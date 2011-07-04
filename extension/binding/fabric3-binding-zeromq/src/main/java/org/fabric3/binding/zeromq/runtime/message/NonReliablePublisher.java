@@ -33,6 +33,7 @@ package org.fabric3.binding.zeromq.runtime.message;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.zeromq.ZMQ;
@@ -53,12 +54,21 @@ import org.fabric3.binding.zeromq.runtime.SocketAddress;
 public class NonReliablePublisher implements Publisher, Thread.UncaughtExceptionHandler {
     private Context context;
     private SocketAddress address;
+    private long pollTimeout;
     private MessagingMonitor monitor;
 
     private Socket socket;
     private Dispatcher dispatcher;
 
     private LinkedBlockingQueue<byte[]> queue;
+
+    public NonReliablePublisher(Context context, SocketAddress address, long pollTimeout, MessagingMonitor monitor) {
+        this.context = context;
+        this.address = address;
+        this.pollTimeout = pollTimeout;
+        this.monitor = monitor;
+        this.queue = new LinkedBlockingQueue<byte[]>();
+    }
 
     public void start() {
         if (dispatcher == null) {
@@ -73,13 +83,6 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
         } finally {
             dispatcher = null;
         }
-    }
-
-    public NonReliablePublisher(Context context, SocketAddress address, MessagingMonitor monitor) {
-        this.context = context;
-        this.address = address;
-        this.monitor = monitor;
-        this.queue = new LinkedBlockingQueue<byte[]>();
     }
 
     public void publish(byte[] message) {
@@ -117,7 +120,13 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
 
             while (active.get()) {
                 try {
+
+                    byte[] value = queue.poll(pollTimeout, TimeUnit.MILLISECONDS);
+                    if (value == null) {
+                        continue;
+                    }
                     List<byte[]> drained = new ArrayList<byte[]>();
+                    drained.add(value);
                     queue.drainTo(drained);
                     for (byte[] bytes : drained) {
                         socket.send(bytes, 0);
@@ -126,6 +135,8 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
                     // exception, make sure the thread is rescheduled
                     schedule();
                     throw e;
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
 
             }

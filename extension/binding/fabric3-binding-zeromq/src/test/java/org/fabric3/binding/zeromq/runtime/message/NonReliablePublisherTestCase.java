@@ -83,7 +83,7 @@ public class NonReliablePublisherTestCase extends TestCase {
         EasyMock.replay(context);
         EasyMock.replay(socket);
 
-        NonReliablePublisher publisher = new NonReliablePublisher(context, ADDRESS, monitor);
+        NonReliablePublisher publisher = new NonReliablePublisher(context, ADDRESS, 1000, monitor);
         publisher.start();
         publisher.publish(message);
 

@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.zeromq.ZMQ;
 
@@ -78,6 +79,8 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
     private HostInfo info;
     private MessagingMonitor monitor;
 
+    private long pollTimeout = 1000;
+
     private Map<String, Subscriber> subscribers = new HashMap<String, Subscriber>();
     private Map<String, PublisherHolder> publishers = new HashMap<String, PublisherHolder>();
 
@@ -93,6 +96,16 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         this.allocator = allocator;
         this.info = info;
         this.monitor = monitor;
+    }
+
+    /**
+     * Sets the timeout in milliseconds for polling operations.
+     *
+     * @param timeout the timeout in milliseconds for polling operations
+     */
+    @Property(required = false)
+    public void setPollTimeout(long timeout) {
+        this.pollTimeout = timeout;
     }
 
     public void subscribe(URI subscriberId, String channelName, ChannelConnection connection, ClassLoader loader) {
@@ -139,7 +152,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
                 SocketAddress address = new SocketAddress(runtimeName, "tcp", InetAddress.getLocalHost().getHostAddress(), port);
                 ZMQ.Context context = manager.getContext();
 
-                Publisher publisher = new NonReliablePublisher(context, address, monitor);
+                Publisher publisher = new NonReliablePublisher(context, address, pollTimeout, monitor);
                 attachConnection(connection, publisher);
 
                 AddressAnnouncement event = new AddressAnnouncement(channelName, AddressAnnouncement.Type.ACTIVATED, address);
