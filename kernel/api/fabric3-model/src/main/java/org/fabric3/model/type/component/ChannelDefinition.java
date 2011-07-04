@@ -71,9 +71,9 @@ public class ChannelDefinition extends AbstractPolicyAware {
     }
 
     /**
-     * Returns the URI of the contribution this channel is defned in.
+     * Returns the URI of the contribution this channel is defined in.
      *
-     * @return the URI of the contribution this channel is defned in
+     * @return the URI of the contribution this channel is defined in
      */
     public URI getContributionUri() {
         return contributionUri;
