@@ -194,8 +194,7 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
 
         public void run() {
             try {
-                messagesProcessed.set(0);
-                startTime = System.currentTimeMillis();
+                startStatistics();
                 while (active.get()) {
                     reconnect();
                     long val = poller.poll();

@@ -129,8 +129,7 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
             address.getPort().releaseLock();
             socket.bind(address.toProtocolString());
 
-            messagesProcessed.set(0);
-            startTime = System.currentTimeMillis();
+            startStatistics();
 
             while (active.get()) {
                 try {

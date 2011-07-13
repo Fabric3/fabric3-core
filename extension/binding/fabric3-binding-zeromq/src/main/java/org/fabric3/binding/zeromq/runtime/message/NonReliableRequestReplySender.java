@@ -67,7 +67,7 @@ import org.fabric3.spi.invocation.WorkContext;
  *
  * @version $Revision$ $Date$
  */
-public class NonReliableRequestReplySender implements RequestReplySender, Thread.UncaughtExceptionHandler {
+public class NonReliableRequestReplySender extends AbstractStatistics implements RequestReplySender, Thread.UncaughtExceptionHandler {
     private static final Callable<byte[]> CALLABLE = new Callable<byte[]>() {
         public byte[] call() throws Exception {
             return null;
@@ -200,6 +200,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
         }
 
         public void run() {
+            startStatistics();
             while (active.get()) {
                 try {
                     reconnect();
@@ -243,6 +244,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
                         }
                         byte[] response = socket.recv(0);
                         request.set(response);
+                        messagesProcessed.incrementAndGet();
                         request.run();
                     }
                 } catch (RuntimeException e) {

@@ -43,6 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.zeromq.ZMQ;
 
+import org.fabric3.api.annotation.management.Management;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.invocation.CallFrame;
@@ -51,7 +52,8 @@ import org.fabric3.spi.invocation.WorkContext;
 /**
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExceptionHandler {
+@Management
+public class NonReliableOneWaySender extends AbstractStatistics implements OneWaySender, Thread.UncaughtExceptionHandler {
     private String id;
     private List<SocketAddress> addresses;
     private MessagingMonitor monitor;
@@ -159,6 +161,8 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
         }
 
         public void run() {
+            startStatistics();
+
             while (active.get()) {
                 try {
                     reconnect();
@@ -191,6 +195,7 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
 
                         // serialize the request payload
                         socket.send(request.getPayload(), 0);
+                        messagesProcessed.incrementAndGet();
                     }
                 } catch (RuntimeException e) {
                     // exception, make sure the thread is rescheduled

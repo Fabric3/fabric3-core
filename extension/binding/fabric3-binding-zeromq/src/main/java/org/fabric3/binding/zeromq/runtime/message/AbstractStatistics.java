@@ -66,5 +66,10 @@ public class AbstractStatistics {
         return messagesProcessed.get();
     }
 
+    protected void startStatistics() {
+        messagesProcessed.set(0);
+        startTime = System.currentTimeMillis();
+    }
+
 
 }
