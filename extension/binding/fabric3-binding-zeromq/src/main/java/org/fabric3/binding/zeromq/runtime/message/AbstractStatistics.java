@@ -30,22 +30,11 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Context;
-import org.zeromq.ZMQ.Socket;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.management.OperationType;
-import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
-import org.fabric3.binding.zeromq.runtime.SocketAddress;
 
 /**
  * Implements basic management statistics for producer and consumer artifacts.

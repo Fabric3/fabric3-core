@@ -168,6 +168,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
                 holder = new PublisherHolder(publisher);
                 holder.getConnectionIds().add(connectionId);
                 publishers.put(channelName, holder);
+                managementService.register(channelName, publisher);
             } catch (PortAllocationException e) {
                 throw new BrokerException("Error creating connection to " + channelName, e);
             } catch (UnknownHostException e) {
@@ -190,6 +191,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         if (holder.getConnectionIds().isEmpty()) {
             publishers.remove(connectionId);
             publisher.stop();
+            managementService.unregister(channelName);
         }
         allocator.release(channelName);
     }

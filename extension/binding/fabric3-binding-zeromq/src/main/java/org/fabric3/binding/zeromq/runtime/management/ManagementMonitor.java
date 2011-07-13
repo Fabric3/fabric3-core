@@ -30,38 +30,16 @@
  */
 package org.fabric3.binding.zeromq.runtime.management;
 
-import java.net.URI;
-
-import org.fabric3.binding.zeromq.runtime.message.Publisher;
-import org.fabric3.binding.zeromq.runtime.message.Subscriber;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Exposes ZeroMQ binding infrastructure to the runtime management framework.
  *
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public interface ZeroMQManagementService {
+public interface ManagementMonitor {
 
-    /**
-     * Registers a {@link Subscriber} for management.
-     *
-     * @param channelName  the channel the subscriber is listening on
-     * @param subscriberId the unique subscriber id
-     * @param subscriber   the subscriber
-     */
-    void register(String channelName, URI subscriberId, Subscriber subscriber);
-
-    /**
-     * Unregisters a subscriber.
-     *
-     * @param channelName  the channel the subscriber is listening on
-     * @param subscriberId the unique subscriber id
-     */
-    void unregister(String channelName, URI subscriberId);
-
-
-    void register(String channelName, Publisher publisher);
-
-    void unregister(String channelName);
+    @Severe
+    void error(String message, Throwable t);
 
 }

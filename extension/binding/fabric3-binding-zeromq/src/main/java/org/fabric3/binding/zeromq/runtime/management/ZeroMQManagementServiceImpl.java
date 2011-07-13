@@ -31,15 +31,16 @@
 package org.fabric3.binding.zeromq.runtime.management;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.binding.zeromq.runtime.message.Publisher;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
@@ -50,36 +51,64 @@ import org.fabric3.spi.management.ManagementService;
 @EagerInit
 @Management(path = "/runtime/transports/zeromq", description = "Manages ZeroMQ infrastructure")
 public class ZeroMQManagementServiceImpl implements ZeroMQManagementService {
-    private static final String CHANNELS_PATH = "transports/zeromq/channels/";
+    private static final String SUBSCRIBERS_PATH = "transports/zeromq/subscribers/";
+    private static final String PUBLISHERS_PATH = "transports/zeromq/publishers/";
 
-    private List<String> channels = new ArrayList<String>();
+    private Set<String> subscribers = new HashSet<String>();
+    private Set<String> publishers = new HashSet<String>();
+
     private ManagementService managementService;
+    private ManagementMonitor monitor;
 
-    public ZeroMQManagementServiceImpl(@Reference ManagementService managementService) {
+    public ZeroMQManagementServiceImpl(@Reference ManagementService managementService, @Monitor ManagementMonitor monitor) {
         this.managementService = managementService;
+        this.monitor = monitor;
+    }
+
+    @ManagementOperation
+    public Set<String> getSubscribers() {
+        return subscribers;
+    }
+
+    @ManagementOperation
+    public Set<String> getPublishers() {
+        return publishers;
     }
 
     public void register(String channelName, URI subscriberId, Subscriber subscriber) {
         try {
-            channels.add(channelName);
-            managementService.export(CHANNELS_PATH + channelName, "", "", subscriber);
+            subscribers.add(channelName);
+            managementService.export(SUBSCRIBERS_PATH + channelName, "", "", subscriber);
         } catch (ManagementException e) {
-            e.printStackTrace();
+            monitor.error("Error registering subscriber for channel " + channelName, e);
         }
     }
 
     public void unregister(String channelName, URI subscriberId) {
         try {
-            channels.remove(channelName);
-            managementService.remove(CHANNELS_PATH + channelName, "");
+            subscribers.remove(channelName);
+            managementService.remove(SUBSCRIBERS_PATH + channelName, "");
         } catch (ManagementException e) {
-            e.printStackTrace();
+            monitor.error("Error unregistering subscriber for channel " + channelName, e);
         }
     }
 
-    @ManagementOperation(path = "channels")
-    public Collection<String> getChannels() {
-        return channels;
+    public void register(String channelName, Publisher publisher) {
+        publishers.add(channelName);
+        try {
+            managementService.export(PUBLISHERS_PATH + channelName, "", "", publisher);
+        } catch (ManagementException e) {
+            monitor.error("Error registering publisher for channel " + channelName, e);
+        }
+    }
+
+    public void unregister(String channelName) {
+        try {
+            publishers.remove(channelName);
+            managementService.remove(PUBLISHERS_PATH + channelName, "");
+        } catch (ManagementException e) {
+            monitor.error("Error unregistering publisher for channel " + channelName, e);
+        }
     }
 
 }
