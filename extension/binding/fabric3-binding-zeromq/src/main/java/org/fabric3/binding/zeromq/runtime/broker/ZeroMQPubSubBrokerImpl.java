@@ -55,6 +55,7 @@ import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
 import org.fabric3.binding.zeromq.runtime.handler.DeserializingEventStreamHandler;
 import org.fabric3.binding.zeromq.runtime.handler.PublisherHandler;
 import org.fabric3.binding.zeromq.runtime.handler.SerializingEventStreamHandler;
+import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
 import org.fabric3.binding.zeromq.runtime.message.NonReliablePublisher;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableSubscriber;
 import org.fabric3.binding.zeromq.runtime.message.Publisher;
@@ -76,6 +77,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
     private AddressCache addressCache;
     private ExecutorService executorService;
     private PortAllocator allocator;
+    private ZeroMQManagementService managementService;
     private HostInfo info;
     private MessagingMonitor monitor;
 
@@ -88,12 +90,14 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
                                   @Reference AddressCache addressCache,
                                   @Reference ExecutorService executorService,
                                   @Reference PortAllocator allocator,
+                                  @Reference ZeroMQManagementService managementService,
                                   @Reference HostInfo info,
                                   @Monitor MessagingMonitor monitor) {
         this.manager = manager;
         this.addressCache = addressCache;
         this.executorService = executorService;
         this.allocator = allocator;
+        this.managementService = managementService;
         this.info = info;
         this.monitor = monitor;
     }
@@ -123,6 +127,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
             subscriber.start();
             addressCache.subscribe(channelName, subscriber);
             subscribers.put(channelName, subscriber);
+            managementService.register(channelName, subscriberId, subscriber);
         } else {
             subscriber.addConnection(subscriberId, connection);
         }
@@ -139,6 +144,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
             subscribers.remove(channelName);
             subscriber.stop();
         }
+        managementService.unregister(channelName, subscriberId);
         monitor.onUnsubscribe(subscriberId);
     }
 

@@ -40,4 +40,8 @@
         <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQTransport"/>
     </component>
 
+    <component name="ZeroMQManagementService">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementServiceImpl"/>
+    </component>
+
 </composite>
