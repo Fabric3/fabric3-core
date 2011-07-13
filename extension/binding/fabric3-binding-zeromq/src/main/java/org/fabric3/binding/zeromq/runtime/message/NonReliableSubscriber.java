@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
@@ -62,7 +61,7 @@ import org.fabric3.spi.channel.EventStreamHandler;
  * @version $Revision: 10396 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 @Management
-public class NonReliableSubscriber implements Subscriber, AddressListener, Thread.UncaughtExceptionHandler {
+public class NonReliableSubscriber extends AbstractStatistics implements Subscriber, AddressListener, Thread.UncaughtExceptionHandler {
     private static final byte[] EMPTY_BYTES = new byte[0];
 
     private String id;
@@ -76,8 +75,6 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
     private AtomicInteger connectionCount = new AtomicInteger();
 
     private SocketReceiver receiver;
-    private long startTime = 0;
-    private AtomicLong messagesProcessed = new AtomicLong();
 
     public NonReliableSubscriber(String id,
                                  Context context,
@@ -119,24 +116,6 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
         return list;
     }
 
-    @ManagementOperation(type = OperationType.POST)
-    public void clearMessageStatistics() {
-        messagesProcessed.set(0);
-        startTime = System.currentTimeMillis();
-    }
-
-    @ManagementOperation
-    public double getMessageRate() {
-        if (startTime == 0) {
-            return 0;
-        }
-        return (double) messagesProcessed.get() / (System.currentTimeMillis() - startTime);
-    }
-
-    @ManagementOperation
-    public long getMessagesProcessed() {
-        return messagesProcessed.get();
-    }
 
     public void addConnection(URI subscriberId, ChannelConnection connection) {
         fanOutHandler.addConnection(subscriberId, connection);

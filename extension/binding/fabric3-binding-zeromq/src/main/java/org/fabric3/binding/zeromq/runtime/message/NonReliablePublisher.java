@@ -40,6 +40,9 @@ import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
+import org.fabric3.api.annotation.management.Management;
+import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.api.annotation.management.OperationType;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 
@@ -51,7 +54,8 @@ import org.fabric3.binding.zeromq.runtime.SocketAddress;
  *
  * @version $Revision$ $Date$
  */
-public class NonReliablePublisher implements Publisher, Thread.UncaughtExceptionHandler {
+@Management
+public class NonReliablePublisher extends AbstractStatistics implements Publisher, Thread.UncaughtExceptionHandler {
     private Context context;
     private SocketAddress address;
     private long pollTimeout;
@@ -70,6 +74,7 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
         this.queue = new LinkedBlockingQueue<byte[]>();
     }
 
+    @ManagementOperation(type = OperationType.POST)
     public void start() {
         if (dispatcher == null) {
             dispatcher = new Dispatcher();
@@ -77,12 +82,18 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
         }
     }
 
+    @ManagementOperation(type = OperationType.POST)
     public void stop() {
         try {
             dispatcher.stop();
         } finally {
             dispatcher = null;
         }
+    }
+
+    @ManagementOperation
+    public String getAddress() {
+        return address.toString();
     }
 
     public void publish(byte[] message) {
@@ -118,6 +129,9 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
             address.getPort().releaseLock();
             socket.bind(address.toProtocolString());
 
+            messagesProcessed.set(0);
+            startTime = System.currentTimeMillis();
+
             while (active.get()) {
                 try {
 
@@ -131,6 +145,7 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
                     for (byte[] bytes : drained) {
                         socket.send(bytes, 0);
                     }
+                    messagesProcessed.incrementAndGet();
                 } catch (RuntimeException e) {
                     // exception, make sure the thread is rescheduled
                     schedule();
@@ -140,7 +155,7 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
                 }
 
             }
-
+            startTime = 0;
         }
     }
 
