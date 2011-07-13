@@ -57,12 +57,13 @@ public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQTargetDefi
     }
 
     public void attach(PhysicalSourceDefinition source, ZeroMQTargetDefinition target, Wire wire) throws WiringException {
-        String id = source.getUri().toString();
-        URI uri = target.getUri();
+        final URI sourceUri = source.getUri();
+        String id = sourceUri.getPath().substring(1) + "/" + sourceUri.getFragment();   // strip leading '/'
+        URI targetUri = target.getUri();
         ClassLoader loader = registry.getClassLoader(target.getClassLoaderId());
         List<InvocationChain> chains = ZeroMQAttacherHelper.sortChains(wire);
         try {
-            broker.connectToSender(id, uri, chains, loader);
+            broker.connectToSender(id, targetUri, chains, loader);
         } catch (BrokerException e) {
             throw new WiringException(e);
         }

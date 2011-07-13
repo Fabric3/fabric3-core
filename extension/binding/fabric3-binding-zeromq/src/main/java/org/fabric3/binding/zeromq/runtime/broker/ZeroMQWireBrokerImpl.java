@@ -56,6 +56,7 @@ import org.fabric3.binding.zeromq.runtime.interceptor.OneWayInterceptor;
 import org.fabric3.binding.zeromq.runtime.interceptor.ReferenceMarshallingInterceptor;
 import org.fabric3.binding.zeromq.runtime.interceptor.RequestReplyInterceptor;
 import org.fabric3.binding.zeromq.runtime.interceptor.ServiceMarshallingInterceptor;
+import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
 import org.fabric3.binding.zeromq.runtime.message.DelegatingOneWaySender;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableOneWayReceiver;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableOneWaySender;
@@ -85,6 +86,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
     private AddressCache addressCache;
     private PortAllocator allocator;
     private HostInfo info;
+    private ZeroMQManagementService managementService;
     private ExecutorService executorService;
     private MessagingMonitor monitor;
     private long pollTimeout = 1000;
@@ -96,12 +98,14 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
                                 @Reference AddressCache addressCache,
                                 @Reference PortAllocator allocator,
                                 @Reference ExecutorService executorService,
+                                @Reference ZeroMQManagementService managementService,
                                 @Reference HostInfo info,
                                 @Monitor MessagingMonitor monitor) {
         this.manager = manager;
         this.addressCache = addressCache;
         this.allocator = allocator;
         this.executorService = executorService;
+        this.managementService = managementService;
         this.info = info;
         this.monitor = monitor;
     }
@@ -127,6 +131,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
         if (holder == null) {
             boolean oneWay = isOneWay(chains, uri);
             holder = createSender(uri.toString(), oneWay);
+            managementService.registerSender(id, holder.getSender());
         }
         for (int i = 0, chainsSize = chains.size(); i < chainsSize; i++) {
             InvocationChain chain = chains.get(i);
@@ -151,6 +156,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
             senders.remove(uri.toString());
             Sender sender = holder.getSender();
             sender.stop();
+            managementService.unregisterSender(id);
         }
     }
 

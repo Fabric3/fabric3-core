@@ -33,6 +33,7 @@ package org.fabric3.binding.zeromq.runtime.management;
 import java.net.URI;
 
 import org.fabric3.binding.zeromq.runtime.message.Publisher;
+import org.fabric3.binding.zeromq.runtime.message.Sender;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
 
 /**
@@ -59,9 +60,34 @@ public interface ZeroMQManagementService {
      */
     void unregister(String channelName, URI subscriberId);
 
-
+    /**
+     * Registers a {@link Publisher} for management.
+     *
+     * @param channelName the channel the publisher is sending messages to
+     * @param publisher   the publisher
+     */
     void register(String channelName, Publisher publisher);
 
+    /**
+     * Unregisters a {@link Publisher}.
+     *
+     * @param channelName the channel the publisher is sending messages to
+     */
     void unregister(String channelName);
+
+    /**
+     * Registers a {@link Sender} for management.
+     *
+     * @param id     the sender id
+     * @param sender the sender
+     */
+    void registerSender(String id, Sender sender);
+
+    /**
+     * Unregisters a {@link Sender}.
+     *
+     * @param id the sender id
+     */
+    void unregisterSender(String id);
 
 }

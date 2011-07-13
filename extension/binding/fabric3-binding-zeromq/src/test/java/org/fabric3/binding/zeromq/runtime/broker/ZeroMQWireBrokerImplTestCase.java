@@ -44,6 +44,7 @@ import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
 import org.fabric3.binding.zeromq.runtime.federation.AddressEvent;
+import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
 import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.host.Port;
@@ -78,6 +79,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
     private ZeroMQWireBrokerImpl broker;
     private PortAllocator allocator;
     private HostInfo info;
+    private ZeroMQManagementService managementService;
 
 
     public void testConnectToReceiverRelease() throws Exception {
@@ -92,7 +94,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         allocator.release("wire");
 
         EasyMock.replay(context);
-        EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info);
+        EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info, managementService);
 
         PhysicalOperationDefinition definition = new PhysicalOperationDefinition();
         definition.setOneWay(true);
@@ -111,7 +113,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         broker.releaseReceiver(URI.create("wire"));
 
         EasyMock.verify(context);
-        EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain, interceptor, port);
+        EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain, interceptor, port, managementService);
     }
 
     public void testConnectToSenderRelease() throws Exception {
@@ -120,7 +122,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         EasyMock.expectLastCall();
 
         EasyMock.replay(context);
-        EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info);
+        EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info, managementService);
 
         PhysicalOperationDefinition definition = new PhysicalOperationDefinition();
         definition.setOneWay(true);
@@ -137,7 +139,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         broker.releaseSender("id", URI.create("wire"));
 
         EasyMock.verify(context);
-        EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain);
+        EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain, managementService);
     }
 
     @Override
@@ -158,7 +160,8 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
 
         monitor = EasyMock.createNiceMock(MessagingMonitor.class);
 
-        broker = new ZeroMQWireBrokerImpl(manager, addressCache, allocator, executorService, info, monitor);
+        managementService = EasyMock.createNiceMock(ZeroMQManagementService.class);
 
+        broker = new ZeroMQWireBrokerImpl(manager, addressCache, allocator, executorService, managementService, info, monitor);
     }
 }
