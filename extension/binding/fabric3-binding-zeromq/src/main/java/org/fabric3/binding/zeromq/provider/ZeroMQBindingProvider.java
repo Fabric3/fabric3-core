@@ -56,7 +56,7 @@ import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.util.UriHelper;
 
 /**
- * A binding.sca implementation that uses ZeroMQ as the underlying transport.
+ * A binding.sca provider that uses ZeroMQ as the underlying transport.
  *
  * @version $Rev$ $Date$
  */
