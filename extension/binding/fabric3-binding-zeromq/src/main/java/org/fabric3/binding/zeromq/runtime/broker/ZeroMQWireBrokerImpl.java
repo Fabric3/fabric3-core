@@ -190,7 +190,9 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
             addressCache.publish(event);
 
             receivers.put(uri.toString(), receiver);
-            monitor.onProvisionEndpoint(uri);
+            String id = createReceiverId(uri);
+            managementService.registerReceiver(id, receiver);
+            monitor.onProvisionEndpoint(id);
         } catch (PortAllocationException e) {
             throw new BrokerException("Error allocating port for " + uri, e);
         } catch (UnknownHostException e) {
@@ -206,7 +208,9 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
         receiver.stop();
         String endpointId = uri.toString();
         allocator.release(endpointId);
-        monitor.onRemoveEndpoint(uri);
+        String id = createReceiverId(uri);
+        managementService.unregisterReceiver(id);
+        monitor.onRemoveEndpoint(id);
     }
 
     public void send(byte[] message, int index, WorkContext context) {
@@ -307,6 +311,14 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, OneWaySender {
         } else {
             throw new AssertionError("Unknown sender type: " + sender.getClass().getName());
         }
+    }
+
+    private String createReceiverId(URI uri) {
+        if ("zmq".equals(uri.getScheme())) {
+            // callback ids are of the form zmq://<service>
+            return uri.getAuthority();
+        }
+        return uri.getPath().substring(1) + "/" + uri.getFragment();
     }
 
     private class SenderHolder {

@@ -54,7 +54,7 @@ import org.fabric3.spi.wire.InvocationChain;
 /**
  * @version $Revision: 10396 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExceptionHandler {
+public abstract class AbstractReceiver extends AbstractStatistics implements Receiver, Thread.UncaughtExceptionHandler {
 
     private Context context;
     private SocketAddress address;
@@ -185,7 +185,7 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
         public void run() {
             try {
                 bind();
-
+                startStatistics();
                 while (active.get()) {
                     if (poller == null) {
                         // the socket or poller could not be created, abort
@@ -197,6 +197,7 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
                         invoke(socket);
                     }
                     response(socket);
+                    messagesProcessed.incrementAndGet();
                 }
             } catch (RuntimeException e) {
                 // exception, make sure the thread is rescheduled

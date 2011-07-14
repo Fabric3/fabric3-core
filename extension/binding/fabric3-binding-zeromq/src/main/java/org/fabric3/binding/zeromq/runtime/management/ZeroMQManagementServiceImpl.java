@@ -41,6 +41,7 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.zeromq.runtime.message.Publisher;
+import org.fabric3.binding.zeromq.runtime.message.Receiver;
 import org.fabric3.binding.zeromq.runtime.message.Sender;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
 import org.fabric3.spi.management.ManagementException;
@@ -55,10 +56,12 @@ public class ZeroMQManagementServiceImpl implements ZeroMQManagementService {
     private static final String SUBSCRIBERS_PATH = "transports/zeromq/subscribers/";
     private static final String PUBLISHERS_PATH = "transports/zeromq/publishers/";
     private static final String SENDERS_PATH = "transports/zeromq/senders/";
+    private static final String RECEIVERS_PATH = "transports/zeromq/receivers/";
 
     private Set<String> subscribers = new HashSet<String>();
     private Set<String> publishers = new HashSet<String>();
     private Set<String> senders = new HashSet<String>();
+    private Set<String> receivers = new HashSet<String>();
 
     private ManagementService managementService;
     private ManagementMonitor monitor;
@@ -81,6 +84,11 @@ public class ZeroMQManagementServiceImpl implements ZeroMQManagementService {
     @ManagementOperation
     public Set<String> getSenders() {
         return senders;
+    }
+
+    @ManagementOperation
+    public Set<String> getReceivers() {
+        return receivers;
     }
 
     public void register(String channelName, URI subscriberId, Subscriber subscriber) {
@@ -130,8 +138,28 @@ public class ZeroMQManagementServiceImpl implements ZeroMQManagementService {
 
     public void unregisterSender(String id) {
         senders.remove(id);
-
+        try {
+            managementService.remove(SENDERS_PATH + id, "");
+        } catch (ManagementException e) {
+            monitor.error("Error unregistering sender: " + id, e);
+        }
     }
 
+    public void registerReceiver(String id, Receiver receiver) {
+        receivers.add(id);
+        try {
+            managementService.export(RECEIVERS_PATH + id, "", "", receiver);
+        } catch (ManagementException e) {
+            monitor.error("Error registering receiver: " + id, e);
+        }
+    }
 
+    public void unregisterReceiver(String id) {
+        receivers.remove(id);
+        try {
+            managementService.remove(RECEIVERS_PATH + id, "");
+        } catch (ManagementException e) {
+            monitor.error("Error unregistering receiver: " + id, e);
+        }
+    }
 }

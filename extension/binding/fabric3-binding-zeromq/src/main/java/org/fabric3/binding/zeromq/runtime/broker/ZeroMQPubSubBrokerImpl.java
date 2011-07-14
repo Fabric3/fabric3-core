@@ -131,7 +131,8 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         } else {
             subscriber.addConnection(subscriberId, connection);
         }
-        monitor.onSubscribe(subscriberId);
+        String id = subscriberId.getPath().substring(1) + "/" + subscriberId.getFragment();
+        monitor.onSubscribe(id);
     }
 
     public void unsubscribe(URI subscriberId, String channelName) {
@@ -145,7 +146,8 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
             subscriber.stop();
         }
         managementService.unregister(channelName, subscriberId);
-        monitor.onUnsubscribe(subscriberId);
+        String id = subscriberId.getPath().substring(1) + "/" + subscriberId.getFragment();
+        monitor.onUnsubscribe(id);
     }
 
     public void connect(String connectionId, ChannelConnection connection, String channelName) throws BrokerException {

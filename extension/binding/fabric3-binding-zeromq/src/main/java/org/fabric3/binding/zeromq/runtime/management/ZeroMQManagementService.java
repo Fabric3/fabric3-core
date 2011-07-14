@@ -33,6 +33,7 @@ package org.fabric3.binding.zeromq.runtime.management;
 import java.net.URI;
 
 import org.fabric3.binding.zeromq.runtime.message.Publisher;
+import org.fabric3.binding.zeromq.runtime.message.Receiver;
 import org.fabric3.binding.zeromq.runtime.message.Sender;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
 
@@ -90,4 +91,7 @@ public interface ZeroMQManagementService {
      */
     void unregisterSender(String id);
 
+    void registerReceiver(String id, Receiver receiver);
+
+    void unregisterReceiver(String id);
 }

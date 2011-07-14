@@ -51,16 +51,16 @@ public interface MessagingMonitor {
     public void warn(String message);
 
     @Info("Provisioned ZeroMQ subscriber [{0}]")
-    void onSubscribe(URI id);
+    void onSubscribe(String id);
 
     @Info("Removed ZeroMQ subscriber [{0}]")
-    void onUnsubscribe(URI id);
+    void onUnsubscribe(String id);
 
     @Info("Provisioned ZeroMQ endpoint [{0}]")
-    void onProvisionEndpoint(URI id);
+    void onProvisionEndpoint(String id);
 
     @Info("Removed ZeroMQ endpoint [{0}]")
-    void onRemoveEndpoint(URI id);
+    void onRemoveEndpoint(String id);
     
     @Debug("ZeroMQ message dropped due to unavailable endpoint")
     void dropMessage();

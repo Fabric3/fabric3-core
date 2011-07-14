@@ -42,6 +42,7 @@ import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
+import org.fabric3.api.annotation.management.Management;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.invocation.Message;
@@ -59,6 +60,7 @@ import org.fabric3.spi.wire.InvocationChain;
  *
  * @version $Revision: 10396 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
+@Management
 public class NonReliableRequestReplyReceiver extends AbstractReceiver implements Thread.UncaughtExceptionHandler {
     private ExecutorService executorService;
     private long pollTimeout;
