@@ -91,7 +91,18 @@ public interface ZeroMQManagementService {
      */
     void unregisterSender(String id);
 
+    /**
+     * Registers a {@link Receiver} for management.
+     *
+     * @param id       the receiver id
+     * @param receiver the receiver
+     */
     void registerReceiver(String id, Receiver receiver);
 
+    /**
+     * Unregisters a {@link Receiver}.
+     *
+     * @param id the receiver id
+     */
     void unregisterReceiver(String id);
 }
