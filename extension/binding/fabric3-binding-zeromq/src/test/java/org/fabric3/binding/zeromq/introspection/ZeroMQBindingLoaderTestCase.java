@@ -52,19 +52,16 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 public class ZeroMQBindingLoaderTestCase extends TestCase {
-    private static final String BINDING_CONFIG = "<binding.zeromq name='zeromq1'>"
-            + "<host name='blabla'/>"
-            + "<port number='123'/>"
-            + "</binding.zeromq>";
-    // private static final String BINDING_CONFIG =
-    // "<binding.zeromq name='zeromq1'/>";
-    // private static final String BINDING_CONFIG = "<binding.zeromq/>";
+    private static final String BINDING_CONFIG =
+            "<binding.zeromq name='zmq' host='host' high.water='1' multicast.rate='2' multicast.recovery='3' send.buffer='4' receive.buffer='5'/>";
+
     private XMLInputFactory xmlFactory;
     private ZeroMQBindingLoader loader;
 
@@ -74,9 +71,16 @@ public class ZeroMQBindingLoaderTestCase extends TestCase {
         ZeroMQBindingDefinition definition = loader.load(reader, context);
         assertFalse(context.hasErrors());
 
-        assertEquals("zeromq1", definition.getName());
-        assertEquals("blabla", definition.getZeroMQMetadata().getHost());
-        assertEquals(123, definition.getZeroMQMetadata().getPort());
+        assertEquals("zmq", definition.getName());
+        ZeroMQMetadata metadata = definition.getZeroMQMetadata();
+        assertEquals("host", metadata.getHost());
+        assertEquals(1, metadata.getHighWater());
+        assertEquals(2, metadata.getMulticastRate());
+        assertEquals(3, metadata.getMulticastRecovery());
+        assertEquals(4, metadata.getSendBuffer());
+        assertEquals(5, metadata.getReceiveBuffer());
+
+
     }
 
     @Override

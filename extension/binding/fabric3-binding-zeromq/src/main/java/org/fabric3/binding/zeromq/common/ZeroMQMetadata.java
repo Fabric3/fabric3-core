@@ -40,22 +40,13 @@ import org.fabric3.model.type.ModelObject;
 public class ZeroMQMetadata extends ModelObject {
     private static final long serialVersionUID = 6236084212498002778L;
 
-    public final static int PORT_NOT_SET = -1;
-    private int port = PORT_NOT_SET;
     private String host;
     private String channelName;
-
-    public ZeroMQMetadata() {
-
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
+    private long highWater = -1;
+    private long multicastRate = -1;
+    private long multicastRecovery = -1;
+    private long sendBuffer = -1;
+    private long receiveBuffer = -1;
 
     public String getHost() {
         return host;
@@ -66,17 +57,60 @@ public class ZeroMQMetadata extends ModelObject {
     }
 
     /**
-     * @return the channelName
+     * Returns the channel name
+     *
+     * @return the channel name
      */
     public String getChannelName() {
         return channelName;
     }
 
     /**
-     * @param channelName the channelName to set
+     * Sets the channel name
+     *
+     * @param channelName the channel name to set
      */
     public void setChannelName(String channelName) {
         this.channelName = channelName;
     }
 
+    public long getHighWater() {
+        return highWater;
+    }
+
+    public void setHighWater(long highWater) {
+        this.highWater = highWater;
+    }
+
+    public long getMulticastRate() {
+        return multicastRate;
+    }
+
+    public void setMulticastRate(long multicastRate) {
+        this.multicastRate = multicastRate;
+    }
+
+    public long getMulticastRecovery() {
+        return multicastRecovery;
+    }
+
+    public void setMulticastRecovery(long multicastRecovery) {
+        this.multicastRecovery = multicastRecovery;
+    }
+
+    public long getSendBuffer() {
+        return sendBuffer;
+    }
+
+    public void setSendBuffer(long sendBuffer) {
+        this.sendBuffer = sendBuffer;
+    }
+
+    public long getReceiveBuffer() {
+        return receiveBuffer;
+    }
+
+    public void setReceiveBuffer(long receiveBuffer) {
+        this.receiveBuffer = receiveBuffer;
+    }
 }

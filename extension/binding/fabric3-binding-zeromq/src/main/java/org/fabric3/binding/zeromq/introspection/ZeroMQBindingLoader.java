@@ -52,11 +52,9 @@ import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
+import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
-
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
  * Loads a <code>binding.zeromq</code> element in a composite.
@@ -71,8 +69,12 @@ public class ZeroMQBindingLoader implements TypeLoader<ZeroMQBindingDefinition> 
     static {
         ATTRIBUTES.add("target");
         ATTRIBUTES.add("host");
-        ATTRIBUTES.add("port");
         ATTRIBUTES.add("name");
+        ATTRIBUTES.add("high.water");
+        ATTRIBUTES.add("multicast.rate");
+        ATTRIBUTES.add("multicast.recovery");
+        ATTRIBUTES.add("send.buffer");
+        ATTRIBUTES.add("receive.buffer");
     }
 
     public ZeroMQBindingLoader(@Reference LoaderHelper loaderHelper) {
@@ -83,62 +85,52 @@ public class ZeroMQBindingLoader implements TypeLoader<ZeroMQBindingDefinition> 
 
         validateAttributes(reader, context);
 
-        String target = reader.getAttributeValue(null, "target");
         String bindingName = reader.getAttributeValue(null, "name");
 
         ZeroMQMetadata metadata = new ZeroMQMetadata();
         ZeroMQBindingDefinition definition = new ZeroMQBindingDefinition(bindingName, metadata);
+
+        String target = reader.getAttributeValue(null, "target");
         if (target != null) {
             try {
                 definition.setTargetUri(new URI(target));
             } catch (URISyntaxException e) {
-                InvalidValue value = new InvalidValue("Invalid target URI specified: " + target, reader, e);
-                context.addError(value);
+                InvalidValue error = new InvalidValue("Invalid target URI specified: " + target, reader, e);
+                context.addError(error);
             }
         }
+
+        String host = reader.getAttributeValue(null, "host");
+        long highWater = parseLong("high.water", reader, context);
+        long multicastRate = parseLong("multicast.rate", reader, context);
+        long multicastRecovery = parseLong("multicast.recovery", reader, context);
+        long sendBuffer = parseLong("send.buffer", reader, context);
+        long receiveBuffer = parseLong("receive.buffer", reader, context);
+
+        metadata.setHost(host);
+        metadata.setHighWater(highWater);
+        metadata.setMulticastRate(multicastRate);
+        metadata.setMulticastRecovery(multicastRecovery);
+        metadata.setSendBuffer(sendBuffer);
+        metadata.setReceiveBuffer(receiveBuffer);
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
-
-        // now start parsing the xml subtree and see what
-        // elements and set the values inside the ZeroMQMetadata.
-
-        String name;
-        String value;
-        test:
-        while (true) {
-            switch (reader.next()) {
-            case START_ELEMENT:
-                name = reader.getName().getLocalPart();
-                if ("host".equalsIgnoreCase(name)) {
-                    value = reader.getAttributeValue(null, "name");
-                    if (value == null)
-                        metadata.setHost("localhost");
-                    else
-                        metadata.setHost(value);
-                } else if ("port".equalsIgnoreCase(name)) {
-                    value = reader.getAttributeValue(null, "number");
-                    if (value == null) {
-                        InvalidValue error = new InvalidValue("No port set for binding.zmq", reader);
-                        context.addError(error);
-                    }
-                    try {
-                        int p = Integer.parseInt(value);
-                        metadata.setPort(p);
-                    } catch (NumberFormatException e) {
-                        InvalidValue error = new InvalidValue("The port :[" + value + "] is not a number", reader,
-                                                              e);
-                        context.addError(error);
-                    }
-                }
-                break;
-            case END_ELEMENT:
-                name = reader.getName().getLocalPart();
-                if (name.equalsIgnoreCase("binding.zeromq")) {
-                    break test;
-                }
-            }
-        }
+        LoaderUtil.skipToEndElement(reader);
         return definition;
+    }
+
+    private long parseLong(String name, XMLStreamReader reader, IntrospectionContext context) {
+        try {
+            String val = reader.getAttributeValue(null, name);
+            if (val == null) {
+                return -1;
+            }
+            return Long.parseLong(val);
+        } catch (NumberFormatException e) {
+            InvalidValue error = new InvalidValue("Invalid value specified for " + name, reader, e);
+            context.addError(error);
+            return -1;
+        }
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
