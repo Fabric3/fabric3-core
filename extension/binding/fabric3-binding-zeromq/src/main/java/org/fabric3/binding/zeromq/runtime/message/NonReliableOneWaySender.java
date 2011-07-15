@@ -44,6 +44,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 import org.zeromq.ZMQ;
 
 import org.fabric3.api.annotation.management.Management;
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.invocation.CallFrame;
@@ -64,13 +65,18 @@ public class NonReliableOneWaySender extends AbstractStatistics implements OneWa
     private LinkedBlockingQueue<Request> queue;
     private long pollTimeout;
 
-    public NonReliableOneWaySender(String id, ZMQ.Context context, List<SocketAddress> addresses, long pollTimeout, MessagingMonitor monitor) {
+    public NonReliableOneWaySender(String id,
+                                   ZMQ.Context context,
+                                   List<SocketAddress> addresses,
+                                   long pollTimeout,
+                                   ZeroMQMetadata metadata,
+                                   MessagingMonitor monitor) {
         this.id = id;
         this.addresses = addresses;
         this.pollTimeout = pollTimeout;
         this.monitor = monitor;
         queue = new LinkedBlockingQueue<Request>();
-        multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PUSH);
+        multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PUSH, metadata);
     }
 
     public void start() {

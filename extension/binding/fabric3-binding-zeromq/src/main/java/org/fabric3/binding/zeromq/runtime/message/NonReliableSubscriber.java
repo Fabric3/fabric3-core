@@ -43,6 +43,7 @@ import org.zeromq.ZMQ.Socket;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.management.OperationType;
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.federation.AddressListener;
@@ -68,6 +69,7 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
     private Context context;
     private List<SocketAddress> addresses;
     private EventStreamHandler handler;
+    private ZeroMQMetadata metadata;
     private MessagingMonitor monitor;
 
     private AsyncFanOutHandler fanOutHandler;
@@ -80,11 +82,13 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
                                  Context context,
                                  List<SocketAddress> addresses,
                                  EventStreamHandler head,
+                                 ZeroMQMetadata metadata,
                                  MessagingMonitor monitor) {
         this.id = id;
         this.context = context;
         this.addresses = addresses;
         this.handler = head;
+        this.metadata = metadata;
         this.monitor = monitor;
         EventStreamHandler current = handler;
         setFanOutHandler(current);
@@ -224,6 +228,7 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
                 socket.close();
             }
             socket = context.socket(ZMQ.SUB);
+            SocketHelper.configure(socket, metadata);
             socket.subscribe(EMPTY_BYTES);    // receive all messages
 
             for (SocketAddress address : addresses) {

@@ -38,6 +38,7 @@ import javax.xml.namespace.QName;
 import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQTargetDefinition;
@@ -65,11 +66,12 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
                                                  ServiceContract contract,
                                                  List<LogicalOperation> operations,
                                                  EffectivePolicy policy) throws GenerationException {
+        ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
         if (binding.isCallback()) {
             URI uri = URI.create("zmq://" + contract.getInterfaceName());
-            return new ZeroMQSourceDefinition(uri);
+            return new ZeroMQSourceDefinition(uri, metadata);
         } else {
-            return new ZeroMQSourceDefinition();
+            return new ZeroMQSourceDefinition(metadata);
         }
     }
 
@@ -79,9 +81,11 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
                                                  EffectivePolicy policy) throws GenerationException {
         validateServiceContract(contract);
 
+        ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
+
         if (binding.isCallback()) {
             URI targetUri = URI.create("zmq://" + contract.getInterfaceName());
-            return new ZeroMQTargetDefinition(targetUri);
+            return new ZeroMQTargetDefinition(targetUri, metadata);
         }
         LogicalCompositeComponent composite = binding.getParent().getParent().getParent();
         URI parent = composite.getUri();
@@ -104,24 +108,25 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
             }
 
         }
-        return generateTarget(contract, targetUri);
+        return generateTarget(contract, targetUri, metadata);
     }
 
     public ZeroMQTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
-                                                                 ServiceContract contract,
-                                                                 List<LogicalOperation> operations,
-                                                                 EffectivePolicy policy) throws GenerationException {
+                                                               ServiceContract contract,
+                                                               List<LogicalOperation> operations,
+                                                               EffectivePolicy policy) throws GenerationException {
         URI targetUri = binding.getParent().getUri();
-        return generateTarget(contract, targetUri);
+        ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
+        return generateTarget(contract, targetUri, metadata);
     }
 
-    private ZeroMQTargetDefinition generateTarget(ServiceContract contract, URI targetUri) {
+    private ZeroMQTargetDefinition generateTarget(ServiceContract contract, URI targetUri, ZeroMQMetadata metadata) {
         boolean hasCallback = contract.getCallbackContract() != null;
         if (hasCallback) {
             URI callbackUri = URI.create("zmq://" + contract.getCallbackContract().getInterfaceName());
-            return new ZeroMQTargetDefinition(targetUri, callbackUri);
+            return new ZeroMQTargetDefinition(targetUri, callbackUri, metadata);
         }
-        return new ZeroMQTargetDefinition(targetUri);
+        return new ZeroMQTargetDefinition(targetUri, metadata);
     }
 
     private void validateServiceContract(ServiceContract contract) throws InvalidContractException {

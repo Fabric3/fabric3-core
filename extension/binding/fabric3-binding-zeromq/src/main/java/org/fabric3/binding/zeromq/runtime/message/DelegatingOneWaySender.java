@@ -32,6 +32,7 @@ package org.fabric3.binding.zeromq.runtime.message;
 
 import java.util.List;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.invocation.WorkContext;
 
@@ -42,11 +43,13 @@ import org.fabric3.spi.invocation.WorkContext;
  */
 public class DelegatingOneWaySender implements OneWaySender {
     private String id;
-    private OneWaySender delegate;
+    private DynamicOneWaySender delegate;
+    private ZeroMQMetadata metadata;
 
-    public DelegatingOneWaySender(String id, OneWaySender delegate) {
+    public DelegatingOneWaySender(String id, DynamicOneWaySender delegate, ZeroMQMetadata metadata) {
         this.id = id;
         this.delegate = delegate;
+        this.metadata = metadata;
     }
 
     public void start() {
@@ -64,6 +67,6 @@ public class DelegatingOneWaySender implements OneWaySender {
 
 
     public void send(byte[] message, int index, WorkContext context) {
-        delegate.send(message, index, context);
+        delegate.send(message, index, context, metadata);
     }
 }

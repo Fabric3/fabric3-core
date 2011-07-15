@@ -38,6 +38,7 @@ import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
@@ -90,8 +91,11 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
         EasyMock.replay(context);
         EasyMock.replay(manager, addressCache, executorService, monitor, connection, allocator, info, managementService);
 
-        broker.subscribe(URI.create("subscriber"), "endpoint", connection, getClass().getClassLoader());
-        broker.unsubscribe(URI.create("subscriber"), "endpoint");
+        ZeroMQMetadata metadata = new ZeroMQMetadata();
+        metadata.setChannelName("endpoint");
+
+        broker.subscribe(URI.create("subscriber"), metadata, connection, getClass().getClassLoader());
+        broker.unsubscribe(URI.create("subscriber"), metadata);
 
         EasyMock.verify(context);
         EasyMock.verify(manager, addressCache, executorService, monitor, connection, allocator, info, managementService);
@@ -116,8 +120,11 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
         EasyMock.replay(context);
         EasyMock.replay(manager, addressCache, executorService, monitor, connection, allocator, info, stream, port, managementService);
 
-        broker.connect("id", connection, "channel");
-        broker.release("id", "channel");
+        ZeroMQMetadata metadata = new ZeroMQMetadata();
+        metadata.setChannelName("channel");
+
+        broker.connect("id", connection, metadata);
+        broker.release("id", metadata);
 
         EasyMock.verify(context);
         EasyMock.verify(manager, addressCache, executorService, monitor, connection, allocator, info, stream, port, managementService);

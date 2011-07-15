@@ -42,6 +42,7 @@ import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.invocation.CallFrame;
@@ -67,12 +68,14 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
 
     private Receiver receiver;
     private long pollTimeout;
+    private ZeroMQMetadata metadata;
 
     public AbstractReceiver(Context context,
                             SocketAddress address,
                             List<InvocationChain> chains,
                             int socketType,
                             long pollTimeout,
+                            ZeroMQMetadata metadata,
                             MessagingMonitor monitor) {
         this.context = context;
         this.address = address;
@@ -86,6 +89,7 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
             interceptors[i] = chain.getHeadInterceptor();
         }
         this.socketType = socketType;
+        this.metadata = metadata;
         this.monitor = monitor;
     }
 
@@ -213,6 +217,7 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
                 return;
             }
             socket = context.socket(socketType);
+            SocketHelper.configure(socket, metadata);
             address.getPort().releaseLock();
             socket.bind(address.toProtocolString());
             poller = context.poller();

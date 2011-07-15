@@ -54,6 +54,7 @@ import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.invocation.CallFrame;
@@ -87,13 +88,18 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
 
     private LinkedBlockingQueue<Request> queue;
 
-    public NonReliableRequestReplySender(String id, Context context, List<SocketAddress> addresses, long pollTimeout, MessagingMonitor monitor) {
+    public NonReliableRequestReplySender(String id,
+                                         Context context,
+                                         List<SocketAddress> addresses,
+                                         long pollTimeout,
+                                         ZeroMQMetadata metadata,
+                                         MessagingMonitor monitor) {
         this.id = id;
         this.context = context;
         this.addresses = addresses;
         this.pollTimeout = pollTimeout;
         this.monitor = monitor;
-        multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.XREQ);
+        multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.XREQ, metadata);
         queue = new LinkedBlockingQueue<Request>();
         pollers = new ConcurrentHashMap<Socket, ZMQ.Poller>();
     }

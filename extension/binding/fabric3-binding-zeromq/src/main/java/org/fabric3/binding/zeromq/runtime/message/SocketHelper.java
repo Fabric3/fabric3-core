@@ -28,52 +28,43 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.provision;
+package org.fabric3.binding.zeromq.runtime.message;
 
-import java.net.URI;
+import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
- * Generated metadata used for attaching a reference to a ZeroMQ Socket.
+ * Helper methods for configuring ZeroMQ sockets.
  *
- * @version $Revision$ $Date$
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class ZeroMQTargetDefinition extends PhysicalTargetDefinition {
-    private static final long serialVersionUID = 2273519605739325350L;
-    private ZeroMQMetadata metadata;
-    private URI callbackUri;
+public final class SocketHelper {
 
-    /**
-     * Constructor for a reference binding.
-     *
-     * @param uri      the target URI
-     * @param metadata the ZeroMQ metadata to configure the underlying socket
-     */
-    public ZeroMQTargetDefinition(URI uri, ZeroMQMetadata metadata) {
-        this.metadata = metadata;
-        setUri(uri);
+    private SocketHelper() {
     }
 
     /**
-     * Constructor for a bidirectional service
+     * Configures a socket based on metadata.
      *
-     * @param uri         the target URI
-     * @param callbackUri the callback URI
-     * @param metadata    the ZeroMQ metadata to configure the underlying socket
+     * @param socket   the socket
+     * @param metadata the metadata
      */
-    public ZeroMQTargetDefinition(URI uri, URI callbackUri, ZeroMQMetadata metadata) {
-        this.metadata = metadata;
-        setUri(uri);
-        this.callbackUri = callbackUri;
-    }
-
-    public ZeroMQMetadata getMetadata() {
-        return metadata;
-    }
-
-    public URI getCallbackUri() {
-        return callbackUri;
+    public static void configure(ZMQ.Socket socket, ZeroMQMetadata metadata) {
+        if (metadata.getHighWater() > -1) {
+            socket.setHWM(metadata.getHighWater());
+        }
+        if (metadata.getMulticastRate() > -1) {
+            socket.setRate(metadata.getMulticastRate());
+        }
+        if (metadata.getMulticastRecovery() > -1) {
+            socket.setRecoveryInterval(metadata.getMulticastRecovery());
+        }
+        if (metadata.getReceiveBuffer() > -1) {
+            socket.setReceiveBufferSize(metadata.getReceiveBuffer());
+        }
+        if (metadata.getSendBuffer() > -1) {
+            socket.setSendBufferSize(metadata.getSendBuffer());
+        }
     }
 }

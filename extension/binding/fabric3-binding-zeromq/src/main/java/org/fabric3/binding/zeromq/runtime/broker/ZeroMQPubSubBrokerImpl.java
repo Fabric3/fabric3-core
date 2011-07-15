@@ -44,6 +44,7 @@ import org.osoa.sca.annotations.Reference;
 import org.zeromq.ZMQ;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.BrokerException;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
@@ -112,7 +113,8 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         this.pollTimeout = timeout;
     }
 
-    public void subscribe(URI subscriberId, String channelName, ChannelConnection connection, ClassLoader loader) {
+    public void subscribe(URI subscriberId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) {
+        String channelName = metadata.getChannelName();
         Subscriber subscriber = subscribers.get(channelName);
         if (subscriber == null) {
             AsyncFanOutHandler fanOutHandler = new AsyncFanOutHandler(executorService);
@@ -123,7 +125,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
 
             List<SocketAddress> addresses = addressCache.getActiveAddresses(channelName);
             ZMQ.Context context = manager.getContext();
-            subscriber = new NonReliableSubscriber(subscriberId.toString(), context, addresses, head, monitor);
+            subscriber = new NonReliableSubscriber(subscriberId.toString(), context, addresses, head, metadata, monitor);
             subscriber.start();
             addressCache.subscribe(channelName, subscriber);
             subscribers.put(channelName, subscriber);
@@ -135,7 +137,8 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         monitor.onSubscribe(id);
     }
 
-    public void unsubscribe(URI subscriberId, String channelName) {
+    public void unsubscribe(URI subscriberId, ZeroMQMetadata metadata) {
+        String channelName = metadata.getChannelName();
         Subscriber subscriber = subscribers.get(channelName);
         if (subscriber == null) {
             throw new IllegalStateException("Subscriber not found: " + subscriberId);
@@ -150,7 +153,8 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         monitor.onUnsubscribe(id);
     }
 
-    public void connect(String connectionId, ChannelConnection connection, String channelName) throws BrokerException {
+    public void connect(String connectionId, ChannelConnection connection, ZeroMQMetadata metadata) throws BrokerException {
+        String channelName = metadata.getChannelName();
         PublisherHolder holder = publishers.get(channelName);
         if (holder == null) {
             try {
@@ -160,7 +164,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
                 SocketAddress address = new SocketAddress(runtimeName, "tcp", InetAddress.getLocalHost().getHostAddress(), port);
                 ZMQ.Context context = manager.getContext();
 
-                Publisher publisher = new NonReliablePublisher(context, address, pollTimeout, monitor);
+                Publisher publisher = new NonReliablePublisher(context, address, pollTimeout, metadata, monitor);
                 attachConnection(connection, publisher);
 
                 AddressAnnouncement event = new AddressAnnouncement(channelName, AddressAnnouncement.Type.ACTIVATED, address);
@@ -183,7 +187,8 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         }
     }
 
-    public void release(String connectionId, String channelName) throws BrokerException {
+    public void release(String connectionId, ZeroMQMetadata metadata) throws BrokerException {
+        String channelName = metadata.getChannelName();
         PublisherHolder holder = publishers.get(channelName);
         if (holder == null) {
             throw new BrokerException("Publisher not found for " + channelName);

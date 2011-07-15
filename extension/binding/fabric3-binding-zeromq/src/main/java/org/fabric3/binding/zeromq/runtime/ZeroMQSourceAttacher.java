@@ -35,6 +35,7 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
@@ -66,7 +67,8 @@ public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQSourceDefi
         ClassLoader loader = registry.getClassLoader(target.getClassLoaderId());
         List<InvocationChain> chains = ZeroMQAttacherHelper.sortChains(wire);
         try {
-            broker.connectToReceiver(uri, chains, loader);
+            ZeroMQMetadata metadata = source.getMetadata();
+            broker.connectToReceiver(uri, chains, metadata, loader);
         } catch (BrokerException e) {
             throw new WiringException(e);
         }

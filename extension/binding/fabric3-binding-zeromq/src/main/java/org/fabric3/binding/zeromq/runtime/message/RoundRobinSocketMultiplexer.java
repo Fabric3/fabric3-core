@@ -41,6 +41,7 @@ import java.util.Set;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import org.zeromq.ZMQ;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 
 /**
@@ -54,10 +55,12 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
 
     private Map<SocketAddress, ZMQ.Socket> sockets;
     private Iterator<ZMQ.Socket> iterator;
+    private ZeroMQMetadata metadata;
 
-    public RoundRobinSocketMultiplexer(ZMQ.Context context, int socketType) {
+    public RoundRobinSocketMultiplexer(ZMQ.Context context, int socketType, ZeroMQMetadata metadata) {
         this.context = context;
         this.socketType = socketType;
+        this.metadata = metadata;
         sockets = new ConcurrentLinkedHashMap.Builder<SocketAddress, ZMQ.Socket>().maximumWeightedCapacity(1000).build();
     }
 
@@ -65,6 +68,7 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
         if (sockets.isEmpty()) {
             if (addresses.size() == 1) {
                 ZMQ.Socket socket = context.socket(socketType);
+                SocketHelper.configure(socket, metadata);
                 SocketAddress address = addresses.get(0);
                 address.getPort().releaseLock();
                 socket.connect(address.toProtocolString());
@@ -73,6 +77,7 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
             } else {
                 for (SocketAddress address : addresses) {
                     ZMQ.Socket socket = context.socket(socketType);
+                    SocketHelper.configure(socket, metadata);
                     address.getPort().releaseLock();
                     socket.connect(address.toProtocolString());
                     sockets.put(address, socket);
@@ -95,6 +100,7 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
 
             for (SocketAddress address : toAdd) {
                 ZMQ.Socket socket = context.socket(socketType);
+                SocketHelper.configure(socket, metadata);
                 address.getPort().releaseLock();
                 socket.connect(address.toProtocolString());
                 sockets.put(address, socket);

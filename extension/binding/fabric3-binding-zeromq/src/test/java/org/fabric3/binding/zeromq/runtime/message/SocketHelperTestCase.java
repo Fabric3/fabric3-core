@@ -30,69 +30,77 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
 import junit.framework.TestCase;
-import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
-import org.fabric3.binding.zeromq.runtime.SocketAddress;
-import org.fabric3.spi.host.Port;
 
 /**
- * @version $Revision: 10396 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
+ * Implementations dispatch messages over a ZeroMQ socket.
+ *
+ * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class NonReliablePublisherTestCase extends TestCase {
-    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", new Port() {
-        public String getName() {
-            return null;
-        }
+public final class SocketHelperTestCase extends TestCase {
+    private ZMQ.Socket socket;
+    private ZeroMQMetadata metadata;
 
-        public int getNumber() {
-            return 1061;
-        }
-
-        public void releaseLock() {
-
-        }
-    });
-
-    public void testPublish() throws Exception {
-        final CountDownLatch latch = new CountDownLatch(1);
-
-        byte[] message = "test".getBytes();
-
-        ZMQ.Socket socket = EasyMock.createMock(ZMQ.Socket.class);
-        socket.bind(ADDRESS.toProtocolString());
-        EasyMock.expect(socket.send(message, 0)).andStubAnswer(new IAnswer<Boolean>() {
-
-            public Boolean answer() throws Throwable {
-                latch.countDown();
-                return true;
-            }
-        });
-
-        ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
-        EasyMock.expect(context.socket(ZMQ.PUB)).andReturn(socket);
-        MessagingMonitor monitor = EasyMock.createMock(MessagingMonitor.class);
-
-        EasyMock.replay(monitor);
-        EasyMock.replay(context);
+    public void testSetNone() throws Exception {
         EasyMock.replay(socket);
 
-        ZeroMQMetadata metadata = new ZeroMQMetadata();
-
-        NonReliablePublisher publisher = new NonReliablePublisher(context, ADDRESS, 1000, metadata, monitor);
-        publisher.start();
-        publisher.publish(message);
-
-        latch.await(10000, TimeUnit.MILLISECONDS);
-
-        EasyMock.verify(context);
+        SocketHelper.configure(socket, metadata);
         EasyMock.verify(socket);
+    }
+
+    public void testHighWater() throws Exception {
+        metadata.setHighWater(1);
+        socket.setHWM(1);
+        EasyMock.replay(socket);
+
+        SocketHelper.configure(socket, metadata);
+        EasyMock.verify(socket);
+    }
+
+    public void testMulticastRate() throws Exception {
+        metadata.setMulticastRate(1);
+        socket.setRate(1);
+        EasyMock.replay(socket);
+
+        SocketHelper.configure(socket, metadata);
+        EasyMock.verify(socket);
+    }
+
+    public void testMulticastRecovery() throws Exception {
+        metadata.setMulticastRecovery(1);
+        socket.setRecoveryInterval(1);
+        EasyMock.replay(socket);
+
+        SocketHelper.configure(socket, metadata);
+        EasyMock.verify(socket);
+    }
+
+    public void testReceiveBuffer() throws Exception {
+        metadata.setReceiveBuffer(1);
+        socket.setReceiveBufferSize(1);
+        EasyMock.replay(socket);
+
+        SocketHelper.configure(socket, metadata);
+        EasyMock.verify(socket);
+    }
+
+    public void testSendBuffer() throws Exception {
+        metadata.setSendBuffer(1);
+        socket.setSendBufferSize(1);
+        EasyMock.replay(socket);
+
+        SocketHelper.configure(socket, metadata);
+        EasyMock.verify(socket);
+    }
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        socket = EasyMock.createMock(ZMQ.Socket.class);
+        metadata = new ZeroMQMetadata();
     }
 }

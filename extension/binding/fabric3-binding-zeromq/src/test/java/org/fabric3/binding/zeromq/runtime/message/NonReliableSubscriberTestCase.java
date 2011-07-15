@@ -41,6 +41,7 @@ import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
@@ -51,7 +52,7 @@ import org.fabric3.spi.host.Port;
  */
 public class NonReliableSubscriberTestCase extends TestCase {
 
-    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", new Port(){
+    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", new Port() {
         public String getName() {
             return null;
         }
@@ -65,7 +66,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
         }
     });
 
-    private static final SocketAddress ADDRESS2 = new SocketAddress("runtime", "tcp", "10.10.10.2", new Port(){
+    private static final SocketAddress ADDRESS2 = new SocketAddress("runtime", "tcp", "10.10.10.2", new Port() {
         public String getName() {
             return null;
         }
@@ -79,6 +80,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
         }
     });
     private MessagingMonitor monitor;
+    private ZeroMQMetadata metadata;
 
     public void testReceive() throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
@@ -124,7 +126,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
         EasyMock.replay(head);
 
         List<SocketAddress> addresses = Collections.singletonList(ADDRESS);
-        NonReliableSubscriber subscriber = new NonReliableSubscriber("", context, addresses, head, monitor);
+        NonReliableSubscriber subscriber = new NonReliableSubscriber("", context, addresses, head, metadata, monitor);
         subscriber.start();
 
         latch.await(10000, TimeUnit.MILLISECONDS);
@@ -186,7 +188,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
         EasyMock.replay(head);
 
         List<SocketAddress> addresses = Collections.singletonList(ADDRESS);
-        NonReliableSubscriber subscriber = new NonReliableSubscriber("", context, addresses, head, monitor);
+        NonReliableSubscriber subscriber = new NonReliableSubscriber("", context, addresses, head, metadata, monitor);
         subscriber.start();
 
         latch.await();
@@ -244,7 +246,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
         EasyMock.replay(head);
 
         List<SocketAddress> addresses = Collections.singletonList(ADDRESS);
-        NonReliableSubscriber subscriber = new NonReliableSubscriber("", context, addresses, head, monitor);
+        NonReliableSubscriber subscriber = new NonReliableSubscriber("", context, addresses, head, metadata, monitor);
         subscriber.start();
 
         latch.await();
@@ -275,6 +277,6 @@ public class NonReliableSubscriberTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         monitor = EasyMock.createMock(MessagingMonitor.class);
-
+        metadata = new ZeroMQMetadata();
     }
 }

@@ -63,7 +63,7 @@ public class ZeroMQTargetAttacher implements TargetWireAttacher<ZeroMQTargetDefi
         ClassLoader loader = registry.getClassLoader(target.getClassLoaderId());
         List<InvocationChain> chains = ZeroMQAttacherHelper.sortChains(wire);
         try {
-            broker.connectToSender(id, targetUri, chains, loader);
+            broker.connectToSender(id, targetUri, chains, target.getMetadata(), loader);
         } catch (BrokerException e) {
             throw new WiringException(e);
         }

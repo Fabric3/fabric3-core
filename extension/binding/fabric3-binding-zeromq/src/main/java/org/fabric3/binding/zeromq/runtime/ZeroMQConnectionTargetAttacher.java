@@ -53,9 +53,8 @@ public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<
             throws ConnectionAttachException {
         try {
             ZeroMQMetadata metadata = target.getMetadata();
-            String channelName = metadata.getChannelName();
             String connectionId = source.getUri().toString();
-            broker.connect(connectionId, connection, channelName);
+            broker.connect(connectionId, connection, metadata);
         } catch (BrokerException e) {
             throw new ConnectionAttachException(e);
         }
@@ -64,9 +63,8 @@ public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<
     public void detach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target) throws ConnectionAttachException {
         try {
             ZeroMQMetadata metadata = target.getMetadata();
-            String channelName = metadata.getChannelName();
             String connectionId = source.getUri().toString();
-            broker.release(connectionId, channelName);
+            broker.release(connectionId, metadata);
         } catch (BrokerException e) {
             throw new ConnectionAttachException(e);
         }

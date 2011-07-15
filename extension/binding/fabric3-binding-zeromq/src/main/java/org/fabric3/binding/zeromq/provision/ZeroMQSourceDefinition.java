@@ -32,6 +32,7 @@ package org.fabric3.binding.zeromq.provision;
 
 import java.net.URI;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
@@ -42,15 +43,22 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 public class ZeroMQSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = -1119229094076577838L;
     private URI callbackUri;
+    private ZeroMQMetadata metadata;
 
-    public ZeroMQSourceDefinition() {
+    public ZeroMQSourceDefinition(ZeroMQMetadata metadata) {
+        this.metadata = metadata;
     }
 
-    public ZeroMQSourceDefinition(URI callbackUri) {
+    public ZeroMQSourceDefinition(URI callbackUri, ZeroMQMetadata metadata) {
         this.callbackUri = callbackUri;
+        this.metadata = metadata;
     }
 
     public URI getCallbackUri() {
         return callbackUri;
+    }
+
+    public ZeroMQMetadata getMetadata() {
+        return metadata;
     }
 }

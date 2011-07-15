@@ -34,6 +34,7 @@ import java.net.URI;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
@@ -57,20 +58,20 @@ public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<
             throws ConnectionAttachException {
 
         ClassLoader loader = registry.getClassLoader(source.getClassLoaderId());
-        String channelName = source.getMetadata().getChannelName();
         URI subscriberId = source.getUri();
         try {
-            broker.subscribe(subscriberId, channelName, connection, loader);
+            ZeroMQMetadata metadata = source.getMetadata();
+            broker.subscribe(subscriberId, metadata, connection, loader);
         } catch (BrokerException e) {
             throw new ConnectionAttachException(e);
         }
     }
 
     public void detach(ZeroMQConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
-        String channelName = source.getMetadata().getChannelName();
+        ZeroMQMetadata metadata = source.getMetadata();
         URI subscriberId = source.getUri();
         try {
-            broker.unsubscribe(subscriberId, channelName);
+            broker.unsubscribe(subscriberId, metadata);
         } catch (BrokerException e) {
             throw new ConnectionAttachException(e);
         }

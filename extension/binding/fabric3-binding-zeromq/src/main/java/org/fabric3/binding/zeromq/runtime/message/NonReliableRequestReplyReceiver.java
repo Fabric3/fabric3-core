@@ -43,6 +43,7 @@ import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 import org.fabric3.api.annotation.management.Management;
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.invocation.Message;
@@ -71,8 +72,9 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
                                            List<InvocationChain> chains,
                                            ExecutorService executorService,
                                            long pollTimeout,
+                                           ZeroMQMetadata metadata,
                                            MessagingMonitor monitor) {
-        super(context, address, chains, ZMQ.XREP, 100, monitor);
+        super(context, address, chains, ZMQ.XREP, 100, metadata, monitor);
         this.executorService = executorService;
         this.pollTimeout = pollTimeout;
         queue = new LinkedBlockingQueue<Response>();

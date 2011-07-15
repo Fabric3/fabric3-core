@@ -39,6 +39,7 @@ import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
@@ -80,6 +81,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
     private PortAllocator allocator;
     private HostInfo info;
     private ZeroMQManagementService managementService;
+    private ZeroMQMetadata metadata;
 
 
     public void testConnectToReceiverRelease() throws Exception {
@@ -109,7 +111,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         List<InvocationChain> chains = Collections.singletonList(chain);
         EasyMock.replay(chain, interceptor, port);
 
-        broker.connectToReceiver(URI.create("wire"), chains, getClass().getClassLoader());
+        broker.connectToReceiver(URI.create("wire"), chains, metadata, getClass().getClassLoader());
         broker.releaseReceiver(URI.create("wire"));
 
         EasyMock.verify(context);
@@ -135,7 +137,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         List<InvocationChain> chains = Collections.singletonList(chain);
         EasyMock.replay(chain);
 
-        broker.connectToSender("id", URI.create("wire"), chains, getClass().getClassLoader());
+        broker.connectToSender("id", URI.create("wire"), chains, metadata, getClass().getClassLoader());
         broker.releaseSender("id", URI.create("wire"));
 
         EasyMock.verify(context);
@@ -163,5 +165,8 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         managementService = EasyMock.createNiceMock(ZeroMQManagementService.class);
 
         broker = new ZeroMQWireBrokerImpl(manager, addressCache, allocator, executorService, managementService, info, monitor);
+
+        metadata = new ZeroMQMetadata();
+
     }
 }

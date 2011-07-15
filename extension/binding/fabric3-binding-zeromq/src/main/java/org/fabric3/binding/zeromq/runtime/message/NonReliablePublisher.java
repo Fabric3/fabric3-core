@@ -43,6 +43,7 @@ import org.zeromq.ZMQ.Socket;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.management.OperationType;
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 
@@ -59,6 +60,7 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
     private Context context;
     private SocketAddress address;
     private long pollTimeout;
+    private ZeroMQMetadata metadata;
     private MessagingMonitor monitor;
 
     private Socket socket;
@@ -66,10 +68,11 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
 
     private LinkedBlockingQueue<byte[]> queue;
 
-    public NonReliablePublisher(Context context, SocketAddress address, long pollTimeout, MessagingMonitor monitor) {
+    public NonReliablePublisher(Context context, SocketAddress address, long pollTimeout, ZeroMQMetadata metadata, MessagingMonitor monitor) {
         this.context = context;
         this.address = address;
         this.pollTimeout = pollTimeout;
+        this.metadata = metadata;
         this.monitor = monitor;
         this.queue = new LinkedBlockingQueue<byte[]>();
     }
@@ -126,6 +129,7 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
 
         public void run() {
             socket = context.socket(ZMQ.PUB);
+            SocketHelper.configure(socket, metadata);
             address.getPort().releaseLock();
             socket.bind(address.toProtocolString());
 

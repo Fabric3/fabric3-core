@@ -38,6 +38,7 @@ import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 
 import org.fabric3.api.annotation.management.Management;
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.invocation.Message;
@@ -63,8 +64,9 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
                                      SocketAddress address,
                                      List<InvocationChain> chains,
                                      ExecutorService executorService,
+                                     ZeroMQMetadata metadata,
                                      MessagingMonitor monitor) {
-        super(context, address, chains, ZMQ.PULL, -1, monitor);
+        super(context, address, chains, ZMQ.PULL, -1, metadata, monitor);
         this.executorService = executorService;
     }
 

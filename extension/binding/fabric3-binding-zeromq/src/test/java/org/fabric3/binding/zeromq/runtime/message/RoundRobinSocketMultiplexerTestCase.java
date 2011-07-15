@@ -38,6 +38,7 @@ import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.host.Port;
 
@@ -45,11 +46,12 @@ import org.fabric3.spi.host.Port;
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class RoundRobinSocketMultiplexerTestCase extends TestCase {
+    private ZeroMQMetadata metadata = new ZeroMQMetadata();
 
     public void testRoundRobin() throws Exception {
         ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
 
-        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL);
+        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL, metadata);
         ZMQ.Socket socket1 = EasyMock.createMock(ZMQ.Socket.class);
         ZMQ.Socket socket2 = EasyMock.createMock(ZMQ.Socket.class);
         ZMQ.Socket socket3 = EasyMock.createMock(ZMQ.Socket.class);
@@ -91,7 +93,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
     public void testSingletonIterator() throws Exception {
         ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
 
-        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL);
+        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL, metadata);
         ZMQ.Socket socket = EasyMock.createMock(ZMQ.Socket.class);
         EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket);
         EasyMock.replay(context);
@@ -109,7 +111,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
     public void testUpdateAdd() throws Exception {
         ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
 
-        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL);
+        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL, metadata);
         ZMQ.Socket socket1 = EasyMock.createMock(ZMQ.Socket.class);
         socket1.connect("tcp://1:1");
         ZMQ.Socket socket2 = EasyMock.createMock(ZMQ.Socket.class);
@@ -174,7 +176,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
     public void testUpdateRemove() throws Exception {
         ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
 
-        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL);
+        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL, metadata);
         ZMQ.Socket socket1 = EasyMock.createMock(ZMQ.Socket.class);
         socket1.connect("tcp://1:1");
         socket1.close();

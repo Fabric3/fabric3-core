@@ -33,6 +33,7 @@ package org.fabric3.binding.zeromq.runtime;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
@@ -47,13 +48,14 @@ public interface ZeroMQWireBroker {
      * Connects a set of ordered invocation chains to a ZeroMQ XREQ sender. The Invocation chain order is used to match an invocation chain on the
      * receiving end to dispatch the invocation to.
      *
-     * @param id     the connection id
-     * @param uri    the target service URI
-     * @param chains the invocation chains
-     * @param loader the classloader to load invocation parameters with
+     * @param id       the connection id
+     * @param uri      the target service URI
+     * @param chains   the invocation chains
+     * @param metadata the ZeroMQ metadata to configure the underlying socket
+     * @param loader   the classloader to load invocation parameters with
      * @throws BrokerException if a connection error occurs
      */
-    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ClassLoader loader) throws BrokerException;
+    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws BrokerException;
 
     /**
      * Releases a previous connection to a sender.
@@ -68,12 +70,13 @@ public interface ZeroMQWireBroker {
      * Connects to a receiver that dispatches invocation requests from an ZeroMQ XREP socket. The Invocation chain order is used to match an
      * invocation chain for dispatching the invocation.
      *
-     * @param uri    the target service URI
-     * @param chains the invocation chains
-     * @param loader the classloader to load invocation parameters with
+     * @param uri      the target service URI
+     * @param chains   the invocation chains
+     * @param metadata the ZeroMQ metadata to configure the underlying socket
+     * @param loader   the classloader to load invocation parameters with
      * @throws BrokerException if a connection error occurs
      */
-    public void connectToReceiver(URI uri, List<InvocationChain> chains, ClassLoader loader) throws BrokerException;
+    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws BrokerException;
 
     /**
      * Releases previous connection to a receiver.
