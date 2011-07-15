@@ -25,6 +25,7 @@
         <f3:implementation.system class="org.fabric3.binding.activemq.control.ActiveMQBindingProvider"/>
         <property name="connectionFactory" source="$systemConfig//jms/binding.sca/@factory"/>
         <property name="xaConnectionFactory" source="$systemConfig//jms/binding.sca/@xa.factory"/>
+        <property name="level" source="$systemConfig//jms/binding.sca/@cache"/>
         <property name="enabled" source="$systemConfig//binding.jms/@jmsBindingProvider"/>
     </component>
 

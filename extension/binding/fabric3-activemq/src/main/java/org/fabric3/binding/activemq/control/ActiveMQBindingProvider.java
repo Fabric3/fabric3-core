@@ -45,7 +45,9 @@ import org.oasisopen.sca.Constants;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.binding.jms.spi.common.CacheLevel;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.CreateOption;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
@@ -88,6 +90,9 @@ public class ActiveMQBindingProvider implements BindingProvider {
     private String connectionFactory;
     private String xaConnectionFactory;
     private boolean enabled = true;
+    private CacheLevel level = CacheLevel.ADMINISTERED_OBJECTS;
+
+    private ProviderMonitor monitor;
 
     @Property
     public void setConnectionFactory(String name) {
@@ -102,6 +107,23 @@ public class ActiveMQBindingProvider implements BindingProvider {
     @Property(required = false)
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Property(required = false)
+    public void setLevel(String cacheLevel) {
+        if ("connection".equalsIgnoreCase(cacheLevel)) {
+            level = CacheLevel.CONNECTION;
+        } else if ("session".equalsIgnoreCase(cacheLevel)) {
+            level = CacheLevel.ADMINISTERED_OBJECTS;
+        } else if ("none".equalsIgnoreCase(cacheLevel)) {
+            level = CacheLevel.NONE;
+        } else {
+            monitor.error("Invalid JMS provider cache level value: " + cacheLevel + ". Ignoring value.");
+        }
+    }
+
+    public ActiveMQBindingProvider(@Monitor ProviderMonitor monitor) {
+        this.monitor = monitor;
     }
 
     public QName getType() {
@@ -190,7 +212,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
 
     private JmsBindingDefinition createBindingDefinition(String queueName, boolean response, boolean xa) {
         JmsBindingMetadata metadata = new JmsBindingMetadata();
-
+        metadata.setCacheLevel(level);
         DestinationDefinition destinationDefinition = new DestinationDefinition();
         destinationDefinition.setType(DestinationType.QUEUE);
         destinationDefinition.setCreate(CreateOption.IF_NOT_EXIST);
@@ -228,6 +250,7 @@ public class ActiveMQBindingProvider implements BindingProvider {
 
     private JmsBindingDefinition createTopicBindingDefinition(String topicName) {
         JmsBindingMetadata metadata = new JmsBindingMetadata();
+        metadata.setCacheLevel(level);
         DestinationDefinition destinationDefinition = new DestinationDefinition();
         destinationDefinition.setType(DestinationType.TOPIC);
         destinationDefinition.setCreate(CreateOption.IF_NOT_EXIST);

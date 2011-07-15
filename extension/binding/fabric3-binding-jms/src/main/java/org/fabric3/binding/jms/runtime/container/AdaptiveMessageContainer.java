@@ -818,6 +818,7 @@ public class AdaptiveMessageContainer {
                     received = (receive() || received);
                 }
             }
+            closeResources(true);
             return received;
         }
 
@@ -835,7 +836,7 @@ public class AdaptiveMessageContainer {
                 previousSucceeded = true;
                 return received;
             } finally {
-                closeResources();
+                closeResources(false);
             }
         }
 
@@ -890,6 +891,8 @@ public class AdaptiveMessageContainer {
                 work.end(session, message);
                 return false;
             }
+
+
         }
 
         private void closeSession() {
@@ -906,15 +909,15 @@ public class AdaptiveMessageContainer {
             session = null;
         }
 
-        private void closeResources() {
+        private void closeResources(boolean force) {
             synchronized (connectionManager) {
-                if (cacheLevel < CACHE_ADMINISTERED_OBJECTS) {
+                if (cacheLevel < CACHE_ADMINISTERED_OBJECTS || force) {
                     JmsHelper.closeQuietly(consumer);
                     JmsHelper.closeQuietly(session);
                     consumer = null;
                     session = null;
                 }
-                if (cacheLevel == CACHE_NONE) {
+                if (cacheLevel == CACHE_NONE || force) {
                     JmsHelper.closeQuietly(connection);
                     connection = null;
                 }

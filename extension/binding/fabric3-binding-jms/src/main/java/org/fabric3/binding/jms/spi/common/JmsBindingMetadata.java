@@ -72,7 +72,7 @@ public class JmsBindingMetadata extends ModelObject {
     private Map<String, OperationPropertiesDefinition> operationProperties = new HashMap<String, OperationPropertiesDefinition>();
 
     // Fabric3-specific configuration settings
-    private CacheLevel cacheLevel;
+    private CacheLevel cacheLevel = CacheLevel.ADMINISTERED_OBJECTS;
     private int minReceivers = 1;
     private int maxReceivers = 1;
     private int idleLimit = 1;

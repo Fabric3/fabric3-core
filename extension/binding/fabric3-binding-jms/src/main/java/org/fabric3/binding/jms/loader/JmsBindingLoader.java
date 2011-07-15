@@ -264,13 +264,11 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
 
     private void loadFabric3Attributes(JmsBindingMetadata metadata, XMLStreamReader reader, IntrospectionContext context) {
         String cacheLevel = reader.getAttributeValue(null, "cache");
-        if (cacheLevel == null) {
-            metadata.setCacheLevel(CacheLevel.NONE);
-        } else if ("connection".equalsIgnoreCase(cacheLevel)) {
+        if ("connection".equalsIgnoreCase(cacheLevel)) {
             metadata.setCacheLevel((CacheLevel.CONNECTION));
         } else if ("session".equalsIgnoreCase(cacheLevel)) {
             metadata.setCacheLevel((CacheLevel.ADMINISTERED_OBJECTS));
-        } else {
+        } else if (cacheLevel != null) {
             InvalidValue error = new InvalidValue("Invalid cache level attribute", reader);
             context.addError(error);
         }
