@@ -345,7 +345,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     /**
      * Parses the path info so it can be used to resolve the requested resource.
      *
-     * @param request the currrent request
+     * @param request the current request
      * @return the parsed path info
      */
     private String parsePathInfo(HttpServletRequest request) {
