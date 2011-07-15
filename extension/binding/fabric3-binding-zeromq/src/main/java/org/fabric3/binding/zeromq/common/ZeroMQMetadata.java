@@ -74,42 +74,92 @@ public class ZeroMQMetadata extends ModelObject {
         this.channelName = channelName;
     }
 
+    /**
+     * Returns the socket high water mark.
+     *
+     * @return the socket high water mark or -1 if not specified
+     */
     public long getHighWater() {
         return highWater;
     }
 
+    /**
+     * Sets the socket high water mark.
+     *
+     * @param highWater the socket high water mark
+     */
     public void setHighWater(long highWater) {
         this.highWater = highWater;
     }
 
+    /**
+     * Returns the socket multicast rate.
+     *
+     * @return the socket multicast rate or -1 if not specified
+     */
     public long getMulticastRate() {
         return multicastRate;
     }
 
-    public void setMulticastRate(long multicastRate) {
-        this.multicastRate = multicastRate;
+    /**
+     * Sets the socket multicast rate.
+     *
+     * @param rate socket multicast rate
+     */
+    public void setMulticastRate(long rate) {
+        this.multicastRate = rate;
     }
 
+    /**
+     * Returns the socket multicast recovery interval.
+     *
+     * @return the socket multicast recovery interval or -1 if not specified
+     */
     public long getMulticastRecovery() {
         return multicastRecovery;
     }
 
+    /**
+     * Sets the socket multicast recovery interval.
+     *
+     * @param multicastRecovery socket multicast recovery interval
+     */
     public void setMulticastRecovery(long multicastRecovery) {
         this.multicastRecovery = multicastRecovery;
     }
 
+    /**
+     * Gets the socket send buffer size.
+     *
+     * @return the socket send buffer size or -1 if not specified
+     */
     public long getSendBuffer() {
         return sendBuffer;
     }
 
+    /**
+     * Sets the socket send buffer size.
+     *
+     * @param sendBuffer socket send buffer size
+     */
     public void setSendBuffer(long sendBuffer) {
         this.sendBuffer = sendBuffer;
     }
 
+    /**
+     * Gets the socket receive buffer size.
+     *
+     * @return the socket receive buffer size or -1 if not specified
+     */
     public long getReceiveBuffer() {
         return receiveBuffer;
     }
 
+    /**
+     * Sets the socket receive buffer size.
+     *
+     * @param receiveBuffer socket receive buffer size
+     */
     public void setReceiveBuffer(long receiveBuffer) {
         this.receiveBuffer = receiveBuffer;
     }
