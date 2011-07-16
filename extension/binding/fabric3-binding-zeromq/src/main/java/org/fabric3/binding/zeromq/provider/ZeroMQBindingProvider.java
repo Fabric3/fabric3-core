@@ -65,10 +65,46 @@ public class ZeroMQBindingProvider implements BindingProvider {
     private static final BindingMatchResult NO_MATCH = new BindingMatchResult(false, ZeroMQBindingDefinition.BINDING_0MQ);
 
     private boolean enabled = true;
+    private long highWater = -1;
+    private long multicastRate = -1;
+    private long multicastRecovery = -1;
+    private long sendBuffer = -1;
+    private long receiveBuffer = -1;
+    private String host;
 
     @Property(required = false)
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Property(required = false)
+    public void setHighWater(long highWater) {
+        this.highWater = highWater;
+    }
+
+    @Property(required = false)
+    public void setMulticastRate(long multicastRate) {
+        this.multicastRate = multicastRate;
+    }
+
+    @Property(required = false)
+    public void setMulticastRecovery(long multicastRecovery) {
+        this.multicastRecovery = multicastRecovery;
+    }
+
+    @Property(required = false)
+    public void setSendBuffer(long sendBuffer) {
+        this.sendBuffer = sendBuffer;
+    }
+
+    @Property(required = false)
+    public void setReceiveBuffer(long receiveBuffer) {
+        this.receiveBuffer = receiveBuffer;
+    }
+
+    @Property(required = false)
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public QName getType() {
@@ -88,7 +124,7 @@ public class ZeroMQBindingProvider implements BindingProvider {
         LogicalService target = wire.getTarget().getLeafService();
         QName deployable = source.getParent().getDeployable();
 
-        ZeroMQMetadata metadata = new ZeroMQMetadata();
+        ZeroMQMetadata metadata = createMetadata();
 
         // setup the forward binding
         ZeroMQBindingDefinition referenceDefinition = new ZeroMQBindingDefinition("binding.zeromq", metadata);
@@ -108,8 +144,8 @@ public class ZeroMQBindingProvider implements BindingProvider {
         ServiceContract targetContract = target.getDefinition().getServiceContract();
         if (targetContract.getCallbackContract() != null) {
             // setup callback bindings
+            ZeroMQMetadata callbackMetadata = createMetadata();
 
-            ZeroMQMetadata callbackMetadata = new ZeroMQMetadata();
             ZeroMQBindingDefinition callbackReferenceDefinition = new ZeroMQBindingDefinition("binding.zeromq.callback", callbackMetadata);
             LogicalBinding<ZeroMQBindingDefinition> callbackReferenceBinding =
                     new LogicalBinding<ZeroMQBindingDefinition>(callbackReferenceDefinition, source, deployable);
@@ -125,13 +161,23 @@ public class ZeroMQBindingProvider implements BindingProvider {
     }
 
     public void bind(LogicalChannel channel) throws BindingSelectionException {
-        ZeroMQMetadata metadata = new ZeroMQMetadata();
+        ZeroMQMetadata metadata = createMetadata();
         metadata.setChannelName(channel.getDefinition().getName());
         ZeroMQBindingDefinition definition = new ZeroMQBindingDefinition("binding.zeromq", metadata);
         LogicalBinding<ZeroMQBindingDefinition> binding = new LogicalBinding<ZeroMQBindingDefinition>(definition, channel);
         channel.addBinding(binding);
     }
 
+    private ZeroMQMetadata createMetadata() {
+        ZeroMQMetadata metadata = new ZeroMQMetadata();
+        metadata.setHighWater(highWater);
+        metadata.setMulticastRate(multicastRate);
+        metadata.setMulticastRecovery(multicastRecovery);
+        metadata.setReceiveBuffer(receiveBuffer);
+        metadata.setSendBuffer(sendBuffer);
+        metadata.setHost(host);
+        return metadata;
+    }
 
 
 }

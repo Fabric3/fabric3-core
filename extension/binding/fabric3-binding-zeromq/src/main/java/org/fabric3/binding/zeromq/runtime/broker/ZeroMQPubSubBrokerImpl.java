@@ -159,9 +159,16 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         if (holder == null) {
             try {
                 Port port = allocator.allocate(channelName, ZMQ);
-                // XCV FIXME localhost
                 String runtimeName = info.getRuntimeName();
-                SocketAddress address = new SocketAddress(runtimeName, "tcp", InetAddress.getLocalHost().getHostAddress(), port);
+
+                String host;
+                if (metadata.getHost() == null) {
+                    host = InetAddress.getLocalHost().getHostAddress();
+                } else {
+                    host = InetAddress.getByName(metadata.getHost()).getHostAddress();
+                }
+
+                SocketAddress address = new SocketAddress(runtimeName, "tcp", host, port);
                 ZMQ.Context context = manager.getContext();
 
                 Publisher publisher = new NonReliablePublisher(context, address, pollTimeout, metadata, monitor);

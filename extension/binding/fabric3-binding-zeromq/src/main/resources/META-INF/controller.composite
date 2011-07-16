@@ -31,6 +31,12 @@ Public License. See the accompanying license file for details.
     <component name="ZeroMQBindingProvider">
         <f3:implementation.system class="org.fabric3.binding.zeromq.provider.ZeroMQBindingProvider"/>
         <property name="enabled" source="$systemConfig//zeromq.binding/@bindingProvider"/>
+        <property name="highWater" source="$systemConfig//zeromq.binding/@high.water"/>
+        <property name="multicastRate" source="$systemConfig//zeromq.binding/@multicast.rate"/>
+        <property name="multicastRecovery" source="$systemConfig//zeromq.binding/@multicast.recovery"/>
+        <property name="sendBuffer" source="$systemConfig//zeromq.binding/@send.buffer"/>
+        <property name="receiveBuffer" source="$systemConfig//zeromq.binding/@receive.buffer"/>
+        <property name="host" source="$systemConfig//zeromq.binding/@host"/>
     </component>
 
 </composite>

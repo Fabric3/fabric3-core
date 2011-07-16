@@ -172,9 +172,16 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             String endpointId = uri.toString();
 
             Port port = allocator.allocate(endpointId, ZMQ);
-            // XCV FIXME localhost
+
+            String host;
+            if (metadata.getHost() == null) {
+                host = InetAddress.getLocalHost().getHostAddress();
+            } else {
+                host = InetAddress.getByName(metadata.getHost()).getHostAddress();
+            }
+
             String runtimeName = info.getRuntimeName();
-            SocketAddress address = new SocketAddress(runtimeName, "tcp", InetAddress.getLocalHost().getHostAddress(), port);
+            SocketAddress address = new SocketAddress(runtimeName, "tcp", host, port);
 
             for (InvocationChain chain : chains) {
                 ServiceMarshallingInterceptor interceptor = new ServiceMarshallingInterceptor(loader);
