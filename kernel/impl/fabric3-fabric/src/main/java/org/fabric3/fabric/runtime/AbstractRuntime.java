@@ -91,7 +91,6 @@ import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
-import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.lcm.LogicalComponentManager;
@@ -238,6 +237,10 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         } finally {
             WorkContextTunnel.setThreadWorkContext(oldContext);
         }
+    }
+
+    public <I> I getComponent(Class<I> service) {
+        return getComponent(service, URI.create(Names.RUNTIME_NAME + "/" + service.getSimpleName()));
     }
 
     public LogicalComponentManager getLogicalComponentManager() {

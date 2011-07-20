@@ -49,7 +49,7 @@ import org.fabric3.host.monitor.Monitorable;
 public interface Fabric3Runtime extends Monitorable {
 
     /**
-     * Returns a system component providing the designated service.
+     * Returns the named system component providing the designated service.
      *
      * @param service the service interface required
      * @param uri     the id of the system component
@@ -57,6 +57,15 @@ public interface Fabric3Runtime extends Monitorable {
      * @return an implementation of the requested service
      */
     <I> I getComponent(Class<I> service, URI uri);
+
+    /**
+     * Returns the default system component providing the designated service.
+     *
+     * @param service the service interface required
+     * @param <I>     the Java type for the service interface
+     * @return an implementation of the requested service
+     */
+    <I> I getComponent(Class<I> service);
 
     /**
      * Boots core services in the runtime.
