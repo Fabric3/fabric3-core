@@ -41,4 +41,10 @@ Public License. See the accompanying license file for details.
     <f3:library path="META-INF/native/libjzmq.so">
     	<os name="Linux" min="2.6" processor="x86"/>
     </f3:library>
+    <f3:library path="META-INF/native/x86_64/linux/libzmq.so">
+    	<os name="Linux" min="2.6" processor="x86-64"/>
+    </f3:library>
+    <f3:library path="META-INF/native/x86_64/linux/libjzmq.so">
+    	<os name="Linux" min="2.6" processor="x86-64"/>
+    </f3:library>
 </contribution>
