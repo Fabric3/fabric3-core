@@ -265,6 +265,8 @@ public class PortAllocatorImpl implements PortAllocator {
             String localhost = InetAddress.getLocalHost().getCanonicalHostName();
             InetAddress[] addresses = InetAddress.getAllByName(localhost);
             for (InetAddress address : addresses) {
+            	if(address.isLoopbackAddress())
+            		continue;
                 if (!checkPortOnHost(address, port)) {
                     try {
                         socket.close();
