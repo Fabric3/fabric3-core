@@ -49,6 +49,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.introspection.xml.common.BindingHelper;
@@ -79,10 +80,16 @@ public class CompositeServiceLoader implements TypeLoader<CompositeService> {
     private static final QName CALLBACK = new QName(SCA_NS, "callback");
     private LoaderRegistry registry;
     private LoaderHelper loaderHelper;
+    private boolean roundTrip;
 
     public CompositeServiceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         this.registry = registry;
         this.loaderHelper = loaderHelper;
+    }
+
+    @Property(required = false)
+    public void setRoundTrip(boolean roundTrip) {
+        this.roundTrip = roundTrip;
     }
 
     public CompositeService load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -106,9 +113,13 @@ public class CompositeServiceLoader implements TypeLoader<CompositeService> {
             context.addError(error);
             uri = URI.create("");
         }
-        CompositeService def = new CompositeService(name, null, uri);
+        CompositeService service = new CompositeService(name, null, uri);
+        if (roundTrip) {
+            service.enableRoundTrip();
+        }
 
-        loaderHelper.loadPolicySetsAndIntents(def, reader, context);
+
+        loaderHelper.loadPolicySetsAndIntents(service, reader, context);
         boolean callback = false;
         while (true) {
             int i = reader.next();
@@ -129,26 +140,26 @@ public class CompositeServiceLoader implements TypeLoader<CompositeService> {
 
                 }
                 if (type instanceof ServiceContract) {
-                    def.setServiceContract((ServiceContract) type);
+                    service.setServiceContract((ServiceContract) type);
                 } else if (type instanceof BindingDefinition) {
                     BindingDefinition binding = (BindingDefinition) type;
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, def.getCallbackBindings(), reader, context);
+                            BindingHelper.configureName(binding, name, service.getCallbackBindings(), reader, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, def.getCallbackBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, service.getCallbackBindings(), reader, context);
                         if (check) {
-                            def.addCallbackBinding(binding);
+                            service.addCallbackBinding(binding);
                         }
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, def.getBindings(), reader, context);
+                            BindingHelper.configureName(binding, name, service.getBindings(), reader, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, def.getBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, service.getBindings(), reader, context);
                         if (check) {
-                            def.addBinding(binding);
+                            service.addBinding(binding);
                         }
                     }
                 } else if (type == null) {
@@ -167,7 +178,7 @@ public class CompositeServiceLoader implements TypeLoader<CompositeService> {
                     callback = false;
                     break;
                 }
-                return def;
+                return service;
             }
         }
     }

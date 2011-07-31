@@ -45,12 +45,14 @@ package org.fabric3.model.type.component;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
+import org.fabric3.model.type.Namespace;
 import org.fabric3.model.type.PolicyAware;
 
 /**
@@ -86,6 +88,7 @@ public class Composite extends ComponentType implements PolicyAware {
     private List<ResourceDefinition> resourcesView = new ArrayList<ResourceDefinition>();
 
     private Map<QName, Object> metadata = new HashMap<QName, Object>();
+    private List<Namespace> namespaces;
 
     /**
      * Constructor.
@@ -232,6 +235,9 @@ public class Composite extends ComponentType implements PolicyAware {
      * @param component the component
      */
     public void add(ComponentDefinition<? extends Implementation<?>> component) {
+        if (roundTrip) {
+            pushElement(component);
+        }
         componentsView.put(component.getName(), component);
         components.put(component.getName(), component);
     }
@@ -251,6 +257,9 @@ public class Composite extends ComponentType implements PolicyAware {
      * @param wire the wire
      */
     public void add(WireDefinition wire) {
+        if (roundTrip) {
+            pushElement(wire);
+        }
         wires.add(wire);
         wiresView.add(wire);
     }
@@ -270,6 +279,9 @@ public class Composite extends ComponentType implements PolicyAware {
      * @param channel the channel
      */
     public void add(ChannelDefinition channel) {
+        if (roundTrip) {
+            pushElement(channel);
+        }
         channelsView.put(channel.getName(), channel);
         channels.put(channel.getName(), channel);
     }
@@ -289,6 +301,9 @@ public class Composite extends ComponentType implements PolicyAware {
      * @param resource the resource
      */
     public void add(ResourceDefinition resource) {
+        if (roundTrip) {
+            pushElement(resource);
+        }
         resourcesView.add(resource);
         resources.add(resource);
     }
@@ -415,6 +430,20 @@ public class Composite extends ComponentType implements PolicyAware {
      */
     public List<ResourceDefinition> getDeclaredResources() {
         return resources;
+    }
+
+    public void addNamespace(String prefix, String uri) {
+        if (namespaces == null) {
+            namespaces = new ArrayList<Namespace>();
+        }
+        namespaces.add(new Namespace(prefix, uri));
+    }
+
+    public List<Namespace> getNamespaces() {
+        if (namespaces == null) {
+            return Collections.emptyList();
+        }
+        return namespaces;
     }
 
     public int hashCode() {

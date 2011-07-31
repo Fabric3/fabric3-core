@@ -94,6 +94,9 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param implementation the component implementation
      */
     public void setImplementation(I implementation) {
+        if (roundTrip) {
+            pushElement(implementation);
+        }
         this.implementation = implementation;
     }
 
@@ -154,10 +157,13 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     /**
      * Add a reference to this component.
      *
-     * @param target the reference to add
+     * @param reference the reference to add
      */
-    public void add(ComponentReference target) {
-        references.put(target.getName(), target);
+    public void add(ComponentReference reference) {
+        if (roundTrip) {
+            pushElement(reference);
+        }
+        references.put(reference.getName(), reference);
     }
 
     /**
@@ -175,6 +181,9 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param service the service to add
      */
     public void add(ComponentService service) {
+        if (roundTrip) {
+            pushElement(service);
+        }
         services.put(service.getName(), service);
     }
 
@@ -184,6 +193,9 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param producer the producer to add
      */
     public void add(ComponentProducer producer) {
+        if (roundTrip) {
+            pushElement(producer);
+        }
         producers.put(producer.getName(), producer);
     }
 
@@ -202,6 +214,9 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param consumer the consumer to add
      */
     public void add(ComponentConsumer consumer) {
+        if (roundTrip) {
+            pushElement(consumer);
+        }
         consumers.put(consumer.getName(), consumer);
     }
 
@@ -229,6 +244,9 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param value the property value to add
      */
     public void add(PropertyValue value) {
+        if (roundTrip) {
+            pushElement(value);
+        }
         propertyValues.put(value.getName(), value);
     }
 

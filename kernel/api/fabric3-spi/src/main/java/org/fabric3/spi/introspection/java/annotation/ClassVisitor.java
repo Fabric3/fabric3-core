@@ -46,7 +46,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  * reported in the IntrospectionContext.
  *
  * @version $Rev$ $Date$
- * @param <I> the type of implementation that the clas is for
+ * @param <I> the type of implementation that the class is for
  */
 public interface ClassVisitor<I extends Implementation<? extends InjectingComponentType>> {
     /**

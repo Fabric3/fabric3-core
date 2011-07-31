@@ -51,6 +51,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
@@ -87,10 +88,16 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
     }
 
     private LoaderHelper loaderHelper;
+    private boolean roundTrip;
 
     public ChannelLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         super(registry);
         this.loaderHelper = loaderHelper;
+    }
+
+    @Property(required = false)
+    public void setRoundTrip(boolean roundTrip) {
+        this.roundTrip = roundTrip;
     }
 
     public ChannelDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -104,6 +111,10 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
 
         URI uri = context.getContributionUri();
         ChannelDefinition definition = new ChannelDefinition(name, uri);
+
+        if (roundTrip) {
+            definition.enableRoundTrip();
+        }
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 

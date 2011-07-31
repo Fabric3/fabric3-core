@@ -82,6 +82,9 @@ public class ComponentType extends ModelObject implements CapabilityAware {
      * @param service the service to add
      */
     public void add(ServiceDefinition service) {
+        if (roundTrip) {
+            pushElement(service);
+        }
         services.put(service.getName(), service);
     }
 
@@ -97,10 +100,13 @@ public class ComponentType extends ModelObject implements CapabilityAware {
     /**
      * Adds a consumer provided by the implementation.
      *
-     * @param definition the consumer to add
+     * @param consumer the consumer to add
      */
-    public void add(ConsumerDefinition definition) {
-        consumers.put(definition.getName(), definition);
+    public void add(ConsumerDefinition consumer) {
+        if (roundTrip) {
+            pushElement(consumer);
+        }
+        consumers.put(consumer.getName(), consumer);
     }
 
     /**
@@ -118,6 +124,9 @@ public class ComponentType extends ModelObject implements CapabilityAware {
      * @param reference the reference to add
      */
     public void add(ReferenceDefinition reference) {
+        if (roundTrip) {
+            pushElement(reference);
+        }
         references.put(reference.getName(), reference);
     }
 
@@ -136,6 +145,9 @@ public class ComponentType extends ModelObject implements CapabilityAware {
      * @param producer the producer to add
      */
     public void add(ProducerDefinition producer) {
+        if (roundTrip) {
+            pushElement(producer);
+        }
         producers.put(producer.getName(), producer);
     }
 
@@ -154,6 +166,9 @@ public class ComponentType extends ModelObject implements CapabilityAware {
      * @param property the property to add
      */
     public void add(Property property) {
+        if (roundTrip) {
+            pushElement(property);
+        }
         properties.put(property.getName(), property);
     }
 
@@ -172,6 +187,9 @@ public class ComponentType extends ModelObject implements CapabilityAware {
      * @param definition the resource reference to add
      */
     public void add(ResourceReferenceDefinition definition) {
+        if (roundTrip) {
+            pushElement(definition);
+        }
         resourceReferences.put(definition.getName(), definition);
     }
 

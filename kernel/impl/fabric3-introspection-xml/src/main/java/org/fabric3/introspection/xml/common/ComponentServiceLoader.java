@@ -48,6 +48,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.model.type.ModelObject;
@@ -74,11 +75,17 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
     private static final QName SERVICE = new QName(SCA_NS, "service");
     private static final QName CALLBACK = new QName(SCA_NS, "callback");
 
-    private final LoaderHelper loaderHelper;
+    private LoaderHelper loaderHelper;
+    private boolean roundTrip;
 
     public ComponentServiceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         super(registry);
         this.loaderHelper = loaderHelper;
+    }
+
+    @Property(required = false)
+    public void setRoundTrip(boolean roundTrip) {
+        this.roundTrip = roundTrip;
     }
 
     public QName getXMLType() {
@@ -94,6 +101,10 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
             return null;
         }
         ComponentService definition = new ComponentService(name);
+        if (roundTrip) {
+            definition.enableRoundTrip();
+        }
+
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 

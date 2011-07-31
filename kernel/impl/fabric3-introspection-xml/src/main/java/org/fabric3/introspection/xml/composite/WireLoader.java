@@ -47,6 +47,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.model.type.component.Target;
@@ -65,17 +66,25 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 @EagerInit
 public class WireLoader implements TypeLoader<WireDefinition> {
     private LoaderHelper helper;
+    private boolean roundTrip;
 
     public WireLoader(@Reference LoaderHelper helper) {
         this.helper = helper;
     }
 
+    @Property(required = false)
+    public void setRoundTrip(boolean roundTrip) {
+        this.roundTrip = roundTrip;
+    }
+
+    @SuppressWarnings({"VariableNotUsedInsideIf"})
     public WireDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
 
         String referenceAttribute = reader.getAttributeValue(null, "source");
         String serviceAttribute = reader.getAttributeValue(null, "target");
-        boolean replace = Boolean.parseBoolean(reader.getAttributeValue(null, "replace"));
+        String replaceAttribute = reader.getAttributeValue(null, "replace");
+        boolean replace = Boolean.parseBoolean(replaceAttribute);
         LoaderUtil.skipToEndElement(reader);
 
         Target referenceTarget = null;
@@ -87,7 +96,21 @@ public class WireLoader implements TypeLoader<WireDefinition> {
             InvalidValue failure = new InvalidValue("Invalid wire attribute", reader, e);
             context.addError(failure);
         }
-        return new WireDefinition(referenceTarget, serviceTarget, replace);
+        WireDefinition definition = new WireDefinition(referenceTarget, serviceTarget, replace);
+        if (roundTrip) {
+            definition.enableRoundTrip();
+            if (referenceAttribute != null) {
+                definition.attributeSpecified("source");
+            }
+            if (serviceAttribute != null) {
+                definition.attributeSpecified("target");
+            }
+            if (replaceAttribute != null) {
+                definition.attributeSpecified("replace");
+            }
+        }
+
+        return definition;
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {

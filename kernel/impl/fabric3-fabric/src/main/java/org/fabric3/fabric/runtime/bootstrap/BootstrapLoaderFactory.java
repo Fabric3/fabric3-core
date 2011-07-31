@@ -52,6 +52,7 @@ import org.fabric3.introspection.xml.composite.IncludeLoader;
 import org.fabric3.introspection.xml.composite.PropertyValueLoader;
 import org.fabric3.introspection.xml.composite.WireLoader;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
+import org.fabric3.spi.introspection.xml.CompositeConstants;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -85,7 +86,7 @@ public class BootstrapLoaderFactory {
 
         // loader for <wire> elements
         WireLoader wireLoader = new WireLoader(loaderHelper);
-        registry.registerLoader(CompositeLoader.WIRE, wireLoader);
+        registry.registerLoader(CompositeConstants.WIRE, wireLoader);
 
         // loader for <composite> documents
         compositeLoader(registry, loaderHelper);

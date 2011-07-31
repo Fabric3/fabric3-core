@@ -54,6 +54,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.model.type.ModelObject;
@@ -85,8 +86,15 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
         ATTRIBUTES.put("target", "target");
     }
 
+    private boolean roundTrip;
+
     public ComponentProducerLoader(@Reference LoaderRegistry registry) {
         super(registry);
+    }
+
+    @Property(required = false)
+    public void setRoundTrip(boolean roundTrip) {
+        this.roundTrip = roundTrip;
     }
 
     public QName getXMLType() {
@@ -118,6 +126,15 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
             context.addError(failure);
         }
         ComponentProducer producer = new ComponentProducer(name, targets);
+        if (roundTrip) {
+            producer.enableRoundTrip();
+            //noinspection VariableNotUsedInsideIf
+            if (targetAttribute != null) {
+                producer.attributeSpecified("target");
+
+            }
+        }
+
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:

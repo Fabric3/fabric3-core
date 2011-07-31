@@ -91,7 +91,14 @@ import org.fabric3.spi.util.UriHelper;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.oasisopen.sca.Constants.SCA_NS;
+import static org.fabric3.spi.introspection.xml.CompositeConstants.CHANNEL;
+import static org.fabric3.spi.introspection.xml.CompositeConstants.COMPONENT;
+import static org.fabric3.spi.introspection.xml.CompositeConstants.COMPOSITE;
+import static org.fabric3.spi.introspection.xml.CompositeConstants.INCLUDE;
+import static org.fabric3.spi.introspection.xml.CompositeConstants.PROPERTY;
+import static org.fabric3.spi.introspection.xml.CompositeConstants.REFERENCE;
+import static org.fabric3.spi.introspection.xml.CompositeConstants.SERVICE;
+import static org.fabric3.spi.introspection.xml.CompositeConstants.WIRE;
 
 /**
  * Loads a composite component definition from an XML-based assembly file
@@ -100,14 +107,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
  */
 @EagerInit
 public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
-    public static final QName COMPOSITE = new QName(SCA_NS, "composite");
-    public static final QName INCLUDE = new QName(SCA_NS, "include");
-    public static final QName CHANNEL = new QName(SCA_NS, "channel");
-    public static final QName PROPERTY = new QName(SCA_NS, "property");
-    public static final QName SERVICE = new QName(SCA_NS, "service");
-    public static final QName REFERENCE = new QName(SCA_NS, "reference");
-    public static final QName COMPONENT = new QName(SCA_NS, "component");
-    public static final QName WIRE = new QName(SCA_NS, "wire");
 
     private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
 
@@ -127,7 +126,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
     private TypeLoader<Property> propertyLoader;
     private ContractMatcher contractMatcher;
     private final LoaderHelper loaderHelper;
-
+    boolean roundTrip;
 
     /**
      * Constructor used during bootstrap; service and reference elements are not supported.
@@ -168,28 +167,51 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         this.loaderHelper = loaderHelper;
     }
 
+    @org.osoa.sca.annotations.Property(required = false)
+    public void setRoundTrip(boolean roundTrip) {
+        this.roundTrip = roundTrip;
+    }
+
     public QName getXMLType() {
         return COMPOSITE;
     }
 
+    @SuppressWarnings({"VariableNotUsedInsideIf"})
     public Composite load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         String targetNamespace = reader.getAttributeValue(null, "targetNamespace");
-        boolean local = Boolean.valueOf(reader.getAttributeValue(null, "local"));
+        String localStr = reader.getAttributeValue(null, "local");
+        boolean local = Boolean.valueOf(localStr);
         IntrospectionContext childContext = new DefaultIntrospectionContext(context, targetNamespace);
         QName compositeName = new QName(targetNamespace, name);
-
         NamespaceContext nsContext = createNamespaceContext(reader);
 
         Composite type = new Composite(compositeName);
+        String autowire = reader.getAttributeValue(null, "autowire");
+        type.setAutowire(Autowire.fromString(autowire));
+
+        if (roundTrip) {
+            type.enableRoundTrip();
+            addNamespaces(type, reader);
+            if (targetNamespace != null) {
+                type.attributeSpecified("targetNamespace");
+            }
+            if (localStr != null) {
+                type.attributeSpecified("local");
+            }
+            if (autowire != null) {
+                type.attributeSpecified("autowire");
+            }
+        }
         type.setContributionUri(context.getContributionUri());
         type.setLocal(local);
-        type.setAutowire(Autowire.fromString(reader.getAttributeValue(null, "autowire")));
+
         loaderHelper.loadPolicySetsAndIntents(type, reader, childContext);
         try {
             while (true) {
-                switch (reader.next()) {
+                int val = reader.next();
+                switch (val) {
                 case START_ELEMENT:
                     QName qname = reader.getName();
                     if (INCLUDE.equals(qname)) {
@@ -227,13 +249,36 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     updateAndValidateReferencePromotions(type, reader, childContext);
                     updateContext(context, childContext, compositeName);
                     return type;
+                case XMLStreamReader.COMMENT:
+                    if (!roundTrip) {
+                        continue;
+                    }
+                    String comment = reader.getText();
+                    type.addComment(comment);
+                    continue;
+                default:
+                    if (!roundTrip) {
+                        continue;
+                    }
+                    comment = reader.getText();
+                    type.addText(comment);
                 }
+
             }
         } catch (UnrecognizedElementException e) {
             updateContext(context, childContext, compositeName);
             UnrecognizedElement failure = new UnrecognizedElement(reader);
             context.addError(failure);
             return type;
+        }
+    }
+
+    private void addNamespaces(Composite type, XMLStreamReader reader) {
+        int count = reader.getNamespaceCount();
+        for (int i = 0; i < count; i++) {
+            String prefix = reader.getNamespacePrefix(i);
+            String uri = reader.getNamespaceURI(i);
+            type.addNamespace(prefix, uri);
         }
     }
 
@@ -385,7 +430,8 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         Composite included = include.getIncluded();
         if (type.isLocal() != included.isLocal()) {
             InvalidInclude error = new InvalidInclude("Composite " + type.getName() + " has a local value of " + type.isLocal()
-                    + " and the included composite " + includeName + " has a value of " + included.isLocal(), reader);
+                                                              + " and the included composite " + includeName + " has a value of " + included.isLocal(),
+                                                      reader);
             context.addError(error);
         }
         for (ComponentDefinition definition : included.getComponents().values()) {
@@ -520,7 +566,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                 String name = service.getName();
                 IncompatibleContracts error =
                         new IncompatibleContracts("The composite service interface " + name + " is not compatible with the promoted service "
-                                + promotedService.getName() + ": " + result.getError(), reader);
+                                                          + promotedService.getName() + ": " + result.getError(), reader);
                 context.addError(error);
             } else {
                 matchServiceCallbackContracts(service, promotedService, reader, context);
@@ -552,7 +598,8 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             if (!result.isAssignable()) {
                 String name = reference.getName();
                 IncompatibleContracts error = new IncompatibleContracts("The composite service interface " + name
-                        + " is not compatible with the promoted service " + promotedReference.getName() + ": " + result.getError(), reader);
+                                                                                + " is not compatible with the promoted service " + promotedReference.getName() + ": " + result.getError(),
+                                                                        reader);
                 context.addError(error);
             } else {
                 matchReferenceCallbackContracts(reference, promotedReference, reader, context);
@@ -587,7 +634,8 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         if (!result.isAssignable()) {
             String name = service.getName();
             IncompatibleContracts error = new IncompatibleContracts("The composite service " + name + " callback contract is not compatible with " +
-                    "the promoted service " + promotedService.getName() + " callback contract: " + result.getError(), reader);
+                                                                            "the promoted service " + promotedService.getName() + " callback contract: " + result.getError(),
+                                                                    reader);
             context.addError(error);
         }
     }
@@ -619,7 +667,8 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         if (!result.isAssignable()) {
             String name = reference.getName();
             IncompatibleContracts error = new IncompatibleContracts("The composite reference " + name + " callback contract is not compatible with " +
-                    "the promoted reference " + promotedReference.getName() + " callback contract: " + result.getError(), reader);
+                                                                            "the promoted reference " + promotedReference.getName() + " callback contract: " + result.getError(),
+                                                                    reader);
             context.addError(error);
         }
     }

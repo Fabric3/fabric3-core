@@ -49,6 +49,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.model.type.ModelObject;
+
 /**
  * Utility functions to support loader implementations.
  *
@@ -102,6 +104,39 @@ public final class LoaderUtil {
             String localPart = text.substring(index + 1);
             return new QName(uri, localPart, prefix);
         }
+    }
+
+    /**
+     * Advances to the next tag in the stream according to the semantics of {@link XMLStreamReader#nextTag()} with the additional behavior that
+     * characters, spaces, comments, CDATA, and processing instructions will be recorded on the model object.
+     *
+     * @param type   the model object
+     * @param reader the stream
+     * @return the next tag value
+     * @throws XMLStreamException if a parsing error occurs
+     */
+    public static int nextTagRecord(ModelObject type, XMLStreamReader reader) throws XMLStreamException {
+        int eventType = reader.next();
+        while (true) {
+            if (eventType == XMLStreamConstants.CHARACTERS) {
+                type.addText(reader.getText());
+            } else if (eventType == XMLStreamConstants.SPACE) {
+                type.addText(reader.getText());
+            } else if (eventType == XMLStreamConstants.COMMENT) {
+                type.addComment(reader.getText());
+            } else if (eventType == XMLStreamConstants.PROCESSING_INSTRUCTION) {
+                // FIXME record
+            } else if (eventType == XMLStreamConstants.CDATA) {
+                // FIXME record
+            } else {
+                break;
+            }
+            eventType = reader.next();
+        }
+        if (eventType != XMLStreamConstants.START_ELEMENT && eventType != XMLStreamConstants.END_ELEMENT) {
+            throw new XMLStreamException("Expected start or end tag", reader.getLocation());
+        }
+        return eventType;
     }
 
 }

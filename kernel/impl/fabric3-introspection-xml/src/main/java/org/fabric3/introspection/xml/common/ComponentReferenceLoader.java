@@ -52,6 +52,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.model.type.ModelObject;
@@ -94,10 +95,16 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
     }
 
     private LoaderHelper loaderHelper;
+    private boolean roundTrip;
 
     public ComponentReferenceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         super(registry);
         this.loaderHelper = loaderHelper;
+    }
+
+    @Property(required = false)
+    public void setRoundTrip(boolean roundTrip) {
+        this.roundTrip = roundTrip;
     }
 
     public QName getXMLType() {
@@ -126,7 +133,6 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
             context.addError(failure);
         }
         ComponentReference reference = new ComponentReference(name, multiplicity);
-
         if ("true".equalsIgnoreCase(autowire)) {
             reference.setAutowire(Autowire.ON);
         } else if ("false".equalsIgnoreCase(autowire)) {
@@ -152,6 +158,19 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
         reference.addTargets(targets);
 
         loaderHelper.loadPolicySetsAndIntents(reference, reader, context);
+
+        if (roundTrip) {
+            reference.enableRoundTrip();
+            //noinspection VariableNotUsedInsideIf
+            if (autowire != null) {
+                reference.attributeSpecified("autowire");
+
+            }
+            //noinspection VariableNotUsedInsideIf
+            if (targetAttribute != null) {
+                reference.attributeSpecified("target");
+            }
+        }
 
         boolean callback = false;
         boolean bindingError = false;  // used to avoid reporting multiple binding errors
@@ -182,7 +201,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
                             // bindings cannot be configured on references if the @target attribute is used
                             InvalidBinding error =
                                     new InvalidBinding("Bindings cannot be configured when the target attribute on a reference is used: "
-                                            + name, reader);
+                                                               + name, reader);
                             context.addError(error);
                             bindingError = true;
                         }

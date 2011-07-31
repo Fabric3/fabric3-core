@@ -54,6 +54,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.introspection.xml.common.BindingHelper;
@@ -95,10 +96,16 @@ public class CompositeReferenceLoader implements TypeLoader<CompositeReference> 
 
     private LoaderRegistry registry;
     private LoaderHelper loaderHelper;
+    private boolean roundTrip;
 
     public CompositeReferenceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         this.registry = registry;
         this.loaderHelper = loaderHelper;
+    }
+
+    @Property(required = false)
+    public void setRoundTrip(boolean roundTrip) {
+        this.roundTrip = roundTrip;
     }
 
     public CompositeReference load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -125,18 +132,27 @@ public class CompositeReferenceLoader implements TypeLoader<CompositeReference> 
             context.addError(error);
         }
         Multiplicity multiplicity = null;
-        String value = reader.getAttributeValue(null, "multiplicity");
+        String multiplicityValue = reader.getAttributeValue(null, "multiplicity");
         try {
-            if (value != null) {
-                multiplicity = Multiplicity.fromString(value);
+            if (multiplicityValue != null) {
+                multiplicity = Multiplicity.fromString(multiplicityValue);
             }
         } catch (IllegalArgumentException e) {
-            InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + value, reader);
+            InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + multiplicityValue, reader);
             context.addError(failure);
         }
 
-        CompositeReference referenceDefinition = new CompositeReference(name, promotedUris, multiplicity);
-        loaderHelper.loadPolicySetsAndIntents(referenceDefinition, reader, context);
+        CompositeReference reference = new CompositeReference(name, promotedUris, multiplicity);
+        if (roundTrip) {
+            reference.enableRoundTrip();
+            //noinspection VariableNotUsedInsideIf
+            if (multiplicityValue != null) {
+                reference.attributeSpecified("multiplicity");
+            }
+
+        }
+
+        loaderHelper.loadPolicySetsAndIntents(reference, reader, context);
 
         boolean callback = false;
         while (true) {
@@ -156,26 +172,26 @@ public class CompositeReferenceLoader implements TypeLoader<CompositeReference> 
                     continue;
                 }
                 if (type instanceof ServiceContract) {
-                    referenceDefinition.setServiceContract((ServiceContract) type);
+                    reference.setServiceContract((ServiceContract) type);
                 } else if (type instanceof BindingDefinition) {
                     BindingDefinition binding = (BindingDefinition) type;
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, referenceDefinition.getCallbackBindings(), reader, context);
+                            BindingHelper.configureName(binding, name, reference.getCallbackBindings(), reader, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, referenceDefinition.getCallbackBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, reference.getCallbackBindings(), reader, context);
                         if (check) {
-                            referenceDefinition.addCallbackBinding(binding);
+                            reference.addCallbackBinding(binding);
                         }
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, referenceDefinition.getBindings(), reader, context);
+                            BindingHelper.configureName(binding, name, reference.getBindings(), reader, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, referenceDefinition.getBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, reference.getBindings(), reader, context);
                         if (check) {
-                            referenceDefinition.addBinding(binding);
+                            reference.addBinding(binding);
                         }
                     }
                 } else if (type == null) {
@@ -194,7 +210,7 @@ public class CompositeReferenceLoader implements TypeLoader<CompositeReference> 
                     callback = false;
                     break;
                 }
-                return referenceDefinition;
+                return reference;
             }
         }
 

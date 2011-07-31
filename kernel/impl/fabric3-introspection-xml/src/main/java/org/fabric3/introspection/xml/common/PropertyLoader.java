@@ -71,17 +71,26 @@ public class PropertyLoader implements TypeLoader<Property> {
     private static final String SOURCE = "source";
     private static final String VALUE = "value";
 
-    private final LoaderHelper helper;
+    private LoaderHelper helper;
+    private boolean roundTrip;
 
     public PropertyLoader(@Reference LoaderHelper helper) {
         this.helper = helper;
     }
 
+    @org.osoa.sca.annotations.Property(required = false)
+    public void setRoundTrip(boolean roundTrip) {
+        this.roundTrip = roundTrip;
+    }
+
+    @SuppressWarnings({"VariableNotUsedInsideIf"})
     public Property load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, NAME);
-        boolean many = Boolean.parseBoolean(reader.getAttributeValue(null, MANY));
-        boolean mustSupply = Boolean.parseBoolean(reader.getAttributeValue(null, MUST_SUPPLY));
+        String manyAttr = reader.getAttributeValue(null, MANY);
+        boolean many = Boolean.parseBoolean(manyAttr);
+        String mustSupplyAttr = reader.getAttributeValue(null, MUST_SUPPLY);
+        boolean mustSupply = Boolean.parseBoolean(mustSupplyAttr);
         String typeAttribute = reader.getAttributeValue(null, TYPE);
         String elementAttribute = reader.getAttributeValue(null, ELEMENT);
 
@@ -116,6 +125,26 @@ public class PropertyLoader implements TypeLoader<Property> {
             context.addError(error);
         }
         Property property = new Property(name);
+        if (roundTrip) {
+            property.enableRoundTrip();
+            if (manyAttr != null) {
+                property.attributeSpecified(MANY);
+            }
+            if (mustSupplyAttr != null) {
+                property.attributeSpecified(MUST_SUPPLY);
+            }
+            if (typeAttribute != null) {
+                property.attributeSpecified(TYPE);
+            }
+            if (elementAttribute != null) {
+                property.attributeSpecified(ELEMENT);
+            }
+            if (valueAttribute != null) {
+                property.attributeSpecified(VALUE);
+            }
+
+        }
+
         property.setRequired(mustSupply);
         property.setType(type);
         property.setElement(element);
