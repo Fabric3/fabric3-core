@@ -40,5 +40,6 @@
 		<module>fabric3-test-spi</module>
 		<module>fabric3-recovery</module>
 		<module>fabric3-execution</module>
+		<module>fabric3-writer</module>
 	</modules>
 </project>

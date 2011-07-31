@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ See the NOTICE file distributed with this work for information
+ regarding copyright ownership.  This file is licensed
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
+           name="WriterExtension"
+           autowire="true">
+
+    <component name="Writer">
+        <f3:implementation.system class="org.fabric3.introspection.xml.writer.WriterImpl"/>
+    </component>
+
+    <component name="CompositeWriter" f3:key="org.fabric3.model.type.component.Composite">
+        <f3:implementation.system class="org.fabric3.introspection.xml.writer.CompositeWriter"/>
+    </component>
+
+    <component name="ComponentWriter" f3:key="org.fabric3.model.type.component.ComponentDefinition">
+        <f3:implementation.system class="org.fabric3.introspection.xml.writer.ComponentWriter"/>
+    </component>
+
+    <component name="CompositeServiceWriter" f3:key="org.fabric3.model.type.component.CompositeService">
+        <f3:implementation.system class="org.fabric3.introspection.xml.writer.CompositeServiceWriter"/>
+    </component>
+
+    <component name="CompositeReferenceWriter" f3:key="org.fabric3.model.type.component.CompositeReference">
+        <f3:implementation.system class="org.fabric3.introspection.xml.writer.CompositeReferenceWriter"/>
+    </component>
+
+    <component name="PropertyValueWriter" f3:key="org.fabric3.model.type.component.PropertyValue">
+        <f3:implementation.system class="org.fabric3.introspection.xml.writer.PropertyValueWriter"/>
+    </component>
+
+    <component name="ComponentReferenceWriter" f3:key="org.fabric3.model.type.component.ComponentReference">
+        <f3:implementation.system class="org.fabric3.introspection.xml.writer.ComponentReferenceWriter"/>
+    </component>
+
+    <component name="CommentWriter" f3:key="org.fabric3.model.type.Comment">
+        <f3:implementation.system class="org.fabric3.introspection.xml.writer.CommentWriter"/>
+    </component>
+
+    <component name="TextWriter" f3:key="org.fabric3.model.type.Text">
+        <f3:implementation.system class="org.fabric3.introspection.xml.writer.TextWriter"/>
+    </component>
+
+
+</composite>
