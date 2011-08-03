@@ -93,4 +93,25 @@ public class Target extends ModelObject {
     public String getBinding() {
         return binding;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Target target = (Target) o;
+
+        return !(bindable != null ? !bindable.equals(target.bindable) : target.bindable != null)
+                && !(binding != null ? !binding.equals(target.binding) : target.binding != null)
+                && !(component != null ? !component.equals(target.component) : target.component != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = component != null ? component.hashCode() : 0;
+        result = 31 * result + (bindable != null ? bindable.hashCode() : 0);
+        result = 31 * result + (binding != null ? binding.hashCode() : 0);
+        return result;
+    }
 }
