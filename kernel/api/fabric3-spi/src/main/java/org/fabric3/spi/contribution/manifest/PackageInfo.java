@@ -251,7 +251,8 @@ public final class PackageInfo extends Versionable {
         }
         // match package names
         int i = 0;
-        if (packageNames.length < exportPackage.packageNames.length && !"*".equals(packageNames[packageNames.length - 1])) {
+        boolean exportWildcard = exportPackage.packageNames[exportPackage.packageNames.length - 1].equals("*");
+        if (packageNames.length < exportPackage.packageNames.length && !"*".equals(packageNames[packageNames.length - 1]) && !exportWildcard) {
             return false;
         }
         for (String packageName : exportPackage.packageNames) {

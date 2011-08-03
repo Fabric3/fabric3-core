@@ -182,4 +182,10 @@ public class PackageInfoTestCase extends TestCase {
         assertFalse(imprt.matches(export));
     }
 
+    public void testMatchWildCardExport() throws Exception {
+        PackageInfo imprt = new PackageInfo("org.fabric3.api");
+        PackageInfo export = new PackageInfo("org.fabric3.api.*");
+        assertTrue(imprt.matches(export));
+    }
+
 }
