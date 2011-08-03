@@ -56,6 +56,7 @@ public final class BootExports {
         Map<String, String> bootMap = new HashMap<String, String>();
 
         // Fabric3 packages
+        bootMap.put("org.fabric3.api.*", Names.VERSION);
         bootMap.put("org.fabric3.spi.*", Names.VERSION);
         bootMap.put("org.fabric3.util.*", Names.VERSION);
         bootMap.put("org.fabric3.host.*", Names.VERSION);
