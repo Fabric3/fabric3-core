@@ -148,4 +148,17 @@ public abstract class ModelObject implements Serializable {
         }
         elementStack.add(element);
     }
+
+    /**
+     * Removes an element from the stack.
+     *
+     * @param element the element to remove
+     */
+    protected void removeElement(ModelObject element) {
+        if (!roundTrip || elementStack == null) {
+            return;
+        }
+        elementStack.remove(element);
+    }
+
 }

@@ -160,10 +160,18 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param reference the reference to add
      */
     public void add(ComponentReference reference) {
-        if (roundTrip) {
-            pushElement(reference);
-        }
+        pushElement(reference);
         references.put(reference.getName(), reference);
+    }
+
+    /**
+     * Removes a reference.
+     *
+     * @param reference the reference to remove
+     */
+    public void remove(ComponentReference reference) {
+        removeElement(reference);
+        references.remove(reference.getName());
     }
 
     /**
@@ -181,11 +189,20 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param service the service to add
      */
     public void add(ComponentService service) {
-        if (roundTrip) {
-            pushElement(service);
-        }
+        pushElement(service);
         services.put(service.getName(), service);
     }
+
+    /**
+     * Removes a service.
+     *
+     * @param service the service to remove
+     */
+    public void remove(ComponentService service) {
+        removeElement(service);
+        services.remove(service.getName());
+    }
+
 
     /**
      * Adds a producer to this component.
@@ -193,11 +210,20 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param producer the producer to add
      */
     public void add(ComponentProducer producer) {
-        if (roundTrip) {
-            pushElement(producer);
-        }
+        pushElement(producer);
         producers.put(producer.getName(), producer);
     }
+
+    /**
+     * Removes a producer.
+     *
+     * @param producer the producer to remove
+     */
+    public void remove(ComponentProducer producer) {
+        removeElement(producer);
+        producers.remove(producer.getName());
+    }
+
 
     /**
      * Returns the producers configured by this component definition.
@@ -214,11 +240,20 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param consumer the consumer to add
      */
     public void add(ComponentConsumer consumer) {
-        if (roundTrip) {
-            pushElement(consumer);
-        }
+        pushElement(consumer);
         consumers.put(consumer.getName(), consumer);
     }
+
+    /**
+     * Removes a consumer.
+     *
+     * @param consumer the consumer to remove
+     */
+    public void remove(ComponentConsumer consumer) {
+        removeElement(consumer);
+        consumers.remove(consumer.getName());
+    }
+
 
     /**
      * Returns the consumers configured by this component definition.
@@ -244,11 +279,20 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param value the property value to add
      */
     public void add(PropertyValue value) {
-        if (roundTrip) {
-            pushElement(value);
-        }
+        pushElement(value);
         propertyValues.put(value.getName(), value);
     }
+
+    /**
+     * Removes a property value.
+     *
+     * @param value the value to remove
+     */
+    public void remove(PropertyValue value) {
+        removeElement(value);
+        propertyValues.remove(value.getName());
+    }
+
 
     /**
      * Returns the key to be used if this component is wired to a map of references.

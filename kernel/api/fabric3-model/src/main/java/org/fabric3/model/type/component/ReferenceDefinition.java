@@ -231,7 +231,7 @@ public class ReferenceDefinition extends AbstractPolicyAware {
     }
 
     /**
-     * Sets autowire enablement for the reference.
+     * Sets autowire for the reference.
      *
      * @param autowire true if autowire is enabled.
      */
