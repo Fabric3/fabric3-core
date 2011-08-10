@@ -177,9 +177,9 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
             Source source = new UrlSource(url);
             composite = registry.load(source, Composite.class, childContext);
         } catch (LoaderException e) {
-            InvalidValue failure = new InvalidValue("Error loading include", reader);
+            InvalidInclude failure = new InvalidInclude("Error loading include: "+ name, e, reader);
             context.addError(failure);
-            return include;
+            return null;
         }
         if (childContext.hasErrors()) {
             context.addErrors(childContext.getErrors());

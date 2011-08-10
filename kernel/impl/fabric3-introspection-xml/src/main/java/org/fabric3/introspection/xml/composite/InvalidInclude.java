@@ -37,6 +37,8 @@
 */
 package org.fabric3.introspection.xml.composite;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
@@ -45,9 +47,25 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  * @version $Rev$ $Date$
  */
 public class InvalidInclude extends XmlValidationFailure {
+    private Throwable cause;
 
     public InvalidInclude(String message, XMLStreamReader reader) {
         super(message, reader);
     }
 
+    public InvalidInclude(String message, Throwable cause, XMLStreamReader reader) {
+        super(message, reader);
+        this.cause = cause;
+    }
+
+    public String getMessage() {
+        if (cause != null) {
+            StringWriter writer = new StringWriter();
+            writer.write(super.getMessage() + ". The original error was: \n");
+            cause.printStackTrace(new PrintWriter(writer));
+            return writer.toString();
+        } else {
+            return super.getMessage();
+        }
+    }
 }
