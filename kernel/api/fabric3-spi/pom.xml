@@ -21,6 +21,7 @@
     <artifactId>fabric3-spi</artifactId>
     <name>Fabric3 SPI</name>
     <description>SPIs for runtime extensions</description>
+    <packaging>bundle</packaging>
 
     <dependencies>
 
@@ -74,5 +75,20 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Export-Package>org.fabric3.spi.*;version=${fabric3.release.version}</Export-Package>
+                        <Import-Package>!sun.security.util,*</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
