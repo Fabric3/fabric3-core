@@ -383,6 +383,11 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         } else {
             definition.add(value);
         }
+        if (value.getValue() != null && value.getValue().getDocumentElement().getChildNodes().getLength() == 0 && property.isRequired()) {
+            // property value not specified
+            PropertyValueNotSpecified failure = new PropertyValueNotSpecified(value.getName(), definition, reader);
+            context.addError(failure);
+        }
     }
 
     /**
