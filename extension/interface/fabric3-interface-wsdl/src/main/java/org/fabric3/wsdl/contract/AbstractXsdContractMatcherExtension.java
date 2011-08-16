@@ -190,6 +190,9 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
                 // sequence type matches
                 return true;
             }
+            if (type.getXsdType().getNamespaceURI().equals("http://util.java/") && type.getXsdType().getLocalPart().equals("list")){
+                return true;
+            }
         }
         return false;
     }
