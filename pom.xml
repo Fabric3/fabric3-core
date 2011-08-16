@@ -39,7 +39,8 @@
     </modules>
 
     <properties>
-        <sca.api.version>1.1.1</sca.api.version>
+        <fabric3.release.version>1.9</fabric3.release.version>
+        <sca.api.version>1.1.2-SNAPSHOT</sca.api.version>
         <stax.api.version>1.0</stax.api.version>
         <woodstox.version>3.2.9</woodstox.version>
         <jta.version>1.1.0</jta.version>
@@ -80,6 +81,17 @@
                         <descriptors>
                             <descriptor>assembly.xml</descriptor>
                         </descriptors>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>2.3.5</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <instructions>
+                            <Private-Package/>
+                        </instructions>
                     </configuration>
                 </plugin>
                 <plugin>
