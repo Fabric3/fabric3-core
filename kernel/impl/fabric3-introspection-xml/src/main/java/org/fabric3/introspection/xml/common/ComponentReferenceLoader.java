@@ -92,7 +92,8 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
         ATTRIBUTES.put("multiplicity", "multiplicity");
         ATTRIBUTES.put("requires", "requires");
         ATTRIBUTES.put("policySets", "policySets");
-    }
+        ATTRIBUTES.put("nonOverridable", "nonOverridable");
+     }
 
     private LoaderHelper loaderHelper;
     private boolean roundTrip;
@@ -157,6 +158,10 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
         }
         reference.addTargets(targets);
 
+        String nonOverridable = reader.getAttributeValue(null, "nonOverridable");
+        if (nonOverridable != null) {
+            reference.setNonOverridable(Boolean.parseBoolean(nonOverridable));
+        }
         loaderHelper.loadPolicySetsAndIntents(reference, reader, context);
 
         if (roundTrip) {
@@ -169,6 +174,10 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
             //noinspection VariableNotUsedInsideIf
             if (targetAttribute != null) {
                 reference.attributeSpecified("target");
+            }
+            //noinspection VariableNotUsedInsideIf
+            if (nonOverridable != null) {
+                reference.attributeSpecified("nonOverridable");
             }
         }
 
