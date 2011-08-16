@@ -110,7 +110,7 @@ public abstract class AbstractComponentInstantiator {
                 } else if (propertyValue.getSource() != null) {
                     // get the value by evaluating an XPath against the composite properties
                     try {
-                        value = deriveValueFromXPath(propertyValue.getSource(), component.getParent(), propertyValue.getNamespaceContext());
+                        value = deriveValueFromXPath(propertyValue, component.getParent(), propertyValue.getNamespaceContext());
                     } catch (XPathExpressionException e) {
                         URI uri = component.getUri();
                         URI contributionUri = component.getDefinition().getContributionUri();
@@ -136,7 +136,13 @@ public abstract class AbstractComponentInstantiator {
             } else {
                 // set the property value
                 boolean many = property.isMany();
-                LogicalProperty logicalProperty = new LogicalProperty(name, value, many, component);
+                LogicalProperty logicalProperty;
+                QName type = property.getType();
+                if (type == null) {
+                    logicalProperty = new LogicalProperty(name, value, many, component);
+                } else {
+                    logicalProperty = new LogicalProperty(name, value, many, type, component);
+                }
                 component.setProperties(logicalProperty);
             }
 
@@ -144,7 +150,8 @@ public abstract class AbstractComponentInstantiator {
 
     }
 
-    Document deriveValueFromXPath(String source, final LogicalComponent<?> parent, NamespaceContext nsContext) throws XPathExpressionException {
+    Document deriveValueFromXPath(final PropertyValue propertyValue, final LogicalComponent<?> parent, NamespaceContext nsContext)
+            throws XPathExpressionException {
 
         XPathVariableResolver variableResolver = new XPathVariableResolver() {
             public Object resolveVariable(QName qName) {
@@ -153,12 +160,17 @@ public abstract class AbstractComponentInstantiator {
                 if (property == null) {
                     return null;
                 }
+                if (propertyValue.getType() != null && property.getType() != null && !propertyValue.getType().equals(property.getType())) {
+                    throw new PropertyTypeException("Property types are incompatible:" + name + " and " + propertyValue.getName());
+                }
                 Document value = property.getValue();
                 if (value == null || value.getDocumentElement().getChildNodes().getLength() == 0) {
                     return null;
                 }
                 // select the first value
-                return value.getDocumentElement().getFirstChild();
+                return value.getDocumentElement();
+//                return value.getDocumentElement().getChildNodes();
+//               return value.getDocumentElement().getFirstChild();
             }
         };
 
@@ -176,7 +188,15 @@ public abstract class AbstractComponentInstantiator {
         Document document = builder.newDocument();
         Element root = document.createElement("values");
         document.appendChild(root);
+        String source = propertyValue.getSource();
         try {
+            if (source.startsWith("$")) {
+                // ASM_5039 complex type with multiple values: ensure all values are selected
+                int index = source.indexOf("/");
+                if (index > 0 && index < source.length() - 2 && !source.substring(index + 1, index + 2).equals("/")) {
+                    source = source.substring(0, index) + "/" + source.substring(index);
+                }
+            }
             NodeList result = (NodeList) xpath.evaluate(source, document, XPathConstants.NODESET);
 
             if (result.getLength() == 0) {
@@ -186,7 +206,7 @@ public abstract class AbstractComponentInstantiator {
             for (int i = 0; i < result.getLength(); i++) {
                 Node node = result.item(i);
                 Element value;
-                if (!"value".equals(node.getNodeName())){
+                if (!"value".equals(node.getNodeName())) {
                     value = document.createElement("value");
                     root.appendChild(value);
                 } else {
@@ -216,6 +236,8 @@ public abstract class AbstractComponentInstantiator {
             // a more descriptive cause, but that also might be confusing for people who
             // are used to this behavior
             throw e;
+        } catch (PropertyTypeException e) {
+            throw new XPathExpressionException(e);
         }
         return document;
 
