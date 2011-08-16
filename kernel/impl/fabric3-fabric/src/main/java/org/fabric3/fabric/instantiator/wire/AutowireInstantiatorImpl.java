@@ -148,7 +148,8 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                 return;
             }
 
-            if (componentReference.getAutowire() == Autowire.ON) {
+            if (componentReference.getAutowire() == Autowire.ON
+                    || (componentReference.getAutowire() == Autowire.INHERITED && component.getAutowire() == Autowire.ON)) {
                 ReferenceDefinition referenceDefinition = logicalReference.getDefinition();
                 ServiceContract requiredContract = referenceDefinition.getServiceContract();
                 boolean resolved = resolveByType(component.getParent(), logicalReference, requiredContract);
@@ -226,7 +227,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         LogicalComponent<?> parent = leafReference.getParent();
         LogicalCompositeComponent parentComposite = parent.getParent();
         List<LogicalWire> existingWires = parentComposite.getWires(leafReference);
-        
+
         // create the wires
         for (LogicalService target : candidates) {
             // for autowire, the deployable of the wire is the target since the wire must be removed when the target is undeployed
