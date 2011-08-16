@@ -58,6 +58,7 @@ import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
@@ -124,6 +125,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                 } catch (UnrecognizedElementException e) {
                     UnrecognizedElement failure = new UnrecognizedElement(reader);
                     context.addError(failure);
+                    LoaderUtil.skipToEndElement(reader);
                     continue;
                 }
                 if (type instanceof ServiceContract) {
