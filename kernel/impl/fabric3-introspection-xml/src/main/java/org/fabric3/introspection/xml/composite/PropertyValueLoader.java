@@ -110,9 +110,21 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
 
         String source = reader.getAttributeValue(null, "source");
         String file = reader.getAttributeValue(null, "file");
+        String typeAttribute = reader.getAttributeValue(null, "type");
+        QName type = null;
+        if (typeAttribute != null) {
+            try {
+                type = helper.createQName(typeAttribute, reader);
+            } catch (InvalidPrefixException e) {
+                InvalidAttributes error = new InvalidAttributes("Invalid property type namespace:" + e.getMessage(), reader);
+                context.addError(error);
+            }
+        }
         if (source != null) {
             LoaderUtil.skipToEndElement(reader);
-            return new PropertyValue(name, source);
+            PropertyValue value = new PropertyValue(name, source);
+            value.setType(type);
+            return value;
         } else if (file != null) {
             try {
                 URI uri = new URI(file);
@@ -120,7 +132,9 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
                     uri = context.getSourceBase().toURI().resolve(uri);
                 }
                 LoaderUtil.skipToEndElement(reader);
-                return new PropertyValue(name, uri);
+                PropertyValue value = new PropertyValue(name, uri);
+                value.setType(type);
+                return value;
             } catch (URISyntaxException e) {
                 InvalidValue failure = new InvalidValue("File specified for property " + name + " is invalid: " + file, reader, e);
                 context.addError(failure);
