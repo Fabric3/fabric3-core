@@ -48,16 +48,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathExpressionException;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.fabric3.introspection.xml.composite.StatefulNamespaceContext;
-import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.CompositeImplementation;
-import org.fabric3.model.type.component.Property;
+import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
 
@@ -72,20 +70,23 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
     private Document property;
 
     public void testSimpleProperty() throws Exception {
+        PropertyValue propertyValue = new PropertyValue("property", "$domain");
         value.setTextContent("Hello World");
-        Document value = instantiator.deriveValueFromXPath("$domain", domain, new StatefulNamespaceContext());
+        Document value = instantiator.deriveValueFromXPath(propertyValue, domain, new StatefulNamespaceContext());
         Node child = value.getDocumentElement().getFirstChild().getFirstChild();
         assertEquals(Node.TEXT_NODE, child.getNodeType());
         assertEquals("Hello World", child.getTextContent());
     }
 
     public void testComplexProperty() throws Exception {
+        PropertyValue propertyValue = new PropertyValue("property", "$domain//http/port");
+
         Element http = property.createElement("http");
         value.appendChild(http);
         Element port = property.createElement("port");
         http.appendChild(port);
         port.setTextContent("8080");
-        Document value = instantiator.deriveValueFromXPath("$domain/http/port", domain, new StatefulNamespaceContext());
+        Document value = instantiator.deriveValueFromXPath(propertyValue, domain, new StatefulNamespaceContext());
         Node child = value.getDocumentElement().getFirstChild().getFirstChild();
         assertEquals(Node.ELEMENT_NODE, child.getNodeType());
         assertEquals("port", child.getNodeName());
@@ -93,10 +94,11 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
     }
 
     public void testAttributeProperty() throws Exception {
+        PropertyValue propertyValue = new PropertyValue("property", "$domain//http/@port");
         Element http = property.createElement("http");
         http.setAttribute("port", "8080");
         value.appendChild(http);
-        Document value = instantiator.deriveValueFromXPath("$domain/http/@port", domain, new StatefulNamespaceContext());
+        Document value = instantiator.deriveValueFromXPath(propertyValue, domain, new StatefulNamespaceContext());
         Node child = value.getDocumentElement().getFirstChild().getFirstChild();
         assertEquals(Node.ELEMENT_NODE, child.getNodeType());
         assertEquals("port", child.getNodeName());
@@ -104,13 +106,14 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
     }
 
     public void testComplexPropertyWithMultipleValues() throws Exception {
+        PropertyValue propertyValue = new PropertyValue("property", "$domain//http");
         Element http1 = property.createElement("http");
         this.value.appendChild(http1);
         http1.setAttribute("index", "1");
         Element http2 = property.createElement("http");
         this.value.appendChild(http2);
         http2.setAttribute("index", "2");
-        Document values = instantiator.deriveValueFromXPath("$domain/http", domain, new StatefulNamespaceContext());
+        Document values = instantiator.deriveValueFromXPath(propertyValue, domain, new StatefulNamespaceContext());
         Node value = values.getDocumentElement().getChildNodes().item(0);
         NodeList list = value.getChildNodes();
         assertEquals(1, list.getLength());
@@ -125,8 +128,9 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
     }
 
     public void testUnknownVariable() {
+        PropertyValue propertyValue = new PropertyValue("property", "$foo");
         try {
-            instantiator.deriveValueFromXPath("$foo", domain, new StatefulNamespaceContext());
+            instantiator.deriveValueFromXPath(propertyValue, domain, new StatefulNamespaceContext());
             fail();
         } catch (XPathExpressionException e) {
             // this is ok?
