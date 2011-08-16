@@ -90,7 +90,10 @@ public class JavaImport implements Import {
 
     public void addResolved(URI contributionUri, Export export) {
         if (!resolved.isEmpty()) {
-            throw new IllegalArgumentException("Import can resolve to only one export");
+            URI entry = resolved.keySet().iterator().next();
+            String s = "Import [" + packageInfo + "] must resolve to only one export. Multiple exporting contributions found: " + entry + " and "
+                    + contributionUri;
+            throw new IllegalArgumentException(s);
         }
         resolved.put(contributionUri, export);
     }
