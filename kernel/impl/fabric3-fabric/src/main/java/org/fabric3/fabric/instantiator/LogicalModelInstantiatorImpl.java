@@ -141,7 +141,8 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
             } else {
                 Document value = property.getDefaultValue();
                 boolean many = property.isMany();
-                LogicalProperty logicalProperty = new LogicalProperty(name, value, many, domain);
+                QName type = property.getType();
+                LogicalProperty logicalProperty = new LogicalProperty(name, value, many, type, domain);
                 domain.setProperties(logicalProperty);
             }
         }
