@@ -37,6 +37,8 @@
 */
 package org.fabric3.spi.model.instance;
 
+import javax.xml.namespace.QName;
+
 import org.w3c.dom.Document;
 
 /**
@@ -50,12 +52,21 @@ public class LogicalProperty extends LogicalScaArtifact<LogicalComponent<?>> {
     private String name;
     private Document value;
     private boolean many;
+    private QName type;
 
     public LogicalProperty(String name, Document value, boolean many, LogicalComponent<?> parent) {
         super(parent);
         this.name = name;
         this.value = value;
         this.many = many;
+    }
+
+    public LogicalProperty(String name, Document value, boolean many, QName type, LogicalComponent<?> parent) {
+        super(parent);
+        this.name = name;
+        this.value = value;
+        this.many = many;
+        this.type = type;
     }
 
     /**
@@ -83,6 +94,15 @@ public class LogicalProperty extends LogicalScaArtifact<LogicalComponent<?>> {
      */
     public boolean isMany() {
         return many;
+    }
+
+    /**
+     * Returns the XSD type or null of the property.
+     *
+     * @return the XSD type or null of the property.
+     */
+    public QName getType() {
+        return type;
     }
 }
 
