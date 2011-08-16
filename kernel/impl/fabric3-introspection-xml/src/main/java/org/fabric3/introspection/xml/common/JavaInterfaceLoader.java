@@ -82,6 +82,7 @@ public class JavaInterfaceLoader implements TypeLoader<ServiceContract> {
         if (name == null) {
             MissingAttribute failure = new MissingAttribute("An interface must be specified using the class attribute", reader);
             context.addError(failure);
+            LoaderUtil.skipToEndElement(reader);
             return null;
         }
         Class<?> interfaceClass;
@@ -90,6 +91,7 @@ public class JavaInterfaceLoader implements TypeLoader<ServiceContract> {
         } catch (ImplementationNotFoundException e) {
             ResourceNotFound failure = new ResourceNotFound("Interface not found: " + name, reader);
             context.addError(failure);
+            LoaderUtil.skipToEndElement(reader);
             return null;
         }
 
@@ -100,6 +102,7 @@ public class JavaInterfaceLoader implements TypeLoader<ServiceContract> {
         } catch (ImplementationNotFoundException e) {
             ResourceNotFound failure = new ResourceNotFound("Callback interface not found: " + name, reader);
             context.addError(failure);
+            LoaderUtil.skipToEndElement(reader);
             return null;
         }
 
