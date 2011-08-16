@@ -67,6 +67,7 @@ import org.fabric3.spi.contribution.xml.XmlResourceElementLoaderRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
+import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -86,6 +87,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
     static final QName BINDING_TYPE = new QName(SCA_NS, "bindingType");
     static final QName IMPLEMENTATION_TYPE = new QName(SCA_NS, "implementationType");
     static final QName DEFINITIONS = new QName(SCA_NS, "definitions");
+    static final QName EXTERNAL_ATTACHMENT = new QName(SCA_NS, "externalAttachment");
 
     private XmlResourceElementLoaderRegistry elementLoaderRegistry;
     private Loader loaderRegistry;
@@ -140,6 +142,11 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
                     } catch (UnrecognizedElementException e) {
                         throw new InstallException(e);
                     }
+                } else if (EXTERNAL_ATTACHMENT.equals(qname)) {
+                    // TODO implement
+                } else {
+                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    context.addError(failure);
                 }
                 if (definition != null) {
                     if (definitions.contains(definition)) {
