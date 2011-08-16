@@ -40,4 +40,8 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.introspection.xml.definitions.ImplementationTypeLoader"/>
     </component>
 
+    <component name="ExternalAttachmentLoader" f3:key="sca:externalAttachment">
+         <f3:implementation.system class="org.fabric3.introspection.xml.definitions.ExternalAttachmentLoader"/>
+     </component>
+
 </composite>
