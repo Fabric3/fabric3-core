@@ -437,6 +437,9 @@ public class DependencyResolverImpl implements DependencyResolver {
     }
 
     private void dropExport(Import imprt, ContributionManifest manifest) {
+        if (imprt.isMultiplicity()) {
+            return; // multiplicity imports do not drop exports
+        }
         for (Iterator<Export> iterator = manifest.getExports().iterator(); iterator.hasNext();) {
             Export export = iterator.next();
             if (export.match(imprt)) {
@@ -449,6 +452,9 @@ public class DependencyResolverImpl implements DependencyResolver {
     private void dropImport(Export export, ContributionManifest manifest) {
         for (Iterator<Import> iterator = manifest.getImports().iterator(); iterator.hasNext();) {
             Import imprt = iterator.next();
+            if (imprt.isMultiplicity()) {
+                return; // multiplicity imports do not drop exports
+            }
             if (export.match(imprt)) {
                 iterator.remove();
                 break;
