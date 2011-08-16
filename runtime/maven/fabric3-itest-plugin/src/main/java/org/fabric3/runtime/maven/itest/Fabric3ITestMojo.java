@@ -233,6 +233,13 @@ public class Fabric3ITestMojo extends AbstractMojo {
     protected File outputDirectory;
 
     /**
+     * Allows the optional in-line specification of an expected error
+     *
+     * @parameter
+     */
+    public String errorText;
+
+    /**
      * JDK and system classpath packages to hide from the runtime classpath.
      *
      * @parameter
@@ -266,7 +273,10 @@ public class Fabric3ITestMojo extends AbstractMojo {
             // load the contributions
             deployContributions(runtime);
             TestDeployer deployer = new TestDeployer(compositeNamespace, compositeName, buildDirectory, getLog());
-            deployer.deploy(runtime);
+            boolean continueDeployment = deployer.deploy(runtime, errorText);
+            if (!continueDeployment)  {
+                return;
+            }
             TestRunner runner = new TestRunner(reportsDirectory, trimStackTrace, getLog());
             runner.executeTests(runtime);
         } finally {

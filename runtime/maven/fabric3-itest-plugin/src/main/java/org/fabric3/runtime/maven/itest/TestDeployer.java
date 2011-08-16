@@ -67,23 +67,33 @@ public class TestDeployer {
         this.buildDirectory = buildDirectory;
     }
 
-    public void deploy(MavenRuntime runtime) throws MojoExecutionException {
+    public boolean deploy(MavenRuntime runtime, String errorText) throws MojoExecutionException {
         try {
             QName qName = new QName(compositeNamespace, compositeName);
             URL buildDirUrl = getBuildDirectoryUrl();
             runtime.deploy(buildDirUrl, qName);
             runtime.startContext(qName);
+            return true;
         } catch (ValidationException e) {
+            if (errorText != null && e.getMessage() != null && e.getMessage().contains(errorText)) {
+                return false;
+            }
             // print out the validation errors
             reportContributionErrors(e);
             String msg = "Contribution errors were found";
             throw new MojoExecutionException(msg);
         } catch (AssemblyException e) {
+            if (errorText != null && e.getMessage().contains(errorText)) {
+                return false;
+            }
             reportDeploymentErrors(e);
             String msg = "Deployment errors were found";
             throw new MojoExecutionException(msg);
         } catch (Exception e) {
             // trap any other exception
+            if (errorText != null && e.getCause() != null && e.getCause().getMessage() != null && e.getCause().getMessage().contains(errorText)) {
+                return false;
+            }
             throw new MojoExecutionException("Error deploying test composite", e);
         }
     }
