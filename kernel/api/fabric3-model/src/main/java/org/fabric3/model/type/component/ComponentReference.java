@@ -54,6 +54,7 @@ import java.util.List;
 public class ComponentReference extends ReferenceDefinition {
     private static final long serialVersionUID = 2072898078368317712L;
     private List<Target> targets = new ArrayList<Target>();
+    private boolean nonOverridable;
 
     /**
      * Constructor.
@@ -77,4 +78,11 @@ public class ComponentReference extends ReferenceDefinition {
         targets.add(target);
     }
 
+    public boolean isNonOverridable() {
+        return nonOverridable;
+    }
+
+    public void setNonOverridable(boolean nonOverridable) {
+        this.nonOverridable = nonOverridable;
+    }
 }
