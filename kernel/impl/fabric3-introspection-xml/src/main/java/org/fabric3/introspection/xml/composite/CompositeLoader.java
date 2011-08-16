@@ -61,6 +61,7 @@ import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeReference;
@@ -119,6 +120,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         ATTRIBUTES.put("policySets", "policySets");
         ATTRIBUTES.put("constrainingType", "constrainingType");
         ATTRIBUTES.put("channel", "channel");
+        ATTRIBUTES.put("schemaLocation", "schemaLocation");
     }
 
     private TypeLoader<CompositeService> serviceLoader;
@@ -537,6 +539,18 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     }
                     processMultiplicity(reference, promotedReference, reader, context);
                     processReferenceContract(reference, promotedReference, reader, context);
+                    // check overridable
+                    ComponentReference componentReference = promoted.getReferences().get(referenceName);
+                    if (componentReference != null) {
+                        if (componentReference.isNonOverridable()) {
+                            if (promotedReference.getMultiplicity().equals(Multiplicity.ONE_ONE) || promotedReference.getMultiplicity().equals(
+                                    Multiplicity.ZERO_ONE)) {
+                                IllegalPromotion failure =
+                                        new IllegalPromotion("Cannot promote a 0..1 or 1..1 non-overridable reference: " + referenceName, reader);
+                                context.addError(failure);
+                            }
+                        }
+                    }
                 }
 
             }
