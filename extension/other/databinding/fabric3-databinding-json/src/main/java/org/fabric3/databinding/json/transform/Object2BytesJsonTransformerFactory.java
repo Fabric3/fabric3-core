@@ -37,7 +37,6 @@
 */
 package org.fabric3.databinding.json.transform;
 
-import java.io.OutputStream;
 import java.util.List;
 
 import org.codehaus.jackson.jaxrs.Annotations;
