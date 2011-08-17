@@ -33,5 +33,6 @@
 		<module>fabric3-jaxb</module>
 		<module>fabric3-databinding-jaxb</module>
 		<module>fabric3-databinding-json</module>
+		<module>fabric3-databinding-kryo</module>
 	</modules>
 </project>
