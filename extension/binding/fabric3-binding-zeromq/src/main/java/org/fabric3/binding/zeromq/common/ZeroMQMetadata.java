@@ -47,6 +47,7 @@ public class ZeroMQMetadata extends ModelObject {
     private long multicastRecovery = -1;
     private long sendBuffer = -1;
     private long receiveBuffer = -1;
+    private String wireFormat;
 
     public String getHost() {
         return host;
@@ -162,5 +163,23 @@ public class ZeroMQMetadata extends ModelObject {
      */
     public void setReceiveBuffer(long receiveBuffer) {
         this.receiveBuffer = receiveBuffer;
+    }
+
+    /**
+     * Returns the wire format for serializing messages.
+     *
+     * @return the wire format for serializing messages
+     */
+    public String getWireFormat() {
+        return wireFormat;
+    }
+
+    /**
+     * Sets the wire format for serializing messages.
+     *
+     * @param wireFormat the wire format for serializing messages
+     */
+    public void setWireFormat(String wireFormat) {
+        this.wireFormat = wireFormat;
     }
 }

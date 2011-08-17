@@ -75,6 +75,7 @@ public class ZeroMQBindingLoader implements TypeLoader<ZeroMQBindingDefinition> 
         ATTRIBUTES.add("multicast.recovery");
         ATTRIBUTES.add("send.buffer");
         ATTRIBUTES.add("receive.buffer");
+        ATTRIBUTES.add("wireFormat");
     }
 
     public ZeroMQBindingLoader(@Reference LoaderHelper loaderHelper) {
@@ -106,6 +107,7 @@ public class ZeroMQBindingLoader implements TypeLoader<ZeroMQBindingDefinition> 
         long multicastRecovery = parseLong("multicast.recovery", reader, context);
         long sendBuffer = parseLong("send.buffer", reader, context);
         long receiveBuffer = parseLong("receive.buffer", reader, context);
+        String wireFormat = reader.getAttributeValue(null, "wireFormat");
 
         metadata.setHost(host);
         metadata.setHighWater(highWater);
@@ -113,6 +115,7 @@ public class ZeroMQBindingLoader implements TypeLoader<ZeroMQBindingDefinition> 
         metadata.setMulticastRecovery(multicastRecovery);
         metadata.setSendBuffer(sendBuffer);
         metadata.setReceiveBuffer(receiveBuffer);
+        metadata.setWireFormat(wireFormat);
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
         LoaderUtil.skipToEndElement(reader);
