@@ -256,30 +256,30 @@ public class PortAllocatorImpl implements PortAllocator {
 
     private ServerSocket checkAvailability(int port) throws PortAllocationException {
 
-        try {
+        //try {
             ServerSocket socket = lockPort(port);
             // try the wildcard address first
             if (socket == null) {
                 return null;
             }
-            String localhost = InetAddress.getLocalHost().getCanonicalHostName();
-            InetAddress[] addresses = InetAddress.getAllByName(localhost);
-            for (InetAddress address : addresses) {
-            	if(address.isLoopbackAddress())
-            		continue;
-                if (!checkPortOnHost(address, port)) {
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-            }
+//            String localhost = InetAddress.getLocalHost().getCanonicalHostName();
+//            InetAddress[] addresses = InetAddress.getAllByName(localhost);
+//            for (InetAddress address : addresses) {
+//            	if(address.isLoopbackAddress())
+//            		continue;
+//                if (!checkPortOnHost(address, port)) {
+//                    try {
+//                        socket.close();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    return null;
+//                }
+//            }
             return socket;
-        } catch (UnknownHostException e) {
-            throw new PortAllocationException(e);
-        }
+//        } catch (UnknownHostException e) {
+//            throw new PortAllocationException(e);
+//        }
     }
 
     private ServerSocket lockPort(int port) {
@@ -288,6 +288,7 @@ public class PortAllocatorImpl implements PortAllocator {
         try {
             serverSocket = new ServerSocket();
             InetSocketAddress socketAddress = new InetSocketAddress(port);
+            serverSocket.setReuseAddress(true);
             serverSocket.bind(socketAddress);
             datagramSocket = new DatagramSocket(port);
             datagramSocket.setReuseAddress(true);
