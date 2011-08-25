@@ -45,7 +45,13 @@
             <artifactId>fabric3-jpa-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>com.springsource.javax.transaction</artifactId>
+            <version>${jta.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-spring-library</artifactId>

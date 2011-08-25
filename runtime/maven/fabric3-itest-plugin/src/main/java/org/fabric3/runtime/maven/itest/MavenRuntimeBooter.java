@@ -55,6 +55,7 @@ import java.util.concurrent.ExecutionException;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.w3c.dom.Document;
@@ -97,11 +98,12 @@ public class MavenRuntimeBooter {
     private ClassLoader hostClassLoader;
     private Set<URL> moduleDependencies;
     private Set<org.apache.maven.model.Dependency> extensions;
+    private ExtensionHelper extensionHelper;
+    private Set<ArtifactRepository> repositories;
     private Log log;
 
     private RuntimeCoordinator coordinator;
 
-    private ExtensionHelper extensionHelper;
 
     public MavenRuntimeBooter(MavenBootConfiguration configuration) {
         mavenVersion = configuration.getMavenVersion();
@@ -112,8 +114,9 @@ public class MavenRuntimeBooter {
         hostClassLoader = configuration.getHostClassLoader();
         moduleDependencies = configuration.getModuleDependencies();
         extensions = configuration.getExtensions();
-        log = configuration.getLog();
         extensionHelper = configuration.getExtensionHelper();
+        repositories = configuration.getRepositories();
+        log = configuration.getLog();
     }
 
     @SuppressWarnings({"unchecked"})
@@ -130,7 +133,7 @@ public class MavenRuntimeBooter {
             exportedPackages.put("org.fabric3.runtime.maven", Names.VERSION);
 
             // process extensions
-            List<ContributionSource> contributions = extensionHelper.processExtensions(extensions);
+            List<ContributionSource> contributions = extensionHelper.processExtensions(extensions, repositories);
 
             BootConfiguration configuration = new BootConfiguration();
 

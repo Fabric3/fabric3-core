@@ -46,6 +46,7 @@ package org.fabric3.runtime.maven.itest;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -110,7 +111,7 @@ public class ArtifactHelper {
         }
         dependency.setVersion(runtimeVersion);
         dependency.setExclusions(exclusions);
-        return resolveArtifacts(dependency, true);
+        return resolveArtifacts(dependency, Collections.<ArtifactRepository>emptySet(), true);
     }
 
     /**
@@ -145,14 +146,14 @@ public class ArtifactHelper {
     public Set<Artifact> calculateDependencies() throws MojoExecutionException {
         // add all declared project dependencies
         Set<Artifact> artifacts = new HashSet<Artifact>();
-        for (Dependency dependency : ((List<Dependency>) project.getDependencies())) {
+        for (Dependency dependency : project.getDependencies()) {
             if (!dependency.getScope().equals("f3-extension")) {
-                artifacts.addAll(resolveArtifacts(dependency, true));
+                artifacts.addAll(resolveArtifacts(dependency, Collections.<ArtifactRepository>emptySet(), true));
             }
         }
 
         // include any artifacts that have been added by other plugins (e.g. Clover see FABRICTHREE-220)
-        for (Artifact artifact : ((Set<Artifact>) project.getDependencyArtifacts())) {
+        for (Artifact artifact : project.getDependencyArtifacts()) {
             if (!artifact.getScope().equals("f3-extension")) {
                 artifacts.add(artifact);
             }
@@ -190,40 +191,40 @@ public class ArtifactHelper {
         fabric3Api.setArtifactId("fabric3-api");
         fabric3Api.setVersion(version);
         fabric3Api.setExclusions(exclusions);
-        hostArtifacts.addAll(resolveArtifacts(fabric3Api, true));
+        hostArtifacts.addAll(resolveArtifacts(fabric3Api, Collections.<ArtifactRepository>emptySet(), true));
 
         // add commons annotations dependency
         Dependency jsr250API = new Dependency();
         jsr250API.setGroupId("org.apache.geronimo.specs");
         jsr250API.setArtifactId("geronimo-annotation_1.0_spec");
         jsr250API.setVersion("1.1");
-        hostArtifacts.addAll(resolveArtifacts(jsr250API, true));
+        hostArtifacts.addAll(resolveArtifacts(jsr250API, Collections.<ArtifactRepository>emptySet(), true));
 
         // add JAXB API dependency
         Dependency jaxbAPI = new Dependency();
         jaxbAPI.setGroupId("javax.xml.bind");
         jaxbAPI.setArtifactId("jaxb-api-osgi");
         jaxbAPI.setVersion("2.2-promoted-b50");
-        hostArtifacts.addAll(resolveArtifacts(jaxbAPI, true));
+        hostArtifacts.addAll(resolveArtifacts(jaxbAPI, Collections.<ArtifactRepository>emptySet(), true));
 
         // ad web services API
         Dependency wsAPI = new Dependency();
         wsAPI.setGroupId("javax.xml");
         wsAPI.setArtifactId("webservices-api-osgi");
         wsAPI.setVersion("2.0-b24");
-        hostArtifacts.addAll(resolveArtifacts(wsAPI, true));
+        hostArtifacts.addAll(resolveArtifacts(wsAPI, Collections.<ArtifactRepository>emptySet(), true));
 
         // add JAX-RS API
         Dependency rsAPI = new Dependency();
         rsAPI.setGroupId("javax.ws.rs");
         rsAPI.setArtifactId("jsr311-api");
         rsAPI.setVersion("1.1.1");
-        hostArtifacts.addAll(resolveArtifacts(rsAPI, true));
+        hostArtifacts.addAll(resolveArtifacts(rsAPI, Collections.<ArtifactRepository>emptySet(), true));
 
         // add shared artifacts to the host classpath
         if (shared != null) {
             for (Dependency sharedDependency : shared) {
-                hostArtifacts.addAll(resolveArtifacts(sharedDependency, true));
+                hostArtifacts.addAll(resolveArtifacts(sharedDependency, Collections.<ArtifactRepository>emptySet(), true));
             }
         }
         return hostArtifacts;
@@ -233,12 +234,13 @@ public class ArtifactHelper {
      * Returns the set of extensions for the given profiles.
      *
      * @param profiles the profiles
-     * @return the extensions
+     * @return the expanded profile set including extensions and remote repositories for transitive dependencies
      * @throws MojoExecutionException if there is an error dereferencing the extensions
      */
     @SuppressWarnings({"unchecked"})
-    public Set<Dependency> expandProfileExtensions(Dependency[] profiles) throws MojoExecutionException {
+    public ExpandedProfiles expandProfileExtensions(Dependency[] profiles) throws MojoExecutionException {
         Set<Dependency> dependencies = new HashSet<Dependency>();
+        Set<ArtifactRepository> repositories = new HashSet<ArtifactRepository>();
         try {
             for (Dependency profile : profiles) {
                 Artifact artifact =
@@ -252,35 +254,41 @@ public class ArtifactHelper {
                     dependency.setVersion(extension.getVersion());
                     dependencies.add(dependency);
                 }
+                for (ArtifactRepository repository : resolutionGroup.getResolutionRepositories()) {
+                    repositories.add(repository);
+                }
             }
         } catch (ArtifactMetadataRetrievalException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
 
-        return dependencies;
+        return new ExpandedProfiles(dependencies, repositories);
     }
 
     /**
      * Resolves the root dependency to the local artifact.
      *
-     * @param dependency Root dependency.
+     * @param dependency   Root dependency.
+     * @param repositories additional remote repositories to resolve transitive dependencies
      * @return Resolved artifact.
      * @throws MojoExecutionException if unable to resolve any dependencies.
      */
-    public Artifact resolve(Dependency dependency) throws MojoExecutionException {
-        return resolveArtifacts(dependency, false).iterator().next();
+    public Artifact resolve(Dependency dependency, Set<ArtifactRepository> repositories) throws MojoExecutionException {
+        return resolveArtifacts(dependency, repositories, false).iterator().next();
     }
 
     /**
      * Resolves dependencies for a dependency.
      *
-     * @param dependency Root dependency.
-     * @param transitive true if the resolution should be performed transitively
-     * @return Resolved set of artifacts.
+     * @param dependency   Root dependency.
+     * @param repositories additional remote repositories to resolve transitive dependencies
+     * @param transitive   true if the resolution should be performed transitively  @return Resolved set of artifacts.
+     * @return repositories to resolve dependencies
      * @throws MojoExecutionException if unable to resolve any dependencies.
      */
     @SuppressWarnings({"unchecked"})
-    private Set<Artifact> resolveArtifacts(Dependency dependency, boolean transitive) throws MojoExecutionException {
+    private Set<Artifact> resolveArtifacts(Dependency dependency, Set<ArtifactRepository> repositories, boolean transitive)
+            throws MojoExecutionException {
         Set<Artifact> artifacts = new HashSet<Artifact>();
         if (dependency.getVersion() == null) {
             resolveVersion(dependency);
@@ -288,7 +296,9 @@ public class ArtifactHelper {
         List<Exclusion> exclusions = dependency.getExclusions();
         Artifact rootArtifact = createArtifact(dependency);
         try {
-            resolver.resolve(rootArtifact, remoteRepositories, localRepository);
+            List<ArtifactRepository> dependencyRepositories = new ArrayList<ArtifactRepository>(remoteRepositories);
+            dependencyRepositories.addAll(repositories);
+            resolver.resolve(rootArtifact, dependencyRepositories, localRepository);
             artifacts.add(rootArtifact);
             if (!transitive) {
                 return artifacts;

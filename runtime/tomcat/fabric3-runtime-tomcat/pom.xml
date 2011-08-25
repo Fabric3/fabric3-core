@@ -186,12 +186,6 @@ Public License. See the accompanying license file for details.
             <scope>runtime</scope>
         </dependency>
 
-        <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>com.springsource.javax.transaction</artifactId>
-            <version>${jta.version}</version>
-        </dependency>
-
         <!-- extensions -->
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>

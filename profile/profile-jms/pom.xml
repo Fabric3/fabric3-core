@@ -83,7 +83,13 @@ Public License. See the accompanying license file for details.
             <artifactId>fabric3-datasource</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>com.springsource.javax.transaction</artifactId>
+            <version>${jta.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>javax.jms</groupId>
             <artifactId>com.springsource.javax.jms</artifactId>

@@ -101,7 +101,6 @@
                 <include>org.codehaus.fabric3:fabric3-federation-deployment</include>
                 <include>org.codehaus.fabric3:fabric3-jgroups</include>
                 <include>org.codehaus.fabric3:fabric3-federation-jgroups</include>
-                <include>javax.transaction:com.springsource.javax.transaction</include>
                 <include>org.codehaus.fabric3:fabric3-container-web-spi</include>
                 <include>org.codehaus.fabric3:fabric3-contribution-scanner-war</include>
                 <include>org.codehaus.fabric3:fabric3-contribution-war</include>

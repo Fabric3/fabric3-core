@@ -60,6 +60,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>com.springsource.javax.transaction</artifactId>
+            <version>${jta.version}</version>
+        </dependency>
+
         <!-- JMS is needed for Atomikos -->
         <dependency>
             <groupId>javax.jms</groupId>

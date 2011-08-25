@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -59,9 +60,25 @@ import org.fabric3.host.contribution.FileContributionSource;
 public class ExtensionHelper {
     public ArtifactHelper artifactHelper;
 
-    public  List<ContributionSource> processExtensions(Set<Dependency> extensions) throws MojoExecutionException {
-        Set<URL> extensionUrls = resolveDependencies(extensions);
+    public List<ContributionSource> processExtensions(Set<Dependency> extensions, Set<ArtifactRepository> repositories)
+            throws MojoExecutionException {
+        Set<URL> extensionUrls = resolveDependencies(extensions, repositories);
         return createContributionSources(extensionUrls);
+    }
+
+    private Set<URL> resolveDependencies(Set<Dependency> dependencies, Set<ArtifactRepository> repositories) throws MojoExecutionException {
+        Set<URL> urls = new HashSet<URL>();
+        if (dependencies != null) {
+            for (Dependency dependency : dependencies) {
+                Artifact artifact = artifactHelper.resolve(dependency, repositories);
+                try {
+                    urls.add(artifact.getFile().toURI().toURL());
+                } catch (MalformedURLException e) {
+                    throw new AssertionError();
+                }
+            }
+        }
+        return urls;
     }
 
     private List<ContributionSource> createContributionSources(Set<URL> urls) {
@@ -73,21 +90,6 @@ public class ExtensionHelper {
             sources.add(source);
         }
         return sources;
-    }
-
-    private Set<URL> resolveDependencies(Set<Dependency> dependencies) throws MojoExecutionException {
-        Set<URL> urls = new HashSet<URL>();
-        if (dependencies != null) {
-            for (Dependency dependency : dependencies) {
-                Artifact artifact = artifactHelper.resolve(dependency);
-                try {
-                    urls.add(artifact.getFile().toURI().toURL());
-                } catch (MalformedURLException e) {
-                    throw new AssertionError();
-                }
-            }
-        }
-        return urls;
     }
 
 }

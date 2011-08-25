@@ -39,6 +39,7 @@ Public License. See the accompanying license file for details.
                 <include>org.codehaus.fabric3:fabric3-datasource</include>
                 <include>javax.resource:com.springsource.javax.resource</include>
                 <include>javax.jms:com.springsource.javax.jms</include>
+                <include>javax.transaction:com.springsource.javax.transaction</include>
              </includes>
             <outputDirectory>/extensions</outputDirectory>
         </dependencySet>

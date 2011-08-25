@@ -51,6 +51,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -106,7 +107,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
      * @required
      */
     protected MavenProject project;
-
 
     /**
      * The optional target namespace of the composite to activate.
@@ -240,6 +240,13 @@ public class Fabric3ITestMojo extends AbstractMojo {
     public String errorText;
 
     /**
+     * If false, external default repositories for transitive dependencies will not be used
+     *
+     * @parameter
+     */
+    public boolean useDefaultRepositories = true;
+
+    /**
      * JDK and system classpath packages to hide from the runtime classpath.
      *
      * @parameter
@@ -274,7 +281,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
             deployContributions(runtime);
             TestDeployer deployer = new TestDeployer(compositeNamespace, compositeName, buildDirectory, getLog());
             boolean continueDeployment = deployer.deploy(runtime, errorText);
-            if (!continueDeployment)  {
+            if (!continueDeployment) {
                 return;
             }
             TestRunner runner = new TestRunner(reportsDirectory, trimStackTrace, getLog());
@@ -303,7 +310,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
             Domain domain = runtime.getComponent(Domain.class, Names.APPLICATION_DOMAIN_URI);
             List<ContributionSource> sources = new ArrayList<ContributionSource>();
             for (Dependency contribution : contributions) {
-                Artifact artifact = artifactHelper.resolve(contribution);
+                Artifact artifact = artifactHelper.resolve(contribution, Collections.<ArtifactRepository>emptySet());
                 URL url = artifact.getFile().toURI().toURL();
                 URI uri = URI.create(new File(url.getFile()).getName());
                 ContributionSource source = new FileContributionSource(uri, url, -1, true);
@@ -353,7 +360,8 @@ public class Fabric3ITestMojo extends AbstractMojo {
         Set<Dependency> expandedExtensions = new HashSet<Dependency>();
         expandedExtensions.addAll(getCoreExtensions());
         expandedExtensions.addAll(Arrays.asList(extensions));
-        expandedExtensions.addAll(artifactHelper.expandProfileExtensions(profiles));
+        ExpandedProfiles expandedProfiles = artifactHelper.expandProfileExtensions(profiles);
+        expandedExtensions.addAll(expandedProfiles.getExtensions());
 
         ClassLoader parentClassLoader = getClass().getClassLoader();
         if (hiddenPackages.length > 0) {
@@ -373,6 +381,9 @@ public class Fabric3ITestMojo extends AbstractMojo {
         configuration.setExtensionHelper(extensionHelper);
 
         configuration.setExtensions(expandedExtensions);
+        if (useDefaultRepositories) {
+            configuration.setRemoteRepositories(expandedProfiles.getRepositories());
+        }
 
         configuration.setModuleDependencies(moduleDependencies);
         configuration.setOutputDirectory(outputDirectory);
@@ -454,20 +465,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
 
         dependency = new Dependency();
         dependency.setGroupId("org.codehaus.fabric3");
-        dependency.setArtifactId("fabric3-management-jmx");
-        dependency.setVersion(runtimeVersion);
-        dependency.setType("jar");
-        extensions.add(dependency);
-
-        dependency = new Dependency();
-        dependency.setGroupId("org.codehaus.fabric3");
-        dependency.setArtifactId("fabric3-management-jmx-agent");
-        dependency.setVersion(runtimeVersion);
-        dependency.setType("jar");
-        extensions.add(dependency);
-
-        dependency = new Dependency();
-        dependency.setGroupId("org.codehaus.fabric3");
         dependency.setArtifactId("fabric3-java");
         dependency.setVersion(runtimeVersion);
         dependency.setType("jar");
@@ -505,13 +502,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
         dependency.setGroupId("org.codehaus.fabric3");
         dependency.setArtifactId("fabric3-execution");
         dependency.setVersion(runtimeVersion);
-        dependency.setType("jar");
-        extensions.add(dependency);
-
-        dependency = new Dependency();
-        dependency.setGroupId("javax.transaction");
-        dependency.setArtifactId("com.springsource.javax.transaction");
-        dependency.setVersion("1.1.0");
         dependency.setType("jar");
         extensions.add(dependency);
 

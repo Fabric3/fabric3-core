@@ -39,8 +39,10 @@ package org.fabric3.runtime.maven.itest;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Set;
 
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.logging.Log;
 
@@ -55,6 +57,7 @@ public class MavenBootConfiguration {
     private Set<Dependency> extensions;
     private Log log;
     private ExtensionHelper extensionHelper;
+    private Set<ArtifactRepository> repositories = Collections.emptySet();
 
     public void setMavenVersion(int mavenVersion) {
         this.mavenVersion = mavenVersion;
@@ -136,4 +139,11 @@ public class MavenBootConfiguration {
         this.extensionHelper = extensionHelper;
     }
 
+    public Set<ArtifactRepository> getRepositories() {
+        return repositories;
+    }
+
+    public void setRemoteRepositories(Set<ArtifactRepository> repositories) {
+        this.repositories = repositories;
+    }
 }
