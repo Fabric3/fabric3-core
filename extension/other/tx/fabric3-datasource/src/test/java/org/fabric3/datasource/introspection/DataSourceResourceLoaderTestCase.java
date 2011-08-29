@@ -54,7 +54,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 public class DataSourceResourceLoaderTestCase extends TestCase {
     private static final String SINGLE_DATASOURCE =
             "<datasources>" +
-                    "   <datasource name='test' driver='foo.Bar' type='xa' url='jdbc:test'>" +
+                    "   <datasource name='test' aliases='foo,bar' driver='foo.Bar' type='xa' url='jdbc:test'>" +
                     "      <username>user</username>" +
                     "      <password>pass</password>" +
                     "      <maxPoolSize>10</maxPoolSize>" +
@@ -92,6 +92,8 @@ public class DataSourceResourceLoaderTestCase extends TestCase {
 
         assertFalse(context.hasErrors());
         DataSourceConfiguration configuration = resource.getConfigurations().get(0);
+        assertTrue(configuration.getAliases().contains("foo"));
+        assertTrue(configuration.getAliases().contains("bar"));
         assertEquals(10, configuration.getMaxPoolSize());
         assertEquals(1, configuration.getMinPoolSize());
         assertEquals(20000, configuration.getConnectionTimeout());

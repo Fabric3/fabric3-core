@@ -54,7 +54,7 @@ import org.fabric3.datasource.spi.DataSourceType;
 public class DataSourceConfigParserTestCase extends TestCase {
     private static final String XML = "<foo><value>" +
             "<datasources>" +
-            "   <datasource name='test' driver='foo.Bar' type='xa'>" +
+            "   <datasource name='test' aliases='foo,bar' driver='foo.Bar' type='xa'>" +
             "      <username>user</username>" +
             "      <password>pass</password>" +
             "      <maxPoolSize>10</maxPoolSize>" +
@@ -80,6 +80,8 @@ public class DataSourceConfigParserTestCase extends TestCase {
         assertEquals(1, configurations.size());
         DataSourceConfiguration configuration = configurations.get(0);
         assertEquals("test", configuration.getName());
+        assertTrue(configuration.getAliases().contains("foo"));
+        assertTrue(configuration.getAliases().contains("bar"));
         assertEquals("foo.Bar", configuration.getDriverClass());
         assertEquals(DataSourceType.XA, configuration.getType());
         assertEquals("user", configuration.getProperty("username"));

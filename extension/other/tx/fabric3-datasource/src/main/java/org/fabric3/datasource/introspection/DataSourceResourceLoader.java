@@ -38,6 +38,8 @@
 package org.fabric3.datasource.introspection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -91,6 +93,10 @@ public class DataSourceResourceLoader implements TypeLoader<DataSourceResource> 
                     }
                     String driver = readMandatoryAttribute("driver", reader, context);
                     configuration = new DataSourceConfiguration(name, driver, dataSourceType);
+
+                    List<String> aliases = readAliases(reader);
+                    configuration.setAliases(aliases);
+
                     String url = reader.getAttributeValue(null, "url");
                     configuration.setUrl(url);
                     String username = reader.getAttributeValue(null, "username");
@@ -137,6 +143,15 @@ public class DataSourceResourceLoader implements TypeLoader<DataSourceResource> 
                     return new DataSourceResource(configurations);
                 }
             }
+        }
+    }
+
+    private List<String> readAliases(XMLStreamReader reader) {
+        String aliasesAttr = reader.getAttributeValue(null, "aliases");
+        if (aliasesAttr == null) {
+            return Collections.emptyList();
+        } else {
+            return Arrays.asList(aliasesAttr.split(","));
         }
     }
 

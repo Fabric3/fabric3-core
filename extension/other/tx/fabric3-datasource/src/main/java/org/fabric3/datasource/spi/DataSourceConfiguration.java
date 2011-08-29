@@ -38,6 +38,8 @@
 package org.fabric3.datasource.spi;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -49,6 +51,7 @@ public class DataSourceConfiguration implements Serializable {
     private static final long serialVersionUID = -2790525523535863636L;
 
     private String name;
+    private List<String> aliases;
     private String driverClass;
     private DataSourceType type;
     private String url;
@@ -70,10 +73,19 @@ public class DataSourceConfiguration implements Serializable {
         this.name = name;
         this.driverClass = driverClass;
         this.type = type;
+        this.aliases = Collections.emptyList();
     }
 
     public String getName() {
         return name;
+    }
+
+    public List<String> getAliases() {
+        return aliases;
+    }
+
+    public void setAliases(List<String> aliases) {
+        this.aliases = aliases;
     }
 
     public String getDriverClass() {

@@ -38,6 +38,8 @@
 package org.fabric3.tx.atomikos.datasource;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
@@ -62,19 +64,15 @@ public class DataSourceConfigParser {
                 case XMLStreamConstants.START_ELEMENT:
                     if ("datasource".equals(reader.getName().getLocalPart())) {
                         String name = readMandatoryAttribute("name", reader);
-                        DataSourceType dataSourceType;
-                        String type = readMandatoryAttribute("type", reader);
-                        if (type == null) {
-                            dataSourceType = DataSourceType.NON_XA;
-                        } else {
-                            try {
-                                dataSourceType = DataSourceType.valueOf(type.toUpperCase());
-                            } catch (IllegalArgumentException e) {
-                                throw new DataSourceParseException("Datasource type must be either xa or non_xa");
-                            }
-                        }
+
+                        DataSourceType dataSourceType = parseType(reader);
+
                         String driver = readMandatoryAttribute("driver", reader);
                         configuration = new DataSourceConfiguration(name, driver, dataSourceType);
+
+                        List<String> aliases = readAliases(reader);
+                        configuration.setAliases(aliases);
+
                         String url = reader.getAttributeValue(null, "url");
                         configuration.setUrl(url);
                         String username = reader.getAttributeValue(null, "username");
@@ -126,6 +124,30 @@ public class DataSourceConfigParser {
         } catch (XMLStreamException e) {
             throw new DataSourceParseException(e);
         }
+    }
+
+    private List<String> readAliases(XMLStreamReader reader) {
+        String aliasesAttr = reader.getAttributeValue(null, "aliases");
+        if (aliasesAttr == null) {
+            return Collections.emptyList();
+        } else {
+            return Arrays.asList(aliasesAttr.split(","));
+        }
+    }
+
+    private DataSourceType parseType(XMLStreamReader reader) throws DataSourceParseException {
+        DataSourceType dataSourceType;
+        String type = readMandatoryAttribute("type", reader);
+        if (type == null) {
+            dataSourceType = DataSourceType.NON_XA;
+        } else {
+            try {
+                dataSourceType = DataSourceType.valueOf(type.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new DataSourceParseException("Datasource type must be either xa or non_xa");
+            }
+        }
+        return dataSourceType;
     }
 
     private int parseInt(String value, String name) throws DataSourceParseException {
