@@ -38,6 +38,7 @@
 package org.fabric3.tx.atomikos.datasource;
 
 import java.sql.SQLException;
+import java.util.Collections;
 
 import com.atomikos.datasource.pool.ConnectionFactory;
 import com.atomikos.jdbc.AbstractDataSourceBean;
@@ -50,7 +51,7 @@ public class DataSourceWrapperTestCase extends TestCase {
 
     public void testWrapper() throws Exception {
         AbstractDataSourceBean bean = new MockBean();
-        DataSourceWrapper wrapper = new DataSourceWrapper(bean);
+        DataSourceWrapper wrapper = new DataSourceWrapper(bean, Collections.<String>emptyList());
         wrapper.setBorrowConnectionTimeout(1000);
         wrapper.setLoginTimeout(10);
         wrapper.setMaintenanceInterval(20);

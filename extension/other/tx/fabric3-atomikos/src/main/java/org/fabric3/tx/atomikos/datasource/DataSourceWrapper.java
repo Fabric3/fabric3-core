@@ -38,6 +38,7 @@
 package org.fabric3.tx.atomikos.datasource;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import com.atomikos.jdbc.AbstractDataSourceBean;
 import com.atomikos.jdbc.AtomikosSQLException;
@@ -53,9 +54,21 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 @Management
 public class DataSourceWrapper {
     private AbstractDataSourceBean delegate;
+    private List<String> aliases;
 
-    public DataSourceWrapper(AbstractDataSourceBean delegate) {
+    public DataSourceWrapper(AbstractDataSourceBean delegate, List<String> aliases) {
         this.delegate = delegate;
+        this.aliases = aliases;
+    }
+
+    @ManagementOperation(description = "The aliases this datasource is registered under")
+    public List<String> getAliases() {
+        return aliases;
+    }
+
+    @ManagementOperation(description = "The aliases this datasource is registered under")
+    public void setAliases(List<String> aliases) {
+        throw new UnsupportedOperationException("Aliases are immutable");
     }
 
     @ManagementOperation(description = "The minimum connection pool size")

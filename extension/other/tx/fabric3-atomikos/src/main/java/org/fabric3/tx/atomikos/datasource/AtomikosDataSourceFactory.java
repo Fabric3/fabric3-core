@@ -110,6 +110,11 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
         if (registry.getDataSource(name) != null) {
             throw new DuplicateDataSourceException("Datasource already registered with name: " + name);
         }
+        for (String alias : configuration.getAliases()) {
+            if (registry.getDataSource(alias) != null) {
+                throw new DuplicateDataSourceException("Datasource already registered with name: " + name);
+            }
+        }
         if (DataSourceType.XA == configuration.getType()) {
             AtomikosDataSourceBean bean = new AtomikosDataSourceBean();
             bean.setUniqueResourceName(name);
@@ -117,9 +122,12 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
             bean.setXaProperties(properties);
             bean.setXaDataSourceClassName(configuration.getDriverClass());
             setBeanProperties(configuration, bean);
-            registerManagement(bean);
+            registerManagement(bean, configuration.getAliases());
             beans.put(name, bean);
             registry.register(name, bean);
+            for (String alias : configuration.getAliases()) {
+                registry.register(alias, bean);
+            }
         } else {
             AtomikosNonXADataSourceBean bean = new AtomikosNonXADataSourceBean();
             bean.setUniqueResourceName(name);
@@ -128,10 +136,50 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
             bean.setUser(configuration.getUsername());
             bean.setPassword(configuration.getPassword());
             setBeanProperties(configuration, bean);
-            registerManagement(bean);
+            registerManagement(bean, configuration.getAliases());
             beans.put(name, bean);
             registry.register(name, bean);
+            for (String alias : configuration.getAliases()) {
+                registry.register(alias, bean);
+            }
         }
+    }
+
+    public void remove(DataSourceConfiguration configuration) throws DataSourceFactoryException {
+        String name = configuration.getName();
+        AbstractDataSourceBean bean = beans.remove(name);
+        if (bean == null) {
+            throw new DataSourceFactoryException("DataSource not registered: " + name);
+        }
+        for (String alias : configuration.getAliases()) {
+            registry.unregister(alias);
+        }
+        registry.unregister(name);
+        unRegisterManagement(bean);
+        bean.close();
+    }
+
+    private void registerManagement(AbstractDataSourceBean bean, List<String> aliases) throws DataSourceFactoryException {
+        String name = bean.getUniqueResourceName();
+        try {
+            DataSourceWrapper wrapper = new DataSourceWrapper(bean, aliases);
+            managementService.export(encode(name), "datasources", "Configured datasources", wrapper);
+        } catch (ManagementException e) {
+            throw new DataSourceFactoryException(e);
+        }
+    }
+
+    private void unRegisterManagement(AbstractDataSourceBean bean) throws DataSourceFactoryException {
+        try {
+            String name = bean.getUniqueResourceName();
+            managementService.remove(encode(name), "datasources");
+        } catch (ManagementException e) {
+            throw new DataSourceFactoryException(e);
+        }
+    }
+
+    private String encode(String name) {
+        return "datasources/" + name.toLowerCase();
     }
 
     private void setBeanProperties(DataSourceConfiguration configuration, AbstractDataSourceBean bean) throws DataSourceFactoryException {
@@ -177,39 +225,4 @@ public class AtomikosDataSourceFactory implements DataSourceFactory {
             bean.setTestQuery(query);
         }
     }
-
-    public void remove(DataSourceConfiguration configuration) throws DataSourceFactoryException {
-        String name = configuration.getName();
-        AbstractDataSourceBean bean = beans.remove(name);
-        if (bean == null) {
-            throw new DataSourceFactoryException("DataSource not registered: " + name);
-        }
-        registry.unregister(name);
-        unRegisterManagement(bean);
-        bean.close();
-    }
-
-    private void registerManagement(AbstractDataSourceBean bean) throws DataSourceFactoryException {
-        String name = bean.getUniqueResourceName();
-        try {
-            DataSourceWrapper wrapper = new DataSourceWrapper(bean);
-            managementService.export(encode(name), "datasources", "Configured datasources", wrapper);
-        } catch (ManagementException e) {
-            throw new DataSourceFactoryException(e);
-        }
-    }
-
-    private void unRegisterManagement(AbstractDataSourceBean bean) throws DataSourceFactoryException {
-        try {
-            String name = bean.getUniqueResourceName();
-            managementService.remove(encode(name), "datasources");
-        } catch (ManagementException e) {
-            throw new DataSourceFactoryException(e);
-        }
-    }
-
-    private String encode(String name) {
-        return "datasources/" + name.toLowerCase();
-    }
-
 }
