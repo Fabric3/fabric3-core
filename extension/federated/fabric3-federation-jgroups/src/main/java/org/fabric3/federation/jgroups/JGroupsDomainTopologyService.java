@@ -63,6 +63,7 @@ import org.jgroups.blocks.MessageDispatcher;
 import org.jgroups.util.UUID;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.api.annotation.management.Management;
@@ -91,6 +92,7 @@ import org.fabric3.spi.federation.RemoteSystemException;
 import org.fabric3.spi.federation.RuntimeInstance;
 import org.fabric3.spi.federation.TopologyListener;
 import org.fabric3.spi.federation.Zone;
+import org.w3c.dom.Element;
 
 /**
  * JGroups implementation of the {@link DomainTopologyService}.
@@ -108,6 +110,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     private List<TopologyListener> topologyListeners = new ArrayList<TopologyListener>();
     private Map<String, Map<String, String>> transportMetadata = new ConcurrentHashMap<String, Map<String, String>>();
     private Map<String, Map<String, RuntimeInstance>> runtimes = new ConcurrentHashMap<String, Map<String, RuntimeInstance>>();
+    private Element channelConfig;
 
     public JGroupsDomainTopologyService(@Reference HostInfo info,
                                         @Reference CommandExecutorRegistry executorRegistry,
@@ -126,7 +129,13 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     @Init
     public void init() throws ChannelException {
         super.init();
-        domainChannel = new JChannel();
+        if(channelConfig!=null){
+            domainChannel = new JChannel(channelConfig);
+        }
+        else{
+            domainChannel = new JChannel();
+        }
+
         domainChannel.setName(runtimeName);
 
         initializeChannel(domainChannel);
@@ -160,6 +169,12 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         }
         return runtimes;
     }
+
+    @Property(required = false)
+    public void setChannelConfig(Element config) {
+        this.channelConfig = (Element) config.getElementsByTagName("config").item(0);
+    }
+
 
     public List<RuntimeInstance> getRuntimes() {
         List<RuntimeInstance> list = new ArrayList<RuntimeInstance>();
