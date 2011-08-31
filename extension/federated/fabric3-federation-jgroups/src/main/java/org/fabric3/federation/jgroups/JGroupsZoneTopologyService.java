@@ -300,7 +300,17 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             throw new ZoneChannelException("Channel already open:" + name);
         }
         try {
-            Channel channel = new JChannel();
+
+            Channel channel = null;
+            if(configuration !=null)
+            {
+                channel = new JChannel(configuration);
+            }else if (channelConfig!=null){
+                channel = new JChannel(channelConfig);
+            }
+            else{
+               channel = new JChannel();
+            }
             channels.put(name, channel);
             DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver, helper, monitor);
             channel.setReceiver(delegatingReceiver);
