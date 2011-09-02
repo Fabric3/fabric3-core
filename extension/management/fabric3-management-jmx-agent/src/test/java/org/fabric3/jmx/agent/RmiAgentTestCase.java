@@ -38,7 +38,7 @@ public class RmiAgentTestCase extends TestCase {
 
         Port port = EasyMock.createMock(Port.class);
         EasyMock.expect(port.getNumber()).andReturn(8182).anyTimes();
-        port.releaseLock();
+        port.bind(Port.TYPE.TCP);
 
         PortAllocator portAllocator = EasyMock.createMock(PortAllocator.class);
         EasyMock.expect(portAllocator.reserve("JMX", "JMX", 8182)).andReturn(port);
@@ -61,7 +61,7 @@ public class RmiAgentTestCase extends TestCase {
 
         Port port = EasyMock.createMock(Port.class);
         EasyMock.expect(port.getNumber()).andReturn(8182).anyTimes();
-        port.releaseLock();
+        port.bind(Port.TYPE.TCP);
 
         PortAllocator portAllocator = EasyMock.createMock(PortAllocator.class);
         EasyMock.expect(portAllocator.isPoolEnabled()).andReturn(true);

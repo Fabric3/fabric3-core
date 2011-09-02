@@ -35,20 +35,13 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
 package org.fabric3.fabric.host;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,6 +62,14 @@ import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 
 /**
+ * The default port allocator implementation.
+ * <p>
+ * Implements a brute-force port allocation approach by scanning a block of available ports and opening
+ * both TCP and UDP sockets as a mechanism for maintaining port locks. After receiving a port, a client must invoke {@link Port#bind(Port.TYPE)} prior
+ * to binding a TCP or UDP socket in order to free the underlying lock for the socket type. Note that the port will still hold a lock for the other
+ * socket type, which will guarantee the port remains inaccessible to other clients if the owning client temporarily releases its socket connection
+ * (some transport bindings such as ZeroMQ may close and re-establish socket connections over the life of a communication session).
+ *
  * @version $Rev: 10029 $ $Date: 2011-02-21 16:56:40 -0500 (Mon, 21 Feb 2011) $
  */
 @Management(name = "PortAllocator", path = "/runtime/ports", group = "kernel", description = "Manages runtime ports")
@@ -114,7 +115,7 @@ public class PortAllocatorImpl implements PortAllocator {
     public void destroy() {
         for (List<Port> ports : allocated.values()) {
             for (Port port : ports) {
-                port.releaseLock();
+                port.release();
             }
         }
     }
@@ -144,9 +145,9 @@ public class PortAllocatorImpl implements PortAllocator {
                 throw new PortAllocationException("No ports available");
             }
             int portNumber = unallocated.remove();
-            ServerSocket socket = checkAvailability(portNumber);
-            if (socket != null) {
-                Port port = new PortImpl(name, portNumber, socket);
+            SocketPair pair = checkAvailability(portNumber);
+            if (pair != null) {
+                Port port = new PortImpl(name, portNumber, pair.getServerSocket(), pair.getDatagramSocket());
                 if (ports == null) {
                     ports = new ArrayList<Port>();
                     allocated.put(type, ports);
@@ -159,8 +160,8 @@ public class PortAllocatorImpl implements PortAllocator {
 
     public Port reserve(String name, String type, int portNumber) throws PortAllocationException {
         List<Port> ports = checkAllocated(name, type);
-        ServerSocket socket = checkAvailability(portNumber);
-        if (socket == null) {
+        SocketPair pair = checkAvailability(portNumber);
+        if (pair == null) {
             throw new PortAllocatedException(portNumber);
         }
         int pos = unallocated.indexOf(portNumber);
@@ -168,7 +169,7 @@ public class PortAllocatorImpl implements PortAllocator {
             unallocated.remove(pos);
         }
 
-        Port port = new PortImpl(name, portNumber, socket);
+        Port port = new PortImpl(name, portNumber, pair.getServerSocket(), pair.getDatagramSocket());
         if (ports == null) {
             ports = new ArrayList<Port>();
             allocated.put(type, ports);
@@ -204,11 +205,10 @@ public class PortAllocatorImpl implements PortAllocator {
                     if (ports.isEmpty()) {
                         iterator.remove();
                     }
-                    port.releaseLock();
+                    port.release();
                     return;
                 }
             }
-
         }
     }
 
@@ -224,11 +224,10 @@ public class PortAllocatorImpl implements PortAllocator {
                     if (ports.isEmpty()) {
                         iterator.remove();
                     }
-                    port.releaseLock();
+                    port.release();
                     return;
                 }
             }
-
         }
     }
 
@@ -237,7 +236,7 @@ public class PortAllocatorImpl implements PortAllocator {
         if (ports != null) {
             for (Port port : ports) {
                 unallocated.add(port.getNumber());
-                port.releaseLock();
+                port.release();
             }
         }
     }
@@ -254,74 +253,28 @@ public class PortAllocatorImpl implements PortAllocator {
         return ports;
     }
 
-    private ServerSocket checkAvailability(int port) throws PortAllocationException {
-
-        //try {
-            ServerSocket socket = lockPort(port);
-            // try the wildcard address first
-            if (socket == null) {
-                return null;
-            }
-//            String localhost = InetAddress.getLocalHost().getCanonicalHostName();
-//            InetAddress[] addresses = InetAddress.getAllByName(localhost);
-//            for (InetAddress address : addresses) {
-//            	if(address.isLoopbackAddress())
-//            		continue;
-//                if (!checkPortOnHost(address, port)) {
-//                    try {
-//                        socket.close();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    return null;
-//                }
-//            }
-            return socket;
-//        } catch (UnknownHostException e) {
-//            throw new PortAllocationException(e);
-//        }
+    private SocketPair checkAvailability(int port) throws PortAllocationException {
+        SocketPair pair = lockPort(port);
+        // try the wildcard address first
+        if (pair == null) {
+            return null;
+        }
+        return pair;
     }
 
-    private ServerSocket lockPort(int port) {
-        ServerSocket serverSocket;
-        DatagramSocket datagramSocket = null;
+    private SocketPair lockPort(int port) {
         try {
-            serverSocket = new ServerSocket();
+            ServerSocket serverSocket = new ServerSocket();
             InetSocketAddress socketAddress = new InetSocketAddress(port);
             serverSocket.setReuseAddress(true);
             serverSocket.bind(socketAddress);
-            datagramSocket = new DatagramSocket(port);
+            DatagramSocket datagramSocket = new DatagramSocket(port);
             datagramSocket.setReuseAddress(true);
-            return serverSocket;
+            return new SocketPair(serverSocket, datagramSocket);
         } catch (IOException e) {
             // ignore
-        } finally {
-            if (datagramSocket != null) {
-                datagramSocket.close();
-            }
         }
         return null;
-    }
-
-    private boolean checkPortOnHost(InetAddress address, int port) {
-        ServerSocket serverSocket = null;
-        DatagramSocket datagramSocket = null;
-        try {
-            serverSocket = new ServerSocket();
-            InetSocketAddress socketAddress = new InetSocketAddress(address, port);
-            serverSocket.bind(socketAddress);
-            datagramSocket = new DatagramSocket(port, address);
-            datagramSocket.setReuseAddress(true);
-            return true;
-        } catch (IOException e) {
-            // ignore
-        } finally {
-            close(serverSocket);
-            if (datagramSocket != null) {
-                datagramSocket.close();
-            }
-        }
-        return false;
     }
 
     private int parsePortNumber(String portVal) {
@@ -336,13 +289,22 @@ public class PortAllocatorImpl implements PortAllocator {
         }
     }
 
-    private void close(ServerSocket serverSocket) {
-        if (serverSocket != null) {
-            try {
-                serverSocket.close();
-            } catch (IOException e) {
-                // ignore
-            }
+
+    private class SocketPair {
+        private ServerSocket serverSocket;
+        private DatagramSocket datagramSocket;
+
+        private SocketPair(ServerSocket serverSocket, DatagramSocket datagramSocket) {
+            this.serverSocket = serverSocket;
+            this.datagramSocket = datagramSocket;
+        }
+
+        public ServerSocket getServerSocket() {
+            return serverSocket;
+        }
+
+        public DatagramSocket getDatagramSocket() {
+            return datagramSocket;
         }
     }
 

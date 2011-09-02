@@ -61,7 +61,11 @@ public class NonReliableSubscriberTestCase extends TestCase {
             return 1061;
         }
 
-        public void releaseLock() {
+        public void bind(TYPE type) {
+
+        }
+
+        public void release() {
 
         }
     });
@@ -75,7 +79,11 @@ public class NonReliableSubscriberTestCase extends TestCase {
             return 1061;
         }
 
-        public void releaseLock() {
+        public void bind(TYPE type) {
+
+        }
+
+        public void release() {
 
         }
     });

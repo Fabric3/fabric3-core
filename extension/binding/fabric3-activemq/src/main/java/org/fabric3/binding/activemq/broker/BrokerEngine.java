@@ -158,7 +158,7 @@ public class BrokerEngine {
             // default configuration
             broker.setBrokerName(brokerName);
             createManagementContext(brokerName);
-            selectedPort.releaseLock();
+            selectedPort.bind(Port.TYPE.TCP);
             TransportConnector connector = broker.addConnector("tcp://" + bindAddress + ":" + selectedPort.getNumber());
             String group = info.getDomain().getAuthority();
             connector.setDiscoveryUri(URI.create("multicast://default?group=" + group));

@@ -42,7 +42,7 @@ import org.fabric3.spi.host.Port;
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class LocalAddressCacheTestCase extends TestCase {
-    private static final Port PORT = new Port(){
+    private static final Port PORT = new Port() {
         public String getName() {
             return null;
         }
@@ -51,7 +51,11 @@ public class LocalAddressCacheTestCase extends TestCase {
             return 1061;
         }
 
-        public void releaseLock() {
+        public void bind(TYPE type) {
+
+        }
+
+        public void release() {
 
         }
     };

@@ -46,6 +46,7 @@ import org.fabric3.api.annotation.management.OperationType;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.spi.host.Port;
 
 /**
  * Implements a basic PUB client with no qualities of service.
@@ -130,7 +131,7 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
         public void run() {
             socket = context.socket(ZMQ.PUB);
             SocketHelper.configure(socket, metadata);
-            address.getPort().releaseLock();
+            address.getPort().bind(Port.TYPE.TCP);
             socket.bind(address.toProtocolString());
 
             startStatistics();

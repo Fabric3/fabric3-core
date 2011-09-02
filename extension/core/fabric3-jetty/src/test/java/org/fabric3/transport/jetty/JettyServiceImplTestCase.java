@@ -201,7 +201,7 @@ public class JettyServiceImplTestCase extends TestCase {
 
         Port port = EasyMock.createMock(Port.class);
         EasyMock.expect(port.getNumber()).andReturn(8585).anyTimes();
-        port.releaseLock();
+        port.bind(Port.TYPE.TCP);
         EasyMock.expectLastCall().atLeastOnce();
 
         PortAllocator portAllocator = EasyMock.createMock(PortAllocator.class);

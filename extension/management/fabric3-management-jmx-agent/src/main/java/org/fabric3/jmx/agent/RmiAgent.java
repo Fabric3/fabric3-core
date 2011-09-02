@@ -159,7 +159,7 @@ public class RmiAgent {
                 } else {
                     assignedPort = portAllocator.reserve("JMX", "JMX", DEFAULT_JMX_PORT);
                 }
-                assignedPort.releaseLock();
+                assignedPort.bind(Port.TYPE.TCP);
                 registry = LocateRegistry.createRegistry(assignedPort.getNumber());
             } catch (RemoteException e) {
                 throw new ManagementException(e);
@@ -170,7 +170,7 @@ public class RmiAgent {
             // port is explicitly assigned
             try {
                 assignedPort = portAllocator.reserve("JMX", "JMX", port);
-                assignedPort.releaseLock();
+                assignedPort.bind(Port.TYPE.TCP);
                 registry = LocateRegistry.createRegistry(assignedPort.getNumber());
             } catch (PortAllocationException e) {
                 throw new ManagementException(e);

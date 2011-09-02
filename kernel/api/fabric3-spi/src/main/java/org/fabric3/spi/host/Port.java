@@ -35,21 +35,20 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
 package org.fabric3.spi.host;
 
 /**
  * A reserved port on a runtime. After reserving a port, clients must release the port lock prior to binding a socket to the port using {@link
- * #releaseLock()}.
+ * #bind(Port.TYPE)}.
  *
  * @version $Rev$ $Date$
  */
 public interface Port {
+
+    public enum TYPE {
+        TCP, UDP
+    }
 
     /**
      * Returns the port name.
@@ -66,8 +65,15 @@ public interface Port {
     int getNumber();
 
     /**
-     * Releases the port lock so that a socket may be bound to the port. This method may be called any number of times.
+     * Prepares the port so that a socket may be bound. This method may be called any number of times.
+     *
+     * @param type the socket type to bind
      */
-    void releaseLock();
+    void bind(TYPE type);
+
+    /**
+     * Releases all port locks. This method may be called any number of times.
+     */
+    void release();
 
 }

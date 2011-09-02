@@ -435,12 +435,12 @@ public class JettyServiceImpl implements JettyService, Transport {
     private void initializeConnector() throws IOException, JettyInitializationException {
         selectHttpPort();
         selectHttpsPort();
-        selectedHttp.releaseLock();
+        selectedHttp.bind(Port.TYPE.TCP);
         if (enableHttps) {
             if (keyStoreManager == null) {
                 throw new JettyInitializationException("Key store manager not found - a security extension must be installed");
             }
-            selectedHttps.releaseLock();
+            selectedHttps.bind(Port.TYPE.TCP);
             // setup HTTP and HTTPS
             String keystore = keyStoreManager.getKeyStoreLocation().getAbsolutePath();
             String keyPassword = keyStoreManager.getKeyStorePassword();

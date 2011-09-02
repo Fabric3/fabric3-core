@@ -58,9 +58,14 @@ public class FederatedAddressCacheTestCase extends TestCase {
             return 1061;
         }
 
-        public void releaseLock() {
+        public void bind(TYPE type) {
 
         }
+
+        public void release() {
+
+        }
+
     };
 
     private static final SocketAddress ADDRESS1 = new SocketAddress("runtime", "tcp", "10.10.10.1", PORT);

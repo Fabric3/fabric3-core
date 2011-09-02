@@ -56,7 +56,11 @@ public class NonReliablePublisherTestCase extends TestCase {
             return 1061;
         }
 
-        public void releaseLock() {
+        public void bind(TYPE type) {
+
+        }
+
+        public void release() {
 
         }
     });

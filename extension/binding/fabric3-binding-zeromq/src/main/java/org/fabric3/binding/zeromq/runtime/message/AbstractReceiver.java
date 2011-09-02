@@ -45,6 +45,7 @@ import org.zeromq.ZMQ.Socket;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.spi.host.Port;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.ConversationContext;
 import org.fabric3.spi.invocation.F3Conversation;
@@ -218,7 +219,7 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
             }
             socket = context.socket(socketType);
             SocketHelper.configure(socket, metadata);
-            address.getPort().releaseLock();
+            address.getPort().bind(Port.TYPE.TCP);
             socket.bind(address.toProtocolString());
             poller = context.poller();
             poller.register(socket);

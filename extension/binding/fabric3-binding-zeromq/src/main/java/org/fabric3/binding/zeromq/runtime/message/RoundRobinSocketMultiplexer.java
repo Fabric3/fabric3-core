@@ -43,6 +43,7 @@ import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.spi.host.Port;
 
 /**
  * Implements a round-robin strategy for selecting an available socket from a collection of sockets.
@@ -70,7 +71,7 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
                 ZMQ.Socket socket = context.socket(socketType);
                 SocketHelper.configure(socket, metadata);
                 SocketAddress address = addresses.get(0);
-                address.getPort().releaseLock();
+                address.getPort().bind(Port.TYPE.TCP);
                 socket.connect(address.toProtocolString());
                 sockets.put(address, socket);
                 iterator = new SingletonIterator(socket);
@@ -78,7 +79,7 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
                 for (SocketAddress address : addresses) {
                     ZMQ.Socket socket = context.socket(socketType);
                     SocketHelper.configure(socket, metadata);
-                    address.getPort().releaseLock();
+                    address.getPort().bind(Port.TYPE.TCP);
                     socket.connect(address.toProtocolString());
                     sockets.put(address, socket);
                 }
@@ -101,7 +102,7 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
             for (SocketAddress address : toAdd) {
                 ZMQ.Socket socket = context.socket(socketType);
                 SocketHelper.configure(socket, metadata);
-                address.getPort().releaseLock();
+                address.getPort().bind(Port.TYPE.TCP);
                 socket.connect(address.toProtocolString());
                 sockets.put(address, socket);
             }

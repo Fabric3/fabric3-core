@@ -45,6 +45,7 @@ package org.fabric3.fabric.host;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.DatagramSocket;
 import java.net.ServerSocket;
 
 import org.fabric3.spi.host.Port;
@@ -56,12 +57,14 @@ public class PortImpl implements Port, Serializable {
     private static final long serialVersionUID = -708646870372177434L;
     private String name;
     private int number;
-    private transient ServerSocket socket;
+    private transient ServerSocket serverSocket;
+    private transient DatagramSocket datagramSocket;
 
-    public PortImpl(String name, int number, ServerSocket socket) {
+    public PortImpl(String name, int number, ServerSocket serverSocket, DatagramSocket datagramSocket) {
         this.name = name;
         this.number = number;
-        this.socket = socket;
+        this.serverSocket = serverSocket;
+        this.datagramSocket = datagramSocket;
     }
 
     public String getName() {
@@ -72,17 +75,31 @@ public class PortImpl implements Port, Serializable {
         return number;
     }
 
-    public void releaseLock() {
-        try {
-            if (socket == null || socket.isClosed()) {   // socket will be null if this class is serialized
+    public void bind(TYPE type) {
+        if (TYPE.TCP == type) {
+            try {
+                if (serverSocket == null || serverSocket.isClosed()) {   // socket will be null if this class is serialized
+                    return;
+                }
+                serverSocket.close();
+                serverSocket = null;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            if (datagramSocket == null || datagramSocket.isClosed()) {   // socket will be null if this class is serialized
                 return;
             }
-            socket.close();
-            socket = null;
-        } catch (IOException e) {
-            e.printStackTrace();
+            datagramSocket.close();
+            datagramSocket = null;
         }
     }
+
+    public void release() {
+        bind(TYPE.TCP);
+        bind(TYPE.UDP);
+    }
+
 }
 
 

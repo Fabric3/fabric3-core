@@ -236,7 +236,11 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
                 return port;
             }
 
-            public void releaseLock() {
+            public void bind(TYPE type) {
+
+            }
+
+            public void release() {
 
             }
         });
