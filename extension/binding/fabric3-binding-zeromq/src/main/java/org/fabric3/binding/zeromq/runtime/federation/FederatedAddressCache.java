@@ -59,23 +59,25 @@ public class FederatedAddressCache extends LocalAddressCache implements Topology
     private static final String ZEROMQ_CHANNEL = "ZeroMQChannel";
     private ZoneTopologyService topologyService;
     private HostInfo info;
+    private String qualifiedChannelName;
 
     public FederatedAddressCache(@Reference ZoneTopologyService topologyService, @Reference HostInfo info) {
         this.topologyService = topologyService;
         this.info = info;
+        this.qualifiedChannelName = ZEROMQ_CHANNEL + "." + info.getDomain().getAuthority();
     }
 
     @Init
     public void init() throws MessageException {
         topologyService.register(this);
-        topologyService.openChannel(ZEROMQ_CHANNEL, null, this);
+        topologyService.openChannel(qualifiedChannelName, null, this);
         AddressRequest request = new AddressRequest(info.getRuntimeName());
-        topologyService.sendAsynchronous(ZEROMQ_CHANNEL, request);
+        topologyService.sendAsynchronous(qualifiedChannelName, request);
     }
 
     @Destroy
     public void destroy() throws ZoneChannelException {
-        topologyService.closeChannel(ZEROMQ_CHANNEL);
+        topologyService.closeChannel(qualifiedChannelName);
         topologyService.deregister(this);
     }
 
@@ -83,7 +85,7 @@ public class FederatedAddressCache extends LocalAddressCache implements Topology
     public void publish(AddressEvent event) {
         if (event instanceof AddressAnnouncement) {
             try {
-                topologyService.sendAsynchronous(ZEROMQ_CHANNEL, event);
+                topologyService.sendAsynchronous(qualifiedChannelName, event);
                 super.publish(event);
             } catch (MessageException e) {
                 e.printStackTrace();
@@ -113,7 +115,7 @@ public class FederatedAddressCache extends LocalAddressCache implements Topology
             }
             if (!update.getAnnouncements().isEmpty()) {
                 try {
-                    topologyService.sendAsynchronous(request.getRuntimeName(), ZEROMQ_CHANNEL, update);
+                    topologyService.sendAsynchronous(request.getRuntimeName(), qualifiedChannelName, update);
                 } catch (MessageException e) {
                     e.printStackTrace();
                     // TODO monitor

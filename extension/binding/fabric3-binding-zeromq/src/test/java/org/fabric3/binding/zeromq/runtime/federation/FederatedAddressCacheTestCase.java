@@ -30,6 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime.federation;
 
+import java.net.URI;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -47,7 +48,7 @@ import org.fabric3.spi.host.Port;
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class FederatedAddressCacheTestCase extends TestCase {
-    private static final String ZEROMQ_CHANNEL = "ZeroMQChannel";
+    private static final String ZEROMQ_CHANNEL = "ZeroMQChannel.domain";
     private static final Port PORT = new Port() {
         public String getName() {
             return null;
@@ -107,9 +108,10 @@ public class FederatedAddressCacheTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testSendAddressAnnouncement() throws Exception {
+        EasyMock.replay(info);
         FederatedAddressCache cache = new FederatedAddressCache(topologyService, info);
         topologyService.sendAsynchronous(EasyMock.eq(ZEROMQ_CHANNEL), EasyMock.isA(AddressAnnouncement.class));
-        EasyMock.replay(info, topologyService);
+        EasyMock.replay(topologyService);
 
         AddressAnnouncement announcement = new AddressAnnouncement("test", AddressAnnouncement.Type.ACTIVATED, ADDRESS1);
         cache.publish(announcement);
@@ -120,9 +122,10 @@ public class FederatedAddressCacheTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testReceiveAddressAnnouncement() throws Exception {
+        EasyMock.replay(info);
 
         FederatedAddressCache cache = new FederatedAddressCache(topologyService, info);
-        EasyMock.replay(info, topologyService);
+        EasyMock.replay(topologyService);
 
         AddressAnnouncement announcement2 = new AddressAnnouncement("test", AddressAnnouncement.Type.ACTIVATED, ADDRESS2);
         cache.onMessage(announcement2);
@@ -134,6 +137,7 @@ public class FederatedAddressCacheTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testSendAddressUpdate() throws Exception {
         EasyMock.expect(info.getRuntimeName()).andReturn("runtime").atLeastOnce();
+        EasyMock.replay(info);
         FederatedAddressCache cache = new FederatedAddressCache(topologyService, info);
 
         topologyService.sendAsynchronous(EasyMock.eq(ZEROMQ_CHANNEL), EasyMock.isA(AddressAnnouncement.class));
@@ -150,7 +154,7 @@ public class FederatedAddressCacheTestCase extends TestCase {
                 return null;
             }
         });
-        EasyMock.replay(info, topologyService);
+        EasyMock.replay(topologyService);
 
         AddressAnnouncement announcement = new AddressAnnouncement("test", AddressAnnouncement.Type.ACTIVATED, ADDRESS1);
         cache.publish(announcement);
@@ -168,6 +172,7 @@ public class FederatedAddressCacheTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         info = EasyMock.createNiceMock(HostInfo.class);
+        EasyMock.expect(info.getDomain()).andReturn(URI.create("fabric3://domain")).atLeastOnce();
         topologyService = EasyMock.createMock(ZoneTopologyService.class);
     }
 }
