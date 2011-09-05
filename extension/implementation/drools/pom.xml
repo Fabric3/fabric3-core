@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (c) 2009-2011 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.codehaus.fabric3</groupId>
+        <artifactId>fabric3-extension-implementation-parent-pom</artifactId>
+        <version>1.9-SNAPSHOT</version>
+    </parent>
+    <groupId>org.codehaus.fabric3</groupId>
+    <artifactId>fabric3-extension-implementation-drools-parent-pom</artifactId>
+    <name>Fabric3 Drools Extensions Parent POM</name>
+    <description>Fabric3 Drools Extensions Parent POM</description>
+    <packaging>pom</packaging>
+
+    <properties>
+        <drools.version>5.2.0.Final</drools.version>
+    </properties>
+    
+    <modules>
+       <module>fabric3-drools-library</module>
+       <module>fabric3-drools</module>
+    </modules>
+
+</project>
