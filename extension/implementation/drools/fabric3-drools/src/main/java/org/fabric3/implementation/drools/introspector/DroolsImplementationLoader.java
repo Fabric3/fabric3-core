@@ -39,6 +39,7 @@ package org.fabric3.implementation.drools.introspector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -107,7 +108,8 @@ public class DroolsImplementationLoader implements TypeLoader<DroolsImplementati
                     }
 
                     KnowledgeBuilderImpl builder = createBuilder();
-                    ComponentType componentType = rulesIntrospector.introspect(builder, reader, context);
+                    Map<String,Class<?>> globals = builder.getPackageBuilder().getGlobals();
+                    ComponentType componentType = rulesIntrospector.introspect(globals, reader, context);
                     return new DroolsImplementation(componentType, resources);
                 }
 

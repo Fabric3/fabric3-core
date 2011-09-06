@@ -40,17 +40,15 @@ package org.fabric3.implementation.drools.introspector;
 import java.util.Map;
 import javax.xml.stream.XMLStreamReader;
 
-import org.drools.builder.impl.KnowledgeBuilderImpl;
-import org.drools.rule.Package;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Multiplicity;
+import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.spi.introspection.xml.ResourceNotFound;
 
 /**
  * @version $Rev$ $Date$
@@ -62,38 +60,46 @@ public class RulesIntrospectorImpl implements RulesIntrospector {
         this.contractProcessor = contractProcessor;
     }
 
-    public ComponentType introspect(KnowledgeBuilderImpl builder, XMLStreamReader reader, IntrospectionContext context) {
-        ClassLoader loader = context.getClassLoader();
-
+    public ComponentType introspect(Map<String, Class<?>> globals, XMLStreamReader reader, IntrospectionContext context) {
         ComponentType componentType = new ComponentType();
-        for (Package pkg : builder.getPackageBuilder().getPackages()) {
-            for (Map.Entry<String, String> entry : pkg.getGlobals().entrySet()) {
-                try {
-                    String key = entry.getKey();
-                    Class<?> type = loader.loadClass(entry.getValue());
-                    introspectType(key, type, componentType, context);
-                } catch (ClassNotFoundException e) {
-                    ResourceNotFound error = new ResourceNotFound("Global type not found: " + entry.getValue(), reader);
-                    context.addError(error);
-                    continue;
-                }
-            }
+        for (Map.Entry<String, Class<?>> entry : globals.entrySet()) {
+            String key = entry.getKey();
+            Class<?> value = entry.getValue();
+            introspectType(key, value, componentType, context);
         }
         return componentType;
     }
 
     private void introspectType(String name, Class<?> type, ComponentType componentType, IntrospectionContext context) {
         java.lang.Package pkg = type.getPackage();
-        if (pkg == null) {
-            ServiceContract contract = contractProcessor.introspect(type, context);
-            // no package, default to a reference
-            ReferenceDefinition definition = new ReferenceDefinition(name, contract, Multiplicity.ONE_ONE);
-            componentType.add(definition);
+        if (type.isPrimitive()) {
+            createProperty(name, componentType);
         } else if (type.isArray()) {
-
-        } //else if (type)
+            Class<?> arrayType = type.getComponentType();
+            introspectType(name, arrayType, componentType, context);
+        } else if (pkg == null) {
+            // no package, default to a reference
+            createReference(name, type, componentType, context);
+        } else if (pkg.getName().startsWith("java.lang.")) {
+            // create a property
+            createProperty(name, componentType);
+        } else {
+            // default to a reference
+            createReference(name, type, componentType, context);
+        }
     }
 
+    private void createProperty(String name, ComponentType componentType) {
+        Property property = new Property(name);
+        property.setRequired(true);
+        componentType.add(property);
+    }
+
+    private void createReference(String name, Class<?> type, ComponentType componentType, IntrospectionContext context) {
+        ServiceContract contract = contractProcessor.introspect(type, context);
+        ReferenceDefinition definition = new ReferenceDefinition(name, contract, Multiplicity.ONE_ONE);
+        componentType.add(definition);
+    }
 
 
 }

@@ -37,26 +37,35 @@
 */
 package org.fabric3.implementation.drools.introspector;
 
-import java.util.Map;
-import javax.xml.stream.XMLStreamReader;
+import java.util.Collections;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 
 /**
- * Introspects a component type from rules comprising a knowledge base by categorizing global variables as properties or references.
- *
- * @version $Rev: 10617 $ $Date: 2011-09-06 16:14:23 +0200 (Tue, 06 Sep 2011) $
+ * @version $Rev$ $Date$
  */
-public interface RulesIntrospector {
+public class RulesIntrospectorImplTestCase extends TestCase {
+    private RulesIntrospectorImpl rulesIntrospector;
+    private JavaContractProcessor contractProcessor;
+    private IntrospectionContext context;
 
-    /**
-     * Performs the introspection.
-     *
-     * @param globals the global variables to introspect
-     * @param reader  the reader used to retrieve the location of the component configuration in the case of an error
-     * @param context the current introspection context
-     * @return the component type
-     */
-    ComponentType introspect(Map<String, Class<?>> globals, XMLStreamReader reader, IntrospectionContext context);
+    public void testIntrospectPrimitiveProperty() throws Exception {
+        ComponentType type = rulesIntrospector.introspect(Collections.<String, Class<?>>singletonMap("property", int.class), null, context);
+        assertFalse(context.hasErrors());
+        assertTrue(type.getProperties().containsKey("property"));
+    }
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        contractProcessor = EasyMock.createMock(JavaContractProcessor.class);
+        rulesIntrospector = new RulesIntrospectorImpl(contractProcessor);
+        context = new DefaultIntrospectionContext();
+    }
 }

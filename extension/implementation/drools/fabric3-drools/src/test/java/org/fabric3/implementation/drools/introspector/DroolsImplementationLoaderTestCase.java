@@ -40,12 +40,12 @@ package org.fabric3.implementation.drools.introspector;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-import org.drools.builder.impl.KnowledgeBuilderImpl;
 import org.easymock.EasyMock;
 
 import org.fabric3.implementation.drools.model.DroolsImplementation;
@@ -67,9 +67,10 @@ public class DroolsImplementationLoaderTestCase extends TestCase {
     private DroolsImplementationLoader loader;
     private RulesIntrospector rulesIntrospector;
 
+    @SuppressWarnings({"unchecked"})
     public void testParse() throws Exception {
         ComponentType componentType = new ComponentType();
-        EasyMock.expect(rulesIntrospector.introspect(EasyMock.isA(KnowledgeBuilderImpl.class),
+        EasyMock.expect(rulesIntrospector.introspect(EasyMock.isA(Map.class),
                                                      EasyMock.isA(XMLStreamReader.class),
                                                      EasyMock.isA(IntrospectionContext.class))).andReturn(componentType);
         EasyMock.replay(rulesIntrospector);
