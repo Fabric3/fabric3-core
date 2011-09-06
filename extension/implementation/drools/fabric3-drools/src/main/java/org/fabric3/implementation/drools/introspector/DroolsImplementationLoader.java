@@ -65,6 +65,9 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  * @version $Rev$ $Date$
  */
 public class DroolsImplementationLoader implements TypeLoader<DroolsImplementation> {
+    private static final String IMPLEMENTATION_DROOLS = "implementation.drools";
+    private static final String RESOURCE = "resource";
+
     private RulesIntrospector rulesIntrospector;
 
     public DroolsImplementationLoader(@Reference RulesIntrospector rulesIntrospector) {
@@ -79,7 +82,7 @@ public class DroolsImplementationLoader implements TypeLoader<DroolsImplementati
             switch (reader.next()) {
             case START_ELEMENT:
                 QName qname = reader.getName();
-                if ("resource".equals(qname.getLocalPart())) {
+                if (RESOURCE.equals(qname.getLocalPart())) {
                     String source = reader.getAttributeValue(null, "source");
                     if (source == null) {
                         MissingAttribute error = new MissingAttribute("The source attribute must be specified for a knowledge base resource", reader);
@@ -94,7 +97,7 @@ public class DroolsImplementationLoader implements TypeLoader<DroolsImplementati
                 }
                 break;
             case END_ELEMENT:
-                if ("implementation.drools".equals(reader.getName().getLocalPart())) {
+                if (IMPLEMENTATION_DROOLS.equals(reader.getName().getLocalPart())) {
                     if (resources.isEmpty()) {
                         MissingKnowledgeBaseDefinition error = new MissingKnowledgeBaseDefinition(reader);
                         context.addError(error);
