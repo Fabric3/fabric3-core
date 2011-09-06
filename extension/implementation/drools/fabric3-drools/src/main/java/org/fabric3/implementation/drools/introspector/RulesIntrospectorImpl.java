@@ -51,6 +51,11 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 
 /**
+ * Default introspector implementation.
+ * <p/>
+ * The following algorithm is applied: if the global type is a primitive, array of primitives or is in the "java" package hierarchy, it is a property;
+ * otherwise it is a reference.
+ *
  * @version $Rev$ $Date$
  */
 public class RulesIntrospectorImpl implements RulesIntrospector {
