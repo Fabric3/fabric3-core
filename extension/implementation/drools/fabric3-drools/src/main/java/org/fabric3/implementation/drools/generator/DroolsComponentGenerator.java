@@ -2,6 +2,8 @@ package org.fabric3.implementation.drools.generator;
 
 import org.fabric3.implementation.drools.model.DroolsImplementation;
 import org.fabric3.implementation.drools.provision.DroolsComponentDefinition;
+import org.fabric3.implementation.drools.provision.DroolsSourceDefinition;
+import org.fabric3.implementation.drools.provision.DroolsTargetDefinition;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
@@ -14,7 +16,6 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 public class DroolsComponentGenerator implements ComponentGenerator<LogicalComponent<DroolsImplementation>> {
 
@@ -23,16 +24,16 @@ public class DroolsComponentGenerator implements ComponentGenerator<LogicalCompo
         return new DroolsComponentDefinition(implementation.getPackages());
     }
 
-    public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
-        return null;
+    public DroolsSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
+        return new DroolsSourceDefinition();
     }
 
-    public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
-        return null;
+    public DroolsTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
+        return new DroolsTargetDefinition();
     }
 
-    public PhysicalSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
-        return null;
+    public DroolsSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
+        return new DroolsSourceDefinition();
     }
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException {
