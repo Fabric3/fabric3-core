@@ -80,7 +80,7 @@ public class RulesIntrospectorImpl implements RulesIntrospector {
         } else if (pkg == null) {
             // no package, default to a reference
             createReference(name, type, componentType, context);
-        } else if (pkg.getName().startsWith("java.lang.")) {
+        } else if (pkg.getName().startsWith("java.")) {
             // create a property
             createProperty(name, componentType);
         } else {

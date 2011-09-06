@@ -38,6 +38,7 @@
 package org.fabric3.implementation.drools.introspector;
 
 import java.util.Collections;
+import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -46,6 +47,7 @@ import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
  * @version $Rev$ $Date$
@@ -61,11 +63,42 @@ public class RulesIntrospectorImplTestCase extends TestCase {
         assertTrue(type.getProperties().containsKey("property"));
     }
 
+    public void testIntrospectStringProperty() throws Exception {
+        ComponentType type = rulesIntrospector.introspect(Collections.<String, Class<?>>singletonMap("property", String.class), null, context);
+        assertFalse(context.hasErrors());
+        assertTrue(type.getProperties().containsKey("property"));
+    }
+
+    public void testIntrospectCollectionProperty() throws Exception {
+        ComponentType type = rulesIntrospector.introspect(Collections.<String, Class<?>>singletonMap("property", Map.class), null, context);
+        assertFalse(context.hasErrors());
+        assertTrue(type.getProperties().containsKey("property"));
+    }
+
+    public void testIntrospectArrayProperty() throws Exception {
+        ComponentType type = rulesIntrospector.introspect(Collections.<String, Class<?>>singletonMap("property", String[].class), null, context);
+        assertFalse(context.hasErrors());
+        assertTrue(type.getProperties().containsKey("property"));
+    }
+
+    public void testIntrospectReference() throws Exception {
+        EasyMock.expect(contractProcessor.introspect(EasyMock.eq(SomeService.class), EasyMock.eq(context))).andReturn(new JavaServiceContract());
+        EasyMock.replay(contractProcessor);
+        ComponentType type = rulesIntrospector.introspect(Collections.<String, Class<?>>singletonMap("reference", SomeService.class), null, context);
+        assertFalse(context.hasErrors());
+        assertTrue(type.getReferences().containsKey("reference"));
+        EasyMock.verify(contractProcessor);
+    }
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
         contractProcessor = EasyMock.createMock(JavaContractProcessor.class);
         rulesIntrospector = new RulesIntrospectorImpl(contractProcessor);
         context = new DefaultIntrospectionContext();
+    }
+
+    private interface SomeService {
+        String invoke();
     }
 }
