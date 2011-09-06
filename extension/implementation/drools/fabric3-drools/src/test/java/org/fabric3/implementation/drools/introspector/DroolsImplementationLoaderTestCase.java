@@ -45,9 +45,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
+import org.drools.builder.impl.KnowledgeBuilderImpl;
+import org.easymock.EasyMock;
 
 import org.fabric3.implementation.drools.model.DroolsImplementation;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
@@ -61,20 +65,29 @@ public class DroolsImplementationLoaderTestCase extends TestCase {
     private XMLInputFactory xmlFactory;
     private DefaultIntrospectionContext context;
     private DroolsImplementationLoader loader;
+    private RulesIntrospector rulesIntrospector;
 
     public void testParse() throws Exception {
+        ComponentType componentType = new ComponentType();
+        EasyMock.expect(rulesIntrospector.introspect(EasyMock.isA(KnowledgeBuilderImpl.class),
+                                                     EasyMock.isA(XMLStreamReader.class),
+                                                     EasyMock.isA(IntrospectionContext.class))).andReturn(componentType);
+        EasyMock.replay(rulesIntrospector);
         XMLStreamReader reader = createReader(XML);
         DroolsImplementation implementation = loader.load(reader, context);
         assertEquals(2, implementation.getResources().size());
         assertTrue(implementation.getResources().contains("source1"));
         assertTrue(implementation.getResources().contains("source2"));
+        EasyMock.verify(rulesIntrospector);
     }
 
     public void testNoResource() throws Exception {
+        EasyMock.replay(rulesIntrospector);
         XMLStreamReader reader = createReader(XML_NO_RESOURCES);
         loader.load(reader, context);
         assertTrue(context.hasErrors());
         assertTrue(context.getErrors().get(0) instanceof MissingKnowledgeBaseDefinition);
+        EasyMock.verify(rulesIntrospector);
     }
 
     @Override
@@ -82,7 +95,8 @@ public class DroolsImplementationLoaderTestCase extends TestCase {
         super.setUp();
         xmlFactory = XMLInputFactory.newInstance();
         context = new DefaultIntrospectionContext(URI.create("test"), getClass().getClassLoader());
-        loader = new DroolsImplementationLoader();
+        rulesIntrospector = EasyMock.createMock(RulesIntrospector.class);
+        loader = new DroolsImplementationLoader(rulesIntrospector);
     }
 
     private XMLStreamReader createReader(String xml) throws XMLStreamException {

@@ -35,47 +35,30 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.drools.model;
+package org.fabric3.implementation.drools.introspector;
 
-import java.util.List;
-import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
 
-import org.drools.KnowledgeBase;
+import org.drools.builder.impl.KnowledgeBuilderImpl;
 
-import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.model.type.component.Implementation;
+import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * A Drools component implementation type.
+ * Introspects a component type from rules comprising a knowledge base.
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev: 10617 $ $Date: 2011-09-06 16:14:23 +0200 (Tue, 06 Sep 2011) $
  */
-public class DroolsImplementation extends Implementation<ComponentType> {
-    private static final long serialVersionUID = -9156045948000857018L;
-    public static final QName IMPLEMENTATION_DROOLS = new QName(Namespaces.F3, "implementation.drools");
-
-    private KnowledgeBase knowledgeBase;
-    private List<String> resources;
+public interface RulesIntrospector {
 
     /**
-     * Constructor.
+     * Performs the introspection.
      *
-     * @param componentType the component type
-     * @param resources     the resources used to construct the Drools knowledge base for this component
+     * @param builder the Drools knowledge builder. Note the concrete class is required as global variables are only retrievable from a method on the
+     *                implementation (as opposed to the interface).
+     * @param reader  the reader used to retrieve the location of the component configuration in the case of an error
+     * @param context the current introspection context
+     * @return the component type
      */
-    public DroolsImplementation(ComponentType componentType, List<String> resources) {
-        super(componentType);
-        this.resources = resources;
-    }
-
-    public QName getType() {
-        return IMPLEMENTATION_DROOLS;
-    }
-
-    public List<String> getResources() {
-        return resources;
-    }
+    ComponentType introspect(KnowledgeBuilderImpl builder, XMLStreamReader reader, IntrospectionContext context);
 }
-
-

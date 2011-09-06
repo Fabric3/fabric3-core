@@ -43,7 +43,12 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.drools.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.PackageBuilder;
+import org.osoa.sca.annotations.Reference;
+
 import org.fabric3.implementation.drools.model.DroolsImplementation;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
@@ -60,6 +65,11 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  * @version $Rev$ $Date$
  */
 public class DroolsImplementationLoader implements TypeLoader<DroolsImplementation> {
+    private RulesIntrospector rulesIntrospector;
+
+    public DroolsImplementationLoader(@Reference RulesIntrospector rulesIntrospector) {
+        this.rulesIntrospector = rulesIntrospector;
+    }
 
     public DroolsImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
@@ -88,14 +98,25 @@ public class DroolsImplementationLoader implements TypeLoader<DroolsImplementati
                     if (resources.isEmpty()) {
                         MissingKnowledgeBaseDefinition error = new MissingKnowledgeBaseDefinition(reader);
                         context.addError(error);
+                        // mock up an implementation to allow processing to continue
+                        ComponentType componentType = new ComponentType();
+                        return new DroolsImplementation(componentType, resources);
                     }
 
-                    return new DroolsImplementation(null, resources);
+                    KnowledgeBuilderImpl builder = createBuilder();
+                    ComponentType componentType = rulesIntrospector.introspect(builder, reader, context);
+                    return new DroolsImplementation(componentType, resources);
                 }
 
             }
         }
     }
+
+    private KnowledgeBuilderImpl createBuilder() {
+        PackageBuilder packageBuilder = new PackageBuilder();
+        return new KnowledgeBuilderImpl(packageBuilder);
+    }
+
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
