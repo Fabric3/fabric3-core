@@ -72,7 +72,6 @@ public class DroolsImplementation extends Implementation<ComponentType> {
         return IMPLEMENTATION_DROOLS;
     }
 
-
     /**
      * Returns the compiled rules for the knowledge base used by the component.
      *
