@@ -40,6 +40,8 @@ package org.fabric3.implementation.drools.runtime;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
+import org.drools.KnowledgeBase;
+
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.spi.channel.EventStreamHandler;
@@ -59,11 +61,13 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 public class DroolsComponent implements AtomicComponent {
 
     private URI uri;
+    private KnowledgeBase knowledgeBase;
     private QName deployable;
     private URI classLoaderId;
 
-    public DroolsComponent(URI uri, QName deployable) {
+    public DroolsComponent(URI uri, KnowledgeBase knowledgeBase, QName deployable) {
         this.uri = uri;
+        this.knowledgeBase = knowledgeBase;
         this.deployable = deployable;
     }
 
@@ -129,5 +133,9 @@ public class DroolsComponent implements AtomicComponent {
 
     public void setLevel(MonitorLevel level) {
 
+    }
+
+    public KnowledgeBase getKnowledgeBase() {
+        return knowledgeBase;
     }
 }

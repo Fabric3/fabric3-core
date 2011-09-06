@@ -37,11 +37,21 @@
 */
 package org.fabric3.implementation.drools.runtime;
 
+import java.net.URI;
+import java.util.Properties;
+
+import javax.xml.namespace.QName;
+
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
+import org.drools.KnowledgeBaseFactory;
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.implementation.drools.provision.DroolsComponentDefinition;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 
 /**
  * Builds a DroolsComponent from a physical definition.
@@ -49,10 +59,25 @@ import org.fabric3.spi.builder.component.ComponentBuilder;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class DroolsComponentBuilder implements ComponentBuilder<DroolsComponentDefinition, DroolsComponent>{
+public class DroolsComponentBuilder implements ComponentBuilder<DroolsComponentDefinition, DroolsComponent> {
+    private ClassLoaderRegistry classLoaderRegistry;
+
+    public DroolsComponentBuilder(@Reference ClassLoaderRegistry classLoaderRegistry) {
+        this.classLoaderRegistry = classLoaderRegistry;
+    }
 
     public DroolsComponent build(DroolsComponentDefinition definition) throws BuilderException {
-        return null;
+        URI classLoaderId = definition.getClassLoaderId();
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(classLoaderId);
+
+        KnowledgeBaseConfiguration configuration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(new Properties(), classLoader);
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(configuration);
+        knowledgeBase.addKnowledgePackages(definition.getPackages());
+
+        URI componentUri = definition.getComponentUri();
+        QName deployable = definition.getDeployable();
+        return new DroolsComponent(componentUri, knowledgeBase, deployable);
+        // TODO hook into management
     }
 
     public void dispose(DroolsComponentDefinition definition, DroolsComponent component) throws BuilderException {
