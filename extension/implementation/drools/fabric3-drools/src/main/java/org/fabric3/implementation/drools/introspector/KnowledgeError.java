@@ -35,52 +35,41 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.drools.model;
+package org.fabric3.implementation.drools.introspector;
 
-import java.util.Collection;
-import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
 
-import org.drools.definition.KnowledgePackage;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderErrors;
 
-import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.model.type.component.Implementation;
+import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * A Drools component implementation type.
- *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public class DroolsImplementation extends Implementation<ComponentType> {
-    private static final long serialVersionUID = -9156045948000857018L;
-    public static final QName IMPLEMENTATION_DROOLS = new QName(Namespaces.F3, "implementation.drools");
+public class KnowledgeError extends XmlValidationFailure {
+    private KnowledgeBuilderErrors errors;
 
-    private Collection<KnowledgePackage> packages;
-
-    /**
-     * Constructor.
-     *
-     * @param componentType the component type
-     * @param packages      the compiled rules for the knowledge base used by the component
-     */
-    public DroolsImplementation(ComponentType componentType, Collection<KnowledgePackage> packages) {
-        super(componentType);
-        this.packages = packages;
+    public KnowledgeError(KnowledgeBuilderErrors errors, XMLStreamReader reader) {
+        super(null, reader);
+        this.errors = errors;
     }
 
-    public QName getType() {
-        return IMPLEMENTATION_DROOLS;
-    }
-
-
-    /**
-     * Returns the compiled rules for the knowledge base used by the component.
-     *
-     * @return the compiled rules for the knowledge base used by the component
-     */
-    public Collection<KnowledgePackage> getPackages() {
-        return packages;
+    @Override
+    public String getMessage() {
+        StringBuilder builder = new StringBuilder("The following rules errors were encountered:\n");
+        for (KnowledgeBuilderError error : errors) {
+            builder.append(error.getMessage()).append("[");
+            int[] errorLines = error.getErrorLines();
+            for (int i = 0, errorLinesLength = errorLines.length; i < errorLinesLength - 1; i++) {
+                int line = errorLines[i];
+                builder.append(line).append(",");
+            }
+            if (errorLines.length > 0) {
+                builder.append(errorLines[errorLines.length - 1]);
+            }
+            builder.append("\n");
+        }
+        return builder.toString();
     }
 }
-
-

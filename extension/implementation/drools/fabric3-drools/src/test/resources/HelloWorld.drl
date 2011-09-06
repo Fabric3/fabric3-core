@@ -1,0 +1,23 @@
+package org.drools.examples.helloworld
+ 
+import org.fabric3.implementation.drools.message.HelloMessage;
+
+global java.util.List list
+ 
+rule "Hello World"
+    dialect "mvel"
+    when
+        m : HelloMessage( status == HelloMessage.HELLO, message : message )
+    then
+        System.out.println( message );
+    modify ( m ) { message = "Goodbye cruel world",
+                   status = HelloMessage.GOODBYE };
+end
+
+rule "Good Bye"
+    dialect "java"
+    when
+        HelloMessage( status == HelloMessage.GOODBYE, message : message )
+    then
+        System.out.println( message );
+end

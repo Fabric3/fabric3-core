@@ -38,14 +38,21 @@
 package org.fabric3.implementation.drools.introspector;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.drools.builder.KnowledgeBuilderErrors;
+import org.drools.builder.ResourceType;
 import org.drools.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.PackageBuilder;
+import org.drools.definition.KnowledgePackage;
+import org.drools.io.Resource;
+import org.drools.io.ResourceFactory;
 import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.implementation.drools.model.DroolsImplementation;
@@ -104,22 +111,44 @@ public class DroolsImplementationLoader implements TypeLoader<DroolsImplementati
                         context.addError(error);
                         // mock up an implementation to allow processing to continue
                         ComponentType componentType = new ComponentType();
-                        return new DroolsImplementation(componentType, resources);
+                        return new DroolsImplementation(componentType, Collections.<KnowledgePackage>emptyList());
                     }
 
-                    KnowledgeBuilderImpl builder = createBuilder();
-                    Map<String,Class<?>> globals = builder.getPackageBuilder().getGlobals();
+                    KnowledgeBuilderImpl builder = createBuilder(resources, reader, context);
+                    Map<String, Class<?>> globals = builder.getPackageBuilder().getGlobals();
                     ComponentType componentType = rulesIntrospector.introspect(globals, reader, context);
-                    return new DroolsImplementation(componentType, resources);
+
+                    Collection<KnowledgePackage> knowledgePackages = builder.getKnowledgePackages();
+
+                    return new DroolsImplementation(componentType, knowledgePackages);
                 }
 
             }
         }
     }
 
-    private KnowledgeBuilderImpl createBuilder() {
+    private KnowledgeBuilderImpl createBuilder(List<String> resources, XMLStreamReader reader, IntrospectionContext context) {
         PackageBuilder packageBuilder = new PackageBuilder();
-        return new KnowledgeBuilderImpl(packageBuilder);
+        KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl(packageBuilder);
+
+        try {
+            for (String resourceString : resources) {
+                Resource resource = ResourceFactory.newClassPathResource(resourceString, context.getClassLoader());
+                builder.add(resource, ResourceType.DRL);
+                if (builder.hasErrors()) {
+                    KnowledgeBuilderErrors errors = builder.getErrors();
+                    KnowledgeError error = new KnowledgeError(errors, reader);
+                    context.addError(error);
+                    break;
+                }
+            }
+        } catch (RuntimeException e) {
+            // Drools throws generic RuntimeExceptions for conditions such as FileNotFound for a resource
+            RulesParsingError error = new RulesParsingError("Error parsing rules", e, reader);
+            context.addError(error);
+        }
+        return builder;
+
     }
 
 

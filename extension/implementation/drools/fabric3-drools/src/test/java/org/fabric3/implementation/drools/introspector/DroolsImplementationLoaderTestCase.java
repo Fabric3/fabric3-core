@@ -58,7 +58,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  */
 public class DroolsImplementationLoaderTestCase extends TestCase {
 
-    private static final String XML = "<implementation.drools><resource source='source1'/><resource source='source2'/></implementation.drools>";
+    private static final String XML = "<implementation.drools><resource source='HelloWorld.drl'/></implementation.drools>";
 
     private static final String XML_NO_RESOURCES = "<implementation.drools></implementation.drools>";
 
@@ -76,9 +76,8 @@ public class DroolsImplementationLoaderTestCase extends TestCase {
         EasyMock.replay(rulesIntrospector);
         XMLStreamReader reader = createReader(XML);
         DroolsImplementation implementation = loader.load(reader, context);
-        assertEquals(2, implementation.getResources().size());
-        assertTrue(implementation.getResources().contains("source1"));
-        assertTrue(implementation.getResources().contains("source2"));
+        assertTrue(context.getErrors().isEmpty());
+        assertEquals(1, implementation.getPackages().size());
         EasyMock.verify(rulesIntrospector);
     }
 

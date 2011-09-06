@@ -35,52 +35,45 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.drools.model;
+package org.fabric3.implementation.drools.message;
 
-import java.util.Collection;
-import javax.xml.namespace.QName;
-
-import org.drools.definition.KnowledgePackage;
-
-import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.model.type.component.Implementation;
+import java.util.List;
 
 /**
- * A Drools component implementation type.
- *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public class DroolsImplementation extends Implementation<ComponentType> {
-    private static final long serialVersionUID = -9156045948000857018L;
-    public static final QName IMPLEMENTATION_DROOLS = new QName(Namespaces.F3, "implementation.drools");
+public class HelloMessage {
+    public static final int HELLO = 0;
+    public static final int GOODBYE = 1;
 
-    private Collection<KnowledgePackage> packages;
+    private String message;
 
-    /**
-     * Constructor.
-     *
-     * @param componentType the component type
-     * @param packages      the compiled rules for the knowledge base used by the component
-     */
-    public DroolsImplementation(ComponentType componentType, Collection<KnowledgePackage> packages) {
-        super(componentType);
-        this.packages = packages;
+    private int status;
+
+    public String getMessage() {
+        return this.message;
     }
 
-    public QName getType() {
-        return IMPLEMENTATION_DROOLS;
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public int getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public static HelloMessage doSomething(HelloMessage message) {
+        return message;
+    }
+
+    public boolean isSomething(String msg, List<Object> list) {
+        list.add(this);
+        return this.message.equals(msg);
     }
 
 
-    /**
-     * Returns the compiled rules for the knowledge base used by the component.
-     *
-     * @return the compiled rules for the knowledge base used by the component
-     */
-    public Collection<KnowledgePackage> getPackages() {
-        return packages;
-    }
 }
-
-
