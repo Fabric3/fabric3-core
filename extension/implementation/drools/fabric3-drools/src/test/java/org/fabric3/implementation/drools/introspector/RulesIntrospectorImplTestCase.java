@@ -90,6 +90,15 @@ public class RulesIntrospectorImplTestCase extends TestCase {
         EasyMock.verify(contractProcessor);
     }
 
+    public void testIntrospectArrayReference() throws Exception {
+        EasyMock.expect(contractProcessor.introspect(EasyMock.eq(SomeService.class), EasyMock.eq(context))).andReturn(new JavaServiceContract());
+        EasyMock.replay(contractProcessor);
+        ComponentType type = rulesIntrospector.introspect(Collections.<String, Class<?>>singletonMap("reference", SomeService[].class), null, context);
+        assertFalse(context.hasErrors());
+        assertTrue(type.getReferences().containsKey("reference"));
+        EasyMock.verify(contractProcessor);
+    }
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
