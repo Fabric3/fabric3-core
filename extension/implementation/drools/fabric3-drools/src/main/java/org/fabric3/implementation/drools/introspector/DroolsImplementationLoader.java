@@ -60,7 +60,6 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  * @version $Rev$ $Date$
  */
 public class DroolsImplementationLoader implements TypeLoader<DroolsImplementation> {
-    private static final String KNOWLEDGE_BASE = "knowledgeBase";
 
     public DroolsImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
@@ -95,9 +94,7 @@ public class DroolsImplementationLoader implements TypeLoader<DroolsImplementati
                 }
 
             }
-
         }
-
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {

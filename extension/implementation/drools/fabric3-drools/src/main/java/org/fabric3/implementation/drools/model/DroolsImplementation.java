@@ -45,7 +45,7 @@ import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Implementation;
 
 /**
- * Represents a Drools component implementation type.
+ * A Drools component implementation type.
  *
  * @version $$Rev$$ $$Date$$
  */
