@@ -40,6 +40,7 @@ package org.fabric3.implementation.drools.introspection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
@@ -60,6 +61,7 @@ import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.fabric3.spi.introspection.xml.ResourceNotFound;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
@@ -74,6 +76,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  */
 public class DroolsImplementationLoader implements TypeLoader<DroolsImplementation> {
     private static final String IMPLEMENTATION_DROOLS = "implementation.drools";
+    private static final String SERVICE = "service";
     private static final String RESOURCE = "resource";
 
     private RulesIntrospector rulesIntrospector;
@@ -85,19 +88,16 @@ public class DroolsImplementationLoader implements TypeLoader<DroolsImplementati
     public DroolsImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
         List<String> resources = new ArrayList<String>();
+        Map<String, Class<?>> services = new HashMap<String, Class<?>>();
 
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
                 QName qname = reader.getName();
-                if (RESOURCE.equals(qname.getLocalPart())) {
-                    String source = reader.getAttributeValue(null, "source");
-                    if (source == null) {
-                        MissingAttribute error = new MissingAttribute("The source attribute must be specified for a knowledge base resource", reader);
-                        context.addError(error);
-                        LoaderUtil.skipToEndElement(reader);
-                    }
-                    resources.add(source);
+                if (SERVICE.equals(qname.getLocalPart())) {
+                    parseServices(services, reader, context);
+                } else if (RESOURCE.equals(qname.getLocalPart())) {
+                    parseResources(resources, reader, context);
                 } else {
                     // Unknown extension element - issue an error and continue
                     context.addError(new UnrecognizedElement(reader));
@@ -116,7 +116,8 @@ public class DroolsImplementationLoader implements TypeLoader<DroolsImplementati
 
                     KnowledgeBuilderImpl builder = createBuilder(resources, reader, context);
                     Map<String, Class<?>> globals = builder.getPackageBuilder().getGlobals();
-                    ComponentType componentType = rulesIntrospector.introspect(globals, reader, context);
+
+                    ComponentType componentType = rulesIntrospector.introspect(services, globals, context);
 
                     Collection<KnowledgePackage> knowledgePackages = builder.getKnowledgePackages();
 
@@ -125,6 +126,38 @@ public class DroolsImplementationLoader implements TypeLoader<DroolsImplementati
 
             }
         }
+    }
+
+    private void parseServices(Map<String, Class<?>> services, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        String service = reader.getAttributeValue(null, "interface");
+        if (service == null) {
+            MissingAttribute error =
+                    new MissingAttribute("The interface attribute must be specified for a knowledge base service", reader);
+            context.addError(error);
+            LoaderUtil.skipToEndElement(reader);
+        }
+        Class<?> serviceType;
+        try {
+            serviceType = context.getClassLoader().loadClass(service);
+            String name = reader.getAttributeValue(null, "name");
+            if (name == null) {
+                name = serviceType.getSimpleName();
+            }
+            services.put(name, serviceType);
+        } catch (ClassNotFoundException e) {
+            ResourceNotFound failure = new ResourceNotFound("Interface not found: " + service, reader);
+            context.addError(failure);
+        }
+    }
+
+    private void parseResources(List<String> resources, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        String source = reader.getAttributeValue(null, "source");
+        if (source == null) {
+            MissingAttribute error = new MissingAttribute("The source attribute must be specified for a knowledge base resource", reader);
+            context.addError(error);
+            LoaderUtil.skipToEndElement(reader);
+        }
+        resources.add(source);
     }
 
     private KnowledgeBuilderImpl createBuilder(List<String> resources, XMLStreamReader reader, IntrospectionContext context) {

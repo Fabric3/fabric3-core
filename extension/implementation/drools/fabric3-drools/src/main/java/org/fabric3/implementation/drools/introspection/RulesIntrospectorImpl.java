@@ -38,7 +38,6 @@
 package org.fabric3.implementation.drools.introspection;
 
 import java.util.Map;
-import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.annotation.Reference;
 
@@ -46,6 +45,7 @@ import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
+import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
@@ -65,14 +65,28 @@ public class RulesIntrospectorImpl implements RulesIntrospector {
         this.contractProcessor = contractProcessor;
     }
 
-    public ComponentType introspect(Map<String, Class<?>> globals, XMLStreamReader reader, IntrospectionContext context) {
+    public ComponentType introspect(Map<String, Class<?>> services, Map<String, Class<?>> globals, IntrospectionContext context) {
         ComponentType componentType = new ComponentType();
+        introspectServices(services, componentType, context);
+        introspectTypes(globals, componentType, context);
+
+        return componentType;
+    }
+
+    private void introspectTypes(Map<String, Class<?>> globals, ComponentType componentType, IntrospectionContext context) {
         for (Map.Entry<String, Class<?>> entry : globals.entrySet()) {
             String key = entry.getKey();
             Class<?> value = entry.getValue();
             introspectType(key, value, componentType, context);
         }
-        return componentType;
+    }
+
+    private void introspectServices(Map<String, Class<?>> services, ComponentType componentType, IntrospectionContext context) {
+        for (Map.Entry<String, Class<?>> entry : services.entrySet()) {
+            ServiceContract contract = contractProcessor.introspect(entry.getValue(), context);
+            ServiceDefinition serviceDefinition = new ServiceDefinition(entry.getKey(), contract);
+            componentType.add(serviceDefinition);
+        }
     }
 
     private void introspectType(String name, Class<?> type, ComponentType componentType, IntrospectionContext context) {

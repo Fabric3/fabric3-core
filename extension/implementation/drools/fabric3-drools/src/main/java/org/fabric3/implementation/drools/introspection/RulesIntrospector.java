@@ -38,7 +38,6 @@
 package org.fabric3.implementation.drools.introspection;
 
 import java.util.Map;
-import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -53,10 +52,10 @@ public interface RulesIntrospector {
     /**
      * Performs the introspection.
      *
-     * @param globals the global variables to introspect
-     * @param reader  the reader used to retrieve the location of the component configuration in the case of an error
-     * @param context the current introspection context
+     * @param services the map of service names to types implemented by the component
+     * @param globals  the global variables to introspect
+     * @param context  the current introspection context
      * @return the component type
      */
-    ComponentType introspect(Map<String, Class<?>> globals, XMLStreamReader reader, IntrospectionContext context);
+    ComponentType introspect(Map<String, Class<?>> services, Map<String, Class<?>> globals, IntrospectionContext context);
 }

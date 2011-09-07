@@ -71,7 +71,7 @@ public class DroolsImplementationLoaderTestCase extends TestCase {
     public void testParse() throws Exception {
         ComponentType componentType = new ComponentType();
         EasyMock.expect(rulesIntrospector.introspect(EasyMock.isA(Map.class),
-                                                     EasyMock.isA(XMLStreamReader.class),
+                                                     EasyMock.isA(Map.class),
                                                      EasyMock.isA(IntrospectionContext.class))).andReturn(componentType);
         EasyMock.replay(rulesIntrospector);
         XMLStreamReader reader = createReader(XML);
