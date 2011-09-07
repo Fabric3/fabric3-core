@@ -48,6 +48,9 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.implementation.drools.introspection.DroolsImplementationLoader;
+import org.fabric3.implementation.drools.introspection.MissingKnowledgeBaseDefinition;
+import org.fabric3.implementation.drools.introspection.RulesIntrospector;
 import org.fabric3.implementation.drools.model.DroolsImplementation;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;

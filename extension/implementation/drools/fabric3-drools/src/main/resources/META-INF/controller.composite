@@ -18,11 +18,11 @@ Public License. See the accompanying license file for details.
 
 
     <component name="DroolsImplementationLoader" f3:key="f3:implementation.drools">
-        <f3:implementation.system class="org.fabric3.implementation.drools.introspector.DroolsImplementationLoader"/>
+        <f3:implementation.system class="org.fabric3.implementation.drools.introspection.DroolsImplementationLoader"/>
     </component>
 
     <component name="RulesIntrospectorImpl">
-        <f3:implementation.system class="org.fabric3.implementation.drools.introspector.RulesIntrospectorImpl"/>
+        <f3:implementation.system class="org.fabric3.implementation.drools.introspection.RulesIntrospectorImpl"/>
     </component>
 
 

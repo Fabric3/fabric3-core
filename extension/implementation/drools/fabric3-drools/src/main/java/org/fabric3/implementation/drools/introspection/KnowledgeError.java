@@ -35,28 +35,41 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.drools.introspector;
+package org.fabric3.implementation.drools.introspection;
 
-import java.util.Map;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.spi.introspection.IntrospectionContext;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderErrors;
+
+import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * Introspects a component type from rules comprising a knowledge base by categorizing global variables as properties or references.
- *
- * @version $Rev: 10617 $ $Date: 2011-09-06 16:14:23 +0200 (Tue, 06 Sep 2011) $
+ * @version $Rev$ $Date$
  */
-public interface RulesIntrospector {
+public class KnowledgeError extends XmlValidationFailure {
+    private KnowledgeBuilderErrors errors;
 
-    /**
-     * Performs the introspection.
-     *
-     * @param globals the global variables to introspect
-     * @param reader  the reader used to retrieve the location of the component configuration in the case of an error
-     * @param context the current introspection context
-     * @return the component type
-     */
-    ComponentType introspect(Map<String, Class<?>> globals, XMLStreamReader reader, IntrospectionContext context);
+    public KnowledgeError(KnowledgeBuilderErrors errors, XMLStreamReader reader) {
+        super(null, reader);
+        this.errors = errors;
+    }
+
+    @Override
+    public String getMessage() {
+        StringBuilder builder = new StringBuilder("The following rules errors were encountered:\n");
+        for (KnowledgeBuilderError error : errors) {
+            builder.append(error.getMessage()).append("[");
+            int[] errorLines = error.getErrorLines();
+            for (int i = 0, errorLinesLength = errorLines.length; i < errorLinesLength - 1; i++) {
+                int line = errorLines[i];
+                builder.append(line).append(",");
+            }
+            if (errorLines.length > 0) {
+                builder.append(errorLines[errorLines.length - 1]);
+            }
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
 }
