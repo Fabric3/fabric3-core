@@ -38,18 +38,20 @@
 package org.fabric3.implementation.drools.runtime;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.xml.namespace.QName;
 
 import org.drools.KnowledgeBase;
+import org.drools.runtime.StatelessKnowledgeSession;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.host.monitor.MonitorEventDispatcher;
-import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.monitor.DispatcherWrapper;
+import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
@@ -62,12 +64,16 @@ public class DroolsComponent implements AtomicComponent {
 
     private URI uri;
     private KnowledgeBase knowledgeBase;
+    private Map<String, Injector<StatelessKnowledgeSession>> injectorMap;
+    private List<Injector<StatelessKnowledgeSession>> injectors;
     private QName deployable;
     private URI classLoaderId;
 
-    public DroolsComponent(URI uri, KnowledgeBase knowledgeBase, QName deployable) {
+    public DroolsComponent(URI uri, KnowledgeBase knowledgeBase, Map<String, Injector<StatelessKnowledgeSession>> injectors, QName deployable) {
         this.uri = uri;
         this.knowledgeBase = knowledgeBase;
+        this.injectorMap = injectors;
+        this.injectors = new CopyOnWriteArrayList<Injector<StatelessKnowledgeSession>>(injectors.values());
         this.deployable = deployable;
     }
 
@@ -104,11 +110,11 @@ public class DroolsComponent implements AtomicComponent {
     }
 
     public InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public ObjectFactory<Object> createObjectFactory() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public void start() throws ComponentException {
@@ -135,7 +141,27 @@ public class DroolsComponent implements AtomicComponent {
 
     }
 
-    public KnowledgeBase getKnowledgeBase() {
-        return knowledgeBase;
+    public StatelessKnowledgeSession createStatelessSession() throws ObjectCreationException {
+        StatelessKnowledgeSession session = knowledgeBase.newStatelessKnowledgeSession();
+        for (Injector<StatelessKnowledgeSession> injector : injectors) {
+            injector.inject(session);
+        }
+        return session;
+    }
+
+    public void removeObjectFactory(String identifier) {
+
+    }
+
+    public void setObjectFactory(String identifier, ObjectFactory<?> factory) {
+        setObjectFactory(identifier, factory, null);
+    }
+
+    public void setObjectFactory(String identifier, ObjectFactory<?> factory, Object key) {
+
+    }
+
+    public ObjectFactory<?> getObjectFactory(String identifier) {
+        return null;
     }
 }

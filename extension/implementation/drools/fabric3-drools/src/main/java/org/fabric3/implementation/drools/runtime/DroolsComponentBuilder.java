@@ -38,13 +38,15 @@
 package org.fabric3.implementation.drools.runtime;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Properties;
-
+import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.namespace.QName;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 
@@ -52,6 +54,7 @@ import org.fabric3.implementation.drools.provision.DroolsComponentDefinition;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.objectfactory.Injector;
 
 /**
  * Builds a DroolsComponent from a physical definition.
@@ -76,11 +79,18 @@ public class DroolsComponentBuilder implements ComponentBuilder<DroolsComponentD
 
         URI componentUri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
-        return new DroolsComponent(componentUri, knowledgeBase, deployable);
+        Map<String, Injector<StatelessKnowledgeSession>> injectors = createInjectors();
+        return new DroolsComponent(componentUri, knowledgeBase, injectors, deployable);
         // TODO hook into management
     }
 
+
     public void dispose(DroolsComponentDefinition definition, DroolsComponent component) throws BuilderException {
 
+    }
+
+    private Map<String, Injector<StatelessKnowledgeSession>> createInjectors() {
+        Map<String, Injector<StatelessKnowledgeSession>> injectors = new ConcurrentHashMap<String, Injector<StatelessKnowledgeSession>>();
+        return injectors;
     }
 }

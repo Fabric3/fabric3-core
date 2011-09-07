@@ -37,13 +37,88 @@
 */
 package org.fabric3.implementation.drools.provision;
 
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.implementation.pojo.provision.PojoSourceDefinition;
+import org.fabric3.spi.model.type.java.InjectableType;
 
 /**
- *
  * @version $Revision$ $Date$
  */
-public class DroolsSourceDefinition extends PhysicalSourceDefinition {
+public class DroolsSourceDefinition extends PojoSourceDefinition {
     private static final long serialVersionUID = 8851323261546722889L;
 
+    private String identifier;
+    private String interfaceName;
+    private InjectableType injectableType;
+    private String keyClass;
+
+    /**
+     * Constructor.
+     *
+     * @param identifier     the global variable identifier the wire is to be injected into the knowledge session using.
+     * @param interfaceName  the interface type
+     * @param injectableType the injectable type
+     */
+    public DroolsSourceDefinition(String identifier, String interfaceName, InjectableType injectableType) {
+        this(identifier, interfaceName, injectableType, null);
+    }
+
+    /**
+     * Constructor for keyed (Map) references.
+     *
+     * @param identifier     the global variable identifier the wire is to be injected into the knowledge session using.
+     * @param interfaceName  the interface type
+     * @param injectableType the injectable type
+     * @param keyClass       the key type
+     */
+    public DroolsSourceDefinition(String identifier, String interfaceName, InjectableType injectableType, String keyClass) {
+        this.identifier = identifier;
+        this.interfaceName = interfaceName;
+        this.injectableType = injectableType;
+        this.keyClass = keyClass;
+    }
+
+    /**
+     * Returns the global variable identifier the wire is to be injected into the knowledge session.
+     *
+     * @return the global variable identifier the wire is to be injected into the knowledge session
+     */
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    /**
+     * Returns the full qualified class name of the interface type.
+     *
+     * @return the full qualified class name of the interface type
+     */
+    public String getInterfaceName() {
+        return interfaceName;
+    }
+
+    /**
+     * Returns the injectable type.
+     *
+     * @return the injectable type
+     */
+    public InjectableType getInjectableType() {
+        return injectableType;
+    }
+
+    /**
+     * If the reference is a keyed Map type.
+     *
+     * @return true if the reference is a keyed Map type
+     */
+    public boolean isKeyed() {
+        return keyClass != null;
+    }
+
+    /**
+     * The reference key type or null if the reference is not a keyed Map type.
+     *
+     * @return the reference key type or null if the reference is not a keyed Map type
+     */
+    public String getKeyClass() {
+        return keyClass;
+    }
 }
