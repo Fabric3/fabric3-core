@@ -37,6 +37,8 @@
 */
 package org.fabric3.implementation.drools.provision;
 
+import java.net.URI;
+
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
@@ -44,4 +46,8 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
  */
 public class DroolsTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = -3753327096272853871L;
+
+    public DroolsTargetDefinition(URI uri) {
+        setUri(uri);
+    }
 }

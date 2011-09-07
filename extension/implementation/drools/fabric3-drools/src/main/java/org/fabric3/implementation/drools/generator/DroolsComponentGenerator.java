@@ -1,5 +1,7 @@
 package org.fabric3.implementation.drools.generator;
 
+import java.net.URI;
+
 import org.fabric3.implementation.drools.model.DroolsImplementation;
 import org.fabric3.implementation.drools.provision.DroolsComponentDefinition;
 import org.fabric3.implementation.drools.provision.DroolsSourceDefinition;
@@ -36,8 +38,11 @@ public class DroolsComponentGenerator implements ComponentGenerator<LogicalCompo
         return  new DroolsSourceDefinition(reference.getDefinition().getName(), interfaceName, InjectableType.REFERENCE);
     }
 
+    @SuppressWarnings({"unchecked"})
     public DroolsTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
-        return new DroolsTargetDefinition();
+        LogicalComponent<DroolsImplementation> component = (LogicalComponent<DroolsImplementation>) service.getLeafComponent();
+        URI uri = URI.create(component.getUri().toString() + "#" + service.getUri().getFragment());
+        return new DroolsTargetDefinition(uri);
     }
 
     public DroolsSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
