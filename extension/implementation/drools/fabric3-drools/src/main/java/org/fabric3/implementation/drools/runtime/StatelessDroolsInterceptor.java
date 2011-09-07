@@ -120,27 +120,34 @@ public class StatelessDroolsInterceptor implements Interceptor {
      *
      * @param msg     the message containing the data
      * @param session the knowledge session
+     * @return the return message
      */
-    private void execute(Message msg, StatelessKnowledgeSession session) {
+    private Message execute(Message msg, StatelessKnowledgeSession session) {
         Object body = msg.getBody();
         if (body == null) {
             session.execute(body);
+            msg.setBody(null);
         } else {
             if (body.getClass().isArray()) {
                 // unwrap
                 Object[] array = (Object[]) body;
                 if (array.length == 1) {
-                    session.execute(array[0]);
+                    Object param = array[0];
+                    session.execute(param);
+                    msg.setBody(param);
                 } else if (array.length == 0) {
                     session.execute(array);
+                    msg.setBody(array);
                 } else {
                     Iterable<?> iterable = Arrays.asList(array);
                     session.execute(iterable);
+                    msg.setBody(array);
                 }
             } else {
                 session.execute(body);
             }
         }
+        return msg;
     }
 
 }
