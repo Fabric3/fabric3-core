@@ -60,7 +60,6 @@ import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.JavaClass;
-import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.ParamTypes;
 
@@ -90,19 +89,20 @@ public class DroolsComponentBuilder implements ComponentBuilder<DroolsComponentD
 
         URI componentUri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
-        Map<String, Injector<StatelessKnowledgeSession>> injectors = createInjectors(definition, classLoader);
+        Map<String, KnowledgeInjector<StatelessKnowledgeSession>> injectors = createInjectors(definition, classLoader);
         return new DroolsComponent(componentUri, knowledgeBase, injectors, deployable);
         // TODO hook into management
     }
 
 
     public void dispose(DroolsComponentDefinition definition, DroolsComponent component) throws BuilderException {
-
+        // no-op
     }
 
-    private Map<String, Injector<StatelessKnowledgeSession>> createInjectors(DroolsComponentDefinition definition, ClassLoader classLoader)
+    private Map<String, KnowledgeInjector<StatelessKnowledgeSession>> createInjectors(DroolsComponentDefinition definition, ClassLoader classLoader)
             throws BuilderException {
-        Map<String, Injector<StatelessKnowledgeSession>> injectors = new ConcurrentHashMap<String, Injector<StatelessKnowledgeSession>>();
+        Map<String, KnowledgeInjector<StatelessKnowledgeSession>> injectors =
+                new ConcurrentHashMap<String, KnowledgeInjector<StatelessKnowledgeSession>>();
 
         List<DroolsPropertyDefinition> propertyDefinitions = definition.getDroolsPropertyDefinitions();
         for (DroolsPropertyDefinition propertyDefinition : propertyDefinitions) {

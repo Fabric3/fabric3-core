@@ -44,7 +44,6 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.implementation.drools.provision.DroolsSourceDefinition;
 import org.fabric3.implementation.pojo.builder.KeyInstantiationException;
-import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.WireProxyService;
 import org.fabric3.model.type.component.Scope;
@@ -69,7 +68,7 @@ import org.fabric3.spi.wire.Wire;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class DroolsSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<DroolsSourceDefinition> {
+public class DroolsSourceWireAttacher implements SourceWireAttacher<DroolsSourceDefinition> {
     private ComponentManager manager;
     private WireProxyService proxyService;
     private ClassLoaderRegistry classLoaderRegistry;
@@ -80,7 +79,6 @@ public class DroolsSourceWireAttacher extends PojoSourceWireAttacher implements 
                                     @Reference ClassLoaderRegistry classLoaderRegistry,
                                     @Reference TransformerRegistry transformerRegistry,
                                     @Reference ScopeRegistry scopeRegistry) {
-        super(transformerRegistry,classLoaderRegistry);
         this.manager = manager;
         this.proxyService = proxyService;
         this.classLoaderRegistry = classLoaderRegistry;
@@ -129,12 +127,7 @@ public class DroolsSourceWireAttacher extends PojoSourceWireAttacher implements 
         DroolsComponent sourceComponent = (DroolsComponent) manager.getComponent(sourceId);
         String identifier = sourceDefinition.getIdentifier();
 
-        if (sourceDefinition.isKeyed()) {
-            Object key = getKey(sourceDefinition, targetDefinition);
-            sourceComponent.setObjectFactory(identifier, factory, key);
-        } else {
-            sourceComponent.setObjectFactory(identifier, factory);
-        }
+        sourceComponent.setObjectFactory(identifier, factory);
     }
 
     private void processReference(Wire wire,
@@ -152,12 +145,7 @@ public class DroolsSourceWireAttacher extends PojoSourceWireAttacher implements 
         InteractionType interactionType = sourceDefinition.getInteractionType();
         try {
             ObjectFactory<?> factory = proxyService.createObjectFactory(type, interactionType, wire, callbackUri);
-            if (sourceDefinition.isKeyed()) {
-                Object key = getKey(sourceDefinition, targetDefinition);
-                source.setObjectFactory(identifier, factory, key);
-            } else {
-                source.setObjectFactory(identifier, factory);
-            }
+            source.setObjectFactory(identifier, factory);
         } catch (ProxyCreationException e) {
             throw new KeyInstantiationException(e);
         }

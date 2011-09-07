@@ -64,16 +64,16 @@ public class DroolsComponent implements AtomicComponent {
 
     private URI uri;
     private KnowledgeBase knowledgeBase;
-    private Map<String, Injector<StatelessKnowledgeSession>> injectorMap;
-    private List<Injector<StatelessKnowledgeSession>> injectors;
+    private Map<String, KnowledgeInjector<StatelessKnowledgeSession>> injectorMap;
+    private List<KnowledgeInjector<StatelessKnowledgeSession>> injectors;
     private QName deployable;
     private URI classLoaderId;
 
-    public DroolsComponent(URI uri, KnowledgeBase knowledgeBase, Map<String, Injector<StatelessKnowledgeSession>> injectors, QName deployable) {
+    public DroolsComponent(URI uri, KnowledgeBase base, Map<String, KnowledgeInjector<StatelessKnowledgeSession>> injectors, QName deployable) {
         this.uri = uri;
-        this.knowledgeBase = knowledgeBase;
+        this.knowledgeBase = base;
         this.injectorMap = injectors;
-        this.injectors = new CopyOnWriteArrayList<Injector<StatelessKnowledgeSession>>(injectors.values());
+        this.injectors = new CopyOnWriteArrayList<KnowledgeInjector<StatelessKnowledgeSession>>(injectors.values());
         this.deployable = deployable;
     }
 
@@ -150,18 +150,21 @@ public class DroolsComponent implements AtomicComponent {
     }
 
     public void removeObjectFactory(String identifier) {
-
+        KnowledgeInjector injector = injectorMap.get(identifier);
+        if (injector == null) {
+            throw new AssertionError("Injector not found: " + identifier);
+        }
+        injectors.remove(injector);
     }
 
     public void setObjectFactory(String identifier, ObjectFactory<?> factory) {
-        setObjectFactory(identifier, factory, null);
-    }
-
-    public void setObjectFactory(String identifier, ObjectFactory<?> factory, Object key) {
-
+        // multiplicity references are not supported, therefore overwrite an existing factory
+        StatelessInjector injector = new StatelessInjector(identifier, factory);
+        injectors.add(injector);
+        injectorMap.put(identifier, injector);
     }
 
     public ObjectFactory<?> getObjectFactory(String identifier) {
-        return null;
+        return injectorMap.get(identifier).getObjectFactory();
     }
 }

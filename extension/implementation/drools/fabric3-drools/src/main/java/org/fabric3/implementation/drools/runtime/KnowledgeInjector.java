@@ -37,38 +37,21 @@
 */
 package org.fabric3.implementation.drools.runtime;
 
-import org.drools.runtime.StatelessKnowledgeSession;
-
-import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Injects a value in a stateless knowledge session.
+ * Base type for injecting a value in a knowledge session.
  *
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public class StatelessInjector implements KnowledgeInjector<StatelessKnowledgeSession> {
-    private String identifier;
-    private ObjectFactory<?> factory;
+public interface KnowledgeInjector<T> extends Injector<T> {
 
-    public StatelessInjector(String identifier, ObjectFactory<?> factory) {
-        this.identifier = identifier;
-        this.factory = factory;
-    }
+    /**
+     * Returns the injected value object factory.
+     *
+     * @return the injected value object factory
+     */
+    ObjectFactory<?> getObjectFactory();
 
-    public void inject(StatelessKnowledgeSession session) throws ObjectCreationException {
-        session.setGlobal(identifier, factory.getInstance());
-    }
-
-    public void setObjectFactory(ObjectFactory<?> factory, Object key) {
-        this.factory = factory;
-    }
-
-    public void clearObjectFactory() {
-        this.factory = null;
-    }
-
-    public ObjectFactory<?> getObjectFactory() {
-        return factory;
-    }
 }

@@ -42,11 +42,9 @@ public class DroolsComponentGenerator implements ComponentGenerator<LogicalCompo
     public DroolsSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         ServiceContract serviceContract = reference.getDefinition().getServiceContract();
         String interfaceName = serviceContract.getQualifiedInterfaceName();
-        if (reference.getDefinition().isKeyed()) {
-            String keyClass = reference.getDefinition().getKeyDataType().getPhysical().getName();
-            return new DroolsSourceDefinition(reference.getDefinition().getName(), interfaceName, InjectableType.REFERENCE, keyClass);
-        }
-        return new DroolsSourceDefinition(reference.getDefinition().getName(), interfaceName, InjectableType.REFERENCE);
+        String name = reference.getDefinition().getName();
+        URI uri = reference.getUri();
+        return new DroolsSourceDefinition(uri, name, interfaceName, InjectableType.REFERENCE);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -59,7 +57,9 @@ public class DroolsComponentGenerator implements ComponentGenerator<LogicalCompo
     public DroolsSourceDefinition generateCallbackSource(LogicalService service, EffectivePolicy policy) throws GenerationException {
         ServiceContract callbackContract = service.getDefinition().getServiceContract().getCallbackContract();
         String interfaceName = callbackContract.getQualifiedInterfaceName();
-        return new DroolsSourceDefinition(service.getDefinition().getName(), interfaceName, InjectableType.CALLBACK);
+        String name = service.getDefinition().getName();
+        URI uri = service.getUri();
+        return new DroolsSourceDefinition(uri, name, interfaceName, InjectableType.CALLBACK);
     }
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException {
