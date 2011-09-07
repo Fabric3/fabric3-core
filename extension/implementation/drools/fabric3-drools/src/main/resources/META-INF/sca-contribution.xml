@@ -20,4 +20,7 @@ Public License. See the accompanying license file for details.
     <import.java package="org.drools.*" version="5.2.0"/>
     <import.java package="org.eclipse.jdt.*" version="3.5.1"/>
     <import.java package="org.mvel2.*" version="2.1.0"/>
+
+    <deployable composite="f3:DroolsControllerExtension" modes="controller vm"/>
+    <deployable composite="f3:DroolsParticipantExtension" modes="participant vm"/>
 </contribution>

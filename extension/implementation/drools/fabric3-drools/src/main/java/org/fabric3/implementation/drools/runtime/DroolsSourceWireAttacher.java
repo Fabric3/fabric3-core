@@ -47,12 +47,14 @@ import org.fabric3.implementation.pojo.builder.KeyInstantiationException;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.WireProxyService;
+import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopeContainer;
+import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.InjectableType;
@@ -71,15 +73,20 @@ public class DroolsSourceWireAttacher extends PojoSourceWireAttacher implements 
     private ComponentManager manager;
     private WireProxyService proxyService;
     private ClassLoaderRegistry classLoaderRegistry;
+    private ScopeContainer scopeContainer;
 
     public DroolsSourceWireAttacher(@Reference ComponentManager manager,
                                     @Reference WireProxyService proxyService,
                                     @Reference ClassLoaderRegistry classLoaderRegistry,
-                                    @Reference TransformerRegistry transformerRegistry) {
+                                    @Reference TransformerRegistry transformerRegistry,
+                                    @Reference ScopeRegistry scopeRegistry) {
         super(transformerRegistry,classLoaderRegistry);
         this.manager = manager;
         this.proxyService = proxyService;
         this.classLoaderRegistry = classLoaderRegistry;
+        // Scope containers are not used by Drools but required by the WireProxyService to support conversational services.
+        // When conversation support is replaced by distributed caching, this dependency can be removed.
+        this.scopeContainer = scopeRegistry.getScopeContainer(Scope.STATELESS);
     }
 
     public void attach(DroolsSourceDefinition sourceDefinition, PhysicalTargetDefinition targetDefinition, Wire wire) throws WiringException {
@@ -159,13 +166,12 @@ public class DroolsSourceWireAttacher extends PojoSourceWireAttacher implements 
     private void processCallback(Wire wire, PhysicalTargetDefinition targetDefinition, DroolsComponent source, String identifier, Class<?> type)
             throws WiringException {
         URI callbackUri = targetDefinition.getUri();
-        ScopeContainer container = null; // FIXME
         ObjectFactory<?> factory = source.getObjectFactory(identifier);
         try {
             if (factory == null) {
-                factory = proxyService.createCallbackObjectFactory(type, container, callbackUri, wire);
+                factory = proxyService.createCallbackObjectFactory(type, scopeContainer, callbackUri, wire);
             } else {
-                factory = proxyService.updateCallbackObjectFactory(factory, type, container, callbackUri, wire);
+                factory = proxyService.updateCallbackObjectFactory(factory, type, scopeContainer, callbackUri, wire);
             }
             source.setObjectFactory(identifier, factory);
         } catch (ProxyCreationException e) {
