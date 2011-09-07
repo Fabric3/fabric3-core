@@ -58,7 +58,12 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  */
 public class DroolsImplementationLoaderTestCase extends TestCase {
 
-    private static final String XML = "<implementation.drools><resource source='HelloWorld.drl'/></implementation.drools>";
+    private static final String XML =
+            "<implementation.drools>" +
+                    "   <service interface='" + SomeService.class.getName() + "'/>" +
+                    "   <service name='service2' interface='" + SomeService.class.getName() + "'/>" +
+                    "   <resource source='HelloWorld.drl'/>" +
+                    "</implementation.drools>";
 
     private static final String XML_NO_RESOURCES = "<implementation.drools></implementation.drools>";
 
@@ -104,6 +109,11 @@ public class DroolsImplementationLoaderTestCase extends TestCase {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(in);
         reader.nextTag();
         return reader;
+    }
+
+    private static interface SomeService {
+
+        void invoke(String msg);
     }
 
 }
