@@ -41,9 +41,9 @@ import java.util.Map;
 
 import org.oasisopen.sca.annotation.Reference;
 
+import org.fabric3.implementation.drools.model.DroolsProperty;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -92,7 +92,7 @@ public class RulesIntrospectorImpl implements RulesIntrospector {
     private void introspectType(String name, Class<?> type, ComponentType componentType, IntrospectionContext context) {
         java.lang.Package pkg = type.getPackage();
         if (type.isPrimitive()) {
-            createProperty(name, componentType);
+            createProperty(name, type, componentType);
         } else if (type.isArray()) {
             Class<?> arrayType = type.getComponentType();
             introspectType(name, arrayType, componentType, context);
@@ -101,15 +101,15 @@ public class RulesIntrospectorImpl implements RulesIntrospector {
             createReference(name, type, componentType, context);
         } else if (pkg.getName().startsWith("java.")) {
             // create a property
-            createProperty(name, componentType);
+            createProperty(name, type, componentType);
         } else {
             // default to a reference
             createReference(name, type, componentType, context);
         }
     }
 
-    private void createProperty(String name, ComponentType componentType) {
-        Property property = new Property(name);
+    private void createProperty(String name, Class<?> type, ComponentType componentType) {
+        DroolsProperty property = new DroolsProperty(name, type.getName());
         property.setRequired(true);
         componentType.add(property);
     }

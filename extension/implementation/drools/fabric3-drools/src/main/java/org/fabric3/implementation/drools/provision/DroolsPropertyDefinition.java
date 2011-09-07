@@ -37,35 +37,27 @@
 */
 package org.fabric3.implementation.drools.provision;
 
-import java.util.Collection;
-import java.util.List;
+import org.w3c.dom.Document;
 
-import org.drools.definition.KnowledgePackage;
+import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+/**
+ * Extends {@link PhysicalPropertyDefinition} to add type information.
+ *
+ * @version $Rev: 10632 $ $Date: 2011-09-07 12:17:39 +0200 (Wed, 07 Sep 2011) $
+ */
+public class DroolsPropertyDefinition extends PhysicalPropertyDefinition {
+    private static final long serialVersionUID = -3805243048990435693L;
 
-public class DroolsComponentDefinition extends PhysicalComponentDefinition {
-    private static final long serialVersionUID = 7417967412654697630L;
+    private String type;
 
-    private Collection<KnowledgePackage> packages;
-
-    public DroolsComponentDefinition(Collection<KnowledgePackage> packages, List<DroolsPropertyDefinition> properties) {
-        this.packages = packages;
-        getPropertyDefinitions().addAll(properties);
+    public DroolsPropertyDefinition(String name, String type, Document value) {
+        super(name, value, false);
+        this.type = type;
     }
 
-    public Collection<KnowledgePackage> getPackages() {
-        return packages;
+    public String getType() {
+        return type;
     }
-
-    public List<DroolsPropertyDefinition> getDroolsPropertyDefinitions() {
-        return cast(getPropertyDefinitions());
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private <T> T cast(Object o) {
-        return (T) o;
-    }
-
 
 }

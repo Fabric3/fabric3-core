@@ -103,7 +103,7 @@ public class StatelessDroolsInterceptor implements Interceptor {
             } else {
                 ClassLoader old = Thread.currentThread().getContextClassLoader();
                 try {
-                    Thread.currentThread().setContextClassLoader(targetTCCLClassLoader);
+                   Thread.currentThread().setContextClassLoader(targetTCCLClassLoader);
                     execute(msg, session);
                 } finally {
                     Thread.currentThread().setContextClassLoader(old);

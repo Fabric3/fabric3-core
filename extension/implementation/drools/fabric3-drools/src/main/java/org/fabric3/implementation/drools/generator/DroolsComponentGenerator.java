@@ -1,11 +1,20 @@
 package org.fabric3.implementation.drools.generator;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.w3c.dom.Document;
 
 import org.fabric3.implementation.drools.model.DroolsImplementation;
+import org.fabric3.implementation.drools.model.DroolsProperty;
 import org.fabric3.implementation.drools.provision.DroolsComponentDefinition;
+import org.fabric3.implementation.drools.provision.DroolsPropertyDefinition;
 import org.fabric3.implementation.drools.provision.DroolsSourceDefinition;
 import org.fabric3.implementation.drools.provision.DroolsTargetDefinition;
+import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.model.type.component.Property;
+import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.EffectivePolicy;
@@ -25,7 +34,9 @@ public class DroolsComponentGenerator implements ComponentGenerator<LogicalCompo
 
     public DroolsComponentDefinition generate(LogicalComponent<DroolsImplementation> component) throws GenerationException {
         DroolsImplementation implementation = component.getDefinition().getImplementation();
-        return new DroolsComponentDefinition(implementation.getPackages());
+        ComponentType componentType = implementation.getComponentType();
+        List<DroolsPropertyDefinition> properties = generateProperties(component, componentType);
+        return new DroolsComponentDefinition(implementation.getPackages(), properties);
     }
 
     public DroolsSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
@@ -35,7 +46,7 @@ public class DroolsComponentGenerator implements ComponentGenerator<LogicalCompo
             String keyClass = reference.getDefinition().getKeyDataType().getPhysical().getName();
             return new DroolsSourceDefinition(reference.getDefinition().getName(), interfaceName, InjectableType.REFERENCE, keyClass);
         }
-        return  new DroolsSourceDefinition(reference.getDefinition().getName(), interfaceName, InjectableType.REFERENCE);
+        return new DroolsSourceDefinition(reference.getDefinition().getName(), interfaceName, InjectableType.REFERENCE);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -62,4 +73,26 @@ public class DroolsComponentGenerator implements ComponentGenerator<LogicalCompo
     public PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
         throw new UnsupportedOperationException();
     }
+
+    private List<DroolsPropertyDefinition> generateProperties(LogicalComponent<DroolsImplementation> component, ComponentType componentType)
+            throws GenerationException {
+        List<DroolsPropertyDefinition> properties = new ArrayList<DroolsPropertyDefinition>();
+        for (Property property : componentType.getProperties().values()) {
+            DroolsProperty droolsProperty = (DroolsProperty) property;
+            String name = droolsProperty.getName();
+            String type = droolsProperty.getPropertyType();
+
+            PropertyValue propertyValue = component.getDefinition().getPropertyValues().get(name);
+            if (propertyValue == null) {
+                // this should not happen as it is checked before generation
+                throw new GenerationException("Property not configured: " + name);
+            }
+            Document value = propertyValue.getValue();
+            DroolsPropertyDefinition definition = new DroolsPropertyDefinition(name, type, value);
+            properties.add(definition);
+        }
+        return properties;
+    }
+
+
 }

@@ -163,8 +163,9 @@ public class DroolsImplementationLoader implements TypeLoader<DroolsImplementati
     private KnowledgeBuilderImpl createBuilder(List<String> resources, XMLStreamReader reader, IntrospectionContext context) {
         PackageBuilder packageBuilder = new PackageBuilder();
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl(packageBuilder);
-
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             for (String resourceString : resources) {
                 Resource resource = ResourceFactory.newClassPathResource(resourceString, context.getClassLoader());
                 builder.add(resource, ResourceType.DRL);
@@ -179,6 +180,8 @@ public class DroolsImplementationLoader implements TypeLoader<DroolsImplementati
             // Drools throws generic RuntimeExceptions for conditions such as FileNotFound for a resource
             RulesParsingError error = new RulesParsingError("Error parsing rules", e, reader);
             context.addError(error);
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
         return builder;
 

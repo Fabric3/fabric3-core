@@ -38,6 +38,7 @@
 package org.fabric3.implementation.drools.runtime;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,12 +50,19 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
+import org.w3c.dom.Document;
 
 import org.fabric3.implementation.drools.provision.DroolsComponentDefinition;
+import org.fabric3.implementation.drools.provision.DroolsPropertyDefinition;
+import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
+import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.util.ParamTypes;
 
 /**
  * Builds a DroolsComponent from a physical definition.
@@ -64,8 +72,11 @@ import org.fabric3.spi.objectfactory.Injector;
 @EagerInit
 public class DroolsComponentBuilder implements ComponentBuilder<DroolsComponentDefinition, DroolsComponent> {
     private ClassLoaderRegistry classLoaderRegistry;
+    private PropertyObjectFactoryBuilder propertyBuilder;
 
-    public DroolsComponentBuilder(@Reference ClassLoaderRegistry classLoaderRegistry) {
+    public DroolsComponentBuilder(@Reference PropertyObjectFactoryBuilder propertyBuilder,
+                                  @Reference ClassLoaderRegistry classLoaderRegistry) {
+        this.propertyBuilder = propertyBuilder;
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
@@ -79,7 +90,7 @@ public class DroolsComponentBuilder implements ComponentBuilder<DroolsComponentD
 
         URI componentUri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
-        Map<String, Injector<StatelessKnowledgeSession>> injectors = createInjectors();
+        Map<String, Injector<StatelessKnowledgeSession>> injectors = createInjectors(definition, classLoader);
         return new DroolsComponent(componentUri, knowledgeBase, injectors, deployable);
         // TODO hook into management
     }
@@ -89,8 +100,41 @@ public class DroolsComponentBuilder implements ComponentBuilder<DroolsComponentD
 
     }
 
-    private Map<String, Injector<StatelessKnowledgeSession>> createInjectors() {
+    private Map<String, Injector<StatelessKnowledgeSession>> createInjectors(DroolsComponentDefinition definition, ClassLoader classLoader)
+            throws BuilderException {
         Map<String, Injector<StatelessKnowledgeSession>> injectors = new ConcurrentHashMap<String, Injector<StatelessKnowledgeSession>>();
+
+        List<DroolsPropertyDefinition> propertyDefinitions = definition.getDroolsPropertyDefinitions();
+        for (DroolsPropertyDefinition propertyDefinition : propertyDefinitions) {
+            ObjectFactory<?> factory = createPropertyFactories(propertyDefinition, classLoader);
+            String name = propertyDefinition.getName();
+            StatelessInjector injector = new StatelessInjector(name, factory);
+            injectors.put(name, injector);
+        }
         return injectors;
     }
+
+    private ObjectFactory<?> createPropertyFactories(DroolsPropertyDefinition definition, ClassLoader classLoader) throws BuilderException {
+        try {
+            String name = definition.getName();
+            Document value = definition.getValue();
+            Class<?> type = classLoader.loadClass(definition.getType());
+            DataType<?> dataType = getDataType(type);
+
+            boolean many = definition.isMany();
+            return propertyBuilder.createFactory(name, dataType, value, many, classLoader);
+        } catch (ClassNotFoundException e) {
+            throw new BuilderException(e);
+        }
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private DataType<?> getDataType(Class<?> type) {
+        if (type.isPrimitive()) {
+            // convert primitive representation to its object equivalent
+            type = ParamTypes.PRIMITIVE_TO_OBJECT.get(type);
+        }
+        return new JavaClass(type);
+    }
+
 }

@@ -35,37 +35,26 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.drools.provision;
+package org.fabric3.implementation.drools.model;
 
-import java.util.Collection;
-import java.util.List;
+import org.fabric3.model.type.component.Property;
 
-import org.drools.definition.KnowledgePackage;
+/**
+ * @version $$Rev$$ $$Date$$
+ */
+public class DroolsProperty extends Property {
+    private static final long serialVersionUID = 7610101714505478800L;
 
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+    private String propertyType;
 
-public class DroolsComponentDefinition extends PhysicalComponentDefinition {
-    private static final long serialVersionUID = 7417967412654697630L;
-
-    private Collection<KnowledgePackage> packages;
-
-    public DroolsComponentDefinition(Collection<KnowledgePackage> packages, List<DroolsPropertyDefinition> properties) {
-        this.packages = packages;
-        getPropertyDefinitions().addAll(properties);
+    public DroolsProperty(String name, String propertyType) {
+        super(name);
+        this.propertyType = propertyType;
     }
 
-    public Collection<KnowledgePackage> getPackages() {
-        return packages;
+    public String getPropertyType() {
+        return propertyType;
     }
-
-    public List<DroolsPropertyDefinition> getDroolsPropertyDefinitions() {
-        return cast(getPropertyDefinitions());
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private <T> T cast(Object o) {
-        return (T) o;
-    }
-
-
 }
+
+
