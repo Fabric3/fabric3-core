@@ -21,6 +21,7 @@
         <property name="deployableLevels" source="$systemConfig//runtime/monitor/deployables"/>
         <property name="applicationComponentLevels" source="$systemConfig//runtime/monitor/application.components"/>
         <property name="runtimeComponentLevels" source="$systemConfig//runtime/monitor/runtime.components"/>
+        <property name="loggerLevels" source="$systemConfig//runtime/monitor/logger.levels"/>
     </component>
 
 </composite>

@@ -78,6 +78,7 @@ public class LogBackMonitorService implements MonitorService, ComponentBuilderLi
     private Map<URI, MonitorLevel> applicationComponentLevels = Collections.emptyMap();
     private Map<URI, MonitorLevel> runtimeComponentLevels = Collections.emptyMap();
     private Map<QName, MonitorLevel> deployableLevels = Collections.emptyMap();
+    private Map<String,String> providerLevels = Collections.emptyMap();
 
     public LogBackMonitorService(@Reference ComponentManager manager, @Reference HostInfo info) {
         this.manager = manager;
@@ -160,6 +161,24 @@ public class LogBackMonitorService implements MonitorService, ComponentBuilderLi
             String value = element.getAttribute("value").toUpperCase();
             MonitorLevel level = MonitorLevel.valueOf(value.toUpperCase());
             deployableLevels.put(getQualifiedName(element), level);
+        }
+    }
+
+    /**
+     * Used at runtime startup to set the monitor levels based on class names.
+     *
+     * @param levels the mapping of classes-loggers to monitor level
+     */
+    @Property(required = false)
+    public void setLoggerLevels(Element levels){
+         this.providerLevels = new HashMap<String, String>();
+         NodeList list = levels.getElementsByTagName("level");
+        for (int i=0; i < list.getLength();i++)
+        {
+            Element element = (Element) list.item(i);
+            String className = element.getAttribute("name");
+            String level = element.getAttribute("value");
+            setProviderLevel(className,level);
         }
     }
 
