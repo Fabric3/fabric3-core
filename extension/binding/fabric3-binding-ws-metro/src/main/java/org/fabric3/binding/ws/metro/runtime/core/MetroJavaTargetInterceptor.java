@@ -39,10 +39,12 @@ package org.fabric3.binding.ws.metro.runtime.core;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.SocketTimeoutException;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.WebServiceException;
 
-import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
 import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
@@ -102,12 +104,25 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
                 Object ret = method.invoke(proxy, payload);
                 return new MessageImpl(ret, false, null);
             }
-        } catch (InaccessibleWSDLException e) {
-            throw new ServiceRuntimeException(e);
+        } catch (WebServiceException e) {
+            if (e.getCause() instanceof SocketTimeoutException) {
+                throw new ServiceUnavailableException(e);
+            } else {
+                throw new ServiceRuntimeException(e);
+            }
         } catch (IllegalAccessException e) {
             throw new AssertionError(e);
         } catch (InvocationTargetException e) {
-            return new MessageImpl(e.getTargetException(), true, null);
+            if (e.getTargetException() instanceof WebServiceException) {
+                WebServiceException wse = (WebServiceException) e.getTargetException();
+                if (wse.getCause() instanceof SocketTimeoutException) {
+                    throw new ServiceUnavailableException(e);
+                } else {
+                    throw new ServiceRuntimeException(e);
+                }
+            } else {
+                return new MessageImpl(e.getTargetException(), true, null);
+            }
         } catch (ObjectCreationException e) {
             throw new ServiceRuntimeException(e);
         } finally {
