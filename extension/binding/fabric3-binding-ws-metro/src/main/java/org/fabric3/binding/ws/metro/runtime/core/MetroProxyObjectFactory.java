@@ -313,6 +313,8 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
             if (DEFINITIONS.equals(reader.getName())) {
                 return true;
             }
+        } catch (NullPointerException e) {
+            // ignore thrown by URL.openStream(..)
         } catch (IOException e) {
             // ignore
         } catch (XMLStreamException e) {
