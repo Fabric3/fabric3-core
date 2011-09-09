@@ -38,58 +38,50 @@
 package org.fabric3.contribution.manifest;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.spi.contribution.Export;
-import org.fabric3.spi.contribution.Import;
+import org.osoa.sca.annotations.EagerInit;
+
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
+import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
- * Exports the entire package contents of a contribution. This export type is used for API and SPI contributions where all contents are visible to
- * importing contributions.
+ * Processes an <code>import.contribution</code> element in a contribution manifest
  *
  * @version $Rev$ $Date$
  */
-public class ContributionExport implements Export {
-    private static final long serialVersionUID = -2400233923134603994L;
-    private URI symbolicUri;
-    private boolean resolved;
+@EagerInit
+public class ContributionImportLoader implements TypeLoader<ContributionImport> {
+    private URI INVALID_URI = URI.create("invalid");
 
-    public ContributionExport(URI symbolicUri) {
-        this.symbolicUri = symbolicUri;
+    public ContributionImport load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateAttributes(reader, context);
+        String uriStr = reader.getAttributeValue(null, "uri");
+        if (uriStr == null) {
+            MissingManifestAttribute failure = new MissingManifestAttribute("The uri attribute must be specified", reader);
+            context.addError(failure);
+            return null;
+        }
+        try {
+            URI uri = new URI(uriStr);
+            return new ContributionImport(uri);
+        } catch (URISyntaxException e) {
+            InvalidValue error = new InvalidValue("Invalid uri attribute", reader, e);
+            context.addError(error);
+        }
+        return new ContributionImport(INVALID_URI);
     }
 
-    public URI getSymbolicUri() {
-        return symbolicUri;
-    }
-
-    public URI getLocation() {
-        return null;
-    }
-
-    public boolean match(Import imprt) {
-        return imprt instanceof ContributionImport && symbolicUri.equals(((ContributionImport) imprt).getSymbolicUri());
-    }
-
-    public boolean isResolved() {
-        return resolved;
-    }
-
-    public void resolve() {
-        resolved = true;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ContributionExport that = (ContributionExport) o;
-
-        return !(symbolicUri != null ? !symbolicUri.equals(that.symbolicUri) : that.symbolicUri != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return symbolicUri != null ? symbolicUri.hashCode() : 0;
+    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String name = reader.getAttributeLocalName(i);
+            if (!"uri".equals(name)) {
+                context.addError(new UnrecognizedAttribute(name, reader));
+            }
+        }
     }
 }

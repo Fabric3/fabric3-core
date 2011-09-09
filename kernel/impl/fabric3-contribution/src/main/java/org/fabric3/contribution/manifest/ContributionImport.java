@@ -51,16 +51,20 @@ import org.fabric3.spi.contribution.Import;
  */
 public class ContributionImport implements Import {
     private static final long serialVersionUID = 5947082714758125178L;
-    private URI location;
+    private URI symbolicUri;
     private Map<URI, Export> resolved;
 
-    public ContributionImport(URI contributionId) {
-        location = contributionId;
+    public ContributionImport(URI symbolicUri) {
+        this.symbolicUri = symbolicUri;
         resolved = new HashMap<URI, Export>();
     }
 
     public URI getLocation() {
-        return location;
+        return null;
+    }
+
+    public URI getSymbolicUri() {
+        return symbolicUri;
     }
 
     public boolean isMultiplicity() {
@@ -83,7 +87,7 @@ public class ContributionImport implements Import {
     }
 
     public String toString() {
-        return "contribution [" + location + "]";
+        return "contribution [" + symbolicUri + "]";
     }
 
     @Override
@@ -93,12 +97,12 @@ public class ContributionImport implements Import {
 
         ContributionImport that = (ContributionImport) o;
 
-        return !(location != null ? !location.equals(that.location) : that.location != null);
+        return !(symbolicUri != null ? !symbolicUri.equals(that.symbolicUri) : that.symbolicUri != null);
 
     }
 
     @Override
     public int hashCode() {
-        return location != null ? location.hashCode() : 0;
+        return symbolicUri != null ? symbolicUri.hashCode() : 0;
     }
 }

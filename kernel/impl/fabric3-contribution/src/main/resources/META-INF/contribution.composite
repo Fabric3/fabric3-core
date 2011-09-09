@@ -109,6 +109,14 @@
         <f3:implementation.system class="org.fabric3.contribution.manifest.QNameImportLoader"/>
     </component>
 
+    <component name="ContributionImportLoader" f3:key="sca:import.contribution">
+        <f3:implementation.system class="org.fabric3.contribution.manifest.ContributionImportLoader"/>
+    </component>
+
+    <component name="ContributionExportLoader" f3:key="sca:export.contribution">
+        <f3:implementation.system class="org.fabric3.contribution.manifest.ContributionExportLoader"/>
+    </component>
+
     <component name="JavaExportLoader" f3:key="sca:export.java">
         <f3:implementation.system class="org.fabric3.contribution.manifest.JavaExportLoader"/>
     </component>

@@ -37,59 +37,33 @@
 */
 package org.fabric3.contribution.manifest;
 
+import java.io.ByteArrayInputStream;
 import java.net.URI;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.spi.contribution.Export;
-import org.fabric3.spi.contribution.Import;
+import junit.framework.TestCase;
 
 /**
- * Exports the entire package contents of a contribution. This export type is used for API and SPI contributions where all contents are visible to
- * importing contributions.
- *
  * @version $Rev$ $Date$
  */
-public class ContributionExport implements Export {
-    private static final long serialVersionUID = -2400233923134603994L;
-    private URI symbolicUri;
-    private boolean resolved;
+public class ContributionImportLoaderTestCase extends TestCase {
+    private static final String XML = "<import.contribution uri=\"foo\"/>";
 
-    public ContributionExport(URI symbolicUri) {
-        this.symbolicUri = symbolicUri;
+    private ContributionImportLoader loader;
+    private XMLStreamReader reader;
+
+    public void testRead() throws Exception {
+        ContributionImport imprt = loader.load(reader, null);
+        assertEquals(URI.create("foo"), imprt.getSymbolicUri());
     }
 
-    public URI getSymbolicUri() {
-        return symbolicUri;
-    }
 
-    public URI getLocation() {
-        return null;
-    }
-
-    public boolean match(Import imprt) {
-        return imprt instanceof ContributionImport && symbolicUri.equals(((ContributionImport) imprt).getSymbolicUri());
-    }
-
-    public boolean isResolved() {
-        return resolved;
-    }
-
-    public void resolve() {
-        resolved = true;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ContributionExport that = (ContributionExport) o;
-
-        return !(symbolicUri != null ? !symbolicUri.equals(that.symbolicUri) : that.symbolicUri != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return symbolicUri != null ? symbolicUri.hashCode() : 0;
+    protected void setUp() throws Exception {
+        super.setUp();
+        loader = new ContributionImportLoader();
+        ByteArrayInputStream b = new ByteArrayInputStream(XML.getBytes());
+        reader = XMLInputFactory.newInstance().createXMLStreamReader(b);
+        reader.nextTag();
     }
 }
