@@ -42,6 +42,7 @@ import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceException;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
@@ -113,7 +114,7 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
         } catch (IllegalAccessException e) {
             throw new AssertionError(e);
         } catch (InvocationTargetException e) {
-            if (e.getTargetException() instanceof WebServiceException) {
+            if (e.getTargetException() instanceof WebServiceException && !(e.getTargetException() instanceof SOAPFaultException)) {
                 WebServiceException wse = (WebServiceException) e.getTargetException();
                 if (wse.getCause() instanceof SocketTimeoutException) {
                     throw new ServiceUnavailableException(e);
