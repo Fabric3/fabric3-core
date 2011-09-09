@@ -181,7 +181,7 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
         public synchronized void stop() {
             active.set(false);
             if (socket != null) {
-                // FIXME closing results in a segmentation fault for non-reliable one-way on OS X
+                // Closing results in a segmentation fault for non-reliable one-way on OS X
                 socket.close();
                 socket = null;
             }
