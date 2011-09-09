@@ -106,7 +106,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         ClassLoader sourceClassLoader = classLoaderRegistry.getClassLoader(source.getClassLoaderId());
 
         JmsBindingMetadata metadata = source.getMetadata();
-        String clientId = info.getRuntimeName() + ":" + metadata.getClientIdSpecifier();
+        String clientId = info.getDomain().getAuthority() + ":" + info.getRuntimeName() + ":" + metadata.getClientIdSpecifier();
 
         ResolvedObjects objects = resolveAdministeredObjects(source, clientId);
 
