@@ -61,6 +61,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * Generates commands to attach/detach the source end of physical wires to their transports for components being deployed or undeployed.
@@ -127,6 +128,9 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
             }
 
             for (LogicalBinding<?> binding : service.getBindings()) {
+                if (binding.getDefinition() instanceof SCABinding) {
+                    continue;
+                }
                 if (binding.getState() == LogicalState.NEW || binding.getState() == LogicalState.MARKED || !incremental) {
                     PhysicalWireDefinition pwd = wireGenerator.generateBoundService(binding, callbackUri);
                     if (LogicalState.MARKED == binding.getState()) {
@@ -143,9 +147,10 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
             }
             // generate the callback command set
             if (callbackBinding != null
-                    && (callbackBinding.getState() == LogicalState.NEW
+                    && !(callbackBinding.getDefinition() instanceof SCABinding)
+                    && ((callbackBinding.getState() == LogicalState.NEW
                     || callbackBinding.getState() == LogicalState.MARKED
-                    || !incremental)) {
+                    || !incremental))) {
                 PhysicalWireDefinition callbackPwd = wireGenerator.generateBoundServiceCallback(callbackBinding);
                 if (LogicalState.MARKED == callbackBinding.getState()) {
                     DetachWireCommand detachWireCommand = new DetachWireCommand();
