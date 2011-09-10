@@ -90,9 +90,12 @@ public class ContributionHelperImpl implements ContributionHelper {
                     for (Deployable deployable : contribution.getManifest().getDeployables()) {
                         if (deployable.getName().equals(name)) {
                             List<RuntimeMode> deployableModes = deployable.getRuntimeModes();
-                            // only add deployables that are set to boot in the current runtime mode
+                            // only add deployables that are set to boot in the current runtime mode and where the environment matches
                             if (deployableModes.contains(hostInfo.getRuntimeMode())) {
-                                deployables.add(composite);
+                                List<String> environments = deployable.getEnvironments();
+                                if (environments.isEmpty() || environments.contains(hostInfo.getEnvironment())) {
+                                    deployables.add(composite);
+                                }
                             }
                             break;
                         }

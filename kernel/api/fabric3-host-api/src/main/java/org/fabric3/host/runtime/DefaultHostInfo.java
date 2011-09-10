@@ -57,6 +57,7 @@ import org.fabric3.host.RuntimeMode;
 public class DefaultHostInfo implements HostInfo {
     private String runtimeName;
     private RuntimeMode runtimeMode;
+    private String environment;
     private URI domain;
     private File baseDir;
     private File userDirectory;
@@ -75,6 +76,7 @@ public class DefaultHostInfo implements HostInfo {
      *
      * @param runtimeName       the runtime name
      * @param runtimeMode       the mode the runtime is started in
+     * @param environment       the runtime environment type
      * @param domain            the SCA domain this runtime belongs to
      * @param baseDir           directory containing the standalone installation
      * @param userDirectory     user repository directory
@@ -88,6 +90,7 @@ public class DefaultHostInfo implements HostInfo {
      */
     public DefaultHostInfo(String runtimeName,
                            RuntimeMode runtimeMode,
+                           String environment,
                            URI domain,
                            File baseDir,
                            File userDirectory,
@@ -100,6 +103,7 @@ public class DefaultHostInfo implements HostInfo {
                            OperatingSystem operatingSystem) {
         this.runtimeName = runtimeName;
         this.runtimeMode = runtimeMode;
+        this.environment = environment;
         this.domain = domain;
         this.baseDir = baseDir;
         this.userDirectory = userDirectory;
@@ -119,6 +123,10 @@ public class DefaultHostInfo implements HostInfo {
 
     public RuntimeMode getRuntimeMode() {
         return runtimeMode;
+    }
+
+    public String getEnvironment() {
+        return environment;
     }
 
     public URI getDomain() {

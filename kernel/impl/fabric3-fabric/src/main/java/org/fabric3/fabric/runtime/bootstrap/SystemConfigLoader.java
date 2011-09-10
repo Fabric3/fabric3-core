@@ -63,6 +63,7 @@ import org.xml.sax.SAXException;
 
 import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
+import org.fabric3.host.Environment;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.runtime.ParseException;
@@ -223,6 +224,25 @@ public class SystemConfigLoader {
     }
 
     /**
+     * Returns the runtime environment. If one is not explicitly configured, the default {@link Environment#PRODUCTION} will be returned.
+     *
+     * @param systemConfig the system configuration
+     * @return the parsed runtime environment
+     */
+    public String parseEnvironment(Document systemConfig) {
+        Element root = systemConfig.getDocumentElement();
+        NodeList nodes = root.getElementsByTagName("runtime");
+        if (nodes.getLength() == 1) {
+            Element node = (Element) nodes.item(0);
+            String environment = node.getAttribute("environment");
+            if (environment.length() > 0) {
+                return environment;
+            }
+        }
+        return Environment.PRODUCTION;
+    }
+
+    /**
      * Returns the monitor configuration. If not set, null will be returned.
      *
      * @param elementName  the element name of the monitor configuration
@@ -302,4 +322,5 @@ public class SystemConfigLoader {
             }
         }
     }
+
 }

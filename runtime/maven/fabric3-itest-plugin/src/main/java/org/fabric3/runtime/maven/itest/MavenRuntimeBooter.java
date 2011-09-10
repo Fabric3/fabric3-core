@@ -123,10 +123,9 @@ public class MavenRuntimeBooter {
     public MavenRuntime boot() throws MojoExecutionException {
         try {
             BootstrapService bootstrapService = BootstrapFactory.getService(bootClassLoader);
-            MavenRuntime runtime = createRuntime();
-
-            URL systemComposite = bootClassLoader.getResource("META-INF/fabric3/embeddedMaven.composite");
             Document systemConfig = getSystemConfig(bootstrapService);
+
+            MavenRuntime runtime = createRuntime(bootstrapService, systemConfig);
 
             Map<String, String> exportedPackages = new HashMap<String, String>();
             exportedPackages.put("org.fabric3.test.spi", Names.VERSION);
@@ -148,7 +147,10 @@ public class MavenRuntimeBooter {
             configuration.setRuntime(runtime);
             configuration.setHostClassLoader(hostClassLoader);
             configuration.setBootClassLoader(bootClassLoader);
+
+            URL systemComposite = bootClassLoader.getResource("META-INF/fabric3/embeddedMaven.composite");
             configuration.setSystemCompositeUrl(systemComposite);
+
             configuration.setSystemConfig(systemConfig);
             configuration.setExtensionContributions(contributions);
             configuration.setExportedPackages(exportedPackages);
@@ -162,7 +164,9 @@ public class MavenRuntimeBooter {
         }
     }
 
-    private MavenRuntime createRuntime() {
+    private MavenRuntime createRuntime(BootstrapService bootstrapService, Document systemConfig)
+            throws MojoExecutionException, InitializationException {
+        String environment = bootstrapService.parseEnvironment(systemConfig);
 
         File tempDir = new File(System.getProperty("java.io.tmpdir"), ".f3");
         if (tempDir.exists()) {
@@ -178,7 +182,7 @@ public class MavenRuntimeBooter {
         File baseDir = new File(outputDirectory, "test-classes");
         OperatingSystem os = BootstrapHelper.getOperatingSystem();
 
-        MavenHostInfoImpl hostInfo = new MavenHostInfoImpl(domain, moduleDependencies, baseDir, tempDir, os);
+        MavenHostInfoImpl hostInfo = new MavenHostInfoImpl(domain, environment, moduleDependencies, baseDir, tempDir, os);
 
         MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer(DOMAIN);
 

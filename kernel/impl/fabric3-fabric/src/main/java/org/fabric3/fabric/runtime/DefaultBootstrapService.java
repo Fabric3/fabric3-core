@@ -107,6 +107,10 @@ public class DefaultBootstrapService implements BootstrapService {
         return systemConfigLoader.parseRuntimeMode(systemConfig);
     }
 
+    public String parseEnvironment(Document systemConfig) {
+        return systemConfigLoader.parseEnvironment(systemConfig);
+    }
+
     public List<File> parseDeployDirectories(Document systemConfig) throws ParseException {
         return systemConfigLoader.parseDeployDirectories(systemConfig);
     }

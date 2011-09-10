@@ -339,7 +339,7 @@ public class DistributedDomainVMTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         URI uri = URI.create("fabric3://domain");
-        HostInfo info = new DefaultHostInfo("runtime", RuntimeMode.VM, uri, null, null, null, null, null, null, null, null, null);  // set single-VM
+        HostInfo info = new DefaultHostInfo("runtime", RuntimeMode.VM, null, uri, null, null, null, null, null, null, null, null, null);  // set single-VM
 
         control = EasyMock.createControl();
         MetaDataStore store = control.createMock(MetaDataStore.class);

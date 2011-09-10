@@ -289,7 +289,7 @@ public class DistributedDomainControllerTestCase extends TestCase {
         super.setUp();
         URI uri = URI.create("fabric3://domain");
         // set controller mode
-        HostInfo info = new DefaultHostInfo("runtime", RuntimeMode.CONTROLLER, uri, null, null, null, null, null, null, null, null, null);
+        HostInfo info = new DefaultHostInfo("runtime", RuntimeMode.CONTROLLER, null, uri, null, null, null, null, null, null, null, null, null);
 
         control = EasyMock.createControl();
         MetaDataStore store = control.createMock(MetaDataStore.class);

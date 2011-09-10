@@ -87,7 +87,7 @@ import org.fabric3.runtime.ant.monitor.AntMonitorEventDispatcherFactory;
  * <p/>
  * To define the task, create a <code>taskdef</code> pointing to the Fabric3 ant runtime distribution /lib directory entry as follows:
  * <pre>
- * <p/>
+ *
  *  &lt;taskdef name="fabric3" classname="org.fabric3.runtime.ant.task.Fabric3Task"&gt;
  *       &lt;classpath&gt;
  *           &lt;fileset dir="&lt;path to distribution&gt;/fabric3-runtime-ant-1.6-bin/lib"&gt;
@@ -99,7 +99,7 @@ import org.fabric3.runtime.ant.monitor.AntMonitorEventDispatcherFactory;
  * This Task may be configured with <code>contribution</code> sub-elements which are <code>FileLists</code> pointing to contribution jars or
  * <code>contributionSet</code> sub-elements which are <code>FileSet</code> filters for calculating sets of contributions as follows:
  * <pre>
- * <p/>
+ *
  *  &lt;fabric3&gt;
  *     &lt;contribution dir="lib" files="mycontribution.jar"/&gt;
  *     &lt;contributionSet dir="build"&gt;
@@ -163,10 +163,19 @@ public class Fabric3Task extends Task {
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
+            String environment = bootstrapService.parseEnvironment(systemConfig);
+
             List<File> deployDirs = bootstrapService.parseDeployDirectories(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo("ant", RuntimeMode.VM, domainName, runtimeDir, configDir, extensionsDir, deployDirs);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo("ant",
+                                                               RuntimeMode.VM,
+                                                               domainName,
+                                                               environment,
+                                                               runtimeDir,
+                                                               configDir,
+                                                               extensionsDir,
+                                                               deployDirs);
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 

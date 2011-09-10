@@ -146,4 +146,5 @@ public class MavenBootConfiguration {
     public void setRemoteRepositories(Set<ArtifactRepository> repositories) {
         this.repositories = repositories;
     }
+
 }

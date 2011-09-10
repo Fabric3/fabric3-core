@@ -52,6 +52,7 @@ import junit.framework.TestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import org.fabric3.host.Environment;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.stream.InputStreamSource;
 import org.fabric3.host.util.FileHelper;
@@ -98,6 +99,10 @@ public class SystemConfigLoaderTestCase extends TestCase {
             "       <deploy.directory>bar</deploy.directory>" +
             "   </deploy.directories>" +
             "</config>";
+
+    private static final String ENVIRONMENT = "<config><runtime environment='test'/></config>";
+
+    private static final String DEFAULT_ENVIRONMENT = "<config><runtime/></config>";
 
     public void testGetMonitorConfiguration() throws Exception {
         SystemConfigLoader loader = new SystemConfigLoader();
@@ -151,6 +156,22 @@ public class SystemConfigLoaderTestCase extends TestCase {
         InputStreamSource source = new InputStreamSource("stream", stream);
         Document systemConfig = loader.loadSystemConfig(source);
         assertEquals("default.zone", loader.parseZoneName(systemConfig));
+    }
+
+    public void testParseEnvironment() throws Exception {
+        SystemConfigLoader loader = new SystemConfigLoader();
+        ByteArrayInputStream stream = new ByteArrayInputStream(ENVIRONMENT.getBytes());
+        InputStreamSource source = new InputStreamSource("stream", stream);
+        Document systemConfig = loader.loadSystemConfig(source);
+        assertEquals("test", loader.parseEnvironment(systemConfig));
+    }
+
+    public void testDefaultEnvironment() throws Exception {
+        SystemConfigLoader loader = new SystemConfigLoader();
+        ByteArrayInputStream stream = new ByteArrayInputStream(DEFAULT_ENVIRONMENT.getBytes());
+        InputStreamSource source = new InputStreamSource("stream", stream);
+        Document systemConfig = loader.loadSystemConfig(source);
+        assertEquals(Environment.PRODUCTION, loader.parseEnvironment(systemConfig));
     }
 
     public void testParseDeployDirectories() throws Exception {

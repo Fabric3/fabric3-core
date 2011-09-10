@@ -49,6 +49,7 @@ import java.util.List;
 
 import org.w3c.dom.Document;
 
+import org.fabric3.host.Environment;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
@@ -112,6 +113,14 @@ public interface BootstrapService {
      * @throws ParseException if there is an error parsing the runtime mode
      */
     public RuntimeMode parseRuntimeMode(Document systemConfig) throws ParseException;
+
+    /**
+     * Returns the runtime environment. If one is not explicitly configured, the default {@link Environment#PRODUCTION} will be returned.
+     *
+     * @param systemConfig the system configuration
+     * @return the parsed runtime environment
+     */
+    String parseEnvironment(Document systemConfig);
 
     /**
      * Returns configured deployment directories or an empty collection.

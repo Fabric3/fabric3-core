@@ -148,8 +148,10 @@ public class ContributionHelperImplTestCase extends TestCase {
         Composite composite1 = addComposite(name1, contribution);
         Composite composite2 = addComposite(name2, contribution);
 
-        contribution.getManifest().addDeployable(new Deployable(name1, Collections.singletonList(RuntimeMode.VM)));
-        contribution.getManifest().addDeployable(new Deployable(name2, Collections.singletonList(RuntimeMode.PARTICIPANT)));
+        contribution.getManifest().addDeployable(new Deployable(name1, Collections.singletonList(RuntimeMode.VM), Collections.<String>emptyList()));
+        contribution.getManifest().addDeployable(new Deployable(name2,
+                                                                Collections.singletonList(RuntimeMode.PARTICIPANT),
+                                                                Collections.<String>emptyList()));
 
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.VM).atLeastOnce();
 
@@ -164,13 +166,49 @@ public class ContributionHelperImplTestCase extends TestCase {
 
     }
 
+    public void testGetDeployablesWithEnvironment() throws Exception {
+        URI uri = URI.create("test");
+        QName name1 = new QName("foo", "bar");
+        QName name2 = new QName("foo", "bar2");
+        QName name3 = new QName("foo", "bar3");
+        Contribution contribution = new Contribution(uri);
+
+        Composite composite1 = addComposite(name1, contribution);
+        Composite composite2 = addComposite(name2, contribution);
+        Composite composite3 = addComposite(name3, contribution);
+
+        contribution.getManifest().addDeployable(new Deployable(name1,
+                                                                Collections.singletonList(RuntimeMode.VM),
+                                                                Collections.singletonList("production")));
+        contribution.getManifest().addDeployable(new Deployable(name2,
+                                                                Collections.singletonList(RuntimeMode.VM),
+                                                                Collections.<String>emptyList()));
+        contribution.getManifest().addDeployable(new Deployable(name3,
+                                                                Collections.singletonList(RuntimeMode.VM),
+                                                                Collections.singletonList("test")));
+
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.VM).atLeastOnce();
+        EasyMock.expect(info.getEnvironment()).andReturn("production").atLeastOnce();
+
+        EasyMock.replay(store, info);
+
+        List<Composite> returned = helper.getDeployables(Collections.singleton(contribution));
+        assertEquals(2, returned.size());
+        assertTrue(returned.contains(composite1));
+        assertTrue(returned.contains(composite2));
+        assertFalse(returned.contains(composite3));
+
+        EasyMock.verify(store, info);
+
+    }
+
     public void testLocks() throws Exception {
         URI uri = URI.create("test");
         QName name1 = new QName("foo", "bar");
         QName name2 = new QName("foo", "bar2");
         Contribution contribution = new Contribution(uri);
-        contribution.getManifest().addDeployable(new Deployable(name1, Collections.singletonList(RuntimeMode.VM)));
-        contribution.getManifest().addDeployable(new Deployable(name2, Collections.singletonList(RuntimeMode.VM)));
+        contribution.getManifest().addDeployable(new Deployable(name1, Collections.singletonList(RuntimeMode.VM), Collections.<String>emptyList()));
+        contribution.getManifest().addDeployable(new Deployable(name2, Collections.singletonList(RuntimeMode.VM), Collections.<String>emptyList()));
         helper.lock(Collections.singleton(contribution));
         assertTrue(contribution.isLocked());
         assertTrue(contribution.getLockOwners().contains(name1));

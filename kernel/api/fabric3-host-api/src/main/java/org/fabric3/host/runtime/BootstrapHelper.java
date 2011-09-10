@@ -191,16 +191,18 @@ public final class BootstrapHelper {
      * @param runtimeName       the runtime name
      * @param runtimeMode       the runtime boot mode
      * @param domainName        the name of the domain the runtime is part of
+     * @param environment       the runtime environment
      * @param runtimeDir        the base directory containing non-sharable, read-write runtime artifacts
      * @param configDir         the root configuration directory
      * @param extensionsDir     the sharable extensions directory
-     * @param deployDirectories additional deploy directories. These may be absolute or relative to the runtime directory.
-     * @return the host info
+     * @param deployDirectories additional deploy directories. These may be absolute or relative to the runtime directory.     @return the host info
+     * @return the host information
      * @throws IOException if there is an error accessing a host info directory
      */
     public static HostInfo createHostInfo(String runtimeName,
                                           RuntimeMode runtimeMode,
                                           URI domainName,
+                                          String environment,
                                           File runtimeDir,
                                           File configDir,
                                           File extensionsDir,
@@ -227,6 +229,7 @@ public final class BootstrapHelper {
 
         return new DefaultHostInfo(runtimeName,
                                    runtimeMode,
+                                   environment,
                                    domainName,
                                    runtimeDir,
                                    userRepositoryDir,

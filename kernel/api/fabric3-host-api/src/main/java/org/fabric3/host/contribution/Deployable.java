@@ -39,6 +39,7 @@ package org.fabric3.host.contribution;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.xml.namespace.QName;
 
@@ -63,15 +64,17 @@ public class Deployable implements Serializable {
 
     private QName name;
     private List<RuntimeMode> runtimeModes;
+    private List<String> environments;
 
 
     public Deployable(QName name) {
-        this(name, DEFAULT_MODES);
+        this(name, DEFAULT_MODES, Collections.<String>emptyList());
     }
 
-    public Deployable(QName name, List<RuntimeMode> runtimeModes) {
+    public Deployable(QName name, List<RuntimeMode> runtimeModes, List<String> environments) {
         this.name = name;
         this.runtimeModes = runtimeModes;
+        this.environments = environments;
     }
 
     /**
@@ -90,5 +93,14 @@ public class Deployable implements Serializable {
      */
     public List<RuntimeMode> getRuntimeModes() {
         return runtimeModes;
+    }
+
+    /**
+     * Returns the runtime environments this deployable should be activated in. An empty list indicates all environments.
+     *
+     * @return the runtime environments this deployable should be activated in
+     */
+    public List<String> getEnvironments() {
+        return environments;
     }
 }

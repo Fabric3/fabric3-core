@@ -184,11 +184,19 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
 
+            String environment = bootstrapService.parseEnvironment(systemConfig);
+
             List<File> deployDirs = bootstrapService.parseDeployDirectories(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo =
-                    BootstrapHelper.createHostInfo(runtimeName, runtimeMode, domainName, runtimeDir, configDir, extensionsDir, deployDirs);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName,
+                                                               runtimeMode,
+                                                               domainName,
+                                                               environment,
+                                                               runtimeDir,
+                                                               configDir,
+                                                               extensionsDir,
+                                                               deployDirs);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
@@ -283,7 +291,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             return RuntimeMode.PARTICIPANT;
         } else if (!"vm".equals(mode)) {
             throw new IllegalArgumentException("Invalid runtime mode: " + mode
-                    + ". Valid modes are 'controller', 'participant' or 'vm' (default).");
+                                                       + ". Valid modes are 'controller', 'participant' or 'vm' (default).");
         }
         return RuntimeMode.VM;
     }

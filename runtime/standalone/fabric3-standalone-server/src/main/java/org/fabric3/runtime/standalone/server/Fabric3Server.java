@@ -137,6 +137,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             RuntimeMode mode = bootstrapService.parseRuntimeMode(systemConfig);
 
+            String environment = bootstrapService.parseEnvironment(systemConfig);
+
             String zoneName = bootstrapService.parseZoneName(systemConfig);
 
             String runtimeName = bootstrapService.getRuntimeName(domainName, zoneName, params.name, mode);
@@ -144,7 +146,14 @@ public class Fabric3Server implements Fabric3ServerMBean {
             List<File> deployDirs = bootstrapService.parseDeployDirectories(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName, mode, domainName, runtimeDir, configDir, extensionsDir, deployDirs);
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName,
+                                                               mode,
+                                                               domainName,
+                                                               environment,
+                                                               runtimeDir,
+                                                               configDir,
+                                                               extensionsDir,
+                                                               deployDirs);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
@@ -186,7 +195,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
             monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
-            monitor.started(mode.toString());
+            monitor.started(mode.toString(), environment);
 
             try {
                 latch.await();
@@ -286,8 +295,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
         @Severe("Shutdown error")
         void shutdownError(Exception e);
 
-        @Info("Fabric3 ready [Mode:{0}]")
-        void started(String mode);
+        @Info("Fabric3 ready [Mode:{0}, Environment: {1}]")
+        void started(String mode, String environment);
 
         @Info("Fabric3 shutdown")
         void stopped();

@@ -70,7 +70,7 @@ public class ContributionElementLoaderTestCase extends TestCase {
             "              f3:description='JMS extension'>" +
             "    <import.java package='javax.transaction' version='1.1.0'/>" +
             "    <export.java package='org.fabric3.binding.jms.spi.common' version='1.8'/>" +
-            "    <deployable composite='f3:ControllerExtension' modes='controller vm'/>" +
+            "    <deployable composite='f3:ControllerExtension' environments='production staging' modes='controller vm'/>" +
             "    <f3:provides name='some-extension'/>" +
             "    <f3:requires.capability name='some-required-capability'/>" +
             "    <f3:provides.capability name='some-provided-capability'/>" +
@@ -102,6 +102,8 @@ public class ContributionElementLoaderTestCase extends TestCase {
         assertTrue(parsedDeployable.getRuntimeModes().contains(RuntimeMode.VM));
         assertTrue(parsedDeployable.getRuntimeModes().contains(RuntimeMode.CONTROLLER));
         assertFalse(parsedDeployable.getRuntimeModes().contains(RuntimeMode.PARTICIPANT));
+        assertTrue(parsedDeployable.getEnvironments().contains("production"));
+        assertTrue(parsedDeployable.getEnvironments().contains("staging"));
         assertTrue(manifest.getImports().contains(javaImport));
         assertTrue(manifest.getExports().contains(javaExport));
         assertTrue(manifest.getRequiredCapabilities().contains(REQUIRED_CAPABILITY));

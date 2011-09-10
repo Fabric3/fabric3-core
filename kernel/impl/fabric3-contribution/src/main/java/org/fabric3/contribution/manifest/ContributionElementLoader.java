@@ -39,6 +39,8 @@ package org.fabric3.contribution.manifest;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
@@ -139,7 +141,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                         if (ns == null) {
                             URI uri = context.getContributionUri();
                             context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in the contribution manifest file for "
-                                    + uri + " is invalid", reader));
+                                                                            + uri + " is invalid", reader));
                             return null;
                         }
                         qName = new QName(ns, localPart, prefix);
@@ -147,7 +149,8 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                         qName = new QName(null, name);
                     }
                     List<RuntimeMode> runtimeModes = parseRuntimeModes(reader, context);
-                    Deployable deployable = new Deployable(qName, runtimeModes);
+                    List<String> environments = parseEnvironments(reader);
+                    Deployable deployable = new Deployable(qName, runtimeModes, environments);
                     manifest.addDeployable(deployable);
                 } else if (REQUIRES_CAPABILITY.equals(element)) {
                     parseRequiredCapabilities(manifest, reader, context);
@@ -255,6 +258,15 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
         return runtimeModes;
     }
 
+    private List<String> parseEnvironments(XMLStreamReader reader) {
+        String modeAttr = reader.getAttributeValue(null, "environments");
+        if (modeAttr == null) {
+            return Collections.emptyList();
+        } else {
+            return Arrays.asList(modeAttr.trim().split(" "));
+        }
+    }
+
     private void validateContributionAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
@@ -267,7 +279,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
     private void validateDeployableAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
-            if (!"composite".equals(name) && !"modes".equals(name)) {
+            if (!"composite".equals(name) && !"modes".equals(name) && !"environments".equals(name)) {
                 context.addError(new UnrecognizedAttribute(name, reader));
             }
         }

@@ -58,14 +58,16 @@ import org.fabric3.runtime.maven.MavenHostInfo;
  */
 public class MavenHostInfoImpl implements MavenHostInfo {
     private URI domain;
+    private String environment;
     private Set<URL> dependencyUrls;
     private File tempDir;
     private File baseDir;
     private OperatingSystem operatingSystem;
     private File nativeDirectory;
 
-    public MavenHostInfoImpl(URI domain, Set<URL> dependencyUrls, File baseDir, File tempDir, OperatingSystem operatingSystem) {
+    public MavenHostInfoImpl(URI domain, String environment, Set<URL> dependencyUrls, File baseDir, File tempDir, OperatingSystem operatingSystem) {
         this.domain = domain;
+        this.environment = environment;
         this.dependencyUrls = dependencyUrls;
         this.baseDir = baseDir;
         this.tempDir = tempDir;
@@ -75,6 +77,10 @@ public class MavenHostInfoImpl implements MavenHostInfo {
 
     public String getRuntimeName() {
         return "maven";
+    }
+
+    public String getEnvironment() {
+        return environment;
     }
 
     public File getBaseDir() {
