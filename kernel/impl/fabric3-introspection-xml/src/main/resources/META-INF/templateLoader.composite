@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (c) 2009-2011 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+    $Rev$ $Date$
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           name="TemplateLoaderBootComposite"
+           targetNamespace="urn:fabric3.org">
+
+    <component name="BindingTemplateLoader" f3:key="sca:binding.template">
+        <f3:implementation.system class="org.fabric3.introspection.xml.template.TemplateLoader"/>
+        <property name="expectedType">org.fabric3.model.type.component.BindingDefinition</property>
+    </component>
+
+    <component name="TemplateElementLoader">
+        <f3:implementation.system class="org.fabric3.introspection.xml.template.TemplateElementLoader"/>
+    </component>
+
+</composite>

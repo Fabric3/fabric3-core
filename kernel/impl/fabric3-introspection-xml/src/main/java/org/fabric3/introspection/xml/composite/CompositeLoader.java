@@ -306,8 +306,8 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             type.add((ComponentDefinition<?>) modelObject);
         } else if (modelObject instanceof ResourceDefinition) {
             type.add((ResourceDefinition) modelObject);
-        } else if (type == null) {
-            // there was an error loading the element, ignore it as the errors will have been reported
+        } else if (modelObject == null) {
+            // loaders may elect to return a null element; ignore
         } else {
             context.addError(new UnrecognizedElement(reader));
         }
