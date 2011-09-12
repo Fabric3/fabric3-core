@@ -47,12 +47,14 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import org.fabric3.host.Namespaces;
 import org.fabric3.host.util.IOHelper;
 
 /**
@@ -94,20 +96,27 @@ public class DocumentLoaderImpl implements DocumentLoader {
         return document;
     }
 
-    private DocumentBuilder getBuilder() {
-        try {
-            return DOCUMENT_FACTORY.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new AssertionError(e);
+    public void addNamespace(Document document, Node node, String namespace) {
+        if (node.getNodeType() != Node.ELEMENT_NODE) {
+            return;
+        }
+        if ((node.getNamespaceURI() == null || "".equals(node.getNamespaceURI()))) {
+            document.renameNode(node, namespace, node.getNodeName());
+        }
+        NodeList children = node.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            addNamespace(document, children.item(i), Namespaces.F3);
         }
     }
 
+
     /**
      * Recursively strips whitespace nodes starting at a DOM element.
-     * <p>
+     * <p/>
      * This is necessary as <code>DocumentBuilderFactory.setIgnoringElementContentWhitespace(boolean)</code> is broken in JDK 6:
-     * <p>
+     * <p/>
      * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6564400
+     *
      * @param element the element
      */
     public void stripWhitespace(Element element) {
@@ -121,4 +130,13 @@ public class DocumentLoaderImpl implements DocumentLoader {
             }
         }
     }
+
+    private DocumentBuilder getBuilder() {
+        try {
+            return DOCUMENT_FACTORY.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new AssertionError(e);
+        }
+    }
+
 }

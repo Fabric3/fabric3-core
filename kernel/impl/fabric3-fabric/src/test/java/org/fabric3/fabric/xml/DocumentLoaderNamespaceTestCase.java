@@ -37,50 +37,33 @@
 */
 package org.fabric3.fabric.xml;
 
-import java.io.IOException;
-import java.net.URL;
+import java.io.ByteArrayInputStream;
 
+import junit.framework.TestCase;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+
+import org.fabric3.host.Namespaces;
 
 /**
- * Loads XML documents as DOM objects.
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public interface DocumentLoader {
+public class DocumentLoaderNamespaceTestCase extends TestCase {
+    private static final String XML = "<?xml version='1.0' encoding='ASCII'?>\n<test><child/></test>";
 
-    /**
-     * Loads a Document from a URL.
-     *
-     * @param url             the location of the resource
-     * @param stripWhitespace true if whitespace should be stripped from the document
-     * @return the content of the resource as a Document
-     * @throws IOException  if there was a problem reading the resource
-     * @throws SAXException if there was a problem with the document
-     */
-    Document load(URL url, boolean stripWhitespace) throws IOException, SAXException;
+    public void testLoadFromInputSource() throws Exception {
+        DocumentLoaderImpl loader = new DocumentLoaderImpl();
+        ByteArrayInputStream stream = new ByteArrayInputStream(XML.getBytes());
+        InputSource source = new InputSource(stream);
+        Document document = loader.load(source, true);
+        Element root = document.getDocumentElement();
+        loader.addNamespace(document, root, Namespaces.F3);
+        assertEquals(Namespaces.F3, root.getNamespaceURI());
+        Node child = root.getChildNodes().item(0);
+        assertEquals(Namespaces.F3, child.getNamespaceURI());
 
-    /**
-     * Loads a Document from an InputSource.
-     *
-     * @param source          the source of the document text
-     * @param stripWhitespace true if whitespace should be stripped from the document
-     * @return the content as a Document
-     * @throws IOException  if there was a problem reading the content
-     * @throws SAXException if there was a problem with the document
-     */
-    Document load(InputSource source, boolean stripWhitespace) throws IOException, SAXException;
-
-    /**
-     * Recursively add a namespace to a node. Note that the namespace is not added to attributes.
-     *
-     * @param document  the document containing the node
-     * @param node      the node
-     * @param namespace the namespace
-     */
-    void addNamespace(Document document, Node node, String namespace);
+    }
 
 }
