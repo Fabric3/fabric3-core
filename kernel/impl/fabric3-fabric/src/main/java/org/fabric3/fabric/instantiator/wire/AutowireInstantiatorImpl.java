@@ -91,7 +91,8 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         LogicalCompositeComponent parent = component.getParent();
         for (LogicalReference reference : component.getReferences()) {
             boolean scaTarget = isScaTarget(reference);
-            if (scaTarget) {
+            if (scaTarget || reference.isConcreteBound()) {
+                // reference is targeted using binding.sca or is explicitly bound so it should not be autowired
                 return;
             }
             Multiplicity multiplicityValue = reference.getDefinition().getMultiplicity();
