@@ -38,6 +38,7 @@
  */
 package org.fabric3.introspection.xml.template;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -100,8 +101,9 @@ public class TemplateElementLoader implements TypeLoader<ModelObject> {
             return null;
         }
         try {
+            URI uri = context.getContributionUri();
             ModelObject parsed = loaderRegistry.load(reader, ModelObject.class, context);
-            templateRegistry.register(name, parsed);
+            templateRegistry.register(name, uri, parsed);
             LoaderUtil.skipToEndElement(reader);
         } catch (UnrecognizedElementException e) {
             UnrecognizedTemplateType error = new UnrecognizedTemplateType(reader.getName().toString(), reader);

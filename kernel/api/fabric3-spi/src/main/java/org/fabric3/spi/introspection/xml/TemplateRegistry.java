@@ -37,6 +37,8 @@
 */
 package org.fabric3.spi.introspection.xml;
 
+import java.net.URI;
+
 import org.fabric3.model.type.ModelObject;
 
 /**
@@ -50,11 +52,12 @@ public interface TemplateRegistry {
     /**
      * Register the template and its parsed value.
      *
-     * @param name  the template name
+     * @param name  the template name, which must be unique in the domain
+     * @param uri   the contribution the model object is contained in
      * @param value the template value
      * @throws DuplicateTemplateException if an template by the same name is already registered
      */
-    <T extends ModelObject> void register(String name, T value) throws DuplicateTemplateException;
+    <T extends ModelObject> void register(String name, URI uri, T value) throws DuplicateTemplateException;
 
     /**
      * Removes the template.

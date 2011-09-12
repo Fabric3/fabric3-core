@@ -37,23 +37,43 @@
 */
 package org.fabric3.introspection.xml;
 
+import java.net.URI;
+
 import junit.framework.TestCase;
 
 import org.fabric3.model.type.ModelObject;
-import org.fabric3.spi.introspection.xml.TemplateRegistry;
+import org.fabric3.spi.contribution.Contribution;
 
 /**
  * @version $Rev$ $Date$
  */
 public class TemplateRegistryImplTestCase extends TestCase {
-    private TemplateRegistry registry = new TemplateRegistryImpl();
+    private static final URI CONTRIBUTION_URI = URI.create("test");
+
+    private TemplateRegistryImpl registry;
+    private ModelObject object;
 
     public void testRegisterUnregister() throws Exception {
-        ModelObject object = new ModelObject() {
-        };
-        registry.register("template", object);
+        registry.register("template", CONTRIBUTION_URI, object);
         assertNotNull(registry.resolve(ModelObject.class, "template"));
         registry.unregister("template");
         assertNull(registry.resolve(ModelObject.class, "template"));
+    }
+
+    public void testUnRegisterByListener() throws Exception {
+        Contribution contribution = new Contribution(CONTRIBUTION_URI);
+
+        registry.register("template", CONTRIBUTION_URI, object);
+        registry.onUninstall(contribution);
+        assertNull(registry.resolve(ModelObject.class, "template"));
+    }
+
+    @SuppressWarnings({"serial"})
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        registry = new TemplateRegistryImpl();
+        object = new ModelObject() {
+        };
     }
 }

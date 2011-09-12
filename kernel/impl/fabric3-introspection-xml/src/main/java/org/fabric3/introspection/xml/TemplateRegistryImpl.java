@@ -37,26 +37,35 @@
 */
 package org.fabric3.introspection.xml;
 
+import java.net.URI;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.osoa.sca.annotations.Service;
+
 import org.fabric3.model.type.ModelObject;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.introspection.xml.DuplicateTemplateException;
 import org.fabric3.spi.introspection.xml.TemplateRegistry;
 
 /**
- * TODO implement ability to unregister teamplates when a containing contribution is undeployed.
+ * Default implementation of the {@link TemplateRegistry}. Also implements {@link ContributionServiceListener} to unregister templates when their
+ * containing contribution is undeployed.
  *
  * @version $Rev$ $Date$
  */
-public class TemplateRegistryImpl implements TemplateRegistry {
-    private Map<String, ModelObject> cache = new ConcurrentHashMap<String, ModelObject>();
+@Service(interfaces = TemplateRegistry.class)
+public class TemplateRegistryImpl implements TemplateRegistry, ContributionServiceListener {
+    private Map<String, Pair> cache = new ConcurrentHashMap<String, Pair>();
 
-    public <T extends ModelObject> void register(String name, T value) throws DuplicateTemplateException {
+    public <T extends ModelObject> void register(String name, URI uri, T value) throws DuplicateTemplateException {
         if (cache.containsKey(name)) {
             throw new DuplicateTemplateException(name);
         }
-        cache.put(name, value);
+        Pair pair = new Pair(uri, value);
+        cache.put(name, pair);
     }
 
     public void unregister(String name) {
@@ -64,6 +73,51 @@ public class TemplateRegistryImpl implements TemplateRegistry {
     }
 
     public <T extends ModelObject> T resolve(Class<T> type, String name) {
-        return type.cast(cache.get(name));
+        Pair pair = cache.get(name);
+        if (pair != null) {
+            return type.cast(pair.object);
+        }
+        return null;
+    }
+
+    public void onStore(Contribution contribution) {
+
+    }
+
+    public void onProcessManifest(Contribution contribution) {
+
+    }
+
+    public void onInstall(Contribution contribution) {
+
+    }
+
+    public void onUpdate(Contribution contribution) {
+
+    }
+
+    public void onUninstall(Contribution contribution) {
+        URI uri = contribution.getUri();
+        for (Iterator<Pair> iterator = cache.values().iterator(); iterator.hasNext();) {
+            Pair pair = iterator.next();
+            if (pair.contributionUri.equals(uri)) {
+                iterator.remove();
+            }
+        }
+    }
+
+    public void onRemove(Contribution contribution) {
+
+    }
+
+    private class Pair {
+        private URI contributionUri;
+        private ModelObject object;
+
+        private Pair(URI contributionUri, ModelObject object) {
+            this.contributionUri = contributionUri;
+            this.object = object;
+        }
+
     }
 }
