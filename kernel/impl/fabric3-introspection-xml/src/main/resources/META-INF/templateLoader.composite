@@ -25,4 +25,13 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.introspection.xml.template.TemplateElementLoader"/>
     </component>
 
+    <component name="TemplatesElementLoader">
+        <f3:implementation.system class="org.fabric3.introspection.xml.template.TemplatesElementLoader"/>
+    </component>
+
+    <component name="SystemConfigTemplateParser">
+        <f3:implementation.system class="org.fabric3.introspection.xml.template.SystemConfigTemplateParser"/>
+        <property name="templateConfig" source="$systemConfig/f3:templates"/>
+    </component>
+
 </composite>

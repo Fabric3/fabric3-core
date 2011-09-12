@@ -38,7 +38,6 @@
  */
 package org.fabric3.introspection.xml.template;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -52,30 +51,24 @@ import org.osoa.sca.annotations.Reference;
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.DuplicateTemplateException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.introspection.xml.LoaderUtil;
-import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TemplateRegistry;
 import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 /**
- * Loads a <code>&lt;template&gt;</code> element in a composite.
+ * Loads a <code>&lt;templates&gt;</code> element in a composite.
  *
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 @EagerInit
-public class TemplateElementLoader implements TypeLoader<ModelObject> {
-    private static final QName QNAME = new QName(Namespaces.F3, "template");
-    private static final QName LAX_QNAME = new QName("", "template");
-
+public class TemplatesElementLoader implements TypeLoader<ModelObject> {
+    private static final QName QNAME = new QName(Namespaces.F3, "templates");
+    private static final QName LAX_QNAME = new QName("", "templates");
     private LoaderRegistry loaderRegistry;
-    private TemplateRegistry templateRegistry;
 
-    public TemplateElementLoader(@Reference LoaderRegistry loaderRegistry, @Reference TemplateRegistry templateRegistry) {
+    public TemplatesElementLoader(@Reference LoaderRegistry loaderRegistry) {
         this.loaderRegistry = loaderRegistry;
-        this.templateRegistry = templateRegistry;
     }
 
     @Init
@@ -91,34 +84,21 @@ public class TemplateElementLoader implements TypeLoader<ModelObject> {
     }
 
     public ModelObject load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        String name = reader.getAttributeValue(null, "name");
-        if (name == null) {
-            MissingAttribute error = new MissingAttribute("Template name not specified", reader);
-            context.addError(error);
-            LoaderUtil.skipToEndElement(reader);
-            return null;
+        while (true) {
+            switch (reader.next()) {
+            case XMLStreamConstants.START_ELEMENT:
+                try {
+                    loaderRegistry.load(reader, ModelObject.class, context);
+                } catch (UnrecognizedElementException e) {
+                    UnrecognizedElement error = new UnrecognizedElement(reader);
+                    context.addError(error);
+                }
+                break;
+            case XMLStreamConstants.END_ELEMENT:
+                if ("templates".equals(reader.getName().getLocalPart())) {
+                    return null;
+                }
+            }
         }
-        int val = reader.nextTag();
-        if (val == XMLStreamConstants.END_ELEMENT && reader.getName().getLocalPart().equals("template")) {
-            InvalidTemplateDefinition error = new InvalidTemplateDefinition("Template body is missing: " + name, reader);
-            context.addError(error);
-            return null;
-        }
-        try {
-            URI uri = context.getContributionUri();
-            ModelObject parsed = loaderRegistry.load(reader, ModelObject.class, context);
-            templateRegistry.register(name, uri, parsed);
-            LoaderUtil.skipToEndElement(reader);
-        } catch (UnrecognizedElementException e) {
-            UnrecognizedTemplateType error = new UnrecognizedTemplateType(reader.getName().toString(), reader);
-            context.addError(error);
-            LoaderUtil.skipToEndElement(reader);
-        } catch (DuplicateTemplateException e) {
-            DuplicateTemplate error = new DuplicateTemplate(name, reader);
-            context.addError(error);
-        }
-        return null;
     }
-
-
 }
