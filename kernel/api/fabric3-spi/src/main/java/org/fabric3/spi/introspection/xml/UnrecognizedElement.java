@@ -69,9 +69,17 @@ public class UnrecognizedElement extends XmlValidationFailure {
     public String getMessage() {
         String namespace = name.getNamespaceURI();
         if (DeprecatedNamespaceHelper.isDeprecatedNamespace(namespace)) {
+            if (getLine() == -1) {
+                return "The element specified in " + getResourceURI() + " uses the deprecated namespace "
+                        + namespace + ". Please change it to " + Namespaces.F3;
+            }
             return "The element specified in " + getResourceURI() + " at " + getLine() + "," + getColumn() + " uses the deprecated namespace "
                     + namespace + ". Please change it to " + Namespaces.F3;
         } else {
+            if (getLine() == -1) {
+                return "The element " + name + " specified in " + getResourceURI() + " was not recognized. "
+                        + "If this is not a typo, check to ensure extensions are configured properly.";
+            }
             return "The element " + name + " specified in " + getResourceURI() + " at " + getLine() + "," + getColumn() + " was not recognized. "
                     + "If this is not a typo, check to ensure extensions are configured properly.";
         }

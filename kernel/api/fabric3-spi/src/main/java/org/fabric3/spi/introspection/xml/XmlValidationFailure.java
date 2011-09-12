@@ -56,9 +56,15 @@ public abstract class XmlValidationFailure extends ValidationFailure {
     protected XmlValidationFailure(String message, XMLStreamReader reader) {
         this.message = message;
         Location location = reader.getLocation();
-        line = location.getLineNumber();
-        column = location.getColumnNumber();
-        resourceURI = location.getSystemId();
+        if (location != null) {
+            line = location.getLineNumber();
+            column = location.getColumnNumber();
+            resourceURI = location.getSystemId();
+        } else {
+            resourceURI = "system";
+            line = -1;
+            column = -1;
+        }
     }
 
     public int getLine() {
