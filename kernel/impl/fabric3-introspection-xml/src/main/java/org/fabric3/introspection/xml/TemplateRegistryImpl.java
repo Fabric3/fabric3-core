@@ -80,22 +80,6 @@ public class TemplateRegistryImpl implements TemplateRegistry, ContributionServi
         return null;
     }
 
-    public void onStore(Contribution contribution) {
-
-    }
-
-    public void onProcessManifest(Contribution contribution) {
-
-    }
-
-    public void onInstall(Contribution contribution) {
-
-    }
-
-    public void onUpdate(Contribution contribution) {
-
-    }
-
     public void onUninstall(Contribution contribution) {
         URI uri = contribution.getUri();
         for (Iterator<Pair> iterator = cache.values().iterator(); iterator.hasNext();) {
@@ -107,7 +91,23 @@ public class TemplateRegistryImpl implements TemplateRegistry, ContributionServi
     }
 
     public void onRemove(Contribution contribution) {
+        // no-op
+    }
 
+    public void onStore(Contribution contribution) {
+        // no-op
+    }
+
+    public void onProcessManifest(Contribution contribution) {
+        // no-op
+    }
+
+    public void onInstall(Contribution contribution) {
+        // no-op
+    }
+
+    public void onUpdate(Contribution contribution) {
+        // no-op
     }
 
     private class Pair {
