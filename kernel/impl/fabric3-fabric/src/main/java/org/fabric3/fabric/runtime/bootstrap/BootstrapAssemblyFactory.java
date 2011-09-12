@@ -131,6 +131,7 @@ import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
+import org.fabric3.fabric.xml.XMLFactoryImpl;
 import org.fabric3.host.Names;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorCreationException;
@@ -204,11 +205,13 @@ import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.transform.SingleTypeTransformer;
+import org.fabric3.spi.xml.XMLFactory;
 import org.fabric3.transform.DefaultTransformerRegistry;
 import org.fabric3.transform.property.Property2BooleanTransformer;
 import org.fabric3.transform.property.Property2ElementTransformer;
 import org.fabric3.transform.property.Property2IntegerTransformer;
 import org.fabric3.transform.property.Property2QNameTransformer;
+import org.fabric3.transform.property.Property2StreamTransformer;
 import org.fabric3.transform.property.Property2StringTransformer;
 import org.fabric3.transform.string2java.String2ClassTransformer;
 import org.fabric3.transform.string2java.String2IntegerTransformer;
@@ -222,6 +225,7 @@ import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
  * @version $Rev$ $Date$
  */
 public class BootstrapAssemblyFactory {
+    private static final XMLFactory XML_FACTORY = new XMLFactoryImpl();
 
     private BootstrapAssemblyFactory() {
     }
@@ -371,6 +375,7 @@ public class BootstrapAssemblyFactory {
         transformers.add(new Property2BooleanTransformer());
         transformers.add(new Property2ElementTransformer());
         transformers.add(new Property2QNameTransformer());
+        transformers.add(new Property2StreamTransformer(XML_FACTORY));
         transformers.add(new String2ClassTransformer(classLoaderRegistry));
         transformers.add(new String2QNameTransformer());
         transformers.add(new String2IntegerTransformer());
