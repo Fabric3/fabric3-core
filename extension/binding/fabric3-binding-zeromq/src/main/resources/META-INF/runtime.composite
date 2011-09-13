@@ -33,7 +33,7 @@
 
     <component name="ZeroMQWireBroker">
         <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.broker.ZeroMQWireBrokerImpl"/>
-        <property name="pollTimeout" source="$systemConfig//zeromq.binding/@poll.timeout"/>
+        <property name="pollTimeout" source="$systemConfig//f3:zeromq.binding/@poll.timeout"/>
     </component>
 
     <component name="ZeroMQTransport" f3:key="zeromq">

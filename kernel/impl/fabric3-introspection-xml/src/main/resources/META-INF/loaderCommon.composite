@@ -22,7 +22,7 @@ Public License. See the accompanying license file for details.
 
     <component name="LoaderHelper">
         <f3:implementation.system class="org.fabric3.introspection.xml.DefaultLoaderHelper"/>
-        <property name="strictValidation" source="$systemConfig//sca/@strictValidation"/>
+        <property name="strictValidation" source="$systemConfig//f3:sca/@strictValidation"/>
     </component>
 
     <component name="TemplateRegistry">

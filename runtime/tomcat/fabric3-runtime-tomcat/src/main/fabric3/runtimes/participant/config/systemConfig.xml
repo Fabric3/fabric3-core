@@ -1,4 +1,5 @@
-<config>
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="urn:fabric3.org">
     <runtime mode="participant"/>
     <tomcat httpPort="8181"/>
 </config>

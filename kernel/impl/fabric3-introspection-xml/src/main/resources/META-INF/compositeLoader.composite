@@ -18,27 +18,27 @@
 
     <component name="ComponentReferenceLoader">
         <f3:implementation.system class="org.fabric3.introspection.xml.common.ComponentReferenceLoader"/>
-        <property name="roundTrip" source="$systemConfig/loader/@round.trip"/>
+        <property name="roundTrip" source="$systemConfig/f3:loader/@round.trip"/>
     </component>
 
     <component name="ComponentServiceLoader">
         <f3:implementation.system class="org.fabric3.introspection.xml.common.ComponentServiceLoader"/>
-        <property name="roundTrip" source="$systemConfig/loader/@round.trip"/>
+        <property name="roundTrip" source="$systemConfig/f3:loader/@round.trip"/>
     </component>
 
     <component name="ComponentProducerLoader">
         <f3:implementation.system class="org.fabric3.introspection.xml.common.ComponentProducerLoader"/>
-        <property name="roundTrip" source="$systemConfig/loader/@round.trip"/>
+        <property name="roundTrip" source="$systemConfig/f3:loader/@round.trip"/>
     </component>
 
     <component name="ComponentConsumerLoader">
         <f3:implementation.system class="org.fabric3.introspection.xml.common.ComponentConsumerLoader"/>
-        <property name="roundTrip" source="$systemConfig/loader/@round.trip"/>
+        <property name="roundTrip" source="$systemConfig/f3:loader/@round.trip"/>
     </component>
 
     <component name="PropertyLoader">
         <f3:implementation.system class="org.fabric3.introspection.xml.common.PropertyLoader"/>
-        <property name="roundTrip" source="$systemConfig/loader/@round.trip"/>
+        <property name="roundTrip" source="$systemConfig/f3:loader/@round.trip"/>
     </component>
 
     <component name="JavaInterfaceLoader" f3:key="sca:interface.java">
@@ -51,7 +51,7 @@
 
     <component name="ComponentLoader">
         <f3:implementation.system class="org.fabric3.introspection.xml.composite.ComponentLoader"/>
-        <property name="roundTrip" source="$systemConfig/loader/@round.trip"/>
+        <property name="roundTrip" source="$systemConfig/f3:loader/@round.trip"/>
     </component>
 
     <component name="IncludeLoader">
@@ -60,22 +60,22 @@
 
     <component name="CompositeReferenceLoader">
         <f3:implementation.system class="org.fabric3.introspection.xml.composite.CompositeReferenceLoader"/>
-        <property name="roundTrip" source="$systemConfig/loader/@round.trip"/>
+        <property name="roundTrip" source="$systemConfig/f3:loader/@round.trip"/>
     </component>
 
     <component name="CompositeServiceLoader">
         <f3:implementation.system class="org.fabric3.introspection.xml.composite.CompositeServiceLoader"/>
-        <property name="roundTrip" source="$systemConfig/loader/@round.trip"/>
+        <property name="roundTrip" source="$systemConfig/f3:loader/@round.trip"/>
     </component>
 
     <component name="ChannelLoader">
         <f3:implementation.system class="org.fabric3.introspection.xml.composite.ChannelLoader"/>
-        <property name="roundTrip" source="$systemConfig/loader/@round.trip"/>
+        <property name="roundTrip" source="$systemConfig/f3:loader/@round.trip"/>
     </component>
 
     <component name="WireLoader" f3:key="sca:wire">
         <f3:implementation.system class="org.fabric3.introspection.xml.composite.WireLoader"/>
-        <property name="roundTrip" source="$systemConfig/loader/@round.trip"/>
+        <property name="roundTrip" source="$systemConfig/f3:loader/@round.trip"/>
     </component>
 
     <component name="CompositeLoader">
@@ -84,7 +84,7 @@
         <reference name="service" target="CompositeServiceLoader"/>
         <reference name="reference" target="CompositeReferenceLoader"/>
         <reference name="property" target="PropertyLoader"/>
-        <property name="roundTrip" source="$systemConfig/loader/@round.trip"/>
+        <property name="roundTrip" source="$systemConfig/f3:loader/@round.trip"/>
     </component>
 
     <component name="ImplementationCompositeLoader">

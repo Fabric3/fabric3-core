@@ -26,7 +26,7 @@ Public License. See the accompanying license file for details.
 
     <component name="DeploymentCache">
         <f3:implementation.system class="org.fabric3.federation.deployment.coordinator.DeploymentCacheImpl"/>
-        <property name="threshold" source="$systemConfig//federation/deployment/@history.threshold"/>
+        <property name="threshold" source="$systemConfig//f3:federation/f3:deployment/@history.threshold"/>
     </component>
 
     <component name="RollbackService">

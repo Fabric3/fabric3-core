@@ -17,14 +17,9 @@ Public License. See the accompanying license file for details.
     <!-- Jetty service -->
     <component name="JettyService" f3:key="http">
         <f3:implementation.system class="org.fabric3.transport.jetty.impl.JettyServiceImpl"/>
-        <property name="httpPort" source="$systemConfig//web.server/http/@port"/>
-        <property name="enableHttps" source="$systemConfig//web.server/https/@enabled"/>
-        <property name="httpsPort" source="$systemConfig//web.server/https/@port"/>
-        <!--<property name="keystore" source="$systemConfig/security/keystore"/>-->
-        <!--<property name="keyPassword" source="$systemConfig/security/keystore.password"/>-->
-        <!--<property name="certPassword" source="$systemConfig/security/cert.password"/>-->
-        <!--<property name="truststore" source="$systemConfig/security/truststore"/>-->
-        <!--<property name="trustPassword" source="$systemConfig/security/truststore.password"/>-->
+        <property name="httpPort" source="$systemConfig//f3:web.server/f3:http/@port"/>
+        <property name="enableHttps" source="$systemConfig//f3:web.server/f3:https/@enabled"/>
+        <property name="httpsPort" source="$systemConfig//f3:web.server/f3:https/@port"/>
     </component>
 
 </composite>

@@ -54,6 +54,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.oasisopen.sca.Constants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -64,6 +65,7 @@ import org.xml.sax.SAXException;
 import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.Environment;
+import org.fabric3.host.Namespaces;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.runtime.ParseException;
@@ -121,10 +123,20 @@ public class SystemConfigLoader {
             Document document = loader.load(inputSource, true);
             // all properties have a root <values> element, append the existing root to it. The existing root will be taken as a property <value>.
             Element oldRoot = document.getDocumentElement();
-            Element newRoot = document.createElement("values");
+            boolean hasNamespaces = oldRoot.getNamespaceURI() != null && !"".equals(oldRoot.getNamespaceURI());
+            Element newRoot = document.createElementNS(Namespaces.F3, "values");
+            newRoot.setAttribute("xmlns:sca", Constants.SCA_NS);
             document.removeChild(oldRoot);
             document.appendChild(newRoot);
             newRoot.appendChild(oldRoot);
+            if (!hasNamespaces) {
+                // System config did not specify namespaces, add them
+                // Note that namespaces are not added to attributes since the latter do not inherit the default namespace:
+                // http://www.w3.org/TR/REC-xml-names/#defaulting (the default namespace does not apply to attribute names)
+                // If namespaces were added to attributes, consistency would require users to manually add them to all attributes in a systemConfig
+                // that is namespace-aware and hence is not updated using DocumentLoader.addNamespace().
+                loader.addNamespace(document, oldRoot, Namespaces.F3);
+            }
             return document;
         } catch (IOException e) {
             throw new ParseException(e);

@@ -17,7 +17,7 @@ licensed under the Apache 2.0 license.
 
     <component name="MessageContainerManager" f3:key="jms">
         <f3:implementation.system class="org.fabric3.binding.jms.runtime.container.MessageContainerManagerImpl"/>
-        <property name="transactionTimeout" source="$systemConfig//jms/@transaction.timeout"/>
+        <property name="transactionTimeout" source="$systemConfig//f3:jms/@transaction.timeout"/>
     </component>
 
     <component name="JmsSourceWireAttacher" f3:key="org.fabric3.binding.jms.spi.provision.JmsSourceDefinition">

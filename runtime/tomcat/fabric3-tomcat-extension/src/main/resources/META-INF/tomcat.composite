@@ -21,12 +21,12 @@ Copyright (c) 2009-2011 Metaform Systems
 
     <component name="ConnectorService">
         <f3:implementation.system class="org.fabric3.runtime.tomcat.connector.ConnectorServiceImpl"/>
-        <property name="httpPort" source="$systemConfig//tomcat/@httpPort"/>
+        <property name="httpPort" source="$systemConfig//f3:tomcat/@httpPort"/>
     </component>
 
     <component name="TomcatServletHost">
         <f3:implementation.system class="org.fabric3.runtime.tomcat.servlet.TomcatServletHost"/>
-        <property name="httpPort" source="$systemConfig//tomcat/@httpPort"/>
+        <property name="httpPort" source="$systemConfig//f3:tomcat/@httpPort"/>
     </component>
 
     <component name="TomcatWebApplicationActivator">

@@ -20,7 +20,7 @@
     <component name="ApplicationDomain">
         <f3:implementation.system class="org.fabric3.fabric.domain.DistributedDomain"/>
         <reference name="logicalComponentManager" target="LogicalComponentManager"/>
-        <property name="transactional" source="$systemConfig//deployment/@transactional"/>
+        <property name="transactional" source="$systemConfig//f3:deployment/@transactional"/>
     </component>
 
     <component name="DeployMonitorListener">
@@ -33,7 +33,7 @@
 
     <component name="LogicalComponentManager">
         <f3:implementation.system class="org.fabric3.fabric.lcm.LogicalComponentManagerImpl"/>
-        <property name="autowire" source="$systemConfig/domain/@autowire"/>
+        <property name="autowire" source="$systemConfig/f3:domain/@autowire"/>
     </component>
 
     <component name="LocalDeployer">

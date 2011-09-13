@@ -17,7 +17,7 @@ Public License. See the accompanying license file for details.
 
     <component name="SpringAuthenticationService">
         <f3:implementation.system class="org.fabric3.security.spring.Fabric3ProviderManager"/>
-        <property name="configuration" source="$systemConfig/security/spring.security"/>
+        <property name="configuration" source="$systemConfig/f3:security/f3:spring.security"/>
     </component>
 
     <component name="ConfigurationParser">
@@ -30,7 +30,7 @@ Public License. See the accompanying license file for details.
 
     <component name="SpringAuthorizationService">
         <f3:implementation.system class="org.fabric3.security.spring.Fabric3AccessDecisionManager"/>
-        <property name="managerType" source="$systemConfig/security/spring.security/@decision.manager"/>
+        <property name="managerType" source="$systemConfig/f3:security/f3:spring.security/@decision.manager"/>
     </component>
 
     <component name="SecurityApplicationContextListener">

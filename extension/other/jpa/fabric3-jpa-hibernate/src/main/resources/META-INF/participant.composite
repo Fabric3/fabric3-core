@@ -43,7 +43,7 @@ Public License. See the accompanying license file for details.
 
     <component name="CachingEntityManagerFactoryResolver">
         <f3:implementation.system class="org.fabric3.jpa.runtime.emf.CachingEntityManagerFactoryResolver"/>
-        <property name="monitorLevel" source="$systemConfig//jpa/@logging"/>
+        <property name="monitorLevel" source="$systemConfig//f3:jpa/@logging"/>
     </component>
 
     <component name="EntityManagerService">

@@ -23,24 +23,24 @@
 
     <component name="ActiveMQBrokerEngine">
         <f3:implementation.system class="org.fabric3.binding.activemq.broker.BrokerEngine"/>
-        <property name="defaultBindAddress" source="$systemConfig//host.bind.address"/>
-        <property name="disabled" source="$systemConfig//jms/activemq/@broker.disabled"/>
-        <property name="brokerConfig" source="$systemConfig//jms/activemq"/>
-        <property name="monitorLevel" source="$systemConfig//jms/activemq/@logging"/>
-        <property name="jmsPort" source="$systemConfig//jms/activemq/@port"/>
+        <property name="defaultBindAddress" source="$systemConfig//f3:host.bind.address"/>
+        <property name="disabled" source="$systemConfig//f3:jms/f3:activemq/@broker.disabled"/>
+        <property name="brokerConfig" source="$systemConfig//f3:jms/f3:activemq"/>
+        <property name="monitorLevel" source="$systemConfig//f3:jms/f3:activemq/@logging"/>
+        <property name="jmsPort" source="$systemConfig//f3:jms/f3:activemq/@port"/>
         <!-- used to raise backward compatibility error -->
-        <property name="minPort" source="$systemConfig//jms/activemq/@min.port"/>
-        <property name="maxPort" source="$systemConfig//jms/activemq/@max.port"/>
+        <property name="minPort" source="$systemConfig//f3:jms/f3:activemq/@min.port"/>
+        <property name="maxPort" source="$systemConfig//f3:jms/f3:activemq/@max.port"/>
     </component>
 
     <component name="ConnectionFactoryInstantiator">
         <f3:implementation.system class="org.fabric3.binding.activemq.factory.ConnectionFactoryInstantiator"/>
-        <property name="connectionFactories" source="$systemConfig//jms/connection.factories"/>
+        <property name="connectionFactories" source="$systemConfig//f3:jms/f3:connection.factories"/>
     </component>
 
     <component name="ConnectionFactoryTemplateRegistry">
         <f3:implementation.system class="org.fabric3.binding.activemq.factory.ConnectionFactoryTemplateRegistryImpl"/>
-        <property name="connectionFactoryTemplates" source="$systemConfig//jms/connection.factory.templates"/>
+        <property name="connectionFactoryTemplates" source="$systemConfig//f3:jms/f3:connection.factory.templates"/>
     </component>
 
     <component name="ActiveMQConnectionFactoryCreator">

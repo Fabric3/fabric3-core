@@ -27,8 +27,8 @@ Public License. See the accompanying license file for details.
 
     <component name="CachingAuthenticationService">
         <f3:implementation.system class="org.fabric3.security.authentication.CachingAuthenticationService"/>
-        <property name="enabled" source="$systemConfig//security/@authentication.service"/>
-        <property name="allowHttp" source="$systemConfig//security/@allow.http.authentication"/>
+        <property name="enabled" source="$systemConfig//f3:security/@authentication.service"/>
+        <property name="allowHttp" source="$systemConfig//f3:security/@allow.http.authentication"/>
     </component>
 
 </composite>

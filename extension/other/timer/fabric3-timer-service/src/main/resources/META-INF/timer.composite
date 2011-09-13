@@ -17,7 +17,7 @@ Public License. See the accompanying license file for details.
 
     <component name="ScheduledExecutorService">
         <f3:implementation.system class="org.fabric3.timer.impl.ExecutorTimerService"/>
-        <property name="defaultPoolSize" source="$systemConfig//timers/@default.pool.Size"/>
+        <property name="defaultPoolSize" source="$systemConfig//f3:timers/@default.pool.Size"/>
     </component>
 
     <component name="TimerPoolResourceLoader" f3:key="f3:timer.pool">
