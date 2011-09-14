@@ -39,9 +39,8 @@ package org.fabric3.jpa.runtime.emf;
 
 import java.net.URI;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.sql.DataSource;
@@ -56,6 +55,7 @@ import org.fabric3.host.Names;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.F3TransactionManagerLookup;
 import org.fabric3.jpa.api.JpaResolutionException;
+import org.fabric3.jpa.common.PersistenceOverrides;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.monitor.MonitorService;
 
@@ -92,54 +92,54 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
         monitorService.setProviderLevel("org.hibernate", logLevel.toString());
     }
 
-    public synchronized EntityManagerFactory resolve(String unitName, ClassLoader classLoader) throws JpaResolutionException {
+    public synchronized EntityManagerFactory resolve(String unitName, PersistenceOverrides overrides, ClassLoader classLoader)
+            throws JpaResolutionException {
         EntityManagerFactory resolvedEmf = cache.get(unitName);
         if (resolvedEmf != null) {
             return resolvedEmf;
         }
 
-        Map<String, EntityManagerFactory> emfs = createEntityManagerFactories(classLoader);
+        EntityManagerFactory emf = createEntityManagerFactory(overrides, classLoader);
         URI key;
         if (classLoader instanceof MultiParentClassLoader) {
             key = ((MultiParentClassLoader) classLoader).getName();
         } else {
             key = Names.HOST_CONTRIBUTION;
         }
-        for (Map.Entry<String, EntityManagerFactory> entry : emfs.entrySet()) {
-            String name = entry.getKey();
-            EntityManagerFactory emf = entry.getValue();
-            cache.put(key, name, emf);
-            if (unitName.equals(name)) {
-                resolvedEmf = emf;
-            }
-
-        }
-        return resolvedEmf;
+        cache.put(key, unitName, emf);
+        return emf;
     }
 
     /**
-     * Creates EntityManagerFactory instances for all persistence units defined in the persistence.xml file.
+     * Creates EntityManagerFactory instances the requested persistence unit by parsing the persistence.xml file.
      *
+     * @param overrides   persistence unit property overrides
      * @param classLoader the persistence unit classloader
      * @return the entity manager factory
      * @throws JpaResolutionException if there is an error creating the factory
      */
-    private Map<String, EntityManagerFactory> createEntityManagerFactories(ClassLoader classLoader) throws JpaResolutionException {
-        Map<String, EntityManagerFactory> emfs = new HashMap<String, EntityManagerFactory>();
+    private EntityManagerFactory createEntityManagerFactory(PersistenceOverrides overrides, ClassLoader classLoader) throws JpaResolutionException {
         List<PersistenceUnitInfo> infos = parser.parse(classLoader);
         for (PersistenceUnitInfo info : infos) {
+            if (!overrides.getUnitName().equals(info.getPersistenceUnitName())) {
+                // Not the most efficient approach: parse all of the persistence units and only keep the one we are requested in, potentially
+                // resulting in parsing the units multiple times.
+                // This must be done since the overrides may not be loaded for all units
+                continue;
+            }
             Ejb3Configuration cfg = new Ejb3Configuration();
             DataSource dataSource = info.getJtaDataSource();
             if (dataSource == null) {
                 dataSource = info.getNonJtaDataSource();
             }
             cfg.setDataSource(dataSource);
-            cfg.getProperties().setProperty(HIBERNATE_LOOKUP, F3TransactionManagerLookup.class.getName());
+            Properties unitProperties = cfg.getProperties();
+            unitProperties.setProperty(HIBERNATE_LOOKUP, F3TransactionManagerLookup.class.getName());
+            unitProperties.putAll(overrides.getProperties());
             cfg.configure(info, Collections.emptyMap());
-            EntityManagerFactory emf = cfg.buildEntityManagerFactory();
-            emfs.put(info.getPersistenceUnitName(), emf);
+            return cfg.buildEntityManagerFactory();
         }
-        return emfs;
+        return null;
     }
 
 

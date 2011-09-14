@@ -37,46 +37,15 @@
 */
 package org.fabric3.jpa.provision;
 
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-
 /**
  * Contains attach point metadata for an EntityManager resource.
  *
  * @version $Rev$ $Date$
  */
-public class PersistenceContextTargetDefinition extends PhysicalTargetDefinition {
+public class PersistenceContextTargetDefinition extends AbstractContextTargetDefinition {
     private static final long serialVersionUID = -6823873953780670817L;
-    private String unitName;
-    private boolean extended;
-    private boolean multiThreaded = true;
 
-    /**
-     * @return The persistence unit name.
-     */
-    public String getUnitName() {
-        return unitName;
-    }
-
-    /**
-     * @param unitName The persistence unit name.
-     */
-    public void setUnitName(String unitName) {
-        this.unitName = unitName;
-    }
-
-    public boolean isMultiThreaded() {
-        return multiThreaded;
-    }
-
-    public void setMultiThreaded(boolean multiThreaded) {
-        this.multiThreaded = multiThreaded;
-    }
-
-    public boolean isExtended() {
-        return extended;
-    }
-
-    public void setExtended(boolean extended) {
-        this.extended = extended;
+    public PersistenceContextTargetDefinition(String unitName) {
+        super(unitName);
     }
 }

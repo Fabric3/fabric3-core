@@ -37,12 +37,14 @@
 */
 package org.fabric3.jpa.runtime.emf;
 
+import java.util.Collections;
 import javax.persistence.EntityManagerFactory;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
+import org.fabric3.jpa.common.PersistenceOverrides;
 
 /**
  * @version $Rev$ $Date$
@@ -60,7 +62,9 @@ public class CachingEmfResolverTest extends TestCase {
 
     public void testBuild() throws Exception {
 
-        EntityManagerFactory emf = emfResolver.resolve("test", getClass().getClassLoader());
+        ClassLoader classLoader = getClass().getClassLoader();
+        PersistenceOverrides overrides = new PersistenceOverrides("test", Collections.<String, String>emptyMap());
+        EntityManagerFactory emf = emfResolver.resolve("test", overrides, classLoader);
         assertNotNull(emf);
     }
 

@@ -35,17 +35,43 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.provision;
+package org.fabric3.jpa.common;
+
+import java.io.Serializable;
+import java.util.Map;
 
 /**
- * Contains attach point metadata for an Hibernate Session resource.
+ * Contains override information for persistence units.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public class SessionTargetDefinition extends AbstractContextTargetDefinition {
-    private static final long serialVersionUID = 7712184177617794651L;
+public class PersistenceOverrides implements Serializable {
+    private static final long serialVersionUID = -8553765085228025466L;
 
-    public SessionTargetDefinition(String unitName) {
-        super(unitName);
+    private String unitName;
+    Map<String, String> properties;
+
+    public PersistenceOverrides(String unitName, Map<String, String> properties) {
+        this.unitName = unitName;
+        this.properties = properties;
     }
+
+    /**
+     * Returns the persistence unit name.
+     *
+     * @return the persistence unit name
+     */
+    public String getUnitName() {
+        return unitName;
+    }
+
+    /**
+     * Returns property overrides for the persistence context or Hibernate Session.
+     *
+     * @return property overrides for the persistence context or Hibernate Session
+     */
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
 }

@@ -44,6 +44,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.JpaResolutionException;
+import org.fabric3.jpa.common.PersistenceOverrides;
 import org.fabric3.jpa.provision.SessionTargetDefinition;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxyFactory;
@@ -67,10 +68,10 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionTargetDefi
     /**
      * Constructor.
      *
-     * @param emService  the service for creating EntityManagers
-     * @param tm         the transaction manager
+     * @param emService   the service for creating EntityManagers
+     * @param tm          the transaction manager
      * @param emfResolver the EMF builder
-     * @param registry   the classloader registry
+     * @param registry    the classloader registry
      */
     public SessionWireAttacher(@Reference EntityManagerService emService,
                                @Reference TransactionManager tm,
@@ -89,10 +90,11 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionTargetDefi
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
             // get the classloader for the entity manager factory
-            ClassLoader appCl = registry.getClassLoader(classLoaderId);
-            Thread.currentThread().setContextClassLoader(appCl);
+            ClassLoader classLoader = registry.getClassLoader(classLoaderId);
+            Thread.currentThread().setContextClassLoader(classLoader);
             // eagerly build the the EntityManagerFactory
-            emfResolver.resolve(unitName, appCl);
+            PersistenceOverrides overrides = definition.getOverrides();
+            emfResolver.resolve(unitName, overrides, classLoader);
             if (definition.isMultiThreaded()) {
                 return new MultiThreadedSessionProxyFactory(unitName, extended, emService, tm);
             } else {

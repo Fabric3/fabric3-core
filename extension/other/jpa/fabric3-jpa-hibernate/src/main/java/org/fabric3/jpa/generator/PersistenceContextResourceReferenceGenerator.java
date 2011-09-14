@@ -40,8 +40,11 @@ package org.fabric3.jpa.generator;
 import javax.persistence.PersistenceContextType;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.jpa.common.PersistenceOverrides;
 import org.fabric3.jpa.model.PersistenceContextResourceReference;
+import org.fabric3.jpa.override.OverrideRegistry;
 import org.fabric3.jpa.provision.PersistenceContextTargetDefinition;
 import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
@@ -51,14 +54,22 @@ import org.fabric3.spi.model.instance.LogicalResourceReference;
  */
 @EagerInit
 public class PersistenceContextResourceReferenceGenerator implements ResourceReferenceGenerator<PersistenceContextResourceReference> {
+    private OverrideRegistry registry;
+
+    public PersistenceContextResourceReferenceGenerator(@Reference OverrideRegistry registry) {
+        this.registry = registry;
+    }
 
     public PersistenceContextTargetDefinition generateWireTarget(LogicalResourceReference<PersistenceContextResourceReference> logicalResourceReference) {
         PersistenceContextResourceReference resource = logicalResourceReference.getDefinition();
         String unitName = resource.getUnitName();
+        PersistenceContextTargetDefinition definition = new PersistenceContextTargetDefinition(unitName);
+        PersistenceOverrides overrides = registry.resolve(unitName);
+        if (overrides != null) {
+            definition.setOverrides(overrides);
+        }
         boolean multiThreaded = resource.isMultiThreaded();
         boolean extended = PersistenceContextType.EXTENDED == resource.getType();
-        PersistenceContextTargetDefinition definition = new PersistenceContextTargetDefinition();
-        definition.setUnitName(unitName);
         definition.setOptimizable(true);
         definition.setExtended(extended);
         definition.setMultiThreaded(multiThreaded);

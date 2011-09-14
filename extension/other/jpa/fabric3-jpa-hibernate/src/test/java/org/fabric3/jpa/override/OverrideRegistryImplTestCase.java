@@ -35,17 +35,43 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.provision;
+package org.fabric3.jpa.override;
+
+import java.net.URI;
+import java.util.Collections;
+
+import junit.framework.TestCase;
+
+import org.fabric3.jpa.common.PersistenceOverrides;
+import org.fabric3.spi.contribution.Contribution;
 
 /**
- * Contains attach point metadata for an Hibernate Session resource.
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public class SessionTargetDefinition extends AbstractContextTargetDefinition {
-    private static final long serialVersionUID = 7712184177617794651L;
+public class OverrideRegistryImplTestCase extends TestCase {
+    private static final URI CONTRIBUTION_URI = URI.create("test");
+    private OverrideRegistryImpl registry = new OverrideRegistryImpl();
 
-    public SessionTargetDefinition(String unitName) {
-        super(unitName);
+    public void testRegisterUnregister() throws Exception {
+        PersistenceOverrides overrides = new PersistenceOverrides("unit", Collections.<String, String>emptyMap());
+        registry.register(CONTRIBUTION_URI, overrides);
+        assertEquals(overrides, registry.resolve("unit"));
+        Contribution contribution = new Contribution(CONTRIBUTION_URI);
+        registry.onUninstall(contribution);
+        assertNull(registry.resolve("unit"));
+        registry.register(CONTRIBUTION_URI, overrides);
     }
+
+
+    public void testDuplicateRegister() throws Exception {
+        PersistenceOverrides overrides = new PersistenceOverrides("unit", Collections.<String, String>emptyMap());
+        registry.register(CONTRIBUTION_URI, overrides);
+        try {
+            registry.register(CONTRIBUTION_URI, overrides);
+            fail();
+        } catch (DuplicateOverridesException e) {
+            // expected
+        }
+    }
+
 }

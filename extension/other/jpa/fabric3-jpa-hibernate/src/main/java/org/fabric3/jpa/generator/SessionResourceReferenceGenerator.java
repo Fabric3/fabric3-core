@@ -40,8 +40,11 @@ package org.fabric3.jpa.generator;
 import javax.persistence.PersistenceContextType;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.jpa.common.PersistenceOverrides;
 import org.fabric3.jpa.model.HibernateSessionResourceReference;
+import org.fabric3.jpa.override.OverrideRegistry;
 import org.fabric3.jpa.provision.SessionTargetDefinition;
 import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
@@ -51,14 +54,24 @@ import org.fabric3.spi.model.instance.LogicalResourceReference;
  */
 @EagerInit
 public class SessionResourceReferenceGenerator implements ResourceReferenceGenerator<HibernateSessionResourceReference> {
+    private OverrideRegistry registry;
+
+    public SessionResourceReferenceGenerator(@Reference OverrideRegistry registry) {
+        this.registry = registry;
+    }
 
     public SessionTargetDefinition generateWireTarget(LogicalResourceReference<HibernateSessionResourceReference> logicalResourceReference) {
         HibernateSessionResourceReference resource = logicalResourceReference.getDefinition();
         String unitName = resource.getUnitName();
+        SessionTargetDefinition definition = new SessionTargetDefinition(unitName);
+
+        PersistenceOverrides overrides = registry.resolve(unitName);
+        if (overrides != null) {
+            definition.setOverrides(overrides);
+        }
+
         boolean multiThreaded = resource.isMultiThreaded();
         boolean extended = PersistenceContextType.EXTENDED == resource.getType();
-        SessionTargetDefinition definition = new SessionTargetDefinition();
-        definition.setUnitName(unitName);
         definition.setOptimizable(true);
         definition.setExtended(extended);
         definition.setMultiThreaded(multiThreaded);

@@ -44,6 +44,7 @@ import org.osoa.sca.annotations.Reference;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.JpaResolutionException;
+import org.fabric3.jpa.common.PersistenceOverrides;
 import org.fabric3.jpa.provision.PersistenceUnitTargetDefinition;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
@@ -66,7 +67,7 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
      * Constructor.
      *
      * @param emfResolver EntityManagerFactory builder.
-     * @param registry   the classloader registry
+     * @param registry    the classloader registry
      */
     public PersistenceUnitWireAttacher(@Reference EntityManagerFactoryResolver emfResolver, @Reference ClassLoaderRegistry registry) {
         this.emfResolver = emfResolver;
@@ -84,12 +85,13 @@ public class PersistenceUnitWireAttacher implements TargetWireAttacher<Persisten
     public ObjectFactory<?> createObjectFactory(PersistenceUnitTargetDefinition target) throws WiringException {
         String unitName = target.getUnitName();
         URI classLoaderUri = target.getClassLoaderId();
-        ClassLoader appCl = registry.getClassLoader(classLoaderUri);
+        ClassLoader classLoader = registry.getClassLoader(classLoaderUri);
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
 
         try {
-            Thread.currentThread().setContextClassLoader(appCl);
-            EntityManagerFactory entityManagerFactory = emfResolver.resolve(unitName, appCl);
+            Thread.currentThread().setContextClassLoader(classLoader);
+            PersistenceOverrides overrides = target.getOverrides();
+            EntityManagerFactory entityManagerFactory = emfResolver.resolve(unitName, overrides, classLoader);
             return new SingletonObjectFactory<EntityManagerFactory>(entityManagerFactory);
         } catch (JpaResolutionException e) {
             throw new WiringException(e);

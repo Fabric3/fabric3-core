@@ -38,8 +38,11 @@
 package org.fabric3.jpa.generator;
 
 import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.jpa.common.PersistenceOverrides;
 import org.fabric3.jpa.model.PersistenceUnitResourceReference;
+import org.fabric3.jpa.override.OverrideRegistry;
 import org.fabric3.jpa.provision.PersistenceUnitTargetDefinition;
 import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
@@ -49,11 +52,20 @@ import org.fabric3.spi.model.instance.LogicalResourceReference;
  */
 @EagerInit
 public class PersistenceUnitResourceReferenceGenerator implements ResourceReferenceGenerator<PersistenceUnitResourceReference> {
+    private OverrideRegistry registry;
+
+    public PersistenceUnitResourceReferenceGenerator(@Reference OverrideRegistry registry) {
+        this.registry = registry;
+    }
 
     public PersistenceUnitTargetDefinition generateWireTarget(LogicalResourceReference<PersistenceUnitResourceReference> resourceReference) {
-        PersistenceUnitTargetDefinition definition = new PersistenceUnitTargetDefinition();
+        String unitName = resourceReference.getDefinition().getUnitName();
+        PersistenceUnitTargetDefinition definition = new PersistenceUnitTargetDefinition(unitName);
+        PersistenceOverrides overrides = registry.resolve(unitName);
+        if (overrides != null) {
+            definition.setOverrides(overrides);
+        }
         definition.setOptimizable(true);
-        definition.setUnitName(resourceReference.getDefinition().getUnitName());
         return definition;
     }
 

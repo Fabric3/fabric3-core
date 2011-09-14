@@ -29,6 +29,14 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.jpa.introspection.PersistenceContextProcessor"/>
     </component>
 
+    <component name="PersistenceOverridesElementLoader">
+        <f3:implementation.system class="org.fabric3.jpa.introspection.PersistenceOverridesElementLoader"/>
+    </component>
+
+    <component name="PersistenceUnitOverridesElementLoader">
+        <f3:implementation.system class="org.fabric3.jpa.introspection.PersistenceUnitOverridesElementLoader"/>
+    </component>
+
     <component name="SessionResourceGenerator" f3:key="org.fabric3.jpa.model.HibernateSessionResourceReference">
         <f3:implementation.system class="org.fabric3.jpa.generator.SessionResourceReferenceGenerator"/>
     </component>
@@ -39,6 +47,15 @@ Public License. See the accompanying license file for details.
 
     <component name="PersistenceContextResourceWireGenerator" f3:key="org.fabric3.jpa.model.PersistenceContextResourceReference">
         <f3:implementation.system class="org.fabric3.jpa.generator.PersistenceContextResourceReferenceGenerator"/>
+    </component>
+
+    <component name="OverrideRegistry">
+        <f3:implementation.system class="org.fabric3.jpa.override.OverrideRegistryImpl"/>
+    </component>
+
+    <component name="SystemConfigOverrideParser">
+        <f3:implementation.system class="org.fabric3.jpa.override.SystemConfigOverrideParser"/>
+        <property name="overrideConfig" source="$systemConfig/f3:persistence"/>
     </component>
 
 </composite>

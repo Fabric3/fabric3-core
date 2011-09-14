@@ -35,17 +35,34 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.provision;
+package org.fabric3.jpa.override;
+
+import java.net.URI;
+
+import org.fabric3.jpa.common.PersistenceOverrides;
 
 /**
- * Contains attach point metadata for an Hibernate Session resource.
+ * Manages persistence context overrides.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public class SessionTargetDefinition extends AbstractContextTargetDefinition {
-    private static final long serialVersionUID = 7712184177617794651L;
+public interface OverrideRegistry {
 
-    public SessionTargetDefinition(String unitName) {
-        super(unitName);
-    }
+    /**
+     * Registers a set of persistence overrides contained by a given contribution. The overrides will be held until the contribution is uninstalled.
+     *
+     * @param contributionURI the contribution URI
+     * @param overrides       the overrides
+     * @throws DuplicateOverridesException if a set of overrides for the persistence context are already registered
+     */
+    void register(URI contributionURI, PersistenceOverrides overrides) throws DuplicateOverridesException;
+
+    /**
+     * Resolves the overrides for the persistence context or null if none are registered.
+     *
+     * @param unitName the persistence context name
+     * @return the overrides for the persistence context or null if none are registered
+     */
+    PersistenceOverrides resolve(String unitName);
+
 }

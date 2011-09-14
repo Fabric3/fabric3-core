@@ -37,31 +37,15 @@
 */
 package org.fabric3.jpa.provision;
 
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-
 /**
  * Contains attach point metadata for an EntityManagerFactory resource.
  *
  * @version $Rev$ $Date$
  */
-public class PersistenceUnitTargetDefinition extends PhysicalTargetDefinition {
+public class PersistenceUnitTargetDefinition extends AbstractTargetDefinition {
     private static final long serialVersionUID = 5921863240878645759L;
 
-    private String unitName;
-
-    /**
-     * @return The persistence unit name.
-     */
-    public String getUnitName() {
-        return unitName;
+    public PersistenceUnitTargetDefinition(String unitName) {
+        super(unitName);
     }
-
-    /**
-     * @param unitName The persistence unit name.
-     */
-    public void setUnitName(String unitName) {
-        this.unitName = unitName;
-    }
-
-
 }

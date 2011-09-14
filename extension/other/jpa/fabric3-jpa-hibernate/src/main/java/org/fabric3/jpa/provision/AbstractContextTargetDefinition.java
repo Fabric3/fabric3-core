@@ -38,14 +38,53 @@
 package org.fabric3.jpa.provision;
 
 /**
- * Contains attach point metadata for an Hibernate Session resource.
+ * Contains attach point metadata for an EntityManager and Hibernate Session resource.
  *
  * @version $Rev$ $Date$
  */
-public class SessionTargetDefinition extends AbstractContextTargetDefinition {
-    private static final long serialVersionUID = 7712184177617794651L;
+public abstract class AbstractContextTargetDefinition extends AbstractTargetDefinition {
+    private static final long serialVersionUID = -6823873953780670817L;
+    private boolean extended;
+    private boolean multiThreaded = true;
 
-    public SessionTargetDefinition(String unitName) {
+    protected AbstractContextTargetDefinition(String unitName) {
         super(unitName);
     }
+
+    /**
+     * Returns true if the persistence unit is accessed from a multi-threaded (e.g. composite-scoped) component.
+     *
+     * @return true if the persistence unit is accessed from a multi-threaded (e.g. composite-scoped) component.
+     */
+    public boolean isMultiThreaded() {
+        return multiThreaded;
+    }
+
+    /**
+     * Sets the threading environment in which the persistence unit is accessed.
+     *
+     * @param multiThreaded true if the persistence unit is accessed from a multi-threaded (e.g. composite-scoped) component.
+     */
+    public void setMultiThreaded(boolean multiThreaded) {
+        this.multiThreaded = multiThreaded;
+    }
+
+    /**
+     * Returns true if the persistence unit is part of an extended context.
+     *
+     * @return true if the persistence unit is part of an extended context
+     */
+    public boolean isExtended() {
+        return extended;
+    }
+
+    /**
+     * Sets if the persistence unit is part of an extended context.
+     *
+     * @param extended if the persistence unit is part of an extended context
+     */
+    public void setExtended(boolean extended) {
+        this.extended = extended;
+    }
+
 }

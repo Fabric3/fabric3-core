@@ -35,17 +35,18 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.provision;
+package org.fabric3.jpa.override;
+
+import org.fabric3.host.Fabric3Exception;
 
 /**
- * Contains attach point metadata for an Hibernate Session resource.
- *
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public class SessionTargetDefinition extends AbstractContextTargetDefinition {
-    private static final long serialVersionUID = 7712184177617794651L;
+public class DuplicateOverridesException extends Fabric3Exception {
 
-    public SessionTargetDefinition(String unitName) {
-        super(unitName);
+    private static final long serialVersionUID = -5798319005418906051L;
+
+    public DuplicateOverridesException(String unitName) {
+        super("Duplicate persistence context overrides for: " + unitName);
     }
 }

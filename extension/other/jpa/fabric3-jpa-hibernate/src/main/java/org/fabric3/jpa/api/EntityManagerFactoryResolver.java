@@ -39,6 +39,8 @@ package org.fabric3.jpa.api;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.fabric3.jpa.common.PersistenceOverrides;
+
 /**
  * Resolves EntityManagerFactor instances.
  *
@@ -47,13 +49,14 @@ import javax.persistence.EntityManagerFactory;
 public interface EntityManagerFactoryResolver {
 
     /**
-     * Resolves the EntityManagerFactory corresponding for the given persistence unit.
+     * Resolves the EntityManagerFactory corresponding to the given persistence unit.
      *
-     * @param unitName    Persistence unit name.
-     * @param classLoader Classloader to load the persistence XML.
+     * @param unitName    persistence unit name.
+     * @param overrides   persistence unit property overrides
+     * @param classLoader the classloader to load the persistence XML
      * @return Entity manager factory.
      * @throws JpaResolutionException if an error occurs building the EMF
      */
-    EntityManagerFactory resolve(String unitName, ClassLoader classLoader) throws JpaResolutionException;
+    EntityManagerFactory resolve(String unitName, PersistenceOverrides overrides, ClassLoader classLoader) throws JpaResolutionException;
 
 }

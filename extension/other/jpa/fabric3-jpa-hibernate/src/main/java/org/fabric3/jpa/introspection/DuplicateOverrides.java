@@ -35,17 +35,20 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jpa.provision;
+package org.fabric3.jpa.introspection;
+
+import javax.xml.stream.XMLStreamReader;
+
+import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * Contains attach point metadata for an Hibernate Session resource.
+ * Raised when an attempt is made to register a set of persistent overrides with the name of one that is already registered.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public class SessionTargetDefinition extends AbstractContextTargetDefinition {
-    private static final long serialVersionUID = 7712184177617794651L;
+public class DuplicateOverrides extends XmlValidationFailure {
 
-    public SessionTargetDefinition(String unitName) {
-        super(unitName);
+    public DuplicateOverrides(String name, XMLStreamReader reader) {
+        super("Duplicate persistence overrides: " + name, reader);
     }
 }

@@ -37,15 +37,52 @@
 */
 package org.fabric3.jpa.provision;
 
+import java.util.Collections;
+
+import org.fabric3.jpa.common.PersistenceOverrides;
+import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+
 /**
- * Contains attach point metadata for an Hibernate Session resource.
+ * Contains general attach point metadata for Hibernate and JPA resources.
  *
  * @version $Rev$ $Date$
  */
-public class SessionTargetDefinition extends AbstractContextTargetDefinition {
-    private static final long serialVersionUID = 7712184177617794651L;
+public abstract class AbstractTargetDefinition extends PhysicalTargetDefinition {
+    private static final long serialVersionUID = 2196282576920362492L;
+    private String unitName;
+    private PersistenceOverrides overrides;
 
-    public SessionTargetDefinition(String unitName) {
-        super(unitName);
+    protected AbstractTargetDefinition(String unitName) {
+        this.unitName = unitName;
+        overrides = new PersistenceOverrides(unitName, Collections.<String, String>emptyMap());
     }
+
+    /**
+     * Returns the persistence unit name.
+     *
+     * @return the persistence unit name
+     */
+    public String getUnitName() {
+        return unitName;
+    }
+
+    /**
+     * Returns property overrides for a collection of persistence contexts or Hibernate Sessions.
+     *
+     * @return property overrides for a collection of persistence contexts or Hibernate Sessions
+     */
+    public PersistenceOverrides getOverrides() {
+        return overrides;
+    }
+
+    /**
+     * Sets property overrides for a collection of the persistence contexts or Hibernate Sessions.
+     *
+     * @param overrides property overrides for a collection of persistence contexts or Hibernate Sessions
+     */
+    public void setOverrides(PersistenceOverrides overrides) {
+        this.overrides = overrides;
+    }
+
+
 }
