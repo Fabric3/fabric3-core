@@ -53,6 +53,7 @@ import org.fabric3.model.type.component.Scope;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
@@ -66,10 +67,12 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
  */
 @EagerInit
 public class PersistenceContextProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<PersistenceContext, I> {
-    private final ServiceContract factoryServiceContract;
+    private ServiceContract factoryServiceContract;
+    private IntrospectionHelper helper;
 
-    public PersistenceContextProcessor(@Reference JavaContractProcessor contractProcessor) {
+    public PersistenceContextProcessor(@Reference JavaContractProcessor contractProcessor, @Reference IntrospectionHelper helper) {
         super(PersistenceContext.class);
+        this.helper = helper;
         IntrospectionContext context = new DefaultIntrospectionContext();
         factoryServiceContract = contractProcessor.introspect(EntityManager.class, context);
         assert !context.hasErrors(); // should not happen
@@ -78,11 +81,12 @@ public class PersistenceContextProcessor<I extends Implementation<? extends Inje
     public void visitField(PersistenceContext annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
         FieldInjectionSite site = new FieldInjectionSite(field);
         InjectingComponentType componentType = implementation.getComponentType();
+        String name = helper.getSiteName(field, null);
         if (EntityManager.class.equals(field.getType())) {
-            PersistenceContextResourceReference definition = createDefinition(annotation, componentType);
+            PersistenceContextResourceReference definition = createDefinition(name, annotation, componentType);
             componentType.add(definition, site);
         } else {
-            HibernateSessionResourceReference definition = createSessionDefinition(annotation, componentType);
+            HibernateSessionResourceReference definition = createSessionDefinition(name, annotation, componentType);
             componentType.add(definition, site);
         }
         // record that the implementation requires JPA
@@ -92,27 +96,26 @@ public class PersistenceContextProcessor<I extends Implementation<? extends Inje
     public void visitMethod(PersistenceContext annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         InjectingComponentType componentType = implementation.getComponentType();
+        String name = helper.getSiteName(method, null);
         if (EntityManager.class.equals(method.getParameterTypes()[0])) {
-            PersistenceContextResourceReference definition = createDefinition(annotation, componentType);
+            PersistenceContextResourceReference definition = createDefinition(name, annotation, componentType);
             componentType.add(definition, site);
         } else {
-            HibernateSessionResourceReference definition = createSessionDefinition(annotation, componentType);
+            HibernateSessionResourceReference definition = createSessionDefinition(name, annotation, componentType);
             componentType.add(definition, site);
         }
         // record that the implementation requires JPA
         componentType.addRequiredCapability("jpa");
     }
 
-    private PersistenceContextResourceReference createDefinition(PersistenceContext annotation, InjectingComponentType componentType) {
-        String name = annotation.name();
+    private PersistenceContextResourceReference createDefinition(String name, PersistenceContext annotation, InjectingComponentType componentType) {
         String unitName = annotation.unitName();
         PersistenceContextType type = annotation.type();
         boolean multiThreaded = Scope.COMPOSITE.getScope().equals(componentType.getScope());
         return new PersistenceContextResourceReference(name, unitName, type, factoryServiceContract, multiThreaded);
     }
 
-    private HibernateSessionResourceReference createSessionDefinition(PersistenceContext annotation, InjectingComponentType componentType) {
-        String name = annotation.name();
+    private HibernateSessionResourceReference createSessionDefinition(String name, PersistenceContext annotation, InjectingComponentType componentType) {
         String unitName = annotation.unitName();
         PersistenceContextType type = annotation.type();
         boolean multiThreaded = Scope.COMPOSITE.getScope().equals(componentType.getScope());
