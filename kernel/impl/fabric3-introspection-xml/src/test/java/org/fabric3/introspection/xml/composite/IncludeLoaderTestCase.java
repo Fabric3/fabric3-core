@@ -102,7 +102,6 @@ public class IncludeLoaderTestCase extends TestCase {
         Composite include = new Composite(name);
         ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol);
         element.setValue(include);
-        // FIXME null check
         expect(store.resolve((URI) EasyMock.isNull(),
                              eq(Composite.class),
                              isA(QNameSymbol.class),

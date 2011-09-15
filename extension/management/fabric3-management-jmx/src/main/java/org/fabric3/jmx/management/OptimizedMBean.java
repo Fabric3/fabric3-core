@@ -149,7 +149,6 @@ public class OptimizedMBean<T> extends AbstractMBean {
             throw new AssertionError(e);
         } catch (InvocationTargetException e) {
             Throwable cause = e.getCause();
-            // FIXME print to a monitor
             cause.printStackTrace();
             if (cause instanceof Exception) {
                 throw new MBeanException((Exception) e.getCause());

@@ -186,7 +186,6 @@ public class MarshallerImpl implements Marshaller {
                 throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error reading request");
             }
         } else {
-            // FIXME set HTTP response error
             throw new ResourceException(HttpStatus.BAD_REQUEST, "Multiple parameter types not supported: " + method);
         }
     }

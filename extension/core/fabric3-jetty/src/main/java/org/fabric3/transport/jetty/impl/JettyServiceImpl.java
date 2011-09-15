@@ -594,7 +594,6 @@ public class JettyServiceImpl implements JettyService, Transport {
         }
 
         public boolean isLowOnThreads() {
-            // TODO FIXME
             return false;
         }
 

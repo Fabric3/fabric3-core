@@ -132,7 +132,6 @@ public class TomcatServletHost implements ServletHost {
         try {
             dispatchingServlet.registerMapping(mapping, servlet);
         } catch (ServletException e) {
-            // FIXME
             throw new AssertionError(e);
         }
 
@@ -142,7 +141,6 @@ public class TomcatServletHost implements ServletHost {
         try {
             return dispatchingServlet.unregisterMapping(mapping);
         } catch (ServletException e) {
-            // FIXME
             throw new AssertionError(e);
         }
     }
