@@ -99,15 +99,15 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
             return resolvedEmf;
         }
 
-        EntityManagerFactory emf = createEntityManagerFactory(overrides, classLoader);
+        EntityManagerFactory factory = createEntityManagerFactory(overrides, classLoader);
         URI key;
         if (classLoader instanceof MultiParentClassLoader) {
             key = ((MultiParentClassLoader) classLoader).getName();
         } else {
             key = Names.HOST_CONTRIBUTION;
         }
-        cache.put(key, unitName, emf);
-        return emf;
+        cache.put(key, unitName, factory);
+        return factory;
     }
 
     /**

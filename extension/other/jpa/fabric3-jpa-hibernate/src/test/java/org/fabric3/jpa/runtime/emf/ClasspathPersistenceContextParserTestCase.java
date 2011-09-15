@@ -95,8 +95,12 @@ public class ClasspathPersistenceContextParserTestCase extends TestCase {
                 return null;
             }
         };
-        List<PersistenceUnitInfo> infos = parser.parse(loader);
-        assertTrue(infos.isEmpty());
+        try {
+            parser.parse(loader);
+            fail();
+        } catch (PersistenceUnitException e) {
+            // expected
+        }
     }
 
     protected void setUp() throws Exception {

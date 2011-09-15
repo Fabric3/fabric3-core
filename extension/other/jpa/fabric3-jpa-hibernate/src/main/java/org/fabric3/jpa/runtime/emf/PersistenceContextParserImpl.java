@@ -44,7 +44,6 @@ import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
@@ -81,7 +80,7 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
     public List<PersistenceUnitInfo> parse(ClassLoader classLoader) throws PersistenceUnitException {
         URL url = classLoader.getResource("META-INF/persistence.xml");
         if (url == null) {
-            return Collections.emptyList();
+            throw new PersistenceUnitException("Persistence context (persistence.xml) not found in /META-INF");
         }
         URL rootUrl = getRootJarUrl(url);
         InputStream stream = null;
