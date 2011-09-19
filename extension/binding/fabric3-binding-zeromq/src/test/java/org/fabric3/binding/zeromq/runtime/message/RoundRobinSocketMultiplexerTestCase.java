@@ -40,6 +40,7 @@ import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
 
 /**
@@ -50,8 +51,14 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
 
     public void testRoundRobin() throws Exception {
         ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
+        ContextManager manager = EasyMock.createMock(ContextManager.class);
+        manager.reserve(EasyMock.isA(String.class));
+        EasyMock.expectLastCall().times(3);
+        EasyMock.expect(manager.getContext()).andReturn(context).atLeastOnce();
+        manager.release(EasyMock.isA(String.class));
+        EasyMock.expectLastCall().times(3);
 
-        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL, metadata);
+        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(manager, ZMQ.PULL, metadata);
         ZMQ.Socket socket1 = EasyMock.createMock(ZMQ.Socket.class);
         ZMQ.Socket socket2 = EasyMock.createMock(ZMQ.Socket.class);
         ZMQ.Socket socket3 = EasyMock.createMock(ZMQ.Socket.class);
@@ -59,6 +66,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket2);
         EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket3);
         EasyMock.replay(context);
+        EasyMock.replay(manager);
 
         SocketAddress address1 = createAddress(1);
         SocketAddress address2 = createAddress(2);
@@ -88,15 +96,25 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         for (ZMQ.Socket socket : order) {
             assertSame(socket, multiplexer.get());
         }
+        multiplexer.close();
+        EasyMock.verify(manager);
+        EasyMock.verify(context);
+
     }
 
     public void testSingletonIterator() throws Exception {
         ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
 
-        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL, metadata);
+        ContextManager manager = EasyMock.createMock(ContextManager.class);
+        manager.reserve(EasyMock.isA(String.class));
+        EasyMock.expect(manager.getContext()).andReturn(context);
+        manager.release(EasyMock.isA(String.class));
+
+        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(manager, ZMQ.PULL, metadata);
         ZMQ.Socket socket = EasyMock.createMock(ZMQ.Socket.class);
         EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket);
         EasyMock.replay(context);
+        EasyMock.replay(manager);
 
         SocketAddress address = createAddress(1);
         List<SocketAddress> list = new ArrayList<SocketAddress>();
@@ -106,25 +124,45 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
 
         assertSame(socket, multiplexer.get());
         assertSame(socket, multiplexer.get());
+
+        multiplexer.close();
+
+        EasyMock.verify(manager);
+        EasyMock.verify(context);
     }
 
     public void testUpdateAdd() throws Exception {
         ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
+        ContextManager manager = EasyMock.createMock(ContextManager.class);
+        manager.reserve(EasyMock.isA(String.class));
+        EasyMock.expectLastCall().times(4);
+        EasyMock.expect(manager.getContext()).andReturn(context).atLeastOnce();
+        manager.release(EasyMock.isA(String.class));
+        EasyMock.expectLastCall().times(4);
 
-        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL, metadata);
+        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(manager, ZMQ.PULL, metadata);
         ZMQ.Socket socket1 = EasyMock.createMock(ZMQ.Socket.class);
+        socket1.setLinger(0);
         socket1.connect("tcp://1:1");
+        socket1.close();
         ZMQ.Socket socket2 = EasyMock.createMock(ZMQ.Socket.class);
+        socket2.setLinger(0);
         socket2.connect("tcp://2:2");
+        socket2.close();
         ZMQ.Socket socket3 = EasyMock.createMock(ZMQ.Socket.class);
+        socket3.setLinger(0);
         socket3.connect("tcp://3:3");
+        socket3.close();
         ZMQ.Socket socket4 = EasyMock.createMock(ZMQ.Socket.class);
+        socket4.setLinger(0);
         socket4.connect("tcp://4:4");
+        socket4.close();
         EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket1);
         EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket2);
         EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket3);
         EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket4);
         EasyMock.replay(context);
+        EasyMock.replay(manager);
         EasyMock.replay(socket1);
         EasyMock.replay(socket2);
         EasyMock.replay(socket3);
@@ -166,7 +204,10 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
             assertSame(socket, multiplexer.get());
         }
 
+        multiplexer.close();
+
         EasyMock.verify(context);
+        EasyMock.verify(manager);
         EasyMock.verify(socket1);
         EasyMock.verify(socket2);
         EasyMock.verify(socket3);
@@ -175,19 +216,32 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
 
     public void testUpdateRemove() throws Exception {
         ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
+        ContextManager manager = EasyMock.createMock(ContextManager.class);
+        EasyMock.expect(manager.getContext()).andReturn(context).atLeastOnce();
+        manager.reserve(EasyMock.isA(String.class));
+        EasyMock.expectLastCall().times(4);
 
-        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PULL, metadata);
+        manager.release(EasyMock.isA(String.class));
+        EasyMock.expectLastCall().times(4);
+
+
+        RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(manager, ZMQ.PULL, metadata);
         ZMQ.Socket socket1 = EasyMock.createMock(ZMQ.Socket.class);
+        socket1.setLinger(0);
         socket1.connect("tcp://1:1");
         socket1.close();
         ZMQ.Socket socket2 = EasyMock.createMock(ZMQ.Socket.class);
+        socket2.setLinger(0);
         socket2.connect("tcp://2:2");
         socket2.close();
         ZMQ.Socket socket3 = EasyMock.createMock(ZMQ.Socket.class);
+        socket3.setLinger(0);
         socket3.connect("tcp://3:3");
         socket3.close();
         ZMQ.Socket socket4 = EasyMock.createMock(ZMQ.Socket.class);
+        socket4.setLinger(0);
         socket4.connect("tcp://4:4");
+        socket4.close();
         EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket1);
         EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket2);
         EasyMock.expect(context.socket(ZMQ.PULL)).andReturn(socket3);
@@ -197,6 +251,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         EasyMock.replay(socket2);
         EasyMock.replay(socket3);
         EasyMock.replay(socket4);
+        EasyMock.replay(manager);
 
         SocketAddress address1 = createAddress(1);
         SocketAddress address2 = createAddress(2);
@@ -217,8 +272,10 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         assertSame(socket4, multiplexer.get());
         assertSame(socket4, multiplexer.get());
 
+        multiplexer.close();
 
         EasyMock.verify(context);
+        EasyMock.verify(manager);
         EasyMock.verify(socket1);
         EasyMock.verify(socket2);
         EasyMock.verify(socket3);

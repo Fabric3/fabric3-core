@@ -39,13 +39,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
@@ -64,30 +64,43 @@ import org.fabric3.spi.wire.InvocationChain;
 @Management
 public class NonReliableRequestReplyReceiver extends AbstractReceiver implements Thread.UncaughtExceptionHandler {
     private ExecutorService executorService;
-    private long pollTimeout;
     private LinkedBlockingQueue<Response> queue;
 
-    public NonReliableRequestReplyReceiver(Context context,
+    /**
+     * Constructor.
+     *
+     * @param manager         the ZeroMQ Context manager
+     * @param address         the address to receive messages on
+     * @param chains          the invocation chains for dispatching invocations
+     * @param executorService the runtime executor service
+     * @param metadata        metadata
+     * @param pollTimeout     timeout for polling operations in microseconds
+     * @param monitor         the monitor
+     */
+    public NonReliableRequestReplyReceiver(ContextManager manager,
                                            SocketAddress address,
                                            List<InvocationChain> chains,
                                            ExecutorService executorService,
                                            long pollTimeout,
                                            ZeroMQMetadata metadata,
                                            MessagingMonitor monitor) {
-        super(context, address, chains, ZMQ.XREP, 100, metadata, monitor);
+        super(manager, address, chains, ZMQ.XREP, pollTimeout, metadata, monitor);
         this.executorService = executorService;
         this.pollTimeout = pollTimeout;
         queue = new LinkedBlockingQueue<Response>();
     }
 
     @Override
-    protected void invoke(Socket socket) {
+    protected boolean invoke(Socket socket) {
         // read the message
-        final byte[] clientId = socket.recv(0);
-        final byte[] contextHeader = socket.recv(0);
-        final byte[] methodNumber = socket.recv(0);
-        final byte[] body = socket.recv(0);
-
+        final byte[] clientId = socket.recv(ZMQ.NOBLOCK);
+        if (clientId == null) {
+            // nothing was received, just return
+            return false;
+        }
+        final byte[] contextHeader = socket.recv(ZMQ.NOBLOCK);
+        final byte[] methodNumber = socket.recv(ZMQ.NOBLOCK);
+        final byte[] body = socket.recv(ZMQ.NOBLOCK);
         executorService.execute(new Runnable() {
             public void run() {
                 WorkContext context = createWorkContext(contextHeader);
@@ -113,12 +126,13 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
 
             }
         });
+        return true;
 
     }
 
     protected void response(Socket socket) {
         try {
-            Response first = queue.poll(pollTimeout, TimeUnit.MILLISECONDS);
+            Response first = queue.poll(pollTimeout, TimeUnit.MICROSECONDS);
             if (first == null) {
                 return;
             }

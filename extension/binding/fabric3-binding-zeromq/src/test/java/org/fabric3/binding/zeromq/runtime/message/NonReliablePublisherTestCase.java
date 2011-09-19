@@ -41,6 +41,7 @@ import org.zeromq.ZMQ;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
 
 /**
@@ -71,6 +72,7 @@ public class NonReliablePublisherTestCase extends TestCase {
         byte[] message = "test".getBytes();
 
         ZMQ.Socket socket = EasyMock.createMock(ZMQ.Socket.class);
+        socket.setLinger(0);
         socket.bind(ADDRESS.toProtocolString());
         EasyMock.expect(socket.send(message, 0)).andStubAnswer(new IAnswer<Boolean>() {
 
@@ -82,20 +84,26 @@ public class NonReliablePublisherTestCase extends TestCase {
 
         ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
         EasyMock.expect(context.socket(ZMQ.PUB)).andReturn(socket);
+        ContextManager manager = EasyMock.createMock(ContextManager.class);
+        manager.reserve(EasyMock.isA(String.class));
+        EasyMock.expect(manager.getContext()).andReturn(context);
         MessagingMonitor monitor = EasyMock.createMock(MessagingMonitor.class);
 
         EasyMock.replay(monitor);
+        EasyMock.replay(manager);
         EasyMock.replay(context);
         EasyMock.replay(socket);
 
         ZeroMQMetadata metadata = new ZeroMQMetadata();
 
-        NonReliablePublisher publisher = new NonReliablePublisher(context, ADDRESS, 1000, metadata, monitor);
+        NonReliablePublisher publisher = new NonReliablePublisher(manager, ADDRESS, metadata, 1000, monitor);
         publisher.start();
         publisher.publish(message);
 
         latch.await(10000, TimeUnit.MILLISECONDS);
 
+        EasyMock.verify(monitor);
+        EasyMock.verify(manager);
         EasyMock.verify(context);
         EasyMock.verify(socket);
     }

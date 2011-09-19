@@ -33,6 +33,7 @@ package org.fabric3.binding.zeromq.runtime.message;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -46,6 +47,7 @@ import org.fabric3.api.annotation.management.OperationType;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.federation.AddressListener;
 import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
 import org.fabric3.spi.channel.ChannelConnection;
@@ -66,9 +68,11 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
     private static final byte[] EMPTY_BYTES = new byte[0];
 
     private String id;
-    private Context context;
+    private String socketId = getClass().getName() + ":" + UUID.randomUUID();
+    private ContextManager manager;
     private List<SocketAddress> addresses;
     private EventStreamHandler handler;
+    private long pollTimeout;   // microseconds
     private ZeroMQMetadata metadata;
     private MessagingMonitor monitor;
 
@@ -78,17 +82,30 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
 
     private SocketReceiver receiver;
 
+    /**
+     * Constructor
+     *
+     * @param id          the unique subscriber id, typically the consumer URI.
+     * @param manager     the ZeroMQ context manager
+     * @param addresses   the addresses the subscriber must connect to
+     * @param head        the head handler for dispatching events
+     * @param metadata    subscriber metadata
+     * @param pollTimeout the timeout for polling operations in milliseconds
+     * @param monitor     the monitor
+     */
     public NonReliableSubscriber(String id,
-                                 Context context,
+                                 ContextManager manager,
                                  List<SocketAddress> addresses,
                                  EventStreamHandler head,
                                  ZeroMQMetadata metadata,
+                                 long pollTimeout,
                                  MessagingMonitor monitor) {
         this.id = id;
-        this.context = context;
+        this.manager = manager;
         this.addresses = addresses;
         this.handler = head;
         this.metadata = metadata;
+        this.pollTimeout = pollTimeout * 1000;  // convert milliseconds to microseconds used by ZeroMQ
         this.monitor = monitor;
         EventStreamHandler current = handler;
         setFanOutHandler(current);
@@ -191,9 +208,6 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
          */
         public synchronized void stop() {
             active.set(false);
-            if (socket != null) {
-                socket.close();
-            }
         }
 
         public void run() {
@@ -201,7 +215,7 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
                 startStatistics();
                 while (active.get()) {
                     reconnect();
-                    long val = poller.poll();
+                    long val = poller.poll(pollTimeout);
                     if (val > 0) {
                         byte[] payload = socket.recv(0);
                         handler.handle(payload);
@@ -209,12 +223,12 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
                     }
                 }
                 startTime = 0;
+                closeSocket();
             } catch (RuntimeException e) {
                 // exception, make sure the thread is rescheduled
                 schedule();
                 throw e;
             }
-
         }
 
         /**
@@ -224,9 +238,9 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
             if (!doRefresh.getAndSet(false)) {
                 return;
             }
-            if (socket != null) {
-                socket.close();
-            }
+            closeSocket();
+            manager.reserve(socketId);
+            Context context = manager.getContext();
             socket = context.socket(ZMQ.SUB);
             SocketHelper.configure(socket, metadata);
             socket.subscribe(EMPTY_BYTES);    // receive all messages
@@ -235,8 +249,19 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
                 socket.connect(address.toProtocolString());
             }
             poller = context.poller();
-            poller.register(socket);
+            poller.register(socket, ZMQ.Poller.POLLIN);
         }
+
+        private void closeSocket() {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } finally {
+                    manager.release(socketId);
+                }
+            }
+        }
+
     }
 
 

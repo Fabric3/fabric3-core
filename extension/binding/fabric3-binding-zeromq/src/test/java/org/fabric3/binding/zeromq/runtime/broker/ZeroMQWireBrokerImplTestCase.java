@@ -48,6 +48,7 @@ import org.fabric3.binding.zeromq.runtime.federation.AddressEvent;
 import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
 import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -99,7 +100,6 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         EasyMock.expect(allocator.allocate("wire", "zmq")).andReturn(port);
         allocator.release("wire");
 
-        EasyMock.replay(context);
         EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info, managementService);
 
         PhysicalOperationDefinition definition = new PhysicalOperationDefinition();
@@ -118,11 +118,11 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         broker.connectToReceiver(URI.create("wire"), chains, metadata, getClass().getClassLoader());
         broker.releaseReceiver(URI.create("wire"));
 
-        EasyMock.verify(context);
         EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain, interceptor, port, managementService);
     }
 
     public void testConnectToSenderRelease() throws Exception {
+
         EasyMock.expect(addressCache.getActiveAddresses("wire")).andReturn(Collections.singletonList(ADDRESS));
         addressCache.subscribe(EasyMock.eq("wire"), EasyMock.isA(OneWaySender.class));
         EasyMock.expectLastCall();
@@ -154,8 +154,6 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         context = EasyMock.createMock(ZMQ.Context.class);
         manager = EasyMock.createMock(ContextManager.class);
 
-        EasyMock.expect(manager.getContext()).andReturn(context);
-
         addressCache = EasyMock.createMock(AddressCache.class);
 
         executorService = EasyMock.createMock(ExecutorService.class);
@@ -168,7 +166,8 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
 
         managementService = EasyMock.createNiceMock(ZeroMQManagementService.class);
 
-        broker = new ZeroMQWireBrokerImpl(manager, addressCache, allocator, executorService, managementService, info, monitor);
+        EventService eventService = EasyMock.createNiceMock(EventService.class);
+        broker = new ZeroMQWireBrokerImpl(manager, addressCache, allocator, executorService, managementService, eventService, info, monitor);
 
         metadata = new ZeroMQMetadata();
 

@@ -39,8 +39,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 import org.zeromq.ZMQ;
 
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -64,6 +66,9 @@ import org.fabric3.binding.zeromq.runtime.message.Subscriber;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.event.EventService;
+import org.fabric3.spi.event.Fabric3EventListener;
+import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
@@ -71,7 +76,8 @@ import org.fabric3.spi.host.PortAllocator;
 /**
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
-public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
+@Service(ZeroMQPubSubBroker.class)
+public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventListener<RuntimeStop> {
     private static final String ZMQ = "zmq";
 
     private ContextManager manager;
@@ -79,10 +85,11 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
     private ExecutorService executorService;
     private PortAllocator allocator;
     private ZeroMQManagementService managementService;
+    private EventService eventService;
     private HostInfo info;
     private MessagingMonitor monitor;
 
-    private long pollTimeout = 1000;
+    private long pollTimeout = 10000;  // default to 10 seconds
 
     private Map<String, Subscriber> subscribers = new HashMap<String, Subscriber>();
     private Map<String, PublisherHolder> publishers = new HashMap<String, PublisherHolder>();
@@ -92,6 +99,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
                                   @Reference ExecutorService executorService,
                                   @Reference PortAllocator allocator,
                                   @Reference ZeroMQManagementService managementService,
+                                  @Reference EventService eventService,
                                   @Reference HostInfo info,
                                   @Monitor MessagingMonitor monitor) {
         this.manager = manager;
@@ -99,6 +107,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         this.executorService = executorService;
         this.allocator = allocator;
         this.managementService = managementService;
+        this.eventService = eventService;
         this.info = info;
         this.monitor = monitor;
     }
@@ -113,6 +122,11 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         this.pollTimeout = timeout;
     }
 
+    @Init
+    public void init() {
+        eventService.subscribe(RuntimeStop.class, this);
+    }
+
     public void subscribe(URI subscriberId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) {
         String channelName = metadata.getChannelName();
         Subscriber subscriber = subscribers.get(channelName);
@@ -124,8 +138,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
             head.setNext(fanOutHandler);
 
             List<SocketAddress> addresses = addressCache.getActiveAddresses(channelName);
-            ZMQ.Context context = manager.getContext();
-            subscriber = new NonReliableSubscriber(subscriberId.toString(), context, addresses, head, metadata, monitor);
+            subscriber = new NonReliableSubscriber(subscriberId.toString(), manager, addresses, head, metadata, pollTimeout, monitor);
             subscriber.start();
             addressCache.subscribe(channelName, subscriber);
             subscribers.put(channelName, subscriber);
@@ -169,9 +182,8 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
                 }
 
                 SocketAddress address = new SocketAddress(runtimeName, "tcp", host, port);
-                ZMQ.Context context = manager.getContext();
 
-                Publisher publisher = new NonReliablePublisher(context, address, pollTimeout, metadata, monitor);
+                Publisher publisher = new NonReliablePublisher(manager, address, metadata, pollTimeout, monitor);
                 attachConnection(connection, publisher);
 
                 AddressAnnouncement event = new AddressAnnouncement(channelName, AddressAnnouncement.Type.ACTIVATED, address);
@@ -226,6 +238,10 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker {
         for (PublisherHolder holder : publishers.values()) {
             holder.getPublisher().stop();
         }
+    }
+
+    public void onEvent(RuntimeStop event) {
+        stopAll();
     }
 
     private void attachConnection(ChannelConnection connection, Publisher publisher) {

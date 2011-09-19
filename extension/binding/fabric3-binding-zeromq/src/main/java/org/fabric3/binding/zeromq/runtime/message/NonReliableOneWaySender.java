@@ -47,6 +47,7 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 
@@ -66,7 +67,7 @@ public class NonReliableOneWaySender extends AbstractStatistics implements OneWa
     private long pollTimeout;
 
     public NonReliableOneWaySender(String id,
-                                   ZMQ.Context context,
+                                   ContextManager manager,
                                    List<SocketAddress> addresses,
                                    long pollTimeout,
                                    ZeroMQMetadata metadata,
@@ -76,7 +77,7 @@ public class NonReliableOneWaySender extends AbstractStatistics implements OneWa
         this.pollTimeout = pollTimeout;
         this.monitor = monitor;
         queue = new LinkedBlockingQueue<Request>();
-        multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.PUSH, metadata);
+        multiplexer = new RoundRobinSocketMultiplexer(manager, ZMQ.PUSH, metadata);
     }
 
     public void start() {
@@ -163,7 +164,6 @@ public class NonReliableOneWaySender extends AbstractStatistics implements OneWa
          */
         public void stop() {
             active.set(false);
-            multiplexer.close();
         }
 
         public void run() {
@@ -175,7 +175,7 @@ public class NonReliableOneWaySender extends AbstractStatistics implements OneWa
 
                     // handle pending requests
                     List<Request> drained = new ArrayList<Request>();
-                    Request value = queue.poll(pollTimeout, TimeUnit.MILLISECONDS);
+                    Request value = queue.poll(pollTimeout, TimeUnit.MICROSECONDS);
 
                     // if no available socket, drop the message
                     if (!multiplexer.isAvailable()) {
@@ -211,6 +211,7 @@ public class NonReliableOneWaySender extends AbstractStatistics implements OneWa
                     Thread.currentThread().interrupt();
                 }
             }
+            multiplexer.close();
         }
 
         /**

@@ -30,6 +30,9 @@
  */
 package org.fabric3.binding.zeromq.runtime.context;
 
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
@@ -46,11 +49,28 @@ import org.fabric3.host.runtime.HostInfo;
 public class ContextManagerImpl implements ContextManager {
     private Context context;
 
+    // client leases
+    private Set<String> leases = new ConcurrentSkipListSet<String>();
+
+    // object monitor used as a sync for closing the ZeroMQ context after all open sockets have been closed
+    private final Object termMonitor = new Object();
+
     @Reference
     protected HostInfo hostInfo;
 
     public Context getContext() {
         return context;
+    }
+
+    public void reserve(String id) {
+        leases.add(id);
+    }
+
+    public void release(String id) {
+        synchronized (termMonitor) {
+            leases.remove(id);
+            termMonitor.notifyAll();
+        }
     }
 
     @Init
@@ -64,8 +84,24 @@ public class ContextManagerImpl implements ContextManager {
         context = ZMQ.context(1);
     }
 
+    /**
+     * Closes the ZeroMQ context after all socket clients have released their locks. This guarantees the context will not be closed prior to all
+     * sockets being closed. Note that ZeroMQ requires sockets to be open, accessed and closed by the same thread.
+     */
     @Destroy
     public void destroy() {
+        while (!leases.isEmpty()) {
+            synchronized (termMonitor) {
+                if (leases.isEmpty()) {
+                    break;
+                }
+                try {
+                    termMonitor.wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
         context.term();
     }
 

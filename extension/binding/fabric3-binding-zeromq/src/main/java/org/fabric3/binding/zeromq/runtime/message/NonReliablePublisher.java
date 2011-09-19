@@ -32,12 +32,12 @@ package org.fabric3.binding.zeromq.runtime.message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 import org.fabric3.api.annotation.management.Management;
@@ -46,6 +46,7 @@ import org.fabric3.api.annotation.management.OperationType;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
 
 /**
@@ -58,7 +59,7 @@ import org.fabric3.spi.host.Port;
  */
 @Management
 public class NonReliablePublisher extends AbstractStatistics implements Publisher, Thread.UncaughtExceptionHandler {
-    private Context context;
+    private ContextManager manager;
     private SocketAddress address;
     private long pollTimeout;
     private ZeroMQMetadata metadata;
@@ -69,8 +70,8 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
 
     private LinkedBlockingQueue<byte[]> queue;
 
-    public NonReliablePublisher(Context context, SocketAddress address, long pollTimeout, ZeroMQMetadata metadata, MessagingMonitor monitor) {
-        this.context = context;
+    public NonReliablePublisher(ContextManager manager, SocketAddress address, ZeroMQMetadata metadata, long pollTimeout, MessagingMonitor monitor) {
+        this.manager = manager;
         this.address = address;
         this.pollTimeout = pollTimeout;
         this.metadata = metadata;
@@ -123,13 +124,12 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
 
         public void stop() {
             active.set(false);
-            if (socket != null) {
-                socket.close();
-            }
         }
 
         public void run() {
-            socket = context.socket(ZMQ.PUB);
+            String id = getClass().getName() + ":" + UUID.randomUUID().toString();
+            manager.reserve(id);
+            socket = manager.getContext().socket(ZMQ.PUB);
             SocketHelper.configure(socket, metadata);
             address.getPort().bind(Port.TYPE.TCP);
             socket.bind(address.toProtocolString());
@@ -152,6 +152,7 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
                     messagesProcessed.incrementAndGet();
                 } catch (RuntimeException e) {
                     // exception, make sure the thread is rescheduled
+                    manager.release(id);
                     schedule();
                     throw e;
                 } catch (InterruptedException e) {
@@ -160,6 +161,13 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
 
             }
             startTime = 0;
+            if (socket != null) {
+                try {
+                    socket.close();
+                } finally {
+                    manager.release(id);
+                }
+            }
         }
     }
 

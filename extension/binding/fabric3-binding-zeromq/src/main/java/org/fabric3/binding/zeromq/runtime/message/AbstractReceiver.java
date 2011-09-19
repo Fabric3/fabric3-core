@@ -35,16 +35,17 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.ConversationContext;
@@ -58,32 +59,40 @@ import org.fabric3.spi.wire.InvocationChain;
  */
 public abstract class AbstractReceiver extends AbstractStatistics implements Receiver, Thread.UncaughtExceptionHandler {
 
-    private Context context;
-    private SocketAddress address;
-    private int socketType;
+    protected ContextManager manager;
+    protected SocketAddress address;
+    protected int socketType;
 
-    private Interceptor singleInterceptor;
     protected Interceptor[] interceptors;
     protected MessagingMonitor monitor;
 
 
-    private Receiver receiver;
-    private long pollTimeout;
-    private ZeroMQMetadata metadata;
+    protected Receiver receiver;
+    protected long pollTimeout;
+    protected ZeroMQMetadata metadata;
+    protected String id = getClass().getName() + ":" + UUID.randomUUID().toString();
 
-    public AbstractReceiver(Context context,
+    /**
+     * Constructor.
+     *
+     * @param manager     the ZeroMQ Context manager
+     * @param address     the address to receive messages on
+     * @param chains      the invocation chains for dispatching invocations
+     * @param metadata    metadata
+     * @param socketType  the socket type as defined by ZeroMQ
+     * @param pollTimeout timeout for polling operations in microseconds
+     * @param monitor     the monitor
+     */
+    public AbstractReceiver(ContextManager manager,
                             SocketAddress address,
                             List<InvocationChain> chains,
                             int socketType,
                             long pollTimeout,
                             ZeroMQMetadata metadata,
                             MessagingMonitor monitor) {
-        this.context = context;
+        this.manager = manager;
         this.address = address;
         this.pollTimeout = pollTimeout;
-//        if (chains.size() == 1) {
-//            singleInterceptor = chains.get(0).getHeadInterceptor();
-//        } else {
         this.interceptors = new Interceptor[chains.size()];
         for (int i = 0, chainsSize = chains.size(); i < chainsSize; i++) {
             InvocationChain chain = chains.get(i);
@@ -99,7 +108,6 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
             receiver = new Receiver();
             schedule();
         }
-
     }
 
     public void stop() {
@@ -163,7 +171,7 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
         }
     }
 
-    protected abstract void invoke(Socket socket);
+    protected abstract boolean invoke(Socket socket);
 
     protected abstract void response(Socket socket);
 
@@ -176,15 +184,12 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
         private AtomicBoolean active = new AtomicBoolean(true);
 
         /**
-         * Stops polling and closes the existing socket.
+         * Signals to stops polling and close the receiver socket, if one is open. Note that the socket cannot be closed in this method, as it will be
+         * called on a different thread than {@link #run()}, which opened the socket. ZeroMQ requires a socket only be accessed by the thread that
+         * created it.
          */
         public synchronized void stop() {
             active.set(false);
-            if (socket != null) {
-                // Closing results in a segmentation fault for non-reliable one-way on OS X
-                socket.close();
-                socket = null;
-            }
         }
 
         public void run() {
@@ -197,15 +202,27 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
                         monitor.error("Failed to initialize ZeroMQ socket, aborting receiver");
                         return;
                     }
-                    long val = poller.poll(pollTimeout);   // convert timeout to microseconds
+                    long val = poller.poll(pollTimeout);
                     if (val > 0) {
-                        invoke(socket);
+                        if (!invoke(socket)){
+                            continue;
+                        }
+                        response(socket);
+                        messagesProcessed.incrementAndGet();
                     }
-                    response(socket);
-                    messagesProcessed.incrementAndGet();
+                }
+                // the socket must be closed here on this thread!
+                if (socket != null) {
+                    try {
+                        socket.close();
+                    } finally {
+                        manager.release(id);
+                    }
+                    socket = null;
                 }
             } catch (RuntimeException e) {
                 // exception, make sure the thread is rescheduled
+                manager.release(id);
                 schedule();
                 throw e;
             }
@@ -217,12 +234,13 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
                 // Socket is still active, ignore. This can happen if bind is called after the receiver has been rescheduled
                 return;
             }
-            socket = context.socket(socketType);
+            manager.reserve(id);
+            socket = manager.getContext().socket(socketType);
             SocketHelper.configure(socket, metadata);
             address.getPort().bind(Port.TYPE.TCP);
             socket.bind(address.toProtocolString());
-            poller = context.poller();
-            poller.register(socket);
+            poller = manager.getContext().poller();
+            poller.register(socket, ZMQ.Poller.POLLIN);
         }
 
     }

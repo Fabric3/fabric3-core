@@ -37,29 +37,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.UUID;
 
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
 
 /**
  * Implements a round-robin strategy for selecting an available socket from a collection of sockets.
+ * <p/>
+ * Note: Due to restrictions imposed by ZeroMQ, an instance of this class must be called on the same thread at all times.
  *
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
-    private ZMQ.Context context;
+    private ContextManager manager;
     private int socketType;
-
     private Map<SocketAddress, ZMQ.Socket> sockets;
     private Iterator<ZMQ.Socket> iterator;
     private ZeroMQMetadata metadata;
 
-    public RoundRobinSocketMultiplexer(ZMQ.Context context, int socketType, ZeroMQMetadata metadata) {
-        this.context = context;
+    private String seed = UUID.randomUUID().toString();
+
+    public RoundRobinSocketMultiplexer(ContextManager manager, int socketType, ZeroMQMetadata metadata) {
+        this.manager = manager;
         this.socketType = socketType;
         this.metadata = metadata;
         sockets = new ConcurrentLinkedHashMap.Builder<SocketAddress, ZMQ.Socket>().maximumWeightedCapacity(1000).build();
@@ -68,19 +73,23 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
     public synchronized void update(List<SocketAddress> addresses) {
         if (sockets.isEmpty()) {
             if (addresses.size() == 1) {
-                ZMQ.Socket socket = context.socket(socketType);
-                SocketHelper.configure(socket, metadata);
                 SocketAddress address = addresses.get(0);
+                String addressString = address.toProtocolString();
+                manager.reserve(getClass().getName() + ":" + seed + addressString);
+                ZMQ.Socket socket = manager.getContext().socket(socketType);
+                SocketHelper.configure(socket, metadata);
                 address.getPort().bind(Port.TYPE.TCP);
-                socket.connect(address.toProtocolString());
+                socket.connect(addressString);
                 sockets.put(address, socket);
                 iterator = new SingletonIterator(socket);
             } else {
                 for (SocketAddress address : addresses) {
-                    ZMQ.Socket socket = context.socket(socketType);
+                    String addressString = address.toProtocolString();
+                    manager.reserve(getClass().getName() + ":" + seed + addressString);
+                    ZMQ.Socket socket = manager.getContext().socket(socketType);
                     SocketHelper.configure(socket, metadata);
                     address.getPort().bind(Port.TYPE.TCP);
-                    socket.connect(address.toProtocolString());
+                    socket.connect(addressString);
                     sockets.put(address, socket);
                 }
                 iterator = sockets.values().iterator();
@@ -95,15 +104,23 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
             Set<SocketAddress> toAdd = new HashSet<SocketAddress>(addresses);
             toAdd.removeAll(sockets.keySet());
 
-            for (SocketAddress address : toClose) {
-                sockets.remove(address).close();
+            try {
+                for (SocketAddress address : toClose) {
+                    sockets.remove(address).close();
+                }
+            } finally {
+                for (SocketAddress address : toClose) {
+                    manager.release(getClass().getName() + ":" + seed + address.toProtocolString());
+                }
             }
 
             for (SocketAddress address : toAdd) {
-                ZMQ.Socket socket = context.socket(socketType);
+                String addressString = address.toProtocolString();
+                manager.reserve(getClass().getName() + ":" + seed + addressString);
+                ZMQ.Socket socket = manager.getContext().socket(socketType);
                 SocketHelper.configure(socket, metadata);
                 address.getPort().bind(Port.TYPE.TCP);
-                socket.connect(address.toProtocolString());
+                socket.connect(addressString);
                 sockets.put(address, socket);
             }
 
@@ -131,8 +148,15 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
     }
 
     public void close() {
-        for (ZMQ.Socket socket : sockets.values()) {
-            socket.close();
+        try {
+            for (ZMQ.Socket socket : sockets.values()) {
+                socket.close();
+            }
+        } finally {
+            for (SocketAddress address : sockets.keySet()) {
+                manager.release(getClass().getName() + ":" + seed + address.toProtocolString());
+            }
+
         }
     }
 

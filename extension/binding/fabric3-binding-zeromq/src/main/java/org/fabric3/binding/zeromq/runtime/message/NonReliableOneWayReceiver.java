@@ -35,12 +35,12 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Context;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
@@ -60,19 +60,31 @@ import org.fabric3.spi.wire.InvocationChain;
 public class NonReliableOneWayReceiver extends AbstractReceiver implements Thread.UncaughtExceptionHandler {
     private ExecutorService executorService;
 
-    public NonReliableOneWayReceiver(Context context,
+    /**
+     * Constructor.
+     *
+     * @param manager         the ZeroMQ Context manager
+     * @param address         the address to receive messages on
+     * @param chains          the invocation chains for dispatching invocations
+     * @param executorService the runtime executor service
+     * @param metadata        metadata
+     * @param pollTimeout     timeout for polling operations in microseconds
+     * @param monitor         the monitor
+     */
+    public NonReliableOneWayReceiver(ContextManager manager,
                                      SocketAddress address,
                                      List<InvocationChain> chains,
                                      ExecutorService executorService,
                                      ZeroMQMetadata metadata,
+                                     long pollTimeout,
                                      MessagingMonitor monitor) {
-        super(context, address, chains, ZMQ.PULL, -1, metadata, monitor);
+        super(manager, address, chains, ZMQ.PULL, pollTimeout, metadata, monitor);
         this.executorService = executorService;
     }
 
 
     @Override
-    protected void invoke(ZMQ.Socket socket) {
+    protected boolean invoke(ZMQ.Socket socket) {
         final byte[] contextHeader = socket.recv(0);
         final byte[] methodNumber = socket.recv(0);
         final byte[] body = socket.recv(0);
@@ -89,7 +101,7 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
                 interceptor.invoke(request);
             }
         });
-
+        return true;
     }
 
     @Override

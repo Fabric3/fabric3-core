@@ -51,12 +51,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 
@@ -76,7 +76,7 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
     };
 
     private String id;
-    private ZMQ.Context context;
+    private ContextManager manager;
     private List<SocketAddress> addresses;
     private long pollTimeout;
     private MessagingMonitor monitor;
@@ -89,17 +89,17 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
     private LinkedBlockingQueue<Request> queue;
 
     public NonReliableRequestReplySender(String id,
-                                         Context context,
+                                         ContextManager manager,
                                          List<SocketAddress> addresses,
                                          long pollTimeout,
                                          ZeroMQMetadata metadata,
                                          MessagingMonitor monitor) {
         this.id = id;
-        this.context = context;
+        this.manager = manager;
         this.addresses = addresses;
         this.pollTimeout = pollTimeout;
         this.monitor = monitor;
-        multiplexer = new RoundRobinSocketMultiplexer(context, ZMQ.XREQ, metadata);
+        multiplexer = new RoundRobinSocketMultiplexer(manager, ZMQ.XREQ, metadata);
         queue = new LinkedBlockingQueue<Request>();
         pollers = new ConcurrentHashMap<Socket, ZMQ.Poller>();
     }
@@ -202,7 +202,6 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
          */
         public void stop() {
             active.set(false);
-            multiplexer.close();
         }
 
         public void run() {
@@ -213,7 +212,7 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
 
                     // handle pending requests
                     List<Request> drained = new ArrayList<Request>();
-                    Request value = queue.poll(pollTimeout, TimeUnit.MILLISECONDS);
+                    Request value = queue.poll(pollTimeout, TimeUnit.MICROSECONDS);
                     // if no available socket, drop the message
                     if (!multiplexer.isAvailable()) {
                         monitor.dropMessage();
@@ -240,7 +239,7 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
                         socket.send(request.getPayload(), 0);
 
                         ZMQ.Poller poller = pollers.get(socket);
-                        long val = poller.poll(pollTimeout * 1000);
+                        long val = poller.poll(pollTimeout);
                         if (val < 0) {
                             // response timed out, return an error to the waiting thread
                             //noinspection ThrowableInstanceNeverThrown
@@ -262,6 +261,7 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
                 }
 
             }
+            multiplexer.close();
         }
 
         /**
@@ -275,8 +275,8 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
             Collection<Socket> sockets = multiplexer.getAll();
             pollers.clear();
             for (Socket socket : sockets) {
-                ZMQ.Poller poller = context.poller();
-                poller.register(socket);
+                ZMQ.Poller poller = manager.getContext().poller();
+                poller.register(socket, ZMQ.Poller.POLLIN);
                 pollers.put(socket, poller);
             }
         }

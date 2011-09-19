@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
@@ -69,6 +70,9 @@ import org.fabric3.binding.zeromq.runtime.message.Receiver;
 import org.fabric3.binding.zeromq.runtime.message.RequestReplySender;
 import org.fabric3.binding.zeromq.runtime.message.Sender;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.event.EventService;
+import org.fabric3.spi.event.Fabric3EventListener;
+import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
@@ -81,17 +85,18 @@ import org.fabric3.spi.wire.InvocationChain;
  * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 @Service(ZeroMQWireBroker.class)
-public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySender {
+public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySender, Fabric3EventListener<RuntimeStop> {
     private static final String ZMQ = "zmq";
 
     private ContextManager manager;
     private AddressCache addressCache;
     private PortAllocator allocator;
+    private EventService eventService;
     private HostInfo info;
     private ZeroMQManagementService managementService;
     private ExecutorService executorService;
     private MessagingMonitor monitor;
-    private long pollTimeout = 1000;
+    private long pollTimeout = 10000000;
 
     private Map<String, SenderHolder> senders = new HashMap<String, SenderHolder>();
     private Map<String, Receiver> receivers = new HashMap<String, Receiver>();
@@ -101,6 +106,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
                                 @Reference PortAllocator allocator,
                                 @Reference ExecutorService executorService,
                                 @Reference ZeroMQManagementService managementService,
+                                @Reference EventService eventService,
                                 @Reference HostInfo info,
                                 @Monitor MessagingMonitor monitor) {
         this.manager = manager;
@@ -108,6 +114,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         this.allocator = allocator;
         this.executorService = executorService;
         this.managementService = managementService;
+        this.eventService = eventService;
         this.info = info;
         this.monitor = monitor;
     }
@@ -119,7 +126,12 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
      */
     @Property(required = false)
     public void setPollTimeout(long timeout) {
-        this.pollTimeout = timeout;
+        this.pollTimeout = timeout * 1000; // convert milliseconds to microseconds
+    }
+
+    @Init
+    public void init() {
+        eventService.subscribe(RuntimeStop.class, this);
     }
 
     public void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader)
@@ -168,7 +180,6 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             throw new BrokerException("Receiver already defined for " + uri);
         }
         try {
-            ZMQ.Context context = manager.getContext();
             String endpointId = uri.toString();
 
             Port port = allocator.allocate(endpointId, ZMQ);
@@ -190,9 +201,9 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             boolean oneWay = isOneWay(chains, uri);
             Receiver receiver;
             if (oneWay) {
-                receiver = new NonReliableOneWayReceiver(context, address, chains, executorService, metadata, monitor);
+                receiver = new NonReliableOneWayReceiver(manager, address, chains, executorService, metadata, pollTimeout, monitor);
             } else {
-                receiver = new NonReliableRequestReplyReceiver(context, address, chains, executorService, pollTimeout, metadata, monitor);
+                receiver = new NonReliableRequestReplyReceiver(manager, address, chains, executorService, pollTimeout, metadata, monitor);
             }
             receiver.start();
 
@@ -276,15 +287,18 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         // no-op
     }
 
+    public void onEvent(RuntimeStop event) {
+        stopAll();
+    }
+
     private SenderHolder createSender(String endpointId, boolean oneWay, ZeroMQMetadata metadata) {
-        ZMQ.Context context = manager.getContext();
         List<SocketAddress> addresses = addressCache.getActiveAddresses(endpointId);
 
         Sender sender;
         if (oneWay) {
-            sender = new NonReliableOneWaySender(endpointId, context, addresses, pollTimeout, metadata, monitor);
+            sender = new NonReliableOneWaySender(endpointId, manager, addresses, pollTimeout, metadata, monitor);
         } else {
-            sender = new NonReliableRequestReplySender(endpointId, context, addresses, pollTimeout, metadata, monitor);
+            sender = new NonReliableRequestReplySender(endpointId, manager, addresses, pollTimeout, metadata, monitor);
         }
 
 

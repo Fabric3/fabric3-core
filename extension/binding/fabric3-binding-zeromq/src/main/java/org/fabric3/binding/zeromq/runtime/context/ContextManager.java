@@ -34,6 +34,9 @@ import org.zeromq.ZMQ.Context;
 
 /**
  * Manages the ZeroMQ Context lifecycle.
+ * <p/>
+ * Note when sockets are created from the managed <code>Context</code>, clients must reserve a lease using {@link #reserve(String)}. When a socket is
+ * closed, clients must call {@link #release(String)}.
  *
  * @version $Revision: 10396 $ $Date: 2011-05-30 16:10:42 +0200 (Mon, 30 May 2011) $
  */
@@ -45,5 +48,19 @@ public interface ContextManager {
      * @return the active ZeroMQ context
      */
     Context getContext();
+
+    /**
+     * Reserves a socket lease. The context manager will not close the active ZeroMQ context on runtime shutdown until all leases have been released.
+     *
+     * @param id the unique client id
+     */
+    void reserve(String id);
+
+    /**
+     * Releases a socket lease.
+     *
+     * @param id the unique client id used to obtain the lease.
+     */
+    void release(String id);
 
 }

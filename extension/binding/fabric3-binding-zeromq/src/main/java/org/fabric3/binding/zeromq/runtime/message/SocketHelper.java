@@ -51,6 +51,7 @@ public final class SocketHelper {
      * @param metadata the metadata
      */
     public static void configure(ZMQ.Socket socket, ZeroMQMetadata metadata) {
+        socket.setLinger(0);
         if (metadata.getHighWater() > -1) {
             socket.setHWM(metadata.getHighWater());
         }

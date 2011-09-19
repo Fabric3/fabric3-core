@@ -50,6 +50,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 
@@ -142,8 +143,6 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
 
         connection = EasyMock.createMock(ChannelConnection.class);
 
-        EasyMock.expect(manager.getContext()).andReturn(context);
-
         addressCache = EasyMock.createMock(AddressCache.class);
 
         executorService = EasyMock.createMock(ExecutorService.class);
@@ -154,8 +153,9 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
 
         managementService = EasyMock.createNiceMock(ZeroMQManagementService.class);
 
+        EventService eventService = EasyMock.createNiceMock(EventService.class);
 
-        broker = new ZeroMQPubSubBrokerImpl(manager, addressCache, executorService, allocator, managementService, info, monitor);
+        broker = new ZeroMQPubSubBrokerImpl(manager, addressCache, executorService, allocator, managementService, eventService, info, monitor);
 
     }
 }

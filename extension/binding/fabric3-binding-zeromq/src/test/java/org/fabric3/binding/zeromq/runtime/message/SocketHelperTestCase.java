@@ -101,6 +101,7 @@ public final class SocketHelperTestCase extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         socket = EasyMock.createMock(ZMQ.Socket.class);
+        socket.setLinger(0);
         metadata = new ZeroMQMetadata();
     }
 }
