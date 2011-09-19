@@ -37,7 +37,9 @@
 */
 package org.fabric3.jpa.runtime.emf;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.List;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
@@ -92,6 +94,11 @@ public class ClasspathPersistenceContextParserTestCase extends TestCase {
         ClassLoader loader = new ClassLoader() {
             @Override
             public URL getResource(String name) {
+                return null;
+            }
+
+            @Override
+            public Enumeration<URL> getResources(String name) throws IOException {
                 return null;
             }
         };

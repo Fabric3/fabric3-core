@@ -44,6 +44,7 @@ import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
@@ -78,52 +79,65 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
     }
 
     public List<PersistenceUnitInfo> parse(ClassLoader classLoader) throws PersistenceUnitException {
-        URL url = classLoader.getResource("META-INF/persistence.xml");
-        if (url == null) {
-            throw new PersistenceUnitException("Persistence context (persistence.xml) not found in /META-INF");
-        }
-        URL rootUrl = getRootJarUrl(url);
-        InputStream stream = null;
-        XMLStreamReader reader = null;
+        Enumeration<URL> urls = null;
         try {
-            stream = url.openStream();
-            reader = factory.createXMLStreamReader(stream);
-            List<PersistenceUnitInfo> infos = new ArrayList<PersistenceUnitInfo>();
-            reader.nextTag();
-            PersistenceUnitInfo info = null;
-            String version = "2.0";
-            while (true) {
-                int event = reader.next();
-                switch (event) {
-                case START_ELEMENT:
-                    if ("persistence".equals(reader.getName().getLocalPart())) {
-                        String versionAttr = reader.getAttributeValue(null, "version");
-                        if (versionAttr != null) {
-                            version = versionAttr;
-                        }
-                    } else if ("persistence-unit".equals(reader.getName().getLocalPart())) {
-                        info = parsePersistenceUnit(reader, classLoader, rootUrl, version);
-                        infos.add(info);
-                    }
-                    break;
-                case END_ELEMENT:
-                    if ("persistence-unit".equals(reader.getName().getLocalPart())) {
-                        if (info == null) {
-                            throw new PersistenceUnitException("Invalid persistence.xml");
-                        }
-                    }
-                    break;
-                case XMLStreamConstants.END_DOCUMENT:
-                    return infos;
-                }
-            }
+            urls = classLoader.getResources("META-INF/persistence.xml");
         } catch (IOException e) {
             throw new PersistenceUnitException(e);
-        } catch (XMLStreamException e) {
-            throw new PersistenceUnitException(e);
-        } finally {
-            close(stream, reader);
         }
+        if (urls == null) {
+            throw new PersistenceUnitException("Persistence context (persistence.xml) not found in /META-INF");
+        }
+        List<PersistenceUnitInfo> infos = new ArrayList<PersistenceUnitInfo>();
+        while(urls.hasMoreElements()) {
+            URL url = urls.nextElement();
+            URL rootUrl = getRootJarUrl(url);
+            InputStream stream = null;
+            XMLStreamReader reader = null;
+            try {
+                stream = url.openStream();
+                reader = factory.createXMLStreamReader(stream);
+
+                reader.nextTag();
+                PersistenceUnitInfo info = null;
+                String version = "2.0";
+                boolean parse = true;
+                while (parse) {
+                    int event = reader.next();
+                    switch (event) {
+                        case START_ELEMENT:
+                            if ("persistence".equals(reader.getName().getLocalPart())) {
+                                String versionAttr = reader.getAttributeValue(null, "version");
+                                if (versionAttr != null) {
+                                    version = versionAttr;
+                                }
+                            } else if ("persistence-unit".equals(reader.getName().getLocalPart())) {
+                                info = parsePersistenceUnit(reader, classLoader, rootUrl, version);
+                                infos.add(info);
+                            }
+                            break;
+                        case END_ELEMENT:
+                            if ("persistence-unit".equals(reader.getName().getLocalPart())) {
+                                if (info == null) {
+                                    throw new PersistenceUnitException("Invalid persistence.xml found in :"+rootUrl);
+                                }
+                            }
+                            break;
+                        case XMLStreamConstants.END_DOCUMENT:
+                            parse=false;
+                            break;
+                    }
+                }
+
+            } catch (IOException e) {
+                throw new PersistenceUnitException(e);
+            } catch (XMLStreamException e) {
+                throw new PersistenceUnitException(e);
+            } finally {
+                close(stream, reader);
+            }
+        }
+        return infos;
     }
 
     private URL getRootJarUrl(URL url) throws PersistenceUnitException {
