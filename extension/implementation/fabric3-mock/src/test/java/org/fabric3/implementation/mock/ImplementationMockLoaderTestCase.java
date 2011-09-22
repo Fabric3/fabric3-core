@@ -47,6 +47,9 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.implementation.mock.introspection.ImplementationMockLoader;
+import org.fabric3.implementation.mock.introspection.MockComponentTypeLoader;
+import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**

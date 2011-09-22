@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.mock;
+package org.fabric3.implementation.mock.provision;
 
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
@@ -43,6 +43,8 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
  * @version $Rev$ $Date$
  */
 public class MockTargetDefinition extends PhysicalTargetDefinition {
+    private static final long serialVersionUID = -2251215889429868716L;
+
     private String mockedInterface;
 
     public String getMockedInterface() {

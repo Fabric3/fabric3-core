@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.mock;
+package org.fabric3.implementation.mock.runtime;
 
 import java.net.URI;
 import javax.xml.namespace.QName;

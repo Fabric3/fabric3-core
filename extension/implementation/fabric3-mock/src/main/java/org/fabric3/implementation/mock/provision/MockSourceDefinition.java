@@ -35,53 +35,13 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.mock;
+package org.fabric3.implementation.mock.provision;
 
-import java.util.List;
-import javax.xml.namespace.QName;
-
-import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.Implementation;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
- * Implementation type for mock components.
- *
  * @version $Rev$ $Date$
  */
-public class ImplementationMock extends Implementation<InjectingComponentType> {
-    private static final long serialVersionUID = -3519206465795353416L;
-
-    static final QName IMPLEMENTATION_MOCK = new QName(Namespaces.F3, "implementation.mock");
-
-    private final List<String> mockedInterfaces;
-
-    /**
-     * Initializes the mocked interfaces.
-     *
-     * @param mockedInterfaces Mocked interfaces.
-     * @param componentType    the component type
-     */
-    public ImplementationMock(List<String> mockedInterfaces, InjectingComponentType componentType) {
-        super(componentType);
-        this.mockedInterfaces = mockedInterfaces;
-    }
-
-    /**
-     * Gets the interfaces that are mocked.
-     *
-     * @return Interfaces that are mocked.
-     */
-    public List<String> getMockedInterfaces() {
-        return mockedInterfaces;
-    }
-
-    /**
-     * Gets the component type qualified name.
-     */
-    @Override
-    public QName getType() {
-        return IMPLEMENTATION_MOCK;
-    }
-
+public class MockSourceDefinition extends PhysicalSourceDefinition {
+    private static final long serialVersionUID = -5813352307909815506L;
 }

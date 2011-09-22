@@ -35,10 +35,14 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.mock;
+package org.fabric3.implementation.mock.generator;
 
 import org.osoa.sca.annotations.EagerInit;
 
+import org.fabric3.implementation.mock.provision.MockSourceDefinition;
+import org.fabric3.implementation.mock.provision.MockTargetDefinition;
+import org.fabric3.implementation.mock.model.ImplementationMock;
+import org.fabric3.implementation.mock.model.MockComponentDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.EffectivePolicy;
@@ -52,7 +56,6 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * @version $Rev$ $Date$
@@ -63,7 +66,6 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
     public MockComponentDefinition generate(LogicalComponent<ImplementationMock> component) throws GenerationException {
         MockComponentDefinition componentDefinition = new MockComponentDefinition();
         ImplementationMock implementationMock = component.getDefinition().getImplementation();
-        InjectingComponentType componentType = implementationMock.getComponentType();
         componentDefinition.setInterfaces(implementationMock.getMockedInterfaces());
         return componentDefinition;
     }
@@ -81,7 +83,7 @@ public class MockComponentGenerator implements ComponentGenerator<LogicalCompone
     }
 
     public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) {
-        throw new UnsupportedOperationException("Mock objects cannot be source of a wire");
+        throw new UnsupportedOperationException("Mock objects cannot be the source of a wire");
     }
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {

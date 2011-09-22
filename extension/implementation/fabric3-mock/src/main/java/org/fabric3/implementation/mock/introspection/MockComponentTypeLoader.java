@@ -35,31 +35,27 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.mock;
+package org.fabric3.implementation.mock.introspection;
 
 import java.util.List;
 
-import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
+ * Component type loader for mock components.
+ *
  * @version $Rev$ $Date$
  */
-public class MockComponentDefinition extends PhysicalComponentDefinition {
-    private static final long serialVersionUID = 9028368024803049278L;
-    private List<String> interfaces;
+public interface MockComponentTypeLoader {
 
     /**
-     * @return List of interfaces that are mocked.
+     * Loads the mock component type.
+     *
+     * @param interfaces           mock interfaces
+     * @param introspectionContext the introspection context
+     * @return the mock component type
      */
-    public List<String> getInterfaces() {
-        return interfaces;
-    }
-
-    /**
-     * @param interfaces List of interfaces that are mocked.
-     */
-    public void setInterfaces(List<String> interfaces) {
-        this.interfaces = interfaces;
-    }
+    InjectingComponentType load(List<String> interfaces, IntrospectionContext introspectionContext);
 
 }

@@ -35,27 +35,56 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.mock;
+package org.fabric3.implementation.mock.runtime;
 
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.spi.invocation.Message;
+import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.wire.Interceptor;
 
 /**
- * Component type loader for the mock component type.
- *
  * @version $Rev$ $Date$
  */
-public interface MockComponentTypeLoader {
+public class MockTargetInterceptor implements Interceptor {
+    private Interceptor next;
+    private Object mock;
+    private Method method;
 
-    /**
-     * Loads the mock component type.
-     *
-     * @param interfaces           Interfaces that need to be mocked.
-     * @param introspectionContext Loader context.
-     * @return Mock component type.
-     */
-    InjectingComponentType load(List<String> interfaces, IntrospectionContext introspectionContext);
+    public MockTargetInterceptor(Object mock, Method method) {
+        this.mock = mock;
+        this.method = method;
+    }
+
+    public Interceptor getNext() {
+        return next;
+    }
+
+    public Message invoke(Message message) {
+        WorkContext old = WorkContextTunnel.getThreadWorkContext();
+        try {
+            Object[] args = (Object[]) message.getBody();
+            WorkContextTunnel.setThreadWorkContext(message.getWorkContext());
+            Object ret = method.invoke(mock, args);
+            Message out = new MessageImpl();
+            out.setBody(ret);
+
+            return out;
+        } catch (IllegalAccessException e) {
+            throw new AssertionError(e);
+        } catch (InvocationTargetException e) {
+            throw new AssertionError(e);
+        } finally {
+            WorkContextTunnel.setThreadWorkContext(old);
+        }
+    }
+
+    public void setNext(Interceptor next) {
+        this.next = next;
+    }
+
 
 }

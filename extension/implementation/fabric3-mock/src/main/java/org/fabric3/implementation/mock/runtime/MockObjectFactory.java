@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.mock;
+package org.fabric3.implementation.mock.runtime;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -49,6 +49,8 @@ import org.easymock.IMocksControl;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
+ * Creates mock instances by delegating to the IMocksControl.
+ *
  * @version $Rev$ $Date$
  */
 public class MockObjectFactory<T> implements ObjectFactory<T> {
@@ -60,8 +62,9 @@ public class MockObjectFactory<T> implements ObjectFactory<T> {
     /**
      * Eager initiates the proxy.
      *
-     * @param interfaces  Interfaces that need to be proxied.
-     * @param classLoader Classloader for creating the dynamic proxies.
+     * @param interfaces  the proxy interfaces
+     * @param classLoader th classloader for creating the dynamic proxies
+     * @param control     the mock control
      */
     public MockObjectFactory(List<Class<?>> interfaces, ClassLoader classLoader, IMocksControl control) {
 
@@ -99,9 +102,9 @@ public class MockObjectFactory<T> implements ObjectFactory<T> {
                 } else {
                     Object mock = mocks.get(interfaze);
                     if (mock == null) {
-                        for (Class<?> intf : mocks.keySet()) {
-                            if (interfaze.isAssignableFrom(intf)) {
-                                mock = mocks.get(intf);
+                        for (Class<?> mockInterface : mocks.keySet()) {
+                            if (interfaze.isAssignableFrom(mockInterface)) {
+                                mock = mocks.get(mockInterface);
                                 break;
                             }
                         }

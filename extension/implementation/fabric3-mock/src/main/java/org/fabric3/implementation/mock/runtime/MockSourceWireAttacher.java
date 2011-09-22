@@ -35,8 +35,9 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.mock;
+package org.fabric3.implementation.mock.runtime;
 
+import org.fabric3.implementation.mock.provision.MockSourceDefinition;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
@@ -48,13 +49,11 @@ import org.fabric3.spi.wire.Wire;
  */
 public class MockSourceWireAttacher implements SourceWireAttacher<MockSourceDefinition> {
 
-    public void attachObjectFactory(MockSourceDefinition arg0, ObjectFactory<?> arg1, PhysicalTargetDefinition definition)
-            throws WiringException {
+    public void attachObjectFactory(MockSourceDefinition source, ObjectFactory<?> factor, PhysicalTargetDefinition target) throws WiringException {
         // Empty implementation; we don't want to attach anything to the mock
     }
 
-    public void attach(MockSourceDefinition arg0, PhysicalTargetDefinition arg1, Wire arg2)
-            throws WiringException {
+    public void attach(MockSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
         // Empty implementation; we don't want to attach anything to the mock
     }
 

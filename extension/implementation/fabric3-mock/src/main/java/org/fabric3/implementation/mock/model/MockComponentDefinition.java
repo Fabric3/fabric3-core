@@ -35,13 +35,31 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.mock;
+package org.fabric3.implementation.mock.model;
 
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import java.util.List;
+
+import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  * @version $Rev$ $Date$
  */
-public class MockSourceDefinition extends PhysicalSourceDefinition {
+public class MockComponentDefinition extends PhysicalComponentDefinition {
+    private static final long serialVersionUID = 9028368024803049278L;
+    private List<String> interfaces;
+
+    /**
+     * @return List of interfaces that are mocked.
+     */
+    public List<String> getInterfaces() {
+        return interfaces;
+    }
+
+    /**
+     * @param interfaces List of interfaces that are mocked.
+     */
+    public void setInterfaces(List<String> interfaces) {
+        this.interfaces = interfaces;
+    }
 
 }

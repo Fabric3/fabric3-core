@@ -44,6 +44,8 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
+import org.fabric3.implementation.mock.introspection.MockComponentTypeLoader;
+import org.fabric3.implementation.mock.introspection.MockComponentTypeLoaderImpl;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;

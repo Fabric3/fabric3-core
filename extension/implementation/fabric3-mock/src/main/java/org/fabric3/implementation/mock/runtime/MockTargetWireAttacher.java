@@ -35,9 +35,8 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.mock;
+package org.fabric3.implementation.mock.runtime;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
@@ -46,17 +45,16 @@ import java.util.List;
 import org.easymock.IMocksControl;
 import org.osoa.sca.annotations.Reference;
 
+import org.fabric3.implementation.mock.provision.MockTargetDefinition;
+import org.fabric3.implementation.mock.runtime.MockTargetInterceptor;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.objectfactory.SingletonObjectFactory;
-import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
@@ -64,7 +62,6 @@ import org.fabric3.spi.wire.Wire;
  * @version $Rev$ $Date$
  */
 public class MockTargetWireAttacher implements TargetWireAttacher<MockTargetDefinition> {
-
     private final ClassLoaderRegistry classLoaderRegistry;
     private final IMocksControl control;
 
@@ -73,11 +70,9 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockTargetDefi
         this.control = control;
     }
 
-    public void attach(PhysicalSourceDefinition sourceDefinition,
-                       MockTargetDefinition wireTargetDefinition,
-                       Wire wire) throws WireAttachException {
+    public void attach(PhysicalSourceDefinition sourceDefinition, MockTargetDefinition targetDefinition, Wire wire) throws WireAttachException {
 
-        Class<?> mockedInterface = loadInterface(wireTargetDefinition);
+        Class<?> mockedInterface = loadInterface(targetDefinition);
         Object mock = createMock(mockedInterface);
 
         for (InvocationChain chain : wire.getInvocationChains()) {
@@ -85,8 +80,9 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockTargetDefi
 
             //Each invocation chain has a single physical operation associated with it. This physical operation needs a
             //single interceptor to re-direct the invocation to the mock 
-            Method operationMethod = getOperationMethod(mockedInterface, operation, sourceDefinition, wireTargetDefinition);
-            chain.addInterceptor(new MockTargetInterceptor(mock, operationMethod));
+            Method operationMethod = getOperationMethod(mockedInterface, operation, sourceDefinition, targetDefinition);
+            MockTargetInterceptor interceptor = new MockTargetInterceptor(mock, operationMethod);
+            chain.addInterceptor(interceptor);
         }
 
     }
@@ -146,43 +142,4 @@ public class MockTargetWireAttacher implements TargetWireAttacher<MockTargetDefi
         }
     }
 
-    private class MockTargetInterceptor implements Interceptor {
-
-        private Interceptor next;
-        private Object mock;
-        private Method method;
-
-        private MockTargetInterceptor(Object mock, Method method) {
-            this.mock = mock;
-            this.method = method;
-        }
-
-        public Interceptor getNext() {
-            return next;
-        }
-
-        public Message invoke(Message message) {
-
-            try {
-
-                Object[] args = (Object[]) message.getBody();
-                Object ret = method.invoke(mock, args);
-                Message out = new MessageImpl();
-                out.setBody(ret);
-
-                return out;
-
-            } catch (IllegalAccessException e) {
-                throw new AssertionError(e);
-            } catch (InvocationTargetException e) {
-                throw new AssertionError(e);
-            }
-
-        }
-
-        public void setNext(Interceptor next) {
-            this.next = next;
-        }
-
-    }
 }
