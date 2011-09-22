@@ -72,12 +72,15 @@ public class JUnitImplementationLoader implements TypeLoader<JUnitImplementation
 
         JUnitImplementation definition = new JUnitImplementation(className);
         implementationProcessor.introspect(definition, context);
-        // Add bindings so wires are generated to the test operations. These wires will be used by the testing runtime to dispatch to the
-        // JUnit components
+        // Add a binding only on the JUnit service (which is the impl class) so wires are generated to the test operations.
+        // These wires will be used by the testing runtime to dispatch to the JUnit components.
         ContextConfiguration configuration = loadConfiguration(reader, context);
         for (ServiceDefinition serviceDefinition : definition.getComponentType().getServices().values()) {
-            JUnitBindingDefinition bindingDefinition = new JUnitBindingDefinition(configuration);
-            serviceDefinition.addBinding(bindingDefinition);
+            if (serviceDefinition.getServiceContract().getQualifiedInterfaceName().equals(definition.getImplementationClass())) {
+                JUnitBindingDefinition bindingDefinition = new JUnitBindingDefinition(configuration);
+                serviceDefinition.addBinding(bindingDefinition);
+                break;
+            }
         }
         return definition;
     }

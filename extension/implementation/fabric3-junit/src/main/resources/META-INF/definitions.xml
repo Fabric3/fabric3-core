@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ASCII"?>
+<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+             xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+             xmlns:f3="urn:fabric3.org"
+             targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912">
+
+    <!--<bindingType name="f3:binding.junit" mayProvide="sca:oneWay"/>-->
+
+    <!-- note this policy only applies to collocated wires as bindings are expected to handle one-way semantics natively -->
+    <policySet name="junitOneWayPolicy" provides="sca:oneWay" appliesTo="f3:binding.junit">
+        <f3:oneWayPolicy/>
+    </policySet>
+
+</definitions>

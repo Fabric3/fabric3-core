@@ -51,6 +51,7 @@ import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
  * @version $Rev$ $Date$
@@ -100,6 +101,12 @@ public class JUnitImplementationLoaderTestCase extends TestCase {
                 JUnitImplementation definition = (JUnitImplementation) EasyMock.getCurrentArguments()[0];
                 InjectingComponentType componentType = new InjectingComponentType();
                 ServiceDefinition serviceDefinition = new ServiceDefinition("Foo");
+                serviceDefinition.setServiceContract(new JavaServiceContract() {
+                    @Override
+                    public String getQualifiedInterfaceName() {
+                        return "org.fabric3.test.Foo";
+                    }
+                });
                 componentType.add(serviceDefinition);
                 definition.setComponentType(componentType);
                 return null;
