@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.mock;
+package org.fabric3.implementation.mock.introspection;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -47,6 +47,9 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.implementation.mock.introspection.Bar;
+import org.fabric3.implementation.mock.introspection.Baz;
+import org.fabric3.implementation.mock.introspection.Foo;
 import org.fabric3.implementation.mock.introspection.ImplementationMockLoader;
 import org.fabric3.implementation.mock.introspection.MockComponentTypeLoader;
 import org.fabric3.implementation.mock.model.ImplementationMock;
@@ -63,9 +66,9 @@ public class ImplementationMockLoaderTestCase extends TestCase {
             "           autowire='true'>" +
             "    <component name='testMock'>" +
             "        <f3:implementation.mock>" +
-            "            org.fabric3.implementation.mock.Foo" +
-            "            org.fabric3.implementation.mock.Bar" +
-            "            org.fabric3.implementation.mock.Baz" +
+            "            org.fabric3.implementation.mock.introspection.Foo" +
+            "            org.fabric3.implementation.mock.introspection.Bar" +
+            "            org.fabric3.implementation.mock.introspection.Baz" +
             "        </f3:implementation.mock>" +
             "    </component>" +
             "" +

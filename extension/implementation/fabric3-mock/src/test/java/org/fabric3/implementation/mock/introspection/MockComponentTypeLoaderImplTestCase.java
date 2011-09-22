@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.mock;
+package org.fabric3.implementation.mock.introspection;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -44,8 +44,6 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
-import org.fabric3.implementation.mock.introspection.MockComponentTypeLoader;
-import org.fabric3.implementation.mock.introspection.MockComponentTypeLoaderImpl;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
