@@ -164,6 +164,8 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             if (!ZMQ.equals(uri.getScheme())) {
                 // callback holders are dynamically created and it is possible for a sender to be released before an invocation is dispatched to it
                 throw new BrokerException("Sender not found for " + uri);
+            }  else {
+                return;
             }
         }
         holder.getIds().remove(id);

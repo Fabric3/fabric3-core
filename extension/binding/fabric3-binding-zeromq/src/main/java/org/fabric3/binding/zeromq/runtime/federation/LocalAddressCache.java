@@ -79,13 +79,7 @@ public class LocalAddressCache implements AddressCache {
             }
 
             // notify listeners of a change
-            List<AddressListener> list = listeners.get(endpointId);
-            if (list == null) {
-                return;
-            }
-            for (AddressListener listener : list) {
-                listener.onUpdate(addresses);
-            }
+            notifyChange(endpointId);
         }
     }
 
@@ -115,6 +109,20 @@ public class LocalAddressCache implements AddressCache {
         }
         for (AddressListener listener : deleted) {
             list.remove(listener);
+        }
+    }
+
+    protected void notifyChange(String endpointId) {
+        List<SocketAddress> addresses = this.addresses.get(endpointId);
+        if (addresses == null) {
+            addresses = Collections.emptyList();
+        }
+        List<AddressListener> list = listeners.get(endpointId);
+        if (list == null) {
+            return;
+        }
+        for (AddressListener listener : list) {
+            listener.onUpdate(addresses);
         }
     }
 

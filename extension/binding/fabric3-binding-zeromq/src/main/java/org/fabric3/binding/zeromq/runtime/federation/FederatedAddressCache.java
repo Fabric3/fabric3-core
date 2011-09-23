@@ -139,6 +139,7 @@ public class FederatedAddressCache extends LocalAddressCache implements Topology
             if (list.isEmpty()) {
                 addresses.remove(entry.getKey());
             }
+            notifyChange(entry.getKey());
         }
     }
 

@@ -132,13 +132,13 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         Subscriber subscriber = subscribers.get(channelName);
         if (subscriber == null) {
             AsyncFanOutHandler fanOutHandler = new AsyncFanOutHandler(executorService);
-            fanOutHandler.addConnection(subscriberId, connection);
 
             DeserializingEventStreamHandler head = new DeserializingEventStreamHandler(loader);
             head.setNext(fanOutHandler);
 
             List<SocketAddress> addresses = addressCache.getActiveAddresses(channelName);
             subscriber = new NonReliableSubscriber(subscriberId.toString(), manager, addresses, head, metadata, pollTimeout, monitor);
+            subscriber.addConnection(subscriberId, connection);
             subscriber.start();
             addressCache.subscribe(channelName, subscriber);
             subscribers.put(channelName, subscriber);

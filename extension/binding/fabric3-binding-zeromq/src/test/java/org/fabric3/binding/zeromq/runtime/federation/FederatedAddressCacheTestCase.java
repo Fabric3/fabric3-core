@@ -98,6 +98,7 @@ public class FederatedAddressCacheTestCase extends TestCase {
 
         AddressListener listener = EasyMock.createMock(AddressListener.class);
         listener.onUpdate(EasyMock.isA(List.class));
+        EasyMock.expectLastCall().times(2);
         EasyMock.replay(info, topologyService, listener);
 
         FederatedAddressCache cache = new FederatedAddressCache(topologyService, info);

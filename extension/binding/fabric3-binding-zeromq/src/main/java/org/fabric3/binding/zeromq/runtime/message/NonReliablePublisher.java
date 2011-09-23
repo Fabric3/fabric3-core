@@ -90,7 +90,9 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
     @ManagementOperation(type = OperationType.POST)
     public void stop() {
         try {
-            dispatcher.stop();
+            if (dispatcher != null) {
+                dispatcher.stop();
+            }
         } finally {
             dispatcher = null;
         }
