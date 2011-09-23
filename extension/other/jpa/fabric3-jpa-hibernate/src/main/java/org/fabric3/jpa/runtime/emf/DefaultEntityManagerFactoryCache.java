@@ -117,6 +117,9 @@ public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCac
     }
 
     public void put(URI uri, String unitName, EntityManagerFactory factory) throws JpaResolutionException {
+        if (factory == null) {
+            throw new IllegalArgumentException("EntityManagerFactory was null");
+        }
         cache.put(unitName, factory);
         Set<String> names = contributionCache.get(uri);
         if (names == null) {

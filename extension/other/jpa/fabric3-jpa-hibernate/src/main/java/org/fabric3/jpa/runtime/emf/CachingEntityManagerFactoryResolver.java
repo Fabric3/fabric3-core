@@ -111,7 +111,8 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
     }
 
     /**
-     * Creates EntityManagerFactory instances the requested persistence unit by parsing the persistence.xml file.
+     * Creates an EntityManagerFactory for a persistence unit specified by the property overrides. The EMF is created by parsing all persistence.xml
+     * files on the classpath.
      *
      * @param overrides   persistence unit property overrides
      * @param classLoader the persistence unit classloader
@@ -120,8 +121,9 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
      */
     private EntityManagerFactory createEntityManagerFactory(PersistenceOverrides overrides, ClassLoader classLoader) throws JpaResolutionException {
         List<PersistenceUnitInfo> infos = parser.parse(classLoader);
+        String unitName = overrides.getUnitName();
         for (PersistenceUnitInfo info : infos) {
-            if (!overrides.getUnitName().equals(info.getPersistenceUnitName())) {
+            if (!unitName.equals(info.getPersistenceUnitName())) {
                 // Not the most efficient approach: parse all of the persistence units and only keep the one we are requested in, potentially
                 // resulting in parsing the units multiple times.
                 // This must be done since the overrides may not be loaded for all units
@@ -139,7 +141,7 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
             cfg.configure(info, Collections.emptyMap());
             return cfg.buildEntityManagerFactory();
         }
-        return null;
+        throw new JpaResolutionException("Persistence unit not defined for: " + unitName);
     }
 
 
