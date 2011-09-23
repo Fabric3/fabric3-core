@@ -43,7 +43,6 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
-import org.zeromq.ZMQ;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
@@ -190,7 +189,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 addressCache.publish(event);
                 publisher.start();
 
-                holder = new PublisherHolder(publisher);
+                holder = new PublisherHolder(publisher, address);
                 holder.getConnectionIds().add(connectionId);
                 publishers.put(channelName, holder);
                 managementService.register(channelName, publisher);
@@ -217,6 +216,10 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         if (holder.getConnectionIds().isEmpty()) {
             publishers.remove(connectionId);
             publisher.stop();
+
+            SocketAddress address = holder.getAddress();
+            AddressAnnouncement event = new AddressAnnouncement(channelName, AddressAnnouncement.Type.REMOVED, address);
+            addressCache.publish(event);
             managementService.unregister(channelName);
         }
         allocator.release(channelName);
@@ -254,9 +257,11 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     private class PublisherHolder {
         private List<String> connectionIds = new ArrayList<String>();
         private Publisher publisher;
+        private SocketAddress address;
 
-        private PublisherHolder(Publisher publisher) {
+        private PublisherHolder(Publisher publisher, SocketAddress address) {
             this.publisher = publisher;
+            this.address = address;
         }
 
         public List<String> getConnectionIds() {
@@ -265,6 +270,10 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
 
         public Publisher getPublisher() {
             return publisher;
+        }
+
+        public SocketAddress getAddress() {
+            return address;
         }
     }
 

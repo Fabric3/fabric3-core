@@ -30,6 +30,8 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
+
 /**
  * Implementations receive messages on a ZeroMQ socket using XREQ sockets. Qualities of service such as reliability may be provided by an
  * implementation.
@@ -47,5 +49,13 @@ public interface Receiver {
      * Disposes the server and any open resources.
      */
     void stop();
+
+    /**
+     * Returns the socket address the receiver is listening on.
+     *
+     * @return the socket address the receiver is listening on
+     */
+    SocketAddress getAddress();
+
 
 }

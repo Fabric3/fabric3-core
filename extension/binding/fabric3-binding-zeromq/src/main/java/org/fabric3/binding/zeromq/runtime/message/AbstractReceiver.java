@@ -118,6 +118,10 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
         }
     }
 
+    public SocketAddress getAddress() {
+        return address;
+    }
+
     public void uncaughtException(Thread t, Throwable e) {
         monitor.error(e);
     }

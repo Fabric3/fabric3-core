@@ -121,6 +121,7 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
         EasyMock.expect(connection.getEventStreams()).andReturn(Collections.singletonList(stream));
 
         addressCache.publish(EasyMock.isA(AddressAnnouncement.class));
+        EasyMock.expectLastCall().times(2);
 
         EasyMock.replay(context);
         EasyMock.replay(manager, addressCache, executorService, monitor, connection, allocator, info, stream, port, managementService);

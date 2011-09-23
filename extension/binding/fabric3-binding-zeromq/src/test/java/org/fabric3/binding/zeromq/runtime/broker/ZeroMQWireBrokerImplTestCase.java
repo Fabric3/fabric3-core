@@ -93,6 +93,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         EasyMock.expect(info.getRuntimeName()).andReturn("runtime");
 
         addressCache.publish(EasyMock.isA(AddressEvent.class));
+        EasyMock.expectLastCall().times(2);
 
         Port port = EasyMock.createMock(Port.class);
         EasyMock.expect(port.getNumber()).andReturn(1099).anyTimes();

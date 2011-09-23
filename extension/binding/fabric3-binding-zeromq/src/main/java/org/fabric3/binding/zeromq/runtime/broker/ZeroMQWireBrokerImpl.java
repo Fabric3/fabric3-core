@@ -43,7 +43,6 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
-import org.zeromq.ZMQ;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
@@ -164,7 +163,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             if (!ZMQ.equals(uri.getScheme())) {
                 // callback holders are dynamically created and it is possible for a sender to be released before an invocation is dispatched to it
                 throw new BrokerException("Sender not found for " + uri);
-            }  else {
+            } else {
                 return;
             }
         }
@@ -228,8 +227,13 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         if (receiver == null) {
             throw new BrokerException("Receiver not found for " + uri);
         }
-        receiver.stop();
         String endpointId = uri.toString();
+
+        SocketAddress address = receiver.getAddress();
+        AddressAnnouncement event = new AddressAnnouncement(endpointId, AddressAnnouncement.Type.REMOVED, address);
+        addressCache.publish(event);
+
+        receiver.stop();
         allocator.release(endpointId);
         String id = createReceiverId(uri);
         managementService.unregisterReceiver(id);

@@ -163,7 +163,9 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
     public void onUpdate(List<SocketAddress> addresses) {
         // refresh socket
         this.addresses = addresses;
-        receiver.refresh();
+        if (receiver != null) {
+            receiver.refresh();
+        }
     }
 
     private void setFanOutHandler(EventStreamHandler current) {
