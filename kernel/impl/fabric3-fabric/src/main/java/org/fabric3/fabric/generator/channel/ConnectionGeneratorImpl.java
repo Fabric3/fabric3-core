@@ -260,13 +260,14 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
     private LogicalChannel getChannelInHierarchy(URI channelUri, LogicalInvocable invocable) throws GenerationException {
         LogicalChannel channel = null;
+        LogicalCompositeComponent parent = invocable.getParent().getParent();
         while (true) {
-            LogicalCompositeComponent parent = invocable.getParent().getParent();
             if (parent != null) {
                 channel = parent.getChannel(channelUri);
                 if (channel != null) {
                     break;
                 }
+                parent = parent.getParent();
             } else {
                 break;
             }
