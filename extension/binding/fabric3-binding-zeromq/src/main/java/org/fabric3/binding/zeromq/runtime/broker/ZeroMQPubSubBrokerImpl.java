@@ -214,7 +214,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         Publisher publisher = holder.getPublisher();
         holder.getConnectionIds().remove(connectionId);
         if (holder.getConnectionIds().isEmpty()) {
-            publishers.remove(connectionId);
+            publishers.remove(channelName);
             publisher.stop();
 
             SocketAddress address = holder.getAddress();
