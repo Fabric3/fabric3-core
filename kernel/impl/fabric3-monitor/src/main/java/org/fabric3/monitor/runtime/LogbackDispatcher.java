@@ -40,6 +40,9 @@ package org.fabric3.monitor.runtime;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -55,7 +58,11 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusManager;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -138,6 +145,8 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
         if (!configured) {
             configureDefaultAppender(context);
         }
+
+        checkLogErrors();
     }
 
     public void stop() {
@@ -203,6 +212,29 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
         StreamResult result = new StreamResult(stream);
         transformer.transform(source, result);
         return new InputSource(new ByteArrayInputStream(stream.toByteArray()));
+    }
+
+    /**
+     * Checks for fatal log configuration errors.
+     */
+    @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
+    private void checkLogErrors() {
+        LoggerContext context = logger.getLoggerContext();
+        StatusManager sm = context.getStatusManager();
+        if (sm != null && sm.getLevel() == ErrorStatus.ERROR) {
+            List<Status> list = sm.getCopyOfStatusList();
+            SimpleDateFormat format = new SimpleDateFormat(CoreConstants.ISO8601_PATTERN);
+            String time = format.format(new Date(System.currentTimeMillis()));
+            for (Status status : list) {
+                if (status.getLevel() == ErrorStatus.ERROR) {
+                    System.err.println("[ERROR " + Thread.currentThread().getName() + " " + time + "] " + status.getMessage());
+                    Throwable throwable = status.getThrowable();
+                    if (throwable != null) {
+                        throwable.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
 }
