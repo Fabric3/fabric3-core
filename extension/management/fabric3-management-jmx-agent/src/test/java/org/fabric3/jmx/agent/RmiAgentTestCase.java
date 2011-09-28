@@ -30,6 +30,7 @@ import org.fabric3.spi.host.PortAllocator;
  * @version $Revision: 9250 $ $Date: 2010-07-30 12:52:01 +0200 (Fri, 30 Jul 2010) $
  */
 public class RmiAgentTestCase extends TestCase {
+    private static final int PORT = 1099;
 
     public void testConfiguredPort() throws Exception {
         MBeanServer mBeanServer = EasyMock.createNiceMock(MBeanServer.class);
@@ -37,18 +38,18 @@ public class RmiAgentTestCase extends TestCase {
         RmiAgentMonitor monitor = EasyMock.createNiceMock(RmiAgentMonitor.class);
 
         Port port = EasyMock.createMock(Port.class);
-        EasyMock.expect(port.getNumber()).andReturn(8182).anyTimes();
+        EasyMock.expect(port.getNumber()).andReturn(PORT).anyTimes();
         port.bind(Port.TYPE.TCP);
 
         PortAllocator portAllocator = EasyMock.createMock(PortAllocator.class);
-        EasyMock.expect(portAllocator.reserve("JMX", "JMX", 8182)).andReturn(port);
+        EasyMock.expect(portAllocator.reserve("JMX", "JMX", PORT)).andReturn(port);
         portAllocator.release("JMX");
         EasyMock.expectLastCall();
 
         EasyMock.replay(mBeanServer, monitor, portAllocator, port);
 
         RmiAgent agent = new RmiAgent(mBeanServer, authenticator, portAllocator, monitor);
-        agent.setJmxPort("8182");
+        agent.setJmxPort(String.valueOf(PORT));
         agent.init();
         agent.destroy();
         EasyMock.verify(portAllocator, port);
@@ -60,7 +61,7 @@ public class RmiAgentTestCase extends TestCase {
         RmiAgentMonitor monitor = EasyMock.createNiceMock(RmiAgentMonitor.class);
 
         Port port = EasyMock.createMock(Port.class);
-        EasyMock.expect(port.getNumber()).andReturn(8182).anyTimes();
+        EasyMock.expect(port.getNumber()).andReturn(PORT).anyTimes();
         port.bind(Port.TYPE.TCP);
 
         PortAllocator portAllocator = EasyMock.createMock(PortAllocator.class);
