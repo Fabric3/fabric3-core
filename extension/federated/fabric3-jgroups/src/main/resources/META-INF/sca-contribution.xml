@@ -13,6 +13,6 @@ Public License. See the accompanying license file for details.
               xmlns:federation="urn:fabric3.org:federation"
               xmlns:f3-core="urn:fabric3.org:core"
               f3-core:extension="true">
-    <export.java package="org.fabric3.federation.jgroups.log" version="1.9"/>
+    <export.java package="org.fabric3.federation.jgroups.log" version="1.9.5"/>
     <export.java package="org.jgroups.*" version="2.10.0"/>
 </contribution>

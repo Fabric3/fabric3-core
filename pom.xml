@@ -25,7 +25,7 @@
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-modules-parent-pom</artifactId>
-    <version>1.10-SNAPSHOT</version>
+    <version>1.9.5-SNAPSHOT</version>
     <name>Fabric3 Modules Parent POM</name>
     <description>Fabric3 Modules Parent POM.</description>
     <packaging>pom</packaging>
@@ -39,7 +39,7 @@
     </modules>
 
     <properties>
-        <fabric3.release.version>1.9</fabric3.release.version>
+        <fabric3.release.version>1.9.5</fabric3.release.version>
         <sca.api.version>1.1.2</sca.api.version>
         <stax.api.version>1.0</stax.api.version>
         <woodstox.version>3.2.9</woodstox.version>
