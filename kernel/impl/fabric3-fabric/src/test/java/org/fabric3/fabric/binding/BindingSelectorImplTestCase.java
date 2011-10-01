@@ -44,7 +44,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;

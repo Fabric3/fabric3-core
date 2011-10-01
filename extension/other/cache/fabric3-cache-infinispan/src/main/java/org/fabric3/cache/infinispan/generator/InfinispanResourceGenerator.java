@@ -44,7 +44,7 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import java.util.List;
 

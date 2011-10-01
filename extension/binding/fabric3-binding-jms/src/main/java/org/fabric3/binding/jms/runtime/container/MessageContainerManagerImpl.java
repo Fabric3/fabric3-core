@@ -47,11 +47,11 @@ import javax.jms.JMSException;
 import javax.transaction.TransactionManager;
 
 import org.oasisopen.sca.annotation.Property;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.jms.spi.common.TransactionType;
@@ -70,7 +70,7 @@ import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
  * @version $Rev$ $Date$
  */
 @EagerInit
-@Service(interfaces = {MessageContainerManager.class, Transport.class})
+@Service(names = {MessageContainerManager.class, Transport.class})
 public class MessageContainerManagerImpl implements MessageContainerManager, Transport {
     private static final int DEFAULT_TRX_TIMEOUT = 30;
     private Map<URI, AdaptiveMessageContainer> containers = new ConcurrentHashMap<URI, AdaptiveMessageContainer>();

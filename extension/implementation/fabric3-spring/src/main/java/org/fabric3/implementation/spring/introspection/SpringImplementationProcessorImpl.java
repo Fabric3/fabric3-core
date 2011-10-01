@@ -45,7 +45,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.Constants;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.stream.Source;
 import org.fabric3.implementation.spring.model.BeanDefinition;

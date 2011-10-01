@@ -40,7 +40,7 @@ package org.fabric3.fabric.security;
 import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.invocation.WorkContext;

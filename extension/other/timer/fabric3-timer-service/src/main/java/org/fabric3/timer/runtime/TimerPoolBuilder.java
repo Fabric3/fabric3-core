@@ -37,8 +37,8 @@
 */
 package org.fabric3.timer.runtime;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.resource.ResourceBuilder;

@@ -236,8 +236,6 @@ public final class Java6HostExports {
         // sca packages
         hostMap.put("org.oasisopen.sca", "1.1");
         hostMap.put("org.oasisopen.sca.annotation", "1.1");
-        hostMap.put("org.osoa.sca", "1.0");
-        hostMap.put("org.osoa.sca.annotations", "1.0");
 
         // jax-rs packages
         hostMap.put("javax.ws.rs", "1.1.1");

@@ -52,7 +52,7 @@ import javax.jms.Queue;
 import javax.jms.Topic;
 import javax.transaction.TransactionManager;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;

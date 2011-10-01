@@ -42,7 +42,7 @@ import java.util.Map;
 import org.apache.mina.common.IdleStatus;
 import org.apache.mina.common.IoHandler;
 import org.apache.mina.common.IoSession;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.transport.ftp.server.monitor.FtpMonitor;

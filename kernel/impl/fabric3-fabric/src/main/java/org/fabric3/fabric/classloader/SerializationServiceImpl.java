@@ -49,7 +49,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;

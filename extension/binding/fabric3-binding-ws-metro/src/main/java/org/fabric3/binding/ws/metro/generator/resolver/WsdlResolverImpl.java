@@ -46,7 +46,7 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.spi.contribution.MetaDataStore;

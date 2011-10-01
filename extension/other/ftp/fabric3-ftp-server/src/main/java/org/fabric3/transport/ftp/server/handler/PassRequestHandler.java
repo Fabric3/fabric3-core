@@ -37,7 +37,7 @@
 */
 package org.fabric3.transport.ftp.server.handler;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.transport.ftp.server.protocol.DefaultResponse;
 import org.fabric3.transport.ftp.server.protocol.FtpSession;

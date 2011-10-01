@@ -151,13 +151,6 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
                 return names[index];
             }
         }
-        org.osoa.sca.annotations.Constructor annotation = constructor.getAnnotation(org.osoa.sca.annotations.Constructor.class);
-        if (annotation != null) {
-            String[] names = annotation.value();
-            if (names.length != 1 || names[0].length() != 0) {
-                return names[index];
-            }
-        }
         return constructor.getDeclaringClass().getSimpleName() + "[" + index + ']';
     }
 
@@ -245,22 +238,18 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
 
         // it it's a context interfaces, it must be a context
         if (ComponentContext.class.isAssignableFrom(rawType)
-                || org.osoa.sca.ComponentContext.class.isAssignableFrom(rawType)
-                || RequestContext.class.isAssignableFrom(rawType)
-                || org.osoa.sca.RequestContext.class.isAssignableFrom(rawType)) {
+                || RequestContext.class.isAssignableFrom(rawType)) {
             return InjectableType.CONTEXT;
         }
 
         // if it's Remotable or a local Service, it must be a reference
         if (isAnnotationPresent(rawType, Remotable.class)
-                || isAnnotationPresent(rawType, org.osoa.sca.annotations.Remotable.class)
-                || isAnnotationPresent(rawType, Service.class)
-                || isAnnotationPresent(rawType, org.osoa.sca.annotations.Service.class)) {
+                || isAnnotationPresent(rawType, Service.class)) {
             return InjectableType.REFERENCE;
         }
 
         // if it has a Callback annotation, it's a callback
-        if (isAnnotationPresent(rawType, Callback.class) || isAnnotationPresent(rawType, org.osoa.sca.annotations.Callback.class)) {
+        if (isAnnotationPresent(rawType, Callback.class)) {
             return InjectableType.CALLBACK;
         }
 

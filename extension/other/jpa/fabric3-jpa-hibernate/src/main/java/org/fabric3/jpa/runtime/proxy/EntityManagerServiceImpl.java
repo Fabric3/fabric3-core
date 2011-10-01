@@ -47,7 +47,7 @@ import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.jpa.runtime.emf.EntityManagerFactoryCache;
 import org.fabric3.model.type.component.Scope;

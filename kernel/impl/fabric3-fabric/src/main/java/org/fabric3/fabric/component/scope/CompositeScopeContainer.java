@@ -43,8 +43,8 @@
  */
 package org.fabric3.fabric.component.scope;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Scope;

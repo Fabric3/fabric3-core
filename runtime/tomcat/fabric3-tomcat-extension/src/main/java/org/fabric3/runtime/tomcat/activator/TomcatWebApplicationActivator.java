@@ -52,9 +52,9 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.ContextConfig;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.container.web.spi.InjectingSessionListener;

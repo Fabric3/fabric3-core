@@ -90,9 +90,6 @@ public abstract class AbstractCallbackInvocationHandler<T> implements Invocation
             } catch (ServiceUnavailableException e) {
                 // simply rethrow ServiceUnavailableExceptions
                 throw e;
-            } catch (org.osoa.sca.ServiceUnavailableException e) {
-                //  rethrow OSOA ServiceUnavailableExceptions
-                throw e;
             } catch (RuntimeException e) {
                 // wrap other exceptions raised by the runtime
                 throw new ServiceUnavailableException(e);

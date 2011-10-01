@@ -42,7 +42,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.dom.DOMSource;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Node;
 
 import org.fabric3.model.type.contract.DataType;

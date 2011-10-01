@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.ConversationContext;

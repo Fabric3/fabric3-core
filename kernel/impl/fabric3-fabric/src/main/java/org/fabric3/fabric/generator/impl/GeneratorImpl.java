@@ -50,9 +50,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GenerationType;

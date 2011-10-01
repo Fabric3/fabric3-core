@@ -50,7 +50,7 @@ import java.util.Set;
 import org.jgroups.Address;
 import org.jgroups.View;
 import org.jgroups.util.UUID;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;

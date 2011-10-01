@@ -39,7 +39,7 @@ package org.fabric3.federation.deployment.coordinator;
 
 import java.util.LinkedList;
 
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 

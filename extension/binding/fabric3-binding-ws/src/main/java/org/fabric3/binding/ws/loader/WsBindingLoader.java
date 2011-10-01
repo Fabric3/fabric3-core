@@ -50,8 +50,8 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;

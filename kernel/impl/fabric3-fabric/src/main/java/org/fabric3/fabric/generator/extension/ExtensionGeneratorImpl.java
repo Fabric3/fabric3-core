@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.command.AbstractExtensionsCommand;
 import org.fabric3.fabric.command.AttachWireCommand;

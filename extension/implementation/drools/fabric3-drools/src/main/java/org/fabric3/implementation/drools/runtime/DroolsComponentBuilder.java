@@ -48,8 +48,8 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.runtime.StatelessKnowledgeSession;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
 import org.fabric3.implementation.drools.provision.DroolsComponentDefinition;

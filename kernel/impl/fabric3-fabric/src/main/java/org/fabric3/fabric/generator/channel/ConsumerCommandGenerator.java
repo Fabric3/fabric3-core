@@ -39,8 +39,8 @@ package org.fabric3.fabric.generator.channel;
 
 import java.util.List;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.command.AttachChannelConnectionCommand;
 import org.fabric3.fabric.command.ChannelConnectionCommand;

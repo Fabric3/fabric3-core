@@ -45,7 +45,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.datasource.model.DataSourceResource;
 import org.fabric3.datasource.spi.DataSourceConfiguration;

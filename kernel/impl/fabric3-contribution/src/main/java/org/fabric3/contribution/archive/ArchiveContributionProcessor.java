@@ -40,7 +40,7 @@ package org.fabric3.contribution.archive;
 import java.net.URL;
 import java.util.List;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.contribution.UnsupportedContentTypeException;

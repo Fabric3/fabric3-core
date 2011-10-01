@@ -39,8 +39,8 @@ package org.fabric3.contribution.scanner.impl;
 
 import java.io.File;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.contribution.scanner.spi.FileResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResource;

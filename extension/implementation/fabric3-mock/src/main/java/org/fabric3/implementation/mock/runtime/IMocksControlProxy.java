@@ -44,8 +44,8 @@ import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.easymock.IExpectationSetters;
 import org.easymock.IMocksControl;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
 
 /**
  * @version $Rev$ $Date$

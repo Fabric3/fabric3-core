@@ -41,10 +41,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.AccessDeniedException;
@@ -72,7 +72,7 @@ import org.fabric3.spi.security.AuthorizationService;
  *
  * @version $Rev$ $Date$
  */
-@Service(interfaces = {AccessDecisionManager.class, AuthorizationService.class})
+@Service(names = {AccessDecisionManager.class, AuthorizationService.class})
 public class Fabric3AccessDecisionManager extends AbstractAccessDecisionManager implements AuthorizationService {
     private String managerType = "affirmative";
 

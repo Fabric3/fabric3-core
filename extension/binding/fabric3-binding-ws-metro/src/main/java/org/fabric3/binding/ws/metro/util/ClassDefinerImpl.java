@@ -42,7 +42,7 @@ import java.lang.reflect.Method;
 import java.security.CodeSource;
 import java.security.SecureClassLoader;
 
-import org.osoa.sca.annotations.Init;
+import org.oasisopen.sca.annotation.Init;
 
 /**
  * @version $Rev$ $Date$

@@ -47,11 +47,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.RuntimeMode;
@@ -77,7 +77,7 @@ import org.fabric3.spi.invocation.WorkContext;
  * @version $Rev$ $Date$
  */
 @EagerInit
-@Service(interfaces = {ScopeContainer.class, TopologyListener.class})
+@Service(names = {ScopeContainer.class, TopologyListener.class})
 public class DomainScopeContainer extends SingletonScopeContainer implements TopologyListener {
     private HostInfo info;
     private ZoneTopologyService topologyService;

@@ -40,8 +40,8 @@ package org.fabric3.implementation.junit.introspection;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.model.JUnitBindingDefinition;

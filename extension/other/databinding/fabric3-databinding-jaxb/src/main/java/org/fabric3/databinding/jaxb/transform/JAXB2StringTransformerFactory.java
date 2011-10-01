@@ -45,7 +45,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.databinding.jaxb.factory.JAXBContextFactory;
 import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;

@@ -42,10 +42,10 @@ import javax.servlet.ServletException;
 import org.atmosphere.cpr.AtmosphereServlet;
 import org.atmosphere.handler.ReflectorServletProcessor;
 import org.oasisopen.sca.annotation.Reference;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.web.provision.WebSourceDefinition;

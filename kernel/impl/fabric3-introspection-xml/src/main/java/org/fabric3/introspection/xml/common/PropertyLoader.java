@@ -47,7 +47,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
 import org.fabric3.model.type.component.Property;
@@ -78,7 +78,7 @@ public class PropertyLoader implements TypeLoader<Property> {
         this.helper = helper;
     }
 
-    @org.osoa.sca.annotations.Property(required = false)
+    @org.oasisopen.sca.annotation.Property(required = false)
     public void setRoundTrip(boolean roundTrip) {
         this.roundTrip = roundTrip;
     }

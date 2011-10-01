@@ -40,8 +40,8 @@ package org.fabric3.implementation.java.runtime;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;

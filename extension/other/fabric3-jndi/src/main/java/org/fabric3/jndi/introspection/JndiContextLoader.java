@@ -44,7 +44,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.jndi.model.JndiContextDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;

@@ -39,7 +39,7 @@ package org.fabric3.tx;
 
 import javax.transaction.TransactionManager;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.spi.builder.BuilderException;

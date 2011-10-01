@@ -41,7 +41,7 @@ import java.net.URI;
 import java.net.URL;
 
 import junit.framework.TestCase;
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;

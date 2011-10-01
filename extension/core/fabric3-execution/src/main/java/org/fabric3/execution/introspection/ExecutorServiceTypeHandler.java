@@ -40,9 +40,9 @@ package org.fabric3.execution.introspection;
 import java.lang.reflect.Member;
 import java.util.concurrent.ExecutorService;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.Resource;
 import org.fabric3.execution.model.ExecutorServiceResourceReference;

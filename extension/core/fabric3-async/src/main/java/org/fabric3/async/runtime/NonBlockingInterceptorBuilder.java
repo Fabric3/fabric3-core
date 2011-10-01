@@ -39,7 +39,7 @@ package org.fabric3.async.runtime;
 
 import java.util.concurrent.ExecutorService;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.async.provision.NonBlockingInterceptorDefinition;

@@ -41,8 +41,8 @@ import java.util.Map;
 import java.util.Properties;
 import javax.naming.NamingException;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.jndi.provision.PhysicalJndiContextDefinition;
 import org.fabric3.jndi.spi.JndiContextManager;

@@ -40,7 +40,7 @@ package org.fabric3.api.annotation.scope;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

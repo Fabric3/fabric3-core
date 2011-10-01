@@ -43,8 +43,8 @@ import javax.jms.ConnectionFactory;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQXAConnectionFactory;
 import org.apache.activemq.pool.PooledConnectionFactory;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryCreationException;
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryType;

@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.mock.generator;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.implementation.mock.provision.MockSourceDefinition;
 import org.fabric3.implementation.mock.provision.MockTargetDefinition;

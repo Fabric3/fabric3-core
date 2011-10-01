@@ -44,7 +44,7 @@
 package org.fabric3.introspection.java.annotation;
 
 import org.oasisopen.sca.annotation.Remotable;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ServiceDefinition;

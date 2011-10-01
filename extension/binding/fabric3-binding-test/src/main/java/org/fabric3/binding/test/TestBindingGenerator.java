@@ -40,7 +40,7 @@ package org.fabric3.binding.test;
 import java.net.URI;
 import java.util.List;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.BindingGenerator;

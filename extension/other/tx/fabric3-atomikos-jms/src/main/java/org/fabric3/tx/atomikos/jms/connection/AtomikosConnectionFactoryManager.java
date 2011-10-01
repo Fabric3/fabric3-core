@@ -45,9 +45,9 @@ import javax.jms.ConnectionFactory;
 import javax.jms.XAConnectionFactory;
 
 import com.atomikos.jms.AtomikosConnectionFactoryBean;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;

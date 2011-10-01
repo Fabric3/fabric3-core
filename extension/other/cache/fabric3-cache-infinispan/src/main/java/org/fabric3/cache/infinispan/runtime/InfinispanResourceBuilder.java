@@ -45,7 +45,7 @@ import org.fabric3.host.Fabric3Exception;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.resource.ResourceBuilder;
 import org.oasisopen.sca.annotation.Reference;
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import java.util.List;
 

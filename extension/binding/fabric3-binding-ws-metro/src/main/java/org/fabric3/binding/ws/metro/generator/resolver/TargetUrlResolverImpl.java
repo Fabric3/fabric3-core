@@ -40,7 +40,7 @@ package org.fabric3.binding.ws.metro.generator.resolver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.model.type.definitions.Intent;

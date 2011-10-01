@@ -41,7 +41,7 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * User manager implementation that reads the credential from the file system.
@@ -78,7 +78,7 @@ public class FileSystemUserManager implements UserManager {
      *
      * @param users Map of users to passwords.
      */
-    @Property
+    @Property(required = false)
     public void setUsers(Map<String, String> users) {
         this.users = users;
     }

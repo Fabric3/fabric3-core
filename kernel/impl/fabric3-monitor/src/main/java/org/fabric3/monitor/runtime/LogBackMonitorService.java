@@ -45,11 +45,11 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 import org.slf4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -70,7 +70,7 @@ import org.fabric3.spi.monitor.MonitorService;
  */
 @EagerInit
 @Management(name = "MonitorService", path = "/runtime/monitor", description = "Sets monitoring levels for the runtime")
-@Service(interfaces = {MonitorService.class, ComponentBuilderListener.class})
+@Service(names = {MonitorService.class, ComponentBuilderListener.class})
 public class LogBackMonitorService implements MonitorService, ComponentBuilderListener {
     private ComponentManager manager;
     private HostInfo info;

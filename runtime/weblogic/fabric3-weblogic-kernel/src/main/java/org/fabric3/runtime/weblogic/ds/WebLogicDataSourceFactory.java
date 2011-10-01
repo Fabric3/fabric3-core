@@ -37,7 +37,7 @@
 */
 package org.fabric3.runtime.weblogic.ds;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.datasource.spi.DataSourceConfiguration;
 import org.fabric3.datasource.spi.DataSourceFactory;

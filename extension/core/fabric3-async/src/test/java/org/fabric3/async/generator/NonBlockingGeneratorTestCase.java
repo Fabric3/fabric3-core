@@ -39,7 +39,7 @@ package org.fabric3.async.generator;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 import org.w3c.dom.Element;
 
 import org.fabric3.model.type.contract.Operation;

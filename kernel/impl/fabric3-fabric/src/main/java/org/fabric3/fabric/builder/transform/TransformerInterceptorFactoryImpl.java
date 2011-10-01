@@ -40,7 +40,7 @@ package org.fabric3.fabric.builder.transform;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.builder.WiringException;

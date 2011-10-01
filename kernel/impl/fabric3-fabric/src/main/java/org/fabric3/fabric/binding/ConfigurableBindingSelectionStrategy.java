@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.spi.binding.provider.BindingProvider;
 import org.fabric3.spi.binding.provider.BindingSelectionStrategy;
@@ -59,7 +59,7 @@ public class ConfigurableBindingSelectionStrategy implements BindingSelectionStr
     private Map<QName, Integer> bindingOrder;
     private BindingProviderComparator comparator = new BindingProviderComparator();
 
-    @Property
+    @Property(required = false)
     public void setScaBindingOrder(List<QName> order) {
         this.bindingOrder = new HashMap<QName, Integer>(order.size());
         for (int i = 0; i < order.size(); i++) {

@@ -40,11 +40,11 @@ package org.fabric3.federation.jgroups;
 import org.jgroups.Global;
 import org.jgroups.logging.CustomLogFactory;
 import org.jgroups.logging.Log;
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.MonitorChannel;
 import org.fabric3.api.annotation.monitor.Monitor;

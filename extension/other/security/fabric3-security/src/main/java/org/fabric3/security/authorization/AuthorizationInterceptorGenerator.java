@@ -40,7 +40,7 @@ package org.fabric3.security.authorization;
 import java.util.Arrays;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 import org.w3c.dom.Element;
 
 import org.fabric3.spi.generator.GenerationException;

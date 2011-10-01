@@ -43,7 +43,7 @@
  */
 package org.fabric3.fabric.generator.component;
 
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.fabric.command.StartComponentCommand;
 import org.fabric3.fabric.generator.CommandGenerator;

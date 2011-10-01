@@ -41,8 +41,8 @@ import java.util.Map;
 import javax.sql.DataSource;
 import javax.transaction.TransactionManager;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.transaction.jta.JtaTransactionManager;
 

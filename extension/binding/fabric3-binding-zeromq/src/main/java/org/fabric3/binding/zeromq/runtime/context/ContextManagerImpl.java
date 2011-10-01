@@ -33,10 +33,10 @@ package org.fabric3.binding.zeromq.runtime.context;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 

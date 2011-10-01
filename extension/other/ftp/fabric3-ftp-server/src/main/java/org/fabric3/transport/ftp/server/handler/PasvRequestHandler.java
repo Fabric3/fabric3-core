@@ -40,8 +40,8 @@ package org.fabric3.transport.ftp.server.handler;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.transport.ftp.server.data.DataConnection;
 import org.fabric3.transport.ftp.server.data.PassiveDataConnection;
@@ -107,7 +107,7 @@ public class PasvRequestHandler implements RequestHandler {
 
     }
 
-    @Property
+    @Property(required = false)
     public void setListenAddress(String listenAddress) {
         this.listenAddress = listenAddress;
     }
@@ -117,7 +117,7 @@ public class PasvRequestHandler implements RequestHandler {
      *
      * @param timeout timeout in milliseconds.
      */
-    @Property
+    @Property(required = false)
     public void setIdleTimeout(int timeout) {
         this.idleTimeout = timeout / 1000;   // convert to seconds used by Mina
     }

@@ -50,7 +50,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ReferenceDefinition;

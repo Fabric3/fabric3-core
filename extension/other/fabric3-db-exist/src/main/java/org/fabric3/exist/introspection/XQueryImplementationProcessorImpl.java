@@ -28,7 +28,7 @@ import org.exist.xquery.PathExpr;
 import org.exist.xquery.parser.XQueryLexer;
 import org.exist.xquery.parser.XQueryParser;
 import org.exist.xquery.parser.XQueryTreeParser;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.component.InvalidImplementation;
 import org.fabric3.model.type.component.MissingResource;

@@ -37,8 +37,8 @@
 */
 package org.fabric3.jpa.generator;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.jpa.common.PersistenceOverrides;
 import org.fabric3.jpa.model.PersistenceUnitResourceReference;

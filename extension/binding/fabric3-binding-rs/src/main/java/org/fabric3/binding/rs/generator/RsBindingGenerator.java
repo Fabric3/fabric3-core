@@ -43,7 +43,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.Constants;
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.binding.rs.model.RsBindingDefinition;
 import org.fabric3.binding.rs.provision.AuthenticationType;

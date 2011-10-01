@@ -39,7 +39,7 @@ package org.fabric3.monitor.runtime;
 
 import java.net.URI;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.monitor.provision.MonitorConnectionTargetDefinition;
 import org.fabric3.spi.builder.component.ConnectionAttachException;

@@ -44,7 +44,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Node;
 
 import org.fabric3.databinding.jaxb.factory.JAXBContextFactory;

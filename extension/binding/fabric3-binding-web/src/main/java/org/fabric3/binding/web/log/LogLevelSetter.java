@@ -41,8 +41,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.oasisopen.sca.annotation.Init;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * @version $Rev$ $Date$

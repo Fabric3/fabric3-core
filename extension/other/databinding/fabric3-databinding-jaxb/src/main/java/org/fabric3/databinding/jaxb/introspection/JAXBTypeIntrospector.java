@@ -57,7 +57,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
 import org.fabric3.model.type.contract.DataType;

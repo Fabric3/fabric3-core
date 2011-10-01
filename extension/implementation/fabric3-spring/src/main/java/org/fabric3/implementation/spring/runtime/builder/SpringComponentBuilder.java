@@ -43,9 +43,9 @@ import java.util.Collections;
 import java.util.List;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
 import org.fabric3.implementation.spring.runtime.component.SCAApplicationContext;

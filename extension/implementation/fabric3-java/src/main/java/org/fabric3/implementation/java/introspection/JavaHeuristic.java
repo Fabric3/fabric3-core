@@ -45,7 +45,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.model.type.component.Property;
@@ -128,8 +128,7 @@ public class JavaHeuristic implements HeuristicProcessor<JavaImplementation> {
             selected = constructors[0];
         } else {
             for (Constructor<?> constructor : constructors) {
-                if (constructor.isAnnotationPresent(org.oasisopen.sca.annotation.Constructor.class)
-                        || (constructor.isAnnotationPresent(org.osoa.sca.annotations.Constructor.class))) {
+                if (constructor.isAnnotationPresent(org.oasisopen.sca.annotation.Constructor.class)) {
                     if (selected != null) {
                         context.addError(new AmbiguousConstructor(implClass));
                         return null;

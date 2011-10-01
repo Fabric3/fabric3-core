@@ -43,7 +43,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
 import org.fabric3.host.Namespaces;

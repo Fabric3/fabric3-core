@@ -39,8 +39,8 @@ package org.fabric3.fabric.builder.channel;
 
 import java.net.URI;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.spi.builder.component.ConnectionAttachException;

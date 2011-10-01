@@ -39,7 +39,7 @@ package org.fabric3.fabric.instantiator.component;
 
 import java.net.URI;
 
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;

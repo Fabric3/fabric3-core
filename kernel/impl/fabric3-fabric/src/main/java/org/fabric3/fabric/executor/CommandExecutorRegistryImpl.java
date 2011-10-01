@@ -46,7 +46,7 @@ package org.fabric3.fabric.executor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.executor.CommandExecutor;

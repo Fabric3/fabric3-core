@@ -40,7 +40,7 @@ package org.fabric3.contribution.archive;
 import java.io.File;
 import java.net.URL;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.util.FileHelper;

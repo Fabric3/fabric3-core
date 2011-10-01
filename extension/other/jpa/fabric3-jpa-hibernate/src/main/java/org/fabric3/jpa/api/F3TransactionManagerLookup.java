@@ -43,8 +43,8 @@ import javax.transaction.TransactionManager;
 
 import org.hibernate.HibernateException;
 import org.hibernate.transaction.TransactionManagerLookup;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Resolves a Fabric3 transaction manager for Hibernate.

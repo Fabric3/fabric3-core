@@ -40,7 +40,7 @@ package org.fabric3.cache.introspection;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.cache.model.CacheResource;
 import org.fabric3.spi.introspection.IntrospectionContext;

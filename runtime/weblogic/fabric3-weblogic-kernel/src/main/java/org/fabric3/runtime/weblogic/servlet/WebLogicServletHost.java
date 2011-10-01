@@ -52,10 +52,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.runtime.weblogic.api.Constants;
 import org.fabric3.runtime.weblogic.api.ServletRequestDispatcher;
@@ -66,7 +66,7 @@ import org.fabric3.spi.host.ServletHost;
  *
  * @version $Rev$ $Date$
  */
-@Service(interfaces = {ServletHost.class, ServletRequestDispatcher.class})
+@Service(names = {ServletHost.class, ServletRequestDispatcher.class})
 @EagerInit
 public class WebLogicServletHost extends HttpServlet implements ServletHost, ServletRequestDispatcher {
     private static final long serialVersionUID = -3784698338450289318L;

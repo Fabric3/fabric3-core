@@ -42,7 +42,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.contribution.Contribution;
@@ -56,7 +56,7 @@ import org.fabric3.spi.introspection.xml.TemplateRegistry;
  *
  * @version $Rev$ $Date$
  */
-@Service(interfaces = TemplateRegistry.class)
+@Service(TemplateRegistry.class)
 public class TemplateRegistryImpl implements TemplateRegistry, ContributionServiceListener {
     private Map<String, Pair> cache = new ConcurrentHashMap<String, Pair>();
 

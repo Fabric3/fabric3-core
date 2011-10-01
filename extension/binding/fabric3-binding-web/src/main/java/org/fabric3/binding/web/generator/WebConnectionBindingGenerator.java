@@ -45,7 +45,7 @@ package org.fabric3.binding.web.generator;
 
 import java.net.URI;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.binding.web.common.OperationsAllowed;
 import org.fabric3.binding.web.model.WebBindingDefinition;

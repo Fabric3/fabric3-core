@@ -49,7 +49,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -80,7 +80,7 @@ public class DefaultClassVisitor<I extends Implementation<? extends InjectingCom
     /**
      * Constructor.
      */
-    @org.osoa.sca.annotations.Constructor
+    @org.oasisopen.sca.annotation.Constructor
     public DefaultClassVisitor() {
     }
 

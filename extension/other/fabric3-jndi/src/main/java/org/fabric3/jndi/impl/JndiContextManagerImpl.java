@@ -46,7 +46,7 @@ import javax.naming.Name;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
-import org.osoa.sca.annotations.Destroy;
+import org.oasisopen.sca.annotation.Destroy;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.jndi.spi.JndiContextManager;

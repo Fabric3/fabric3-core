@@ -39,7 +39,7 @@ package org.fabric3.implementation.junit.generator;
 
 import java.util.List;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.model.JUnitBindingDefinition;

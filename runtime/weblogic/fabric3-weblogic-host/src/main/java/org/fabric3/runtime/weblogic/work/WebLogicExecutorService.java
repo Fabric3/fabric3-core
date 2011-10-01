@@ -53,8 +53,8 @@ import com.bea.core.workmanager.WorkManagerFactory;
 import commonj.work.Work;
 import commonj.work.WorkException;
 import commonj.work.WorkManager;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
 import weblogic.logging.LoggingHelper;
 
 /**

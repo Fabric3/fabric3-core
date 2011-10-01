@@ -158,9 +158,6 @@ public final class JDKInvocationHandler<B> implements ConversationExpirationCall
             } catch (ServiceRuntimeException e) {
                 // simply rethrow ServiceRuntimeException
                 throw e;
-            } catch (org.osoa.sca.ServiceUnavailableException e) {
-                // rethrow OSOA ServiceUnavailableExceptions
-                throw e;
             } catch (RuntimeException e) {
                 // wrap other exceptions raised by the runtime
                 throw new ServiceUnavailableException(e);

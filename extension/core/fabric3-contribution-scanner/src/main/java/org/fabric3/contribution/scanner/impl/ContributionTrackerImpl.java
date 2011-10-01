@@ -55,7 +55,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.oasisopen.sca.annotation.Reference;
-import org.osoa.sca.annotations.Init;
+import org.oasisopen.sca.annotation.Init;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.Namespaces;

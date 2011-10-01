@@ -59,10 +59,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.Namespaces;
@@ -80,7 +80,7 @@ import org.fabric3.spi.xml.XMLFactory;
  *
  * @version $Rev$ $Date$
  */
-@Service(interfaces = {ContributionServiceListener.class, Fabric3EventListener.class})
+@Service(names = {ContributionServiceListener.class, Fabric3EventListener.class})
 @EagerInit
 public class ProfileTracker implements ContributionServiceListener, Fabric3EventListener<RuntimeRecover> {
     private static final QName CONTRIBUTION = new QName(Namespaces.F3, "contribution");

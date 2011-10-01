@@ -40,7 +40,7 @@ package org.fabric3.runtime.maven.test;
 import java.util.Map;
 
 import org.apache.maven.surefire.suite.SurefireTestSuite;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.runtime.maven.TestSuiteFactory;
 import org.fabric3.spi.wire.Wire;

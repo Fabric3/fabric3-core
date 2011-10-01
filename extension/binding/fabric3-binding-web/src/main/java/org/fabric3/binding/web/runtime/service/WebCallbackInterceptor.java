@@ -38,7 +38,7 @@
 package org.fabric3.binding.web.runtime.service;
 
 import org.atmosphere.cpr.Broadcaster;
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.spi.invocation.Message;

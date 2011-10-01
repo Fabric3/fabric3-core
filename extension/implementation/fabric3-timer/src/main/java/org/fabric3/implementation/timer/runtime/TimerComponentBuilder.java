@@ -41,8 +41,8 @@ import java.net.URI;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;

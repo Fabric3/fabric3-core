@@ -39,7 +39,7 @@ package org.fabric3.federation.allocator;
 
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.spi.allocator.AllocationException;
 import org.fabric3.spi.allocator.Allocator;

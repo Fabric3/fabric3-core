@@ -40,7 +40,7 @@ package org.fabric3.transport.ftp.server.handler;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.transport.ftp.server.data.DataConnection;
 import org.fabric3.transport.ftp.server.passive.PassiveConnectionService;

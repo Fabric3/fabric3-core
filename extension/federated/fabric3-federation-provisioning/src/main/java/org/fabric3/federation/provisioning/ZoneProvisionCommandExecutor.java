@@ -39,8 +39,8 @@ package org.fabric3.federation.provisioning;
 
 import javax.servlet.http.HttpServlet;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.spi.artifact.ArtifactCache;

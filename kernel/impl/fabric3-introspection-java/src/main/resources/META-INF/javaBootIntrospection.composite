@@ -77,54 +77,7 @@
         <f3:implementation.system class="org.fabric3.introspection.java.annotation.OASISServiceProcessor"/>
     </component>
 
-
-    <!-- OSOA Specification Annotations -->
-
-    <component name="CallbackProcessor" f3:key="org.osoa.sca.annotations.Callback">
-        <f3:implementation.system class="org.fabric3.introspection.java.annotation.CallbackProcessor"/>
-    </component>
-
-    <component name="ContextProcessor" f3:key="org.osoa.sca.annotations.Context">
-        <f3:implementation.system class="org.fabric3.introspection.java.annotation.ContextProcessor"/>
-    </component>
-
-    <component name="ConversationIDProcessor" f3:key="org.osoa.sca.annotations.ConversationID">
-        <f3:implementation.system class="org.fabric3.introspection.java.annotation.ConversationIDProcessor"/>
-    </component>
-
-    <component name="DestroyProcessor" f3:key="org.osoa.sca.annotations.Destroy">
-        <f3:implementation.system class="org.fabric3.introspection.java.annotation.DestroyProcessor"/>
-    </component>
-
-    <component name="EagerInitProcessor" f3:key="org.osoa.sca.annotations.EagerInit">
-        <f3:implementation.system class="org.fabric3.introspection.java.annotation.EagerInitProcessor"/>
-    </component>
-
-    <component name="InitProcessor" f3:key="org.osoa.sca.annotations.Init">
-        <f3:implementation.system class="org.fabric3.introspection.java.annotation.InitProcessor"/>
-    </component>
-
-    <component name="PropertyProcessor" f3:key="org.osoa.sca.annotations.Property">
-        <f3:implementation.system class="org.fabric3.introspection.java.annotation.PropertyProcessor"/>
-    </component>
-
-    <component name="ReferenceProcessor" f3:key="org.osoa.sca.annotations.Reference">
-        <f3:implementation.system class="org.fabric3.introspection.java.annotation.ReferenceProcessor"/>
-    </component>
-
-    <component name="RemotableProcessor" f3:key="org.osoa.sca.annotations.Remotable">
-        <f3:implementation.system class="org.fabric3.introspection.java.annotation.RemotableProcessor"/>
-    </component>
-
-    <component name="ScopeProcessor" f3:key="org.osoa.sca.annotations.Scope">
-        <f3:implementation.system class="org.fabric3.introspection.java.annotation.ScopeProcessor"/>
-    </component>
-
-    <component name="ServiceProcessor" f3:key="org.osoa.sca.annotations.Service">
-        <f3:implementation.system class="org.fabric3.introspection.java.annotation.ServiceProcessor"/>
-    </component>
-
-    <!--Fabric3 Annotations -->
+   <!--Fabric3 Annotations -->
 
     <component name="DomainProcessor" f3:key="org.fabric3.api.annotation.scope.Domain">
         <f3:implementation.system class="org.fabric3.introspection.java.annotation.DomainProcessor"/>

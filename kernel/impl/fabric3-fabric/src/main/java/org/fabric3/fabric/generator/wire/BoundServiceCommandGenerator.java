@@ -46,8 +46,8 @@ package org.fabric3.fabric.generator.wire;
 import java.net.URI;
 import java.util.List;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.command.AttachWireCommand;
 import org.fabric3.fabric.command.ConnectionCommand;

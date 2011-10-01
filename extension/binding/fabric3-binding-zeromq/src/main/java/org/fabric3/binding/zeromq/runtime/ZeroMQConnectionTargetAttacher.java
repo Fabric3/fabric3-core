@@ -30,7 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;

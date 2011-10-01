@@ -50,10 +50,10 @@ import java.util.Random;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.contribution.Library;

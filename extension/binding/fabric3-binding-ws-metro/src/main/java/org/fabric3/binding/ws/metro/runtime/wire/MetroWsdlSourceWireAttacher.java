@@ -45,7 +45,7 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceFeature;
 
 import com.sun.xml.ws.api.BindingID;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.ws.metro.provision.MetroWsdlSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;

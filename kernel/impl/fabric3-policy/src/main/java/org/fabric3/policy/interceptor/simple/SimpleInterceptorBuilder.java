@@ -39,7 +39,7 @@ package org.fabric3.policy.interceptor.simple;
 
 import java.net.URI;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.interceptor.InterceptorBuilder;

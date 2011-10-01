@@ -40,9 +40,9 @@ package org.fabric3.security.impl;
 import javax.management.remote.JMXAuthenticator;
 import javax.security.auth.Subject;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.security.AuthenticationException;
@@ -57,7 +57,7 @@ import org.fabric3.spi.security.UsernamePasswordToken;
  *
  * @version $Rev$ $Date$
  */
-@Service(interfaces = {AuthenticationService.class, JMXAuthenticator.class})
+@Service(names = {AuthenticationService.class, JMXAuthenticator.class})
 @EagerInit
 public class AuthenticationServiceImpl implements AuthenticationService, JMXAuthenticator {
     private SecurityStore store;

@@ -37,7 +37,7 @@
 */
 package org.fabric3.execution.generator;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.execution.model.ExecutorServiceResourceReference;
 import org.fabric3.execution.provision.ExecutorServiceTargetDefinition;

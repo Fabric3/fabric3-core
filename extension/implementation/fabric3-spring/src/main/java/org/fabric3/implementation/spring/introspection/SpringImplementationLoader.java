@@ -40,8 +40,8 @@ package org.fabric3.implementation.spring.introspection;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;

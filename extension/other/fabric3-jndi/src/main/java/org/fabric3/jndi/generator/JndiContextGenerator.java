@@ -37,7 +37,7 @@
 */
 package org.fabric3.jndi.generator;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.jndi.model.JndiContextDefinition;
 import org.fabric3.jndi.provision.PhysicalJndiContextDefinition;

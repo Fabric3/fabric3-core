@@ -40,8 +40,8 @@ package org.fabric3.binding.ws.metro.runtime.core;
 import java.util.concurrent.ExecutorService;
 
 import com.sun.xml.wss.SecurityEnvironment;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ws.metro.MetroBindingMonitor;

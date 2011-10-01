@@ -37,7 +37,7 @@
 */
 package org.fabric3.timer.generator;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.ResourceGenerator;

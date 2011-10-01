@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletContext;
 
-import org.osoa.sca.ComponentContext;
+import org.oasisopen.sca.ComponentContext;
 
 import org.fabric3.spi.objectfactory.Injector;
 

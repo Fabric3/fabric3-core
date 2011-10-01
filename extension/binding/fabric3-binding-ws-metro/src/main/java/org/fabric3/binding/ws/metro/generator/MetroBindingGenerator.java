@@ -40,7 +40,7 @@ package org.fabric3.binding.ws.metro.generator;
 import java.util.List;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.ws.metro.provision.MetroSourceDefinition;
 import org.fabric3.binding.ws.model.WsBindingDefinition;

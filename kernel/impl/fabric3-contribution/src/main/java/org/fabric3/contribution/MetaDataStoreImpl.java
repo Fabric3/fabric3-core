@@ -46,7 +46,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistry;
 import org.fabric3.host.Names;

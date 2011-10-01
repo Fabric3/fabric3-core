@@ -45,7 +45,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.jpa.common.PersistenceOverrides;
 import org.fabric3.jpa.override.OverrideRegistry;

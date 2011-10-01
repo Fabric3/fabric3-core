@@ -45,7 +45,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.regex.Pattern;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.stream.Source;

@@ -51,12 +51,12 @@ import javax.jws.WebMethod;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.Constants;
-import org.osoa.sca.annotations.Callback;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.OneWay;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Remotable;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
-import org.osoa.sca.annotations.OneWay;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Remotable;
 
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;

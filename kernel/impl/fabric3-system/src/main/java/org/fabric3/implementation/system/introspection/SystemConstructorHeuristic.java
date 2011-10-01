@@ -83,7 +83,7 @@ public class SystemConstructorHeuristic implements HeuristicProcessor<SystemImpl
             selected = constructors[0];
         } else {
             for (Constructor<?> constructor : constructors) {
-                if (constructor.isAnnotationPresent(org.osoa.sca.annotations.Constructor.class)) {
+                if (constructor.isAnnotationPresent(org.oasisopen.sca.annotation.Constructor.class)) {
                     if (selected != null) {
                         context.addError(new AmbiguousConstructor(implClass));
                         return null;

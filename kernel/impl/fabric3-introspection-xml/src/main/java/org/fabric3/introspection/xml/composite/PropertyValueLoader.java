@@ -52,7 +52,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.Constants;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;

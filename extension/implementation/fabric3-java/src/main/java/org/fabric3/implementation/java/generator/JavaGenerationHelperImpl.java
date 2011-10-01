@@ -40,7 +40,7 @@ package org.fabric3.implementation.java.generator;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.implementation.java.model.JavaImplementation;

@@ -41,7 +41,7 @@ import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.naming.NamingException;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;

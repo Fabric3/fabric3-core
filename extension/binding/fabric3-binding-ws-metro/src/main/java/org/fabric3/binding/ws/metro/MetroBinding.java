@@ -40,9 +40,9 @@ package org.fabric3.binding.ws.metro;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * Reports the status of the Metro binding extension and sets the log level for the underlying Metro stack.

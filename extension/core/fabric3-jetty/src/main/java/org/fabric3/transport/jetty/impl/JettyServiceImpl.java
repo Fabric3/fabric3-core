@@ -65,13 +65,13 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlet.ServletMapping;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;
@@ -97,7 +97,7 @@ import org.fabric3.transport.jetty.management.ManagedStatisticsHandler;
  * @version $$Rev$$ $$Date$$
  */
 @EagerInit
-@Service(interfaces = {JettyService.class, Transport.class})
+@Service(names = {JettyService.class, Transport.class})
 public class JettyServiceImpl implements JettyService, Transport {
     private static final String STATISTICS = "transports/http/container/statistics";
     private static final String MAPPINGS = "transports/http/container/mappings";

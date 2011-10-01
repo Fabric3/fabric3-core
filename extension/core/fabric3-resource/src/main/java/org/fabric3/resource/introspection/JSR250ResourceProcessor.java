@@ -44,7 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Resource;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;

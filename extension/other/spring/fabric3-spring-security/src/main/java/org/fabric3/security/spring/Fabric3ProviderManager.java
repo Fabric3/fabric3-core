@@ -41,10 +41,10 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -71,7 +71,7 @@ import org.fabric3.spi.security.UsernamePasswordToken;
  *
  * @version $Rev$ $Date$
  */
-@Service(interfaces = {AuthenticationManager.class, AuthenticationService.class})
+@Service(names = {AuthenticationManager.class, AuthenticationService.class})
 public class Fabric3ProviderManager extends ProviderManager implements AuthenticationService {
     private AuthenticationProviderFactory factory;
     private ConfigurationParser parser;

@@ -37,7 +37,7 @@
 */
 package org.fabric3.transform.property;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Node;
 
 import org.fabric3.model.type.contract.DataType;

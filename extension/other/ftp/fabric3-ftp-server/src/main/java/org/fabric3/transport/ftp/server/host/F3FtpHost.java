@@ -50,11 +50,11 @@ import org.apache.mina.filter.executor.ExecutorFilter;
 import org.apache.mina.transport.socket.SocketAcceptor;
 import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 
@@ -151,7 +151,7 @@ public class F3FtpHost implements FtpHost {
      *
      * @param commandPort Command port.
      */
-    @Property
+    @Property(required = false)
     public void setCommandPort(int commandPort) {
         this.commandPort = commandPort;
     }
@@ -161,7 +161,7 @@ public class F3FtpHost implements FtpHost {
      *
      * @param timeout timeout in milliseconds.
      */
-    @Property
+    @Property(required = false)
     public void setIdleTimeout(int timeout) {
         this.idleTimeout = timeout / 1000;   // convert to seconds used by Mina
     }
@@ -171,7 +171,7 @@ public class F3FtpHost implements FtpHost {
      *
      * @param listenAddress the address to bind to
      */
-    @Property
+    @Property(required = false)
     public void setListenAddress(String listenAddress) {
         this.listenAddress = listenAddress;
     }

@@ -43,8 +43,8 @@ import java.util.StringTokenizer;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.spi.introspection.IntrospectionContext;

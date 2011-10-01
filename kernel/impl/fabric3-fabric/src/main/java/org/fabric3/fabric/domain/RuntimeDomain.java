@@ -37,7 +37,7 @@
 */
 package org.fabric3.fabric.domain;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;

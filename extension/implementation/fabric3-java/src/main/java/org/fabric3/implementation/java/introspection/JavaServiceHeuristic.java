@@ -40,7 +40,7 @@ package org.fabric3.implementation.java.introspection;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.model.type.component.ServiceDefinition;

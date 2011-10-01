@@ -52,9 +52,9 @@ import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.container.web.spi.InjectingSessionListener;

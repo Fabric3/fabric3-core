@@ -41,8 +41,8 @@ import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.spi.xml.XMLFactory;
 import org.fabric3.spi.xml.XMLFactoryInstantiationException;

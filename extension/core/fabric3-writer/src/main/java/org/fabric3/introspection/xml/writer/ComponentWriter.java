@@ -41,8 +41,8 @@ package org.fabric3.introspection.xml.writer;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.ComponentDefinition;

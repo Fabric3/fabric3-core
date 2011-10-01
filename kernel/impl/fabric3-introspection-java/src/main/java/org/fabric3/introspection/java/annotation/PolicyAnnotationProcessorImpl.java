@@ -54,7 +54,7 @@ import org.oasisopen.sca.annotation.Intent;
 import org.oasisopen.sca.annotation.PolicySets;
 import org.oasisopen.sca.annotation.Qualifier;
 import org.oasisopen.sca.annotation.Requires;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.api.annotation.IntentMetaData;
 import org.fabric3.model.type.PolicyAware;

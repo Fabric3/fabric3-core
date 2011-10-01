@@ -49,8 +49,8 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.binding.ws.metro.util.ClassDefiner;
 
@@ -76,7 +76,7 @@ public class InterfaceGeneratorImpl implements InterfaceGenerator, Opcodes {
             return true;
         }
         for (Method method : clazz.getMethods()) {
-            if (method.isAnnotationPresent(OneWay.class) || method.isAnnotationPresent(org.osoa.sca.annotations.OneWay.class)) {
+            if (method.isAnnotationPresent(OneWay.class)) {
                 return true;
             }
         }
@@ -155,7 +155,7 @@ public class InterfaceGeneratorImpl implements InterfaceGenerator, Opcodes {
             av.visitEnd();
         }
         if (!m.isAnnotationPresent(Oneway.class)) {
-            if (m.isAnnotationPresent(OneWay.class) || m.isAnnotationPresent(org.osoa.sca.annotations.OneWay.class)) {
+            if (m.isAnnotationPresent(OneWay.class)) {
                 // add the JAX-WS one-way equivalent
                 AnnotationVisitor oneWay = mv.visitAnnotation(getSignature(Oneway.class), true);
                 oneWay.visitEnd();

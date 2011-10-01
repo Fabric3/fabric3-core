@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 import org.w3c.dom.Element;
 
 import org.fabric3.binding.ftp.common.Constants;
@@ -72,7 +72,7 @@ public class FtpBindingGenerator implements BindingGenerator<FtpBindingDefinitio
      *
      * @param connectTimeout the timeout in milliseconds
      */
-    @Property
+    @Property(required = false)
     public void setConnectTimeout(int connectTimeout) {
         this.connectTimeout = connectTimeout;
     }
@@ -82,7 +82,7 @@ public class FtpBindingGenerator implements BindingGenerator<FtpBindingDefinitio
      *
      * @param socketTimeout the timeout in milliseconds
      */
-    @Property
+    @Property(required = false)
     public void setSocketTimeout(int socketTimeout) {
         this.socketTimeout = socketTimeout;
     }

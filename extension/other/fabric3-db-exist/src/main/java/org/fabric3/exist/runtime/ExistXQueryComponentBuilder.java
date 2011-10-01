@@ -25,10 +25,10 @@ import org.exist.source.URLSource;
 import org.fabric3.exist.ExistDBInstance;
 import org.fabric3.exist.ExistDBInstanceRegistry;
 import org.fabric3.exist.transform.TransformerRegistry;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;

@@ -39,9 +39,9 @@ package org.fabric3.transport.ftp.server.passive;
 
 import java.util.Stack;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * @version $Rev$ $Date$
@@ -58,7 +58,7 @@ public class PassiveConnectionServiceImpl implements PassiveConnectionService {
      *
      * @param minPort Minimum passive port.
      */
-    @Property
+    @Property(required = false)
     public void setMinPort(int minPort) {
         this.minPort = minPort;
     }
@@ -68,7 +68,7 @@ public class PassiveConnectionServiceImpl implements PassiveConnectionService {
      *
      * @param maxPort Maximum passive port.
      */
-    @Property
+    @Property(required = false)
     public void setMaxPort(int maxPort) {
         this.maxPort = maxPort;
     }

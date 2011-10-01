@@ -37,7 +37,7 @@
 */
 package org.fabric3.datasource.generator;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.datasource.model.DataSourceResource;
 import org.fabric3.datasource.provision.PhysicalDataSourceResource;

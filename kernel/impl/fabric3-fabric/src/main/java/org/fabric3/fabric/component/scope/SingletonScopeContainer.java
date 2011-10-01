@@ -54,7 +54,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Destroy;
+import org.oasisopen.sca.annotation.Destroy;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Scope;

@@ -54,7 +54,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.drools.model.DroolsImplementation;
 import org.fabric3.model.type.component.ComponentType;

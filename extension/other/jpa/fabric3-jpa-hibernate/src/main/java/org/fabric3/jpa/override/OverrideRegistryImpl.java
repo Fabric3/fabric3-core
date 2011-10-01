@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.jpa.common.PersistenceOverrides;
 import org.fabric3.spi.contribution.Contribution;
@@ -52,7 +52,7 @@ import org.fabric3.spi.contribution.ContributionServiceListener;
 /**
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-@Service(interfaces = OverrideRegistry.class)
+@Service(OverrideRegistry.class)
 public class OverrideRegistryImpl implements OverrideRegistry, ContributionServiceListener {
     private Map<URI, List<PersistenceOverrides>> index = new ConcurrentHashMap<URI, List<PersistenceOverrides>>();
     private Map<String, PersistenceOverrides> cache = new ConcurrentHashMap<String, PersistenceOverrides>();

@@ -46,8 +46,8 @@ package org.fabric3.introspection.java.annotation;
 import java.lang.annotation.Annotation;
 
 import org.oasisopen.sca.annotation.Service;
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ServiceDefinition;

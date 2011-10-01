@@ -43,7 +43,7 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.xml.TypeWriter;

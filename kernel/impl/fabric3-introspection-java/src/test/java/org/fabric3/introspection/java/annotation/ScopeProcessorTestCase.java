@@ -46,7 +46,7 @@ package org.fabric3.introspection.java.annotation;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;

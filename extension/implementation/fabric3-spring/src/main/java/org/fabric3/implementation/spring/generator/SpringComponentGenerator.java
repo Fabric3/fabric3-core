@@ -39,7 +39,7 @@ package org.fabric3.implementation.spring.generator;
 
 import java.net.URI;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.implementation.spring.model.SpringConsumer;
 import org.fabric3.implementation.spring.model.SpringImplementation;

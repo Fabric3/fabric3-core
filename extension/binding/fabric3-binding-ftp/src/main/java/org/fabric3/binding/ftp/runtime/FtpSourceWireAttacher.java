@@ -39,7 +39,7 @@ package org.fabric3.binding.ftp.runtime;
 
 import java.net.URI;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ftp.provision.FtpSourceDefinition;

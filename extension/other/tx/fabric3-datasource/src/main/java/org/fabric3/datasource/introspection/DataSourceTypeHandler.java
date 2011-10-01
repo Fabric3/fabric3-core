@@ -40,9 +40,9 @@ package org.fabric3.datasource.introspection;
 import java.lang.reflect.Member;
 import javax.sql.DataSource;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.Resource;
 import org.fabric3.datasource.model.DataSourceResourceReference;

@@ -47,8 +47,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.builder.transform.TransformerInterceptorFactory;
 import org.fabric3.fabric.wire.InvocationChainImpl;

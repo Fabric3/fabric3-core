@@ -47,7 +47,7 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.api.Role;
 import org.fabric3.model.type.contract.DataType;

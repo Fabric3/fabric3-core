@@ -43,8 +43,8 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Remotable;
 
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ServiceDefinition;

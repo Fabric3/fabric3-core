@@ -43,7 +43,7 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Init;
+import org.oasisopen.sca.annotation.Init;
 
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;

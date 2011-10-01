@@ -40,7 +40,7 @@ package org.fabric3.implementation.web.contribution;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.contribution.Deployable;

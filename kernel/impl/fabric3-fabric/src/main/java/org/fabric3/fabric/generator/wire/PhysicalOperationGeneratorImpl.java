@@ -47,8 +47,8 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.Constants;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.host.Namespaces;

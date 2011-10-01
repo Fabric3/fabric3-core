@@ -42,8 +42,8 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.Constants;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
@@ -94,12 +94,12 @@ public class ActiveMQBindingProvider implements BindingProvider {
 
     private ProviderMonitor monitor;
 
-    @Property
+    @Property(required = false)
     public void setConnectionFactory(String name) {
         this.connectionFactory = name;
     }
 
-    @Property
+    @Property(required = false)
     public void setXaConnectionFactory(String name) {
         this.xaConnectionFactory = name;
     }

@@ -48,9 +48,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.builder.BuilderNotFoundException;
 import org.fabric3.fabric.command.DisposeComponentCommand;

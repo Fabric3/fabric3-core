@@ -48,7 +48,7 @@ import java.util.List;
 import javax.jws.WebMethod;
 
 import junit.framework.TestCase;
-import org.osoa.sca.annotations.Callback;
+import org.oasisopen.sca.annotation.Callback;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 

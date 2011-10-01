@@ -45,7 +45,7 @@ package org.fabric3.implementation.system.singleton;
 
 import java.net.URI;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.EffectivePolicy;

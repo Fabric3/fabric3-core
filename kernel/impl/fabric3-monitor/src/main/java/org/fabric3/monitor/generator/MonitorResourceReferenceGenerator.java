@@ -39,7 +39,7 @@ package org.fabric3.monitor.generator;
 
 import java.net.URI;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.host.Names;
 import org.fabric3.monitor.model.MonitorResourceReference;

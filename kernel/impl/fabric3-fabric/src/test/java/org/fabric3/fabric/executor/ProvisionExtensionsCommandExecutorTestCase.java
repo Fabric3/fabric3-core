@@ -44,7 +44,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.fabric.command.ProvisionExtensionsCommand;
 import org.fabric3.host.contribution.ContributionService;

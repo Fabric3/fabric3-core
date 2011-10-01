@@ -39,7 +39,7 @@ package org.fabric3.contribution.wire;
 
 import java.net.URI;
 
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.contribution.manifest.ContributionExport;
 import org.fabric3.contribution.manifest.ContributionImport;

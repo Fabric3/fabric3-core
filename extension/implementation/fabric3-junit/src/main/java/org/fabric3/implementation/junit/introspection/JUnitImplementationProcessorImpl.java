@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.junit.introspection;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.java.introspection.ImplementationArtifactNotFound;
 import org.fabric3.implementation.junit.model.JUnitImplementation;

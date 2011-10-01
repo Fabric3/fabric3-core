@@ -46,9 +46,9 @@ import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 import org.hibernate.jmx.StatisticsService;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.Names;
@@ -63,7 +63,7 @@ import org.fabric3.spi.management.ManagementService;
  *
  * @version $Rev: 8837 $ $Date: 2010-04-08 14:05:46 +0200 (Thu, 08 Apr 2010) $
  */
-@Service(interfaces = {EntityManagerFactoryCache.class, ClassLoaderListener.class})
+@Service(names = {EntityManagerFactoryCache.class, ClassLoaderListener.class})
 public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCache, ClassLoaderListener {
     private CacheMonitor monitor;
 

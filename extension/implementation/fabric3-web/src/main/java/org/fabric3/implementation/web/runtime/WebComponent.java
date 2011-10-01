@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.ServiceReference;
-import org.osoa.sca.ComponentContext;
+import org.oasisopen.sca.ComponentContext;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
@@ -86,7 +86,6 @@ public class WebComponent implements AtomicComponent {
     private final Map<String, ObjectFactory<?>> propertyFactories;
     private final Map<String, ObjectFactory<?>> referenceFactories;
     private final URI archiveUri;
-    private ComponentContext context;
     private OASISWebComponentContext oasisContext;
     private String contextUrl;
     private MonitorLevel level = MonitorLevel.INFO;
@@ -143,11 +142,8 @@ public class WebComponent implements AtomicComponent {
             Map<String, List<Injector<?>>> injectors = new HashMap<String, List<Injector<?>>>();
             injectorFactory.createInjectorMappings(injectors, siteMappings, referenceFactories, classLoader);
             injectorFactory.createInjectorMappings(injectors, siteMappings, propertyFactories, classLoader);
-            context = new WebComponentContext(this);
             oasisContext = new OASISWebComponentContext(this);
             Map<String, ObjectFactory<?>> contextFactories = new HashMap<String, ObjectFactory<?>>();
-            SingletonObjectFactory<ComponentContext> componentContextFactory = new SingletonObjectFactory<ComponentContext>(context);
-            contextFactories.put(CONTEXT_ATTRIBUTE, componentContextFactory);
 
             SingletonObjectFactory<org.oasisopen.sca.ComponentContext> oasisComponentContextFactory =
                     new SingletonObjectFactory<org.oasisopen.sca.ComponentContext>(oasisContext);
@@ -155,7 +151,7 @@ public class WebComponent implements AtomicComponent {
 
             injectorFactory.createInjectorMappings(injectors, siteMappings, contextFactories, classLoader);
             // activate the web application
-            activator.activate(contextUrl, archiveUri, classLoaderId, injectors, context);
+            activator.activate(contextUrl, archiveUri, classLoaderId, injectors, oasisContext);
         } catch (InjectionCreationException e) {
             throw new WebComponentStartException("Error starting web component: " + uri.toString(), e);
         } catch (WebApplicationActivationException e) {

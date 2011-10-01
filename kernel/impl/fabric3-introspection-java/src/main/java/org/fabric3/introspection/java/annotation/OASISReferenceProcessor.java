@@ -66,8 +66,8 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
  */
 public class OASISReferenceProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractReferenceProcessor<Reference, I> {
 
-    public OASISReferenceProcessor(@org.osoa.sca.annotations.Reference JavaContractProcessor contractProcessor,
-                                   @org.osoa.sca.annotations.Reference IntrospectionHelper helper) {
+    public OASISReferenceProcessor(@org.oasisopen.sca.annotation.Reference JavaContractProcessor contractProcessor,
+                                   @org.oasisopen.sca.annotation.Reference IntrospectionHelper helper) {
         super(Reference.class, contractProcessor, helper);
     }
 
