@@ -85,7 +85,6 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionTargetDefi
 
     public ObjectFactory<?> createObjectFactory(SessionTargetDefinition definition) throws WiringException {
         String unitName = definition.getUnitName();
-        boolean extended = definition.isExtended();
         URI classLoaderId = definition.getClassLoaderId();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
@@ -96,9 +95,9 @@ public class SessionWireAttacher implements TargetWireAttacher<SessionTargetDefi
             PersistenceOverrides overrides = definition.getOverrides();
             emfResolver.resolve(unitName, overrides, classLoader);
             if (definition.isMultiThreaded()) {
-                return new MultiThreadedSessionProxyFactory(unitName, extended, emService, tm);
+                return new MultiThreadedSessionProxyFactory(unitName, emService, tm);
             } else {
-                return new StatefulSessionProxyFactory(unitName, extended, emService, tm);
+                return new StatefulSessionProxyFactory(unitName, emService, tm);
             }
         } catch (JpaResolutionException e) {
             throw new WiringException(e);

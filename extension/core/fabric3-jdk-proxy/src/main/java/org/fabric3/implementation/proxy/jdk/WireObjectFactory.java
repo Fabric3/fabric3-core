@@ -48,7 +48,6 @@ import java.util.Map;
 
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.WireProxyService;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
@@ -60,7 +59,6 @@ import org.fabric3.spi.wire.InvocationChain;
  */
 public class WireObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;
-    private InteractionType type;
     private String callbackUri;
     private WireProxyService proxyService;
     // the cache of proxy interface method to operation mappings
@@ -70,19 +68,16 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
      * Constructor.
      *
      * @param interfaze    the interface the proxy implements
-     * @param type         if the wire is stateless, conversational or propagates a conversational context
      * @param callbackUri  the callback URI for the wire or null if the wire is unidirectional
      * @param proxyService the proxy creation service
      * @param mappings     proxy method to wire invocation chain mappings
      * @throws NoMethodForOperationException if a method matching the operation cannot be found
      */
     public WireObjectFactory(Class<T> interfaze,
-                             InteractionType type,
                              String callbackUri,
                              WireProxyService proxyService,
                              Map<Method, InvocationChain> mappings) throws NoMethodForOperationException {
         this.interfaze = interfaze;
-        this.type = type;
         this.callbackUri = callbackUri;
         this.proxyService = proxyService;
         this.mappings = mappings;
@@ -91,7 +86,7 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
 
     public T getInstance() throws ObjectCreationException {
         try {
-            return interfaze.cast(proxyService.createProxy(interfaze, type, callbackUri, mappings));
+            return interfaze.cast(proxyService.createProxy(interfaze, callbackUri, mappings));
         } catch (ProxyCreationException e) {
             throw new ObjectCreationException(e);
         }

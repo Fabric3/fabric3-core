@@ -46,8 +46,6 @@ package org.fabric3.implementation.pojo.component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.osoa.sca.ConversationEndedException;
-
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceDestructionException;
@@ -101,9 +99,6 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
         InstanceWrapper wrapper;
         try {
             wrapper = scopeContainer.getWrapper(component, workContext);
-        } catch (ConversationEndedException e) {
-            // this should not happen
-            throw new AssertionError(e);
         } catch (InstanceLifecycleException e) {
             throw new InvocationRuntimeException(e);
         }

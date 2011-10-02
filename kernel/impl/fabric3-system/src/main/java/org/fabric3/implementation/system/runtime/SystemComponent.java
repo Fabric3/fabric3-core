@@ -60,10 +60,8 @@ public class SystemComponent extends PojoComponent {
                            InstanceFactoryProvider provider,
                            ScopeContainer scopeContainer,
                            QName deployable,
-                           boolean eager,
-                           int maxIdleTime,
-                           int maxAge) {
-        super(componentId, provider, scopeContainer, deployable, eager, maxIdleTime, maxAge);
+                           boolean eager) {
+        super(componentId, provider, scopeContainer, deployable, eager);
     }
 
 }

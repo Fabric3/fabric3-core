@@ -40,51 +40,11 @@ package org.fabric3.implementation.java.provision;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 
 /**
- * Represents the physical component definition for a Java implementation.
+ * Represents the physical component definition for a Java component.
  *
  * @version $Rev$ $Date$
  */
 public class JavaComponentDefinition extends PojoComponentDefinition {
     private static final long serialVersionUID = -4767928352571015483L;
-
-    private long maxIdleTime;
-    private long maxAge;
-
-    /**
-     * Returns the idle time allowed between operations in milliseconds if the implementation is conversational.
-     *
-     * @return the idle time allowed between operations in milliseconds if the implementation is conversational
-     */
-    public long getMaxIdleTime() {
-        return maxIdleTime;
-    }
-
-    /**
-     * Sets the idle time allowed between operations in milliseconds if the implementation is conversational.
-     *
-     * @param maxIdleTime the idle time
-     */
-    public void setMaxIdleTime(long maxIdleTime) {
-        this.maxIdleTime = maxIdleTime;
-    }
-
-    /**
-     * Returns the maximum age a conversation may remain active in milliseconds if the implementation is conversational.
-     *
-     * @return the maximum age a conversation may remain active in milliseconds if the implementation is conversational
-     */
-    public long getMaxAge() {
-        return maxAge;
-    }
-
-    /**
-     * Sets the maximum age a conversation may remain active in milliseconds if the implementation is conversational.
-     *
-     * @param maxAge the maximum age
-     */
-    public void setMaxAge(long maxAge) {
-        this.maxAge = maxAge;
-    }
-
 
 }

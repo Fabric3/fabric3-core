@@ -32,7 +32,6 @@
 	<modules>
 		<module>fabric3-async</module>
 		<module>fabric3-contribution-scanner</module>
-		<module>fabric3-conversation-propagation</module>
 		<module>fabric3-jdk-proxy</module>
 		<module>fabric3-jetty</module>
 		<module>fabric3-resource</module>

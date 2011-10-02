@@ -50,7 +50,6 @@ import java.util.Map;
 import org.oasisopen.sca.ServiceReference;
 
 import org.fabric3.spi.component.ScopeContainer;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
@@ -66,13 +65,12 @@ public interface WireProxyService {
      * Create an ObjectFactory that provides proxies for the forward wire.
      *
      * @param interfaze   the interface the proxy implements
-     * @param type        the proxy type, i.e. stateless, conversational or propagates conversations
      * @param wire        the wire to proxy @return an ObjectFactory that will create proxies
      * @param callbackUri the callback URI or null if the wire is unidirectional
      * @return the factory
      * @throws ProxyCreationException if there was a problem creating the proxy
      */
-    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, InteractionType type, Wire wire, String callbackUri) throws ProxyCreationException;
+    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ProxyCreationException;
 
     /**
      * Create an ObjectFactory that provides proxies for the callback wire.
@@ -109,14 +107,12 @@ public interface WireProxyService {
      * Creates a Java proxy for the given wire.
      *
      * @param interfaze   the interface the proxy implements
-     * @param type        the interaction style for the wire
      * @param callbackUri the callback URI fr the wire fronted by the proxy or null if the wire is unidirectional
      * @param mappings    the method to invocation chain mappings
      * @return the proxy
      * @throws ProxyCreationException if there was a problem creating the proxy
      */
-    <T> T createProxy(Class<T> interfaze, InteractionType type, String callbackUri, Map<Method, InvocationChain> mappings)
-            throws ProxyCreationException;
+    <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws ProxyCreationException;
 
     /**
      * Creates a Java proxy for the callback invocations chains.
@@ -133,10 +129,9 @@ public interface WireProxyService {
      *
      * @param interfaze the service interface
      * @param mapping   the invocation chain mapping for the callback service
-     * @param container the scope container that manages the implementation instance the proxy is injected on
      * @return the proxy instance
      */
-    <T> T createStatefullCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping, ScopeContainer container);
+    <T> T createStatefullCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping);
 
     /**
      * Cast a proxy to a ServiceReference.

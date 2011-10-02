@@ -44,20 +44,16 @@
 package org.fabric3.fabric.component.scope;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.ConversationExpirationCallback;
-import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
-import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
@@ -66,8 +62,8 @@ import org.fabric3.spi.invocation.WorkContext;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractScopeContainer implements ScopeContainer {
-    private final Scope scope;
-    protected final ScopeContainerMonitor monitor;
+    private Scope scope;
+    protected ScopeContainerMonitor monitor;
     private ScopeRegistry scopeRegistry;
 
     public AbstractScopeContainer(Scope scope, ScopeContainerMonitor monitor) {
@@ -100,28 +96,6 @@ public abstract class AbstractScopeContainer implements ScopeContainer {
     }
 
     public void unregister(AtomicComponent component) {
-    }
-
-    public void registerCallback(F3Conversation conversation, ConversationExpirationCallback callback) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void initializeComponents(List<AtomicComponent> components, WorkContext workContext) throws GroupInitializationException {
-        List<Exception> causes = null;
-        for (AtomicComponent component : components) {
-            try {
-                getWrapper(component, workContext);
-            } catch (Exception e) {
-                monitor.eagerInitializationError(component.getUri(), e);
-                if (causes == null) {
-                    causes = new ArrayList<Exception>();
-                }
-                causes.add(e);
-            }
-        }
-        if (causes != null) {
-            throw new GroupInitializationException(causes);
-        }
     }
 
     public String toString() {

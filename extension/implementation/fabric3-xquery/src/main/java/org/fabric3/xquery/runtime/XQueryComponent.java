@@ -46,7 +46,6 @@ import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.Wire;
@@ -79,9 +78,9 @@ public abstract class XQueryComponent implements AtomicComponent {
         this.classLoaderId = classLoaderId;
     }
 
-    public abstract void attachSourceWire(String name, InteractionType interactionType, String callbackUri, Wire wire) throws WiringException;
+    public abstract void attachSourceWire(String name, String callbackUri, Wire wire) throws WiringException;
 
-    public abstract void attachTargetWire(String name, InteractionType interactionType, Wire wire) throws WiringException;
+    public abstract void attachTargetWire(String name, Wire wire) throws WiringException;
 
     public void attachObjectFactory(String name, ObjectFactory<?> factory) throws ObjectCreationException {
         referenceFactories.put(name, factory);

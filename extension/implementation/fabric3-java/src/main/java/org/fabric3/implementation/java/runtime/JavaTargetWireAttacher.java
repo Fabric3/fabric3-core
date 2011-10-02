@@ -91,22 +91,16 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefi
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
             Method method = MethodUtils.findMethod(sourceDefinition, targetDefinition, operation, implementationClass, loader, classLoaderRegistry);
-            boolean endsConversation = operation.isEndsConversation();
-            boolean callback = targetDefinition.isCallback();
-            if (callback) {
-                // callbacks do not expire the client (i.e. the callback target); they expire the forward implementation instance
-                endsConversation = false;
-            }
             InvokerInterceptor interceptor;
             if (sourceDefinition instanceof PojoSourceDefinition &&
                     targetDefinition.getClassLoaderId().equals(sourceDefinition.getClassLoaderId())) {
                 // if the source is Java and target classloaders are equal, do not set the TCCL
-                interceptor = new InvokerInterceptor(method, callback, endsConversation, target, scopeContainer);
+                interceptor = new InvokerInterceptor(method, target, scopeContainer);
             } else {
                 // If the source and target classloaders are not equal, configure the interceptor to set the TCCL to the target classloader
                 // when dispatching to a target instance. This guarantees when application code executes, it does so with the TCCL set to the
                 // target component's classloader.
-                interceptor = new InvokerInterceptor(method, callback, endsConversation, target, scopeContainer, loader);
+                interceptor = new InvokerInterceptor(method, target, scopeContainer, loader);
             }
             chain.addInterceptor(interceptor);
         }

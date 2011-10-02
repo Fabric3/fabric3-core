@@ -69,7 +69,7 @@ public class OASISEagerInitProcessorTestCase extends TestCase {
     }
 
 
-    @Scope("CONVERSATION")
+    @Scope("STATELESS")
     @EagerInit
     public static class TestClass {
     }

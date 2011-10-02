@@ -47,7 +47,7 @@ import org.fabric3.model.type.contract.ServiceContract;
 /**
  * WSDL Service contract.
  *
- * @version $Revsion$ $Date$
+ * @version $Revision$ $Date$
  */
 public class WsdlServiceContract extends ServiceContract {
     private static final long serialVersionUID = 8084985972954894699L;
@@ -86,9 +86,9 @@ public class WsdlServiceContract extends ServiceContract {
     }
 
     /**
-     * Returns the qualied WSDL name.
+     * Returns the qualified WSDL name.
      *
-     * @return the qualied WSDL name
+     * @return the qualified WSDL name
      */
     public QName getWsdlQName() {
         return wsdlQName;
@@ -100,7 +100,7 @@ public class WsdlServiceContract extends ServiceContract {
      * @param key     the element key
      * @param element the extension element
      */
-    public void addExtensonElement(QName key, Object element) {
+    public void addExtensionElement(QName key, Object element) {
         extensionElements.put(key, element);
     }
 
@@ -132,13 +132,12 @@ public class WsdlServiceContract extends ServiceContract {
     public WsdlServiceContract copy() {
         WsdlServiceContract copy = new WsdlServiceContract(portType, wsdlQName);
         copy.setCallbackContract(callbackContract);
-        copy.setConversational(conversational);
         copy.setIntents(getIntents());
         copy.setInterfaceName(interfaceName);
         copy.setOperations(operations);
         copy.setPolicySets(getPolicySets());
         for (Map.Entry<QName, Object> entry : extensionElements.entrySet()) {
-            copy.addExtensonElement(entry.getKey(), entry.getValue());
+            copy.addExtensionElement(entry.getKey(), entry.getValue());
         }
         return copy;
     }

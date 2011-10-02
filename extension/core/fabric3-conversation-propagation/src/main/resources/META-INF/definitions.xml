@@ -12,12 +12,5 @@ Public License. See the accompanying license file for details.
         xmlns:f3="urn:fabric3.org"
         targetNamespace="urn:fabric3.org">
 
-    <intent name="propagatesConversation" constrains="binding">
-        <description>
-            Propagates a conversation through a reference.
-        </description>
-    </intent>
-
-    <policySet name="propagatesConversationPolicy" provides="f3:propagatesConversation"/>
 
 </definitions>

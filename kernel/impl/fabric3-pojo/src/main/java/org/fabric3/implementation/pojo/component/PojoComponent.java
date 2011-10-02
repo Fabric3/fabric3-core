@@ -60,7 +60,7 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Base class for Component implementations based on Java objects.
+ * Base class for Java component implementations.
  *
  * @version $Rev$ $Date$
  */
@@ -70,8 +70,6 @@ public abstract class PojoComponent implements AtomicComponent {
     private ScopeContainer scopeContainer;
     private QName deployable;
     private boolean eager;
-    private long maxIdleTime;
-    private long maxAge;
     private InstanceFactory instanceFactory;
     private URI classLoaderId;
     private MonitorLevel level = MonitorLevel.INFO;
@@ -80,16 +78,12 @@ public abstract class PojoComponent implements AtomicComponent {
                          InstanceFactoryProvider provider,
                          ScopeContainer scopeContainer,
                          QName deployable,
-                         boolean eager,
-                         long maxIdleTime,
-                         long maxAge) {
+                         boolean eager) {
         this.uri = componentId;
         this.provider = provider;
         this.scopeContainer = scopeContainer;
         this.deployable = deployable;
         this.eager = eager;
-        this.maxIdleTime = maxIdleTime;
-        this.maxAge = maxAge;
     }
 
     public void start() throws ComponentException {
@@ -102,7 +96,7 @@ public abstract class PojoComponent implements AtomicComponent {
     }
 
     public void startUpdate() {
-       provider.startUpdate();
+        provider.startUpdate();
     }
 
     public void endUpdate() {
@@ -139,14 +133,6 @@ public abstract class PojoComponent implements AtomicComponent {
 
     public boolean isEagerInit() {
         return eager;
-    }
-
-    public long getMaxIdleTime() {
-        return maxIdleTime;
-    }
-
-    public long getMaxAge() {
-        return maxAge;
     }
 
     public InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {

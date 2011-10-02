@@ -61,30 +61,23 @@ import org.hibernate.jdbc.Work;
 import org.hibernate.stat.SessionStatistics;
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.spi.invocation.F3Conversation;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
-
 /**
  * An Hibernate Session proxy that delegates to a backing instance. This proxy is injected on composite-scoped components where more than one thread
  * may be accessing the proxy at a time.
  * <p/>
  * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the Session instance associated with the
- * current transaction context from the EntityManagerService. If the persistence context is extended (as defined by JPA), the proxy will attempt to
- * retrieve the Session instance associated with the current conversation.
+ * current transaction context from the EntityManagerService.
  *
  * @version $Rev: 7878 $ $Date: 2009-11-21 18:38:22 +0100 (Sat, 21 Nov 2009) $
  */
 public class MultiThreadedSessionProxy implements Session, HibernateProxy {
     private static final long serialVersionUID = -4143261157740097948L;
     private String unitName;
-    private boolean extended;
     private EntityManagerService emService;
     private TransactionManager tm;
 
-    public MultiThreadedSessionProxy(String unitName, boolean extended, EntityManagerService emService, TransactionManager tm) {
+    public MultiThreadedSessionProxy(String unitName, EntityManagerService emService, TransactionManager tm) {
         this.unitName = unitName;
-        this.extended = extended;
         this.emService = emService;
         this.tm = tm;
     }
@@ -403,38 +396,23 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
 
     /**
      * Returns the delegated Session. If the persistence context is transaction-scoped, the Session associated with the current transaction will be
-     * used. Otherwise, if the persistence context is extended, the Session associated with the current conversation will be used.
+     * used.
      *
      * @return the Session
      */
     private Session getSession() {
-        if (extended) {
-            // an extended persistence context, associate it with the current conversation
-            WorkContext context = WorkContextTunnel.getThreadWorkContext();
-            F3Conversation conversation = context.peekCallFrame().getConversation();
-            if (conversation == null) {
-                throw new IllegalStateException("No conversational context associated with the current component");
+        // a transaction-scoped persistence context
+        try {
+            Transaction trx = tm.getTransaction();
+            if (trx == null) {
+                throw new IllegalStateException("A transaction is not active - ensure the component is executing in a managed transaction");
             }
-            try {
-                EntityManager em = emService.getEntityManager(unitName, this, conversation);
-                return (Session) em.getDelegate();
-            } catch (EntityManagerCreationException e) {
-                throw new ServiceRuntimeException(e);
-            }
-        } else {
-            // a transaction-scoped persistence context
-            try {
-                Transaction trx = tm.getTransaction();
-                if (trx == null) {
-                    throw new IllegalStateException("A transaction is not active - ensure the component is executing in a managed transaction");
-                }
-                EntityManager em = emService.getEntityManager(unitName, this, trx);
-                return (Session) em.getDelegate();
-            } catch (SystemException e) {
-                throw new ServiceRuntimeException(e);
-            } catch (EntityManagerCreationException e) {
-                throw new ServiceRuntimeException(e);
-            }
+            EntityManager em = emService.getEntityManager(unitName, this, trx);
+            return (Session) em.getDelegate();
+        } catch (SystemException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (EntityManagerCreationException e) {
+            throw new ServiceRuntimeException(e);
         }
     }
 

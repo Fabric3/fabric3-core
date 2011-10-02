@@ -38,11 +38,9 @@
 package org.fabric3.implementation.java.generator;
 
 import java.net.URI;
-import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.host.Namespaces;
 import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
@@ -56,7 +54,6 @@ import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.generator.EffectivePolicy;
@@ -67,7 +64,6 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
@@ -77,7 +73,6 @@ import org.fabric3.spi.model.type.java.Signature;
  * @version $Rev$ $Date$
  */
 public class JavaGenerationHelperImpl implements JavaGenerationHelper {
-    private static final QName PROPAGATES_CONVERSATION_POLICY = new QName(Namespaces.F3, "propagatesConversationPolicy");
     private final GenerationHelper helper;
     private ContractMatcher matcher;
 
@@ -104,8 +99,6 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         // create the physical component definition
         definition.setScope(scope);
         definition.setEagerInit(type.isEagerInit());
-        definition.setMaxAge(type.getMaxAge());
-        definition.setMaxIdleTime(type.getMaxIdleTime());
         definition.setProviderDefinition(factoryDefinition);
 
         definition.setManaged(type.isManaged());
@@ -126,8 +119,6 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         // assume for now that any wire from a Java component can be optimized
         definition.setOptimizable(true);
 
-        boolean conversational = serviceContract.isConversational();
-        calculateConversationalPolicy(definition, policy, conversational);
         if (reference.getDefinition().isKeyed()) {
             definition.setKeyed(true);
             DataType<?> type = reference.getDefinition().getKeyDataType();
@@ -190,7 +181,8 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         definition.setOptimizable(false);
     }
 
-    public void generateResourceWireSource(JavaSourceDefinition wireDefinition, LogicalResourceReference<?> resourceReference) throws GenerationException {
+    public void generateResourceWireSource(JavaSourceDefinition wireDefinition, LogicalResourceReference<?> resourceReference)
+            throws GenerationException {
         URI uri = resourceReference.getUri();
         ServiceContract serviceContract = resourceReference.getDefinition().getServiceContract();
         String interfaceName = serviceContract.getQualifiedInterfaceName();
@@ -214,22 +206,4 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         definition.setOptimizable(Scope.getScope(scope).isSingleton());
     }
 
-    /**
-     * Determines if the wire propagates conversations. Conversational propagation is handled by the source component.
-     *
-     * @param definition     the source wire defintion
-     * @param policy         the set of policies for the wire
-     * @param conversational true if the contract is conversational
-     */
-    private void calculateConversationalPolicy(JavaSourceDefinition definition, EffectivePolicy policy, boolean conversational) {
-        for (PolicySet policySet : policy.getEndpointPolicySets()) {
-            if (PROPAGATES_CONVERSATION_POLICY.equals(policySet.getName())) {
-                definition.setInteractionType(InteractionType.PROPAGATES_CONVERSATION);
-                return;
-            }
-        }
-        if (conversational) {
-            definition.setInteractionType(InteractionType.CONVERSATIONAL);
-        }
-    }
 }

@@ -86,7 +86,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
                           ZoneTopologyService topologyService,
                           HostInfo info,
                           InvokerMonitor monitor) {
-        super(componentId, factoryProvider, scopeContainer, deployable, false, -1, -1);
+        super(componentId, factoryProvider, scopeContainer, deployable, false);
         this.data = data;
         this.implementationClass = implementationClass;
         this.transactional = transactional;

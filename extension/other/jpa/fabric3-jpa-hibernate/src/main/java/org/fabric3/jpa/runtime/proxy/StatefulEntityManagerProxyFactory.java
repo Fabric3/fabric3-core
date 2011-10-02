@@ -51,16 +51,14 @@ public class StatefulEntityManagerProxyFactory implements ObjectFactory<Stateful
     private String unitName;
     private EntityManagerService service;
     private TransactionManager tm;
-    private boolean extended;
 
-    public StatefulEntityManagerProxyFactory(String unitName, boolean extended, EntityManagerService service, TransactionManager tm) {
+    public StatefulEntityManagerProxyFactory(String unitName, EntityManagerService service, TransactionManager tm) {
         this.service = service;
         this.tm = tm;
-        this.extended = extended;
         this.unitName = unitName;
     }
 
     public StatefulEntityManagerProxy getInstance() throws ObjectCreationException {
-        return new StatefulEntityManagerProxy(unitName, extended, service, tm);
+        return new StatefulEntityManagerProxy(unitName, service, tm);
     }
 }

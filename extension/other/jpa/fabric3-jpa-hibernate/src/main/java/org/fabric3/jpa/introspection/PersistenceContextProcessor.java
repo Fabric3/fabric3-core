@@ -83,7 +83,7 @@ public class PersistenceContextProcessor<I extends Implementation<? extends Inje
         InjectingComponentType componentType = implementation.getComponentType();
         String name = helper.getSiteName(field, null);
         if (EntityManager.class.equals(field.getType())) {
-            PersistenceContextResourceReference definition = createDefinition(name, annotation, componentType);
+            PersistenceContextResourceReference definition = createDefinition(name, annotation, componentType, context);
             componentType.add(definition, site);
         } else {
             HibernateSessionResourceReference definition = createSessionDefinition(name, annotation, componentType);
@@ -98,7 +98,7 @@ public class PersistenceContextProcessor<I extends Implementation<? extends Inje
         InjectingComponentType componentType = implementation.getComponentType();
         String name = helper.getSiteName(method, null);
         if (EntityManager.class.equals(method.getParameterTypes()[0])) {
-            PersistenceContextResourceReference definition = createDefinition(name, annotation, componentType);
+            PersistenceContextResourceReference definition = createDefinition(name, annotation, componentType, context);
             componentType.add(definition, site);
         } else {
             HibernateSessionResourceReference definition = createSessionDefinition(name, annotation, componentType);
@@ -108,18 +108,26 @@ public class PersistenceContextProcessor<I extends Implementation<? extends Inje
         componentType.addRequiredCapability("jpa");
     }
 
-    private PersistenceContextResourceReference createDefinition(String name, PersistenceContext annotation, InjectingComponentType componentType) {
+    private PersistenceContextResourceReference createDefinition(String name,
+                                                                 PersistenceContext annotation,
+                                                                 InjectingComponentType componentType,
+                                                                 IntrospectionContext context) {
         String unitName = annotation.unitName();
         PersistenceContextType type = annotation.type();
+        if (PersistenceContextType.EXTENDED == type) {
+            InvalidPersistenceContextType error = new InvalidPersistenceContextType("Extended persistence contexts not supported: " + unitName);
+            context.addError(error);
+        }
         boolean multiThreaded = Scope.COMPOSITE.getScope().equals(componentType.getScope());
-        return new PersistenceContextResourceReference(name, unitName, type, factoryServiceContract, multiThreaded);
+        return new PersistenceContextResourceReference(name, unitName, factoryServiceContract, multiThreaded);
     }
 
-    private HibernateSessionResourceReference createSessionDefinition(String name, PersistenceContext annotation, InjectingComponentType componentType) {
+    private HibernateSessionResourceReference createSessionDefinition(String name,
+                                                                      PersistenceContext annotation,
+                                                                      InjectingComponentType componentType) {
         String unitName = annotation.unitName();
-        PersistenceContextType type = annotation.type();
         boolean multiThreaded = Scope.COMPOSITE.getScope().equals(componentType.getScope());
-        return new HibernateSessionResourceReference(name, unitName, type, factoryServiceContract, multiThreaded);
+        return new HibernateSessionResourceReference(name, unitName, factoryServiceContract, multiThreaded);
     }
 
 }

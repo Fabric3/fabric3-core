@@ -118,7 +118,7 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
                 callbackUri = uri.toString();
             }
             try {
-                ObjectFactory<?> factory = proxyService.createObjectFactory(type, source.getInteractionType(), wire, callbackUri);
+                ObjectFactory<?> factory = proxyService.createObjectFactory(type, wire, callbackUri);
 
                 if (source.isKeyed()) {
                     Object key = getKey(source, target);

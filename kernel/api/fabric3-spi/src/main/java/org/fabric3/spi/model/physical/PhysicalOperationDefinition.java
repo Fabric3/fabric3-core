@@ -71,7 +71,6 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
 
     private boolean callback;
     private boolean oneWay;
-    private boolean endsConversation;
     private boolean remotable;
     private boolean allowsPassByReference = true;
     private String compareString;
@@ -248,24 +247,6 @@ public class PhysicalOperationDefinition implements Serializable, Comparable {
      */
     public void setCallback(boolean callback) {
         this.callback = callback;
-    }
-
-    /**
-     * Returns true if the operation ends a conversation.
-     *
-     * @return true if the operation ends a conversation
-     */
-    public boolean isEndsConversation() {
-        return endsConversation;
-    }
-
-    /**
-     * Sets if the operation ends a conversation.
-     *
-     * @param endsConversation true if the operation ends a conversation
-     */
-    public void setEndsConversation(boolean endsConversation) {
-        this.endsConversation = endsConversation;
     }
 
     /**

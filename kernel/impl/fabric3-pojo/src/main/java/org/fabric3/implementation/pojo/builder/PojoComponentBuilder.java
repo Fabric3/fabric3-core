@@ -54,7 +54,6 @@ import org.fabric3.implementation.pojo.component.OASISPojoRequestContext;
 import org.fabric3.implementation.pojo.component.PojoComponent;
 import org.fabric3.implementation.pojo.component.PojoComponentContext;
 import org.fabric3.implementation.pojo.component.PojoRequestContext;
-import org.fabric3.implementation.pojo.injection.ConversationIDObjectFactory;
 import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 import org.fabric3.model.type.contract.DataType;
@@ -79,7 +78,7 @@ import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.util.ParamTypes;
 
 /**
- * Base class for component builders that build Java-based components.
+ * Base class for component builders that create Java-based components.
  *
  * @version $Rev$ $Date$
  */
@@ -152,8 +151,6 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
         PojoComponentContext componentContext = new PojoComponentContext(component, requestContext);
         SingletonObjectFactory<PojoComponentContext> componentObjectFactory = new SingletonObjectFactory<PojoComponentContext>(componentContext);
         provider.setObjectFactory(Injectable.COMPONENT_CONTEXT, componentObjectFactory);
-        ConversationIDObjectFactory conversationIDObjectFactory = new ConversationIDObjectFactory();
-        provider.setObjectFactory(Injectable.CONVERSATION_ID, conversationIDObjectFactory);
 
         OASISPojoRequestContext oasisRequestContext = new OASISPojoRequestContext();
         SingletonObjectFactory<OASISPojoRequestContext> oasisRequestFactory =

@@ -71,8 +71,6 @@ public class InjectingComponentType extends ComponentType {
     private Signature constructor;
     private Signature initMethod;
     private Signature destroyMethod;
-    private long maxAge;
-    private long maxIdleTime;
     private Map<InjectionSite, Injectable> injectionSites = new HashMap<InjectionSite, Injectable>();
     private Map<String, CallbackDefinition> callbacks = new HashMap<String, CallbackDefinition>();
     private Map<String, Signature> consumerSignatures = new HashMap<String, Signature>();
@@ -172,42 +170,6 @@ public class InjectingComponentType extends ComponentType {
      */
     public void setManagementInfo(ManagementInfo managementInfo) {
         this.managementInfo = managementInfo;
-    }
-
-    /**
-     * Returns the idle time allowed between operations in milliseconds if the implementation is conversational
-     *
-     * @return the idle time allowed between operations in milliseconds if the implementation is conversational
-     */
-    public long getMaxIdleTime() {
-        return maxIdleTime;
-    }
-
-    /**
-     * Sets the idle time allowed between operations in milliseconds if the implementation is conversational.
-     *
-     * @param maxIdleTime the idle time allowed between operations in milliseconds if the implementation is conversational
-     */
-    public void setMaxIdleTime(long maxIdleTime) {
-        this.maxIdleTime = maxIdleTime;
-    }
-
-    /**
-     * Returns the maximum age a conversation may remain active in milliseconds if the implementation is conversational
-     *
-     * @return the maximum age a conversation may remain active in milliseconds if the implementation is conversational
-     */
-    public long getMaxAge() {
-        return maxAge;
-    }
-
-    /**
-     * Sets the maximum age a conversation may remain active in milliseconds if the implementation is conversational.
-     *
-     * @param maxAge the maximum age a conversation may remain active in milliseconds if the implementation is conversational
-     */
-    public void setMaxAge(long maxAge) {
-        this.maxAge = maxAge;
     }
 
     /**

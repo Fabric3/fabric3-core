@@ -53,7 +53,6 @@ import org.fabric3.model.type.ModelObject;
 public class Scope extends ModelObject {
     private static final long serialVersionUID = -5300929173662672089L;
     public static final Scope STATELESS = new Scope("STATELESS", false);
-    public static final Scope CONVERSATION = new Scope("CONVERSATION", false);
     public static final Scope COMPOSITE = new Scope("COMPOSITE", true);
     public static final Scope DOMAIN = new Scope("DOMAIN", true);
 
@@ -70,8 +69,6 @@ public class Scope extends ModelObject {
             return STATELESS;
         } else if (COMPOSITE.getScope().equals(name)) {
             return COMPOSITE;
-        } else if (CONVERSATION.getScope().equals(name)) {
-            return CONVERSATION;
         } else if (DOMAIN.getScope().equals(name)) {
             return DOMAIN;
         }

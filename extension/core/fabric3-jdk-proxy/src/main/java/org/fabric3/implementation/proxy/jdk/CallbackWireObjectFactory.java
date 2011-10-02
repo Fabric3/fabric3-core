@@ -76,6 +76,7 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
         this.interfaze = interfaze;
         this.container = container;
         this.proxyService = proxyService;
+        // xcv FIXME REMOVE scope container and pass scope!!!!
         this.mappings = mappings;
     }
 
@@ -92,7 +93,7 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
             assert callbackUri != null;
             Map<Method, InvocationChain> mapping = mappings.get(callbackUri);
             assert mapping != null;
-            return interfaze.cast(proxyService.createStatefullCallbackProxy(interfaze, mapping, container));
+            return interfaze.cast(proxyService.createStatefullCallbackProxy(interfaze, mapping));
         }
     }
 

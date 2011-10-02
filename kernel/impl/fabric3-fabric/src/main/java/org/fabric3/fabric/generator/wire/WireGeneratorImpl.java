@@ -490,9 +490,6 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     private boolean checkOptimization(ServiceContract serviceContract, Set<PhysicalOperationDefinition> operationDefinitions) {
-        if (serviceContract.isConversational()) {
-            return false;
-        }
         if (serviceContract.isRemotable()) {
             return false;
         }

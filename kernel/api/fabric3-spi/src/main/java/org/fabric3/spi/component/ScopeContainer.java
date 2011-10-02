@@ -45,10 +45,7 @@ package org.fabric3.spi.component;
 
 import java.util.List;
 
-import org.osoa.sca.ConversationEndedException;
-
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.WorkContext;
 
 
@@ -81,51 +78,12 @@ public interface ScopeContainer {
     void unregister(AtomicComponent component);
 
     /**
-     * Registers a callback object to receive notification when a conversation has expired.
-     *
-     * @param conversation the conversation to listen to
-     * @param callback     the callback instance that receives notifications
-     */
-    void registerCallback(F3Conversation conversation, ConversationExpirationCallback callback);
-
-    /**
      * Start a new, non-expiring context. The context will remain active until explicitly stopped.
      *
      * @param workContext the current WorkContext
      * @throws ComponentException if an exception starting the context was encountered
      */
     void startContext(WorkContext workContext) throws ComponentException;
-
-    /**
-     * Start a new context which expires according to the given ExpirationPolicy. The context will remain active until it is explicitly stopped or it
-     * expires.
-     *
-     * @param workContext the current WorkContext
-     * @param policy      determines when the context expires
-     * @throws GroupInitializationException if an exception was thrown by any eagerInit component
-     */
-    public void startContext(WorkContext workContext, ExpirationPolicy policy) throws ComponentException;
-
-    /**
-     * Joins an existing context. Since a scope context may exist across multiple JVMs (for example, when conversational context is propagated), this
-     * operation may result in the creation of a local context associated with the distributed scope context. When the scope context is contained in a
-     * single JVM, a new context will not need to be created.
-     *
-     * @param workContext the current WorkContext
-     * @throws GroupInitializationException if an exception was thrown by any eagerInit component
-     */
-    void joinContext(WorkContext workContext) throws ComponentException;
-
-    /**
-     * Joins an existing context. Since a scope context may exist across multiple JVMs (for example, when conversational context is propagated), this
-     * operation may result in the creation of a local context associated with the distributed scope context. This variant of joinContext sets an
-     * expiration policy for local contexts, if one needs to be created.
-     *
-     * @param workContext the current WorkContext
-     * @param policy      determines when the local context expires
-     * @throws GroupInitializationException if an exception was thrown by any eagerInit component
-     */
-    void joinContext(WorkContext workContext, ExpirationPolicy policy) throws ComponentException;
 
     /**
      * Stop the context associated with the current work context.
@@ -136,25 +94,14 @@ public interface ScopeContainer {
     void stopContext(WorkContext workContext) throws ComponentException;
 
     /**
-     * Initialize an ordered list of components. The list is traversed in order and the getWrapper() method called for each to associate an instance
-     * with the supplied context.
-     *
-     * @param components  the components to be initialized
-     * @param workContext the work context in which to initialize the components
-     * @throws GroupInitializationException if one or more components threw an exception during initialization
-     */
-    void initializeComponents(List<AtomicComponent> components, WorkContext workContext) throws GroupInitializationException;
-
-    /**
      * Returns an instance wrapper associated with the current scope context, creating one if necessary
      *
      * @param component   the component
      * @param workContext the work context in which the instance should be obtained
      * @return the wrapper for the target instance
      * @throws InstanceLifecycleException if there was a problem instantiating the target instance
-     * @throws ConversationEndedException if the instance is conversational and the associated has ended or expired
      */
-    InstanceWrapper getWrapper(AtomicComponent component, WorkContext workContext) throws InstanceLifecycleException, ConversationEndedException;
+    InstanceWrapper getWrapper(AtomicComponent component, WorkContext workContext) throws InstanceLifecycleException;
 
     /**
      * Return a wrapper after use (for example, after invoking the instance).

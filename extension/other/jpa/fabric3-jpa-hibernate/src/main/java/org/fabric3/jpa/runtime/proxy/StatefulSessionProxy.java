@@ -61,32 +61,24 @@ import org.hibernate.jdbc.Work;
 import org.hibernate.stat.SessionStatistics;
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.spi.invocation.F3Conversation;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
-
 /**
- * An Hibernate Session proxy that delegates to a cached instance. This proxy is injected on stateless and conversation-scoped components. This proxy
- * is <strong>not</strong> safe to inject on composite-scoped implementations.
+ * An Hibernate Session proxy that delegates to a cached instance. This proxy is injected on stateless-scoped components. This proxy is
+ * <strong>not</strong> safe to inject on composite-scoped implementations.
  * <p/>
  * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the Session instance associated with the
- * current transaction context from the EntityManagerService. If the persistence context is extended (as defined by JPA), the proxy will attempt to
- * retrieve the Session instance associated with the current conversation. The proxy will cache the Session instance until the transaction completes
- * (or aborts) or the conversation ends.
+ * current transaction context from the EntityManagerService. The proxy will cache the Session instance until the transaction completes (or aborts).
  *
  * @version $Rev: 7878 $ $Date: 2009-11-21 18:38:22 +0100 (Sat, 21 Nov 2009) $
  */
 public class StatefulSessionProxy implements Session, HibernateProxy {
     private static final long serialVersionUID = 1955430345975268500L;
     private String unitName;
-    private boolean extended;
     private EntityManagerService emService;
     private TransactionManager tm;
     private Session session;
 
-    public StatefulSessionProxy(String unitName, boolean extended, EntityManagerService emService, TransactionManager tm) {
+    public StatefulSessionProxy(String unitName, EntityManagerService emService, TransactionManager tm) {
         this.unitName = unitName;
-        this.extended = extended;
         this.emService = emService;
         this.tm = tm;
     }
@@ -477,7 +469,7 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
     }
 
     public void disableFetchProfile(String s) throws UnknownProfileException {
-         initSession();
+        initSession();
         session.disableFetchProfile(s);
     }
 
@@ -486,41 +478,27 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
     }
 
     /**
-     * Initalizes the delegated Session. If the persistence context is transaction-scoped, the Session associated with the current transaction will be
-     * used. Otherwise, if the persistence context is extended, the Session associated with the current conversation will be used.
+     * Initializes the delegated Session. If the persistence context is transaction-scoped, the Session associated with the current transaction will
+     * be used.
      */
     private void initSession() {
         if (session != null) {
             return;
         }
-        if (extended) {
-            // an extended persistence context, associate it with the current conversation
-            WorkContext context = WorkContextTunnel.getThreadWorkContext();
-            F3Conversation conversation = context.peekCallFrame().getConversation();
-            if (conversation == null) {
-                throw new IllegalStateException("No conversational context associated with the current component");
+        // a transaction-scoped persistence context
+        try {
+            Transaction trx = tm.getTransaction();
+            if (trx == null) {
+                throw new IllegalStateException("A transaction is not active - ensure the component is executing in a managed transaction");
             }
-            try {
-                EntityManager em = emService.getEntityManager(unitName, this, conversation);
-                session = (Session) em.getDelegate();
-            } catch (EntityManagerCreationException e) {
-                throw new ServiceRuntimeException(e);
-            }
-        } else {
-            // a transaction-scoped persitence context
-            try {
-                Transaction trx = tm.getTransaction();
-                if (trx == null) {
-                    throw new IllegalStateException("A transaction is not active - ensure the component is executing in a managed transaction");
-                }
-                EntityManager em = emService.getEntityManager(unitName, this, trx);
-                session = (Session) em.getDelegate();
-            } catch (SystemException e) {
-                throw new ServiceRuntimeException(e);
-            } catch (EntityManagerCreationException e) {
-                throw new ServiceRuntimeException(e);
-            }
+            EntityManager em = emService.getEntityManager(unitName, this, trx);
+            session = (Session) em.getDelegate();
+        } catch (SystemException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (EntityManagerCreationException e) {
+            throw new ServiceRuntimeException(e);
         }
+
     }
 
 }

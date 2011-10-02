@@ -40,8 +40,6 @@ package org.fabric3.jpa.runtime.proxy;
 import javax.persistence.EntityManager;
 import javax.transaction.Transaction;
 
-import org.fabric3.spi.invocation.F3Conversation;
-
 /**
  * Responsible for returning an EntityManager with a persitence context tied to an execution context.
  *
@@ -59,16 +57,5 @@ public interface EntityManagerService {
      * @throws EntityManagerCreationException if an error creating the EntityManager is encountered
      */
     EntityManager getEntityManager(String unitName, HibernateProxy proxy, Transaction transaction) throws EntityManagerCreationException;
-
-    /**
-     * Returns the EntityManager associated with the given conversation.
-     *
-     * @param unitName     the persistence unit name
-     * @param proxy        the proxy requesting the EntityManager
-     * @param conversation the conversation
-     * @return the EntityManager
-     * @throws EntityManagerCreationException if an error creating the EntityManager is encountered
-     */
-    EntityManager getEntityManager(String unitName, HibernateProxy proxy, F3Conversation conversation) throws EntityManagerCreationException;
 
 }

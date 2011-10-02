@@ -25,14 +25,5 @@
         <f3:implementation.system class="org.fabric3.fabric.component.scope.StatelessScopeContainer"/>
     </component>
 
-    <component name="ConversationalScopeContainer">
-        <f3:implementation.system class="org.fabric3.fabric.component.scope.ConversationalScopeContainer"/>
-        <reference name="store" target="MemoryStore"/>
-    </component>
-
-    <component name="MemoryStore">
-        <f3:implementation.system class="org.fabric3.fabric.component.scope.NonExpiringMemoryStore"/>
-    </component>
-
 
 </composite>

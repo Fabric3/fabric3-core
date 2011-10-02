@@ -51,16 +51,14 @@ public class MultiThreadedEntityManagerProxyFactory implements ObjectFactory<Mul
     private String unitName;
     private EntityManagerService service;
     private TransactionManager tm;
-    private boolean extended;
 
-    public MultiThreadedEntityManagerProxyFactory(String unitName, boolean extended, EntityManagerService service, TransactionManager tm) {
+    public MultiThreadedEntityManagerProxyFactory(String unitName, EntityManagerService service, TransactionManager tm) {
         this.service = service;
         this.tm = tm;
-        this.extended = extended;
         this.unitName = unitName;
     }
 
     public MultiThreadedEntityManagerProxy getInstance() throws ObjectCreationException {
-        return new MultiThreadedEntityManagerProxy(unitName, extended, service, tm);
+        return new MultiThreadedEntityManagerProxy(unitName, service, tm);
     }
 }

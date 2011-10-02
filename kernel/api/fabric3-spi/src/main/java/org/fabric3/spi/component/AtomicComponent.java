@@ -62,20 +62,6 @@ public interface AtomicComponent extends Component {
     boolean isEagerInit();
 
     /**
-     * Returns the idle time allowed between operations in milliseconds if the implementation is conversational.
-     *
-     * @return the idle time allowed between operations in milliseconds if the implementation is conversational
-     */
-    long getMaxIdleTime();
-
-    /**
-     * Returns the maximum age a conversation may remain active in milliseconds if the implementation is conversational.
-     *
-     * @return the maximum age a conversation may remain active in milliseconds if the implementation is conversational
-     */
-    long getMaxAge();
-
-    /**
      * Create a new implementation instance, fully injected with all property and reference values. The instance's lifecycle callbacks must not have
      * been called.
      *

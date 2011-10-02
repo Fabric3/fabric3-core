@@ -45,7 +45,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.ServiceReference;
-import org.oasisopen.sca.ComponentContext;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
@@ -56,7 +55,6 @@ import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -64,7 +62,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.wire.Wire;
 
-import static org.fabric3.container.web.spi.WebApplicationActivator.CONTEXT_ATTRIBUTE;
 import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEXT_ATTRIBUTE;
 
 /**
@@ -86,7 +83,6 @@ public class WebComponent implements AtomicComponent {
     private final Map<String, ObjectFactory<?>> propertyFactories;
     private final Map<String, ObjectFactory<?>> referenceFactories;
     private final URI archiveUri;
-    private OASISWebComponentContext oasisContext;
     private String contextUrl;
     private MonitorLevel level = MonitorLevel.INFO;
 
@@ -142,7 +138,7 @@ public class WebComponent implements AtomicComponent {
             Map<String, List<Injector<?>>> injectors = new HashMap<String, List<Injector<?>>>();
             injectorFactory.createInjectorMappings(injectors, siteMappings, referenceFactories, classLoader);
             injectorFactory.createInjectorMappings(injectors, siteMappings, propertyFactories, classLoader);
-            oasisContext = new OASISWebComponentContext(this);
+            OASISWebComponentContext oasisContext = new OASISWebComponentContext(this);
             Map<String, ObjectFactory<?>> contextFactories = new HashMap<String, ObjectFactory<?>>();
 
             SingletonObjectFactory<org.oasisopen.sca.ComponentContext> oasisComponentContextFactory =
@@ -176,7 +172,7 @@ public class WebComponent implements AtomicComponent {
 
     }
 
-    public void attachWire(String name, InteractionType interactionType, Wire wire) throws ObjectCreationException {
+    public void attachWire(String name, Wire wire) throws ObjectCreationException {
         Map<String, InjectionSite> sites = siteMappings.get(name);
         if (sites == null || sites.isEmpty()) {
             throw new ObjectCreationException("Injection site not found for: " + name);
@@ -187,7 +183,7 @@ public class WebComponent implements AtomicComponent {
         } catch (ClassNotFoundException e) {
             throw new ObjectCreationException("Reference type not found for: " + name, e);
         }
-        ObjectFactory<?> factory = createWireFactory(type, interactionType, wire);
+        ObjectFactory<?> factory = createWireFactory(type, wire);
         attachWire(name, factory);
     }
 
@@ -195,9 +191,9 @@ public class WebComponent implements AtomicComponent {
         referenceFactories.put(name, factory);
     }
 
-    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, InteractionType interactionType, Wire wire) throws ObjectCreationException {
+    protected <B> ObjectFactory<B> createWireFactory(Class<B> interfaze, Wire wire) throws ObjectCreationException {
         try {
-            return proxyService.createObjectFactory(interfaze, interactionType, wire, null);
+            return proxyService.createObjectFactory(interfaze, wire, null);
         } catch (ProxyCreationException e) {
             throw new ObjectCreationException(e);
         }

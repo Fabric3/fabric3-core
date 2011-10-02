@@ -69,22 +69,5 @@ public abstract class AbstractContextTargetDefinition extends AbstractTargetDefi
         this.multiThreaded = multiThreaded;
     }
 
-    /**
-     * Returns true if the persistence unit is part of an extended context.
-     *
-     * @return true if the persistence unit is part of an extended context
-     */
-    public boolean isExtended() {
-        return extended;
-    }
-
-    /**
-     * Sets if the persistence unit is part of an extended context.
-     *
-     * @param extended if the persistence unit is part of an extended context
-     */
-    public void setExtended(boolean extended) {
-        this.extended = extended;
-    }
 
 }

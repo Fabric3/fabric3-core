@@ -52,16 +52,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.oasisopen.sca.ServiceReference;
-import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.WireProxyService;
-import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.component.ScopeContainer;
-import org.fabric3.spi.component.ScopeRegistry;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
@@ -74,22 +70,15 @@ import org.fabric3.spi.wire.Wire;
  */
 public class JDKWireProxyService implements WireProxyService {
     private ClassLoaderRegistry classLoaderRegistry;
-    private ScopeRegistry scopeRegistry;
-    private ScopeContainer conversationalContainer;
 
-    public JDKWireProxyService() {
-    }
-
-    @Constructor
-    public JDKWireProxyService(@Reference ClassLoaderRegistry classLoaderRegistry, @Reference ScopeRegistry scopeRegistry) {
+    public JDKWireProxyService(@Reference ClassLoaderRegistry classLoaderRegistry) {
         this.classLoaderRegistry = classLoaderRegistry;
-        this.scopeRegistry = scopeRegistry;
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, InteractionType type, Wire wire, String callbackUri)
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri)
             throws ProxyCreationException {
         Map<Method, InvocationChain> mappings = createInterfaceToWireMapping(interfaze, wire);
-        return new WireObjectFactory<T>(interfaze, type, callbackUri, this, mappings);
+        return new WireObjectFactory<T>(interfaze, callbackUri, this, mappings);
     }
 
     public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, ScopeContainer container, URI callbackUri, Wire wire)
@@ -115,17 +104,9 @@ public class JDKWireProxyService implements WireProxyService {
         return callbackFactory;
     }
 
-    public <T> T createProxy(Class<T> interfaze, InteractionType type, String callbackUri, Map<Method, InvocationChain> mappings)
-            throws ProxyCreationException {
+    public <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws ProxyCreationException {
         JDKInvocationHandler<T> handler;
-        if (InteractionType.CONVERSATIONAL == type || InteractionType.PROPAGATES_CONVERSATION == type) {
-            // create a conversational proxy
-            ScopeContainer scopeContainer = getContainer();
-            handler = new JDKInvocationHandler<T>(interfaze, type, callbackUri, mappings, scopeContainer);
-        } else {
-            // create a non-conversational proxy
-            handler = new JDKInvocationHandler<T>(interfaze, callbackUri, mappings);
-        }
+        handler = new JDKInvocationHandler<T>(interfaze, callbackUri, mappings);
         return handler.getService();
     }
 
@@ -135,9 +116,9 @@ public class JDKWireProxyService implements WireProxyService {
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 
-    public <T> T createStatefullCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping, ScopeContainer container) {
+    public <T> T createStatefullCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping) {
         ClassLoader cl = interfaze.getClassLoader();
-        StatefulCallbackInvocationHandler<T> handler = new StatefulCallbackInvocationHandler<T>(interfaze, container, mapping);
+        StatefulCallbackInvocationHandler<T> handler = new StatefulCallbackInvocationHandler<T>(interfaze, mapping);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 
@@ -193,10 +174,4 @@ public class JDKWireProxyService implements WireProxyService {
         return clazz.getMethod(name, types);
     }
 
-    private ScopeContainer getContainer() {
-        if (conversationalContainer == null) {
-            conversationalContainer = scopeRegistry.getScopeContainer(Scope.CONVERSATION);
-        }
-        return conversationalContainer;
-    }
 }

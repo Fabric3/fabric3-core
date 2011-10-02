@@ -66,7 +66,6 @@ import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -113,9 +112,6 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
     public WebComponentSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         WebComponentSourceDefinition sourceDefinition = new WebComponentSourceDefinition();
         sourceDefinition.setUri(reference.getUri());
-        if (reference.getDefinition().getServiceContract().isConversational()) {
-            sourceDefinition.setInteractionType(InteractionType.CONVERSATIONAL);
-        }
         return sourceDefinition;
     }
 
@@ -171,11 +167,9 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         // inject the reference into the session context
         WebContextInjectionSite site = new WebContextInjectionSite(interfaceClass, SESSION_CONTEXT);
         mapping.put(SESSION_CONTEXT_SITE, site);
-        if (!contract.isConversational()) {
-            // if the target service is non-conversational, also inject the reference into the servlet context
-            WebContextInjectionSite servletContextsite = new WebContextInjectionSite(interfaceClass, SERVLET_CONTEXT);
-            mapping.put(SERVLET_CONTEXT_SITE, servletContextsite);
-        }
+        // also inject the reference into the servlet context
+        WebContextInjectionSite servletContextsite = new WebContextInjectionSite(interfaceClass, SERVLET_CONTEXT);
+        mapping.put(SERVLET_CONTEXT_SITE, servletContextsite);
     }
 
     private void generatePropertyInjectionMapping(Property property, Map<String, Map<String, InjectionSite>> mappings) {
@@ -232,7 +226,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
             if (document != null) {
                 String name = property.getName();
                 boolean many = property.isMany();
-                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, document,many);
+                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, document, many);
                 physical.setPropertyDefinition(definition);
             }
         }

@@ -83,10 +83,6 @@
         <f3:implementation.system class="org.fabric3.introspection.java.annotation.DomainProcessor"/>
     </component>
 
-    <component name="ConversationProcessor" f3:key="org.fabric3.api.annotation.scope.Conversation">
-        <f3:implementation.system class="org.fabric3.introspection.java.annotation.ConversationProcessor"/>
-    </component>
-
     <component name="CompositeProcessor" f3:key="org.fabric3.api.annotation.scope.Composite">
         <f3:implementation.system class="org.fabric3.introspection.java.annotation.CompositeProcessor"/>
     </component>

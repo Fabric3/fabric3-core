@@ -46,7 +46,6 @@ import org.fabric3.implementation.web.provision.WebComponentSourceDefinition;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
@@ -69,10 +68,9 @@ public class WebComponentSourceWireAttacher implements SourceWireAttacher<WebCom
     public void attach(WebComponentSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
         URI sourceUri = UriHelper.getDefragmentedName(source.getUri());
         String referenceName = source.getUri().getFragment();
-        InteractionType interactionType = source.getInteractionType();
         WebComponent component = (WebComponent) manager.getComponent(sourceUri);
         try {
-            component.attachWire(referenceName, interactionType, wire);
+            component.attachWire(referenceName, wire);
         } catch (ObjectCreationException e) {
             throw new WiringException(e);
         }

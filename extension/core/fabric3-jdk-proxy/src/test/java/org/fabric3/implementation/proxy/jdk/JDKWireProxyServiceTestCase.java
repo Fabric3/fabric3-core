@@ -41,7 +41,7 @@ public class JDKWireProxyServiceTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        proxyService = new JDKWireProxyService();
+        proxyService = new JDKWireProxyService(null);
     }
 
     public interface Foo {

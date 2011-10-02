@@ -54,29 +54,22 @@ import javax.transaction.TransactionManager;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.spi.invocation.F3Conversation;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
-
 /**
  * An EntityManager proxy that delegates to a backing instance. This proxy is injected on composite-scoped components where more than one thread may
  * be accessing the proxy at a time.
  * <p/>
  * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the EntityManager instance associated with
- * the current transaction context from the EntityManagerService. If the persistence context is extended (as defined by JPA), the proxy will attempt
- * to retrieve the EntityManager instance associated with the current conversation.
+ * the current transaction context from the EntityManagerService.
  *
  * @version $Rev$ $Date$
  */
 public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityManager {
     private String unitName;
-    private boolean extended;
     private EntityManagerService emService;
     private TransactionManager tm;
 
-    public MultiThreadedEntityManagerProxy(String unitName, boolean extended, EntityManagerService emService, TransactionManager tm) {
+    public MultiThreadedEntityManagerProxy(String unitName, EntityManagerService emService, TransactionManager tm) {
         this.unitName = unitName;
-        this.extended = extended;
         this.emService = emService;
         this.tm = tm;
     }
@@ -247,37 +240,22 @@ public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityMa
 
     /**
      * Returns the delegated EntityManager. If the persistence context is transaction-scoped, the EntityManager associated with the current
-     * transaction will be used. Otherwise, if the persistence context is extended, the EntityManager associated with the current conversation will be
-     * used.
+     * transaction will be used.
      *
      * @return the EntityManager
      */
     private EntityManager getEntityManager() {
-        if (extended) {
-            // an extended persistence context, associate it with the current conversation
-            WorkContext context = WorkContextTunnel.getThreadWorkContext();
-            F3Conversation conversation = context.peekCallFrame().getConversation();
-            if (conversation == null) {
-                throw new IllegalStateException("No conversational context associated with the current component");
+        // a transaction-scoped persistence context
+        try {
+            Transaction trx = tm.getTransaction();
+            if (trx == null) {
+                throw new IllegalStateException("A transaction is not active - ensure the component is executing in a managed transaction");
             }
-            try {
-                return emService.getEntityManager(unitName, this, conversation);
-            } catch (EntityManagerCreationException e) {
-                throw new ServiceRuntimeException(e);
-            }
-        } else {
-            // a transaction-scoped persistence context
-            try {
-                Transaction trx = tm.getTransaction();
-                if (trx == null) {
-                    throw new IllegalStateException("A transaction is not active - ensure the component is executing in a managed transaction");
-                }
-                return emService.getEntityManager(unitName, this, trx);
-            } catch (SystemException e) {
-                throw new ServiceRuntimeException(e);
-            } catch (EntityManagerCreationException e) {
-                throw new ServiceRuntimeException(e);
-            }
+            return emService.getEntityManager(unitName, this, trx);
+        } catch (SystemException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (EntityManagerCreationException e) {
+            throw new ServiceRuntimeException(e);
         }
     }
 

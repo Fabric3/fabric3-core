@@ -55,7 +55,6 @@ import org.fabric3.model.type.AbstractPolicyAware;
  */
 public abstract class ServiceContract extends AbstractPolicyAware {
     private static final long serialVersionUID = 7930416351019873131L;
-    protected boolean conversational;
     protected boolean remotable;
     protected String interfaceName;
     protected List<Operation> operations;
@@ -80,24 +79,6 @@ public abstract class ServiceContract extends AbstractPolicyAware {
      */
     public void setInterfaceName(String interfaceName) {
         this.interfaceName = interfaceName;
-    }
-
-    /**
-     * Returns true if the service contract is conversational
-     *
-     * @return true if the service contract is conversational
-     */
-    public boolean isConversational() {
-        return conversational;
-    }
-
-    /**
-     * Sets if the service contract is conversational
-     *
-     * @param conversational the conversational attribute
-     */
-    public void setConversational(boolean conversational) {
-        this.conversational = conversational;
     }
 
     /**

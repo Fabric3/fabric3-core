@@ -120,7 +120,7 @@ public class TomcatWebApplicationActivator implements WebApplicationActivator {
                     container.addChild(context);
                 }
             }
-            // Setup the session listener to inject conversational reference proxies in newly created sessions.
+            // Setup the session listener to inject reference proxies in newly created sessions.
             // Note this must be performed after the context is added as a child to StandardHost as doing so
             // starts the context which results in the application lifecycle listeners being reset.
             List<Injector<HttpSession>> sessionInjectors = List.class.cast(injectors.get(SESSION_CONTEXT_SITE));

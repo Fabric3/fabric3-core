@@ -70,7 +70,6 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -222,9 +221,6 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
     public XQueryComponentSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
         XQueryComponentSourceDefinition sourceDefinition = new XQueryComponentSourceDefinition();
         sourceDefinition.setUri(reference.getUri());
-        if (reference.getDefinition().getServiceContract().isConversational()) {
-            sourceDefinition.setInteractionType(InteractionType.CONVERSATIONAL);
-        }
         return sourceDefinition;
     }
 

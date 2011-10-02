@@ -48,8 +48,6 @@ import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.invocation.CallFrame;
-import org.fabric3.spi.invocation.ConversationContext;
-import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
@@ -155,14 +153,12 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
             stream.close();
             CallFrame previous = workContext.peekCallFrame();
             if (previous != null) {
-                // Copy correlation and conversation information from incoming frame to new frame
+                // Copy correlation information from incoming frame to new frame
                 // Note that the callback URI is set to the callback address of this service so its callback wire can be mapped in the case of a
                 // bidirectional service
                 Serializable id = previous.getCorrelationId(Serializable.class);
-                ConversationContext context = previous.getConversationContext();
-                F3Conversation conversation = previous.getConversation();
                 String callback = previous.getCallbackUri();
-                CallFrame frame = new CallFrame(callback, id, conversation, context);
+                CallFrame frame = new CallFrame(callback, id);
                 stack.add(frame);
             } else {
                 workContext.addCallFrame(CallFrame.STATELESS_FRAME);
@@ -208,7 +204,7 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
                     }
                     long val = poller.poll(pollTimeout);
                     if (val > 0) {
-                        if (!invoke(socket)){
+                        if (!invoke(socket)) {
                             continue;
                         }
                         response(socket);

@@ -54,7 +54,7 @@ Public License. See the accompanying license file for details.
             <artifactId>fabric3-fabric</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-policy</artifactId>
@@ -85,7 +85,7 @@ Public License. See the accompanying license file for details.
             <version>${project.version}</version>
         </dependency>
 
-        
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-federation-deployment</artifactId>
@@ -114,14 +114,14 @@ Public License. See the accompanying license file for details.
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-federation-jgroups</artifactId>
             <version>${project.version}</version>
-        </dependency>        
+        </dependency>
 
-         <dependency>
+        <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-security</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <!-- provided scope dependencies that need to be resolved -->
         <dependency>
             <groupId>javax.annotation</groupId>
@@ -213,12 +213,6 @@ Public License. See the accompanying license file for details.
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-conversation-propagation</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-resource</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -228,7 +222,7 @@ Public License. See the accompanying license file for details.
             <artifactId>fabric3-execution</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-thread-pool</artifactId>

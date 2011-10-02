@@ -41,26 +41,23 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.introspection.java.contract;
-
-import java.lang.reflect.Method;
+package org.fabric3.jpa.introspection;
 
 import org.fabric3.host.contribution.ValidationFailure;
 
 /**
- * Denotes an invalid conversational interface definition
+ * Denotes an invalid persistence context type.
  *
  * @version $Rev$ $Date$
  */
-public class InvalidConversationalOperation extends ValidationFailure {
-    private Method method;
+public class InvalidPersistenceContextType extends ValidationFailure {
+    private String message;
 
-    public InvalidConversationalOperation(Method method) {
-        super();
-        this.method = method;
+    public InvalidPersistenceContextType(String message) {
+        this.message = message;
     }
 
     public String getMessage() {
-        return "Method is marked as end conversation but contract is not conversational: " + method;
+        return message;
     }
 }

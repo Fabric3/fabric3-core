@@ -55,8 +55,6 @@ import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Remotable;
-import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.EndsConversation;
 
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
@@ -70,9 +68,6 @@ import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-
-import static org.fabric3.model.type.contract.Operation.CONVERSATION_END;
-import static org.fabric3.model.type.contract.Operation.NO_CONVERSATION;
 
 /**
  * Default implementation of a ContractProcessor for Java interfaces.
@@ -134,7 +129,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
             String forwardName = contract.getInterfaceName();
             String callbackName = callbackContract.getInterfaceName();
             InvalidCallbackContract error = new InvalidCallbackContract("The remotable attribute on the forward and callback contract do not match: "
-                    + forwardName + "," + callbackName);
+                                                                                + forwardName + "," + callbackName);
             context.addError(error);
         }
         contract.setCallbackContract(callbackContract);
@@ -148,10 +143,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
                 interfaze.isAnnotationPresent(org.oasisopen.sca.annotation.Remotable.class) || interfaze.isAnnotationPresent(Remotable.class);
         contract.setRemotable(remotable);
 
-        boolean conversational = helper.isAnnotationPresent(interfaze, Conversational.class);
-        contract.setConversational(conversational);
-
-        List<Operation> operations = introspectOperations(interfaze, baseClass, remotable, conversational, context);
+        List<Operation> operations = introspectOperations(interfaze, baseClass, remotable, context);
         contract.setOperations(operations);
         for (InterfaceIntrospector introspector : interfaceIntrospectors) {
             introspector.introspect(contract, interfaze, context);
@@ -162,7 +154,6 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
     private List<Operation> introspectOperations(Class<?> interfaze,
                                                  Class<?> baseClass,
                                                  boolean remotable,
-                                                 boolean conversational,
                                                  IntrospectionContext context) {
         Method[] methods = interfaze.getMethods();
         List<Operation> operations = new ArrayList<Operation>(methods.length);
@@ -175,9 +166,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
             List<DataType<?>> paramTypes = introspectParameterTypes(method, typeMapping);
             List<DataType<?>> faultTypes = introspectFaultTypes(method, typeMapping);
 
-            int conversationSequence = introspectConversationSequence(conversational, method, context);
-
-            Operation operation = new Operation(name, paramTypes, returnType, faultTypes, conversationSequence);
+            Operation operation = new Operation(name, paramTypes, returnType, faultTypes);
             operation.setRemotable(remotable);
 
             if (method.isAnnotationPresent(org.oasisopen.sca.annotation.OneWay.class) || method.isAnnotationPresent(OneWay.class)) {
@@ -241,27 +230,6 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
             helper.resolveTypeParameters(type, typeMapping);
         }
         return typeMapping;
-    }
-
-    /**
-     * Determines the conversational sequence of a conversational service.
-     *
-     * @param conversational true if the service is conversational
-     * @param method         the method being introspected
-     * @param context        the introspection context
-     * @return the conversational sequence
-     */
-    private int introspectConversationSequence(boolean conversational, Method method, IntrospectionContext context) {
-        int conversationSequence = NO_CONVERSATION;
-        if (method.isAnnotationPresent(EndsConversation.class)) {
-            if (!conversational) {
-                context.addError(new InvalidConversationalOperation(method));
-            }
-            conversationSequence = CONVERSATION_END;
-        } else if (conversational) {
-            conversationSequence = Operation.CONVERSATION_CONTINUE;
-        }
-        return conversationSequence;
     }
 
     /**

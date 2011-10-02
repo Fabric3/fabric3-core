@@ -63,7 +63,6 @@ public abstract class PhysicalSourceDefinition implements Serializable {
     private URI classLoaderId;
     private boolean optimizable;
     private String key;
-    private InteractionType type = InteractionType.STATELESS;
     protected List<DataType<?>> physicalDataTypes = new ArrayList<DataType<?>>();
 
     public PhysicalSourceDefinition() {
@@ -129,24 +128,6 @@ public abstract class PhysicalSourceDefinition implements Serializable {
      */
     public void setOptimizable(boolean optimizable) {
         this.optimizable = optimizable;
-    }
-
-    /**
-     * Returns the interaction style for the wire.
-     *
-     * @return the interaction style for the wire
-     */
-    public InteractionType getInteractionType() {
-        return type;
-    }
-
-    /**
-     * Sets the interaction style for the wire. If none is set, the default {@link InteractionType#STATELESS} is used.
-     *
-     * @param type the interaction style for the wire
-     */
-    public void setInteractionType(InteractionType type) {
-        this.type = type;
     }
 
     /**

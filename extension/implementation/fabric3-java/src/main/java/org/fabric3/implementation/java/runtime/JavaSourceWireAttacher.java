@@ -53,7 +53,6 @@ import org.fabric3.spi.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopeContainer;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
@@ -142,9 +141,8 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
             callbackUri = uri.toString();
         }
 
-        InteractionType interactionType = sourceDefinition.getInteractionType();
         try {
-            ObjectFactory<?> factory = proxyService.createObjectFactory(type, interactionType, wire, callbackUri);
+            ObjectFactory<?> factory = proxyService.createObjectFactory(type, wire, callbackUri);
             if (sourceDefinition.isKeyed()) {
                 Object key = getKey(sourceDefinition, targetDefinition);
                 source.setObjectFactory(injectable, factory, key);

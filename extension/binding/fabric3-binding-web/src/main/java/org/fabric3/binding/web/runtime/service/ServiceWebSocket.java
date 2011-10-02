@@ -107,7 +107,7 @@ public class ServiceWebSocket implements WebSocket {
         // Set the correlation id to the broadcaster UUID so callbacks can be routed to the correct broadcaster instance
         Object[] content = new Object[]{data};
         WorkContext context = new WorkContext();
-        CallFrame frame = new CallFrame(callbackUri, uuid, null, null);
+        CallFrame frame = new CallFrame(callbackUri, uuid);
         context.addCallFrame(frame);
         // As an optimization, we add the callframe twice instead of two different frames for representing the service call and the binding invocation 
         context.addCallFrame(frame);

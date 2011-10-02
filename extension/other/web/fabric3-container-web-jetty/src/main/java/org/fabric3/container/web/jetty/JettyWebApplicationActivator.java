@@ -131,7 +131,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
             context.addEventListener(new ServletContextListener() {
                 public void contextInitialized(ServletContextEvent sce) {
 
-                    // Setup the session listener to inject conversational reference proxies in newly created sessions
+                    // Setup the session listener to inject reference proxies in newly created sessions
                     // Note the listener must be added after the context is started as Jetty web xml configurer clears event listeners
                     List<Injector<HttpSession>> sessionInjectors = List.class.cast(injectors.get(SESSION_CONTEXT_SITE));
                     InjectingSessionListener listener = new InjectingSessionListener(sessionInjectors);

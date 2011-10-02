@@ -59,7 +59,6 @@ import org.oasisopen.sca.annotation.Destroy;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.ExpirationPolicy;
 import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.component.InstanceInitializationException;
 import org.fabric3.spi.component.InstanceLifecycleException;
@@ -139,19 +138,6 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
                 destroyQueues.put(deployable, new ArrayList<InstanceWrapper>());
             }
         }
-    }
-
-    public void startContext(WorkContext workContext, ExpirationPolicy policy) throws GroupInitializationException {
-        // scope does not support expiration policies
-        startContext(workContext);
-    }
-
-    public void joinContext(WorkContext workContext) throws GroupInitializationException {
-        // no-op
-    }
-
-    public void joinContext(WorkContext workContext, ExpirationPolicy policy) throws GroupInitializationException {
-        // no-op
     }
 
     public void stopContext(WorkContext workContext) {
@@ -282,6 +268,33 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
             initializeComponents(initQueue, workContext);
         }
     }
+
+    /**
+     * Initialize an ordered list of components. The list is traversed in order and the getWrapper() method called for each to associate an instance
+     * with the supplied context.
+     *
+     * @param components  the components to be initialized
+     * @param workContext the work context in which to initialize the components
+     * @throws GroupInitializationException if one or more components threw an exception during initialization
+     */
+    private void initializeComponents(List<AtomicComponent> components, WorkContext workContext) throws GroupInitializationException {
+        List<Exception> causes = null;
+        for (AtomicComponent component : components) {
+            try {
+                getWrapper(component, workContext);
+            } catch (Exception e) {
+                monitor.eagerInitializationError(component.getUri(), e);
+                if (causes == null) {
+                    causes = new ArrayList<Exception>();
+                }
+                causes.add(e);
+            }
+        }
+        if (causes != null) {
+            throw new GroupInitializationException(causes);
+        }
+    }
+
 
     private static final InstanceWrapper EMPTY = new InstanceWrapper() {
         public Object getInstance() {

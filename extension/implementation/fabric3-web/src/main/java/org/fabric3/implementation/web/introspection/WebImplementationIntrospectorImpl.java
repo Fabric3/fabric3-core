@@ -102,19 +102,8 @@ public class WebImplementationIntrospectorImpl implements WebImplementationIntro
             if (childContext.hasWarnings()) {
                 context.addWarnings(childContext.getWarnings());
             }
-            validateComponentType(type, context);
             // TODO apply heuristics
             mergeComponentTypes(implementation.getComponentType(), type, context);
-        }
-    }
-
-    private void validateComponentType(InjectingComponentType type, IntrospectionContext context) {
-        for (ReferenceDefinition reference : type.getReferences().values()) {
-            if (reference.getServiceContract().isConversational()) {
-                IllegalConversationalReferenceInjection failure = new IllegalConversationalReferenceInjection(reference, type.getImplClass());
-                context.addError(failure);
-            }
-
         }
     }
 

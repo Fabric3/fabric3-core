@@ -37,8 +37,6 @@
 */
 package org.fabric3.jpa.model;
 
-import javax.persistence.PersistenceContextType;
-
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 
@@ -50,7 +48,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 public final class PersistenceContextResourceReference extends ResourceReferenceDefinition {
     private static final long serialVersionUID = -8717050996527626286L;
     private String unitName;
-    private PersistenceContextType type;
     private boolean multiThreaded;
 
     /**
@@ -58,18 +55,15 @@ public final class PersistenceContextResourceReference extends ResourceReference
      *
      * @param name            Name of the resource.
      * @param unitName        Persistence unit name.
-     * @param type            the PersistenceContextType
      * @param serviceContract the service contract for the persistence unit
      * @param multiThreaded   true if the resource is accessed from a multi-threaded implementation
      */
     public PersistenceContextResourceReference(String name,
-                                      String unitName,
-                                      PersistenceContextType type,
-                                      ServiceContract serviceContract,
-                                      boolean multiThreaded) {
+                                               String unitName,
+                                               ServiceContract serviceContract,
+                                               boolean multiThreaded) {
         super(name, serviceContract, true);
         this.unitName = unitName;
-        this.type = type;
         this.multiThreaded = multiThreaded;
     }
 
@@ -80,15 +74,6 @@ public final class PersistenceContextResourceReference extends ResourceReference
      */
     public final String getUnitName() {
         return this.unitName;
-    }
-
-    /**
-     * Returns the persistence context type.
-     *
-     * @return the persistence context type
-     */
-    public PersistenceContextType getType() {
-        return type;
     }
 
     /**

@@ -51,16 +51,14 @@ public class MultiThreadedSessionProxyFactory implements ObjectFactory<MultiThre
     private String unitName;
     private EntityManagerService service;
     private TransactionManager tm;
-    private boolean extended;
 
-    public MultiThreadedSessionProxyFactory(String unitName, boolean extended, EntityManagerService service, TransactionManager tm) {
+    public MultiThreadedSessionProxyFactory(String unitName, EntityManagerService service, TransactionManager tm) {
         this.service = service;
         this.tm = tm;
-        this.extended = extended;
         this.unitName = unitName;
     }
 
     public MultiThreadedSessionProxy getInstance() throws ObjectCreationException {
-        return new MultiThreadedSessionProxy(unitName, extended, service, tm);
+        return new MultiThreadedSessionProxy(unitName, service, tm);
     }
 }

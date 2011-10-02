@@ -46,8 +46,6 @@ public interface Scopes {
 
     String COMPOSITE = "COMPOSITE";
 
-    String CONVERSATION = "CONVERSATION";
-
     String DOMAIN = "DOMAIN";
 
 }

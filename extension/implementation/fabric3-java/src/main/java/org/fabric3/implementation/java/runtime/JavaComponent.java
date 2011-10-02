@@ -52,24 +52,20 @@ import org.fabric3.spi.component.ScopeContainer;
 public class JavaComponent extends PojoComponent {
 
     /**
-     * Constructor for a Java Component.
+     * Constructor.
      *
      * @param componentId             the component's uri
      * @param instanceFactoryProvider the provider for the instance factory
      * @param scopeContainer          the container for the component's implementation scope
      * @param deployable              the deployable composite this component is deployed with
      * @param eager                   true if the component should be eagerly initialized
-     * @param maxIdleTime             the time after which idle instances of this component can be expired
-     * @param maxAge                  the time after which instances of this component can be expired
      */
     public JavaComponent(URI componentId,
                          InstanceFactoryProvider instanceFactoryProvider,
                          ScopeContainer scopeContainer,
                          QName deployable,
-                         boolean eager,
-                         long maxIdleTime,
-                         long maxAge) {
-        super(componentId, instanceFactoryProvider, scopeContainer, deployable, eager, maxIdleTime, maxAge);
+                         boolean eager) {
+        super(componentId, instanceFactoryProvider, scopeContainer, deployable, eager);
     }
 
 

@@ -54,10 +54,6 @@ import org.fabric3.model.type.AbstractPolicyAware;
  * @version $Rev$ $Date$
  */
 public class Operation extends AbstractPolicyAware {
-    public static final int NO_CONVERSATION = -1;
-    public static final int CONVERSATION_CONTINUE = 1;
-    public static final int CONVERSATION_END = 2;
-
     private static final long serialVersionUID = 5279880534105654066L;
     private String name;
     private String wsdlName;
@@ -65,7 +61,6 @@ public class Operation extends AbstractPolicyAware {
     private DataType<?> outputType;
     private List<DataType<?>> inputTypes;
     private List<DataType<?>> faultTypes;
-    private int conversationSequence = NO_CONVERSATION;
 
     /**
      * Construct a minimally-specified operation
@@ -76,27 +71,11 @@ public class Operation extends AbstractPolicyAware {
      * @param faultTypes the data type of faults raised by the operation
      */
     public Operation(String name, List<DataType<?>> inputTypes, DataType<?> outputType, List<DataType<?>> faultTypes) {
-        this(name, inputTypes, outputType, faultTypes, NO_CONVERSATION);
-        wsdlName = name;
-    }
-
-    /**
-     * Construct an operation
-     *
-     * @param name       the name of the operation
-     * @param inputTypes the data types of parameters passed to the operation
-     * @param outputType the data type returned by the operation
-     * @param faultTypes the data type of faults raised by the operation
-     * @param sequence   the conversational attributes of the operation, {@link #NO_CONVERSATION}, {@link #CONVERSATION_CONTINUE}, {@link
-     *                   #CONVERSATION_CONTINUE}
-     */
-    public Operation(String name, List<DataType<?>> inputTypes, DataType<?> outputType, List<DataType<?>> faultTypes, int sequence) {
         this.name = name;
         List<DataType<?>> types = Collections.emptyList();
         this.inputTypes = inputTypes;
         this.outputType = outputType;
         this.faultTypes = (faultTypes == null) ? types : faultTypes;
-        this.conversationSequence = sequence;
         wsdlName = name;
     }
 
@@ -158,24 +137,6 @@ public class Operation extends AbstractPolicyAware {
             return Collections.emptyList();
         }
         return faultTypes;
-    }
-
-    /**
-     * Returns the sequence the operation is called in a conversation
-     *
-     * @return the sequence the operation is called in a conversation
-     */
-    public int getConversationSequence() {
-        return conversationSequence;
-    }
-
-    /**
-     * Sets the sequence the operation is called in a conversation
-     *
-     * @param conversationSequence true the sequence the operation is called in a conversation
-     */
-    public void setConversationSequence(int conversationSequence) {
-        this.conversationSequence = conversationSequence;
     }
 
     /**

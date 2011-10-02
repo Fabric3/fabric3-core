@@ -72,8 +72,6 @@ import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import org.fabric3.spi.invocation.CallFrame;
-import org.fabric3.spi.invocation.ConversationContext;
-import org.fabric3.spi.invocation.F3Conversation;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.util.Base64;
@@ -339,13 +337,11 @@ public class ServiceListener implements MessageListener {
             stream.close();
             CallFrame previous = workContext.peekCallFrame();
             if (previous != null) {
-                // Copy correlation and conversation information from incoming frame to new frame
+                // Copy correlation information from incoming frame to new frame
                 // Note that the callback URI is set to the callback address of this service so its callback wire can be mapped in the case of a
                 // bidirectional service
                 Serializable id = previous.getCorrelationId(Serializable.class);
-                ConversationContext context = previous.getConversationContext();
-                F3Conversation conversation = previous.getConversation();
-                CallFrame frame = new CallFrame(callbackUri, id, conversation, context);
+                CallFrame frame = new CallFrame(callbackUri, id);
                 stack.add(frame);
             } else {
                 workContext.addCallFrame(CallFrame.STATELESS_FRAME);

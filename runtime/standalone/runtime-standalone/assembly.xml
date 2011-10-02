@@ -108,7 +108,6 @@
                 <include>org.codehaus.fabric3:fabric3-jdk-proxy</include>
                 <include>org.codehaus.fabric3:fabric3-java</include>
                 <include>org.codehaus.fabric3:fabric3-async</include>
-                <include>org.codehaus.fabric3:fabric3-conversation-propagation</include>
                 <include>org.codehaus.fabric3:fabric3-sca-intents</include>
                 <include>org.codehaus.fabric3:fabric3-jetty</include>
                 <include>org.codehaus.fabric3:fabric3-contribution-scanner</include>

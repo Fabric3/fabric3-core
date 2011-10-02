@@ -54,31 +54,23 @@ import javax.transaction.TransactionManager;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.spi.invocation.F3Conversation;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
-
 /**
- * An EntityManager proxy that delegates to a cached instance. This proxy is injected on stateless and conversation-scoped components. This proxy is
+ * An EntityManager proxy that delegates to a cached instance. This proxy is injected on stateless-scoped components. This proxy is
  * <strong>not</strong> safe to inject on composite-scoped implementations.
  * <p/>
  * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the EntityManager instance associated with
- * the current transaction context from the EntityManagerService. If the persistence context is extended (as defined by JPA), the proxy will attempt
- * to retrieve the EntityManager instance associated with the current conversation. The proxy will cache the EntityManager instance until the
- * transaction completes (or aborts) or the conversation ends.
+ * the current transaction context from the EntityManagerService. The proxy will cache the EntityManager instance until the transaction completes.
  *
  * @version $Rev$ $Date$
  */
 public class StatefulEntityManagerProxy implements HibernateProxy, EntityManager {
     private String unitName;
-    private boolean extended;
     private EntityManager em;
     private EntityManagerService emService;
     private TransactionManager tm;
 
-    public StatefulEntityManagerProxy(String unitName, boolean extended, EntityManagerService emService, TransactionManager tm) {
+    public StatefulEntityManagerProxy(String unitName, EntityManagerService emService, TransactionManager tm) {
         this.unitName = unitName;
-        this.extended = extended;
         this.emService = emService;
         this.tm = tm;
     }
@@ -296,31 +288,17 @@ public class StatefulEntityManagerProxy implements HibernateProxy, EntityManager
         if (em != null) {
             return;
         }
-        if (extended) {
-            // an extended persistence context, associate it with the current conversation
-            WorkContext context = WorkContextTunnel.getThreadWorkContext();
-            F3Conversation conversation = context.peekCallFrame().getConversation();
-            if (conversation == null) {
-                throw new IllegalStateException("No conversational context associated with the current component");
+        // a transaction-scoped persistence context
+        try {
+            Transaction trx = tm.getTransaction();
+            if (trx == null) {
+                throw new IllegalStateException("A transaction is not active - ensure the component is executing in a managed transaction");
             }
-            try {
-                em = emService.getEntityManager(unitName, this, conversation);
-            } catch (EntityManagerCreationException e) {
-                throw new ServiceRuntimeException(e);
-            }
-        } else {
-            // a transaction-scoped persistence context
-            try {
-                Transaction trx = tm.getTransaction();
-                if (trx == null) {
-                    throw new IllegalStateException("A transaction is not active - ensure the component is executing in a managed transaction");
-                }
-                em = emService.getEntityManager(unitName, this, trx);
-            } catch (SystemException e) {
-                throw new ServiceRuntimeException(e);
-            } catch (EntityManagerCreationException e) {
-                throw new ServiceRuntimeException(e);
-            }
+            em = emService.getEntityManager(unitName, this, trx);
+        } catch (SystemException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (EntityManagerCreationException e) {
+            throw new ServiceRuntimeException(e);
         }
     }
 

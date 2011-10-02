@@ -61,7 +61,6 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -114,9 +113,6 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         wireDefinition.setUri(uri);
         wireDefinition.setInjectable(new Injectable(InjectableType.REFERENCE, uri.getFragment()));
         wireDefinition.setInterfaceName(interfaceName);
-        if (serviceContract.isConversational()) {
-            wireDefinition.setInteractionType(InteractionType.CONVERSATIONAL);
-        }
 
         // assume for now that any wire from a JUnit component can be optimized
         wireDefinition.setOptimizable(true);

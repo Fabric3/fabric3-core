@@ -45,7 +45,6 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -70,9 +69,8 @@ public class XQueryComponentTargetWireAttacher implements TargetWireAttacher<XQu
     public void attach(PhysicalSourceDefinition source, XQueryComponentTargetDefinition target, Wire wire) throws WiringException {
         URI targetURI = UriHelper.getDefragmentedName(target.getUri());
         String serviceName = target.getUri().getFragment();
-        InteractionType interactionType = source.getInteractionType();
         XQueryComponent component = (XQueryComponent) manager.getComponent(targetURI);
-        component.attachTargetWire(serviceName, interactionType, wire);
+        component.attachTargetWire(serviceName, wire);
 
     }
 

@@ -239,7 +239,7 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
             }
             if (found.size() > 1) {
                 throw new ObjectCreationException("Cannot determine the default service name as multiple ports using portType " + portTypeName +
-                        " were found in the WSDL document: " + wsdlLocation);
+                                                          " were found in the WSDL document: " + wsdlLocation);
             } else if (found.isEmpty()) {
                 throw new ObjectCreationException("No default service for portType" + portTypeName + " found in WSDL: " + wsdlLocation);
             } else {
@@ -292,7 +292,7 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
             throw new ObjectCreationException(e);
         }
         throw new ObjectCreationException(
-                "The web service endpoint does not expose a valid WSDL at a known metadata location, e.g. <service url>?wsdl. " +
+                "The web service endpoint " + endpointUrl + " does not expose a valid WSDL at a known metadata location, e.g. <service url>?wsdl. " +
                         "Check to make sure the endpoint address is correct. If it is, please specify a valid location using the @WebService " +
                         "annotation on the reference interface.");
     }

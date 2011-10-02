@@ -38,7 +38,6 @@
 package org.fabric3.jpa.runtime;
 
 import java.net.URI;
-import java.util.Map;
 import javax.transaction.TransactionManager;
 
 import org.oasisopen.sca.annotation.Reference;
@@ -88,7 +87,6 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
 
     public ObjectFactory<?> createObjectFactory(PersistenceContextTargetDefinition definition) throws WiringException {
         String unitName = definition.getUnitName();
-        boolean extended = definition.isExtended();
         URI classLoaderId = definition.getClassLoaderId();
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
@@ -99,9 +97,9 @@ public class PersistenceContextWireAttacher implements TargetWireAttacher<Persis
             PersistenceOverrides overrides = definition.getOverrides();
             emfResolver.resolve(unitName, overrides, classLoader);
             if (definition.isMultiThreaded()) {
-                return new MultiThreadedEntityManagerProxyFactory(unitName, extended, emService, tm);
+                return new MultiThreadedEntityManagerProxyFactory(unitName, emService, tm);
             } else {
-                return new StatefulEntityManagerProxyFactory(unitName, extended, emService, tm);
+                return new StatefulEntityManagerProxyFactory(unitName, emService, tm);
             }
         } catch (JpaResolutionException e) {
             throw new WiringException(e);

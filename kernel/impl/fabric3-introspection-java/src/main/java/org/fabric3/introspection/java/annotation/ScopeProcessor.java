@@ -51,7 +51,6 @@ import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 import static org.fabric3.model.type.component.Scope.COMPOSITE;
-import static org.fabric3.model.type.component.Scope.CONVERSATION;
 import static org.fabric3.model.type.component.Scope.DOMAIN;
 import static org.fabric3.model.type.component.Scope.STATELESS;
 
@@ -67,7 +66,6 @@ public class ScopeProcessor<I extends Implementation<? extends InjectingComponen
     public void visitType(Scope annotation, Class<?> type, I implementation, IntrospectionContext context) {
         String scopeName = annotation.value();
         if (!COMPOSITE.getScope().equals(scopeName)
-                && !CONVERSATION.getScope().equals(scopeName)
                 && !STATELESS.getScope().equals(scopeName)
                 && !DOMAIN.getScope().equals(scopeName)) {
             InvalidScope failure = new InvalidScope(type, scopeName);

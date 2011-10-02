@@ -49,8 +49,6 @@ import javax.jws.WebMethod;
 
 import junit.framework.TestCase;
 import org.oasisopen.sca.annotation.Callback;
-import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.EndsConversation;
 
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.model.type.contract.DataType;
@@ -165,46 +163,6 @@ public class JavaContractProcessorImplTestCase extends TestCase {
         assertEquals("back", back.getName());
     }
 
-    public void testConversationalInformationIntrospection() throws Exception {
-        IntrospectionContext context = new DefaultIntrospectionContext();
-        TypeMapping mapping = new TypeMapping();
-        context.addTypeMapping(Foo.class, mapping);
-
-        ServiceContract contract = impl.introspect(Foo.class, context);
-        assertTrue(contract.isConversational());
-        boolean testedContinue = false;
-        boolean testedEnd = false;
-        for (Operation operation : contract.getOperations()) {
-            if (operation.getName().equals("operation")) {
-                assertEquals(Operation.CONVERSATION_CONTINUE, operation.getConversationSequence());
-                testedContinue = true;
-            } else if (operation.getName().equals("endOperation")) {
-                assertEquals(Operation.CONVERSATION_END, operation.getConversationSequence());
-                testedEnd = true;
-            }
-        }
-        assertTrue(testedContinue);
-        assertTrue(testedEnd);
-    }
-
-    public void testNonConversationalInformationIntrospection() throws Exception {
-        IntrospectionContext context = new DefaultIntrospectionContext();
-        TypeMapping mapping = new TypeMapping();
-        context.addTypeMapping(NonConversationalFoo.class, mapping);
-
-        ServiceContract contract = impl.introspect(NonConversationalFoo.class, context);
-        assertFalse(contract.isConversational());
-        boolean tested = false;
-        for (Operation operation : contract.getOperations()) {
-            if (operation.getName().equals("operation")) {
-                int seq = operation.getConversationSequence();
-                assertEquals(Operation.NO_CONVERSATION, seq);
-                tested = true;
-            }
-        }
-        assertTrue(tested);
-    }
-
     public void testMappedWsdlName() throws Exception {
         IntrospectionContext context = new DefaultIntrospectionContext();
         TypeMapping mapping = new TypeMapping();
@@ -215,16 +173,6 @@ public class JavaContractProcessorImplTestCase extends TestCase {
         assertEquals(1, contract.getOperations().size());
         assertEquals("operation", contract.getOperations().get(0).getWsdlName());
     }
-
-    public void testInvalidConversationalAttribute() throws Exception {
-        IntrospectionContext context = new DefaultIntrospectionContext();
-        TypeMapping mapping = new TypeMapping();
-        context.addTypeMapping(BadConversation.class, mapping);
-
-        impl.introspect(BadConversation.class, context);
-        assertTrue(context.getErrors().get(0) instanceof InvalidConversationalOperation);
-    }
-
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -265,25 +213,6 @@ public class JavaContractProcessorImplTestCase extends TestCase {
 
     private static interface CallbackInterface {
         int back() throws IllegalArgumentException;
-    }
-
-    private interface NonConversationalFoo {
-        void operation();
-    }
-
-    @Conversational
-    private interface Foo {
-        void operation();
-
-        @EndsConversation
-        void endOperation();
-    }
-
-    private static interface BadConversation {
-        void operation();
-
-        @EndsConversation
-        void endOperation();
     }
 
     private interface FooWsdl {

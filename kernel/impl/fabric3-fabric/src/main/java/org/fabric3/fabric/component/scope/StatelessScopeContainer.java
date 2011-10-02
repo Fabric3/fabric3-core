@@ -51,7 +51,6 @@ import org.oasisopen.sca.annotation.Service;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.ExpirationPolicy;
 import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitializationException;
@@ -100,18 +99,6 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
     }
 
     public void startContext(WorkContext workContext) throws GroupInitializationException {
-        // do nothing
-    }
-
-    public void startContext(WorkContext workContext, ExpirationPolicy policy) throws GroupInitializationException {
-        // do nothing
-    }
-
-    public void joinContext(WorkContext workContext) throws GroupInitializationException {
-        // do nothing
-    }
-
-    public void joinContext(WorkContext workContext, ExpirationPolicy policy) throws GroupInitializationException {
         // do nothing
     }
 

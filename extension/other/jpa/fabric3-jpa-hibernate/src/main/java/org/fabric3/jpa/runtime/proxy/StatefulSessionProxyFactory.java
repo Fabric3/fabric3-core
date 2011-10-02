@@ -51,16 +51,14 @@ public class StatefulSessionProxyFactory implements ObjectFactory<StatefulSessio
     private String unitName;
     private EntityManagerService service;
     private TransactionManager tm;
-    private boolean extended;
 
-    public StatefulSessionProxyFactory(String unitName, boolean extended, EntityManagerService service, TransactionManager tm) {
+    public StatefulSessionProxyFactory(String unitName, EntityManagerService service, TransactionManager tm) {
         this.service = service;
         this.tm = tm;
-        this.extended = extended;
         this.unitName = unitName;
     }
 
     public StatefulSessionProxy getInstance() throws ObjectCreationException {
-        return new StatefulSessionProxy(unitName, extended, service, tm);
+        return new StatefulSessionProxy(unitName, service, tm);
     }
 }

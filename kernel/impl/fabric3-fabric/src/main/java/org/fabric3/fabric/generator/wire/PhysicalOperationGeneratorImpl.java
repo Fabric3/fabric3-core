@@ -196,7 +196,6 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         Operation o = source.getDefinition();
         PhysicalOperationDefinition operation = new PhysicalOperationDefinition();
         operation.setName(o.getName());
-        operation.setEndsConversation(o.getConversationSequence() == Operation.CONVERSATION_END);
         if (o.getIntents().contains(OASIS_ONEWAY)) {
             operation.setOneWay(true);
         }
@@ -248,7 +247,6 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
             operation.setAllowsPassByReference(false);
         }
 
-        operation.setEndsConversation(o.getConversationSequence() == Operation.CONVERSATION_END);
         if (o.getIntents().contains(OASIS_ONEWAY)) {
             operation.setOneWay(true);
         }

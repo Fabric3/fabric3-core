@@ -52,7 +52,6 @@ import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.Wire;
@@ -91,9 +90,8 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringSource
         Class<?> interfaze;
         try {
             interfaze = loader.loadClass(source.getInterface());
-            InteractionType interactionType = source.getInteractionType();
             // note callbacks not supported for spring beans
-            ObjectFactory<?> factory = proxyService.createObjectFactory(interfaze, interactionType, wire, null);
+            ObjectFactory<?> factory = proxyService.createObjectFactory(interfaze, wire, null);
             component.attach(referenceName, interfaze, factory);
             for (WireListener listener : listeners) {
                 listener.onAttach(wire);

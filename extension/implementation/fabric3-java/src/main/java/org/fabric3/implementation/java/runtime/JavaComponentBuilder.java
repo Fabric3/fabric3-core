@@ -57,7 +57,7 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
 
 /**
- * Builds a JavaComponent from a physical definition.
+ * Builds a Java component from a physical definition.
  *
  * @version $Rev$ $Date$
  */
@@ -92,11 +92,9 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
 
         createPropertyFactories(definition, provider);
 
-        long idleTime = definition.getMaxIdleTime();
-        long age = definition.getMaxAge();
         boolean eager = definition.isEagerInit();
 
-        JavaComponent component = new JavaComponent(uri, provider, scopeContainer, deployable, eager, idleTime, age);
+        JavaComponent component = new JavaComponent(uri, provider, scopeContainer, deployable, eager);
         buildContexts(component, provider);
         export(definition, classLoader, component);
         return component;

@@ -97,7 +97,7 @@ public class SystemComponentBuilder extends PojoComponentBuilder<SystemComponent
         createPropertyFactories(definition, provider);
 
         boolean eager = definition.isEagerInit();
-        SystemComponent component = new SystemComponent(uri, provider, scopeContainer, deployable, eager, -1, -1);
+        SystemComponent component = new SystemComponent(uri, provider, scopeContainer, deployable, eager);
         export(definition, classLoader, component);
         return component;
     }

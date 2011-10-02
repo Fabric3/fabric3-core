@@ -40,7 +40,6 @@ package org.fabric3.implementation.proxy.jdk;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.wire.InvocationChain;
@@ -54,29 +53,15 @@ import org.fabric3.spi.wire.InvocationChain;
  */
 public class StatefulCallbackInvocationHandler<T> extends AbstractCallbackInvocationHandler<T> {
     private Map<Method, InvocationChain> chains;
-    private ScopeContainer scopeContainer;
-
-    /**
-     * Constructor.
-     *
-     * @param interfaze the callback service interface implemented by the proxy
-     * @param chains    the invocation chain mappings for the callback wire
-     */
-    public StatefulCallbackInvocationHandler(Class<T> interfaze, Map<Method, InvocationChain> chains) {
-        super(interfaze);
-        this.chains = chains;
-    }
 
     /**
      * Constructor.
      *
      * @param interfaze      the callback service interface implemented by the proxy
-     * @param scopeContainer the conversational scope container
      * @param chains         the invocation chain mappings for the callback wire
      */
-    public StatefulCallbackInvocationHandler(Class<T> interfaze, ScopeContainer scopeContainer, Map<Method, InvocationChain> chains) {
+    public StatefulCallbackInvocationHandler(Class<T> interfaze, Map<Method, InvocationChain> chains) {
         super(interfaze);
-        this.scopeContainer = scopeContainer;
         this.chains = chains;
     }
 
@@ -87,13 +72,7 @@ public class StatefulCallbackInvocationHandler<T> extends AbstractCallbackInvoca
         if (chain == null) {
             return handleProxyMethod(method);
         }
-        try {
-            return super.invoke(chain, args, workContext);
-        } finally {
-            if (chain.getPhysicalOperation().isEndsConversation()) {
-                scopeContainer.stopContext(workContext);
-            }
-        }
+        return super.invoke(chain, args, workContext);
     }
 
 }

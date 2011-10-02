@@ -46,17 +46,15 @@ import java.io.Serializable;
  * @version $Rev$ $Date$
  */
 public class CallFrame implements Serializable {
+    private static final long serialVersionUID = -6108279393891496098L;
+
     /**
      * A frame for stateless, unidirectional invocations which can be used to avoid new object allocation
      */
     public static final CallFrame STATELESS_FRAME = new CallFrame();
 
-    private static final long serialVersionUID = -6108279393891496098L;
-
     private String callbackUri;
     private Serializable correlationId;
-    private ConversationContext conversationContext;
-    private F3Conversation conversation;
 
     /**
      * Default constructor. Creates a CallFrame for an invocation on a stateless, unidirectional service.
@@ -70,23 +68,19 @@ public class CallFrame implements Serializable {
      * @param correlationId the correlation id
      */
     public CallFrame(Serializable correlationId) {
-        this(null, correlationId, null, null);
+        this(null, correlationId);
     }
 
     /**
-     * Constructor. Creates a CallFrame for an invocation to a stateful bidirectional service.
+     * Constructor. Creates a CallFrame for an invocation to a bidirectional service.
      *
-     * @param callbackUri         the URI the caller of the current service can be called back on
-     * @param correlationId       the key used to correlate the forward invocation with the target component implementation instance. For stateless
-     *                            targets, the id may be null.
-     * @param conversation        the conversation associated with the invocation or null
-     * @param conversationContext the type of conversational context
+     * @param callbackUri   the URI the caller of the current service can be called back on
+     * @param correlationId the key used to correlate the forward invocation with the target component implementation instance. For stateless targets,
+     *                      the id may be null.
      */
-    public CallFrame(String callbackUri, Serializable correlationId, F3Conversation conversation, ConversationContext conversationContext) {
+    public CallFrame(String callbackUri, Serializable correlationId) {
         this.callbackUri = callbackUri;
         this.correlationId = correlationId;
-        this.conversation = conversation;
-        this.conversationContext = conversationContext;
     }
 
     /**
@@ -109,42 +103,17 @@ public class CallFrame implements Serializable {
     }
 
     /**
-     * Returns the conversation associated with this CallFrame or null if the invocation is non-conversational.
-     *
-     * @return the conversation associated with this CallFrame or null if the invocation is non-conversational
-     */
-    public F3Conversation getConversation() {
-        return conversation;
-    }
-
-    public ConversationContext getConversationContext() {
-        return conversationContext;
-    }
-
-    /**
      * Performs a deep copy of the CallFrame.
      *
      * @return the copied frame
      */
     public CallFrame copy() {
         // data is immutable, return a shallow copy
-        return new CallFrame(callbackUri, correlationId, conversation, conversationContext);
+        return new CallFrame(callbackUri, correlationId);
     }
 
     public String toString() {
-        StringBuilder s =
-                new StringBuilder().append("CallFrame [Callback URI: ").append(callbackUri).append(" Correlation ID: ").append(correlationId);
-        if (conversation != null) {
-            s.append(" Conversation ID:").append(conversation.getConversationID());
-            switch (conversationContext) {
-            case PROPAGATE:
-                s.append(" Propagate conversation");
-                break;
-            case NEW:
-                s.append(" New conversation");
-                break;
-            }
-        }
-        return s.append("]").toString();
+        return new StringBuilder().append("CallFrame [Callback URI: ").append(callbackUri).append(" Correlation ID: ").append(correlationId).append(
+                "]").toString();
     }
 }

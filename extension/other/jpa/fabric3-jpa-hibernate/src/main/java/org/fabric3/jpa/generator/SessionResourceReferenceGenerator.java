@@ -37,8 +37,6 @@
 */
 package org.fabric3.jpa.generator;
 
-import javax.persistence.PersistenceContextType;
-
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -71,9 +69,7 @@ public class SessionResourceReferenceGenerator implements ResourceReferenceGener
         }
 
         boolean multiThreaded = resource.isMultiThreaded();
-        boolean extended = PersistenceContextType.EXTENDED == resource.getType();
         definition.setOptimizable(true);
-        definition.setExtended(extended);
         definition.setMultiThreaded(multiThreaded);
         return definition;
     }

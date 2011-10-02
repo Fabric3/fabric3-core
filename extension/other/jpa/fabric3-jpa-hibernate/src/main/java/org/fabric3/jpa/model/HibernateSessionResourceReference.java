@@ -37,8 +37,6 @@
 */
 package org.fabric3.jpa.model;
 
-import javax.persistence.PersistenceContextType;
-
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 
@@ -50,7 +48,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 public final class HibernateSessionResourceReference extends ResourceReferenceDefinition {
     private static final long serialVersionUID = 4343784880360787751L;
     private String unitName;
-    private PersistenceContextType type;
     private boolean multiThreaded;
 
     /**
@@ -58,18 +55,12 @@ public final class HibernateSessionResourceReference extends ResourceReferenceDe
      *
      * @param name            Name of the resource.
      * @param unitName        Persistence unit name.
-     * @param type            the PersistenceContextType
      * @param serviceContract the service contract for the persistence unit
      * @param multiThreaded   true if the resource is accessed from a multi-threaded implementation
      */
-    public HibernateSessionResourceReference(String name,
-                                      String unitName,
-                                      PersistenceContextType type,
-                                      ServiceContract serviceContract,
-                                      boolean multiThreaded) {
+    public HibernateSessionResourceReference(String name, String unitName, ServiceContract serviceContract, boolean multiThreaded) {
         super(name, serviceContract, true);
         this.unitName = unitName;
-        this.type = type;
         this.multiThreaded = multiThreaded;
     }
 
@@ -80,15 +71,6 @@ public final class HibernateSessionResourceReference extends ResourceReferenceDe
      */
     public final String getUnitName() {
         return this.unitName;
-    }
-
-    /**
-     * Returns the persistence context type.
-     *
-     * @return the persistence context type
-     */
-    public PersistenceContextType getType() {
-        return type;
     }
 
     /**

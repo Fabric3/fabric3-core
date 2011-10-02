@@ -54,11 +54,9 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
-import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.wire.Wire;
 
@@ -77,7 +75,6 @@ public class DroolsSourceWireAttacher implements SourceWireAttacher<DroolsSource
     public DroolsSourceWireAttacher(@Reference ComponentManager manager,
                                     @Reference WireProxyService proxyService,
                                     @Reference ClassLoaderRegistry classLoaderRegistry,
-                                    @Reference TransformerRegistry transformerRegistry,
                                     @Reference ScopeRegistry scopeRegistry) {
         this.manager = manager;
         this.proxyService = proxyService;
@@ -106,7 +103,7 @@ public class DroolsSourceWireAttacher implements SourceWireAttacher<DroolsSource
         if (InjectableType.CALLBACK.equals(sourceDefinition.getInjectableType())) {
             processCallback(wire, targetDefinition, source, identifier, type);
         } else {
-            processReference(wire, sourceDefinition, targetDefinition, source, identifier, type);
+            processReference(wire, targetDefinition, source, identifier, type);
         }
     }
 
@@ -131,7 +128,6 @@ public class DroolsSourceWireAttacher implements SourceWireAttacher<DroolsSource
     }
 
     private void processReference(Wire wire,
-                                  DroolsSourceDefinition sourceDefinition,
                                   PhysicalTargetDefinition targetDefinition,
                                   DroolsComponent source,
                                   String identifier,
@@ -142,9 +138,8 @@ public class DroolsSourceWireAttacher implements SourceWireAttacher<DroolsSource
             callbackUri = uri.toString();
         }
 
-        InteractionType interactionType = sourceDefinition.getInteractionType();
         try {
-            ObjectFactory<?> factory = proxyService.createObjectFactory(type, interactionType, wire, callbackUri);
+            ObjectFactory<?> factory = proxyService.createObjectFactory(type, wire, callbackUri);
             source.setObjectFactory(identifier, factory);
         } catch (ProxyCreationException e) {
             throw new KeyInstantiationException(e);
