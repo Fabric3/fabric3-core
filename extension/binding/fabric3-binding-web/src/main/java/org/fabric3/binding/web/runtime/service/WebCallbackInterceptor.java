@@ -52,8 +52,8 @@ import org.fabric3.spi.wire.Interceptor;
  */
 @EagerInit
 public class WebCallbackInterceptor implements Interceptor {
-    private BroadcasterManager broadcasterManager;
     private static final Message EMPTY_MESSAGE = new MessageImpl();
+    private BroadcasterManager broadcasterManager;
 
     public WebCallbackInterceptor(BroadcasterManager broadcasterManager) {
         this.broadcasterManager = broadcasterManager;

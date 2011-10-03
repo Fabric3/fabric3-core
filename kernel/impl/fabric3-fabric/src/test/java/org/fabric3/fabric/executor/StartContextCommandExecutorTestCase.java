@@ -65,9 +65,9 @@ public class StartContextCommandExecutorTestCase extends TestCase {
         executorRegistry.register(EasyMock.eq(StartContextCommand.class), EasyMock.isA(StartContextCommandExecutor.class));
 
         ScopeContainer compositeContainer = EasyMock.createMock(ScopeContainer.class);
-        compositeContainer.startContext(EasyMock.isA(WorkContext.class));
+        compositeContainer.startContext(EasyMock.isA(QName.class), EasyMock.isA(WorkContext.class));
         ScopeContainer domainContainer = EasyMock.createMock(ScopeContainer.class);
-        domainContainer.startContext(EasyMock.isA(WorkContext.class));        
+        domainContainer.startContext(EasyMock.isA(QName.class), EasyMock.isA(WorkContext.class));
         ScopeRegistry scopeRegistry = EasyMock.createMock(ScopeRegistry.class);
         EasyMock.expect(scopeRegistry.getScopeContainer(Scope.COMPOSITE)).andReturn(compositeContainer);
         EasyMock.expect(scopeRegistry.getScopeContainer(Scope.DOMAIN)).andReturn(domainContainer);

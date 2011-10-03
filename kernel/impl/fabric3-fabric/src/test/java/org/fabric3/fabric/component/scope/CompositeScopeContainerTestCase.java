@@ -79,7 +79,7 @@ public class CompositeScopeContainerTestCase extends TestCase {
         EasyMock.expect(component.getDeployable()).andStubReturn(deployable);
         control.replay();
         scopeContainer.register(component);
-        scopeContainer.startContext(workContext);
+        scopeContainer.startContext(deployable, workContext);
         assertSame(wrapper, scopeContainer.getWrapper(component, workContext));
         assertSame(wrapper, scopeContainer.getWrapper(component, workContext));
         control.verify();
@@ -95,8 +95,8 @@ public class CompositeScopeContainerTestCase extends TestCase {
         EasyMock.expect(component.getDeployable()).andStubReturn(deployable);
         control.replay();
         scopeContainer.register(component);
-        scopeContainer.startContext(workContext);
-        scopeContainer.stopContext(workContext);
+        scopeContainer.startContext(deployable, workContext);
+        scopeContainer.stopContext(deployable, workContext);
         control.verify();
     }
 
@@ -105,7 +105,6 @@ public class CompositeScopeContainerTestCase extends TestCase {
         deployable = new QName("deployable");
         control = EasyMock.createStrictControl();
         workContext = new WorkContext();
-        workContext.addCallFrame(new CallFrame(deployable));
         component = control.createMock(AtomicComponent.class);
         wrapper = control.createMock(InstanceWrapper.class);
         scopeContainer = new CompositeScopeContainer(EasyMock.createNiceMock(ScopeContainerMonitor.class));

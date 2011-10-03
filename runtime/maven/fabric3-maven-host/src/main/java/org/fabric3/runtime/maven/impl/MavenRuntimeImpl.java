@@ -95,10 +95,8 @@ public class MavenRuntimeImpl extends AbstractRuntime implements MavenRuntime {
 
     public void startContext(QName deployable) throws ContextStartException {
         WorkContext workContext = new WorkContext();
-        CallFrame frame = new CallFrame(deployable);
-        workContext.addCallFrame(frame);
         try {
-            getScopeContainer().startContext(workContext);
+            getScopeContainer().startContext(deployable, workContext);
         } catch (ComponentException e) {
             throw new ContextStartException(e);
         }

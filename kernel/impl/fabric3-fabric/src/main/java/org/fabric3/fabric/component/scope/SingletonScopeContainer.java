@@ -127,8 +127,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         }
     }
 
-    public void startContext(WorkContext workContext) throws GroupInitializationException {
-        QName deployable = workContext.peekCallFrame().getCorrelationId(QName.class);
+    public void startContext(QName deployable, WorkContext workContext) throws GroupInitializationException {
         eagerInitialize(workContext, deployable);
         // Destroy queues must be updated *after* components have been eagerly initialized since the latter may have dependencies from other
         // contexts. These other contexts need to be put into the destroy queue ahead of the current initializing context so the dependencies
@@ -140,8 +139,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         }
     }
 
-    public void stopContext(WorkContext workContext) {
-        QName deployable = workContext.peekCallFrame().getCorrelationId(QName.class);
+    public void stopContext(QName deployable, WorkContext workContext) {
         synchronized (destroyQueues) {
             List<InstanceWrapper> list = destroyQueues.get(deployable);
             if (list == null) {

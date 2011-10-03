@@ -43,6 +43,8 @@
  */
 package org.fabric3.fabric.component.scope;
 
+import javax.xml.namespace.QName;
+
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -98,11 +100,11 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         wrapper.stop(workContext);
     }
 
-    public void startContext(WorkContext workContext) throws GroupInitializationException {
+    public void startContext(QName deployable, WorkContext workContext) throws GroupInitializationException {
         // do nothing
     }
 
-    public void stopContext(WorkContext workContext) {
+    public void stopContext(QName deployable, WorkContext workContext) {
     }
 
     public void updated(AtomicComponent component, String referenceName) {

@@ -43,7 +43,7 @@
  */
 package org.fabric3.spi.component;
 
-import java.util.List;
+import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.invocation.WorkContext;
@@ -80,18 +80,20 @@ public interface ScopeContainer {
     /**
      * Start a new, non-expiring context. The context will remain active until explicitly stopped.
      *
+     * @param deployable  the deployable to start the context for
      * @param workContext the current WorkContext
      * @throws ComponentException if an exception starting the context was encountered
      */
-    void startContext(WorkContext workContext) throws ComponentException;
+    void startContext(QName deployable, WorkContext workContext) throws ComponentException;
 
     /**
      * Stop the context associated with the current work context.
      *
+     * @param deployable  the deployable to start the context for
      * @param workContext the current WorkContext
      * @throws ComponentException if there is an error stopping the context
      */
-    void stopContext(WorkContext workContext) throws ComponentException;
+    void stopContext(QName deployable, WorkContext workContext) throws ComponentException;
 
     /**
      * Returns an instance wrapper associated with the current scope context, creating one if necessary

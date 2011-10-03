@@ -84,13 +84,11 @@ public class StopContextCommandExecutor implements CommandExecutor<StopContextCo
     public void execute(StopContextCommand command) throws ExecutionException {
         QName deployable = command.getDeployable();
         WorkContext workContext = new WorkContext();
-        CallFrame frame = new CallFrame(deployable);
-        workContext.addCallFrame(frame);
         try {
-            compositeScopeContainer.stopContext(workContext);
+            compositeScopeContainer.stopContext(deployable, workContext);
             if (domainScopeContainer != null) {
                 // domain scope not available during bootstrap
-                domainScopeContainer.stopContext(workContext);
+                domainScopeContainer.stopContext(deployable, workContext);
             }
             if (monitor != null && command.isLog()) {
                 monitor.undeployed(deployable);

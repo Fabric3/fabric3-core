@@ -57,18 +57,9 @@ public class CallFrame implements Serializable {
     private Serializable correlationId;
 
     /**
-     * Default constructor. Creates a CallFrame for an invocation on a stateless, unidirectional service.
+     * Default constructor.
      */
     public CallFrame() {
-    }
-
-    /**
-     * Creates a CallFrame for an invocation to a stateful unidirectional service
-     *
-     * @param correlationId the correlation id
-     */
-    public CallFrame(Serializable correlationId) {
-        this(null, correlationId);
     }
 
     /**

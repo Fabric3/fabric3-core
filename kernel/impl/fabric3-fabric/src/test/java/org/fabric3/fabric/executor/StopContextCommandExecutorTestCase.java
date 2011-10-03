@@ -65,9 +65,9 @@ public class StopContextCommandExecutorTestCase extends TestCase {
         executorRegistry.register(EasyMock.eq(StopContextCommand.class), EasyMock.isA(StopContextCommandExecutor.class));
 
         ScopeContainer compositeContainer = EasyMock.createMock(ScopeContainer.class);
-        compositeContainer.stopContext(EasyMock.isA(WorkContext.class));
+        compositeContainer.stopContext(EasyMock.isA(QName.class), EasyMock.isA(WorkContext.class));
         ScopeContainer domainContainer = EasyMock.createMock(ScopeContainer.class);
-        domainContainer.stopContext(EasyMock.isA(WorkContext.class));
+        domainContainer.stopContext(EasyMock.isA(QName.class), EasyMock.isA(WorkContext.class));
         ScopeRegistry scopeRegistry = EasyMock.createMock(ScopeRegistry.class);
         EasyMock.expect(scopeRegistry.getScopeContainer(Scope.COMPOSITE)).andReturn(compositeContainer);
         EasyMock.expect(scopeRegistry.getScopeContainer(Scope.DOMAIN)).andReturn(domainContainer);

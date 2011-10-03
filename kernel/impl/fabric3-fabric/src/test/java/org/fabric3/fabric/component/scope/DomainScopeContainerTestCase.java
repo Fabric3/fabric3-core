@@ -65,6 +65,7 @@ public class DomainScopeContainerTestCase extends TestCase {
     private AtomicComponent component;
     private InstanceWrapper wrapper;
     private WorkContext workContext;
+    private QName deployable;
     private HostInfo info;
 
     public void testSingleVMStart() throws Exception {
@@ -79,8 +80,8 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, wrapper, info);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(workContext);
-        scopeContainer.stopContext(workContext);
+        scopeContainer.startContext(deployable, workContext);
+        scopeContainer.stopContext(deployable, workContext);
         EasyMock.verify(component, wrapper, info);
     }
 
@@ -97,12 +98,12 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.expect(wrapper.isStarted()).andReturn(false);
         wrapper.start(EasyMock.isA(WorkContext.class));
         wrapper.stop(EasyMock.isA(WorkContext.class));
-        
+
         EasyMock.replay(component, wrapper, info, topologyService);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(workContext);
-        scopeContainer.stopContext(workContext);
+        scopeContainer.startContext(deployable, workContext);
+        scopeContainer.stopContext(deployable, workContext);
         EasyMock.verify(component, wrapper, info, topologyService);
     }
 
@@ -118,8 +119,8 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, wrapper, info, topologyService);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(workContext);
-        scopeContainer.stopContext(workContext);
+        scopeContainer.startContext(deployable, workContext);
+        scopeContainer.stopContext(deployable, workContext);
         EasyMock.verify(component, wrapper, info, topologyService);
     }
 
@@ -141,11 +142,11 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, wrapper, info, topologyService);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(workContext);
+        scopeContainer.startContext(deployable, workContext);
 
         scopeContainer.onLeaderElected("runtime");
 
-        scopeContainer.stopContext(workContext);
+        scopeContainer.stopContext(deployable, workContext);
         EasyMock.verify(component, wrapper, info, topologyService);
     }
 
@@ -161,12 +162,12 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, wrapper, info, topologyService);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(workContext);
+        scopeContainer.startContext(deployable, workContext);
         scopeContainer.stop();
 
         scopeContainer.start();
-        scopeContainer.startContext(workContext);
-        
+        scopeContainer.startContext(deployable, workContext);
+
         EasyMock.verify(component, wrapper, info, topologyService);
     }
 
@@ -182,13 +183,13 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.expect(wrapper.isStarted()).andReturn(false);
         wrapper.start(EasyMock.isA(WorkContext.class));
         wrapper.stop(EasyMock.isA(WorkContext.class));
-        
+
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
 
         EasyMock.replay(component, wrapper, info, topologyService);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(workContext);
+        scopeContainer.startContext(deployable, workContext);
         scopeContainer.stopAllContexts(workContext);
 
         EasyMock.verify(component, wrapper, info, topologyService);
@@ -212,8 +213,8 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, wrapper, info, topologyService);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(workContext);
-        scopeContainer.stopContext(workContext);
+        scopeContainer.startContext(deployable, workContext);
+        scopeContainer.stopContext(deployable, workContext);
 
         EasyMock.verify(component, wrapper, info, topologyService);
     }
@@ -222,8 +223,7 @@ public class DomainScopeContainerTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         workContext = new WorkContext();
-        QName deployable = new QName("deployable");
-        workContext.addCallFrame(new CallFrame(deployable));
+        deployable = new QName("deployable");
 
         info = EasyMock.createMock(HostInfo.class);
         component = EasyMock.createMock(AtomicComponent.class);

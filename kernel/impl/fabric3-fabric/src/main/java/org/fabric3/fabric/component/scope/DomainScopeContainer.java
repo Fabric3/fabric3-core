@@ -64,7 +64,6 @@ import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.federation.TopologyListener;
 import org.fabric3.spi.federation.ZoneTopologyService;
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
@@ -110,27 +109,25 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         super.stop();
     }
 
-    public void startContext(WorkContext workContext) throws GroupInitializationException {
-        QName contextId = workContext.peekCallFrame().getCorrelationId(QName.class);
+    public void startContext(QName deployable, WorkContext workContext) throws GroupInitializationException {
         if (RuntimeMode.PARTICIPANT == info.getRuntimeMode() && topologyService == null) {
             return;
         } else if (RuntimeMode.PARTICIPANT == info.getRuntimeMode() && !topologyService.isZoneLeader()) {
             // defer instantiation until this node becomes zone leader
             synchronized (deferredContexts) {
-                deferredContexts.add(contextId);
+                deferredContexts.add(deployable);
             }
             return;
         }
         activated = true;
-        super.startContext(workContext);
+        super.startContext(deployable, workContext);
     }
 
-    public void stopContext(WorkContext workContext) {
-        QName contextId = workContext.peekCallFrame().getCorrelationId(QName.class);
+    public void stopContext(QName deployable, WorkContext workContext) {
         synchronized (deferredContexts) {
-            deferredContexts.remove(contextId);
+            deferredContexts.remove(deployable);
         }
-        super.stopContext(workContext);
+        super.stopContext(deployable, workContext);
     }
 
     @Override
@@ -157,12 +154,10 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         activated = true;
         // this runtime was elected leader, start the components
         synchronized (deferredContexts) {
-            for (QName contextId : deferredContexts) {
+            for (QName deployable : deferredContexts) {
                 WorkContext workContext = new WorkContext();
-                CallFrame frame = new CallFrame(contextId);
-                workContext.addCallFrame(frame);
                 try {
-                    super.startContext(workContext);
+                    super.startContext(deployable, workContext);
                 } catch (GroupInitializationException e) {
                     monitor.leaderElectionError(e);
                 }

@@ -49,7 +49,6 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 
-import org.fabric3.host.RuntimeMode;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceWrapper;
@@ -62,6 +61,7 @@ import org.fabric3.spi.invocation.WorkContext;
 public class SingletonScopeContainerTestCase extends TestCase {
     private AtomicComponent component;
     private WorkContext workContext;
+    private QName deployable;
     private SingletonScopeContainer container;
     private InstanceWrapper wrapper;
 
@@ -71,8 +71,8 @@ public class SingletonScopeContainerTestCase extends TestCase {
         container.unregister(component);
 
         // verify the component is removed and not started
-        container.startContext(workContext);
-        container.stopContext(workContext);
+        container.startContext(deployable, workContext);
+        container.stopContext(deployable, workContext);
 
         EasyMock.verify(component);
     }
@@ -88,10 +88,10 @@ public class SingletonScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, wrapper);
 
         container.register(component);
-        container.startContext(workContext);
+        container.startContext(deployable, workContext);
         container.updated(component, "reference");
-        container.stopContext(workContext);
-        
+        container.stopContext(deployable, workContext);
+
         EasyMock.verify(component, wrapper);
     }
 
@@ -106,9 +106,9 @@ public class SingletonScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, wrapper);
 
         container.register(component);
-        container.startContext(workContext);
+        container.startContext(deployable, workContext);
         container.removed(component, "reference");
-        container.stopContext(workContext);
+        container.stopContext(deployable, workContext);
 
         EasyMock.verify(component, wrapper);
     }
@@ -124,9 +124,9 @@ public class SingletonScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, wrapper);
 
         container.register(component);
-        container.startContext(workContext);
+        container.startContext(deployable, workContext);
         container.reinject();
-        container.stopContext(workContext);
+        container.stopContext(deployable, workContext);
 
         EasyMock.verify(component, wrapper);
     }
@@ -141,8 +141,7 @@ public class SingletonScopeContainerTestCase extends TestCase {
         };
 
         workContext = new WorkContext();
-        QName deployable = new QName("deployable");
-        workContext.addCallFrame(new CallFrame(deployable));
+        deployable = new QName("deployable");
 
         component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getDeployable()).andReturn(deployable).atLeastOnce();

@@ -97,13 +97,11 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
     public void execute(StartContextCommand command) throws ExecutionException {
         QName deployable = command.getDeployable();
         WorkContext workContext = new WorkContext();
-        CallFrame frame = new CallFrame(deployable);
-        workContext.addCallFrame(frame);
         try {
-            compositeScopeContainer.startContext(workContext);
+            compositeScopeContainer.startContext(deployable, workContext);
             if (domainScopeContainer != null) {
                 // domain scope not available during bootstrap
-                domainScopeContainer.startContext(workContext);
+                domainScopeContainer.startContext(deployable, workContext);
             }
             if (monitor != null && command.isLog()) {
                 monitor.deployed(deployable);
