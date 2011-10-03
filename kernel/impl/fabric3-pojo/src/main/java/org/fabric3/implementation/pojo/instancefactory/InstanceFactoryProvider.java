@@ -75,19 +75,19 @@ public interface InstanceFactoryProvider {
     /**
      * Sets an object factory for an injection site.
      *
-     * @param name          the injection site name
+     * @param injectable          the injection site name
      * @param objectFactory the object factory
      */
-    void setObjectFactory(Injectable name, ObjectFactory<?> objectFactory);
+    void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory);
 
     /**
      * Sets an object factory for an injection site that is associated with a key.
      *
-     * @param name          the injection site
+     * @param injectable          the injection site
      * @param objectFactory the object factory
      * @param key           the key for Map-based injection sites
      */
-    void setObjectFactory(Injectable name, ObjectFactory<?> objectFactory, Object key);
+    void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, Object key);
 
     /**
      * Returns a previously added object factory for the injection site.
@@ -100,25 +100,25 @@ public interface InstanceFactoryProvider {
     /**
      * Removes an object factory for an injection site.
      *
-     * @param name the injection site name
+     * @param injectable the injection site name
      */
-    void removeObjectFactory(Injectable name);
+    void removeObjectFactory(Injectable injectable);
 
     /**
      * Returns the type for the injection site
      *
-     * @param attribute the injection site
+     * @param injectable the injection site
      * @return the required type
      */
-    Class<?> getMemberType(Injectable attribute);
+    Class<?> getMemberType(Injectable injectable);
 
     /**
      * Returns the generic type for the injection site
      *
-     * @param attribute the injection site
+     * @param injectable the injection site
      * @return the required type
      */
-    Type getGenericType(Injectable attribute);
+    Type getGenericType(Injectable injectable);
 
     /**
      * Create an instance factory that can be used to create component instances.

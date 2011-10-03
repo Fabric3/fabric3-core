@@ -153,8 +153,8 @@ public class ReflectiveInstanceFactoryProvider implements InstanceFactoryProvide
         return factories.get(injectable);
     }
 
-    public void removeObjectFactory(Injectable attribute) {
-        factories.remove(attribute);
+    public void removeObjectFactory(Injectable injectable) {
+        factories.remove(injectable);
     }
 
     public Class<?> getMemberType(Injectable injectable) {
@@ -196,10 +196,10 @@ public class ReflectiveInstanceFactoryProvider implements InstanceFactoryProvide
         }
     }
 
-    public Type getGenericType(Injectable attribute) {
-        InjectionSite site = findInjectionSite(attribute);
+    public Type getGenericType(Injectable injectable) {
+        InjectionSite site = findInjectionSite(injectable);
         if (site == null) {
-            throw new AssertionError("No injection site for " + attribute + " in " + implementationClass);
+            throw new AssertionError("No injection site for " + injectable + " in " + implementationClass);
         }
         if (site instanceof FieldInjectionSite) {
             try {
