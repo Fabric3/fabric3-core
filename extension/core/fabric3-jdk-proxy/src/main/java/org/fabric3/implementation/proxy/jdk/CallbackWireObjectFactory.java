@@ -90,9 +90,7 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
         } else {
             CallFrame frame = WorkContextTunnel.getThreadWorkContext().peekCallFrame();
             String callbackUri = frame.getCallbackUri();
-            assert callbackUri != null;
             Map<Method, InvocationChain> mapping = mappings.get(callbackUri);
-            assert mapping != null;
             return interfaze.cast(proxyService.createStatefullCallbackProxy(interfaze, mapping));
         }
     }

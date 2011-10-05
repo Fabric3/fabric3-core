@@ -68,9 +68,9 @@ import org.fabric3.spi.wire.InvocationChain;
  */
 public final class JDKInvocationHandler<B> implements InvocationHandler, ServiceReference<B> {
     private static final long serialVersionUID = -5841336280391145583L;
-    private final Class<B> businessInterface;
-    private final B proxy;
-    private final Map<Method, InvocationChain> chains;
+    private Class<B> interfaze;
+    private B proxy;
+    private Map<Method, InvocationChain> chains;
     private String callbackUri;
 
     /**
@@ -82,20 +82,20 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
      */
     public JDKInvocationHandler(Class<B> interfaze, String callbackUri, Map<Method, InvocationChain> mapping) {
         this.callbackUri = callbackUri;
-        assert mapping != null;
-        this.businessInterface = interfaze;
-        ClassLoader loader = interfaze.getClassLoader();
-        this.proxy = interfaze.cast(Proxy.newProxyInstance(loader, new Class[]{interfaze}, this));
+        this.interfaze = interfaze;
         this.chains = mapping;
     }
 
-
     public B getService() {
+        if (proxy == null) {
+            ClassLoader loader = interfaze.getClassLoader();
+            this.proxy = interfaze.cast(Proxy.newProxyInstance(loader, new Class[]{interfaze}, this));
+        }
         return proxy;
     }
 
     public Class<B> getBusinessInterface() {
-        return businessInterface;
+        return interfaze;
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

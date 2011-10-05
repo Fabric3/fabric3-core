@@ -64,6 +64,9 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
     // the cache of proxy interface method to operation mappings
     private Map<Method, InvocationChain> mappings;
 
+    // lazily created proxies
+    private T proxy;
+
     /**
      * Constructor.
      *
@@ -85,11 +88,15 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
 
 
     public T getInstance() throws ObjectCreationException {
-        try {
-            return interfaze.cast(proxyService.createProxy(interfaze, callbackUri, mappings));
-        } catch (ProxyCreationException e) {
-            throw new ObjectCreationException(e);
+        // as an optimization, only create one proxy since they are stateless
+        if (proxy == null) {
+            try {
+                proxy = interfaze.cast(proxyService.createProxy(interfaze, callbackUri, mappings));
+            } catch (ProxyCreationException e) {
+                throw new ObjectCreationException(e);
+            }
         }
+        return proxy;
     }
 }
 
