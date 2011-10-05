@@ -51,10 +51,8 @@ import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.WireProxyService;
-import org.fabric3.spi.component.AtomicComponent;
+import org.fabric3.spi.component.Component;
 import org.fabric3.spi.component.ComponentException;
-import org.fabric3.spi.component.InstanceWrapper;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -69,7 +67,7 @@ import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEX
  *
  * @version $Rev$ $Date$
  */
-public class WebComponent implements AtomicComponent {
+public class WebComponent implements Component {
 
     private final URI uri;
     private URI classLoaderId;
@@ -201,26 +199,6 @@ public class WebComponent implements AtomicComponent {
 
     public QName getDeployable() {
         return groupId;
-    }
-
-    public boolean isEagerInit() {
-        return false;
-    }
-
-    public long getMaxIdleTime() {
-        return 0;
-    }
-
-    public long getMaxAge() {
-        return 0;
-    }
-
-    public InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
-        throw new UnsupportedOperationException();
-    }
-
-    public ObjectFactory<Object> createObjectFactory() {
-        throw new UnsupportedOperationException();
     }
 
     public <B> B getProperty(Class<B> type, String propertyName) throws ObjectCreationException {

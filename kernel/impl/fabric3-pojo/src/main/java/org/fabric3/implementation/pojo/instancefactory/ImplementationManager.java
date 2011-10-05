@@ -43,25 +43,61 @@
  */
 package org.fabric3.implementation.pojo.instancefactory;
 
-import org.fabric3.spi.component.InstanceWrapper;
+import org.fabric3.spi.component.InstanceDestructionException;
+import org.fabric3.spi.component.InstanceInitException;
+import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
- * Interface for a factory that returns an injected component instance. This is used by a Component implementation to create new instances of
- * application implementation objects as determined by the component scope's lifecycle.
- * <p/>
- * The implementation of this interface may be supplied by the user, may be generated during deployment, or may be dynamic.
+ * Returns an injected component instance. This is used by a Component implementation to create new instances of application implementation objects as
+ * determined by the component scope's lifecycle.
  *
  * @version $Rev$ $Date$
  */
-public interface InstanceFactory {
+public interface ImplementationManager {
     /**
      * Creates a new instance of the component. All injected values must be set but any @Init methods must not have been invoked.
      *
      * @param workContext the work context in which to create the instance
-     * @return A wrapper for the created component instance.
+     * @return A new component instance
      * @throws ObjectCreationException if there was a problem creating the instance
      */
-    InstanceWrapper newInstance(WorkContext workContext) throws ObjectCreationException;
+    Object newInstance(WorkContext workContext) throws ObjectCreationException;
+
+    /**
+     * Starts the instance, calling an @Init method if one is configured.
+     *
+     * @param instance the instance
+     * @param context  the work context
+     * @throws InstanceInitException if there is an error when calling the initialization method
+     */
+    void start(Object instance, WorkContext context) throws InstanceInitException;
+
+    /**
+     * Stops the instance, calling an @Destroy method if one is configured.
+     *
+     * @param instance the instance
+     * @param context  the work context
+     * @throws InstanceDestructionException if there is an error when calling the initialization method
+     */
+    void stop(Object instance, WorkContext context) throws InstanceDestructionException;
+
+    /**
+     * Reinjects the instance with any updated references.
+     *
+     * @param instance the instance
+     * @throws InstanceLifecycleException if an error is raised during reinjection
+     */
+    void reinject(Object instance) throws InstanceLifecycleException;
+
+    /**
+     * Signal
+     * @param instance
+     * @param referenceName
+     */
+    void updated(Object instance, String referenceName);
+
+    void removed(Object instance, String referenceName);
+
 }

@@ -46,7 +46,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.implementation.java.runtime.JavaComponent;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
 import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ComponentException;
@@ -79,14 +79,14 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
                           TimerData data,
                           Class<?> implementationClass,
                           boolean transactional,
-                          InstanceFactoryProvider factoryProvider,
+                          ImplementationManagerFactory factory,
                           ScopeContainer scopeContainer,
                           TimerService timerService,
                           TransactionManager tm,
                           ZoneTopologyService topologyService,
                           HostInfo info,
                           InvokerMonitor monitor) {
-        super(componentId, factoryProvider, scopeContainer, deployable, false);
+        super(componentId, factory, scopeContainer, deployable, false);
         this.data = data;
         this.implementationClass = implementationClass;
         this.transactional = transactional;
@@ -96,7 +96,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
         this.scope = scopeContainer.getScope();
         this.tm = tm;
         this.info = info;
-        classLoader = factoryProvider.getImplementationClass().getClassLoader();
+        classLoader = factory.getImplementationClass().getClassLoader();
     }
 
     public void start() throws ComponentException {

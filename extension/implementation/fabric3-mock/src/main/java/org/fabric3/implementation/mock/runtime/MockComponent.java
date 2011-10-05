@@ -42,7 +42,8 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.InstanceWrapper;
+import org.fabric3.spi.component.InstanceException;
+import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
@@ -73,13 +74,20 @@ public class MockComponent implements AtomicComponent {
         this.classLoaderId = classLoaderId;
     }
 
-    @SuppressWarnings("unchecked")
     public ObjectFactory<Object> createObjectFactory() {
         return objectFactory;
     }
 
-    public InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
-        return null;
+    public Object getInstance(WorkContext workContext) throws InstanceLifecycleException {
+        try {
+            return objectFactory.getInstance();
+        } catch (ObjectCreationException e) {
+            throw new InstanceLifecycleException(e);
+        }
+    }
+
+    public void releaseInstance(Object instance, WorkContext workContext) {
+
     }
 
     public void start() {
@@ -100,18 +108,6 @@ public class MockComponent implements AtomicComponent {
 
     public QName getDeployable() {
         return null;
-    }
-
-    public long getMaxAge() {
-        return 0;
-    }
-
-    public long getMaxIdleTime() {
-        return 0;
-    }
-
-    public boolean isEagerInit() {
-        return false;
     }
 
     public String getName() {

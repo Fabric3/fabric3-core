@@ -43,7 +43,7 @@ import java.util.Set;
 
 import org.w3c.dom.Document;
 
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
+import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
@@ -59,12 +59,12 @@ import org.fabric3.spi.model.type.java.Signature;
  */
 public class GenerationHelperImpl implements GenerationHelper {
 
-    public void processInjectionSites(InjectingComponentType componentType, InstanceFactoryDefinition factoryDefinition) {
+    public void processInjectionSites(InjectingComponentType componentType, ImplementationManagerDefinition managerDefinition) {
 
         Map<InjectionSite, Injectable> mappings = componentType.getInjectionSites();
 
         // add injections for all the active constructor args
-        Map<InjectionSite, Injectable> construction = factoryDefinition.getConstruction();
+        Map<InjectionSite, Injectable> construction = managerDefinition.getConstruction();
         Signature constructor = componentType.getConstructor();
         Set<Injectable> byConstruction = new HashSet<Injectable>(constructor.getParameterTypes().size());
         for (int i = 0; i < constructor.getParameterTypes().size(); i++) {
@@ -75,8 +75,8 @@ public class GenerationHelperImpl implements GenerationHelper {
         }
 
         // add field/method injections
-        Map<InjectionSite, Injectable> postConstruction = factoryDefinition.getPostConstruction();
-        Map<InjectionSite, Injectable> reinjection = factoryDefinition.getReinjectables();
+        Map<InjectionSite, Injectable> postConstruction = managerDefinition.getPostConstruction();
+        Map<InjectionSite, Injectable> reinjection = managerDefinition.getReinjectables();
         for (Map.Entry<InjectionSite, Injectable> entry : mappings.entrySet()) {
             InjectionSite site = entry.getKey();
             if (site instanceof ConstructorInjectionSite) {

@@ -59,4 +59,7 @@ public class InstanceLifecycleException extends InstanceException {
         super(message, cause);
     }
 
+    public InstanceLifecycleException(Throwable cause) {
+        super(cause);
+    }
 }

@@ -45,7 +45,7 @@ import org.easymock.EasyMock;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
 import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.implementation.timer.provision.TimerType;
 import org.fabric3.model.type.component.Scope;
@@ -124,10 +124,10 @@ public class TimerComponentDomainScopeTestCase extends TestCase {
         HostInfo info = EasyMock.createMock(HostInfo.class);
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT);
 
-        InstanceFactoryProvider provider = EasyMock.createMock(InstanceFactoryProvider.class);
-        EasyMock.expect(provider.getImplementationClass()).andReturn((Class) TimerInstance.class);
+        ImplementationManagerFactory factory = EasyMock.createMock(ImplementationManagerFactory.class);
+        EasyMock.expect(factory.getImplementationClass()).andReturn((Class) TimerInstance.class);
 
-        EasyMock.replay(container, monitor, provider, info);
+        EasyMock.replay(container, monitor, factory, info);
 
         topologyService = EasyMock.createMock(ZoneTopologyService.class);
 
@@ -136,7 +136,7 @@ public class TimerComponentDomainScopeTestCase extends TestCase {
                                        data,
                                        TimerInstance.class,
                                        false,
-                                       provider,
+                                       factory,
                                        container,
                                        timerService,
                                        null,

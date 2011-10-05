@@ -52,7 +52,6 @@ import org.fabric3.spi.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.Component;
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
@@ -83,7 +82,6 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefi
         }
         JavaComponent target = (JavaComponent) component;
 
-        ScopeContainer scopeContainer = target.getScopeContainer();
         Class<?> implementationClass = target.getImplementationClass();
         ClassLoader loader = implementationClass.getClassLoader();
 
@@ -95,12 +93,12 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefi
             if (sourceDefinition instanceof PojoSourceDefinition &&
                     targetDefinition.getClassLoaderId().equals(sourceDefinition.getClassLoaderId())) {
                 // if the source is Java and target classloaders are equal, do not set the TCCL
-                interceptor = new InvokerInterceptor(method, target, scopeContainer);
+                interceptor = new InvokerInterceptor(method, target);
             } else {
                 // If the source and target classloaders are not equal, configure the interceptor to set the TCCL to the target classloader
                 // when dispatching to a target instance. This guarantees when application code executes, it does so with the TCCL set to the
                 // target component's classloader.
-                interceptor = new InvokerInterceptor(method, target, scopeContainer, loader);
+                interceptor = new InvokerInterceptor(method, target, loader);
             }
             chain.addInterceptor(interceptor);
         }

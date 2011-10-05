@@ -44,32 +44,14 @@
 package org.fabric3.spi.component;
 
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * The runtime instantiation of an SCA atomic, or leaf-type, component
+ * The runtime instantiation of an SCA atomic, or leaf-type, component.
  *
  * @version $Rev$ $Date$
  */
 public interface AtomicComponent extends Component {
-
-    /**
-     * Returns true if component instances should be eagerly initialized.
-     *
-     * @return true if component instances should be eagerly initialized
-     */
-    boolean isEagerInit();
-
-    /**
-     * Create a new implementation instance, fully injected with all property and reference values. The instance's lifecycle callbacks must not have
-     * been called.
-     *
-     * @param workContext the work context in which to create the instance
-     * @return a wrapper for a new implementation instance
-     * @throws ObjectCreationException if there was a problem instantiating the implementation
-     */
-    InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException;
 
     /**
      * Create an ObjectFactory that returns an instance of this AtomicComponent.
@@ -78,4 +60,22 @@ public interface AtomicComponent extends Component {
      */
     ObjectFactory<Object> createObjectFactory();
 
+    /**
+     * Returns a component instance for the current context. After an instance is used, it must be returned by calling {@link #releaseInstance(Object,
+     * WorkContext)}.
+     *
+     * @param workContext the work context
+     * @return a component instance
+     * @throws InstanceLifecycleException if there is an error returning an instance
+     */
+    Object getInstance(WorkContext workContext) throws InstanceLifecycleException;
+
+    /**
+     * Signals that an implementation has been released from use.
+     *
+     * @param instance    the instance
+     * @param workContext the work context
+     * @throws InstanceDestructionException if there is an error releasing the component
+     */
+    void releaseInstance(Object instance, WorkContext workContext) throws InstanceDestructionException;
 }

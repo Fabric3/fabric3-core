@@ -47,10 +47,8 @@ import org.drools.KnowledgeBase;
 import org.drools.runtime.StatelessKnowledgeSession;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.spi.component.AtomicComponent;
+import org.fabric3.spi.component.Component;
 import org.fabric3.spi.component.ComponentException;
-import org.fabric3.spi.component.InstanceWrapper;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
@@ -60,7 +58,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  *
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public class DroolsComponent implements AtomicComponent {
+public class DroolsComponent implements Component {
 
     private URI uri;
     private KnowledgeBase knowledgeBase;
@@ -95,26 +93,6 @@ public class DroolsComponent implements AtomicComponent {
 
     public String getName() {
         return uri.toString();
-    }
-
-    public boolean isEagerInit() {
-        return false;
-    }
-
-    public long getMaxIdleTime() {
-        return -1;
-    }
-
-    public long getMaxAge() {
-        return -1;
-    }
-
-    public InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
-        throw new UnsupportedOperationException();
-    }
-
-    public ObjectFactory<Object> createObjectFactory() {
-        throw new UnsupportedOperationException();
     }
 
     public void start() throws ComponentException {

@@ -49,8 +49,6 @@ import java.lang.reflect.Method;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.InstanceWrapper;
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
@@ -63,12 +61,10 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
 public class SystemInvokerInterceptor implements Interceptor {
 
     private final Method operation;
-    private final ScopeContainer scopeContainer;
     private final AtomicComponent component;
 
-    public SystemInvokerInterceptor(Method operation, ScopeContainer scopeContainer, AtomicComponent component) {
+    public SystemInvokerInterceptor(Method operation, AtomicComponent component) {
         this.operation = operation;
-        this.scopeContainer = scopeContainer;
         this.component = component;
     }
 
@@ -83,15 +79,14 @@ public class SystemInvokerInterceptor implements Interceptor {
     public Message invoke(Message msg) {
         Object body = msg.getBody();
         WorkContext workContext = msg.getWorkContext();
-        InstanceWrapper wrapper;
+        Object instance;
         try {
-            wrapper = scopeContainer.getWrapper(component, workContext);
+            instance = component.getInstance(workContext);
         } catch (InstanceLifecycleException e) {
             throw new InvocationRuntimeException(e);
         }
 
         try {
-            Object instance = wrapper.getInstance();
             WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
             try {
                 msg.setBody(operation.invoke(instance, (Object[]) body));
@@ -105,7 +100,7 @@ public class SystemInvokerInterceptor implements Interceptor {
             return msg;
         } finally {
             try {
-                scopeContainer.returnWrapper(component, workContext, wrapper);
+                component.releaseInstance(instance, workContext);
             } catch (InstanceDestructionException e) {
                 throw new InvocationRuntimeException(e);
             }

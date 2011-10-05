@@ -80,7 +80,7 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
         }
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
         Method method = loadMethod(target, component);
-        InvokerEventStreamHandler handler = new InvokerEventStreamHandler(method, component, component.getScopeContainer(), loader);
+        InvokerEventStreamHandler handler = new InvokerEventStreamHandler(method, component, loader);
         for (EventStream stream : connection.getEventStreams()) {
             stream.addHandler(handler);
         }

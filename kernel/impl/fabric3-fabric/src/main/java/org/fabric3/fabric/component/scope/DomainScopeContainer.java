@@ -57,11 +57,10 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
+import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.federation.TopologyListener;
 import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.invocation.WorkContext;
@@ -131,11 +130,11 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
     }
 
     @Override
-    public InstanceWrapper getWrapper(AtomicComponent component, WorkContext workContext) throws InstanceLifecycleException {
+    public Object getInstance(ScopedComponent component, WorkContext workContext) throws InstanceLifecycleException {
         if (topologyService != null && !activated) {
             throw new InstanceLifecycleException("Component instance not active: " + component.getUri());
         }
-        return super.getWrapper(component, workContext);
+        return super.getInstance(component, workContext);
     }
 
     public void onJoin(String name) {

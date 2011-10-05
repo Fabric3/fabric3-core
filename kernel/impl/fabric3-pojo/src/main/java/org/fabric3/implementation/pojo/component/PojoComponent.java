@@ -44,16 +44,20 @@
 package org.fabric3.implementation.pojo.component;
 
 import java.net.URI;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.implementation.pojo.injection.ComponentObjectFactory;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactory;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
-import org.fabric3.spi.component.AtomicComponent;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManager;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
 import org.fabric3.spi.component.ComponentException;
-import org.fabric3.spi.component.InstanceWrapper;
+import org.fabric3.spi.component.InstanceDestructionException;
+import org.fabric3.spi.component.InstanceInitException;
+import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeContainer;
+import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -64,23 +68,24 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  *
  * @version $Rev$ $Date$
  */
-public abstract class PojoComponent implements AtomicComponent {
+public abstract class PojoComponent implements ScopedComponent {
     private URI uri;
-    private InstanceFactoryProvider provider;
+    private ImplementationManagerFactory factory;
     private ScopeContainer scopeContainer;
     private QName deployable;
     private boolean eager;
-    private InstanceFactory instanceFactory;
+    private ImplementationManager implementationManager;
     private URI classLoaderId;
     private MonitorLevel level = MonitorLevel.INFO;
+    private AtomicBoolean recreate = new AtomicBoolean(true);
 
     public PojoComponent(URI componentId,
-                         InstanceFactoryProvider provider,
+                         ImplementationManagerFactory factory,
                          ScopeContainer scopeContainer,
                          QName deployable,
                          boolean eager) {
         this.uri = componentId;
-        this.provider = provider;
+        this.factory = factory;
         this.scopeContainer = scopeContainer;
         this.deployable = deployable;
         this.eager = eager;
@@ -91,16 +96,16 @@ public abstract class PojoComponent implements AtomicComponent {
     }
 
     public void stop() throws ComponentException {
-        instanceFactory = null;
+        implementationManager = null;
         scopeContainer.unregister(this);
     }
 
     public void startUpdate() {
-        provider.startUpdate();
+        factory.startUpdate();
     }
 
     public void endUpdate() {
-        provider.endUpdate();
+        factory.endUpdate();
     }
 
     public URI getUri() {
@@ -135,13 +140,35 @@ public abstract class PojoComponent implements AtomicComponent {
         return eager;
     }
 
-    public InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
-        return getInstanceFactory().newInstance(workContext);
+    public Object getInstance(WorkContext workContext) throws InstanceLifecycleException {
+        return scopeContainer.getInstance(this, workContext);
     }
 
-    @SuppressWarnings({"unchecked"})
+    public void releaseInstance(Object instance, WorkContext workContext) throws InstanceDestructionException {
+        scopeContainer.releaseInstance(this, instance, workContext);
+    }
+
+    public Object createInstance(WorkContext workContext) throws ObjectCreationException {
+        if (recreate.getAndSet(false)) {
+            implementationManager = null;
+        }
+        return getImplementationManager().newInstance(workContext);
+    }
+
     public ObjectFactory<Object> createObjectFactory() {
-        return new ComponentObjectFactory(this, scopeContainer);
+        return new ComponentObjectFactory(this);
+    }
+
+    public void startInstance(Object instance, WorkContext workContext) throws InstanceInitException {
+        getImplementationManager().start(instance, workContext);
+    }
+
+    public void stopInstance(Object instance, WorkContext workContext) throws InstanceDestructionException {
+        getImplementationManager().stop(instance, workContext);
+    }
+
+    public void reinject(Object instance) throws InstanceLifecycleException {
+        getImplementationManager().reinject(instance);
     }
 
     public ScopeContainer getScopeContainer() {
@@ -149,7 +176,7 @@ public abstract class PojoComponent implements AtomicComponent {
     }
 
     public Class<?> getImplementationClass() {
-        return provider.getImplementationClass();
+        return factory.getImplementationClass();
     }
 
     /**
@@ -171,34 +198,44 @@ public abstract class PojoComponent implements AtomicComponent {
      * @param key           key value for a Map reference
      */
     public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, Object key) {
-        scopeContainer.updated(this, injectable.getName());
-        provider.setObjectFactory(injectable, objectFactory, key);
-        // Clear the instance factory as it has changed and will need to be re-created. This can happen if reinjection occurs after the first 
+        factory.setObjectFactory(injectable, objectFactory, key);
+        List<Object> instances = scopeContainer.getActiveInstances(this);
+        String name = injectable.getName();
+        for (Object instance : instances) {
+            getImplementationManager().updated(instance, name);
+        }
+        // Clear the instance factory as it has changed and will need to be re-created. This can happen if reinjection occurs after the first
         // instance has been created.
-        instanceFactory = null;
+        // instanceFactory = null;
+        recreate.set(true);
     }
 
     public void removeObjectFactory(Injectable injectable) {
-        scopeContainer.removed(this, injectable.getName());
-        provider.removeObjectFactory(injectable);
+        factory.removeObjectFactory(injectable);
+        String name = injectable.getName();
+        List<Object> instances = scopeContainer.getActiveInstances(this);
+        for (Object instance : instances) {
+            getImplementationManager().removed(instance, name);
+        }
         // Clear the instance factory as it has changed and will need to be re-created. This can happen if reinjection occurs after the first
         // instance has been created.
-        instanceFactory = null;
+        // instanceFactory = null;
+        recreate.set(true);
     }
 
     public ObjectFactory<?> getObjectFactory(Injectable injectable) {
-        return provider.getObjectFactory(injectable);
+        return factory.getObjectFactory(injectable);
     }
 
     public String toString() {
         return "[" + uri.toString() + "] in state [" + super.toString() + ']';
     }
 
-    private InstanceFactory getInstanceFactory() {
-        if (instanceFactory == null) {
-            instanceFactory = provider.createFactory();
+    private ImplementationManager getImplementationManager() {
+        if (implementationManager == null) {
+            implementationManager = factory.createManager();
         }
-        return instanceFactory;
+        return implementationManager;
     }
 
 }

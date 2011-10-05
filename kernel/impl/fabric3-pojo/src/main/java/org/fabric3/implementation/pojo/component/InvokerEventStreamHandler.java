@@ -50,8 +50,6 @@ import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.InstanceWrapper;
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.wire.InvocationRuntimeException;
@@ -64,7 +62,6 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
 public class InvokerEventStreamHandler implements EventStreamHandler {
     private Method operation;
     private AtomicComponent component;
-    private ScopeContainer scopeContainer;
     private ClassLoader targetTCCLClassLoader;
 
     /**
@@ -72,16 +69,11 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
      *
      * @param operation             the method to invoke on the target instance
      * @param component             the target component
-     * @param scopeContainer        the ScopeContainer that manages implementation instances for the target component
      * @param targetTCCLClassLoader the classloader to set the TCCL to before dispatching.
      */
-    public InvokerEventStreamHandler(Method operation,
-                                     AtomicComponent component,
-                                     ScopeContainer scopeContainer,
-                                     ClassLoader targetTCCLClassLoader) {
+    public InvokerEventStreamHandler(Method operation, AtomicComponent component, ClassLoader targetTCCLClassLoader) {
         this.operation = operation;
         this.component = component;
-        this.scopeContainer = scopeContainer;
         this.targetTCCLClassLoader = targetTCCLClassLoader;
     }
 
@@ -96,19 +88,18 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
 
     public void handle(Object event) {
         WorkContext workContext = new WorkContext();
-        InstanceWrapper wrapper;
+        Object instance;
         try {
-            wrapper = scopeContainer.getWrapper(component, workContext);
+            instance = component.getInstance(workContext);
         } catch (InstanceLifecycleException e) {
             throw new InvocationRuntimeException(e);
         }
 
         try {
-            Object instance = wrapper.getInstance();
             invoke(event, workContext, instance);
         } finally {
             try {
-                scopeContainer.returnWrapper(component, workContext, wrapper);
+                component.releaseInstance(instance, workContext);
             } catch (InstanceDestructionException e) {
                 throw new InvocationRuntimeException(e);
             }

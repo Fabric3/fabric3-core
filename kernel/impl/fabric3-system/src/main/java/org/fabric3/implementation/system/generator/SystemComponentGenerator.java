@@ -41,7 +41,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
+import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
 import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
@@ -86,13 +86,13 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         SystemImplementation implementation = definition.getImplementation();
         InjectingComponentType type = implementation.getComponentType();
 
-        InstanceFactoryDefinition providerDefinition = new InstanceFactoryDefinition();
-        providerDefinition.setReinjectable(true);
-        providerDefinition.setConstructor(type.getConstructor());
-        providerDefinition.setInitMethod(type.getInitMethod());
-        providerDefinition.setDestroyMethod(type.getDestroyMethod());
-        providerDefinition.setImplementationClass(implementation.getImplementationClass());
-        helper.processInjectionSites(type, providerDefinition);
+        ImplementationManagerDefinition managerDefinition = new ImplementationManagerDefinition();
+        managerDefinition.setReinjectable(true);
+        managerDefinition.setConstructor(type.getConstructor());
+        managerDefinition.setInitMethod(type.getInitMethod());
+        managerDefinition.setDestroyMethod(type.getDestroyMethod());
+        managerDefinition.setImplementationClass(implementation.getImplementationClass());
+        helper.processInjectionSites(type, managerDefinition);
 
         // create the physical component definition
         SystemComponentDefinition physical = new SystemComponentDefinition();
@@ -101,7 +101,7 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         physical.setManaged(type.isManaged());
         physical.setManagementInfo(type.getManagementInfo());
 
-        physical.setProviderDefinition(providerDefinition);
+        physical.setManagerDefinition(managerDefinition);
         helper.processPropertyValues(component, physical);
 
         return physical;

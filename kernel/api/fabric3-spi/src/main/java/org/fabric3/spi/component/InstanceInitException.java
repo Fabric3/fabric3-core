@@ -41,24 +41,21 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.instancefactory;
-
-import org.fabric3.spi.builder.BuilderException;
+package org.fabric3.spi.component;
 
 /**
- * The builder exception for IF provider.
+ * Denotes an error initializing a component instance.
  *
- * @version $Revision$ $Date$
+ * @version $Rev$ $Date$
  */
-public class InstanceFactoryBuilderException extends BuilderException {
-    private static final long serialVersionUID = -2582100608101918880L;
+public class InstanceInitException extends InstanceLifecycleException {
+    private static final long serialVersionUID = 987684568823134235L;
 
-    public InstanceFactoryBuilderException(String message, String identifier) {
-        super(message, identifier);
+    public InstanceInitException(String message) {
+        super(message);
     }
 
-    public InstanceFactoryBuilderException(Throwable cause) {
-        super(cause);
+    public InstanceInitException(String message, Throwable cause) {
+        super(message, cause);
     }
-
 }

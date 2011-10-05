@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.pojo.generator;
 
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
+import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
@@ -53,9 +53,9 @@ public interface GenerationHelper {
      * Computes injectors for the component type
      *
      * @param componentType     the component type
-     * @param factoryDefinition the instance factor definition for creating component implementation instances
+     * @param managerDefinition the instance factor definition for creating component implementation instances
      */
-    void processInjectionSites(InjectingComponentType componentType, InstanceFactoryDefinition factoryDefinition);
+    void processInjectionSites(InjectingComponentType componentType, ImplementationManagerDefinition managerDefinition);
 
     /**
      * Set the actual values of the physical properties.

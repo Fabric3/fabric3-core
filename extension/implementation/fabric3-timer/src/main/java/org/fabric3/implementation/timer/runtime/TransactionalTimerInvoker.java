@@ -48,8 +48,6 @@ import org.oasisopen.sca.ServiceRuntimeException;
 
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.InstanceWrapper;
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
@@ -63,7 +61,6 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
 public class TransactionalTimerInvoker implements Runnable {
     private static final CallFrame FRAME = new CallFrame();
     private TimerComponent component;
-    private ScopeContainer scopeContainer;
     private TransactionManager tm;
     private InvokerMonitor monitor;
 
@@ -71,16 +68,15 @@ public class TransactionalTimerInvoker implements Runnable {
         this.component = component;
         this.tm = tm;
         this.monitor = monitor;
-        this.scopeContainer = component.getScopeContainer();
     }
 
     public void run() {
         // create a new work context
         WorkContext workContext = new WorkContext();
         workContext.addCallFrame(FRAME);
-        InstanceWrapper wrapper;
+        Object instance;
         try {
-            wrapper = scopeContainer.getWrapper(component, workContext);
+            instance = component.getInstance(workContext);
         } catch (InstanceLifecycleException e) {
             monitor.initError(e);
             throw new InvocationRuntimeException(e);
@@ -88,7 +84,6 @@ public class TransactionalTimerInvoker implements Runnable {
 
         WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
-            Object instance = wrapper.getInstance();
             tm.begin();
             ((Runnable) instance).run();
             tm.commit();
@@ -123,7 +118,7 @@ public class TransactionalTimerInvoker implements Runnable {
         } finally {
             WorkContextTunnel.setThreadWorkContext(oldWorkContext);
             try {
-                scopeContainer.returnWrapper(component, workContext, wrapper);
+                component.releaseInstance(instance, workContext);
             } catch (InstanceDestructionException e) {
                 monitor.disposeError(e);
             }

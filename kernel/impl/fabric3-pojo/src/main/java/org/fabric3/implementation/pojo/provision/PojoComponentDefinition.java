@@ -54,7 +54,7 @@ import org.fabric3.spi.model.type.java.ManagementInfo;
 public abstract class PojoComponentDefinition extends PhysicalComponentDefinition {
     private static final long serialVersionUID = 297672484973345029L;
 
-    private InstanceFactoryDefinition providerDefinition;
+    private ImplementationManagerDefinition managerDefinition;
     private String scope;
     private boolean eager;
     private boolean managed;
@@ -65,17 +65,17 @@ public abstract class PojoComponentDefinition extends PhysicalComponentDefinitio
      *
      * @return Instance factory provider definition.
      */
-    public InstanceFactoryDefinition getFactoryDefinition() {
-        return providerDefinition;
+    public ImplementationManagerDefinition getFactoryDefinition() {
+        return managerDefinition;
     }
 
     /**
      * Sets the instance factory provider definition.
      *
-     * @param providerDefinition Instance factory provider definition.
+     * @param managerDefinition Instance factory provider definition.
      */
-    public void setProviderDefinition(InstanceFactoryDefinition providerDefinition) {
-        this.providerDefinition = providerDefinition;
+    public void setManagerDefinition(ImplementationManagerDefinition managerDefinition) {
+        this.managerDefinition = managerDefinition;
     }
 
     /**

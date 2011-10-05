@@ -41,21 +41,25 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.component;
+package org.fabric3.implementation.pojo.instancefactory;
+
+import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 
 /**
- * Denotes an error initializing a component instance.
+ * Creates instance factory providers.
  *
- * @version $Rev$ $Date$
+ * @version $Revision$ $Date$
  */
-public class InstanceInitializationException extends InstanceLifecycleException {
-    private static final long serialVersionUID = 987684568823134235L;
+public interface ImplementationManagerFactoryBuilder {
 
-    public InstanceInitializationException(String message) {
-        super(message);
-    }
-
-    public InstanceInitializationException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    /**
+     * Builds an instance factory provider from a definition.
+     *
+     * @param managerDefinition the definition that describes the provider
+     * @param classLoader       the classloader to use to load any implementation classes
+     * @return a provider built from the supplied definition
+     * @throws ImplementationBuildException
+     *          if there was a problem with the definition
+     */
+    ImplementationManagerFactory build(ImplementationManagerDefinition managerDefinition, ClassLoader classLoader) throws ImplementationBuildException;
 }

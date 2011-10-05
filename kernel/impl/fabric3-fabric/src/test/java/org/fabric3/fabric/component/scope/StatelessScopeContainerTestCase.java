@@ -48,8 +48,7 @@ import org.easymock.IMocksControl;
 import org.easymock.classextension.EasyMock;
 
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.InstanceWrapper;
+import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
@@ -60,8 +59,8 @@ import org.fabric3.spi.invocation.WorkContext;
 public class StatelessScopeContainerTestCase extends TestCase {
     private StatelessScopeContainer scopeContainer;
     private IMocksControl control;
-    private AtomicComponent component;
-    private InstanceWrapper wrapper;
+    private ScopedComponent component;
+    private Object instance;
     private WorkContext workContext;
 
     public void testCorrectScope() {
@@ -69,24 +68,23 @@ public class StatelessScopeContainerTestCase extends TestCase {
     }
 
     public void testInstanceCreation() throws Exception {
-        @SuppressWarnings("unchecked")
-        InstanceWrapper wrapper2 = control.createMock(InstanceWrapper.class);
+        instance = new Object();
 
-        EasyMock.expect(component.createInstanceWrapper(workContext)).andReturn(wrapper);
-        wrapper.start(workContext);
-        EasyMock.expect(component.createInstanceWrapper(workContext)).andReturn(wrapper2);
-        wrapper2.start(workContext);
+        EasyMock.expect(component.createInstance(workContext)).andReturn(this.instance);
+        component.startInstance(this.instance, workContext);
+        EasyMock.expect(component.createInstance(workContext)).andReturn(instance);
+        component.startInstance(instance, workContext);
         control.replay();
 
-        assertSame(wrapper, scopeContainer.getWrapper(component, workContext));
-        assertSame(wrapper2, scopeContainer.getWrapper(component, workContext));
+        assertSame(this.instance, scopeContainer.getInstance(component, workContext));
+        assertSame(instance, scopeContainer.getInstance(component, workContext));
         control.verify();
     }
 
     public void testReturnWrapper() throws Exception {
-        wrapper.stop(workContext);
+        component.stopInstance(instance, workContext);
         control.replay();
-        scopeContainer.returnWrapper(component, workContext, wrapper);
+        scopeContainer.releaseInstance(component, instance, workContext);
         control.verify();
     }
 
@@ -97,7 +95,7 @@ public class StatelessScopeContainerTestCase extends TestCase {
 
         control = EasyMock.createStrictControl();
         workContext = control.createMock(WorkContext.class);
-        component = control.createMock(AtomicComponent.class);
-        wrapper = control.createMock(InstanceWrapper.class);
+        component = control.createMock(ScopedComponent.class);
+        instance = new Object();
     }
 }

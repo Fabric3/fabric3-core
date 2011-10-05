@@ -43,6 +43,7 @@
  */
 package org.fabric3.spi.component;
 
+import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.component.Scope;
@@ -68,14 +69,14 @@ public interface ScopeContainer {
      *
      * @param component the component to register
      */
-    void register(AtomicComponent component);
+    void register(ScopedComponent component);
 
     /**
      * Unregisters a component with the scope.
      *
      * @param component the component to unregister
      */
-    void unregister(AtomicComponent component);
+    void unregister(ScopedComponent component);
 
     /**
      * Start a new, non-expiring context. The context will remain active until explicitly stopped.
@@ -96,42 +97,33 @@ public interface ScopeContainer {
     void stopContext(QName deployable, WorkContext workContext) throws ComponentException;
 
     /**
-     * Returns an instance wrapper associated with the current scope context, creating one if necessary
+     * Returns an instance associated with the current scope context, creating one if necessary
      *
      * @param component   the component
      * @param workContext the work context in which the instance should be obtained
-     * @return the wrapper for the target instance
+     * @return the instance
      * @throws InstanceLifecycleException if there was a problem instantiating the target instance
      */
-    InstanceWrapper getWrapper(AtomicComponent component, WorkContext workContext) throws InstanceLifecycleException;
+    Object getInstance(ScopedComponent component, WorkContext workContext) throws InstanceLifecycleException;
 
     /**
-     * Return a wrapper after use (for example, after invoking the instance).
+     * Return am instance after use (for example, after invoking the instance).
+     *
      *
      * @param component   the component
+     * @param instance    the instance
      * @param workContext the work context returning the instance
-     * @param wrapper     the wrapper for the target instance being returned
      * @throws InstanceDestructionException if there was a problem returning the target instance
      */
-    void returnWrapper(AtomicComponent component, WorkContext workContext, InstanceWrapper wrapper) throws InstanceDestructionException;
+    void releaseInstance(ScopedComponent component, Object instance, WorkContext workContext) throws InstanceDestructionException;
 
     /**
-     * Callback received when component reference wire(s) are updated. Instances will be injected with updated wires when {@link #reinject()} is
-     * called.
+     * Returns a snapshot of the component instances that are active and currently managed by the scope container.
      *
-     * @param component     the component being updated
-     * @param referenceName the reference name
+     * @param component the component
+     * @return the active instances
      */
-    void updated(AtomicComponent component, String referenceName);
-
-    /**
-     * Callback received when a wire from a 0..1 or 1..1 reference or all wires from a multiplicity reference have been removed. The instance will be
-     * injected with updated wires when {@link #reinject()} is called.
-     *
-     * @param component     component with active instances, whose references need to be updated
-     * @param referenceName the reference name
-     */
-    void removed(AtomicComponent component, String referenceName);
+    List<Object> getActiveInstances(ScopedComponent component);
 
     /**
      * Reinjects all live instances with updated wires

@@ -40,6 +40,7 @@ package org.fabric3.implementation.java.introspection;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.java.model.JavaImplementation;
@@ -55,6 +56,7 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  *
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class JavaImplementationLoader implements TypeLoader<JavaImplementation> {
     private JavaImplementationProcessor implementationProcessor;
     private LoaderHelper loaderHelper;

@@ -44,8 +44,6 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.InstanceWrapper;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.Wire;
@@ -86,28 +84,12 @@ public abstract class XQueryComponent implements AtomicComponent {
         referenceFactories.put(name, factory);
     }
 
-    public <B> ObjectFactory<B> createWireFactory(String refrenceName) throws ObjectCreationException {
+    public <B> ObjectFactory<B> createWireFactory(String referenceName) throws ObjectCreationException {
         return null;
     }
 
     public QName getDeployable() {
         return deployable;
-    }
-
-    public boolean isEagerInit() {
-        return false;
-    }
-
-    public long getMaxIdleTime() {
-        return 0;
-    }
-
-    public long getMaxAge() {
-        return 0;
-    }
-
-    public InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
-        throw new UnsupportedOperationException();
     }
 
     public ObjectFactory<Object> createObjectFactory() {

@@ -47,7 +47,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
+import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
@@ -61,7 +61,7 @@ import org.fabric3.spi.model.type.java.Signature;
 public class GenerationHelperImplTestCase extends TestCase {
 
     private GenerationHelper helper;
-    private InstanceFactoryDefinition providerDefinition;
+    private ImplementationManagerDefinition managerDefinition;
     private InjectingComponentType componentType;
     private Injectable intProp;
     private Injectable stringProp;
@@ -73,12 +73,12 @@ public class GenerationHelperImplTestCase extends TestCase {
         componentType.setConstructor(constructor);
         componentType.addInjectionSite(intSite, intProp);
         componentType.addInjectionSite(stringSite, stringProp);
-        helper.processInjectionSites(componentType, providerDefinition);
-        Map<InjectionSite, Injectable> mapping = providerDefinition.getConstruction();
+        helper.processInjectionSites(componentType, managerDefinition);
+        Map<InjectionSite, Injectable> mapping = managerDefinition.getConstruction();
         assertEquals(intProp, mapping.get(intSite));
         assertEquals(stringProp, mapping.get(stringSite));
-        assertTrue(providerDefinition.getPostConstruction().isEmpty());
-        assertTrue(providerDefinition.getReinjectables().isEmpty());
+        assertTrue(managerDefinition.getPostConstruction().isEmpty());
+        assertTrue(managerDefinition.getReinjectables().isEmpty());
     }
 
     protected void setUp() throws Exception {
@@ -86,7 +86,7 @@ public class GenerationHelperImplTestCase extends TestCase {
 
         helper = new GenerationHelperImpl();
         componentType = new InjectingComponentType(null);
-        providerDefinition = new InstanceFactoryDefinition();
+        managerDefinition = new ImplementationManagerDefinition();
 
         intProp = new Injectable(InjectableType.PROPERTY, "intProp");
         stringProp = new Injectable(InjectableType.PROPERTY, "stringProp");

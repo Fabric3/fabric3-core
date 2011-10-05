@@ -55,10 +55,10 @@ import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.cm.RegistrationException;
-import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
+import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
@@ -118,12 +118,12 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
     public <S, I extends S> void registerComponent(String name, Class<S> type, I instance, boolean introspect) throws ComponentRegistrationException {
         try {
             LogicalComponent<?> logical = createLogicalComponent(name, type, instance, introspect);
-            AtomicComponent physical = createPhysicalComponent(logical, instance);
+            ScopedComponent physical = createPhysicalComponent(logical, instance);
             componentManager.register(physical);
             scopeContainer.register(physical);
             // initialize the component - needed for reinjection to work
             WorkContext workContext = new WorkContext();
-            scopeContainer.getWrapper(physical, workContext);
+            scopeContainer.getInstance(physical, workContext);
         } catch (RegistrationException e) {
             throw new ComponentRegistrationException(e);
         } catch (AssemblyException e) {
@@ -194,7 +194,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         }
     }
 
-    private <I> AtomicComponent createPhysicalComponent(LogicalComponent<?> logicalComponent, I instance) {
+    private <I> ScopedComponent createPhysicalComponent(LogicalComponent<?> logicalComponent, I instance) {
         URI uri = logicalComponent.getUri();
         InjectingComponentType type = (InjectingComponentType) logicalComponent.getDefinition().getComponentType();
         type.getInjectionSites();

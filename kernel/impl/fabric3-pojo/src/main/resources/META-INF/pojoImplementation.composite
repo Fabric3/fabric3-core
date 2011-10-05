@@ -21,8 +21,8 @@
         <f3:implementation.system class="org.fabric3.implementation.pojo.proxy.JDKChannelProxyService"/>
     </component>
 
-    <component name="ReflectiveInstanceFactoryBuilder" f3:key="org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition">
-        <f3:implementation.system class="org.fabric3.implementation.pojo.reflection.ReflectiveInstanceFactoryBuilder"/>
+    <component name="ReflectiveImplementationManagerFactoryBuilder" f3:key="org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition">
+        <f3:implementation.system class="org.fabric3.implementation.pojo.reflection.ReflectiveImplementationManagerFactoryBuilder"/>
     </component>
 
     <component name="GenerationHelper">

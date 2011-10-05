@@ -75,8 +75,7 @@ public class JDKWireProxyService implements WireProxyService {
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri)
-            throws ProxyCreationException {
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ProxyCreationException {
         Map<Method, InvocationChain> mappings = createInterfaceToWireMapping(interfaze, wire);
         return new WireObjectFactory<T>(interfaze, callbackUri, this, mappings);
     }

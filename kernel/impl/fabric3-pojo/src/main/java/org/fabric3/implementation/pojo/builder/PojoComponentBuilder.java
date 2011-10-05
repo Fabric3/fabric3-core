@@ -54,7 +54,7 @@ import org.fabric3.implementation.pojo.component.OASISPojoRequestContext;
 import org.fabric3.implementation.pojo.component.PojoComponent;
 import org.fabric3.implementation.pojo.component.PojoComponentContext;
 import org.fabric3.implementation.pojo.component.PojoRequestContext;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.builder.BuilderException;
@@ -98,24 +98,24 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
         this.helper = helper;
     }
 
-    protected void createPropertyFactories(PCD definition, InstanceFactoryProvider provider) throws BuilderException {
+    protected void createPropertyFactories(PCD definition, ImplementationManagerFactory factory) throws BuilderException {
         List<PhysicalPropertyDefinition> propertyDefinitions = definition.getPropertyDefinitions();
 
         TypeMapping typeMapping = new TypeMapping();
-        helper.resolveTypeParameters(provider.getImplementationClass(), typeMapping);
+        helper.resolveTypeParameters(factory.getImplementationClass(), typeMapping);
 
         for (PhysicalPropertyDefinition propertyDefinition : propertyDefinitions) {
             String name = propertyDefinition.getName();
             Document value = propertyDefinition.getValue();
             Injectable source = new Injectable(InjectableType.PROPERTY, name);
 
-            Type type = provider.getGenericType(source);
+            Type type = factory.getGenericType(source);
             DataType<?> dataType = getDataType(type, typeMapping);
 
             ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
             boolean many = propertyDefinition.isMany();
             ObjectFactory<?> objectFactory = propertyBuilder.createFactory(name, dataType, value, many, classLoader);
-            provider.setObjectFactory(source, objectFactory);
+            factory.setObjectFactory(source, objectFactory);
         }
     }
 
@@ -144,22 +144,22 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
         }
     }
 
-    protected void buildContexts(PojoComponent component, InstanceFactoryProvider provider) {
+    protected void buildContexts(PojoComponent component, ImplementationManagerFactory factory) {
         PojoRequestContext requestContext = new PojoRequestContext();
         SingletonObjectFactory<PojoRequestContext> requestObjectFactory = new SingletonObjectFactory<PojoRequestContext>(requestContext);
-        provider.setObjectFactory(Injectable.REQUEST_CONTEXT, requestObjectFactory);
+        factory.setObjectFactory(Injectable.REQUEST_CONTEXT, requestObjectFactory);
         PojoComponentContext componentContext = new PojoComponentContext(component, requestContext);
         SingletonObjectFactory<PojoComponentContext> componentObjectFactory = new SingletonObjectFactory<PojoComponentContext>(componentContext);
-        provider.setObjectFactory(Injectable.COMPONENT_CONTEXT, componentObjectFactory);
+        factory.setObjectFactory(Injectable.COMPONENT_CONTEXT, componentObjectFactory);
 
         OASISPojoRequestContext oasisRequestContext = new OASISPojoRequestContext();
         SingletonObjectFactory<OASISPojoRequestContext> oasisRequestFactory =
                 new SingletonObjectFactory<OASISPojoRequestContext>(oasisRequestContext);
-        provider.setObjectFactory(Injectable.OASIS_REQUEST_CONTEXT, oasisRequestFactory);
+        factory.setObjectFactory(Injectable.OASIS_REQUEST_CONTEXT, oasisRequestFactory);
         OASISPojoComponentContext oasisComponentContext = new OASISPojoComponentContext(component, oasisRequestContext);
         SingletonObjectFactory<OASISPojoComponentContext> oasisComponentFactory =
                 new SingletonObjectFactory<OASISPojoComponentContext>(oasisComponentContext);
-        provider.setObjectFactory(Injectable.OASIS_COMPONENT_CONTEXT, oasisComponentFactory);
+        factory.setObjectFactory(Injectable.OASIS_COMPONENT_CONTEXT, oasisComponentFactory);
 
     }
 

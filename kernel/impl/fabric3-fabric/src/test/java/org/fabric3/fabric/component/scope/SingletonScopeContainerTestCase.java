@@ -50,20 +50,18 @@ import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.InstanceWrapper;
-import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
  * @version $Rev$ $Date$
  */
 public class SingletonScopeContainerTestCase extends TestCase {
-    private AtomicComponent component;
+    private ScopedComponent component;
     private WorkContext workContext;
     private QName deployable;
     private SingletonScopeContainer container;
-    private InstanceWrapper wrapper;
+    private Object instance;
 
     public void testRegisterUnregister() throws Exception {
         EasyMock.replay(component);
@@ -78,57 +76,50 @@ public class SingletonScopeContainerTestCase extends TestCase {
     }
 
     public void testUpdated() throws Exception {
-        EasyMock.expect(component.createInstanceWrapper(EasyMock.isA(WorkContext.class))).andReturn(wrapper);
+        EasyMock.expect(component.createInstance(EasyMock.isA(WorkContext.class))).andReturn(instance);
 
-        EasyMock.expect(wrapper.isStarted()).andReturn(false);
-        wrapper.start(EasyMock.isA(WorkContext.class));
-        wrapper.updated("reference");
-        wrapper.stop(EasyMock.isA(WorkContext.class));
+        component.startInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
+        component.stopInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
 
-        EasyMock.replay(component, wrapper);
+        EasyMock.replay(component);
 
         container.register(component);
         container.startContext(deployable, workContext);
-        container.updated(component, "reference");
         container.stopContext(deployable, workContext);
 
-        EasyMock.verify(component, wrapper);
+        EasyMock.verify(component);
     }
 
     public void testRemoved() throws Exception {
-        EasyMock.expect(component.createInstanceWrapper(EasyMock.isA(WorkContext.class))).andReturn(wrapper);
+        EasyMock.expect(component.createInstance(EasyMock.isA(WorkContext.class))).andReturn(instance);
 
-        EasyMock.expect(wrapper.isStarted()).andReturn(false);
-        wrapper.start(EasyMock.isA(WorkContext.class));
-        wrapper.removed("reference");
-        wrapper.stop(EasyMock.isA(WorkContext.class));
+        component.startInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
+        component.stopInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
 
-        EasyMock.replay(component, wrapper);
+        EasyMock.replay(component);
 
         container.register(component);
         container.startContext(deployable, workContext);
-        container.removed(component, "reference");
         container.stopContext(deployable, workContext);
 
-        EasyMock.verify(component, wrapper);
+        EasyMock.verify(component);
     }
 
     public void testReinject() throws Exception {
-        EasyMock.expect(component.createInstanceWrapper(EasyMock.isA(WorkContext.class))).andReturn(wrapper);
+        EasyMock.expect(component.createInstance(EasyMock.isA(WorkContext.class))).andReturn(instance);
 
-        EasyMock.expect(wrapper.isStarted()).andReturn(false);
-        wrapper.start(EasyMock.isA(WorkContext.class));
-        wrapper.reinject();
-        wrapper.stop(EasyMock.isA(WorkContext.class));
+        component.startInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
+        component.reinject(instance);
+        component.stopInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
 
-        EasyMock.replay(component, wrapper);
+        EasyMock.replay(component);
 
         container.register(component);
         container.startContext(deployable, workContext);
         container.reinject();
         container.stopContext(deployable, workContext);
 
-        EasyMock.verify(component, wrapper);
+        EasyMock.verify(component);
     }
 
 
@@ -143,11 +134,11 @@ public class SingletonScopeContainerTestCase extends TestCase {
         workContext = new WorkContext();
         deployable = new QName("deployable");
 
-        component = EasyMock.createMock(AtomicComponent.class);
+        component = EasyMock.createMock(ScopedComponent.class);
         EasyMock.expect(component.getDeployable()).andReturn(deployable).atLeastOnce();
         EasyMock.expect(component.isEagerInit()).andReturn(true).atLeastOnce();
 
-        wrapper = EasyMock.createMock(InstanceWrapper.class);
+        instance = new Object();
 
     }
 

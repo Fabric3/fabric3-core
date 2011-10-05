@@ -37,19 +37,16 @@
 */
 package org.fabric3.implementation.timer.runtime;
 
-import java.lang.reflect.Method;
 import javax.transaction.TransactionManager;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.wire.InvocationRuntimeException;
 
 /**
  * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
@@ -108,20 +105,17 @@ public class TransactionalTimerInvokerTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     private TimerComponent createComponent(TimerInstance instance) throws Exception {
-        InstanceWrapper wrapper = EasyMock.createMock(InstanceWrapper.class);
-        EasyMock.expect(wrapper.getInstance()).andReturn(instance);
-
         ScopeContainer container = EasyMock.createMock(ScopeContainer.class);
         EasyMock.expect(container.getScope()).andReturn(Scope.COMPOSITE);
-        EasyMock.expect(container.getWrapper(EasyMock.isA(TimerComponent.class), EasyMock.isA(WorkContext.class))).andReturn(wrapper);
-        container.returnWrapper(EasyMock.isA(TimerComponent.class), EasyMock.isA(WorkContext.class), EasyMock.isA(InstanceWrapper.class));
+        EasyMock.expect(container.getInstance(EasyMock.isA(TimerComponent.class), EasyMock.isA(WorkContext.class))).andReturn(instance);
+        container.releaseInstance(EasyMock.isA(TimerComponent.class), EasyMock.eq(instance), EasyMock.isA(WorkContext.class));
 
-        InstanceFactoryProvider provider = EasyMock.createMock(InstanceFactoryProvider.class);
-        EasyMock.expect(provider.getImplementationClass()).andReturn((Class) TimerInstance.class);
+        ImplementationManagerFactory factory = EasyMock.createMock(ImplementationManagerFactory.class);
+        EasyMock.expect(factory.getImplementationClass()).andReturn((Class) TimerInstance.class);
 
-        EasyMock.replay(container, provider, wrapper);
+        EasyMock.replay(container, factory);
 
-        return new TimerComponent(null, null, null, TimerInstance.class, false, provider, container, null, null, null, null, null);
+        return new TimerComponent(null, null, null, TimerInstance.class, false, factory, container, null, null, null, null, null);
     }
 
     private interface TimerInstance extends Runnable {

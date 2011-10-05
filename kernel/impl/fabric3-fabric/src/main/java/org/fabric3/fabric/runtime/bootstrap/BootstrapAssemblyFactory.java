@@ -151,7 +151,7 @@ import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl;
 import org.fabric3.implementation.pojo.generator.GenerationHelperImpl;
 import org.fabric3.implementation.pojo.proxy.JDKChannelProxyService;
-import org.fabric3.implementation.pojo.reflection.ReflectiveInstanceFactoryBuilder;
+import org.fabric3.implementation.pojo.reflection.ReflectiveImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.system.generator.SystemComponentGenerator;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
@@ -353,7 +353,7 @@ public class BootstrapAssemblyFactory {
 
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
 
-        ReflectiveInstanceFactoryBuilder factoryBuilder = new ReflectiveInstanceFactoryBuilder(classLoaderRegistry);
+        ReflectiveImplementationManagerFactoryBuilder factoryBuilder = new ReflectiveImplementationManagerFactoryBuilder(classLoaderRegistry);
         SystemComponentBuilder builder = new SystemComponentBuilder(scopeRegistry,
                                                                     factoryBuilder,
                                                                     classLoaderRegistry,

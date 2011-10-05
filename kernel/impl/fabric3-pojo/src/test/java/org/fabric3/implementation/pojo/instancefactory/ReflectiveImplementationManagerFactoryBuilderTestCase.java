@@ -52,8 +52,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
-import org.fabric3.implementation.pojo.reflection.ReflectiveInstanceFactoryBuilder;
+import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
+import org.fabric3.implementation.pojo.reflection.ReflectiveImplementationManagerFactoryBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
@@ -66,9 +66,9 @@ import org.fabric3.spi.model.type.java.Signature;
 /**
  * @version $Date$ $Revision$
  */
-public class ReflectiveIFProviderBuilderTestCase extends TestCase {
-    private ReflectiveInstanceFactoryBuilder builder = new ReflectiveInstanceFactoryBuilder(new MockClassLoaderRegistry());
-    private InstanceFactoryDefinition definition;
+public class ReflectiveImplementationManagerFactoryBuilderTestCase extends TestCase {
+    private ReflectiveImplementationManagerFactoryBuilder builder = new ReflectiveImplementationManagerFactoryBuilder(new MockClassLoaderRegistry());
+    private ImplementationManagerDefinition definition;
     private Constructor<Foo> constructor;
     private ClassLoader cl;
 
@@ -78,8 +78,8 @@ public class ReflectiveIFProviderBuilderTestCase extends TestCase {
      * @throws Exception
      */
     public void testCdiSource() throws Exception {
-        InstanceFactoryProvider provider = builder.build(definition, cl);
-        assertEquals(String.class, provider.getMemberType(new Injectable(InjectableType.PROPERTY, "a")));
+        ImplementationManagerFactory factory = builder.build(definition, cl);
+        assertEquals(String.class, factory.getMemberType(new Injectable(InjectableType.PROPERTY, "a")));
     }
 
     /**
@@ -93,8 +93,8 @@ public class ReflectiveIFProviderBuilderTestCase extends TestCase {
         InjectionSite injectionSite = new FieldInjectionSite(field);
         definition.getPostConstruction().put(injectionSite, injectable);
 
-        InstanceFactoryProvider provider = builder.build(definition, cl);
-        Class<?> clazz = provider.getMemberType(injectable);
+        ImplementationManagerFactory factory = builder.build(definition, cl);
+        Class<?> clazz = factory.getMemberType(injectable);
         assertEquals(Bar.class, clazz);
     }
 
@@ -109,8 +109,8 @@ public class ReflectiveIFProviderBuilderTestCase extends TestCase {
         InjectionSite injectionSite = new MethodInjectionSite(method, 0);
         definition.getPostConstruction().put(injectionSite, injectable);
 
-        InstanceFactoryProvider provider = builder.build(definition, cl);
-        Class<?> clazz = provider.getMemberType(injectable);
+        ImplementationManagerFactory factory = builder.build(definition, cl);
+        Class<?> clazz = factory.getMemberType(injectable);
         assertEquals(Bar.class, clazz);
     }
 
@@ -120,7 +120,7 @@ public class ReflectiveIFProviderBuilderTestCase extends TestCase {
         cl = getClass().getClassLoader();
         constructor = Foo.class.getConstructor(String.class, Long.class);
 
-        definition = new InstanceFactoryDefinition();
+        definition = new ImplementationManagerDefinition();
         definition.setImplementationClass(Foo.class.getName());
         definition.setConstructor(new Signature(constructor));
         definition.setInitMethod(new Signature("init"));

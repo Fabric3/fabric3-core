@@ -89,9 +89,7 @@ public class DroolsTargetWireAttacher implements TargetWireAttacher<DroolsTarget
     }
 
     public ObjectFactory<?> createObjectFactory(DroolsTargetDefinition definition) throws WiringException {
-        URI targetId = UriHelper.getDefragmentedName(definition.getUri());
-        DroolsComponent targetComponent = (DroolsComponent) manager.getComponent(targetId);
-        return targetComponent.createObjectFactory();
+        throw new UnsupportedOperationException();
     }
 
 }

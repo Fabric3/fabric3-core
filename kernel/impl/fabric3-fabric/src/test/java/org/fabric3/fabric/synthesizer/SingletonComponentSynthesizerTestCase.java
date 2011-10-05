@@ -84,7 +84,7 @@ public class SingletonComponentSynthesizerTestCase extends TestCase {
         assertNotNull(lcm.getComponent(uri));
         AtomicComponent component = (AtomicComponent) componentManager.getComponent(uri);
         assertNotNull(component);
-        assertNotNull(scopeContainer.getWrapper(component, new WorkContext()));
+        assertNotNull(component.getInstance(new WorkContext()));
     }
 
     public void testSynthesizeNoIntrospect() throws Exception {
@@ -97,7 +97,8 @@ public class SingletonComponentSynthesizerTestCase extends TestCase {
         assertNotNull(lcm.getComponent(uri));
         AtomicComponent component = (AtomicComponent) componentManager.getComponent(uri);
         assertNotNull(component);
-        assertNotNull(scopeContainer.getWrapper(component, new WorkContext()));
+        WorkContext workContext = new WorkContext();
+        assertNotNull(component.getInstance(workContext));
     }
 
 

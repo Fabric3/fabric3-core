@@ -41,7 +41,7 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.fabric3.implementation.pojo.component.PojoComponent;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
 import org.fabric3.spi.component.ScopeContainer;
 
 /**
@@ -55,17 +55,17 @@ public class JavaComponent extends PojoComponent {
      * Constructor.
      *
      * @param componentId             the component's uri
-     * @param instanceFactoryProvider the provider for the instance factory
+     * @param factory the provider for the instance factory
      * @param scopeContainer          the container for the component's implementation scope
      * @param deployable              the deployable composite this component is deployed with
      * @param eager                   true if the component should be eagerly initialized
      */
     public JavaComponent(URI componentId,
-                         InstanceFactoryProvider instanceFactoryProvider,
+                         ImplementationManagerFactory factory,
                          ScopeContainer scopeContainer,
                          QName deployable,
                          boolean eager) {
-        super(componentId, instanceFactoryProvider, scopeContainer, deployable, eager);
+        super(componentId, factory, scopeContainer, deployable, eager);
     }
 
 

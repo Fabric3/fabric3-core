@@ -46,9 +46,9 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryBuilder;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactoryBuilder;
+import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.component.ScopeContainer;
@@ -64,10 +64,10 @@ import org.fabric3.spi.management.ManagementService;
 @EagerInit
 public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefinition, JavaComponent> {
     private ScopeRegistry scopeRegistry;
-    private InstanceFactoryBuilder factoryBuilder;
+    private ImplementationManagerFactoryBuilder factoryBuilder;
 
     public JavaComponentBuilder(@Reference ScopeRegistry scopeRegistry,
-                                @Reference InstanceFactoryBuilder factoryBuilder,
+                                @Reference ImplementationManagerFactoryBuilder factoryBuilder,
                                 @Reference ClassLoaderRegistry classLoaderRegistry,
                                 @Reference PropertyObjectFactoryBuilder propertyBuilder,
                                 @Reference ManagementService managementService,
@@ -87,15 +87,15 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
 
         // create the InstanceFactoryProvider based on the definition in the model
-        InstanceFactoryDefinition factoryDefinition = definition.getFactoryDefinition();
-        InstanceFactoryProvider provider = factoryBuilder.build(factoryDefinition, classLoader);
+        ImplementationManagerDefinition managerDefinition = definition.getFactoryDefinition();
+        ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition, classLoader);
 
-        createPropertyFactories(definition, provider);
+        createPropertyFactories(definition, factory);
 
         boolean eager = definition.isEagerInit();
 
-        JavaComponent component = new JavaComponent(uri, provider, scopeContainer, deployable, eager);
-        buildContexts(component, provider);
+        JavaComponent component = new JavaComponent(uri, factory, scopeContainer, deployable, eager);
+        buildContexts(component, factory);
         export(definition, classLoader, component);
         return component;
     }

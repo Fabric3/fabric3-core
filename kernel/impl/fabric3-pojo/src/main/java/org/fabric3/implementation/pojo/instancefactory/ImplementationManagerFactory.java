@@ -49,53 +49,60 @@ import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Creates configured instances of a component implementation.
+ * Creates {@link ImplementationManager}s.
  *
  * @version $Rev$ $Date$
  */
-public interface InstanceFactoryProvider {
+public interface ImplementationManagerFactory {
+
+    /**
+     * Creates an instance manager that can be used to create component instances.
+     *
+     * @return a new instance factory
+     */
+    ImplementationManager createManager();
 
     /**
      * Return the implementation class.
      *
-     * @return the implementation class.
+     * @return the implementation class
      */
     Class<?> getImplementationClass();
 
     /**
-     * Used to signal the start of a component configuration update.
+     * Signals the start of a component configuration update.
      */
     void startUpdate();
 
     /**
-     * Used to signal when a component configuration update is complete.
+     * Signals when a component configuration update is complete.
      */
     void endUpdate();
 
     /**
-     * Sets an object factory for an injection site.
-     *
-     * @param injectable          the injection site name
-     * @param objectFactory the object factory
-     */
-    void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory);
-
-    /**
-     * Sets an object factory for an injection site that is associated with a key.
-     *
-     * @param injectable          the injection site
-     * @param objectFactory the object factory
-     * @param key           the key for Map-based injection sites
-     */
-    void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, Object key);
-
-    /**
-     * Returns a previously added object factory for the injection site.
+     * Returns a previously added object factory for the injectable site.
      *
      * @param attribute the injection site
      * @return the object factory or null
      */
     ObjectFactory<?> getObjectFactory(Injectable attribute);
+
+    /**
+     * Sets an object factory for an injectable.
+     *
+     * @param injectable    the injection site name
+     * @param objectFactory the object factory
+     */
+    void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory);
+
+    /**
+     * Sets an object factory that is associated with a key for an injectable.
+     *
+     * @param injectable    the injection site
+     * @param objectFactory the object factory
+     * @param key           the key for Map-based injection sites
+     */
+    void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, Object key);
 
     /**
      * Removes an object factory for an injection site.
@@ -120,10 +127,4 @@ public interface InstanceFactoryProvider {
      */
     Type getGenericType(Injectable injectable);
 
-    /**
-     * Create an instance factory that can be used to create component instances.
-     *
-     * @return a new instance factory
-     */
-    InstanceFactory createFactory();
 }

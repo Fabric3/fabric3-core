@@ -47,7 +47,7 @@ import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
+import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.model.type.contract.DataType;
@@ -88,18 +88,18 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         InjectingComponentType type = implementation.getComponentType();
         String scope = type.getScope();
 
-        InstanceFactoryDefinition providerDefinition = new InstanceFactoryDefinition();
-        providerDefinition.setReinjectable(Scope.COMPOSITE.getScope().equals(scope));
-        providerDefinition.setConstructor(type.getConstructor());
-        providerDefinition.setInitMethod(type.getInitMethod());
-        providerDefinition.setDestroyMethod(type.getDestroyMethod());
-        providerDefinition.setImplementationClass(implementation.getImplementationClass());
-        helper.processInjectionSites(type, providerDefinition);
+        ImplementationManagerDefinition managerDefinition = new ImplementationManagerDefinition();
+        managerDefinition.setReinjectable(Scope.COMPOSITE.getScope().equals(scope));
+        managerDefinition.setConstructor(type.getConstructor());
+        managerDefinition.setInitMethod(type.getInitMethod());
+        managerDefinition.setDestroyMethod(type.getDestroyMethod());
+        managerDefinition.setImplementationClass(implementation.getImplementationClass());
+        helper.processInjectionSites(type, managerDefinition);
 
         JavaComponentDefinition physical = new JavaComponentDefinition();
 
         physical.setScope(scope);
-        physical.setProviderDefinition(providerDefinition);
+        physical.setManagerDefinition(managerDefinition);
         helper.processPropertyValues(component, physical);
         return physical;
     }

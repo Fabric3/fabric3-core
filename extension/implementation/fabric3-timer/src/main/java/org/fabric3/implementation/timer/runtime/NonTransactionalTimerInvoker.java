@@ -39,8 +39,6 @@ package org.fabric3.implementation.timer.runtime;
 
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.InstanceWrapper;
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
@@ -54,12 +52,10 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
 public class NonTransactionalTimerInvoker implements Runnable {
     private TimerComponent component;
     private InvokerMonitor monitor;
-    private ScopeContainer scopeContainer;
 
     public NonTransactionalTimerInvoker(TimerComponent component, InvokerMonitor monitor) {
         this.component = component;
         this.monitor = monitor;
-        this.scopeContainer = component.getScopeContainer();
     }
 
     public void run() {
@@ -67,16 +63,15 @@ public class NonTransactionalTimerInvoker implements Runnable {
         WorkContext workContext = new WorkContext();
         CallFrame frame = new CallFrame();
         workContext.addCallFrame(frame);
-        InstanceWrapper wrapper;
+        Object instance;
         try {
-            wrapper = scopeContainer.getWrapper(component, workContext);
+            instance = component.getInstance(workContext);
         } catch (InstanceLifecycleException e) {
             monitor.initError(e);
             throw new InvocationRuntimeException(e);
         }
 
         try {
-            Object instance = wrapper.getInstance();
             WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
             try {
                 ((Runnable) instance).run();
@@ -88,7 +83,7 @@ public class NonTransactionalTimerInvoker implements Runnable {
             }
         } finally {
             try {
-                scopeContainer.returnWrapper(component, workContext, wrapper);
+                component.releaseInstance(instance, workContext);
             } catch (InstanceDestructionException e) {
                 monitor.disposeError(e);
                 //noinspection ThrowFromFinallyBlock

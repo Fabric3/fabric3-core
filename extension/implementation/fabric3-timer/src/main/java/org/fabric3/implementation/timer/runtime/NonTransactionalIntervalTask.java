@@ -42,7 +42,6 @@ import java.lang.reflect.Method;
 
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
@@ -75,10 +74,9 @@ public class NonTransactionalIntervalTask implements Task {
         workContext.addCallFrame(FRAME);
         WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
 
-        InstanceWrapper wrapper = null;
+        Object instance = null;
         try {
-            wrapper = component.getScopeContainer().getWrapper(component, workContext);
-            Object instance = wrapper.getInstance();
+            instance = component.getInstance(workContext);
             return (Long) method.invoke(instance);
         } catch (InstanceLifecycleException e) {
             monitor.executeError(e);
@@ -91,9 +89,9 @@ public class NonTransactionalIntervalTask implements Task {
             throw new InvocationRuntimeException(e);
         } finally {
             WorkContextTunnel.setThreadWorkContext(oldWorkContext);
-            if (wrapper != null) {
+            if (instance != null) {
                 try {
-                    component.getScopeContainer().returnWrapper(component, workContext, wrapper);
+                    component.releaseInstance(instance, workContext);
                 } catch (InstanceDestructionException e) {
                     monitor.executeError(e);
                 }

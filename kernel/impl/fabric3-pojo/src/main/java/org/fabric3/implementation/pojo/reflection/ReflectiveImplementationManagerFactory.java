@@ -59,8 +59,8 @@ import org.fabric3.implementation.pojo.injection.ListMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.MapMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.SetMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactory;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManager;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
@@ -73,7 +73,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 /**
  * @version $Rev$ $Date$
  */
-public class ReflectiveInstanceFactoryProvider implements InstanceFactoryProvider {
+public class ReflectiveImplementationManagerFactory implements ImplementationManagerFactory {
     private static final ObjectFactory<?> NULL_FACTORY = new ObjectFactory<Object>() {
         public Object getInstance() {
             return null;
@@ -90,13 +90,13 @@ public class ReflectiveInstanceFactoryProvider implements InstanceFactoryProvide
     private final ClassLoader cl;
     private final boolean reinjectable;
 
-    public ReflectiveInstanceFactoryProvider(Constructor<?> constructor,
-                                             List<Injectable> cdiSources,
-                                             Map<InjectionSite, Injectable> postConstruction,
-                                             Method initMethod,
-                                             Method destroyMethod,
-                                             boolean reinjectable,
-                                             ClassLoader cl) {
+    public ReflectiveImplementationManagerFactory(Constructor<?> constructor,
+                                                  List<Injectable> cdiSources,
+                                                  Map<InjectionSite, Injectable> postConstruction,
+                                                  Method initMethod,
+                                                  Method destroyMethod,
+                                                  boolean reinjectable,
+                                                  ClassLoader cl) {
         this.implementationClass = constructor.getDeclaringClass();
         this.constructor = constructor;
         this.cdiSources = cdiSources;
@@ -106,6 +106,21 @@ public class ReflectiveInstanceFactoryProvider implements InstanceFactoryProvide
         this.reinjectable = reinjectable;
         this.cl = cl;
 
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public ImplementationManager createManager() {
+        ObjectFactory<?> factory = new ReflectiveObjectFactory(constructor, getConstructorParameterFactories(cdiSources));
+        Map<Injectable, Injector<Object>> mappings = createInjectorMappings();
+
+        Injectable[] attributes = mappings.keySet().toArray(new Injectable[mappings.size()]);
+        Injector<Object>[] injectors = mappings.values().toArray(new Injector[mappings.size()]);
+
+        return new ReflectiveImplementationManager(factory, attributes, injectors, initInvoker, destroyInvoker, reinjectable, cl);
+    }
+
+    public Class<?> getImplementationClass() {
+        return implementationClass;
     }
 
     public void startUpdate() {
@@ -234,21 +249,6 @@ public class ReflectiveInstanceFactoryProvider implements InstanceFactoryProvide
         }
     }
 
-    public Class<?> getImplementationClass() {
-        return implementationClass;
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public InstanceFactory createFactory() {
-        ObjectFactory<?> factory = new ReflectiveObjectFactory(constructor, getConstructorParameterFactories(cdiSources));
-        Map<Injectable, Injector<Object>> mappings = createInjectorMappings();
-
-        Injectable[] attributes = mappings.keySet().toArray(new Injectable[mappings.size()]);
-        Injector<Object>[] injectors = mappings.values().toArray(new Injector[mappings.size()]);
-
-        return new ReflectiveInstanceFactory(factory, attributes, injectors, initInvoker, destroyInvoker, reinjectable, cl);
-    }
-
     /**
      * Returns an ordered array of object factories for the parameters of the constructor used to instantiate an instance.
      *
@@ -350,7 +350,6 @@ public class ReflectiveInstanceFactoryProvider implements InstanceFactoryProvide
     }
 
     // FIXME this is a hack until can replace getMemberType/getGenericType as they assume a single injection site
-
     private InjectionSite findInjectionSite(Injectable attribute) {
         // try constructor
         for (int i = 0; i < cdiSources.size(); i++) {

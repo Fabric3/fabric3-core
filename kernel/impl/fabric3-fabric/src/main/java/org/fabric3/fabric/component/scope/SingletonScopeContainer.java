@@ -44,6 +44,7 @@
 package org.fabric3.fabric.component.scope;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -58,11 +59,11 @@ import org.oasisopen.sca.annotation.Destroy;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.GroupInitializationException;
-import org.fabric3.spi.component.InstanceInitializationException;
+import org.fabric3.spi.component.InstanceDestructionException;
+import org.fabric3.spi.component.InstanceInitException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.InstanceWrapper;
+import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 
@@ -75,50 +76,51 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
  * @version $Rev: 9039 $ $Date: 2010-05-24 10:22:02 +0200 (Mon, 24 May 2010) $
  */
 public abstract class SingletonScopeContainer extends AbstractScopeContainer {
+    private static final Object EMPTY = new Object();
 
-    private final Map<AtomicComponent, InstanceWrapper> instanceWrappers;
-    // The map of InstanceWrappers to destroy keyed by the deployable composite the component was deployed with.
-    // The queues of InstanceWrappers are ordered by the sequence in which the deployables were deployed.
-    // The InstanceWrappers themselves are ordered by the sequence in which they were instantiated.
-    private final Map<QName, List<InstanceWrapper>> destroyQueues;
+    private final Map<ScopedComponent, Object> instances;
+    // The map of instance/component pairs to destroy keyed by the deployable composite the component was deployed with.
+    // The queues of instance/component pairs are ordered by the sequence in which the deployables were deployed.
+    // The instance/component pairs themselves are ordered by the sequence in which they were instantiated.
+    private final Map<QName, List<Pair>> destroyQueues;
 
     // the queue of components to eagerly initialize in each group
-    private final Map<QName, List<AtomicComponent>> initQueues = new HashMap<QName, List<AtomicComponent>>();
+    private final Map<QName, List<ScopedComponent>> initQueues = new HashMap<QName, List<ScopedComponent>>();
 
     // components that are in the process of being created
-    private final Map<AtomicComponent, CountDownLatch> pending;
+    private final Map<ScopedComponent, CountDownLatch> pending;
 
     protected SingletonScopeContainer(Scope scope, @Monitor ScopeContainerMonitor monitor) {
         super(scope, monitor);
-        instanceWrappers = new ConcurrentHashMap<AtomicComponent, InstanceWrapper>();
-        pending = new ConcurrentHashMap<AtomicComponent, CountDownLatch>();
-        destroyQueues = new LinkedHashMap<QName, List<InstanceWrapper>>();
+        instances = new ConcurrentHashMap<ScopedComponent, Object>();
+        pending = new ConcurrentHashMap<ScopedComponent, CountDownLatch>();
+        destroyQueues = new LinkedHashMap<QName, List<Pair>>();
     }
 
-    public void register(AtomicComponent component) {
+    public void register(ScopedComponent component) {
         super.register(component);
         if (component.isEagerInit()) {
             QName deployable = component.getDeployable();
             synchronized (initQueues) {
-                List<AtomicComponent> initQueue = initQueues.get(deployable);
+                List<ScopedComponent> initQueue = initQueues.get(deployable);
                 if (initQueue == null) {
-                    initQueue = new ArrayList<AtomicComponent>();
+                    initQueue = new ArrayList<ScopedComponent>();
                     initQueues.put(deployable, initQueue);
                 }
                 initQueue.add(component);
             }
         }
-        instanceWrappers.put(component, EMPTY);
+        instances.put(component, EMPTY);
     }
 
-    public void unregister(AtomicComponent component) {
+    public void unregister(ScopedComponent component) {
         super.unregister(component);
         // FIXME should this component be destroyed already or do we need to stop it?
-        instanceWrappers.remove(component);
+        instances.remove(component);
         if (component.isEagerInit()) {
             QName deployable = component.getDeployable();
             synchronized (initQueues) {
-                List<AtomicComponent> initQueue = initQueues.get(deployable);
+                List<ScopedComponent> initQueue = initQueues.get(deployable);
                 initQueue.remove(component);
                 if (initQueue.isEmpty()) {
                     initQueues.remove(deployable);
@@ -134,14 +136,14 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         // are destroyed after the eagerly initialized components (the destroy queues are iterated in reverse order).
         synchronized (destroyQueues) {
             if (!destroyQueues.containsKey(deployable)) {
-                destroyQueues.put(deployable, new ArrayList<InstanceWrapper>());
+                destroyQueues.put(deployable, new ArrayList<Pair>());
             }
         }
     }
 
     public void stopContext(QName deployable, WorkContext workContext) {
         synchronized (destroyQueues) {
-            List<InstanceWrapper> list = destroyQueues.get(deployable);
+            List<Pair> list = destroyQueues.get(deployable);
             if (list == null) {
                 // this can happen with domain scope where a non-leader runtime does not activate a context
                 return;
@@ -159,14 +161,14 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         synchronized (initQueues) {
             initQueues.clear();
         }
-        instanceWrappers.clear();
+        instances.clear();
     }
 
     @SuppressWarnings({"SynchronizationOnLocalVariableOrMethodParameter"})
-    public InstanceWrapper getWrapper(AtomicComponent component, WorkContext workContext) throws InstanceLifecycleException {
-        InstanceWrapper wrapper = instanceWrappers.get(component);
-        if (wrapper != EMPTY && wrapper != null) {
-            return wrapper;
+    public Object getInstance(ScopedComponent component, WorkContext workContext) throws InstanceLifecycleException {
+        Object instance = instances.get(component);
+        if (instance != EMPTY && instance != null) {
+            return instance;
         }
         CountDownLatch latch;
         // Avoid race condition where two or more threads attempt to initialize the component instance concurrently.
@@ -179,64 +181,61 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
                     latch.await(5, TimeUnit.MINUTES);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    throw new InstanceInitializationException("Error creating instance for: " + component.getUri(), e);
+                    throw new InstanceInitException("Error creating instance for: " + component.getUri(), e);
                 }
                 // an instance wrapper is now available as the instantiation has completed
-                return instanceWrappers.get(component);
+                return instances.get(component);
             } else {
                 latch = new CountDownLatch(1);
                 pending.put(component, latch);
             }
         }
         try {
-            wrapper = component.createInstanceWrapper(workContext);
+            instance = component.createInstance(workContext);
             // some component instances such as system singletons may already be started
-            if (!wrapper.isStarted()) {
-                wrapper.start(workContext);
-                List<InstanceWrapper> queue;
-                QName deployable = component.getDeployable();
-                synchronized (destroyQueues) {
-                    queue = destroyQueues.get(deployable);
-                    if (queue == null) {
-                        // The context has not been initialized. This can happen if two deployable composites are deployed simultaneously and a
-                        // component in the first composite to be deployed references a component in the second composite. In this case,
-                        // create the destroy queue prior to the context being started.
-                        queue = new ArrayList<InstanceWrapper>();
-                        destroyQueues.put(deployable, queue);
-                    }
+            // if (!component.isInstanceStarted()) {
+            component.startInstance(instance, workContext);
+            List<Pair> queue;
+            QName deployable = component.getDeployable();
+            synchronized (destroyQueues) {
+                queue = destroyQueues.get(deployable);
+                if (queue == null) {
+                    // The context has not been initialized. This can happen if two deployable composites are deployed simultaneously and a
+                    // component in the first composite to be deployed references a component in the second composite. In this case,
+                    // create the destroy queue prior to the context being started.
+                    queue = new ArrayList<Pair>();
+                    destroyQueues.put(deployable, queue);
                 }
-                queue.add(wrapper);
             }
-            instanceWrappers.put(component, wrapper);
+            queue.add(new Pair(component, instance));
+            //}
+            instances.put(component, instance);
             latch.countDown();
-            return wrapper;
+            return instance;
         } catch (ObjectCreationException e) {
-            throw new InstanceInitializationException("Error creating instance for: " + component.getUri(), e);
+            throw new InstanceInitException("Error creating instance for: " + component.getUri(), e);
         } finally {
             pending.remove(component);
         }
     }
 
-    public void returnWrapper(AtomicComponent component, WorkContext workContext, InstanceWrapper wrapper) {
+    public void releaseInstance(ScopedComponent component, Object instance, WorkContext workContext) {
+        // no-op
     }
 
-    public void updated(AtomicComponent component, String referenceName) {
-        InstanceWrapper wrapper = instanceWrappers.get(component);
-        if (wrapper != null) {
-            wrapper.updated(referenceName);
+    public List<Object> getActiveInstances(ScopedComponent component) {
+        Object instance = instances.get(component);
+        if (instance == null || instance == EMPTY) {
+            return Collections.emptyList();
         }
-    }
-
-    public void removed(AtomicComponent component, String referenceName) {
-        InstanceWrapper wrapper = instanceWrappers.get(component);
-        if (wrapper != null) {
-            wrapper.removed(referenceName);
-        }
+        return Collections.singletonList(instance);
     }
 
     public void reinject() throws InstanceLifecycleException {
-        for (InstanceWrapper instanceWrapper : instanceWrappers.values()) {
-            instanceWrapper.reinject();
+        for (Map.Entry<ScopedComponent, Object> entry : instances.entrySet()) {
+            ScopedComponent component = entry.getKey();
+            Object instance = entry.getValue();
+            component.reinject(instance);
         }
     }
 
@@ -244,10 +243,10 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         synchronized (destroyQueues) {
             // Shutdown all instances by traversing the deployable composites in reverse order they were deployed and interating instances within
             // each composite in the reverse order they were instantiated. This guarantees dependencies are disposed after the dependent instance.
-            List<List<InstanceWrapper>> queues = new ArrayList<List<InstanceWrapper>>(destroyQueues.values());
-            ListIterator<List<InstanceWrapper>> iter = queues.listIterator(queues.size());
+            List<List<Pair>> queues = new ArrayList<List<Pair>>(destroyQueues.values());
+            ListIterator<List<Pair>> iter = queues.listIterator(queues.size());
             while (iter.hasPrevious()) {
-                List<InstanceWrapper> queue = iter.previous();
+                List<Pair> queue = iter.previous();
                 destroyInstances(queue, workContext);
             }
         }
@@ -255,11 +254,11 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
 
     private void eagerInitialize(WorkContext workContext, QName contextId) throws GroupInitializationException {
         // get and clone initialization queue
-        List<AtomicComponent> initQueue;
+        List<ScopedComponent> initQueue;
         synchronized (initQueues) {
             initQueue = initQueues.get(contextId);
             if (initQueue != null) {
-                initQueue = new ArrayList<AtomicComponent>(initQueue);
+                initQueue = new ArrayList<ScopedComponent>(initQueue);
             }
         }
         if (initQueue != null) {
@@ -275,11 +274,11 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
      * @param workContext the work context in which to initialize the components
      * @throws GroupInitializationException if one or more components threw an exception during initialization
      */
-    private void initializeComponents(List<AtomicComponent> components, WorkContext workContext) throws GroupInitializationException {
+    private void initializeComponents(List<ScopedComponent> components, WorkContext workContext) throws GroupInitializationException {
         List<Exception> causes = null;
-        for (AtomicComponent component : components) {
+        for (ScopedComponent component : components) {
             try {
-                getWrapper(component, workContext);
+                getInstance(component, workContext);
             } catch (Exception e) {
                 monitor.eagerInitializationError(component.getUri(), e);
                 if (causes == null) {
@@ -293,33 +292,42 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         }
     }
 
-
-    private static final InstanceWrapper EMPTY = new InstanceWrapper() {
-        public Object getInstance() {
-            return null;
+    /**
+     * Shut down an ordered list of instances. The list passed to this method is treated as a live, mutable list so any instances added to this list
+     * as shutdown is occurring will also be shut down.
+     *
+     * @param instances   the list of instances to shutdown
+     * @param workContext the current work context
+     */
+    @SuppressWarnings({"SynchronizationOnLocalVariableOrMethodParameter"})
+    private void destroyInstances(List<Pair> instances, WorkContext workContext) {
+        while (true) {
+            Pair toDestroy;
+            synchronized (instances) {
+                if (instances.size() == 0) {
+                    return;
+                }
+                toDestroy = instances.remove(instances.size() - 1);
+            }
+            try {
+                ScopedComponent component = toDestroy.component;
+                Object instance = toDestroy.instance;
+                component.stopInstance(instance, workContext);
+            } catch (InstanceDestructionException e) {
+                // log the error from destroy but continue
+                monitor.destructionError(e);
+            }
         }
+    }
 
-        public boolean isStarted() {
-            return true;
+
+    private class Pair {
+        private ScopedComponent component;
+        private Object instance;
+
+        private Pair(ScopedComponent component, Object instance) {
+            this.component = component;
+            this.instance = instance;
         }
-
-        public void start(WorkContext workContext) {
-        }
-
-        public void stop(WorkContext workContext) {
-        }
-
-        public void reinject() {
-        }
-
-        public void updated(String referenceName) {
-
-        }
-
-        public void removed(String referenceName) {
-
-        }
-
-    };
-
+    }
 }

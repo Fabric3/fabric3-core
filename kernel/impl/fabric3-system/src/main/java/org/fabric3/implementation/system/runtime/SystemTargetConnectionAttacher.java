@@ -51,7 +51,6 @@ import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.type.java.Signature;
 import org.fabric3.spi.util.UriHelper;
@@ -81,8 +80,7 @@ public class SystemTargetConnectionAttacher implements TargetConnectionAttacher<
         }
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
         Method method = loadMethod(target, component);
-        ScopeContainer scopeContainer = component.getScopeContainer();
-        InvokerEventStreamHandler handler = new InvokerEventStreamHandler(method, component, scopeContainer, loader);
+        InvokerEventStreamHandler handler = new InvokerEventStreamHandler(method, component, loader);
         for (EventStream stream : connection.getEventStreams()) {
             stream.addHandler(handler);
         }

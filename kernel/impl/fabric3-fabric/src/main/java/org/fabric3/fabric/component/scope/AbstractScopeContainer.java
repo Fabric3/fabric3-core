@@ -44,17 +44,12 @@
 package org.fabric3.fabric.component.scope;
 
 
-import java.util.List;
-
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.InstanceDestructionException;
-import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
-import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.component.ScopedComponent;
 
 /**
  * Implements functionality common to scope containers.
@@ -92,40 +87,14 @@ public abstract class AbstractScopeContainer implements ScopeContainer {
         return scope;
     }
 
-    public void register(AtomicComponent component) {
+    public void register(ScopedComponent component) {
     }
 
-    public void unregister(AtomicComponent component) {
+    public void unregister(ScopedComponent component) {
     }
 
     public String toString() {
         return "In state [" + super.toString() + ']';
-    }
-
-    /**
-     * Shut down an ordered list of instances. The list passed to this method is treated as a live, mutable list so any instances added to this list
-     * as shutdown is occurring will also be shut down.
-     *
-     * @param instances   the list of instances to shutdown
-     * @param workContext the current work context
-     */
-    @SuppressWarnings({"SynchronizationOnLocalVariableOrMethodParameter"})
-    protected void destroyInstances(List<InstanceWrapper> instances, WorkContext workContext) {
-        while (true) {
-            InstanceWrapper toDestroy;
-            synchronized (instances) {
-                if (instances.size() == 0) {
-                    return;
-                }
-                toDestroy = instances.remove(instances.size() - 1);
-            }
-            try {
-                toDestroy.stop(workContext);
-            } catch (InstanceDestructionException e) {
-                // log the error from destroy but continue
-                monitor.destructionError(e);
-            }
-        }
     }
 
 

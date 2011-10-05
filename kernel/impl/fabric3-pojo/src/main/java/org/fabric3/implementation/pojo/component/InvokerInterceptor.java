@@ -49,8 +49,6 @@ import java.lang.reflect.Method;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.InstanceWrapper;
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
@@ -65,22 +63,17 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
 public class InvokerInterceptor implements Interceptor {
     private Method operation;
     private AtomicComponent component;
-    private ScopeContainer scopeContainer;
     private ClassLoader targetTCCLClassLoader;
 
     /**
      * Creates a new interceptor instance.
      *
-     * @param operation      the method to invoke on the target instance
-     * @param component      the target component
-     * @param scopeContainer the ScopeContainer that manages implementation instances for the target component
+     * @param operation the method to invoke on the target instance
+     * @param component the target component
      */
-    public InvokerInterceptor(Method operation,
-                              AtomicComponent component,
-                              ScopeContainer scopeContainer) {
+    public InvokerInterceptor(Method operation, AtomicComponent component) {
         this.operation = operation;
         this.component = component;
-        this.scopeContainer = scopeContainer;
     }
 
     /**
@@ -88,16 +81,11 @@ public class InvokerInterceptor implements Interceptor {
      *
      * @param operation             the method to invoke on the target instance
      * @param component             the target component
-     * @param scopeContainer        the ScopeContainer that manages implementation instances for the target component
      * @param targetTCCLClassLoader the classloader to set the TCCL to before dispatching.
      */
-    public InvokerInterceptor(Method operation,
-                              AtomicComponent component,
-                              ScopeContainer scopeContainer,
-                              ClassLoader targetTCCLClassLoader) {
+    public InvokerInterceptor(Method operation, AtomicComponent component, ClassLoader targetTCCLClassLoader) {
         this.operation = operation;
         this.component = component;
-        this.scopeContainer = scopeContainer;
         this.targetTCCLClassLoader = targetTCCLClassLoader;
     }
 
@@ -111,19 +99,18 @@ public class InvokerInterceptor implements Interceptor {
 
     public Message invoke(Message msg) {
         WorkContext workContext = msg.getWorkContext();
-        InstanceWrapper wrapper;
+        Object instance;
         try {
-            wrapper = scopeContainer.getWrapper(component, workContext);
+            instance = component.getInstance(workContext);
         } catch (InstanceLifecycleException e) {
             throw new InvocationRuntimeException(e);
         }
 
         try {
-            Object instance = wrapper.getInstance();
             return invoke(msg, workContext, instance);
         } finally {
             try {
-                scopeContainer.returnWrapper(component, workContext, wrapper);
+                component.releaseInstance(instance, workContext);
             } catch (ComponentException e) {
                 throw new InvocationRuntimeException(e);
             }

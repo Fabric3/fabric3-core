@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
 import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.implementation.timer.provision.TimerType;
 import org.fabric3.model.type.component.Scope;
@@ -201,12 +201,12 @@ public class TimerComponentTestCase extends TestCase {
         ScopeContainer container = EasyMock.createNiceMock(ScopeContainer.class);
         EasyMock.expect(container.getScope()).andReturn(Scope.COMPOSITE);
 
-        InstanceFactoryProvider provider = EasyMock.createMock(InstanceFactoryProvider.class);
-        EasyMock.expect(provider.getImplementationClass()).andReturn((Class) TimerInstance.class);
+        ImplementationManagerFactory factory = EasyMock.createMock(ImplementationManagerFactory.class);
+        EasyMock.expect(factory.getImplementationClass()).andReturn((Class) TimerInstance.class);
 
-        EasyMock.replay(container, monitor, provider);
+        EasyMock.replay(container, monitor, factory);
 
-        return new TimerComponent(null, null, data, TimerInstance.class, transactional, provider, container, timerService, null, null, null, monitor);
+        return new TimerComponent(null, null, data, TimerInstance.class, transactional, factory, container, timerService, null, null, null, monitor);
     }
 
     private interface TimerInstance extends Runnable {

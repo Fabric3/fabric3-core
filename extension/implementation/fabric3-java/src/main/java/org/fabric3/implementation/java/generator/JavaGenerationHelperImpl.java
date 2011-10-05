@@ -48,7 +48,7 @@ import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
+import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.model.type.component.CallbackDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Scope;
@@ -88,18 +88,18 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         String scope = type.getScope();
 
         // create the instance factory definition
-        InstanceFactoryDefinition factoryDefinition = new InstanceFactoryDefinition();
-        factoryDefinition.setReinjectable(Scope.COMPOSITE.getScope().equals(scope));
-        factoryDefinition.setConstructor(type.getConstructor());
-        factoryDefinition.setInitMethod(type.getInitMethod());
-        factoryDefinition.setDestroyMethod(type.getDestroyMethod());
-        factoryDefinition.setImplementationClass(implementation.getImplementationClass());
-        helper.processInjectionSites(type, factoryDefinition);
+        ImplementationManagerDefinition managerDefinition = new ImplementationManagerDefinition();
+        managerDefinition.setReinjectable(Scope.COMPOSITE.getScope().equals(scope));
+        managerDefinition.setConstructor(type.getConstructor());
+        managerDefinition.setInitMethod(type.getInitMethod());
+        managerDefinition.setDestroyMethod(type.getDestroyMethod());
+        managerDefinition.setImplementationClass(implementation.getImplementationClass());
+        helper.processInjectionSites(type, managerDefinition);
 
         // create the physical component definition
         definition.setScope(scope);
         definition.setEagerInit(type.isEagerInit());
-        definition.setProviderDefinition(factoryDefinition);
+        definition.setManagerDefinition(managerDefinition);
 
         definition.setManaged(type.isManaged());
         definition.setManagementInfo(type.getManagementInfo());

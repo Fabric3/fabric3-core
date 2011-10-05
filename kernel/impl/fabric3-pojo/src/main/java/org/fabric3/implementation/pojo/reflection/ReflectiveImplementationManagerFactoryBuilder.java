@@ -52,9 +52,9 @@ import java.util.Map;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryBuilder;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryBuilderException;
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationBuildException;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactoryBuilder;
+import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
@@ -67,15 +67,14 @@ import org.fabric3.spi.model.type.java.Signature;
  * @version $Date$ $Revision$
  */
 @EagerInit
-public class ReflectiveInstanceFactoryBuilder implements InstanceFactoryBuilder {
+public class ReflectiveImplementationManagerFactoryBuilder implements ImplementationManagerFactoryBuilder {
     private ClassLoaderRegistry classLoaderRegistry;
 
-    public ReflectiveInstanceFactoryBuilder(@Reference ClassLoaderRegistry classLoaderRegistry) {
+    public ReflectiveImplementationManagerFactoryBuilder(@Reference ClassLoaderRegistry classLoaderRegistry) {
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    @SuppressWarnings("unchecked")
-    public ReflectiveInstanceFactoryProvider build(InstanceFactoryDefinition definition, ClassLoader cl) throws InstanceFactoryBuilderException {
+    public ReflectiveImplementationManagerFactory build(ImplementationManagerDefinition definition, ClassLoader cl) throws ImplementationBuildException {
 
         try {
             String className = definition.getImplementationClass();
@@ -86,14 +85,14 @@ public class ReflectiveInstanceFactoryBuilder implements InstanceFactoryBuilder 
             Injectable[] cdiSources = new Injectable[ctr.getParameterTypes().length];
             for (Map.Entry<InjectionSite, Injectable> entry : injectionSites.entrySet()) {
                 InjectionSite site = entry.getKey();
-                Injectable attribute = entry.getValue();
+                Injectable injectable = entry.getValue();
                 ConstructorInjectionSite constructorSite = (ConstructorInjectionSite) site;
-                cdiSources[constructorSite.getParam()] = attribute;
+                cdiSources[constructorSite.getParam()] = injectable;
             }
             for (int i = 0; i < cdiSources.length; i++) {
                 if (cdiSources[i] == null) {
                     String clazz = ctr.getName();
-                    throw new InstanceFactoryBuilderException("No injection value for constructor parameter " + i + " in class " + clazz, clazz);
+                    throw new ImplementationBuildException("No injection value for constructor parameter " + i + " in class " + clazz, clazz);
                 }
             }
 
@@ -104,11 +103,11 @@ public class ReflectiveInstanceFactoryBuilder implements InstanceFactoryBuilder 
             List<Injectable> construction = Arrays.asList(cdiSources);
             boolean reinjectable = definition.isReinjectable();
 
-            return new ReflectiveInstanceFactoryProvider(ctr, construction, postConstruction, initMethod, destroyMethod, reinjectable, cl);
+            return new ReflectiveImplementationManagerFactory(ctr, construction, postConstruction, initMethod, destroyMethod, reinjectable, cl);
         } catch (ClassNotFoundException ex) {
-            throw new InstanceFactoryBuilderException(ex);
+            throw new ImplementationBuildException(ex);
         } catch (NoSuchMethodException ex) {
-            throw new InstanceFactoryBuilderException(ex);
+            throw new ImplementationBuildException(ex);
         }
     }
 

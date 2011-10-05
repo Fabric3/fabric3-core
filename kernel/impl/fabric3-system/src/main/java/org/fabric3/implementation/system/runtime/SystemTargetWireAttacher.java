@@ -56,7 +56,6 @@ import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
@@ -83,7 +82,6 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemTarget
         URI targetId = UriHelper.getDefragmentedName(target.getUri());
         SystemComponent targetComponent = (SystemComponent) manager.getComponent(targetId);
 
-        ScopeContainer scopeContainer = targetComponent.getScopeContainer();
         Class<?> implementationClass = targetComponent.getImplementationClass();
         ClassLoader loader = implementationClass.getClassLoader();
 
@@ -111,7 +109,7 @@ public class SystemTargetWireAttacher implements TargetWireAttacher<SystemTarget
                 throw new WireAttachException("No matching method found", sourceUri, targetUri, e);
             }
 
-            SystemInvokerInterceptor interceptor = new SystemInvokerInterceptor(method, scopeContainer, targetComponent);
+            SystemInvokerInterceptor interceptor = new SystemInvokerInterceptor(method, targetComponent);
             chain.addInterceptor(interceptor);
         }
     }

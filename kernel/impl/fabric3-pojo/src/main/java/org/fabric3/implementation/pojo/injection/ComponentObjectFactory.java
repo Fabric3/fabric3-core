@@ -45,7 +45,6 @@ package org.fabric3.implementation.pojo.injection;
 
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -56,17 +55,15 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  */
 public class ComponentObjectFactory implements ObjectFactory<Object> {
     private final AtomicComponent component;
-    private final ScopeContainer scopeContainer;
 
-    public ComponentObjectFactory(AtomicComponent component, ScopeContainer scopeContainer) {
+    public ComponentObjectFactory(AtomicComponent component) {
         this.component = component;
-        this.scopeContainer = scopeContainer;
     }
 
     public Object getInstance() throws ObjectCreationException {
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
         try {
-            return scopeContainer.getWrapper(component, workContext).getInstance();
+            return component.getInstance(workContext);
         } catch (InstanceLifecycleException e) {
             throw new ObjectCreationException(e);
         }

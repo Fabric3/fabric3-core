@@ -84,11 +84,10 @@ import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.RegistrationException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
+import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.invocation.WorkContext;
@@ -221,7 +220,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         if (RuntimeServices.class.equals(service)) {
             return service.cast(this);
         }
-        AtomicComponent component = (AtomicComponent) componentManager.getComponent(uri);
+        ScopedComponent component = (ScopedComponent) componentManager.getComponent(uri);
         if (component == null) {
             return null;
         }
@@ -229,8 +228,8 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         WorkContext workContext = new WorkContext();
         WorkContext oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
-            InstanceWrapper wrapper = scopeContainer.getWrapper(component, workContext);
-            return service.cast(wrapper.getInstance());
+            Object instance = component.getInstance(workContext);
+            return service.cast(instance);
         } catch (InstanceLifecycleException e) {
             // this is an error with the runtime and not something that is recoverable
             throw new AssertionError(e);

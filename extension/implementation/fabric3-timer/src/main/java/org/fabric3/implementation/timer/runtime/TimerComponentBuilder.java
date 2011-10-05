@@ -48,9 +48,9 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryBuilder;
-import org.fabric3.implementation.pojo.instancefactory.InstanceFactoryProvider;
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactoryBuilder;
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
+import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
 import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.spi.builder.BuilderException;
@@ -68,7 +68,7 @@ import org.fabric3.timer.spi.TimerService;
 @EagerInit
 public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDefinition, TimerComponent> {
     private ScopeRegistry scopeRegistry;
-    private InstanceFactoryBuilder factoryBuilder;
+    private ImplementationManagerFactoryBuilder factoryBuilder;
     private TimerService timerService;
     private TransactionManager tm;
     private HostInfo info;
@@ -76,7 +76,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
     private InvokerMonitor monitor;
 
     public TimerComponentBuilder(@Reference ScopeRegistry scopeRegistry,
-                                 @Reference InstanceFactoryBuilder factoryBuilder,
+                                 @Reference ImplementationManagerFactoryBuilder factoryBuilder,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
                                  @Reference PropertyObjectFactoryBuilder propertyBuilder,
                                  @Reference TimerService timerService,
@@ -107,16 +107,16 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         String scopeName = definition.getScope();
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
 
-        InstanceFactoryDefinition factoryDefinition = definition.getFactoryDefinition();
+        ImplementationManagerDefinition managerDefinition = definition.getFactoryDefinition();
         Class<?> implClass;
         try {
-            implClass = classLoader.loadClass(factoryDefinition.getImplementationClass());
+            implClass = classLoader.loadClass(managerDefinition.getImplementationClass());
         } catch (ClassNotFoundException e) {
             throw new BuilderException(e);
         }
-        InstanceFactoryProvider provider = factoryBuilder.build(factoryDefinition, classLoader);
+        ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition, classLoader);
 
-        createPropertyFactories(definition, provider);
+        createPropertyFactories(definition, factory);
         TimerData data = definition.getTriggerData();
         boolean transactional = definition.isTransactional();
         TimerComponent component = new TimerComponent(uri,
@@ -124,14 +124,14 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
                                                       data,
                                                       implClass,
                                                       transactional,
-                                                      provider,
+                                                      factory,
                                                       scopeContainer,
                                                       timerService,
                                                       tm,
                                                       topologyService,
                                                       info,
                                                       monitor);
-        buildContexts(component, provider);
+        buildContexts(component, factory);
         export(definition, classLoader, component);
         return component;
     }

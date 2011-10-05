@@ -43,6 +43,8 @@
  */
 package org.fabric3.fabric.component.scope;
 
+import java.util.Collections;
+import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.annotation.Destroy;
@@ -52,13 +54,12 @@ import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.component.InstanceDestructionException;
-import org.fabric3.spi.component.InstanceInitializationException;
+import org.fabric3.spi.component.InstanceInitException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.component.ScopeContainer;
+import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 
@@ -86,35 +87,34 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         super.stop();
     }
 
-    public InstanceWrapper getWrapper(AtomicComponent component, WorkContext workContext) throws InstanceLifecycleException {
+    public Object getInstance(ScopedComponent component, WorkContext workContext) throws InstanceLifecycleException {
         try {
-            InstanceWrapper wrapper = component.createInstanceWrapper(workContext);
-            wrapper.start(workContext);
-            return wrapper;
+            Object instance = component.createInstance(workContext);
+            component.startInstance(instance, workContext);
+            return instance;
         } catch (ObjectCreationException e) {
-            throw new InstanceInitializationException("Error creating instance for: " + component.getUri(), e);
+            throw new InstanceInitException("Error creating instance for: " + component.getUri(), e);
         }
     }
 
-    public void returnWrapper(AtomicComponent component, WorkContext workContext, InstanceWrapper wrapper) throws InstanceDestructionException {
-        wrapper.stop(workContext);
+    public void releaseInstance(ScopedComponent component, Object instance, WorkContext workContext) throws InstanceDestructionException {
+        component.stopInstance(instance, workContext);
+    }
+
+    public List<Object> getActiveInstances(ScopedComponent component) {
+        return Collections.emptyList();
     }
 
     public void startContext(QName deployable, WorkContext workContext) throws GroupInitializationException {
-        // do nothing
+        // no-op
     }
 
     public void stopContext(QName deployable, WorkContext workContext) {
-    }
-
-    public void updated(AtomicComponent component, String referenceName) {
-    }
-
-    public void removed(AtomicComponent component, String referenceName) {
-
+        // no-op
     }
 
     public void reinject() {
+        // no-op
     }
 
 }

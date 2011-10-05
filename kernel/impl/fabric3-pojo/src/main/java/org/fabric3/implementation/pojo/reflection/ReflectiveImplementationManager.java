@@ -46,63 +46,73 @@ package org.fabric3.implementation.pojo.reflection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.fabric3.implementation.pojo.instancefactory.ImplementationManager;
 import org.fabric3.spi.component.InstanceDestructionException;
-import org.fabric3.spi.component.InstanceInitializationException;
+import org.fabric3.spi.component.InstanceInitException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.InstanceWrapper;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ReflectiveInstanceWrapper implements InstanceWrapper {
-    private final Object instance;
-    private boolean reinjectable;
-    private final ClassLoader cl;
+public class ReflectiveImplementationManager implements ImplementationManager {
+    private final ObjectFactory<?> constructor;
+    private Injectable[] injectables;
+    private final Injector<Object>[] injectors;
     private final EventInvoker initInvoker;
     private final EventInvoker destroyInvoker;
-    private boolean started;
-    private final Injectable[] attributes;
-    private final Injector<Object>[] injectors;
-    private final Set<Injector<Object>> updatedInjectors;
+    private final ClassLoader cl;
+    private final boolean reinjectable;
+    private Set<Injector<Object>> updatedInjectors;
 
-    public ReflectiveInstanceWrapper(Object instance,
-                                     boolean reinjectable,
-                                     ClassLoader cl,
-                                     EventInvoker initInvoker,
-                                     EventInvoker destroyInvoker,
-                                     Injectable[] attributes,
-                                     Injector<Object>[] injectors) {
-        this.instance = instance;
-        this.reinjectable = reinjectable;
-        this.cl = cl;
+    public ReflectiveImplementationManager(ObjectFactory<?> constructor,
+                                           Injectable[] injectables,
+                                           Injector<Object>[] injectors,
+                                           EventInvoker initInvoker,
+                                           EventInvoker destroyInvoker,
+                                           boolean reinjectable,
+                                           ClassLoader cl) {
+        this.constructor = constructor;
+        this.injectables = injectables;
+        this.injectors = injectors;
         this.initInvoker = initInvoker;
         this.destroyInvoker = destroyInvoker;
-        this.attributes = attributes;
-        this.started = false;
-        this.injectors = injectors;
+        this.reinjectable = reinjectable;
+        this.cl = cl;
         if (reinjectable) {
             this.updatedInjectors = new HashSet<Injector<Object>>();
         } else {
             this.updatedInjectors = null;
         }
+
     }
 
-    public Object getInstance() {
-        assert started;
-        return instance;
+    public Object newInstance(WorkContext workContext) throws ObjectCreationException {
+        // push the work context onto the thread when calling the user object
+        ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(cl);
+        WorkContext oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
+        try {
+            Object instance = constructor.getInstance();
+            if (injectors != null) {
+                for (Injector<Object> injector : injectors) {
+                    injector.inject(instance);
+                }
+            }
+            return instance;
+        } finally {
+            WorkContextTunnel.setThreadWorkContext(oldContext);
+            Thread.currentThread().setContextClassLoader(oldCl);
+        }
     }
 
-    public boolean isStarted() {
-        return started;
-    }
 
-    public void start(WorkContext context) throws InstanceInitializationException {
-        assert !started;
+    public void start(Object instance, WorkContext context) throws InstanceInitException {
         if (initInvoker != null) {
             ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
             WorkContext oldWorkContext = WorkContextTunnel.getThreadWorkContext();
@@ -111,18 +121,16 @@ public class ReflectiveInstanceWrapper implements InstanceWrapper {
                 WorkContextTunnel.setThreadWorkContext(context);
                 initInvoker.invokeEvent(instance);
             } catch (ObjectCallbackException e) {
-                throw new InstanceInitializationException(e.getMessage(), e);
+                throw new InstanceInitException(e.getMessage(), e);
             } finally {
                 Thread.currentThread().setContextClassLoader(oldCl);
                 WorkContextTunnel.setThreadWorkContext(oldWorkContext);
             }
         }
-        started = true;
     }
 
 
-    public void stop(WorkContext context) throws InstanceDestructionException {
-        assert started;
+    public void stop(Object instance, WorkContext context) throws InstanceDestructionException {
         WorkContext oldWorkContext = WorkContextTunnel.getThreadWorkContext();
         try {
             if (destroyInvoker != null) {
@@ -138,12 +146,10 @@ public class ReflectiveInstanceWrapper implements InstanceWrapper {
             }
         } catch (ObjectCallbackException e) {
             throw new InstanceDestructionException(e.getMessage(), e);
-        } finally {
-            started = false;
         }
     }
 
-    public void reinject() throws InstanceLifecycleException {
+    public void reinject(Object instance) throws InstanceLifecycleException {
         if (!reinjectable) {
             throw new IllegalStateException("Implementation is not reinjectable");
         }
@@ -157,12 +163,12 @@ public class ReflectiveInstanceWrapper implements InstanceWrapper {
         }
     }
 
-    public void updated(String referenceName) {
+    public void updated(Object instance, String referenceName) {
         if (instance != null && !reinjectable) {
             throw new IllegalStateException("Implementation is not reinjectable");
         }
-        for (int i = 0; i < attributes.length; i++) {
-            Injectable attribute = attributes[i];
+        for (int i = 0; i < injectables.length; i++) {
+            Injectable attribute = injectables[i];
             if (attribute.getName().equals(referenceName)) {
                 Injector<Object> injector = injectors[i];
                 if (instance != null) {
@@ -172,12 +178,12 @@ public class ReflectiveInstanceWrapper implements InstanceWrapper {
         }
     }
 
-    public void removed(String referenceName) {
+    public void removed(Object instance, String referenceName) {
         if (instance != null && !reinjectable) {
             throw new IllegalStateException("Implementation is not reinjectable");
         }
-        for (int i = 0; i < attributes.length; i++) {
-            Injectable attribute = attributes[i];
+        for (int i = 0; i < injectables.length; i++) {
+            Injectable attribute = injectables[i];
             if (attribute.getName().equals(referenceName)) {
                 Injector<Object> injector = injectors[i];
                 injector.clearObjectFactory();
@@ -188,4 +194,5 @@ public class ReflectiveInstanceWrapper implements InstanceWrapper {
         }
 
     }
+
 }

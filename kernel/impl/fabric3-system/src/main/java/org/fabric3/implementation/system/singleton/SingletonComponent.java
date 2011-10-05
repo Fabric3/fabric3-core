@@ -62,10 +62,10 @@ import org.fabric3.implementation.pojo.injection.ArrayMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.ListMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.SetMultiplicityObjectFactory;
-import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceDestructionException;
-import org.fabric3.spi.component.InstanceInitializationException;
-import org.fabric3.spi.component.InstanceWrapper;
+import org.fabric3.spi.component.InstanceInitException;
+import org.fabric3.spi.component.InstanceLifecycleException;
+import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
@@ -81,11 +81,10 @@ import org.fabric3.spi.objectfactory.SingletonObjectFactory;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SingletonComponent implements AtomicComponent {
+public class SingletonComponent implements ScopedComponent {
     private final URI uri;
     private Object instance;
     private Map<Member, Injectable> sites;
-    private InstanceWrapper wrapper;
     private Map<ObjectFactory, Injectable> reinjectionMappings;
     private URI classLoaderId;
     private MonitorLevel level = MonitorLevel.INFO;
@@ -94,7 +93,6 @@ public class SingletonComponent implements AtomicComponent {
     public SingletonComponent(URI componentId, Object instance, Map<InjectionSite, Injectable> mappings) {
         this.uri = componentId;
         this.instance = instance;
-        this.wrapper = new SingletonWrapper(instance);
         this.reinjectionMappings = new HashMap<ObjectFactory, Injectable>();
         initializeInjectionSites(instance, mappings);
     }
@@ -147,21 +145,22 @@ public class SingletonComponent implements AtomicComponent {
         return true;
     }
 
-    public long getMaxIdleTime() {
-        return -1;
+    public Object createInstance(WorkContext workContext) throws ObjectCreationException {
+        return instance;
     }
 
-    public long getMaxAge() {
-        return -1;
-    }
-
-    public InstanceWrapper createInstanceWrapper(WorkContext workContext) throws ObjectCreationException {
-        return wrapper;
+    public void releaseInstance(Object instance, WorkContext workContext) {
+        // no-op
     }
 
     public ObjectFactory<Object> createObjectFactory() {
         return new SingletonObjectFactory<Object>(instance);
     }
+
+    public Object getInstance(WorkContext workContext) {
+        return instance;
+    }
+
 
     public String getName() {
         return uri.toString();
@@ -173,6 +172,25 @@ public class SingletonComponent implements AtomicComponent {
 
     public void setLevel(MonitorLevel level) {
         this.level = level;
+    }
+
+    public void startInstance(Object instance, WorkContext workContext) throws InstanceInitException {
+        // no-op
+    }
+
+    public void stopInstance(Object instance, WorkContext workContext) throws InstanceDestructionException {
+        // no-op
+    }
+
+    public void reinject(Object instance) throws InstanceLifecycleException {
+        for (Map.Entry<ObjectFactory, Injectable> entry : reinjectionMappings.entrySet()) {
+            try {
+                inject(entry.getValue(), entry.getKey());
+            } catch (ObjectCreationException e) {
+                throw new AssertionError(e);
+            }
+        }
+        reinjectionMappings.clear();
     }
 
     /**
@@ -326,84 +344,42 @@ public class SingletonComponent implements AtomicComponent {
         throw new NoSuchFieldException(name);
     }
 
-    private class SingletonWrapper implements InstanceWrapper {
-
-        private final Object instance;
-
-        private SingletonWrapper(Object instance) {
-            this.instance = instance;
-        }
-
-        public Object getInstance() {
-            return instance;
-        }
-
-        public boolean isStarted() {
-            return started.get();
-        }
-
-        public void start(WorkContext workContext) throws InstanceInitializationException {
-        }
-
-        public void stop(WorkContext workContext) throws InstanceDestructionException {
-        }
-
-        public void reinject() {
-            for (Map.Entry<ObjectFactory, Injectable> entry : reinjectionMappings.entrySet()) {
-                try {
-                    inject(entry.getValue(), entry.getKey());
-                } catch (ObjectCreationException e) {
-                    throw new AssertionError(e);
-                }
-            }
-            reinjectionMappings.clear();
-        }
-
-        /**
-         * Injects a new value on a field or method of the instance.
-         *
-         * @param attribute the InjectableAttribute defining the field or method
-         * @param factory   the ObjectFactory that returns the value to inject
-         * @throws ObjectCreationException if an error occurs during injection
-         */
-        private void inject(Injectable attribute, ObjectFactory factory) throws ObjectCreationException {
-            for (Map.Entry<Member, Injectable> entry : sites.entrySet()) {
-                if (entry.getValue().equals(attribute)) {
-                    Member member = entry.getKey();
-                    if (member instanceof Field) {
-                        try {
-                            Object param = factory.getInstance();
-                            ((Field) member).set(instance, param);
-                        } catch (IllegalAccessException e) {
-                            // should not happen as accessibility is already set
-                            throw new ObjectCreationException(e);
-                        }
-                    } else if (member instanceof Method) {
-                        try {
-                            Object param = factory.getInstance();
-                            Method method = (Method) member;
-                            method.invoke(instance, param);
-                        } catch (IllegalAccessException e) {
-                            // should not happen as accessibility is already set
-                            throw new ObjectCreationException(e);
-                        } catch (InvocationTargetException e) {
-                            throw new ObjectCreationException(e);
-                        }
-                    } else {
-                        // programming error
-                        throw new ObjectCreationException("Unsupported member type" + member);
+    /**
+     * Injects a new value on a field or method of the instance.
+     *
+     * @param attribute the InjectableAttribute defining the field or method
+     * @param factory   the ObjectFactory that returns the value to inject
+     * @throws ObjectCreationException if an error occurs during injection
+     */
+    private void inject(Injectable attribute, ObjectFactory factory) throws ObjectCreationException {
+        for (Map.Entry<Member, Injectable> entry : sites.entrySet()) {
+            if (entry.getValue().equals(attribute)) {
+                Member member = entry.getKey();
+                if (member instanceof Field) {
+                    try {
+                        Object param = factory.getInstance();
+                        ((Field) member).set(instance, param);
+                    } catch (IllegalAccessException e) {
+                        // should not happen as accessibility is already set
+                        throw new ObjectCreationException(e);
                     }
+                } else if (member instanceof Method) {
+                    try {
+                        Object param = factory.getInstance();
+                        Method method = (Method) member;
+                        method.invoke(instance, param);
+                    } catch (IllegalAccessException e) {
+                        // should not happen as accessibility is already set
+                        throw new ObjectCreationException(e);
+                    } catch (InvocationTargetException e) {
+                        throw new ObjectCreationException(e);
+                    }
+                } else {
+                    // programming error
+                    throw new ObjectCreationException("Unsupported member type" + member);
                 }
             }
         }
-
-        public void updated(String referenceName) {
-            // no-op
-        }
-
-        public void removed(String referenceName) {
-            // no-op
-        }
-
     }
+
 }

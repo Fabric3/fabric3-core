@@ -43,23 +43,22 @@
  */
 package org.fabric3.implementation.pojo.instancefactory;
 
-import org.fabric3.implementation.pojo.provision.InstanceFactoryDefinition;
+import org.fabric3.spi.builder.BuilderException;
 
 /**
- * Creates instance factory providers.
+ * The builder exception for IF provider.
  *
  * @version $Revision$ $Date$
  */
-public interface InstanceFactoryBuilder {
+public class ImplementationBuildException extends BuilderException {
+    private static final long serialVersionUID = -2582100608101918880L;
 
-    /**
-     * Builds an instance factory provider from a definition.
-     *
-     * @param definition the definition that describes the provider
-     * @param classLoader       the classloader to use to load any implementation classes
-     * @return a provider built from the supplied definition
-     * @throws InstanceFactoryBuilderException
-     *          if there was a problem with the definition
-     */
-    InstanceFactoryProvider build(InstanceFactoryDefinition definition, ClassLoader classLoader) throws InstanceFactoryBuilderException;
+    public ImplementationBuildException(String message, String identifier) {
+        super(message, identifier);
+    }
+
+    public ImplementationBuildException(Throwable cause) {
+        super(cause);
+    }
+
 }
