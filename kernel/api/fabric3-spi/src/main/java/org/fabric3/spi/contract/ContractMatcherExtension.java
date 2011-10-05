@@ -65,7 +65,7 @@ public interface ContractMatcherExtension<S extends ServiceContract, T extends S
      * these cases, compatibility will include checking if the source contract is a super type of the target contract.
      *
      * @param source       the source contract. Typically, this is the contract specified by a component reference.
-     * @param target       the ctarget contract. Typically this is the contract specified by a service.
+     * @param target       the target contract. Typically this is the contract specified by a service.
      * @param reportErrors true if errors should be reported in the result
      * @return the result
      */
