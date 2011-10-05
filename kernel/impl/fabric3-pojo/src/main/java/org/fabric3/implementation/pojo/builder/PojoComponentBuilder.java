@@ -52,8 +52,6 @@ import org.w3c.dom.Document;
 import org.fabric3.implementation.pojo.component.OASISPojoComponentContext;
 import org.fabric3.implementation.pojo.component.OASISPojoRequestContext;
 import org.fabric3.implementation.pojo.component.PojoComponent;
-import org.fabric3.implementation.pojo.component.PojoComponentContext;
-import org.fabric3.implementation.pojo.component.PojoRequestContext;
 import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 import org.fabric3.model.type.contract.DataType;
@@ -145,22 +143,12 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
     }
 
     protected void buildContexts(PojoComponent component, ImplementationManagerFactory factory) {
-        PojoRequestContext requestContext = new PojoRequestContext();
-        SingletonObjectFactory<PojoRequestContext> requestObjectFactory = new SingletonObjectFactory<PojoRequestContext>(requestContext);
-        factory.setObjectFactory(Injectable.REQUEST_CONTEXT, requestObjectFactory);
-        PojoComponentContext componentContext = new PojoComponentContext(component, requestContext);
-        SingletonObjectFactory<PojoComponentContext> componentObjectFactory = new SingletonObjectFactory<PojoComponentContext>(componentContext);
-        factory.setObjectFactory(Injectable.COMPONENT_CONTEXT, componentObjectFactory);
-
-        OASISPojoRequestContext oasisRequestContext = new OASISPojoRequestContext();
-        SingletonObjectFactory<OASISPojoRequestContext> oasisRequestFactory =
-                new SingletonObjectFactory<OASISPojoRequestContext>(oasisRequestContext);
-        factory.setObjectFactory(Injectable.OASIS_REQUEST_CONTEXT, oasisRequestFactory);
-        OASISPojoComponentContext oasisComponentContext = new OASISPojoComponentContext(component, oasisRequestContext);
-        SingletonObjectFactory<OASISPojoComponentContext> oasisComponentFactory =
-                new SingletonObjectFactory<OASISPojoComponentContext>(oasisComponentContext);
-        factory.setObjectFactory(Injectable.OASIS_COMPONENT_CONTEXT, oasisComponentFactory);
-
+        OASISPojoRequestContext requestContext = new OASISPojoRequestContext();
+        SingletonObjectFactory<OASISPojoRequestContext> requestFactory = new SingletonObjectFactory<OASISPojoRequestContext>(requestContext);
+        factory.setObjectFactory(Injectable.OASIS_REQUEST_CONTEXT, requestFactory);
+        OASISPojoComponentContext componentContext = new OASISPojoComponentContext(component, requestContext);
+        SingletonObjectFactory<OASISPojoComponentContext> componentFactory = new SingletonObjectFactory<OASISPojoComponentContext>(componentContext);
+        factory.setObjectFactory(Injectable.OASIS_COMPONENT_CONTEXT, componentFactory);
     }
 
     @SuppressWarnings({"unchecked"})
