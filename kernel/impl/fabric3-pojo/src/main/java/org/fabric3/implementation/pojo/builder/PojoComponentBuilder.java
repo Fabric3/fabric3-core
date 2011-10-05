@@ -49,8 +49,8 @@ import java.util.List;
 
 import org.w3c.dom.Document;
 
-import org.fabric3.implementation.pojo.component.OASISPojoComponentContext;
-import org.fabric3.implementation.pojo.component.OASISPojoRequestContext;
+import org.fabric3.implementation.pojo.component.PojoComponentContext;
+import org.fabric3.implementation.pojo.component.PojoRequestContext;
 import org.fabric3.implementation.pojo.component.PojoComponent;
 import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
@@ -143,11 +143,11 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
     }
 
     protected void buildContexts(PojoComponent component, ImplementationManagerFactory factory) {
-        OASISPojoRequestContext requestContext = new OASISPojoRequestContext();
-        SingletonObjectFactory<OASISPojoRequestContext> requestFactory = new SingletonObjectFactory<OASISPojoRequestContext>(requestContext);
+        PojoRequestContext requestContext = new PojoRequestContext();
+        SingletonObjectFactory<PojoRequestContext> requestFactory = new SingletonObjectFactory<PojoRequestContext>(requestContext);
         factory.setObjectFactory(Injectable.OASIS_REQUEST_CONTEXT, requestFactory);
-        OASISPojoComponentContext componentContext = new OASISPojoComponentContext(component, requestContext);
-        SingletonObjectFactory<OASISPojoComponentContext> componentFactory = new SingletonObjectFactory<OASISPojoComponentContext>(componentContext);
+        PojoComponentContext componentContext = new PojoComponentContext(component, requestContext);
+        SingletonObjectFactory<PojoComponentContext> componentFactory = new SingletonObjectFactory<PojoComponentContext>(componentContext);
         factory.setObjectFactory(Injectable.OASIS_COMPONENT_CONTEXT, componentFactory);
     }
 

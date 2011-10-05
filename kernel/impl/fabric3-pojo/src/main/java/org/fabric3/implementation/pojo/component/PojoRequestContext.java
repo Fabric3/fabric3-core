@@ -49,7 +49,7 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
 /**
  * @version $Rev$ $Date$
  */
-public class OASISPojoRequestContext implements Fabric3RequestContext {
+public class PojoRequestContext implements Fabric3RequestContext {
     public Subject getSecuritySubject() {
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
         return workContext.getSubject().getJaasSubject();

@@ -52,11 +52,11 @@ import org.oasisopen.sca.ServiceReference;
 /**
  * @version $Rev$ $Date$
  */
-public class OASISPojoComponentContext implements ComponentContext {
+public class PojoComponentContext implements ComponentContext {
     private final PojoComponent component;
-    private final OASISPojoRequestContext requestContext;
+    private final PojoRequestContext requestContext;
 
-    public OASISPojoComponentContext(PojoComponent component, OASISPojoRequestContext requestContext) {
+    public PojoComponentContext(PojoComponent component, PojoRequestContext requestContext) {
         this.component = component;
         this.requestContext = requestContext;
     }
