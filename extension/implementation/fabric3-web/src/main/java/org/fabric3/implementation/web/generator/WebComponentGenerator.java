@@ -201,23 +201,6 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
             }
         }
 
-        //OSOA API
-        Map<String, InjectionSite> mapping = mappings.get(CONTEXT_ATTRIBUTE);
-        if (mapping == null) {
-            mapping = new HashMap<String, InjectionSite>();
-            WebContextInjectionSite site = new WebContextInjectionSite(ComponentContext.class.getName(), SESSION_CONTEXT);
-            mapping.put(SESSION_CONTEXT_SITE, site);
-            mappings.put(CONTEXT_ATTRIBUTE, mapping);
-        }
-        for (Map.Entry<String, Map<InjectionSite, Injectable>> entry : type.getInjectionSites().entrySet()) {
-            for (Map.Entry<InjectionSite, Injectable> siteMap : entry.getValue().entrySet()) {
-                if (siteMap.getValue().equals(Injectable.COMPONENT_CONTEXT)) {
-                    mapping.put(entry.getKey(), siteMap.getKey());
-                }
-            }
-        }
-
-
     }
 
     private void processPropertyValues(LogicalComponent<?> component, WebComponentDefinition physical) {

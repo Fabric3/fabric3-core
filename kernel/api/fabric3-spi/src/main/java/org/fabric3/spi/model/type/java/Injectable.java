@@ -52,8 +52,6 @@ import org.fabric3.model.type.ModelObject;
  */
 public class Injectable extends ModelObject {
     private static final long serialVersionUID = -3313258224983902890L;
-    public static final Injectable COMPONENT_CONTEXT = new Injectable(InjectableType.CONTEXT, "ComponentContext");
-    public static final Injectable REQUEST_CONTEXT = new Injectable(InjectableType.CONTEXT, "OASISRequestContext");
     public static final Injectable OASIS_COMPONENT_CONTEXT = new Injectable(InjectableType.CONTEXT, "OASISComponentContext");
     public static final Injectable OASIS_REQUEST_CONTEXT = new Injectable(InjectableType.CONTEXT, "RequestContext");
 
