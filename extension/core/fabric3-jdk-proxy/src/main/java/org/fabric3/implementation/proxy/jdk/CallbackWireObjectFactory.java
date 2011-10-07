@@ -42,8 +42,6 @@ import java.util.Map;
 
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.WireProxyService;
-import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -56,34 +54,33 @@ import org.fabric3.spi.wire.InvocationChain;
  * @version $Rev$ $Date$
  */
 public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
-    private ScopeContainer container;
+    private Class<T> interfaze;
+    private boolean multiThreaded;
     private WireProxyService proxyService;
     private Map<String, Map<Method, InvocationChain>> mappings;
-    private Class<T> interfaze;
 
     /**
      * Constructor.
      *
-     * @param interfaze    the proxy interface
-     * @param container    the scope container of the component implementation the proxy will be injected on
-     * @param proxyService the service for creating proxies
-     * @param mappings     the callback URI to invocation chain mappings
+     * @param interfaze     the proxy interface
+     * @param multiThreaded if the proxy must be thread safe
+     * @param proxyService  the service for creating proxies
+     * @param mappings      the callback URI to invocation chain mappings
      */
     public CallbackWireObjectFactory(Class<T> interfaze,
-                                     ScopeContainer container,
+                                     boolean multiThreaded,
                                      WireProxyService proxyService,
                                      Map<String, Map<Method, InvocationChain>> mappings) {
         this.interfaze = interfaze;
-        this.container = container;
+        this.multiThreaded = multiThreaded;
         this.proxyService = proxyService;
-        // xcv FIXME REMOVE scope container and pass scope!!!!
         this.mappings = mappings;
     }
 
     public T getInstance() throws ObjectCreationException {
-        if (Scope.COMPOSITE.equals(container.getScope())) {
+        if (multiThreaded) {
             try {
-                return interfaze.cast(proxyService.createCallbackProxy(interfaze, mappings));
+                return interfaze.cast(proxyService.createMultiThreadedCallbackProxy(interfaze, mappings));
             } catch (ProxyCreationException e) {
                 throw new ObjectCreationException(e);
             }
@@ -91,7 +88,8 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
             CallFrame frame = WorkContextTunnel.getThreadWorkContext().peekCallFrame();
             String callbackUri = frame.getCallbackUri();
             Map<Method, InvocationChain> mapping = mappings.get(callbackUri);
-            return interfaze.cast(proxyService.createStatefullCallbackProxy(interfaze, mapping));
+            assert mapping != null;
+            return interfaze.cast(proxyService.createCallbackProxy(interfaze, mapping));
         }
     }
 

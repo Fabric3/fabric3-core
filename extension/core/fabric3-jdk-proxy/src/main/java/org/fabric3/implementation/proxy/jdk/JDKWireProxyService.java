@@ -57,7 +57,6 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.WireProxyService;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
@@ -80,22 +79,22 @@ public class JDKWireProxyService implements WireProxyService {
         return new WireObjectFactory<T>(interfaze, callbackUri, this, mappings);
     }
 
-    public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, ScopeContainer container, URI callbackUri, Wire wire)
+    public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
             throws ProxyCreationException {
         Map<Method, InvocationChain> operationMappings = createInterfaceToWireMapping(interfaze, wire);
         Map<String, Map<Method, InvocationChain>> mappings = new HashMap<String, Map<Method, InvocationChain>>();
         mappings.put(callbackUri.toString(), operationMappings);
-        return new CallbackWireObjectFactory<T>(interfaze, container, this, mappings);
+        return new CallbackWireObjectFactory<T>(interfaze, multiThreaded, this, mappings);
     }
 
     public <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory,
                                                             Class<T> interfaze,
-                                                            ScopeContainer container,
+                                                            boolean multiThreaded,
                                                             URI callbackUri,
                                                             Wire wire) throws ProxyCreationException {
         if (!(factory instanceof CallbackWireObjectFactory)) {
             // a placeholder object factory (i.e. created when the callback is not wired) needs to be replaced 
-            return createCallbackObjectFactory(interfaze, container, callbackUri, wire);
+            return createCallbackObjectFactory(interfaze, multiThreaded, callbackUri, wire);
         }
         CallbackWireObjectFactory<?> callbackFactory = (CallbackWireObjectFactory) factory;
         Map<Method, InvocationChain> operationMappings = createInterfaceToWireMapping(interfaze, wire);
@@ -109,13 +108,14 @@ public class JDKWireProxyService implements WireProxyService {
         return handler.getService();
     }
 
-    public <T> T createCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ProxyCreationException {
+    public <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings)
+            throws ProxyCreationException {
         ClassLoader cl = interfaze.getClassLoader();
         MultiThreadedCallbackInvocationHandler<T> handler = new MultiThreadedCallbackInvocationHandler<T>(interfaze, mappings);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 
-    public <T> T createStatefullCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping) {
+    public <T> T createCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping) {
         ClassLoader cl = interfaze.getClassLoader();
         StatefulCallbackInvocationHandler<T> handler = new StatefulCallbackInvocationHandler<T>(interfaze, mapping);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));

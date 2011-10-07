@@ -46,14 +46,11 @@ import org.fabric3.implementation.drools.provision.DroolsSourceDefinition;
 import org.fabric3.implementation.pojo.builder.KeyInstantiationException;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.WireProxyService;
-import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
-import org.fabric3.spi.component.ScopeContainer;
-import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.objectfactory.ObjectFactory;
@@ -70,18 +67,13 @@ public class DroolsSourceWireAttacher implements SourceWireAttacher<DroolsSource
     private ComponentManager manager;
     private WireProxyService proxyService;
     private ClassLoaderRegistry classLoaderRegistry;
-    private ScopeContainer scopeContainer;
 
     public DroolsSourceWireAttacher(@Reference ComponentManager manager,
                                     @Reference WireProxyService proxyService,
-                                    @Reference ClassLoaderRegistry classLoaderRegistry,
-                                    @Reference ScopeRegistry scopeRegistry) {
+                                    @Reference ClassLoaderRegistry classLoaderRegistry) {
         this.manager = manager;
         this.proxyService = proxyService;
         this.classLoaderRegistry = classLoaderRegistry;
-        // Scope containers are not used by Drools but required by the WireProxyService to support conversational services.
-        // When conversation support is replaced by distributed caching, this dependency can be removed.
-        this.scopeContainer = scopeRegistry.getScopeContainer(Scope.STATELESS);
     }
 
     public void attach(DroolsSourceDefinition sourceDefinition, PhysicalTargetDefinition targetDefinition, Wire wire) throws WiringException {
@@ -152,9 +144,9 @@ public class DroolsSourceWireAttacher implements SourceWireAttacher<DroolsSource
         ObjectFactory<?> factory = source.getObjectFactory(identifier);
         try {
             if (factory == null) {
-                factory = proxyService.createCallbackObjectFactory(type, scopeContainer, callbackUri, wire);
+                factory = proxyService.createCallbackObjectFactory(type, false, callbackUri, wire);
             } else {
-                factory = proxyService.updateCallbackObjectFactory(factory, type, scopeContainer, callbackUri, wire);
+                factory = proxyService.updateCallbackObjectFactory(factory, type, false, callbackUri, wire);
             }
             source.setObjectFactory(identifier, factory);
         } catch (ProxyCreationException e) {

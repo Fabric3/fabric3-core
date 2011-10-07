@@ -49,7 +49,6 @@ import java.util.Map;
 
 import org.oasisopen.sca.ServiceReference;
 
-import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
@@ -75,30 +74,30 @@ public interface WireProxyService {
     /**
      * Create an ObjectFactory that provides proxies for the callback wire.
      *
-     * @param interfaze   the interface the proxy implements
-     * @param container   the the scope container that manages component implementations where proxies created by the object factory will be injected
-     * @param callbackUri the callback service uri
-     * @param wire        the wire to proxy
+     * @param interfaze     the interface the proxy implements
+     * @param multiThreaded if the proxy should be thread-safe
+     * @param callbackUri   the callback service uri
+     * @param wire          the wire to proxy
      * @return an ObjectFactory that will create proxies
      * @throws ProxyCreationException if there was a problem creating the proxy
      */
-    <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, ScopeContainer container, URI callbackUri, Wire wire)
+    <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
             throws ProxyCreationException;
 
     /**
      * Updates an ObjectFactory with an additional callback wire. This is used when multiple clients are wired to a target bidirectional service.
      *
-     * @param factory     the ObjectFactory to update
-     * @param interfaze   the interface the proxy implements
-     * @param container   the the scope container that manages component implementations where proxies created by the object factory will be injected
-     * @param callbackUri the callback service uri
-     * @param wire        the wire to proxy
+     * @param factory       the ObjectFactory to update
+     * @param interfaze     the interface the proxy implements
+     * @param multiThreaded if the proxy should be thread-safe
+     * @param callbackUri   the callback service uri
+     * @param wire          the wire to proxy
      * @return an ObjectFactory that will create proxies
      * @throws ProxyCreationException if there was a problem creating the proxy
      */
     <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory,
                                                      Class<T> interfaze,
-                                                     ScopeContainer container,
+                                                     boolean multiThreaded,
                                                      URI callbackUri,
                                                      Wire wire) throws ProxyCreationException;
 
@@ -122,7 +121,7 @@ public interface WireProxyService {
      * @return the proxy instance
      * @throws ProxyCreationException if an error is encountered during proxy generation
      */
-    <T> T createCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ProxyCreationException;
+    <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ProxyCreationException;
 
     /**
      * Creates a callback proxy that always returns to the same target service
@@ -131,7 +130,7 @@ public interface WireProxyService {
      * @param mapping   the invocation chain mapping for the callback service
      * @return the proxy instance
      */
-    <T> T createStatefullCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping);
+    <T> T createCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping);
 
     /**
      * Cast a proxy to a ServiceReference.

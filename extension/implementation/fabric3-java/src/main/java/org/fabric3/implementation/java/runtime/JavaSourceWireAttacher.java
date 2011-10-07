@@ -47,6 +47,7 @@ import org.fabric3.implementation.pojo.builder.KeyInstantiationException;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.pojo.builder.WireProxyService;
+import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.builder.component.WireAttachException;
@@ -159,11 +160,12 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         URI callbackUri = targetDefinition.getUri();
         ScopeContainer container = source.getScopeContainer();
         ObjectFactory<?> factory = source.getObjectFactory(injectable);
+        boolean multiThreaded = Scope.COMPOSITE.equals(container.getScope());
         try {
             if (factory == null) {
-                factory = proxyService.createCallbackObjectFactory(type, container, callbackUri, wire);
+                factory = proxyService.createCallbackObjectFactory(type, multiThreaded, callbackUri, wire);
             } else {
-                factory = proxyService.updateCallbackObjectFactory(factory, type, container, callbackUri, wire);
+                factory = proxyService.updateCallbackObjectFactory(factory, type, multiThreaded, callbackUri, wire);
             }
             source.setObjectFactory(injectable, factory);
         } catch (ProxyCreationException e) {
