@@ -61,8 +61,11 @@ import org.xml.sax.InputSource;
  * @version $Rev$ $Date$
  */
 public class ContextClassLoaderResolver implements URIResolver {
+    private URIResolver next;
 
-    private URIResolver defaultResolver = new DefaultURIResolver();
+    public ContextClassLoaderResolver(URIResolver next) {
+        this.next = next;
+    }
 
     public InputSource resolveEntity(String targetNamespace, String schemaLocation, String baseUri) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -82,7 +85,7 @@ public class ContextClassLoaderResolver implements URIResolver {
         if (url != null) {
             return createSource(url);
         }
-        return defaultResolver.resolveEntity(targetNamespace, schemaLocation, baseUri);
+        return next.resolveEntity(targetNamespace, schemaLocation, baseUri);
     }
 
     private InputSource createSource(URL url) {

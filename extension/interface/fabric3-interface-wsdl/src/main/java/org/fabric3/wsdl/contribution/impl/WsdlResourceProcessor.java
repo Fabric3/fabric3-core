@@ -40,7 +40,6 @@ package org.fabric3.wsdl.contribution.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +68,6 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
 
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.contribution.StoreException;
@@ -112,7 +110,6 @@ public class WsdlResourceProcessor implements ResourceProcessor {
     private Wsdl4JFactory factory;
     private DocumentBuilderFactory documentBuilderFactory;
     private List<WsdlResourceProcessorExtension> extensions = new ArrayList<WsdlResourceProcessorExtension>();
-    private ContextClassLoaderResolver schemaResolver;
 
     public WsdlResourceProcessor(@Reference ProcessorRegistry registry,
                                  @Reference WsdlContractProcessor processor,
@@ -124,7 +121,6 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         this.factory = factory;
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
-        schemaResolver = new ContextClassLoaderResolver();
     }
 
     @Reference(required = false)
@@ -159,7 +155,6 @@ public class WsdlResourceProcessor implements ResourceProcessor {
                 e.printStackTrace();
             }
         }
-
     }
 
     public void process(Resource resource, IntrospectionContext context) throws InstallException {
@@ -253,7 +248,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
     /**
      * Parses the WSDL document.
      *
-     * @param source  the Soruce for reading the document
+     * @param source  the Source for reading the document
      * @param context the introspection context
      * @return the parsed WSDL
      * @throws InstallException if an unexpected error occurs
@@ -272,8 +267,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
             return definition;
         } catch (WSDLException e) {
             throw new InstallException(e);
-        }
-        finally {
+        } finally {
             locator.close();
         }
     }
@@ -355,7 +349,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
      */
     private XmlSchemaCollection parseSchema(Definition definition, IntrospectionContext context) {
         XmlSchemaCollection collection = new XmlSchemaCollection();
-        collection.setSchemaResolver(schemaResolver);
+        collection.setSchemaResolver(createResolvers(collection));
         try {
             Types types = definition.getTypes();
             if (types == null) {
@@ -367,8 +361,8 @@ public class WsdlResourceProcessor implements ResourceProcessor {
                     Schema schema = (Schema) obj;
                     Element element = schema.getElement();
                     collection.setBaseUri(schema.getDocumentBaseURI());
-                    // create a synthetic id to work around issue where XmlSchema cannot handle elements with the same targetnamespace
-                    String syntheticId = UUID.randomUUID().toString();
+                    // create a synthetic id to work around issue where XmlSchema cannot handle elements with the same target namespace
+                    String syntheticId = definition.getDocumentBaseURI() + "#" + UUID.randomUUID().toString();
                     collection.read(element, syntheticId);
                 }
 
@@ -383,4 +377,12 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         }
         return collection;
     }
+
+    private URIResolver createResolvers(XmlSchemaCollection collection) {
+        DefaultURIResolver defaultResolver = new DefaultURIResolver();
+        ContextClassLoaderResolver classLoaderResolver = new ContextClassLoaderResolver(defaultResolver);
+        return new RelativeUrlResolver(collection, classLoaderResolver);
+    }
+
+
 }

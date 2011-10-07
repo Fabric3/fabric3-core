@@ -42,5 +42,6 @@
         <module>fabric3-jzmq-install</module>
         <module>fabric3-binding-zeromq-library</module>
         <module>fabric3-binding-zeromq</module>
+        <module>fabric3-binding-file</module>
 	</modules>
 </project>
