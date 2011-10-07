@@ -83,7 +83,9 @@ public final class IOHelper {
 
     public static void closeQuietly(Closeable closeable) {
         try {
-            closeable.close();
+            if (closeable != null) {
+                closeable.close();
+            }
         } catch (IOException ignore) {
         }
     }
