@@ -45,12 +45,12 @@ import javax.xml.namespace.QName;
  *
  * @version $Rev$ $Date$
  */
-public class ConcreateWsdlResult {
+public class ConcreteWsdlResult {
     private Definition definiton;
     private QName serviceName;
     private QName portName;
 
-    public ConcreateWsdlResult(Definition definiton, QName serviceName, QName portName) {
+    public ConcreteWsdlResult(Definition definiton, QName serviceName, QName portName) {
         this.definiton = definiton;
         this.serviceName = serviceName;
         this.portName = portName;

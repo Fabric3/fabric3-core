@@ -64,7 +64,7 @@ public interface WsdlSynthesizer {
      * @return a result containing the concrete WSDL and the generated service and port names
      * @throws WsdlSynthesisException if an error occurs during synthesis
      */
-    ConcreateWsdlResult synthesize(LogicalBinding<WsBindingDefinition> binding,
+    ConcreteWsdlResult synthesize(LogicalBinding<WsBindingDefinition> binding,
                                    String endpointAddress,
                                    WsdlServiceContract contract,
                                    EffectivePolicy policy,

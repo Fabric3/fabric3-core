@@ -137,7 +137,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
                 endpointDefinition = endpointResolver.resolveServiceEndpoint(wsdlElement, wsdl, targetUri);
             } else {
                 // A port type is used. Synthesize concrete WSDL for the port type.
-                ConcreateWsdlResult result = wsdlSynthesizer.synthesize(binding, REPLACEABLE_ADDRESS, contract, policy, wsdl, targetUri);
+                ConcreteWsdlResult result = wsdlSynthesizer.synthesize(binding, REPLACEABLE_ADDRESS, contract, policy, wsdl, targetUri);
                 wsdl = result.getDefiniton();
                 endpointDefinition = new ServiceEndpointDefinition(result.getServiceName(), result.getPortName(), targetUri);
             }
@@ -148,7 +148,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
                 // A port type is used. Synthesize concrete WSDL for the port type.
                 Bindable service = binding.getParent();
                 targetUri = URI.create(service.getUri().getFragment());
-                ConcreateWsdlResult result = wsdlSynthesizer.synthesize(binding, REPLACEABLE_ADDRESS, contract, policy, wsdl, targetUri);
+                ConcreteWsdlResult result = wsdlSynthesizer.synthesize(binding, REPLACEABLE_ADDRESS, contract, policy, wsdl, targetUri);
                 wsdl = result.getDefiniton();
                 QName serviceName = result.getServiceName();
                 endpointDefinition = new ServiceEndpointDefinition(serviceName, result.getPortName(), targetUri);
@@ -241,7 +241,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
                 // A port type is used. Synthesize concrete WSDL for the port type.
                 String endpointAddress = targetUrl.toString();
                 URI targetUri = binding.getDefinition().getTargetUri();
-                ConcreateWsdlResult result = wsdlSynthesizer.synthesize(binding, endpointAddress, contract, policy, wsdl, targetUri);
+                ConcreteWsdlResult result = wsdlSynthesizer.synthesize(binding, endpointAddress, contract, policy, wsdl, targetUri);
                 wsdl = result.getDefiniton();
                 // FIXME null service name
                 QName portTypeName = contract.getPortType().getQName();
@@ -285,7 +285,11 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
                 // if policy is configured for the endpoint, generate a WSDL with the policy attachments
                 serializedWsdl = mergePolicy(wsdl, policyExpressions, mappings);
             } else {
-                serializedWsdl = serializeToString(wsdl);
+                if (endpointDefinition.getWsdl() != null) {
+                    serializedWsdl = endpointDefinition.getWsdl();
+                } else {
+                    serializedWsdl = serializeToString(wsdl);
+                }
             }
         } finally {
             Thread.currentThread().setContextClassLoader(old);

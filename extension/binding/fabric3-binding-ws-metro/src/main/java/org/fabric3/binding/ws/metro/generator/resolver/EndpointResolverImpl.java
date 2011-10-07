@@ -37,19 +37,26 @@
 */
 package org.fabric3.binding.ws.metro.generator.resolver;
 
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
+import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
+import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
+
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.ws.metro.generator.WsdlElement;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.wsdl.factory.Wsdl4JFactory;
 
 /**
  * Default EndpointResolver implementation.
@@ -59,6 +66,12 @@ import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 public class EndpointResolverImpl implements EndpointResolver {
     private static final QName SOAP11_ADDRESS = new QName("http://schemas.xmlsoap.org/wsdl/soap/", "address");
     private static final QName SOAP12_ADDRESS = new QName("http://www.w3.org/2003/05/soap/bindings/HTTP/", "address");
+
+    private Wsdl4JFactory wsdlFactory;
+
+    public EndpointResolverImpl(@Reference Wsdl4JFactory wsdlFactory) {
+        this.wsdlFactory = wsdlFactory;
+    }
 
     public ServiceEndpointDefinition resolveServiceEndpoint(WsdlElement wsdlElement, Definition definition) throws EndpointResolutionException {
         return resolveServiceEndpoint(wsdlElement, definition, null);
@@ -79,12 +92,17 @@ public class EndpointResolverImpl implements EndpointResolver {
     }
 
     public ReferenceEndpointDefinition resolveReferenceEndpoint(WsdlElement wsdlElement, Definition wsdl) throws EndpointResolutionException {
-        QName serviceName = wsdlElement.getServiceName();
-        QName portName = wsdlElement.getPortName();
-        Port port = resolvePort(serviceName, portName, wsdl);
-        URL url = getAddress(port);
-        QName portTypeName = port.getBinding().getPortType().getQName();
-        return new ReferenceEndpointDefinition(serviceName, false, portName, portTypeName, url);
+        try {
+            QName serviceName = wsdlElement.getServiceName();
+            QName portName = wsdlElement.getPortName();
+            Port port = resolvePort(serviceName, portName, wsdl);
+            URL url = getAddress(port);
+            QName portTypeName = port.getBinding().getPortType().getQName();
+            String serializedWsdl = serializeToString(wsdl);
+            return new ReferenceEndpointDefinition(serviceName, false, portName, portTypeName, url, serializedWsdl);
+        } catch (GenerationException e) {
+            throw new EndpointResolutionException(e);
+        }
     }
 
     private Port resolvePort(QName serviceName, QName portName, Definition wsdl) throws EndpointResolutionException {
@@ -113,5 +131,24 @@ public class EndpointResolverImpl implements EndpointResolver {
         }
         throw new EndpointResolutionException("SOAP address not found on port " + port.getName());
     }
+
+    /**
+     * Serializes the contents of a parsed WSDL as a string.
+     *
+     * @param wsdl the WSDL
+     * @return the serialized WSDL
+     * @throws GenerationException if an error occurs reading the URL
+     */
+    private String serializeToString(Definition wsdl) throws GenerationException {
+        try {
+            WSDLWriter writer = wsdlFactory.newWriter();
+            StringWriter stringWriter = new StringWriter();
+            writer.writeWSDL(wsdl, stringWriter);
+            return stringWriter.toString();
+        } catch (WSDLException e) {
+            throw new GenerationException(e);
+        }
+    }
+
 
 }

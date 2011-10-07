@@ -63,7 +63,9 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
      * @param endpointDefinition      endpoint metadata
      * @param interfaze               the service contract (SEI) name
      * @param generatedInterface      the generated SEI bytes or null if generation is not needed
-     * @param wsdl                    the generated WSDL or null if the WSDL can be derived from the SEI without the need to merge policy
+     * @param classLoaderUri          the SEI classloader URI
+     * @param wsdl                    the generated WSDL or null if the WSDL can be derived from the SEI or is not explicitly specified via
+     *                                wsdlElement or wsdlLocation
      * @param schemas                 the generated schemas or null
      * @param wsdlLocation            optional URL to the WSDL location
      * @param intents                 intents configured at the endpoint level that are provided natively by the Metro
@@ -97,10 +99,20 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
         return interfaze;
     }
 
+    /**
+     * Returns the generated SEI interface bytes.
+     *
+     * @return the generated SEI interface bytes
+     */
     public byte[] getGeneratedInterface() {
         return generatedInterface;
     }
 
+    /**
+     * Returns any associated WSDLs with the schemas.
+     *
+     * @return any associated WSDLs with the schemas
+     */
     public Map<String, String> getSchemas() {
         return schemas;
     }
@@ -114,6 +126,11 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
         return wsdlLocation;
     }
 
+    /**
+     * Returns the SEI classloader URI.
+     *
+     * @return the SEI classloader URI
+     */
     public URI getSEIClassLoaderUri() {
         return classLoaderUri;
     }

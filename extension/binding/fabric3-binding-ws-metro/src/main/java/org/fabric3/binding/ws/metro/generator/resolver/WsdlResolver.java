@@ -52,7 +52,7 @@ public interface WsdlResolver {
     /**
      * Resolve the WSDL against the external location.
      *
-     * @param wsdlLocation the location of the WSDL docuemnt
+     * @param wsdlLocation the location of the WSDL documemt
      * @return the parsed WSDL
      * @throws WsdlResolutionException if a resolution error occurs
      */

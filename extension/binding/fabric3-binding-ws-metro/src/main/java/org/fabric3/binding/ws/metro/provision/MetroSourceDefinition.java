@@ -56,7 +56,7 @@ public abstract class MetroSourceDefinition extends PhysicalSourceDefinition {
     /**
      * Constructor.
      *
-     * @param endpointDefinition endpoint metadta
+     * @param endpointDefinition endpoint metadata
      * @param intents            intents configured at the endpoint level that are provided natively by the Metro
      * @param wsdl               the WSDL. May be null, in which case the WSDL will be introspected when the endpoint is provisioned.
      */

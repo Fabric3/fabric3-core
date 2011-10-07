@@ -78,7 +78,7 @@ public class WsdlSynthesizerImpl implements WsdlSynthesizer {
     private static final QName SOAP_OPERATION = new QName("http://schemas.xmlsoap.org/wsdl/soap/", "operation");
     public static final String HTTP_TRANSPORT = "http://schemas.xmlsoap.org/soap/http";
 
-    public ConcreateWsdlResult synthesize(LogicalBinding<WsBindingDefinition> logicalBinding,
+    public ConcreteWsdlResult synthesize(LogicalBinding<WsBindingDefinition> logicalBinding,
                                           String endpointAddress,
                                           WsdlServiceContract contract,
                                           EffectivePolicy policy,
@@ -142,7 +142,7 @@ public class WsdlSynthesizerImpl implements WsdlSynthesizer {
 
             copy.addService(service);
 
-            return new ConcreateWsdlResult(copy, serviceName, portName);
+            return new ConcreteWsdlResult(copy, serviceName, portName);
         } catch (WSDLException e) {
             throw new WsdlSynthesisException(e);
         }

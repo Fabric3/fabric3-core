@@ -45,6 +45,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -176,7 +177,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
         byte[] generatedBytes = null;
         String wsdl = null;
-        Map<String, String> schemas = null;
+        Map<String, String> schemas = Collections.emptyMap();
 
         // update the classloader
         classLoaderUpdater.updateClassLoader(serviceClass);
@@ -272,7 +273,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
         byte[] generatedBytes = null;
         String wsdl = null;
-        Map<String, String> schemas = null;
+        Map<String, String> schemas = Collections.emptyMap();
 
         // update the classloader
         classLoaderUpdater.updateClassLoader(serviceClass);
@@ -296,7 +297,13 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                 GeneratedArtifacts artifacts = wsdlGenerator.generate(serviceClass, name, address, bindingId);
                 wsdl = artifacts.getWsdl();
                 schemas = artifacts.getSchemas();
+                // use the WSDL merged with policy and not a WSDL specified via wsdlElement or wsdlLocation
                 wsdl = mergePolicy(wsdl, policyExpressions, mappings);
+            } else if (endpointDefinition.getWsdl() != null) {
+                // No policy specified, use the WSDL specified via wsdlElement or wsdlLocation. If one is not specified, wsdl will be null and
+                // one will be downloaded from the endpoint address (?wsdl) when the reference proxy is created on a runtime and cached. If the
+                // WSDL is specified, it will be used instead when the reference proxy is created.
+                wsdl = endpointDefinition.getWsdl();
             }
         } finally {
             Thread.currentThread().setContextClassLoader(old);
@@ -411,7 +418,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                         WsBindingDefinition wsDefinition = (WsBindingDefinition) otherBinding.getDefinition();
                         if (wsDefinition.getTargetUri() == null && wsDefinition.getWsdlElement() == null) {
                             throw new GenerationException("If there is more than one web service binding, one must provide a URI or WSDLElement:"
-                                    + service.getUri());
+                                                                  + service.getUri());
                         }
 
                     }
@@ -475,10 +482,12 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             // no target uri specified, introspect from wsdlElement
             WsdlElement wsdlElement = GenerationHelper.parseWsdlElement(definition.getWsdlElement());
             if (wsdlLocation == null) {
+                // if the WSDL location is not specified, resolve against the contribution imports
                 URI contributionUri = binding.getParent().getParent().getDefinition().getContributionUri();
                 Definition wsdl = wsdlResolver.resolveWsdlByPortName(contributionUri, wsdlElement.getPortName());
                 endpointDefinition = endpointResolver.resolveReferenceEndpoint(wsdlElement, wsdl);
             } else {
+                // a specific WSDL location is specified
                 Definition wsdl = wsdlResolver.parseWsdl(wsdlLocation);
                 endpointDefinition = endpointResolver.resolveReferenceEndpoint(wsdlElement, wsdl);
             }
@@ -486,5 +495,6 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         }
         return endpointDefinition;
     }
+
 
 }

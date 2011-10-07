@@ -53,6 +53,7 @@ public class ReferenceEndpointDefinition implements Serializable {
     private boolean defaultServiceName;
     private QName portTypeName;
     private URL url;
+    private String wsdl;
 
     /**
      * Constructor.
@@ -71,6 +72,15 @@ public class ReferenceEndpointDefinition implements Serializable {
         this.url = url;
     }
 
+    public ReferenceEndpointDefinition(QName serviceName, boolean defaultServiceName, QName portName, QName portTypeName, URL url, String wsdl) {
+        this.serviceName = serviceName;
+        this.defaultServiceName = defaultServiceName;
+        this.portName = portName;
+        this.portTypeName = portTypeName;
+        this.url = url;
+        this.wsdl = wsdl;
+    }
+
     /**
      * Returns the qualified service name.
      *
@@ -83,7 +93,7 @@ public class ReferenceEndpointDefinition implements Serializable {
     /**
      * Returns true if the service name is a default and may be overriden by introspecting WSDL. If a service name is not specified using the
      * <code>WebService.serviceName</code> annotation attribute, it is calculated according to JAX-WS mapping rules. However, web services stacks such
-     * as WCF (.NET) adopt different defaulting schemes. To accomodate this, during reference proxy creation, the Fabric3 runtime will introspect the
+     * as WCF (.NET) adopt different defaulting schemes. To accommodate this, during reference proxy creation, the Fabric3 runtime will introspect the
      * target WSDL to determine the actual service name if the default name is not valid. The actual name will be determined by mapping the portType
      * name to a service defined in the WSDL. Note this can only be done if the WSDL contains exactly one service that uses the portType. Otherwise, a
      * serviceName will need to be explicitly specified using the <code>WebService</code> annotation or wsdlElement attribute of binding.ws.
@@ -121,4 +131,13 @@ public class ReferenceEndpointDefinition implements Serializable {
         return url;
     }
 
+    /**
+     * Returns a serialized WSDL specified using wsdlElement or wsdlLocation, or null if one is not specified. This WSDL may be overriden by a
+     * generated one if policy is specified on the reference. Otherwise, it should be used to create JAX-WS reference proxies.
+     *
+     * @return the serialized WSDL or null
+     */
+    public String getWsdl() {
+        return wsdl;
+    }
 }
