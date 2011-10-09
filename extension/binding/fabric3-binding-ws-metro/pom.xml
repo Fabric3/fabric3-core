@@ -102,6 +102,26 @@ Public License. See the accompanying license file for details.
                     <groupId>com.sun.xml.bind</groupId>
                     <artifactId>jaxb-osgi</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.ctc.wstx</groupId>
+                    <artifactId>woodstox-osgi</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.xml.stream</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jvnet.staxex</groupId>
+            <artifactId>stax-ex</artifactId>
+            <version>1.6</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.xml.stream</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -127,18 +147,20 @@ Public License. See the accompanying license file for details.
         </dependency>
 
         <dependency>
+            <groupId>javax.security.auth.message</groupId>
+            <artifactId>jmac</artifactId>
+            <version>1.0-rev-1</version>
+            <scope>compile</scope>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.objectweb.asm</groupId>
             <artifactId>com.springsource.org.objectweb.asm</artifactId>
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>javax.security.auth.message</groupId>
-            <artifactId>jmac</artifactId>
-            <version>1.0-rev-1</version>
-            <scope>compile</scope>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -170,20 +192,5 @@ Public License. See the accompanying license file for details.
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>glassfish</id>
-            <name>Glassfish Repository for Maven</name>
-            <url>http://download.java.net/maven/glassfish</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
 
 </project>

@@ -49,7 +49,6 @@ import javax.xml.ws.soap.SOAPBinding;
 import com.sun.xml.ws.binding.SOAPBindingImpl;
 import com.sun.xml.ws.developer.BindingTypeFeature;
 import com.sun.xml.ws.developer.JAXWSProperties;
-import com.sun.xml.ws.rx.rm.ReliableMessagingFeature;
 
 import org.fabric3.binding.ws.metro.util.MayProvideIntents;
 
@@ -74,7 +73,7 @@ public class DefaultFeatureResolver implements FeatureResolver {
      * Translates the requested intents to web service features.
      *
      * @param requestedIntents Requested intents.
-     * @return Rsolved feature sets.
+     * @return Resolved feature sets.
      */
     public WebServiceFeature[] getFeatures(List<QName> requestedIntents) {
         List<WebServiceFeature> features = new LinkedList<WebServiceFeature>();
@@ -82,7 +81,6 @@ public class DefaultFeatureResolver implements FeatureResolver {
             features.add(new MTOMFeature());
         }
         resolveBinding(requestedIntents, features);
-        resolveReliableMessaging(requestedIntents, features);
         features.add(new AddressingFeature());
         WebServiceFeature[] webServiceFeatures = new WebServiceFeature[features.size()];
         webServiceFeatures = features.toArray(webServiceFeatures);
@@ -101,16 +99,6 @@ public class DefaultFeatureResolver implements FeatureResolver {
         }
     }
 
-    private void resolveReliableMessaging(List<QName> requestedIntents, List<WebServiceFeature> features) {
-        if (requestedIntents.contains(MayProvideIntents.AT_LEAST_ONCE)) {
-            features.add(createReliableMessagingFeature(ReliableMessagingFeature.DeliveryAssurance.AT_LEAST_ONCE));
-        } else if (requestedIntents.contains(MayProvideIntents.AT_MOST_ONCE)) {
-            features.add(createReliableMessagingFeature(ReliableMessagingFeature.DeliveryAssurance.AT_MOST_ONCE));
-        } else if (requestedIntents.contains(MayProvideIntents.EXACTLY_ONCE)) {
-            features.add(createReliableMessagingFeature(ReliableMessagingFeature.DeliveryAssurance.EXACTLY_ONCE));
-        }
-    }
-
     private BindingTypeFeature createBindingFeature(String bindingQName) {
         BindingTypeFeature feature = new BindingTypeFeature(bindingQName);
         // hack to enable the protected field that is not properly set
@@ -122,9 +110,4 @@ public class DefaultFeatureResolver implements FeatureResolver {
         return feature;
     }
 
-    private WebServiceFeature createReliableMessagingFeature(ReliableMessagingFeature.DeliveryAssurance delivery) {
-        // TODO values should be configurable
-        return new ReliableMessagingFeature(true);
-
-    }
 }

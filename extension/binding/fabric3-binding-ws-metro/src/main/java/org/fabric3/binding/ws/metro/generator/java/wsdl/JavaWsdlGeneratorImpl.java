@@ -60,7 +60,7 @@ public class JavaWsdlGeneratorImpl implements JavaWsdlGenerator {
         AbstractSEIModelImpl model = modeler.buildRuntimeModel();
         GeneratedWsdlResolver wsdlResolver = new GeneratedWsdlResolver();
         WSBinding binding = BindingImpl.create(bindingId);
-        WSDLGenerator generator = new WSDLGenerator(model, wsdlResolver, binding, null, seiClass);
+        WSDLGenerator generator = new WSDLGenerator(model, wsdlResolver, binding, null, seiClass, true);
         generator.setEndpointAddress(endpointAddress);
         // generate the WSDL and schemas
         generator.doGeneration();
