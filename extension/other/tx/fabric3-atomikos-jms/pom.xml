@@ -115,21 +115,4 @@ $Rev: 7291 $ $Date: 2009-07-06 12:00:22 +0200 (Mon, 06 Jul 2009) $
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>atomikos</id>
-            <name>Atomikos Repository for Maven</name>
-            <url>http://repo.atomikos.com/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
- 
 </project>
