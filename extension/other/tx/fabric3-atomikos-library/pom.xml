@@ -119,21 +119,4 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>atomikos</id>
-            <name>Atomikos Repository for Maven</name>
-            <url>http://repo.atomikos.com/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-    
 </project>
