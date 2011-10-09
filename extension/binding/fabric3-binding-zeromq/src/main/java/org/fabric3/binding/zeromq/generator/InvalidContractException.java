@@ -30,34 +30,11 @@
  */
 package org.fabric3.binding.zeromq.generator;
 
-import java.net.URI;
-import java.util.Collection;
-import java.util.List;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.EagerInit;
-
-import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
-import org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition;
-import org.fabric3.binding.zeromq.provision.ZeroMQTargetDefinition;
-import org.fabric3.model.type.contract.Operation;
-import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.spi.generator.BindingGenerator;
-import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.model.instance.LogicalBinding;
-import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalOperation;
-import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.util.UriHelper;
 
 /**
  * @version $Revision$ $Date$
  */
-@EagerInit
 public class InvalidContractException extends GenerationException {
     private static final long serialVersionUID = -222604356274529323L;
 
