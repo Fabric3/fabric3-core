@@ -45,11 +45,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import jline.ArgumentCompletor;
-import jline.Completor;
-import jline.ConsoleReader;
-import jline.FileNameCompletor;
-import jline.SimpleCompletor;
+import jline.console.ConsoleReader;
+import jline.console.completer.ArgumentCompleter;
+import jline.console.completer.Completer;
+import jline.console.completer.FileNameCompleter;
+import jline.console.completer.StringsCompleter;
 
 import org.fabric3.admin.interpreter.Command;
 import org.fabric3.admin.interpreter.CommandException;
@@ -183,16 +183,16 @@ public class InterpreterImpl implements Interpreter {
     }
 
     private ConsoleReader createReader(InputStream in, PrintStream out) throws IOException {
-        ConsoleReader reader = new ConsoleReader(in,new OutputStreamWriter(out));
-        List<Completor> completors = new ArrayList<Completor>();
+        ConsoleReader reader = new ConsoleReader(in, new OutputStreamWriter(out));
+        List<Completer> completors = new ArrayList<Completer>();
         String[] commands =
                 {"authenticate", "back", "deploy", "follow", "get", "install", "list", "post", "profile", "provision", "status", "undeploy", "uninstall", "use", "run", "quit"};
-        SimpleCompletor simpleCompletor = new SimpleCompletor(commands);
+        StringsCompleter simpleCompletor = new StringsCompleter(commands);
         completors.add(simpleCompletor);
-        FileNameCompletor fileCompletor = new FileNameCompletor();
+        FileNameCompleter fileCompletor = new FileNameCompleter();
         completors.add(fileCompletor);
-        ArgumentCompletor argumentCompletor = new ArgumentCompletor(completors);
-        reader.addCompletor(argumentCompletor);
+        ArgumentCompleter argumentCompletor = new ArgumentCompleter(completors);
+        reader.addCompleter(argumentCompletor);
         return reader;
     }
 

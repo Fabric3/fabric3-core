@@ -51,7 +51,7 @@
                 <include>org.codehaus.jackson:jackson-mapper-asl</include>
                 <include>org.codehaus.jackson:jackson-jaxrs</include>
                 <include>org.codehaus.jackson:jackson-xc</include>
-                <include>jline:jline</include>
+                <include>org.sonatype.jline:jline</include>
             </includes>
             <outputDirectory>lib</outputDirectory>
         </dependencySet>
