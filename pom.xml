@@ -53,7 +53,7 @@
         <servlet.version>3.0.20100224</servlet.version>
         <jetty.version>8.0.0.M1</jetty.version>
         <logback.version>0.9.20</logback.version>
-        <atomikos.version>3.6.5</atomikos.version>
+        <atomikos.version>3.7.0</atomikos.version>
     </properties>
 
     <build>
