@@ -75,11 +75,4 @@ Public License. See the accompanying license file for details.
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>jline</id>
-            <name>JLine Project Repository</name>
-            <url>http://jline.sourceforge.net/m2repo</url>
-        </repository>
-    </repositories>
 </project>
