@@ -58,12 +58,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.objectweb.asm</groupId>
-            <artifactId>com.springsource.org.objectweb.asm</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-
     </dependencies>
 
     <build>

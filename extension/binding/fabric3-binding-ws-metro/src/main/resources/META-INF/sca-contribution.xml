@@ -21,8 +21,6 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.wsdl" version="1.6.2"/>
     <import.java package="org.fabric3.binding.ws.provision" version="1.9.5"/>
     <import.java package="org.fabric3.binding.ws.model" version="1.9.5"/>
-    <import.java package="org.objectweb.asm" version="3.1.0"/>
-    <import.java package="org.objectweb.asm.signature" version="3.1.0"/>
 
     <deployable composite="f3:MetroControllerExtension" modes="controller vm"/>
     <deployable composite="f3:MetroParticipantExtension" modes="participant vm"/>

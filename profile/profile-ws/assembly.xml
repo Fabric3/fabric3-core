@@ -34,7 +34,6 @@
                 <include>org.codehaus.fabric3:fabric3-binding-ws</include>
                 <include>org.codehaus.fabric3:fabric3-binding-ws-metro</include>
                 <include>org.codehaus.fabric3:fabric3-binding-ws-policy</include>
-                <include>org.objectweb.asm:com.springsource.org.objectweb.asm</include>
             </includes>
             <outputDirectory>/extensions</outputDirectory>
         </dependencySet>
