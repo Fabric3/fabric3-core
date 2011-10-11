@@ -35,7 +35,6 @@
                 <include>org.codehaus.fabric3:fabric3-timer-service</include>
                 <include>org.codehaus.fabric3:fabric3-timer-spi</include>
                 <include>javax.transaction:com.springsource.javax.transaction</include>
-                <include>javax.resource:com.springsource.javax.resource</include>
                 <include>javax.jms:com.springsource.javax.jms</include>
             </includes>
             <outputDirectory>/extensions</outputDirectory>

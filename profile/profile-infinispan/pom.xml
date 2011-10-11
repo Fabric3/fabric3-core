@@ -36,12 +36,6 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.resource</groupId>
-            <artifactId>com.springsource.javax.resource</artifactId>
-            <version>1.5.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-tx</artifactId>
             <version>${project.version}</version>
