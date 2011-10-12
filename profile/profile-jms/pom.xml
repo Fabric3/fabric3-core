@@ -85,15 +85,15 @@ Public License. See the accompanying license file for details.
         </dependency>
 
         <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>com.springsource.javax.transaction</artifactId>
+            <groupId>org.codehaus.fabric3.api</groupId>
+            <artifactId>javax-jta</artifactId>
             <version>${jta.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>com.springsource.javax.jms</artifactId>
-            <version>1.1.0</version>
+            <groupId>org.codehaus.fabric3.api</groupId>
+            <artifactId>javax-jms</artifactId>
+            <version>${jms.version}</version>
         </dependency>
     </dependencies>
 

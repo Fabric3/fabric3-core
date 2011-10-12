@@ -124,9 +124,9 @@ Public License. See the accompanying license file for details.
 
         <!-- provided scope dependencies that need to be resolved -->
         <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>com.springsource.javax.annotation</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.codehaus.fabric3.api</groupId>
+            <artifactId>javax-annotation</artifactId>
+            <version>${annotations.version}</version>
             <scope>runtime</scope>
         </dependency>
 

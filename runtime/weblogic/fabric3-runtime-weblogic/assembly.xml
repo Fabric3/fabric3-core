@@ -30,7 +30,7 @@
         <!-- copy shared classes to the host directory -->
         <dependencySet>
             <includes>
-                <include>javax.annotation:com.springsource.javax.annotation</include>
+                <include>org.codehaus.fabric3.api:javax-annotation</include>
                 <include>javax.xml.bind:jaxb-api-osgi</include>
                 <include>javax.xml:webservices-api-osgi</include>
                 <include>javax.ws.rs:jsr311-api</include>
@@ -100,7 +100,7 @@
                 <include>org.codehaus.fabric3:fabric3-binding-ws</include>
                 <include>org.codehaus.fabric3:fabric3-binding-ws-metro</include>
                 <include>org.codehaus.fabric3:fabric3-binding-ws-policy</include>
-                <include>org.objectweb.asm:com.springsource.org.objectweb.asm</include>
+                <include>asm:asm</include>
 
             </includes>
             <outputDirectory>fabric3/extensions</outputDirectory>

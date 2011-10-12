@@ -49,7 +49,7 @@
             <includes>
                 <!-- JSP must be on the host classpath as end-user tags may implement interfaces -->
                 <include>org.mortbay.jetty:jsp-api-2.1</include>
-                <include>javax.annotation:com.springsource.javax.annotation</include>
+                <include>org.codehaus.fabric3.api:javax-annotation</include>
                 <include>javax.xml.bind:jaxb-api-osgi</include>
                 <include>javax.xml:webservices-api-osgi</include>
                 <include>javax.ws.rs:jsr311-api</include>
@@ -96,7 +96,7 @@
                 <include>org.codehaus.fabric3:fabric3-resource</include>
                 <include>org.codehaus.fabric3:fabric3-execution</include>
                 <include>org.codehaus.fabric3:fabric3-security-impl</include>
-                <include>javax.transaction:com.springsource.javax.transaction</include>
+                <include>org.codehaus.fabric3.api:javax-jta</include>
                 <include>org.codehaus.fabric3:fabric3-junit</include>
                 <include>org.codehaus.fabric3:fabric3-test-spi</include>
                  <include>org.codehaus.fabric3:fabric3-ant-extension</include>

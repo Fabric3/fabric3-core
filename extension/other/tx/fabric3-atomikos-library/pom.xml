@@ -36,7 +36,7 @@
             <version>${atomikos.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>javax.transaction</groupId>
+                    <groupId>org.codehaus.fabric3.api</groupId>
                     <artifactId>transaction-api</artifactId>
                 </exclusion>
             </exclusions>
@@ -89,8 +89,8 @@
         </dependency>
         
           <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>com.springsource.javax.transaction</artifactId>
+            <groupId>org.codehaus.fabric3.api</groupId>
+            <artifactId>javax-jta</artifactId>
             <version>${jta.version}</version>
             <scope>provided</scope>
         </dependency>

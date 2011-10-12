@@ -48,15 +48,15 @@ Public License. See the accompanying license file for details.
         </dependency>
 
         <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>com.springsource.javax.annotation</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.codehaus.fabric3.api</groupId>
+            <artifactId>javax-annotation</artifactId>
+            <version>${annotations.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>com.springsource.javax.transaction</artifactId>
+            <groupId>org.codehaus.fabric3.api</groupId>
+            <artifactId>javax-jta</artifactId>
             <version>${jta.version}</version>
             <scope>provided</scope>
         </dependency>

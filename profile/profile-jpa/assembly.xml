@@ -33,9 +33,9 @@ Public License. See the accompanying license file for details.
                 <include>org.codehaus.fabric3:fabric3-tx</include>
                 <include>org.codehaus.fabric3:fabric3-atomikos-library</include>
                 <include>org.codehaus.fabric3:fabric3-atomikos</include>
-                <include>javax.transaction:com.springsource.javax.transaction</include>
+                <include>org.codehaus.fabric3.api:javax-jta</include>
                 <include>org.codehaus.fabric3:fabric3-jpa-api</include>
-                <include>javax.jms:com.springsource.javax.jms</include>
+                <include>org.codehaus.fabric3.api:javax-jms</include>
              </includes>
             <outputDirectory>/extensions</outputDirectory>
         </dependencySet>

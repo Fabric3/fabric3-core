@@ -74,8 +74,8 @@ $Rev: 7291 $ $Date: 2009-07-06 12:00:22 +0200 (Mon, 06 Jul 2009) $
         </dependency>
 
         <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>com.springsource.javax.transaction</artifactId>
+            <groupId>org.codehaus.fabric3.api</groupId>
+            <artifactId>javax-jta</artifactId>
             <version>${jta.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -88,9 +88,9 @@ $Rev: 7291 $ $Date: 2009-07-06 12:00:22 +0200 (Mon, 06 Jul 2009) $
         </dependency>
 
         <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>com.springsource.javax.jms</artifactId>
-            <version>1.1.0</version>
+            <groupId>org.codehaus.fabric3.api</groupId>
+            <artifactId>javax-jms</artifactId>
+            <version>${jms.version}</version>
             <scope>provided</scope>
         </dependency>
 

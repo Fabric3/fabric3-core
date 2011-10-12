@@ -27,14 +27,14 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-                 
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-datasource</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.fabric3.weblogic</groupId>
             <artifactId>fabric3-weblogic-api</artifactId>
@@ -47,11 +47,10 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-         <dependency>
-            <groupId>com.bea.commonj</groupId>
-            <artifactId>com.springsource.commonj</artifactId>
+        <dependency>
+            <groupId>org.codehaus.fabric3.api</groupId>
+            <artifactId>commonj</artifactId>
             <version>1.1.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${servlet.groupId}</groupId>
@@ -60,8 +59,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>com.springsource.javax.transaction</artifactId>
+            <groupId>org.codehaus.fabric3.api</groupId>
+            <artifactId>javax-jta</artifactId>
             <version>${jta.version}</version>
             <scope>provided</scope>
         </dependency>
