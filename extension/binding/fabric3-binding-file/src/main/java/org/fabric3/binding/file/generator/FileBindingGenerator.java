@@ -89,6 +89,15 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Validates a service contract for a bound reference. The service contract must contain exactly one operation of the form:
+     * <pre>
+     * InputStream openStream(String id);
+     * </pre>
+     *
+     * @param contract the service contract to validate
+     * @throws InvalidContractException if the contract is invalid
+     */
     private void validateReferenceContract(ServiceContract contract) throws InvalidContractException {
         if (contract.getOperations().size() != 1) {
             throw new InvalidContractException("File transfer binding contracts must contain one operation of the form openStream(String id)");
@@ -111,10 +120,17 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         if (!(InputStream.class.isAssignableFrom(javaOutputType.getPhysical()))) {
             throw new InvalidContractException("Output type on binding contract must be a java.io.InputStream: " + dataType);
         }
-
-
     }
 
+    /**
+     * Validates a contract for a bound service. The service contract must contain exactly one operation of the form:
+     * <pre>
+     * void onReceive(String id);
+     * </pre>
+     *
+     * @param contract the service contract to validate
+     * @throws InvalidContractException if the contract is invalid
+     */
     private void validateServiceContract(ServiceContract contract) throws InvalidContractException {
         if (contract.getOperations().size() > 1 || contract.getOperations().isEmpty()) {
             throw new InvalidContractException("File transfer binding contracts must contain one operation of the form onReceive(InputStream)");
