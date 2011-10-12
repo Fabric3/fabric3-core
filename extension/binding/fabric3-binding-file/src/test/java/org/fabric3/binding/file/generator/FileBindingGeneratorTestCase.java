@@ -60,7 +60,7 @@ public class FileBindingGeneratorTestCase extends TestCase {
 
     public void testSourceGeneration() throws Exception {
         ServiceContract contract = createServiceContract();
-        FileBindingDefinition definition = new FileBindingDefinition("binding", "location", Strategy.ARCHIVE, "archiveLocation");
+        FileBindingDefinition definition = new FileBindingDefinition("binding", "location", Strategy.ARCHIVE, "archiveLocation", "error");
         LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, null);
 
         FileBindingSourceDefinition physical = generator.generateSource(logicalBinding, contract, Collections.<LogicalOperation>emptyList(), policy);
@@ -72,7 +72,7 @@ public class FileBindingGeneratorTestCase extends TestCase {
     public void testInvalidServiceContractGeneration() throws Exception {
         ServiceContract contract = new JavaServiceContract(Object.class); // invalid contract
 
-        FileBindingDefinition definition = new FileBindingDefinition("binding", "location", Strategy.ARCHIVE, "archiveLocation");
+        FileBindingDefinition definition = new FileBindingDefinition("binding", "location", Strategy.ARCHIVE, "archiveLocation", "error");
         LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, null);
 
         try {
@@ -85,7 +85,7 @@ public class FileBindingGeneratorTestCase extends TestCase {
 
     public void testReferenceGeneration() throws Exception {
         ServiceContract contract = createReferenceContract();
-        FileBindingDefinition definition = new FileBindingDefinition("binding", "location");
+        FileBindingDefinition definition = new FileBindingDefinition("binding", "location", "error");
         LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, null);
 
         FileBindingTargetDefinition physical = generator.generateTarget(logicalBinding, contract, Collections.<LogicalOperation>emptyList(), policy);

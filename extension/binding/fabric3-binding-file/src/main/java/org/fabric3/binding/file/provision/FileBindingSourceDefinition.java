@@ -44,11 +44,13 @@ public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
     private String location;
     private Strategy strategy;
     private String archiveLocation;
+    private String errorLocation;
 
-    public FileBindingSourceDefinition(String location, Strategy strategy, String archiveLocation) {
+    public FileBindingSourceDefinition(String location, Strategy strategy, String archiveLocation, String errorLocation) {
         this.location = location;
         this.strategy = strategy;
         this.archiveLocation = archiveLocation;
+        this.errorLocation = errorLocation;
         setUri(null);
     }
 
@@ -62,5 +64,9 @@ public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
 
     public String getArchiveLocation() {
         return archiveLocation;
+    }
+
+    public String getErrorLocation() {
+        return errorLocation;
     }
 }

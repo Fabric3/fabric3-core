@@ -55,17 +55,20 @@ public class FileBindingDefinition extends BindingDefinition {
     private String location;
     private Strategy strategy = Strategy.DELETE;
     private String archiveLocation;
+    private String errorLocation;
 
-    public FileBindingDefinition(String name, String location) {
+    public FileBindingDefinition(String name, String location, String errorLocation) {
         super(name, null, BINDING_FILE);
         this.location = location;
+        this.errorLocation = errorLocation;
     }
 
-    public FileBindingDefinition(String name, String location, Strategy strategy, String archiveLocation) {
+    public FileBindingDefinition(String name, String location, Strategy strategy, String archiveLocation, String errorLocation) {
         super(name, null, BINDING_FILE);
         this.location = location;
         this.strategy = strategy;
         this.archiveLocation = archiveLocation;
+        this.errorLocation = errorLocation;
     }
 
     public String getLocation() {
@@ -80,4 +83,7 @@ public class FileBindingDefinition extends BindingDefinition {
         return archiveLocation;
     }
 
+    public String getErrorLocation() {
+        return errorLocation;
+    }
 }

@@ -67,6 +67,7 @@ public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
         ATTRIBUTES.add("requires");
         ATTRIBUTES.add("location");
         ATTRIBUTES.add("archive.location");
+        ATTRIBUTES.add("error.location");
         ATTRIBUTES.add("strategy");
         ATTRIBUTES.add("name");
     }
@@ -102,7 +103,9 @@ public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
             }
         }
 
-        FileBindingDefinition definition = new FileBindingDefinition(bindingName, location, strategy, archiveLocation);
+        String errorLocation = reader.getAttributeValue(null, "error.location");
+
+        FileBindingDefinition definition = new FileBindingDefinition(bindingName, location, strategy, archiveLocation, errorLocation);
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
         LoaderUtil.skipToEndElement(reader);
