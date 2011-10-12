@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org" targetNamespace="urn:fabric3.org"
+           autowire="true" name="FileBindingRuntimeExtension">
+
+
+
+</composite>
