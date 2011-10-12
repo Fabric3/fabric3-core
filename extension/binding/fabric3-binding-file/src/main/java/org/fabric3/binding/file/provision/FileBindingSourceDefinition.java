@@ -30,6 +30,7 @@
  */
 package org.fabric3.binding.file.provision;
 
+import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
@@ -41,13 +42,25 @@ public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = -4154935681094596517L;
 
     private String location;
+    private Strategy strategy;
+    private String archiveLocation;
 
-    public FileBindingSourceDefinition(String location) {
+    public FileBindingSourceDefinition(String location, Strategy strategy, String archiveLocation) {
         this.location = location;
+        this.strategy = strategy;
+        this.archiveLocation = archiveLocation;
         setUri(null);
     }
 
     public String getLocation() {
         return location;
+    }
+
+    public Strategy getStrategy() {
+        return strategy;
+    }
+
+    public String getArchiveLocation() {
+        return archiveLocation;
     }
 }

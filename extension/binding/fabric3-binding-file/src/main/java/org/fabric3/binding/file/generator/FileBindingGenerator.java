@@ -30,15 +30,18 @@
  */
 package org.fabric3.binding.file.generator;
 
+import java.io.InputStream;
 import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 
+import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.binding.file.model.FileBindingDefinition;
 import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
 import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
+import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.BindingGenerator;
@@ -47,6 +50,7 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  * @version $Revision$ $Date$
@@ -63,7 +67,9 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         validateServiceContract(contract);
         FileBindingDefinition definition = binding.getDefinition();
         String location = definition.getLocation();
-        return new FileBindingSourceDefinition(location);
+        Strategy strategy = definition.getStrategy();
+        String archiveLocation = definition.getArchiveLocation();
+        return new FileBindingSourceDefinition(location, strategy, archiveLocation);
     }
 
     public FileBindingTargetDefinition generateTarget(LogicalBinding<FileBindingDefinition> binding,
@@ -84,22 +90,47 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
     }
 
     private void validateReferenceContract(ServiceContract contract) throws InvalidContractException {
-        if (contract.getOperations().size() > 1 || contract.getOperations().isEmpty()) {
-            throw new InvalidContractException("File transfer binding contracts must contain one operation of the form openStream(InputStream)");
+        if (contract.getOperations().size() != 1) {
+            throw new InvalidContractException("File transfer binding contracts must contain one operation of the form openStream(String id)");
         }
         Operation operation = contract.getOperations().get(0);
-        if (!"openStream".equals(operation.getName())) {
-            throw new InvalidContractException("File transfer binding contracts must contain one operation of the form openStream(InputStream)");
+        DataType<?> dataType = operation.getInputTypes().get(0);
+        if (!(dataType instanceof JavaType)) {
+            throw new InvalidContractException("Unsupported parameter type on binding contract: " + dataType);
         }
-        // TODO validate input type is 1, and an input stream
+        JavaType<?> javaType = (JavaType) dataType;
+        if (!(String.class.isAssignableFrom(javaType.getPhysical()))) {
+            throw new InvalidContractException("Parameter type on binding contract must be a string: " + dataType);
+        }
+
+        DataType<?> outputType = operation.getOutputType();
+        if (!(outputType instanceof JavaType)) {
+            throw new InvalidContractException("Unsupported output type on binding contract: " + outputType);
+        }
+        JavaType<?> javaOutputType = (JavaType) outputType;
+        if (!(InputStream.class.isAssignableFrom(javaOutputType.getPhysical()))) {
+            throw new InvalidContractException("Output type on binding contract must be a java.io.InputStream: " + dataType);
+        }
+
+
     }
 
     private void validateServiceContract(ServiceContract contract) throws InvalidContractException {
         if (contract.getOperations().size() > 1 || contract.getOperations().isEmpty()) {
-            throw new InvalidContractException("File transfer binding contracts must contain one operation of the form openStream(InputStream)");
+            throw new InvalidContractException("File transfer binding contracts must contain one operation of the form onReceive(InputStream)");
         }
         Operation operation = contract.getOperations().get(0);
-        // TODO validate input type is 1, and an inputstream
+        if (operation.getInputTypes().size() != 1) {
+            throw new InvalidContractException("File transfer binding contracts must contain one operation of the form onReceive(InputStream)");
+        }
+        DataType<?> dataType = operation.getInputTypes().get(0);
+        if (!(dataType instanceof JavaType)) {
+            throw new InvalidContractException("Unsupported parameter type on binding contract: " + dataType);
+        }
+        JavaType<?> javaType = (JavaType) dataType;
+        if (!(InputStream.class.isAssignableFrom(javaType.getPhysical()))) {
+            throw new InvalidContractException("Parameter type on binding contract must be a java.io.InputStream: " + dataType);
+        }
     }
 
 }

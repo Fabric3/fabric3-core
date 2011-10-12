@@ -56,6 +56,11 @@ public class FileBindingDefinition extends BindingDefinition {
     private Strategy strategy = Strategy.DELETE;
     private String archiveLocation;
 
+    public FileBindingDefinition(String name, String location) {
+        super(name, null, BINDING_FILE);
+        this.location = location;
+    }
+
     public FileBindingDefinition(String name, String location, Strategy strategy, String archiveLocation) {
         super(name, null, BINDING_FILE);
         this.location = location;
