@@ -74,7 +74,6 @@ public class CompositeWriterTestCase extends TestCase {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(stream);
         compositeWriter.write(composite, xmlWriter);
-        System.out.println(":" + new String(stream.toByteArray()));
 
     }
 
