@@ -131,7 +131,10 @@ public class FSArtifactCache implements ArtifactCache {
         if (pos >= 0) {
             suffix = strUri.substring(pos);
         }
-        return suffix;
+        if (suffix == null) {
+            return null;
+        }
+        return suffix.replace("/", "_");
     }
 
     private class Entry {
