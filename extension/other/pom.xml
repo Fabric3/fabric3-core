@@ -32,7 +32,7 @@
 	<modules>
 		<module>tx</module>
 		<module>jpa</module>
-		<module>cache</module>
+		<!--<module>cache</module>-->
 		<module>spring</module>
 		<module>security</module>
         <module>timer</module>

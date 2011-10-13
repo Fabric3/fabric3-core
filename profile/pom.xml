@@ -40,6 +40,6 @@
         <module>profile-spring</module>
         <module>profile-drools</module>
         <module>profile-ftp</module>
-        <module>profile-infinispan</module>
+        <!--<module>profile-infinispan</module>-->
     </modules>
 </project>
