@@ -57,7 +57,6 @@ public class ReceiverConfiguration {
     private long delay = 2000;  // FIXME
 
     private Interceptor interceptor;
-    private int corePoolSize;
     private ReceiverMonitor monitor;
 
     public ReceiverConfiguration(String id,
@@ -67,7 +66,6 @@ public class ReceiverConfiguration {
                                  File errorLocation,
                                  File archiveLocation,
                                  Interceptor interceptor,
-                                 int corePoolSize,
                                  ReceiverMonitor monitor) {
         this.id = id;
         this.location = location;
@@ -76,7 +74,6 @@ public class ReceiverConfiguration {
         this.archiveLocation = archiveLocation;
         this.filePattern = Pattern.compile(filePattern);
         this.interceptor = interceptor;
-        this.corePoolSize = corePoolSize;
         this.monitor = monitor;
         this.lockDirectory = new File(location, "locks");
     }
@@ -115,10 +112,6 @@ public class ReceiverConfiguration {
 
     public Interceptor getInterceptor() {
         return interceptor;
-    }
-
-    public int getCorePoolSize() {
-        return corePoolSize;
     }
 
     public ReceiverMonitor getMonitor() {

@@ -75,14 +75,13 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
         Strategy strategy = source.getStrategy();
         File errorLocation = new File(source.getErrorLocation());
         File archiveLocation = new File(source.getArchiveLocation());
-        int coreSize = 2; // TODO make configurable
         if (wire.getInvocationChains().size() != 1) {
             // this should not happen here; multi-operation interfaces will thrown an exception during load/generation
             throw new WiringException("Only one operation is supported");
         }
         Interceptor interceptor = wire.getInvocationChains().get(0).getHeadInterceptor();
         ReceiverConfiguration configuration =
-                new ReceiverConfiguration(id, location, pattern, strategy, errorLocation, archiveLocation, interceptor, coreSize, monitor);
+                new ReceiverConfiguration(id, location, pattern, strategy, errorLocation, archiveLocation, interceptor, monitor);
         receiverManager.create(configuration);
     }
 

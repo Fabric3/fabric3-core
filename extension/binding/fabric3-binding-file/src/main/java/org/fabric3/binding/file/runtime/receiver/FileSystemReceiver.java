@@ -78,7 +78,6 @@ public class FileSystemReceiver implements Runnable {
 
     private Interceptor interceptor;
     private ScheduledExecutorService executorService;
-    private int corePoolSize;
     private ReceiverMonitor monitor;
 
     private Map<String, FileEntry> cache = new ConcurrentHashMap<String, FileEntry>();
@@ -91,13 +90,12 @@ public class FileSystemReceiver implements Runnable {
         this.archiveDirectory = configuration.getArchiveLocation();
         this.filePattern = configuration.getFilePattern();
         this.interceptor = configuration.getInterceptor();
-        this.corePoolSize = configuration.getCorePoolSize();
         this.monitor = configuration.getMonitor();
         this.lockDirectory = configuration.getLockDirectory();
     }
 
     public void start() {
-        executorService = Executors.newScheduledThreadPool(corePoolSize);
+        executorService = Executors.newSingleThreadScheduledExecutor();
         future = executorService.scheduleWithFixedDelay(this, delay, delay, TimeUnit.MILLISECONDS);
     }
 
