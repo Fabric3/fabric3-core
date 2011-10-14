@@ -67,7 +67,7 @@ public final class BootExports {
 
         // Third-party packages
         bootMap.put("org.slf4j.*", "1.5.0");
-        
+        bootMap.put("com.ctc.wstx.*", "3.2.9");
     }
 
     private BootExports() {

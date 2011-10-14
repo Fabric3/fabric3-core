@@ -18,6 +18,9 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.wsdl.contribution" version="1.9.5"/>
     <import.java package="org.fabric3.wsdl.factory" version="1.9.5"/>
 
+    <!--import Woodstox as the Metro WSDL parser assumes it to be visible from the SEI classloader-->
+    <import.java package="com.ctc.wstx.*" version="3.2.9"/>;
+
     <import.java package="javax.wsdl" version="1.6.2"/>
     <import.java package="org.fabric3.binding.ws.provision" version="1.9.5"/>
     <import.java package="org.fabric3.binding.ws.model" version="1.9.5"/>

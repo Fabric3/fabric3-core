@@ -90,8 +90,8 @@ public class ResourceInvoker {
      * "count":10,
      * "links":[{"name":"count","rel":"edit","href":"...."}]
      * }
-     * <p/>
-     * <p/>
+     *
+     *
      * <pre>
      *
      * @param request the HTTP request
@@ -148,11 +148,13 @@ public class ResourceInvoker {
     }
 
     private Object invoke(ResourceMapping mapping) throws ResourceProcessingException {
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Object instance = mapping.getInstance();
             if (instance instanceof ObjectFactory) {
                 instance = ((ObjectFactory) instance).getInstance();
             }
+            Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
             return mapping.getMethod().invoke(instance);
         } catch (IllegalArgumentException e) {
             throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
@@ -162,6 +164,8 @@ public class ResourceInvoker {
             throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
         } catch (ObjectCreationException e) {
             throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
     }
 

@@ -494,12 +494,14 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
      * @throws ResourceException if an error invoking the resource occurs
      */
     private Object invoke(ResourceMapping mapping, Object[] params, boolean replicate, WorkContext workContext) throws ResourceException {
-        WorkContext old = WorkContextTunnel.setThreadWorkContext(workContext);
+        WorkContext oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
+        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
         try {
             Object instance = mapping.getInstance();
             if (instance instanceof ObjectFactory) {
                 instance = ((ObjectFactory) instance).getInstance();
             }
+            Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
             Object ret = mapping.getMethod().invoke(instance, params);
             if (replicate) {
                 replicate(mapping, params);
@@ -523,7 +525,8 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             monitor.error("Error replicating operation: " + mapping.getMethod(), e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
         } finally {
-            WorkContextTunnel.setThreadWorkContext(old);
+            WorkContextTunnel.setThreadWorkContext(oldContext);
+            Thread.currentThread().setContextClassLoader(oldLoader);
         }
     }
 
