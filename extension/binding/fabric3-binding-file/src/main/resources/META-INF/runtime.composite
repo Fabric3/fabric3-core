@@ -12,4 +12,8 @@
         <f3:implementation.system class="org.fabric3.binding.file.runtime.FileSourceWireAttacher"/>
     </component>
 
+    <component name="FileTargetWireAttacher" f3:key="org.fabric3.binding.file.provision.FileBindingTargetDefinition">
+        <f3:implementation.system class="org.fabric3.binding.file.runtime.FileTargetWireAttacher"/>
+    </component>
+
 </composite>
