@@ -51,6 +51,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -77,30 +78,35 @@ public class FileSystemReceiver implements Runnable {
 
     private Interceptor interceptor;
     private ScheduledExecutorService executorService;
+    private int corePoolSize;
     private ReceiverMonitor monitor;
 
     private Map<String, FileEntry> cache = new ConcurrentHashMap<String, FileEntry>();
     private ScheduledFuture<?> future;
 
     public FileSystemReceiver(ReceiverConfiguration configuration) {
-        this.path = configuration.getPath();
+        this.path = configuration.getLocation();
         this.strategy = configuration.getStrategy();
-        this.errorDirectory = configuration.getErrorDirectory();
-        this.archiveDirectory = configuration.getArchiveDirectory();
+        this.errorDirectory = configuration.getErrorLocation();
+        this.archiveDirectory = configuration.getArchiveLocation();
         this.filePattern = configuration.getFilePattern();
         this.interceptor = configuration.getInterceptor();
-        this.executorService = configuration.getExecutorService();
+        this.corePoolSize = configuration.getCorePoolSize();
         this.monitor = configuration.getMonitor();
         this.lockDirectory = configuration.getLockDirectory();
     }
 
     public void start() {
+        executorService = Executors.newScheduledThreadPool(corePoolSize);
         future = executorService.scheduleWithFixedDelay(this, delay, delay, TimeUnit.MILLISECONDS);
     }
 
     public void stop() {
         if (future != null) {
             future.cancel(true);
+        }
+        if (executorService != null) {
+            executorService.shutdownNow();
         }
     }
 

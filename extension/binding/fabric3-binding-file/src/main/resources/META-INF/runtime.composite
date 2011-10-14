@@ -4,5 +4,12 @@
            autowire="true" name="FileBindingRuntimeExtension">
 
 
+    <component name="ReceiverManager">
+        <f3:implementation.system class="org.fabric3.binding.file.runtime.receiver.ReceiverManagerImpl"/>
+    </component>
+
+    <component name="FileSourceWireAttacher" f3:key="org.fabric3.binding.file.provision.FileBindingSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.file.runtime.FileSourceWireAttacher"/>
+    </component>
 
 </composite>

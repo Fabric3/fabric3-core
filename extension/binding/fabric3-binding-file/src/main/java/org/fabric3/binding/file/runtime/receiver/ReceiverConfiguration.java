@@ -38,7 +38,6 @@
 package org.fabric3.binding.file.runtime.receiver;
 
 import java.io.File;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Pattern;
 
 import org.fabric3.binding.file.common.Strategy;
@@ -47,47 +46,47 @@ import org.fabric3.spi.wire.Interceptor;
 /**
  */
 public class ReceiverConfiguration {
-    private File path;
+    private String id;
+    private File location;
     private Pattern filePattern;
     private File lockDirectory;
     Strategy strategy;
-    File errorDirectory;
-    File archiveDirectory;
+    File errorLocation;
+    File archiveLocation;
 
     private long delay = 2000;  // FIXME
 
     private Interceptor interceptor;
-    private ScheduledExecutorService executorService;
+    private int corePoolSize;
     private ReceiverMonitor monitor;
-    private String id;
 
     public ReceiverConfiguration(String id,
-                                 File path,
+                                 File location,
                                  String filePattern,
                                  Strategy strategy,
-                                 File errorDirectory,
-                                 File archiveDirectory,
+                                 File errorLocation,
+                                 File archiveLocation,
                                  Interceptor interceptor,
-                                 ScheduledExecutorService executorService,
+                                 int corePoolSize,
                                  ReceiverMonitor monitor) {
         this.id = id;
-        this.path = path;
+        this.location = location;
         this.strategy = strategy;
-        this.errorDirectory = errorDirectory;
-        this.archiveDirectory = archiveDirectory;
+        this.errorLocation = errorLocation;
+        this.archiveLocation = archiveLocation;
         this.filePattern = Pattern.compile(filePattern);
         this.interceptor = interceptor;
-        this.executorService = executorService;
+        this.corePoolSize = corePoolSize;
         this.monitor = monitor;
-        this.lockDirectory = new File(path, "locks");
+        this.lockDirectory = new File(location, "locks");
     }
 
     public String getId() {
         return id;
     }
 
-    public File getPath() {
-        return path;
+    public File getLocation() {
+        return location;
     }
 
     public Pattern getFilePattern() {
@@ -102,12 +101,12 @@ public class ReceiverConfiguration {
         return strategy;
     }
 
-    public File getErrorDirectory() {
-        return errorDirectory;
+    public File getErrorLocation() {
+        return errorLocation;
     }
 
-    public File getArchiveDirectory() {
-        return archiveDirectory;
+    public File getArchiveLocation() {
+        return archiveLocation;
     }
 
     public long getDelay() {
@@ -118,8 +117,8 @@ public class ReceiverConfiguration {
         return interceptor;
     }
 
-    public ScheduledExecutorService getExecutorService() {
-        return executorService;
+    public int getCorePoolSize() {
+        return corePoolSize;
     }
 
     public ReceiverMonitor getMonitor() {
