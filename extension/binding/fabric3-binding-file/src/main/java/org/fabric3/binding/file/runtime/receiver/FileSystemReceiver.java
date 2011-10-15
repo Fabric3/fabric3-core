@@ -38,14 +38,15 @@
 package org.fabric3.binding.file.runtime.receiver;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,6 +59,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.fabric3.binding.file.common.Strategy;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.util.IOHelper;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
@@ -70,9 +72,9 @@ public class FileSystemReceiver implements Runnable {
     private File path;
     private Pattern filePattern;
     private File lockDirectory;
-    Strategy strategy;
-    File errorDirectory;
-    File archiveDirectory;
+    private Strategy strategy;
+    private File errorDirectory;
+    private File archiveDirectory;
 
     private long delay = 2000;  // FIXME
 
@@ -162,65 +164,72 @@ public class FileSystemReceiver implements Runnable {
         cache.remove(name);
         // attempt to lock the file
         InputStream stream = null;
-
-
-        File lock = new File(lockDirectory, file.getName() + ".f3");
+        FileChannel lockChannel = null;
+        FileLock fileLock = null;
+        File lockFile = new File(lockDirectory, file.getName() + ".f3");
         try {
-            if (lock.exists()) {
-                // file either being processed by another runtime or this runtime, skip it
-                return;
-            }
             try {
-                lock.createNewFile();
+                // Always attempt to lock since a lock file could have been created by this or another VM before it crashed. In this case,
+                // the lock file is orphaned and another VM must continue processing.
+                lockChannel = new RandomAccessFile(lockFile, "rw").getChannel();
+                fileLock = lockChannel.tryLock();
+                if (fileLock == null) {
+                    return;
+                }
                 stream = createInputStream(file);
+            } catch (OverlappingFileLockException e) {
+                // already being processed by this VM, ignore
+                return;
             } catch (IOException e) {
                 // error acquiring the lock or creating the input stream, skip the file
                 monitor.error(e);
                 return;
             }
-            // TODO send stream to interceptor
-            Message message = new MessageImpl();
-            WorkContext workContext = new WorkContext();
-            message.setWorkContext(workContext);
-
-            message.setBody(new Object[]{stream});
-            Message response = interceptor.invoke(message);
+            Message response = dispatch(stream);
             if (response.isFault()) {
                 // TODO error handling
             }
 
         } finally {
             IOHelper.closeQuietly(stream);
-            if (Strategy.DELETE == strategy) {
-                if (file.exists()) {
-                    file.delete();
-                }
-            } else {
+            if (Strategy.ARCHIVE == strategy) {
                 archiveFile(file);
             }
-            if (lock.exists()) {
-                lock.delete();
+            if (file.exists()) {
+                file.delete();
+            }
+            releaseLock(fileLock);
+            IOHelper.closeQuietly(lockChannel);
+            if (lockFile.exists()) {
+                lockFile.delete();
             }
         }
+    }
+
+    private Message dispatch(InputStream stream) {
+        Message message = new MessageImpl();
+        WorkContext workContext = new WorkContext();
+        message.setWorkContext(workContext);
+        message.setBody(new Object[]{stream});
+        return interceptor.invoke(message);
     }
 
     private void archiveFile(File file) {
-        InputStream input = null;
-        OutputStream output = null;
         try {
-            input = createInputStream(file);
-            output = createArchiveStream(file);
-            IOHelper.copy(input, output);
+            FileHelper.copyFile(file, new File(archiveDirectory, file.getName()));
         } catch (IOException e) {
             monitor.error(e);
-        } finally {
-            IOHelper.closeQuietly(input);
-            IOHelper.closeQuietly(output);
         }
     }
 
-    private OutputStream createArchiveStream(File file) throws FileNotFoundException {
-        return new BufferedOutputStream(new FileOutputStream(new File(archiveDirectory, file.getName())));
+    private void releaseLock(FileLock fileLock) {
+        if (fileLock != null) {
+            try {
+                fileLock.release();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
     }
 
     private InputStream createInputStream(File file) throws FileNotFoundException {
