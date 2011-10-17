@@ -31,6 +31,7 @@
 package org.fabric3.binding.file.generator;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,6 +48,7 @@ import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
@@ -61,7 +63,9 @@ public class FileBindingGeneratorTestCase extends TestCase {
     public void testSourceGeneration() throws Exception {
         ServiceContract contract = createServiceContract();
         FileBindingDefinition definition = new FileBindingDefinition("binding", "location", Strategy.ARCHIVE, "archiveLocation", "error");
-        LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, null);
+        URI uri = URI.create("service");
+        LogicalService service = new LogicalService(uri, null, null);
+        LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, service);
 
         FileBindingSourceDefinition physical = generator.generateSource(logicalBinding, contract, Collections.<LogicalOperation>emptyList(), policy);
         assertNotNull(physical.getLocation());
@@ -73,7 +77,9 @@ public class FileBindingGeneratorTestCase extends TestCase {
         ServiceContract contract = new JavaServiceContract(Object.class); // invalid contract
 
         FileBindingDefinition definition = new FileBindingDefinition("binding", "location", Strategy.ARCHIVE, "archiveLocation", "error");
-        LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, null);
+        URI uri = URI.create("service");
+        LogicalService service = new LogicalService(uri, null, null);
+        LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, service);
 
         try {
             generator.generateSource(logicalBinding, contract, Collections.<LogicalOperation>emptyList(), policy);

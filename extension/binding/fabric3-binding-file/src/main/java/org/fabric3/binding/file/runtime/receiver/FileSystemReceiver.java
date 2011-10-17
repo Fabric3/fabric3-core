@@ -99,6 +99,9 @@ public class FileSystemReceiver implements Runnable {
     public void start() {
         executorService = Executors.newSingleThreadScheduledExecutor();
         future = executorService.scheduleWithFixedDelay(this, delay, delay, TimeUnit.MILLISECONDS);
+        if (!lockDirectory.exists()) {
+            lockDirectory.mkdirs();
+        }
     }
 
     public void stop() {
@@ -143,6 +146,7 @@ public class FileSystemReceiver implements Runnable {
     private synchronized void processFiles(List<File> files) {
         for (File file : files) {
             String name = file.getName();
+            if (ignore(file, name)) continue;
             FileEntry cached = cache.get(name);
             if (cached == null) {
                 // the file is new, cache it and wait for next run in case it is in the process of being updated
@@ -155,6 +159,14 @@ public class FileSystemReceiver implements Runnable {
                 }
             }
         }
+    }
+
+    private boolean ignore(File file, String name) {
+        if (name.startsWith(".") || file.isDirectory()) {
+            // skip hidden files
+            return true;
+        }
+        return false;
     }
 
     @SuppressWarnings({"ResultOfMethodCallIgnored"})

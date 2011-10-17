@@ -30,6 +30,8 @@
  */
 package org.fabric3.binding.file.provision;
 
+import java.net.URI;
+
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
@@ -46,12 +48,12 @@ public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
     private String archiveLocation;
     private String errorLocation;
 
-    public FileBindingSourceDefinition(String location, Strategy strategy, String archiveLocation, String errorLocation) {
+    public FileBindingSourceDefinition(URI uri, String location, Strategy strategy, String archiveLocation, String errorLocation) {
         this.location = location;
         this.strategy = strategy;
         this.archiveLocation = archiveLocation;
         this.errorLocation = errorLocation;
-        setUri(null);
+        setUri(uri);
     }
 
     public String getLocation() {

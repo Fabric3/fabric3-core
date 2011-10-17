@@ -45,6 +45,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
+import org.fabric3.binding.file.runtime.receiver.PassThroughInterceptor;
 import org.fabric3.binding.file.runtime.receiver.ReceiverConfiguration;
 import org.fabric3.binding.file.runtime.receiver.ReceiverManager;
 import org.fabric3.binding.file.runtime.receiver.ReceiverMonitor;
@@ -53,6 +54,7 @@ import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
 /**
@@ -71,15 +73,23 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
     public void attach(FileBindingSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
         String id = source.getUri().toString();
         File location = new File(source.getLocation());
-        String pattern = "*"; // FIXME
+        String pattern = ".*"; // FIXME
         Strategy strategy = source.getStrategy();
-        File errorLocation = new File(source.getErrorLocation());
-        File archiveLocation = new File(source.getArchiveLocation());
-        if (wire.getInvocationChains().size() != 1) {
-            // this should not happen here; multi-operation interfaces will thrown an exception during load/generation
-            throw new WiringException("Only one operation is supported");
+        File errorLocation = null;
+        String locationStr = source.getErrorLocation();
+        if (locationStr != null) {
+            new File(locationStr);
         }
-        Interceptor interceptor = wire.getInvocationChains().get(0).getHeadInterceptor();
+        File archiveLocation = null;
+        String archiveLocationStr = source.getArchiveLocation();
+        if (archiveLocationStr != null) {
+            archiveLocation = new File(archiveLocationStr);
+        }
+
+        Interceptor interceptor = new PassThroughInterceptor();
+        for (InvocationChain chain : wire.getInvocationChains()) {
+            chain.addInterceptor(interceptor);
+        }
         ReceiverConfiguration configuration =
                 new ReceiverConfiguration(id, location, pattern, strategy, errorLocation, archiveLocation, interceptor, monitor);
         receiverManager.create(configuration);

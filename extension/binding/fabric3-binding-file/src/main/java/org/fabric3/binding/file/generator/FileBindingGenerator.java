@@ -31,6 +31,7 @@
 package org.fabric3.binding.file.generator;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 import javax.xml.namespace.QName;
 
@@ -70,7 +71,8 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         Strategy strategy = definition.getStrategy();
         String archiveLocation = definition.getArchiveLocation();
         String errorLocation = definition.getErrorLocation();
-        return new FileBindingSourceDefinition(location, strategy, archiveLocation, errorLocation);
+        URI uri = binding.getParent().getUri();
+        return new FileBindingSourceDefinition(uri, location, strategy, archiveLocation, errorLocation);
     }
 
     public FileBindingTargetDefinition generateTarget(LogicalBinding<FileBindingDefinition> binding,
