@@ -60,7 +60,8 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 
 public class FileBindingLoaderTestCase extends TestCase {
-    private static final String REFERENCE_BINDING_CONFIG = "<binding.file name='file' location='/dir/subdir' error.location='/dir/error'/>";
+    private static final String REFERENCE_BINDING_CONFIG =
+            "<binding.file name='file' pattern='trans***' location='/dir/subdir' error.location='/dir/error'/>";
     private static final String STRATEGY_BINDING_CONFIG =
             "<binding.file name='file' location='/dir/subdir' strategy='archive' archive.location='/dir/output' error.location='/dir/error'/>";
 
@@ -78,6 +79,7 @@ public class FileBindingLoaderTestCase extends TestCase {
         assertFalse(context.hasErrors());
 
         assertEquals("file", definition.getName());
+        assertEquals("trans***", definition.getPattern());
         assertEquals("/dir/subdir", definition.getLocation());
         assertEquals("/dir/error", definition.getErrorLocation());
     }
