@@ -85,7 +85,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
         File errorLocation = getErrorLocation(source);
         File archiveLocation = getArchiveLocation(source);
 
-        String pattern = ".*"; // FIXME
+        String pattern = source.getPattern();
         Strategy strategy = source.getStrategy();
 
         Interceptor interceptor = new PassThroughInterceptor();

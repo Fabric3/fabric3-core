@@ -33,9 +33,7 @@ package org.fabric3.binding.file.generator;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
-import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.binding.file.common.Strategy;
@@ -58,8 +56,7 @@ import org.fabric3.spi.model.type.java.JavaType;
  */
 @EagerInit
 public class FileBindingGenerator implements BindingGenerator<FileBindingDefinition> {
-    private static final QName IMMEDIATE_ONEWAY = new QName(Constants.SCA_NS, "immediateOneWay");
-    private static final QName ONEWAY = new QName(Constants.SCA_NS, "oneWay");
+    private static final String REGEX_ALL = ".*";
 
     public FileBindingSourceDefinition generateSource(LogicalBinding<FileBindingDefinition> binding,
                                                       ServiceContract contract,
@@ -67,13 +64,17 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
                                                       EffectivePolicy policy) throws GenerationException {
         validateServiceContract(contract);
         FileBindingDefinition definition = binding.getDefinition();
+        String pattern = definition.getPattern();
+        if (pattern == null) {
+            pattern = REGEX_ALL;
+        }
         String location = definition.getLocation();
         Strategy strategy = definition.getStrategy();
         String archiveLocation = definition.getArchiveLocation();
         String errorLocation = definition.getErrorLocation();
         String listener = definition.getAdapterClass();
         URI uri = binding.getParent().getUri();
-        return new FileBindingSourceDefinition(uri, location, strategy, archiveLocation, errorLocation, listener);
+        return new FileBindingSourceDefinition(uri, pattern, location, strategy, archiveLocation, errorLocation, listener);
     }
 
     public FileBindingTargetDefinition generateTarget(LogicalBinding<FileBindingDefinition> binding,

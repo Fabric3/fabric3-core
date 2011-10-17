@@ -69,6 +69,7 @@ public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
         ATTRIBUTES.add("archive.location");
         ATTRIBUTES.add("error.location");
         ATTRIBUTES.add("strategy");
+        ATTRIBUTES.add("pattern");
         ATTRIBUTES.add("name");
         ATTRIBUTES.add("adapter");
     }
@@ -106,7 +107,10 @@ public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
 
         String adapterClass = reader.getAttributeValue(null, "adapter");
 
-        FileBindingDefinition definition = new FileBindingDefinition(bindingName, location, strategy, archiveLocation, errorLocation, adapterClass);
+        String pattern = reader.getAttributeValue(null, "pattern");
+
+        FileBindingDefinition definition =
+                new FileBindingDefinition(bindingName, pattern, location, strategy, archiveLocation, errorLocation, adapterClass);
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
         LoaderUtil.skipToEndElement(reader);

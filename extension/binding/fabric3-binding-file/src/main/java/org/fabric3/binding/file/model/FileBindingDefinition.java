@@ -52,6 +52,7 @@ public class FileBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -8904535030035183877L;
     public static final QName BINDING_FILE = new QName(Namespaces.F3, "binding.file");
 
+    private String pattern;
     private String location;
     private Strategy strategy = Strategy.DELETE;
     private String archiveLocation;
@@ -65,17 +66,23 @@ public class FileBindingDefinition extends BindingDefinition {
     }
 
     public FileBindingDefinition(String name,
+                                 String pattern,
                                  String location,
                                  Strategy strategy,
                                  String archiveLocation,
                                  String errorLocation,
                                  String adapterClass) {
         super(name, null, BINDING_FILE);
+        this.pattern = pattern;
         this.location = location;
         this.strategy = strategy;
         this.archiveLocation = archiveLocation;
         this.errorLocation = errorLocation;
         this.adapterClass = adapterClass;
+    }
+
+    public String getPattern() {
+        return pattern;
     }
 
     public String getLocation() {
