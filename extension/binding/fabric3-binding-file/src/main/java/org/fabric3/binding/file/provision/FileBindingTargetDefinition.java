@@ -30,8 +30,6 @@
  */
 package org.fabric3.binding.file.provision;
 
-import java.net.URI;
-
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**

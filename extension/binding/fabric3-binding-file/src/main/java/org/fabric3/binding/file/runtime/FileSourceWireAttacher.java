@@ -38,11 +38,13 @@
 package org.fabric3.binding.file.runtime;
 
 import java.io.File;
+import java.net.URI;
 
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.binding.file.api.FileBindingAdapter;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
 import org.fabric3.binding.file.runtime.receiver.PassThroughInterceptor;
@@ -51,6 +53,7 @@ import org.fabric3.binding.file.runtime.receiver.ReceiverManager;
 import org.fabric3.binding.file.runtime.receiver.ReceiverMonitor;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.Interceptor;
@@ -62,36 +65,38 @@ import org.fabric3.spi.wire.Wire;
  */
 @EagerInit
 public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSourceDefinition> {
+    private static final FileBindingAdapter ADAPTER = new DefaultFileBindingAdapter();
     private ReceiverManager receiverManager;
+    private ClassLoaderRegistry registry;
     private ReceiverMonitor monitor;
 
-    public FileSourceWireAttacher(@Reference ReceiverManager receiverManager, @Monitor ReceiverMonitor monitor) {
+    public FileSourceWireAttacher(@Reference ReceiverManager receiverManager,
+                                  @Reference ClassLoaderRegistry registry,
+                                  @Monitor ReceiverMonitor monitor) {
         this.receiverManager = receiverManager;
+        this.registry = registry;
         this.monitor = monitor;
     }
 
     public void attach(FileBindingSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
         String id = source.getUri().toString();
+
         File location = new File(source.getLocation());
+        File errorLocation = getErrorLocation(source);
+        File archiveLocation = getArchiveLocation(source);
+
         String pattern = ".*"; // FIXME
         Strategy strategy = source.getStrategy();
-        File errorLocation = null;
-        String locationStr = source.getErrorLocation();
-        if (locationStr != null) {
-            new File(locationStr);
-        }
-        File archiveLocation = null;
-        String archiveLocationStr = source.getArchiveLocation();
-        if (archiveLocationStr != null) {
-            archiveLocation = new File(archiveLocationStr);
-        }
 
         Interceptor interceptor = new PassThroughInterceptor();
         for (InvocationChain chain : wire.getInvocationChains()) {
             chain.addInterceptor(interceptor);
         }
+
+        FileBindingAdapter adapter = instantiateAdaptor(source);
+
         ReceiverConfiguration configuration =
-                new ReceiverConfiguration(id, location, pattern, strategy, errorLocation, archiveLocation, interceptor, monitor);
+                new ReceiverConfiguration(id, location, pattern, strategy, errorLocation, archiveLocation, interceptor, adapter, monitor);
         receiverManager.create(configuration);
     }
 
@@ -108,4 +113,45 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
     public void detachObjectFactory(FileBindingSourceDefinition source, PhysicalTargetDefinition target) {
         throw new UnsupportedOperationException();
     }
+
+    private File getArchiveLocation(FileBindingSourceDefinition source) {
+        File archiveLocation = null;
+        String archiveLocationStr = source.getArchiveLocation();
+        if (archiveLocationStr != null) {
+            archiveLocation = new File(archiveLocationStr);
+        }
+        return archiveLocation;
+    }
+
+    private File getErrorLocation(FileBindingSourceDefinition source) {
+        File errorLocation = null;
+        String errorLocationStr = source.getErrorLocation();
+        if (errorLocationStr != null) {
+            errorLocation = new File(errorLocationStr);
+        }
+        return errorLocation;
+    }
+
+    private FileBindingAdapter instantiateAdaptor(FileBindingSourceDefinition source) throws WiringException {
+        String adapterClass = source.getAdapterClass();
+        if (adapterClass == null) {
+            return ADAPTER;
+        }
+        URI uri = source.getClassLoaderId();
+        ClassLoader loader = registry.getClassLoader(uri);
+        if (loader == null) {
+            // this should not happen
+            throw new WiringException("ClassLoader not found: " + uri);
+        }
+        try {
+            return (FileBindingAdapter) loader.loadClass(adapterClass).newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new WiringException(e);
+        } catch (InstantiationException e) {
+            throw new WiringException(e);
+        } catch (IllegalAccessException e) {
+            throw new WiringException(e);
+        }
+    }
+
 }

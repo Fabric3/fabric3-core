@@ -28,16 +28,39 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.file.common;
+package org.fabric3.binding.file.api;
+
+import java.io.File;
 
 /**
- * Identifies whether the file binding should archive or delete data files.
+ * Implementations are responsible for returning expected service parameter types and cleaning up resources associated with those parameter types
+ * after an invocation.
  *
  * @version $Revision$ $Date$
  */
-public enum Strategy {
+public interface FileBindingAdapter {
 
-    ARCHIVE,
-    DELETE
+    /**
+     * Called to return expected service parameter types for a detected file as an array. For example, the service may require an input stream If data
+     * in error.
+     * <p/>
+     * If an implementation throws an exception, the invocation will be aborted and {@link #afterInvoke(File, Object[])} will <strong>NOT</string> be
+     * called. Instead, the detected file will be moved to the error directory. It is therefore important to ensure all resource streams are closed
+     * prior to throwing an exception.
+     *
+     * @param file the detected file
+     * @return the expected service parameters
+     * @throws InvalidDataException if an unrecoverable data error is encountered.
+     */
+    Object[] beforeInvoke(File file) throws InvalidDataException;
+
+    /**
+     * Called after an invocation has been made. Implementations should close any open resource streams.
+     *
+     * @param file    the detected file
+     * @param payload the service parameters used for the invocation
+     */
+
+    void afterInvoke(File file, Object[] payload);
 
 }

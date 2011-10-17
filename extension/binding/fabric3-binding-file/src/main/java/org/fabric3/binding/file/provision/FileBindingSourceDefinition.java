@@ -47,12 +47,19 @@ public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
     private Strategy strategy;
     private String archiveLocation;
     private String errorLocation;
+    private String adapterClass;
 
-    public FileBindingSourceDefinition(URI uri, String location, Strategy strategy, String archiveLocation, String errorLocation) {
+    public FileBindingSourceDefinition(URI uri,
+                                       String location,
+                                       Strategy strategy,
+                                       String archiveLocation,
+                                       String errorLocation,
+                                       String adapterClass) {
         this.location = location;
         this.strategy = strategy;
         this.archiveLocation = archiveLocation;
         this.errorLocation = errorLocation;
+        this.adapterClass = adapterClass;
         setUri(uri);
     }
 
@@ -70,5 +77,9 @@ public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
 
     public String getErrorLocation() {
         return errorLocation;
+    }
+
+    public String getAdapterClass() {
+        return adapterClass;
     }
 }

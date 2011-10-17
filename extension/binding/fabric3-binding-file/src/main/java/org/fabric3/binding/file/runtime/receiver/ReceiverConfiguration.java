@@ -40,10 +40,14 @@ package org.fabric3.binding.file.runtime.receiver;
 import java.io.File;
 import java.util.regex.Pattern;
 
+import org.fabric3.binding.file.api.FileBindingAdapter;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
+ * Configuration for instantiating a file binding receiver.
+ *
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public class ReceiverConfiguration {
     private String id;
@@ -58,6 +62,7 @@ public class ReceiverConfiguration {
 
     private Interceptor interceptor;
     private ReceiverMonitor monitor;
+    private FileBindingAdapter adapter;
 
     public ReceiverConfiguration(String id,
                                  File location,
@@ -66,6 +71,7 @@ public class ReceiverConfiguration {
                                  File errorLocation,
                                  File archiveLocation,
                                  Interceptor interceptor,
+                                 FileBindingAdapter adapter,
                                  ReceiverMonitor monitor) {
         this.id = id;
         this.location = location;
@@ -74,6 +80,7 @@ public class ReceiverConfiguration {
         this.archiveLocation = archiveLocation;
         this.filePattern = Pattern.compile(filePattern);
         this.interceptor = interceptor;
+        this.adapter = adapter;
         this.monitor = monitor;
         this.lockDirectory = new File(location, "locks");
     }
@@ -112,6 +119,10 @@ public class ReceiverConfiguration {
 
     public Interceptor getInterceptor() {
         return interceptor;
+    }
+
+    public FileBindingAdapter getAdapter() {
+        return adapter;
     }
 
     public ReceiverMonitor getMonitor() {

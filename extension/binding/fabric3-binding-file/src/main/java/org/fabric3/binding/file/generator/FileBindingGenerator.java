@@ -71,8 +71,9 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         Strategy strategy = definition.getStrategy();
         String archiveLocation = definition.getArchiveLocation();
         String errorLocation = definition.getErrorLocation();
+        String listener = definition.getAdapterClass();
         URI uri = binding.getParent().getUri();
-        return new FileBindingSourceDefinition(uri, location, strategy, archiveLocation, errorLocation);
+        return new FileBindingSourceDefinition(uri, location, strategy, archiveLocation, errorLocation, listener);
     }
 
     public FileBindingTargetDefinition generateTarget(LogicalBinding<FileBindingDefinition> binding,

@@ -37,12 +37,8 @@
 */
 package org.fabric3.binding.file.runtime.receiver;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
@@ -58,6 +54,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import org.fabric3.binding.file.api.FileBindingAdapter;
+import org.fabric3.binding.file.api.InvalidDataException;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.util.IOHelper;
@@ -67,9 +65,16 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
+ * Periodically scans a directory for new files. When a new file is detected, the service bound to the directory is invoked with expected data types
+ * associated with each file. After an invocation completes, the detected file is either archived or deleted according to the configured {@link
+ * Strategy} value. If an error is encountered, the file will be removed to the configured error location.
+ * <p/>
+ * This receiver is non-transactional but supports clustered locking through the use of file locks placed in the &lt;location&gt;/locks directory.
+ *
+ * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public class FileSystemReceiver implements Runnable {
-    private File path;
+    private File location;
     private Pattern filePattern;
     private File lockDirectory;
     private Strategy strategy;
@@ -80,13 +85,14 @@ public class FileSystemReceiver implements Runnable {
 
     private Interceptor interceptor;
     private ScheduledExecutorService executorService;
+    private FileBindingAdapter adapter;
     private ReceiverMonitor monitor;
 
     private Map<String, FileEntry> cache = new ConcurrentHashMap<String, FileEntry>();
     private ScheduledFuture<?> future;
 
     public FileSystemReceiver(ReceiverConfiguration configuration) {
-        this.path = configuration.getLocation();
+        this.location = configuration.getLocation();
         this.strategy = configuration.getStrategy();
         this.errorDirectory = configuration.getErrorLocation();
         this.archiveDirectory = configuration.getArchiveLocation();
@@ -94,13 +100,17 @@ public class FileSystemReceiver implements Runnable {
         this.interceptor = configuration.getInterceptor();
         this.monitor = configuration.getMonitor();
         this.lockDirectory = configuration.getLockDirectory();
+        this.adapter = configuration.getAdapter();
     }
 
     public void start() {
         executorService = Executors.newSingleThreadScheduledExecutor();
         future = executorService.scheduleWithFixedDelay(this, delay, delay, TimeUnit.MILLISECONDS);
-        if (!lockDirectory.exists()) {
-            lockDirectory.mkdirs();
+        lockDirectory.mkdirs();
+        errorDirectory.mkdirs();
+        if (archiveDirectory != null) {
+            // archive directory is optional if the strategy is delete
+            archiveDirectory.mkdirs();
         }
     }
 
@@ -115,11 +125,11 @@ public class FileSystemReceiver implements Runnable {
 
     public synchronized void run() {
         List<File> files = new ArrayList<File>();
-        if (!path.isDirectory()) {
+        if (!location.isDirectory()) {
             // there is no drop directory, return without processing
             return;
         }
-        File[] pathFiles = path.listFiles();
+        File[] pathFiles = location.listFiles();
         for (File file : pathFiles) {
             // add files
             if (filePattern.matcher(file.getName()).matches()) {
@@ -175,54 +185,65 @@ public class FileSystemReceiver implements Runnable {
         // remove file from the cache as it will either be processed by this runtime or skipped
         cache.remove(name);
         // attempt to lock the file
-        InputStream stream = null;
-        FileChannel lockChannel = null;
-        FileLock fileLock = null;
+        Object[] payload = null;
+        FileChannel lockChannel;
+        FileLock fileLock;
         File lockFile = new File(lockDirectory, file.getName() + ".f3");
         try {
-            try {
-                // Always attempt to lock since a lock file could have been created by this or another VM before it crashed. In this case,
-                // the lock file is orphaned and another VM must continue processing.
-                lockChannel = new RandomAccessFile(lockFile, "rw").getChannel();
-                fileLock = lockChannel.tryLock();
-                if (fileLock == null) {
-                    return;
-                }
-                stream = createInputStream(file);
-            } catch (OverlappingFileLockException e) {
-                // already being processed by this VM, ignore
-                return;
-            } catch (IOException e) {
-                // error acquiring the lock or creating the input stream, skip the file
-                monitor.error(e);
+            // Always attempt to lock since a lock file could have been created by this or another VM before it crashed. In this case,
+            // the lock file is orphaned and another VM must continue processing.
+            lockChannel = new RandomAccessFile(lockFile, "rw").getChannel();
+            fileLock = lockChannel.tryLock();
+            if (fileLock == null) {
+                // file lock is held bu another VM. ignore
                 return;
             }
-            Message response = dispatch(stream);
+        } catch (OverlappingFileLockException e) {
+            // already being processed by this VM, ignore
+            return;
+        } catch (IOException e) {
+            // error acquiring the lock, skip processing
+            monitor.error(e);
+            return;
+        }
+        try {
+            payload = adapter.beforeInvoke(file);
+        } catch (InvalidDataException e) {
+            monitor.error(e);
+            // invalid file, return and send it the the error directory
+            try {
+                FileHelper.copyFile(file, new File(errorDirectory, file.getName()));
+                file.delete();
+                return;
+            } catch (IOException ex) {
+                monitor.error(ex);
+            } finally {
+                releaseLock(lockFile, fileLock, lockChannel);
+            }
+        }
+        try {
+            Message response = dispatch(payload);
             if (response.isFault()) {
                 // TODO error handling
             }
 
         } finally {
-            IOHelper.closeQuietly(stream);
+            adapter.afterInvoke(file, payload);
             if (Strategy.ARCHIVE == strategy) {
                 archiveFile(file);
             }
             if (file.exists()) {
                 file.delete();
             }
-            releaseLock(fileLock);
-            IOHelper.closeQuietly(lockChannel);
-            if (lockFile.exists()) {
-                lockFile.delete();
-            }
+            releaseLock(lockFile, fileLock, lockChannel);
         }
     }
 
-    private Message dispatch(InputStream stream) {
+    private Message dispatch(Object[] payload) {
         Message message = new MessageImpl();
         WorkContext workContext = new WorkContext();
         message.setWorkContext(workContext);
-        message.setBody(new Object[]{stream});
+        message.setBody(payload);
         return interceptor.invoke(message);
     }
 
@@ -234,19 +255,18 @@ public class FileSystemReceiver implements Runnable {
         }
     }
 
-    private void releaseLock(FileLock fileLock) {
-        if (fileLock != null) {
+    private void releaseLock(File lockFile, FileLock lock, FileChannel lockChannel) {
+        if (lock != null) {
             try {
-                fileLock.release();
+                lock.release();
+                IOHelper.closeQuietly(lockChannel);
+                if (lockFile.exists()) {
+                    lockFile.delete();
+                }
             } catch (IOException e) {
                 // ignore
             }
         }
     }
-
-    private InputStream createInputStream(File file) throws FileNotFoundException {
-        return new BufferedInputStream(new FileInputStream(file));
-    }
-
 
 }

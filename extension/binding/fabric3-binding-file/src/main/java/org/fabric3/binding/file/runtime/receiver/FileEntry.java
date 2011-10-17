@@ -42,6 +42,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
+ * Implements the ability to set a modification checkpoint for detecting if a file has been changed.
+ *
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public class FileEntry {
@@ -62,15 +64,4 @@ public class FileEntry {
         return val;
     }
 
-    public URL getLocation() {
-        try {
-            return file.toURI().normalize().toURL();
-        } catch (MalformedURLException e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    public File getFile() {
-        return file;
-    }
 }

@@ -70,6 +70,7 @@ public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
         ATTRIBUTES.add("error.location");
         ATTRIBUTES.add("strategy");
         ATTRIBUTES.add("name");
+        ATTRIBUTES.add("adapter");
     }
 
     private final LoaderHelper loaderHelper;
@@ -90,26 +91,35 @@ public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
             context.addError(error);
         }
 
-        Strategy strategy;
-        String strategyAttr = reader.getAttributeValue(null, "strategy");
         String archiveLocation = reader.getAttributeValue(null, "archive.location");
-        if (strategyAttr == null || Strategy.DELETE.toString().toUpperCase().equals(strategyAttr)) {
-            strategy = Strategy.DELETE;
-        } else {
-            strategy = Strategy.valueOf(strategyAttr.toUpperCase());
-            if (archiveLocation == null) {
-                MissingAttribute error = new MissingAttribute("An archive location must be specified", reader);
-                context.addError(error);
-            }
+
+        Strategy strategy = parseStrategy(reader);
+        if (Strategy.ARCHIVE == strategy && archiveLocation == null) {
+            MissingAttribute error = new MissingAttribute("An archive location must be specified", reader);
+            context.addError(error);
+        }
+        String errorLocation = reader.getAttributeValue(null, "error.location");
+        if (errorLocation == null) {
+            MissingAttribute error = new MissingAttribute("The error location attribute must be specified", reader);
+            context.addError(error);
         }
 
-        String errorLocation = reader.getAttributeValue(null, "error.location");
+        String adapterClass = reader.getAttributeValue(null, "adapter");
 
-        FileBindingDefinition definition = new FileBindingDefinition(bindingName, location, strategy, archiveLocation, errorLocation);
+        FileBindingDefinition definition = new FileBindingDefinition(bindingName, location, strategy, archiveLocation, errorLocation, adapterClass);
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
         LoaderUtil.skipToEndElement(reader);
         return definition;
+    }
+
+    private Strategy parseStrategy(XMLStreamReader reader) {
+        String strategyAttr = reader.getAttributeValue(null, "strategy");
+        if (strategyAttr == null || Strategy.DELETE.toString().toUpperCase().equals(strategyAttr)) {
+            return Strategy.DELETE;
+        } else {
+            return Strategy.valueOf(strategyAttr.toUpperCase());
+        }
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {

@@ -56,6 +56,7 @@ public class FileBindingDefinition extends BindingDefinition {
     private Strategy strategy = Strategy.DELETE;
     private String archiveLocation;
     private String errorLocation;
+    private String adapterClass;
 
     public FileBindingDefinition(String name, String location, String errorLocation) {
         super(name, null, BINDING_FILE);
@@ -63,12 +64,18 @@ public class FileBindingDefinition extends BindingDefinition {
         this.errorLocation = errorLocation;
     }
 
-    public FileBindingDefinition(String name, String location, Strategy strategy, String archiveLocation, String errorLocation) {
+    public FileBindingDefinition(String name,
+                                 String location,
+                                 Strategy strategy,
+                                 String archiveLocation,
+                                 String errorLocation,
+                                 String adapterClass) {
         super(name, null, BINDING_FILE);
         this.location = location;
         this.strategy = strategy;
         this.archiveLocation = archiveLocation;
         this.errorLocation = errorLocation;
+        this.adapterClass = adapterClass;
     }
 
     public String getLocation() {
@@ -85,5 +92,9 @@ public class FileBindingDefinition extends BindingDefinition {
 
     public String getErrorLocation() {
         return errorLocation;
+    }
+
+    public String getAdapterClass() {
+        return adapterClass;
     }
 }

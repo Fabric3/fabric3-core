@@ -35,26 +35,44 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.file.runtime.receiver;
+package org.fabric3.binding.file.runtime;
+
+import java.io.BufferedInputStream;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import org.fabric3.binding.file.api.FileBindingAdapter;
+import org.fabric3.binding.file.api.InvalidDataException;
+import org.fabric3.host.util.IOHelper;
 
 /**
- * Manages file binding receivers that monitor a location for data files and invoke bound services.
+ * The default {@link FileBindingAdapter} implementation. Opens a buffered stream for reading the specified file.
  *
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-public interface ReceiverManager {
+public class DefaultFileBindingAdapter implements FileBindingAdapter {
 
-    /**
-     * Creates a receiver and start monitoring the file location.
-     *
-     * @param configuration the receiver configuration
-     */
-    void create(ReceiverConfiguration configuration);
 
-    /**
-     * Stops monitoring and removes a receiver associated with the given id.
-     *
-     * @param id the receiver id
-     */
-    void remove(String id);
+    public Object[] beforeInvoke(File file) throws InvalidDataException {
+        FileInputStream fileStream = null;
+        try {
+            fileStream = new FileInputStream(file);
+            return new Object[]{new BufferedInputStream(fileStream)};
+        } catch (FileNotFoundException e) {
+            IOHelper.closeQuietly(fileStream);
+            throw new InvalidDataException(e);
+        }
+    }
+
+    public void afterInvoke(File file, Object[] payload) {
+        if (payload.length != 1) {
+            throw new AssertionError("Invalid payload length: " + payload.length);
+        }
+        if (!(payload[0] instanceof Closeable)) {
+            throw new AssertionError("Invalid payload type: " + payload[0]);
+        }
+        IOHelper.closeQuietly((Closeable) payload[0]);
+    }
 }
