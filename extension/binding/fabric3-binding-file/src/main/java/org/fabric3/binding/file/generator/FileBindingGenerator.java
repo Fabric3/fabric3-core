@@ -58,7 +58,7 @@ import org.fabric3.spi.model.type.java.JavaType;
 @EagerInit
 public class FileBindingGenerator implements BindingGenerator<FileBindingDefinition> {
     private static final String REGEX_ALL = ".*";
-    private long defaultDelay;
+    private long defaultDelay = 2000;
 
     @Property(required = false)
     public void setDelay(long delay) {
