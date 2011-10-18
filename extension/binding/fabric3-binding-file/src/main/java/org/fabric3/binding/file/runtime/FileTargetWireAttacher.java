@@ -40,9 +40,11 @@ package org.fabric3.binding.file.runtime;
 import java.io.File;
 
 import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
 import org.fabric3.binding.file.runtime.sender.FileSystemInterceptor;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
@@ -55,9 +57,14 @@ import org.fabric3.spi.wire.Wire;
  */
 @EagerInit
 public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTargetDefinition> {
+    private File baseDir;
+
+    public FileTargetWireAttacher(@Reference HostInfo hostInfo) {
+        this.baseDir = new File(hostInfo.getDataDir(), "outbox");
+    }
 
     public void attach(PhysicalSourceDefinition source, FileBindingTargetDefinition target, Wire wire) throws WiringException {
-        File location = new File(target.getLocation());
+        File location = resolve(target.getLocation());
         location.mkdirs();
         FileSystemInterceptor interceptor = new FileSystemInterceptor(location);
         for (InvocationChain chain : wire.getInvocationChains()) {
@@ -72,5 +79,20 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTar
     public ObjectFactory<?> createObjectFactory(FileBindingTargetDefinition target) throws WiringException {
         throw new UnsupportedOperationException();
     }
+
+    /**
+     * Resolve the location as an absolute address or relative to the runtime data/inbox directory.
+     *
+     * @param location the location
+     * @return the resolved location
+     */
+    private File resolve(String location) {
+        File file = new File(location);
+        if (file.isAbsolute()) {
+            return file;
+        }
+        return new File(baseDir, location);
+    }
+
 
 }
