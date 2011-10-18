@@ -58,6 +58,7 @@ public class FileBindingDefinition extends BindingDefinition {
     private String archiveLocation;
     private String errorLocation;
     private String adapterClass;
+    private long delay;
 
     public FileBindingDefinition(String name, String location, String errorLocation) {
         super(name, null, BINDING_FILE);
@@ -71,7 +72,8 @@ public class FileBindingDefinition extends BindingDefinition {
                                  Strategy strategy,
                                  String archiveLocation,
                                  String errorLocation,
-                                 String adapterClass) {
+                                 String adapterClass,
+                                 long delay) {
         super(name, null, BINDING_FILE);
         this.pattern = pattern;
         this.location = location;
@@ -79,6 +81,7 @@ public class FileBindingDefinition extends BindingDefinition {
         this.archiveLocation = archiveLocation;
         this.errorLocation = errorLocation;
         this.adapterClass = adapterClass;
+        this.delay = delay;
     }
 
     public String getPattern() {
@@ -103,5 +106,9 @@ public class FileBindingDefinition extends BindingDefinition {
 
     public String getAdapterClass() {
         return adapterClass;
+    }
+
+    public long getDelay() {
+        return delay;
     }
 }

@@ -35,6 +35,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.binding.file.model.FileBindingDefinition;
@@ -57,6 +58,12 @@ import org.fabric3.spi.model.type.java.JavaType;
 @EagerInit
 public class FileBindingGenerator implements BindingGenerator<FileBindingDefinition> {
     private static final String REGEX_ALL = ".*";
+    private long defaultDelay;
+
+    @Property(required = false)
+    public void setDelay(long delay) {
+        this.defaultDelay = delay;
+    }
 
     public FileBindingSourceDefinition generateSource(LogicalBinding<FileBindingDefinition> binding,
                                                       ServiceContract contract,
@@ -77,7 +84,11 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
             throw new GenerationException("Error location must be specified on the file binding configuration for " + uri);
         }
         String listener = definition.getAdapterClass();
-        return new FileBindingSourceDefinition(uri, pattern, location, strategy, archiveLocation, errorLocation, listener);
+        long delay = definition.getDelay();
+        if (delay == -1) {
+            delay = defaultDelay;
+        }
+        return new FileBindingSourceDefinition(uri, pattern, location, strategy, archiveLocation, errorLocation, listener, delay);
     }
 
     public FileBindingTargetDefinition generateTarget(LogicalBinding<FileBindingDefinition> binding,

@@ -58,7 +58,7 @@ public class ReceiverConfiguration {
     File errorLocation;
     File archiveLocation;
 
-    private long delay = 2000;  // FIXME
+    private long delay;
 
     private Interceptor interceptor;
     private ReceiverMonitor monitor;
@@ -72,6 +72,7 @@ public class ReceiverConfiguration {
                                  File archiveLocation,
                                  Interceptor interceptor,
                                  FileBindingAdapter adapter,
+                                 long delay,
                                  ReceiverMonitor monitor) {
         this.id = id;
         this.location = location;
@@ -81,6 +82,7 @@ public class ReceiverConfiguration {
         this.filePattern = Pattern.compile(filePattern);
         this.interceptor = interceptor;
         this.adapter = adapter;
+        this.delay = delay;
         this.monitor = monitor;
         this.lockDirectory = new File(location, "locks");
     }

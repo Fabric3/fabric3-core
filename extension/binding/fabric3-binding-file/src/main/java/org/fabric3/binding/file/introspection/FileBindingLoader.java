@@ -48,6 +48,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.binding.file.model.FileBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
@@ -72,6 +73,7 @@ public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
         ATTRIBUTES.add("pattern");
         ATTRIBUTES.add("name");
         ATTRIBUTES.add("adapter");
+        ATTRIBUTES.add("delay");
     }
 
     private final LoaderHelper loaderHelper;
@@ -105,8 +107,9 @@ public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
 
         String pattern = reader.getAttributeValue(null, "pattern");
 
+        long delay = parseDelay(reader, context);
         FileBindingDefinition definition =
-                new FileBindingDefinition(bindingName, pattern, location, strategy, archiveLocation, errorLocation, adapterClass);
+                new FileBindingDefinition(bindingName, pattern, location, strategy, archiveLocation, errorLocation, adapterClass, delay);
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
         LoaderUtil.skipToEndElement(reader);
@@ -120,6 +123,20 @@ public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
         } else {
             return Strategy.valueOf(strategyAttr.toUpperCase());
         }
+    }
+
+    private long parseDelay(XMLStreamReader reader, IntrospectionContext context) {
+        long delay = -1;
+        String delayStr = reader.getAttributeValue(null, "delay");
+        if (delayStr != null) {
+            try {
+                delay = Long.parseLong(delayStr);
+            } catch (NumberFormatException e) {
+                InvalidValue error = new InvalidValue("Invalid delay value", reader, e);
+                context.addError(error);
+            }
+        }
+        return delay;
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {

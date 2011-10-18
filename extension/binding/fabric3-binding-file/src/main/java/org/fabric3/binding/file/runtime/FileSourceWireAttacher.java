@@ -95,8 +95,10 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
 
         FileBindingAdapter adapter = instantiateAdaptor(source);
 
+        long delay = source.getDelay();
+
         ReceiverConfiguration configuration =
-                new ReceiverConfiguration(id, location, pattern, strategy, errorLocation, archiveLocation, interceptor, adapter, monitor);
+                new ReceiverConfiguration(id, location, pattern, strategy, errorLocation, archiveLocation, interceptor, adapter, delay, monitor);
         receiverManager.create(configuration);
     }
 

@@ -63,7 +63,8 @@ public class FileBindingGeneratorTestCase extends TestCase {
 
     public void testSourceGeneration() throws Exception {
         ServiceContract contract = createServiceContract();
-        FileBindingDefinition definition = new FileBindingDefinition("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null);
+        FileBindingDefinition definition =
+                new FileBindingDefinition("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null, 10);
         URI uri = URI.create("service");
         LogicalService service = new LogicalService(uri, null, null);
         LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, service);
@@ -77,7 +78,8 @@ public class FileBindingGeneratorTestCase extends TestCase {
     public void testInvalidServiceContractGeneration() throws Exception {
         ServiceContract contract = new JavaServiceContract(Object.class); // invalid contract
 
-        FileBindingDefinition definition = new FileBindingDefinition("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null);
+        FileBindingDefinition definition =
+                new FileBindingDefinition("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null, 10);
         URI uri = URI.create("service");
         LogicalService service = new LogicalService(uri, null, null);
         LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, service);

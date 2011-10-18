@@ -108,12 +108,7 @@ public class FileSystemReceiver implements Runnable {
     public void start() {
         executorService = Executors.newSingleThreadScheduledExecutor();
         future = executorService.scheduleWithFixedDelay(this, delay, delay, TimeUnit.MILLISECONDS);
-        lockDirectory.mkdirs();
-        errorDirectory.mkdirs();
-        if (archiveDirectory != null) {
-            // archive directory is optional if the strategy is delete
-            archiveDirectory.mkdirs();
-        }
+        createDirectories();
     }
 
     public void stop() {
@@ -154,6 +149,16 @@ public class FileSystemReceiver implements Runnable {
             throw e;
         }
     }
+
+    void createDirectories() {
+        lockDirectory.mkdirs();
+        errorDirectory.mkdirs();
+        if (archiveDirectory != null) {
+            // archive directory is optional if the strategy is delete
+            archiveDirectory.mkdirs();
+        }
+    }
+
 
     private synchronized void processFiles(List<File> files) {
         for (File file : files) {
