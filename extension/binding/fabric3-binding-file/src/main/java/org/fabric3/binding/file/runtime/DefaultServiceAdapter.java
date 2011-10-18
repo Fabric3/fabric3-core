@@ -45,18 +45,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.fabric3.binding.file.api.AdapterException;
-import org.fabric3.binding.file.api.FileBindingAdapter;
+import org.fabric3.binding.file.api.ServiceAdapter;
 import org.fabric3.binding.file.api.InvalidDataException;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.util.IOHelper;
 
 /**
- * The default {@link FileBindingAdapter} implementation. Opens a buffered stream for reading the specified file.
+ * The default {@link ServiceAdapter} implementation. Opens a buffered stream for reading the specified file.
  *
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored"})
-public class DefaultFileBindingAdapter implements FileBindingAdapter {
+public class DefaultServiceAdapter implements ServiceAdapter {
 
 
     public Object[] beforeInvoke(File file) throws InvalidDataException {

@@ -44,7 +44,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.binding.file.api.FileBindingAdapter;
+import org.fabric3.binding.file.api.ServiceAdapter;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
 import org.fabric3.binding.file.runtime.receiver.PassThroughInterceptor;
@@ -66,7 +66,7 @@ import org.fabric3.spi.wire.Wire;
  */
 @EagerInit
 public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSourceDefinition> {
-    private static final FileBindingAdapter ADAPTER = new DefaultFileBindingAdapter();
+    private static final ServiceAdapter ADAPTER = new DefaultServiceAdapter();
     private ReceiverManager receiverManager;
     private ClassLoaderRegistry registry;
     private ReceiverMonitor monitor;
@@ -97,7 +97,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
             chain.addInterceptor(interceptor);
         }
 
-        FileBindingAdapter adapter = instantiateAdaptor(source);
+        ServiceAdapter adapter = instantiateAdaptor(source);
 
         long delay = source.getDelay();
 
@@ -157,7 +157,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
         return new File(baseDir, location);
     }
 
-    private FileBindingAdapter instantiateAdaptor(FileBindingSourceDefinition source) throws WiringException {
+    private ServiceAdapter instantiateAdaptor(FileBindingSourceDefinition source) throws WiringException {
         String adapterClass = source.getAdapterClass();
         if (adapterClass == null) {
             return ADAPTER;
@@ -169,7 +169,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
             throw new WiringException("ClassLoader not found: " + uri);
         }
         try {
-            return (FileBindingAdapter) loader.loadClass(adapterClass).newInstance();
+            return (ServiceAdapter) loader.loadClass(adapterClass).newInstance();
         } catch (ClassNotFoundException e) {
             throw new WiringException(e);
         } catch (InstantiationException e) {

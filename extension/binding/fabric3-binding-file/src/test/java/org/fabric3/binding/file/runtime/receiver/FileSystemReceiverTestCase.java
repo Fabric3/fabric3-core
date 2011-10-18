@@ -45,7 +45,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.binding.file.api.FileBindingAdapter;
+import org.fabric3.binding.file.api.ServiceAdapter;
 import org.fabric3.binding.file.api.InvalidDataException;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.host.util.FileHelper;
@@ -64,7 +64,7 @@ public class FileSystemReceiverTestCase extends TestCase {
     private File archiveDirectory = new File("archiveDirectory");
     private ReceiverMonitor monitor;
     private Interceptor interceptor;
-    private FileBindingAdapter adapter;
+    private ServiceAdapter adapter;
 
     public void testFileReceivedAndDeleted() throws Exception {
         FileSystemReceiver receiver = createReceiver("header.*\\.xml", Strategy.DELETE);
@@ -170,7 +170,7 @@ public class FileSystemReceiverTestCase extends TestCase {
         clean();
         monitor = EasyMock.createNiceMock(ReceiverMonitor.class);
         interceptor = EasyMock.createMock(Interceptor.class);
-        adapter = EasyMock.createMock(FileBindingAdapter.class);
+        adapter = EasyMock.createMock(ServiceAdapter.class);
     }
 
     @Override

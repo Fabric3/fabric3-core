@@ -40,7 +40,7 @@ package org.fabric3.binding.file.runtime.receiver;
 import java.io.File;
 import java.util.regex.Pattern;
 
-import org.fabric3.binding.file.api.FileBindingAdapter;
+import org.fabric3.binding.file.api.ServiceAdapter;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.spi.wire.Interceptor;
 
@@ -62,7 +62,7 @@ public class ReceiverConfiguration {
 
     private Interceptor interceptor;
     private ReceiverMonitor monitor;
-    private FileBindingAdapter adapter;
+    private ServiceAdapter adapter;
 
     public ReceiverConfiguration(String id,
                                  File location,
@@ -71,7 +71,7 @@ public class ReceiverConfiguration {
                                  File errorLocation,
                                  File archiveLocation,
                                  Interceptor interceptor,
-                                 FileBindingAdapter adapter,
+                                 ServiceAdapter adapter,
                                  long delay,
                                  ReceiverMonitor monitor) {
         this.id = id;
@@ -123,7 +123,7 @@ public class ReceiverConfiguration {
         return interceptor;
     }
 
-    public FileBindingAdapter getAdapter() {
+    public ServiceAdapter getAdapter() {
         return adapter;
     }
 

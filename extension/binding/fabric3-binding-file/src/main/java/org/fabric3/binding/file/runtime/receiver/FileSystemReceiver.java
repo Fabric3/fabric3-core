@@ -54,7 +54,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.fabric3.binding.file.api.AdapterException;
-import org.fabric3.binding.file.api.FileBindingAdapter;
+import org.fabric3.binding.file.api.ServiceAdapter;
 import org.fabric3.binding.file.api.InvalidDataException;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.host.util.IOHelper;
@@ -85,7 +85,7 @@ public class FileSystemReceiver implements Runnable {
 
     private Interceptor interceptor;
     private ScheduledExecutorService executorService;
-    private FileBindingAdapter adapter;
+    private ServiceAdapter adapter;
     private ReceiverMonitor monitor;
 
     private Map<String, FileEntry> cache = new ConcurrentHashMap<String, FileEntry>();

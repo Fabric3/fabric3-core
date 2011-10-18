@@ -38,7 +38,7 @@ import java.io.File;
  *
  * @version $Revision$ $Date$
  */
-public interface FileBindingAdapter {
+public interface ServiceAdapter {
 
     /**
      * Called to return expected service parameter types for a detected file as an array. For example, the service may require an input stream If data
