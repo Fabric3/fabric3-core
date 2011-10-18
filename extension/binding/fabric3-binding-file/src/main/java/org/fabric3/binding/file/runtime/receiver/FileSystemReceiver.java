@@ -82,7 +82,7 @@ public class FileSystemReceiver implements Runnable {
     private Strategy strategy;
     private Pattern filePattern;
 
-    private long delay = 2000;  // FIXME
+    private long delay;
 
     private Interceptor interceptor;
     private ScheduledExecutorService executorService;
@@ -102,6 +102,7 @@ public class FileSystemReceiver implements Runnable {
         this.monitor = configuration.getMonitor();
         this.lockDirectory = configuration.getLockDirectory();
         this.adapter = configuration.getAdapter();
+        this.delay = configuration.getDelay();
     }
 
     public void start() {

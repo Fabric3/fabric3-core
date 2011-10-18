@@ -45,7 +45,7 @@ package org.fabric3.binding.file.runtime.receiver;
 public interface ReceiverManager {
 
     /**
-     * Creates a receiver and start monitoring the file location.
+     * Creates a receiver and starts monitoring the file location.
      *
      * @param configuration the receiver configuration
      */
