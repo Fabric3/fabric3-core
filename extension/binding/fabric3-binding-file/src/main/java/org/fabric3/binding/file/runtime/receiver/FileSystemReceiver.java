@@ -53,9 +53,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-import org.fabric3.binding.file.api.AdapterException;
-import org.fabric3.binding.file.api.ServiceAdapter;
 import org.fabric3.binding.file.api.InvalidDataException;
+import org.fabric3.binding.file.api.ServiceAdapter;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.host.util.IOHelper;
 import org.fabric3.spi.invocation.Message;
@@ -249,7 +248,7 @@ public class FileSystemReceiver implements Runnable {
     private void afterInvoke(File file, Object[] payload) {
         try {
             adapter.afterInvoke(file, payload);
-        } catch (AdapterException e) {
+        } catch (IOException e) {
             monitor.error(e);
         }
     }
@@ -257,7 +256,7 @@ public class FileSystemReceiver implements Runnable {
     private void archiveFile(File file) {
         try {
             adapter.archive(file, archiveDirectory);
-        } catch (AdapterException e) {
+        } catch (IOException e) {
             monitor.error(e);
         }
     }
@@ -265,7 +264,7 @@ public class FileSystemReceiver implements Runnable {
     private void deleteFile(File file) {
         try {
             adapter.delete(file);
-        } catch (AdapterException e) {
+        } catch (IOException e) {
             monitor.error(e);
         }
     }
@@ -273,7 +272,7 @@ public class FileSystemReceiver implements Runnable {
     private void handleError(File file, Exception e) {
         try {
             adapter.error(file, errorDirectory, e);
-        } catch (AdapterException ex) {
+        } catch (IOException ex) {
             monitor.error(ex);
         }
     }

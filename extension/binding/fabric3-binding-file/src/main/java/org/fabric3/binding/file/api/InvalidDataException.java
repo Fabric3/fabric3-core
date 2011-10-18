@@ -30,12 +30,14 @@
  */
 package org.fabric3.binding.file.api;
 
+import java.io.IOException;
+
 /**
  * Denotes a bad or invalid data file.
  *
  * @version $Revision$ $Date$
  */
-public class InvalidDataException extends AdapterException {
+public class InvalidDataException extends IOException {
     private static final long serialVersionUID = -199562389440429130L;
 
     public InvalidDataException(String message) {

@@ -44,9 +44,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.fabric3.binding.file.api.AdapterException;
-import org.fabric3.binding.file.api.ServiceAdapter;
 import org.fabric3.binding.file.api.InvalidDataException;
+import org.fabric3.binding.file.api.ServiceAdapter;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.util.IOHelper;
 
@@ -57,7 +56,6 @@ import org.fabric3.host.util.IOHelper;
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored"})
 public class DefaultServiceAdapter implements ServiceAdapter {
-
 
     public Object[] beforeInvoke(File file) throws InvalidDataException {
         FileInputStream fileStream = null;
@@ -80,26 +78,18 @@ public class DefaultServiceAdapter implements ServiceAdapter {
         IOHelper.closeQuietly((Closeable) payload[0]);
     }
 
-    public void error(File file, File errorDirectory, Exception e) throws AdapterException {
-        try {
-            FileHelper.copyFile(file, new File(errorDirectory, file.getName()));
-            file.delete();
-        } catch (IOException ex) {
-            throw new AdapterException(ex);
-        }
-    }
-
-    public void delete(File file) throws AdapterException {
+    public void error(File file, File errorDirectory, Exception e) throws IOException {
+        FileHelper.copyFile(file, new File(errorDirectory, file.getName()));
         file.delete();
     }
 
-    public void archive(File file, File archiveDirectory) throws AdapterException {
-        try {
-            File destFile = new File(archiveDirectory, file.getName());
-            FileHelper.copyFile(file, destFile);
-            file.delete();
-        } catch (IOException e) {
-            throw new AdapterException(e);
-        }
+    public void delete(File file) {
+        file.delete();
+    }
+
+    public void archive(File file, File archiveDirectory) throws IOException {
+        File destFile = new File(archiveDirectory, file.getName());
+        FileHelper.copyFile(file, destFile);
+        file.delete();
     }
 }

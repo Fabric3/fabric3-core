@@ -31,10 +31,10 @@
 package org.fabric3.binding.file.api;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
- * Implementations are responsible for returning expected service parameter types, cleaning up resources associated with those parameter types after
- * an invocation, and performing required deleting or archiving.
+ * Implementations adapt the service-side binding infrastructure to a particular file system-based transport protocol.
  *
  * @version $Revision$ $Date$
  */
@@ -60,10 +60,10 @@ public interface ServiceAdapter {
      *
      * @param file    the detected file
      * @param payload the service parameters used for the invocation
-     * @throws AdapterException if an exception occurs
+     * @throws IOException if an exception occurs
      */
 
-    void afterInvoke(File file, Object[] payload) throws AdapterException;
+    void afterInvoke(File file, Object[] payload) throws IOException;
 
     /**
      * Called when an error processing the file is encountered.
@@ -71,25 +71,25 @@ public interface ServiceAdapter {
      * @param file           the file to delete
      * @param errorDirectory the error directory
      * @param e              the exception encountered
-     * @throws AdapterException if an exception handling the error occurs
+     * @throws IOException if an exception handling the error occurs
      */
-    void error(File file, File errorDirectory, Exception e) throws AdapterException;
+    void error(File file, File errorDirectory, Exception e) throws IOException;
 
     /**
      * Called if the binding is configured to delete data files.
      *
      * @param file the file to delete
-     * @throws AdapterException if an exception deleting the file occurs
+     * @throws IOException if an exception deleting the file occurs
      */
-    void delete(File file) throws AdapterException;
+    void delete(File file) throws IOException;
 
     /**
      * Called if the binding is configured to archive data files.
      *
      * @param file             the file to archive
      * @param archiveDirectory the archive directory
-     * @throws AdapterException if an exception archiving the file occurs
+     * @throws IOException if an exception archiving the file occurs
      */
-    void archive(File file, File archiveDirectory) throws AdapterException;
+    void archive(File file, File archiveDirectory) throws IOException;
 
 }
