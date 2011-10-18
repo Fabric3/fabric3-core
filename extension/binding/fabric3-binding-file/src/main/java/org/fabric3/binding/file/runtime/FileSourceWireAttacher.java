@@ -51,6 +51,7 @@ import org.fabric3.binding.file.runtime.receiver.PassThroughInterceptor;
 import org.fabric3.binding.file.runtime.receiver.ReceiverConfiguration;
 import org.fabric3.binding.file.runtime.receiver.ReceiverManager;
 import org.fabric3.binding.file.runtime.receiver.ReceiverMonitor;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -69,19 +70,22 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
     private ReceiverManager receiverManager;
     private ClassLoaderRegistry registry;
     private ReceiverMonitor monitor;
+    private File baseDir;
 
     public FileSourceWireAttacher(@Reference ReceiverManager receiverManager,
                                   @Reference ClassLoaderRegistry registry,
+                                  @Reference HostInfo hostInfo,
                                   @Monitor ReceiverMonitor monitor) {
         this.receiverManager = receiverManager;
         this.registry = registry;
+        this.baseDir = new File(hostInfo.getDataDir(), "inbox");
         this.monitor = monitor;
     }
 
     public void attach(FileBindingSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
         String id = source.getUri().toString();
 
-        File location = new File(source.getLocation());
+        File location = getLocation(source);
         File errorLocation = getErrorLocation(source);
         File archiveLocation = getArchiveLocation(source);
 
@@ -116,11 +120,16 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
         throw new UnsupportedOperationException();
     }
 
+    private File getLocation(FileBindingSourceDefinition source) {
+        String location = source.getLocation();
+        return resolve(location);
+    }
+
     private File getArchiveLocation(FileBindingSourceDefinition source) {
         File archiveLocation = null;
         String archiveLocationStr = source.getArchiveLocation();
         if (archiveLocationStr != null) {
-            archiveLocation = new File(archiveLocationStr);
+            archiveLocation = resolve(archiveLocationStr);
         }
         return archiveLocation;
     }
@@ -129,9 +138,23 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
         File errorLocation = null;
         String errorLocationStr = source.getErrorLocation();
         if (errorLocationStr != null) {
-            errorLocation = new File(errorLocationStr);
+            errorLocation = resolve(errorLocationStr);
         }
         return errorLocation;
+    }
+
+    /**
+     * Resolve the location as an absolute address or relative to the runtime data/inbox directory.
+     *
+     * @param location the location
+     * @return the resolved location
+     */
+    private File resolve(String location) {
+        File file = new File(location);
+        if (file.isAbsolute()) {
+            return file;
+        }
+        return new File(baseDir, location);
     }
 
     private FileBindingAdapter instantiateAdaptor(FileBindingSourceDefinition source) throws WiringException {
