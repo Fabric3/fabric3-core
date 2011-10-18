@@ -31,6 +31,7 @@
 package org.fabric3.binding.file.generator;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -113,7 +114,7 @@ public class FileBindingGeneratorTestCase extends TestCase {
         DataType inputType = new JavaClass<String>(String.class);
         List<DataType<?>> input = Collections.<DataType<?>>singletonList(inputType);
         List<DataType<?>> faultType = Collections.emptyList();
-        DataType<?> outputType = new JavaClass<InputStream>(InputStream.class);
+        DataType<?> outputType = new JavaClass<OutputStream>(OutputStream.class);
         contract.setOperations(Collections.singletonList(new Operation("name", input, outputType, faultType)));
         return contract;
     }
@@ -123,7 +124,7 @@ public class FileBindingGeneratorTestCase extends TestCase {
     }
 
     private static interface FileReferenceTransport {
-        InputStream onStream(String id);
+        OutputStream onStream(String id);
     }
 
     @Override

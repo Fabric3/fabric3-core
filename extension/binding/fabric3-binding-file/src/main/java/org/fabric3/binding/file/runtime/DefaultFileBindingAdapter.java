@@ -42,9 +42,12 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
+import org.fabric3.binding.file.api.AdapterException;
 import org.fabric3.binding.file.api.FileBindingAdapter;
 import org.fabric3.binding.file.api.InvalidDataException;
+import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.util.IOHelper;
 
 /**
@@ -74,5 +77,13 @@ public class DefaultFileBindingAdapter implements FileBindingAdapter {
             throw new AssertionError("Invalid payload type: " + payload[0]);
         }
         IOHelper.closeQuietly((Closeable) payload[0]);
+    }
+
+    public void archive(File file, File archiveDirectory) throws AdapterException {
+        try {
+            FileHelper.copyFile(file, new File(archiveDirectory, file.getName()));
+        } catch (IOException e) {
+            throw new AdapterException(e);
+        }
     }
 }

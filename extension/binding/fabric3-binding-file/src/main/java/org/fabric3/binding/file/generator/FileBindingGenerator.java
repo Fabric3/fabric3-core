@@ -30,7 +30,7 @@
  */
 package org.fabric3.binding.file.generator;
 
-import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.List;
 
@@ -71,9 +71,12 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         String location = definition.getLocation();
         Strategy strategy = definition.getStrategy();
         String archiveLocation = definition.getArchiveLocation();
-        String errorLocation = definition.getErrorLocation();
-        String listener = definition.getAdapterClass();
         URI uri = binding.getParent().getUri();
+        String errorLocation = definition.getErrorLocation();
+        if (errorLocation == null) {
+            throw new GenerationException("Error location must be specified on the file binding configuration for " + uri);
+        }
+        String listener = definition.getAdapterClass();
         return new FileBindingSourceDefinition(uri, pattern, location, strategy, archiveLocation, errorLocation, listener);
     }
 
@@ -97,7 +100,7 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
     /**
      * Validates a service contract for a bound reference. The service contract must contain exactly one operation of the form:
      * <pre>
-     * InputStream openStream(String id);
+     * OutputStream openStream(String id);
      * </pre>
      *
      * @param contract the service contract to validate
@@ -122,8 +125,8 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
             throw new InvalidContractException("Unsupported output type on binding contract: " + outputType);
         }
         JavaType<?> javaOutputType = (JavaType) outputType;
-        if (!(InputStream.class.isAssignableFrom(javaOutputType.getPhysical()))) {
-            throw new InvalidContractException("Output type on binding contract must be a java.io.InputStream: " + dataType);
+        if (!(OutputStream.class.isAssignableFrom(javaOutputType.getPhysical()))) {
+            throw new InvalidContractException("Output type on binding contract must be a java.io.OutputStream: " + dataType);
         }
     }
 

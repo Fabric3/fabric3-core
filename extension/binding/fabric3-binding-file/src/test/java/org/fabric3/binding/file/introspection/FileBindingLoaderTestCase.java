@@ -67,8 +67,6 @@ public class FileBindingLoaderTestCase extends TestCase {
 
     private static final String NO_ARCHIVE_BINDING_CONFIG = "<binding.file name='file' location='/dir/subdir' strategy='archive'/>";
 
-    private static final String NO_ERROR_BINDING_CONFIG = "<binding.file name='file' location='/dir/subdir'/>";
-
     private XMLInputFactory xmlFactory;
     private FileBindingLoader loader;
 
@@ -98,15 +96,6 @@ public class FileBindingLoaderTestCase extends TestCase {
 
     public void testLoadNoArchive() throws Exception {
         XMLStreamReader reader = createReader(NO_ARCHIVE_BINDING_CONFIG);
-        IntrospectionContext context = new DefaultIntrospectionContext();
-        loader.load(reader, context);
-        assertTrue(context.hasErrors());
-        assertTrue(context.getErrors().get(0) instanceof MissingAttribute);
-
-    }
-
-    public void testLoadNoError() throws Exception {
-        XMLStreamReader reader = createReader(NO_ERROR_BINDING_CONFIG);
         IntrospectionContext context = new DefaultIntrospectionContext();
         loader.load(reader, context);
         assertTrue(context.hasErrors());

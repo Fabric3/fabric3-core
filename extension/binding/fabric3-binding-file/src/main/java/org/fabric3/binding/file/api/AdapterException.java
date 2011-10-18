@@ -31,22 +31,22 @@
 package org.fabric3.binding.file.api;
 
 /**
- * Denotes a bad or invalid data file.
+ * Denotes a general exception performing an adapter operation.
  *
  * @version $Revision$ $Date$
  */
-public class InvalidDataException extends AdapterException {
+public class AdapterException extends Exception {
     private static final long serialVersionUID = -199562389440429130L;
 
-    public InvalidDataException(String message) {
+    public AdapterException(String message) {
         super(message);
     }
 
-    public InvalidDataException(String message, Throwable cause) {
+    public AdapterException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public InvalidDataException(Throwable cause) {
+    public AdapterException(Throwable cause) {
         super(cause);
     }
 }

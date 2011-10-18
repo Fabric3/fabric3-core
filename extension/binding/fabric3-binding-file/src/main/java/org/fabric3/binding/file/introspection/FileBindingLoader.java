@@ -100,10 +100,6 @@ public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
             context.addError(error);
         }
         String errorLocation = reader.getAttributeValue(null, "error.location");
-        if (errorLocation == null) {
-            MissingAttribute error = new MissingAttribute("The error location attribute must be specified", reader);
-            context.addError(error);
-        }
 
         String adapterClass = reader.getAttributeValue(null, "adapter");
 

@@ -58,6 +58,7 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTar
 
     public void attach(PhysicalSourceDefinition source, FileBindingTargetDefinition target, Wire wire) throws WiringException {
         File location = new File(target.getLocation());
+        location.mkdirs();
         FileSystemInterceptor interceptor = new FileSystemInterceptor(location);
         for (InvocationChain chain : wire.getInvocationChains()) {
             chain.addInterceptor(interceptor);

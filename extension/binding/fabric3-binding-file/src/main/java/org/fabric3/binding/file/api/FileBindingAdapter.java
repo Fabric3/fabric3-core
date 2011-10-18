@@ -33,8 +33,8 @@ package org.fabric3.binding.file.api;
 import java.io.File;
 
 /**
- * Implementations are responsible for returning expected service parameter types and cleaning up resources associated with those parameter types
- * after an invocation.
+ * Implementations are responsible for returning expected service parameter types, cleaning up resources associated with those parameter types after
+ * an invocation, and performing required archiving.
  *
  * @version $Revision$ $Date$
  */
@@ -59,8 +59,19 @@ public interface FileBindingAdapter {
      *
      * @param file    the detected file
      * @param payload the service parameters used for the invocation
+     * @throws AdapterException if an exception occurs
      */
 
-    void afterInvoke(File file, Object[] payload);
+    void afterInvoke(File file, Object[] payload) throws AdapterException;
+
+    /**
+     * Called if the binding is configured to archive data files.
+     *
+     * @param file             the file to archive
+     * @param archiveDirectory the archive directory
+     * @throws AdapterException if an exception archiving the file occurs
+     */
+    void archive(File file, File archiveDirectory) throws AdapterException;
+
 
 }

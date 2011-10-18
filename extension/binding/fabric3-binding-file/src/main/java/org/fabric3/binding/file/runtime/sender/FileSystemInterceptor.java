@@ -71,7 +71,7 @@ public class FileSystemInterceptor implements Interceptor {
             throw new ServiceRuntimeException("Invalid number of parameters: " + length);
         }
         Object element = Array.get(body, 0);
-        if (element instanceof String) {
+        if (!(element instanceof String)) {
             throw new ServiceRuntimeException("Parameter must be a string: " + element);
         }
         File file = new File(outputDirectory, (String) element);

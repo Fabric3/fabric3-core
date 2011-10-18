@@ -54,6 +54,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import org.fabric3.binding.file.api.AdapterException;
 import org.fabric3.binding.file.api.FileBindingAdapter;
 import org.fabric3.binding.file.api.InvalidDataException;
 import org.fabric3.binding.file.common.Strategy;
@@ -156,7 +157,9 @@ public class FileSystemReceiver implements Runnable {
     private synchronized void processFiles(List<File> files) {
         for (File file : files) {
             String name = file.getName();
-            if (ignore(file, name)) continue;
+            if (ignore(file)) {
+                continue;
+            }
             FileEntry cached = cache.get(name);
             if (cached == null) {
                 // the file is new, cache it and wait for next run in case it is in the process of being updated
@@ -171,12 +174,9 @@ public class FileSystemReceiver implements Runnable {
         }
     }
 
-    private boolean ignore(File file, String name) {
-        if (name.startsWith(".") || file.isDirectory()) {
-            // skip hidden files
-            return true;
-        }
-        return false;
+    private boolean ignore(File file) {
+        String name = file.getName();
+        return name.startsWith(".") || file.isDirectory() || !filePattern.matcher(name).matches();
     }
 
     @SuppressWarnings({"ResultOfMethodCallIgnored"})
@@ -228,7 +228,11 @@ public class FileSystemReceiver implements Runnable {
             }
 
         } finally {
-            adapter.afterInvoke(file, payload);
+            try {
+                adapter.afterInvoke(file, payload);
+            } catch (AdapterException e) {
+                monitor.error(e);
+            }
             if (Strategy.ARCHIVE == strategy) {
                 archiveFile(file);
             }
@@ -249,8 +253,8 @@ public class FileSystemReceiver implements Runnable {
 
     private void archiveFile(File file) {
         try {
-            FileHelper.copyFile(file, new File(archiveDirectory, file.getName()));
-        } catch (IOException e) {
+            adapter.archive(file, archiveDirectory);
+        } catch (AdapterException e) {
             monitor.error(e);
         }
     }
