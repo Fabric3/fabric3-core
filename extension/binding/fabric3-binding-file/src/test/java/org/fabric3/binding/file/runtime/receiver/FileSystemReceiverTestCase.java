@@ -144,6 +144,26 @@ public class FileSystemReceiverTestCase extends TestCase {
         EasyMock.verify(adapter, interceptor);
     }
 
+    public void testServiceCheckedExceptionOnInvoke() throws Exception {
+        FileSystemReceiver receiver = createReceiver("header.*\\.xml", Strategy.DELETE);
+
+        File file = new File(location, DEFAULT_HEADER);
+        EasyMock.expect(adapter.beforeInvoke(EasyMock.eq(file))).andReturn(new Object[]{});
+        MessageImpl errorMessage = new MessageImpl();
+        Exception fault = new Exception();
+        errorMessage.setBodyWithFault(fault);
+        EasyMock.expect(interceptor.invoke(EasyMock.isA(Message.class))).andReturn(errorMessage);
+        adapter.afterInvoke(EasyMock.eq(file), EasyMock.isA(Object[].class));
+        EasyMock.expectLastCall();
+        adapter.error(EasyMock.eq(file), EasyMock.eq(errorDirectory), EasyMock.eq(fault));
+        EasyMock.replay(adapter, interceptor);
+        createFile(DEFAULT_HEADER);
+        receiver.run();    // invoke twice because the file entry is cached on the first run
+        receiver.run();
+
+        EasyMock.verify(adapter, interceptor);
+    }
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
