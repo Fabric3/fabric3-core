@@ -37,59 +37,22 @@
 */
 package org.fabric3.binding.file.runtime;
 
-import java.io.BufferedInputStream;
-import java.io.Closeable;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
-import org.fabric3.binding.file.api.InvalidDataException;
-import org.fabric3.binding.file.api.ServiceAdapter;
-import org.fabric3.host.util.FileHelper;
-import org.fabric3.host.util.IOHelper;
+import org.fabric3.binding.file.api.ReferenceAdapter;
 
 /**
- * The default {@link ServiceAdapter} implementation.
+ * The default {@link ReferenceAdapter} implementation.
  *
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
-@SuppressWarnings({"ResultOfMethodCallIgnored"})
-public class DefaultServiceAdapter implements ServiceAdapter {
+public class DefaultReferenceAdapter implements ReferenceAdapter {
 
-    public Object[] beforeInvoke(File file) throws InvalidDataException {
-        FileInputStream fileStream = null;
-        try {
-            fileStream = new FileInputStream(file);
-            return new Object[]{new BufferedInputStream(fileStream)};
-        } catch (FileNotFoundException e) {
-            IOHelper.closeQuietly(fileStream);
-            throw new InvalidDataException(e);
-        }
-    }
-
-    public void afterInvoke(File file, Object[] payload) {
-        if (payload.length != 1) {
-            throw new AssertionError("Invalid payload length: " + payload.length);
-        }
-        if (!(payload[0] instanceof Closeable)) {
-            throw new AssertionError("Invalid payload type: " + payload[0]);
-        }
-        IOHelper.closeQuietly((Closeable) payload[0]);
-    }
-
-    public void error(File file, File errorDirectory, Exception e) throws IOException {
-        FileHelper.copyFile(file, new File(errorDirectory, file.getName()));
-        file.delete();
-    }
-
-    public void delete(File file) {
-        file.delete();
-    }
-
-    public void archive(File file, File archiveDirectory) throws IOException {
-        File destFile = new File(archiveDirectory, file.getName());
-        FileHelper.copyFile(file, destFile);
-        file.delete();
+    public OutputStream createOutputStream(File file) throws IOException {
+        return new BufferedOutputStream(new FileOutputStream(file));
     }
 }

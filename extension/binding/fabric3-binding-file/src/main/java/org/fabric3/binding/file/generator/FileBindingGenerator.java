@@ -98,7 +98,8 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         validateReferenceContract(contract);
         FileBindingDefinition definition = binding.getDefinition();
         String location = definition.getLocation();
-        return new FileBindingTargetDefinition(location);
+        String adapterClass = definition.getAdapterClass();
+        return new FileBindingTargetDefinition(location, adapterClass);
     }
 
     public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<FileBindingDefinition> binding,

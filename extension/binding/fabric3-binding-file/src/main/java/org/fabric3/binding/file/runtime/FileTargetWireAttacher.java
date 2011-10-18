@@ -38,15 +38,18 @@
 package org.fabric3.binding.file.runtime;
 
 import java.io.File;
+import java.net.URI;
 
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
+import org.fabric3.binding.file.api.ReferenceAdapter;
 import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
 import org.fabric3.binding.file.runtime.sender.FileSystemInterceptor;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
@@ -55,18 +58,25 @@ import org.fabric3.spi.wire.Wire;
 /**
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
+@SuppressWarnings({"ResultOfMethodCallIgnored"})
 @EagerInit
 public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTargetDefinition> {
+    private static final ReferenceAdapter ADAPTER = new DefaultReferenceAdapter();
+
+    private ClassLoaderRegistry registry;
     private File baseDir;
 
-    public FileTargetWireAttacher(@Reference HostInfo hostInfo) {
+    public FileTargetWireAttacher(@Reference ClassLoaderRegistry registry, @Reference HostInfo hostInfo) {
+        this.registry = registry;
         this.baseDir = new File(hostInfo.getDataDir(), "outbox");
     }
 
     public void attach(PhysicalSourceDefinition source, FileBindingTargetDefinition target, Wire wire) throws WiringException {
         File location = resolve(target.getLocation());
         location.mkdirs();
-        FileSystemInterceptor interceptor = new FileSystemInterceptor(location);
+
+        ReferenceAdapter adapter = instantiateAdaptor(target);
+        FileSystemInterceptor interceptor = new FileSystemInterceptor(location, adapter);
         for (InvocationChain chain : wire.getInvocationChains()) {
             chain.addInterceptor(interceptor);
         }
@@ -94,5 +104,26 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTar
         return new File(baseDir, location);
     }
 
+    private ReferenceAdapter instantiateAdaptor(FileBindingTargetDefinition target) throws WiringException {
+        String adapterClass = target.getAdapterClass();
+        if (adapterClass == null) {
+            return ADAPTER;
+        }
+        URI uri = target.getClassLoaderId();
+        ClassLoader loader = registry.getClassLoader(uri);
+        if (loader == null) {
+            // this should not happen
+            throw new WiringException("ClassLoader not found: " + uri);
+        }
+        try {
+            return (ReferenceAdapter) loader.loadClass(adapterClass).newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new WiringException(e);
+        } catch (InstantiationException e) {
+            throw new WiringException(e);
+        } catch (IllegalAccessException e) {
+            throw new WiringException(e);
+        }
+    }
 
 }

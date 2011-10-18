@@ -37,15 +37,14 @@
 */
 package org.fabric3.binding.file.runtime.sender;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 
+import org.fabric3.binding.file.api.ReferenceAdapter;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.wire.Interceptor;
 
@@ -56,9 +55,11 @@ import org.fabric3.spi.wire.Interceptor;
  */
 public class FileSystemInterceptor implements Interceptor {
     private File outputDirectory;
+    private ReferenceAdapter adapter;
 
-    public FileSystemInterceptor(File outputDirectory) {
+    public FileSystemInterceptor(File outputDirectory, ReferenceAdapter adapter) {
         this.outputDirectory = outputDirectory;
+        this.adapter = adapter;
     }
 
     public Message invoke(Message msg) {
@@ -76,10 +77,10 @@ public class FileSystemInterceptor implements Interceptor {
         }
         File file = new File(outputDirectory, (String) element);
         try {
-            OutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
+            OutputStream stream = adapter.createOutputStream(file);
             msg.setBody(stream);
             return msg;
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             throw new ServiceRuntimeException(e);
         }
     }

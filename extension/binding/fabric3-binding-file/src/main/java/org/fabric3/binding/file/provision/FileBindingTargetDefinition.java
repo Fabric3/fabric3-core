@@ -41,13 +41,20 @@ public class FileBindingTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = 1182695578174617840L;
 
     private String location;
+    private String adapterClass;
 
-    public FileBindingTargetDefinition(String location) {
+    public FileBindingTargetDefinition(String location, String adapterClass) {
         this.location = location;
+        this.adapterClass = adapterClass;
         setUri(null);
     }
 
     public String getLocation() {
         return location;
     }
+
+    public String getAdapterClass() {
+        return adapterClass;
+    }
+
 }
