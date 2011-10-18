@@ -39,5 +39,8 @@ public interface ReceiverMonitor {
 
     @Severe
     void error(Throwable e);
+
+    @Severe
+    void error(String message, Throwable error);
 }
 

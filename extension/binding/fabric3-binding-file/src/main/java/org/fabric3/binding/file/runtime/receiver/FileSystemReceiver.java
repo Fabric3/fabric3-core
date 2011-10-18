@@ -44,7 +44,6 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -128,13 +127,10 @@ public class FileSystemReceiver implements Runnable {
         }
         File[] pathFiles = location.listFiles();
         for (File file : pathFiles) {
-            // add files
-            if (filePattern.matcher(file.getName()).matches()) {
+            // add non-ignorable files
+            if (!ignore(file)) {
                 files.add(file);
             }
-        }
-        if (pathFiles != null) {
-            Collections.addAll(files, pathFiles);
         }
         if (files.isEmpty()) {
             // there are no files to process
@@ -159,13 +155,9 @@ public class FileSystemReceiver implements Runnable {
         }
     }
 
-
     private synchronized void processFiles(List<File> files) {
         for (File file : files) {
             String name = file.getName();
-            if (ignore(file)) {
-                continue;
-            }
             FileEntry cached = cache.get(name);
             if (cached == null) {
                 // the file is new, cache it and wait for next run in case it is in the process of being updated
@@ -191,7 +183,6 @@ public class FileSystemReceiver implements Runnable {
         // remove file from the cache as it will either be processed by this runtime or skipped
         cache.remove(name);
         // attempt to lock the file
-        Object[] payload = null;
         FileChannel lockChannel;
         FileLock fileLock;
         File lockFile = new File(lockDirectory, file.getName() + ".f3");
@@ -213,34 +204,36 @@ public class FileSystemReceiver implements Runnable {
             return;
         }
         try {
-            payload = adapter.beforeInvoke(file);
-        } catch (InvalidDataException e) {
-            monitor.error(e);
-            // invalid file, return and send it the the error directory
+            Object[] payload;
             try {
+                payload = adapter.beforeInvoke(file);
+            } catch (InvalidDataException e) {
+                monitor.error(e);
+                // invalid file, return and send it the the error directory
                 handleError(file, e);
                 return;
-            } finally {
-                releaseLock(lockFile, fileLock, lockChannel);
             }
-        }
-        try {
-            Message response = dispatch(payload);
-            if (response.isFault()) {
-                // TODO error handling
-            }
-
-        } finally {
             try {
-                adapter.afterInvoke(file, payload);
-            } catch (AdapterException e) {
-                monitor.error(e);
+                Message response = dispatch(payload);
+                afterInvoke(file, payload);
+                if (response.isFault()) {
+                    // the service threw an exception. this is interpreted as a bad file. Move the file to the error location
+                    Exception error = (Exception) response.getBody();
+                    handleError(file, error);
+                    monitor.error("Error processing file: " + file.getName(), error);
+                } else {
+                    if (Strategy.ARCHIVE == strategy) {
+                        archiveFile(file);
+                    } else {
+                        deleteFile(file);
+                    }
+                }
+            } catch (RuntimeException e) {
+                // an unexpected runtime error, try and close the resources and retry
+                afterInvoke(file, payload);
+                throw e;
             }
-            if (Strategy.ARCHIVE == strategy) {
-                archiveFile(file);
-            } else {
-                deleteFile(file);
-            }
+        } finally {
             releaseLock(lockFile, fileLock, lockChannel);
         }
     }
@@ -251,6 +244,14 @@ public class FileSystemReceiver implements Runnable {
         message.setWorkContext(workContext);
         message.setBody(payload);
         return interceptor.invoke(message);
+    }
+
+    private void afterInvoke(File file, Object[] payload) {
+        try {
+            adapter.afterInvoke(file, payload);
+        } catch (AdapterException e) {
+            monitor.error(e);
+        }
     }
 
     private void archiveFile(File file) {
@@ -269,7 +270,7 @@ public class FileSystemReceiver implements Runnable {
         }
     }
 
-    private void handleError(File file, InvalidDataException e) {
+    private void handleError(File file, Exception e) {
         try {
             adapter.error(file, errorDirectory, e);
         } catch (AdapterException ex) {

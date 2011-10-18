@@ -43,6 +43,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 import org.fabric3.binding.file.api.FileBindingAdapter;
 import org.fabric3.binding.file.api.InvalidDataException;
@@ -57,6 +58,7 @@ import org.fabric3.spi.wire.Interceptor;
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public class FileSystemReceiverTestCase extends TestCase {
+    private static final String DEFAULT_HEADER = "header123.xml";
     private File location = new File("drop");
     private File errorDirectory = new File("errorDirectory");
     private File archiveDirectory = new File("archiveDirectory");
@@ -67,14 +69,15 @@ public class FileSystemReceiverTestCase extends TestCase {
     public void testFileReceivedAndDeleted() throws Exception {
         FileSystemReceiver receiver = createReceiver("header.*\\.xml", Strategy.DELETE);
 
-        File file = new File(location, "header123.xml");
+        File file = new File(location, DEFAULT_HEADER);
         EasyMock.expect(adapter.beforeInvoke(EasyMock.eq(file))).andReturn(new Object[]{});
         EasyMock.expect(interceptor.invoke(EasyMock.isA(Message.class))).andReturn(new MessageImpl());
         adapter.afterInvoke(EasyMock.eq(file), EasyMock.isA(Object[].class));
         adapter.delete(EasyMock.eq(file));
 
         EasyMock.replay(adapter, interceptor);
-        createFile("header123.xml");
+        createFile(DEFAULT_HEADER);
+        receiver.run();    // invoke twice because the file entry is cached on the first run
         receiver.run();
         EasyMock.verify(adapter, interceptor);
     }
@@ -82,14 +85,15 @@ public class FileSystemReceiverTestCase extends TestCase {
     public void testFileReceivedAndArchived() throws Exception {
         FileSystemReceiver receiver = createReceiver("header.*\\.xml", Strategy.ARCHIVE);
 
-        File file = new File(location, "header123.xml");
+        File file = new File(location, DEFAULT_HEADER);
         EasyMock.expect(adapter.beforeInvoke(EasyMock.eq(file))).andReturn(new Object[]{});
         EasyMock.expect(interceptor.invoke(EasyMock.isA(Message.class))).andReturn(new MessageImpl());
         adapter.afterInvoke(EasyMock.eq(file), EasyMock.isA(Object[].class));
         adapter.archive(EasyMock.eq(file), EasyMock.eq(archiveDirectory));
 
         EasyMock.replay(adapter, interceptor);
-        createFile("header123.xml");
+        createFile(DEFAULT_HEADER);
+        receiver.run();    // invoke twice because the file entry is cached on the first run
         receiver.run();
         EasyMock.verify(adapter, interceptor);
     }
@@ -98,6 +102,7 @@ public class FileSystemReceiverTestCase extends TestCase {
         FileSystemReceiver receiver = createReceiver("header.*\\.xml", Strategy.DELETE);
         EasyMock.replay(adapter, interceptor);
         createFile("test.xml");
+        receiver.run();    // invoke twice because the file entry is cached on the first run
         receiver.run();
         EasyMock.verify(adapter, interceptor);
     }
@@ -105,14 +110,37 @@ public class FileSystemReceiverTestCase extends TestCase {
     public void testInvalidFile() throws Exception {
         FileSystemReceiver receiver = createReceiver("header.*\\.xml", Strategy.DELETE);
 
-        File file = new File(location, "header123.xml");
+        File file = new File(location, DEFAULT_HEADER);
         InvalidDataException exception = new InvalidDataException("test");
         EasyMock.expect(adapter.beforeInvoke(EasyMock.eq(file))).andThrow(exception);
         adapter.error(EasyMock.eq(file), EasyMock.eq(errorDirectory), EasyMock.eq(exception));
 
         EasyMock.replay(adapter, interceptor);
-        createFile("header123.xml");
+        createFile(DEFAULT_HEADER);
+        receiver.run();    // invoke twice because the file entry is cached on the first run
         receiver.run();
+        EasyMock.verify(adapter, interceptor);
+    }
+
+    public void testServiceRuntimeExceptionOnInvoke() throws Exception {
+        FileSystemReceiver receiver = createReceiver("header.*\\.xml", Strategy.DELETE);
+
+        File file = new File(location, DEFAULT_HEADER);
+        EasyMock.expect(adapter.beforeInvoke(EasyMock.eq(file))).andReturn(new Object[]{}).times(2);
+        EasyMock.expect(interceptor.invoke(EasyMock.isA(Message.class))).andThrow(new ServiceRuntimeException("test"));
+        EasyMock.expect(interceptor.invoke(EasyMock.isA(Message.class))).andReturn(new MessageImpl());
+        adapter.afterInvoke(EasyMock.eq(file), EasyMock.isA(Object[].class));
+        EasyMock.expectLastCall().times(2);
+        adapter.delete(EasyMock.eq(file));
+        EasyMock.replay(adapter, interceptor);
+        createFile(DEFAULT_HEADER);
+        receiver.run();    // invoke twice because the file entry is cached on the first run
+        receiver.run();
+
+        // now verify a correct run
+        receiver.run();    // invoke twice because the file entry is re-cached on the first run
+        receiver.run();
+
         EasyMock.verify(adapter, interceptor);
     }
 

@@ -55,7 +55,8 @@ public interface FileBindingAdapter {
     Object[] beforeInvoke(File file) throws InvalidDataException;
 
     /**
-     * Called after an invocation has been made. Implementations should close any open resource streams.
+     * Called after an invocation has been made. This method will be called for both successful invocations as well as ones that raise
+     * errors.Implementations should close any open resource streams.
      *
      * @param file    the detected file
      * @param payload the service parameters used for the invocation
