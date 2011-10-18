@@ -34,7 +34,7 @@ import java.io.File;
 
 /**
  * Implementations are responsible for returning expected service parameter types, cleaning up resources associated with those parameter types after
- * an invocation, and performing required archiving.
+ * an invocation, and performing required deleting or archiving.
  *
  * @version $Revision$ $Date$
  */
@@ -65,6 +65,24 @@ public interface FileBindingAdapter {
     void afterInvoke(File file, Object[] payload) throws AdapterException;
 
     /**
+     * Called when an error processing the file is encountered.
+     *
+     * @param file           the file to delete
+     * @param errorDirectory the error directory
+     * @param e              the exception encountered
+     * @throws AdapterException if an exception handling the error occurs
+     */
+    void error(File file, File errorDirectory, Exception e) throws AdapterException;
+
+    /**
+     * Called if the binding is configured to delete data files.
+     *
+     * @param file the file to delete
+     * @throws AdapterException if an exception deleting the file occurs
+     */
+    void delete(File file) throws AdapterException;
+
+    /**
      * Called if the binding is configured to archive data files.
      *
      * @param file             the file to archive
@@ -72,6 +90,5 @@ public interface FileBindingAdapter {
      * @throws AdapterException if an exception archiving the file occurs
      */
     void archive(File file, File archiveDirectory) throws AdapterException;
-
 
 }

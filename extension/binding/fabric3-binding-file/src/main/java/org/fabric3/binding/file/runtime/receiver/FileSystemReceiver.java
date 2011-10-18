@@ -58,7 +58,6 @@ import org.fabric3.binding.file.api.AdapterException;
 import org.fabric3.binding.file.api.FileBindingAdapter;
 import org.fabric3.binding.file.api.InvalidDataException;
 import org.fabric3.binding.file.common.Strategy;
-import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.util.IOHelper;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
@@ -68,19 +67,20 @@ import org.fabric3.spi.wire.Interceptor;
 /**
  * Periodically scans a directory for new files. When a new file is detected, the service bound to the directory is invoked with expected data types
  * associated with each file. After an invocation completes, the detected file is either archived or deleted according to the configured {@link
- * Strategy} value. If an error is encountered, the file will be removed to the configured error location.
+ * Strategy} value. If an error is encountered, the file will be moved to the configured error location.
  * <p/>
  * This receiver is non-transactional but supports clustered locking through the use of file locks placed in the &lt;location&gt;/locks directory.
  *
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
+@SuppressWarnings({"ResultOfMethodCallIgnored"})
 public class FileSystemReceiver implements Runnable {
     private File location;
-    private Pattern filePattern;
     private File lockDirectory;
-    private Strategy strategy;
     private File errorDirectory;
     private File archiveDirectory;
+    private Strategy strategy;
+    private Pattern filePattern;
 
     private long delay = 2000;  // FIXME
 
@@ -212,11 +212,8 @@ public class FileSystemReceiver implements Runnable {
             monitor.error(e);
             // invalid file, return and send it the the error directory
             try {
-                FileHelper.copyFile(file, new File(errorDirectory, file.getName()));
-                file.delete();
+                handleError(file, e);
                 return;
-            } catch (IOException ex) {
-                monitor.error(ex);
             } finally {
                 releaseLock(lockFile, fileLock, lockChannel);
             }
@@ -235,9 +232,8 @@ public class FileSystemReceiver implements Runnable {
             }
             if (Strategy.ARCHIVE == strategy) {
                 archiveFile(file);
-            }
-            if (file.exists()) {
-                file.delete();
+            } else {
+                deleteFile(file);
             }
             releaseLock(lockFile, fileLock, lockChannel);
         }
@@ -256,6 +252,22 @@ public class FileSystemReceiver implements Runnable {
             adapter.archive(file, archiveDirectory);
         } catch (AdapterException e) {
             monitor.error(e);
+        }
+    }
+
+    private void deleteFile(File file) {
+        try {
+            adapter.delete(file);
+        } catch (AdapterException e) {
+            monitor.error(e);
+        }
+    }
+
+    private void handleError(File file, InvalidDataException e) {
+        try {
+            adapter.error(file, errorDirectory, e);
+        } catch (AdapterException ex) {
+            monitor.error(ex);
         }
     }
 

@@ -55,6 +55,7 @@ import org.fabric3.host.util.IOHelper;
  *
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
+@SuppressWarnings({"ResultOfMethodCallIgnored"})
 public class DefaultFileBindingAdapter implements FileBindingAdapter {
 
 
@@ -79,9 +80,24 @@ public class DefaultFileBindingAdapter implements FileBindingAdapter {
         IOHelper.closeQuietly((Closeable) payload[0]);
     }
 
+    public void error(File file, File errorDirectory, Exception e) throws AdapterException {
+        try {
+            FileHelper.copyFile(file, new File(errorDirectory, file.getName()));
+            file.delete();
+        } catch (IOException ex) {
+            throw new AdapterException(ex);
+        }
+    }
+
+    public void delete(File file) throws AdapterException {
+        file.delete();
+    }
+
     public void archive(File file, File archiveDirectory) throws AdapterException {
         try {
-            FileHelper.copyFile(file, new File(archiveDirectory, file.getName()));
+            File destFile = new File(archiveDirectory, file.getName());
+            FileHelper.copyFile(file, destFile);
+            file.delete();
         } catch (IOException e) {
             throw new AdapterException(e);
         }
