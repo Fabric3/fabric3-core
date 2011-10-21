@@ -92,12 +92,19 @@ public interface ImplementationManager {
     void reinject(Object instance) throws InstanceLifecycleException;
 
     /**
-     * Signal
-     * @param instance
-     * @param referenceName
+     * Updates the instance with a new reference proxy.
+     *
+     * @param instance      the instance
+     * @param referenceName the reference name
      */
     void updated(Object instance, String referenceName);
 
+    /**
+     * Updates the instance when a reference has been removed.
+     *
+     * @param instance      the instance
+     * @param referenceName the reference name
+     */
     void removed(Object instance, String referenceName);
 
 }

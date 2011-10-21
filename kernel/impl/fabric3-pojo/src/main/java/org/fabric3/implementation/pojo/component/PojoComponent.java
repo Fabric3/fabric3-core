@@ -206,7 +206,6 @@ public abstract class PojoComponent implements ScopedComponent {
         }
         // Clear the instance factory as it has changed and will need to be re-created. This can happen if reinjection occurs after the first
         // instance has been created.
-        // instanceFactory = null;
         recreate.set(true);
     }
 
@@ -219,7 +218,6 @@ public abstract class PojoComponent implements ScopedComponent {
         }
         // Clear the instance factory as it has changed and will need to be re-created. This can happen if reinjection occurs after the first
         // instance has been created.
-        // instanceFactory = null;
         recreate.set(true);
     }
 
