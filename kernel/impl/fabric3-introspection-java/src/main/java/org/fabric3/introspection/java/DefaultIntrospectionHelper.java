@@ -65,10 +65,10 @@ import java.util.SortedSet;
 
 import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Remotable;
 import org.oasisopen.sca.annotation.Service;
-import org.osoa.sca.ServiceReference;
 
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.ReferenceDefinition;
@@ -100,7 +100,6 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
         WRAPPERS.add(Set.class);
         WRAPPERS.add(SortedSet.class);
         WRAPPERS.add(ServiceReference.class);
-        WRAPPERS.add(org.oasisopen.sca.ServiceReference.class);
     }
 
     public Class<?> loadClass(String name, ClassLoader cl) throws ImplementationNotFoundException {
