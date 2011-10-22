@@ -45,6 +45,6 @@ import org.fabric3.model.type.component.ResourceDefinition;
  * @version $Rev$ $Date$
  */
 public class CacheConfiguration extends ResourceDefinition {
-
     private static final long serialVersionUID = -6743311265670833364L;
+
 }

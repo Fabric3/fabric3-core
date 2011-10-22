@@ -41,36 +41,17 @@ import org.fabric3.host.Fabric3Exception;
 
 
 /**
- * Cache exception.
+ * Denotes Cache exception.
  *
  * @version $Rev$ $Date$
  */
-public class InfinispanException extends Fabric3Exception {
+public class InfinispanCacheException extends Fabric3Exception {
+    private static final long serialVersionUID = -5951166469975384736L;
 
-	public InfinispanException() {
-		super();
-	}
+    public InfinispanCacheException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public InfinispanException(String message, String identifier,
-                               Throwable cause) {
-		super(message, identifier, cause);
-	}
-
-	public InfinispanException(String message, String identifier) {
-		super(message, identifier);
-	}
-
-	public InfinispanException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public InfinispanException(String message) {
-		super(message);
-	}
-
-	public InfinispanException(Throwable cause) {
-		super(cause);
-	}
 }
 
 

@@ -37,19 +37,20 @@
 */
 package org.fabric3.cache.infinispan.introspection;
 
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
+
 import org.fabric3.cache.infinispan.model.InfinispanResourceDefinition;
 import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Document;
-
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 /**
  * Loads an implementation-specific cache configurations specified as part of the cache element.
@@ -58,7 +59,6 @@ import javax.xml.stream.XMLStreamReader;
  */
 @EagerInit
 public class InfinispanTypeLoader implements TypeLoader<InfinispanResourceDefinition> {
-
     private LoaderHelper helper;
 
     public InfinispanTypeLoader(@Reference LoaderHelper helper) {
@@ -70,24 +70,24 @@ public class InfinispanTypeLoader implements TypeLoader<InfinispanResourceDefini
 
         while (true) {
             switch (reader.next()) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if ("cache".equals(reader.getName().getLocalPart())) {
-                        String name = reader.getAttributeValue(null, "name");
+            case XMLStreamConstants.START_ELEMENT:
+                if ("cache".equals(reader.getName().getLocalPart())) {
+                    String name = reader.getAttributeValue(null, "name");
 
-                        if (null == name) {
-                            InvalidValue error = new InvalidValue("You have to specify a cache name. E.g.: <cache name='primaryCache'/>'", reader);
-                            context.addError(error);
-                            name = "default";
-                        }
+                    if (null == name) {
+                        InvalidValue error = new InvalidValue("You have to specify a cache name. E.g.: <cache name='primaryCache'/>'", reader);
+                        context.addError(error);
+                        name = "default";
+                    }
 
-                        Document document = helper.transform(reader);
-                        configurations.addCacheConfiguration(new InfinispanConfiguration(name, document));
-                    }
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if ("caches".equals(reader.getName().getLocalPart())) {
-                        return configurations;
-                    }
+                    Document document = helper.transform(reader);
+                    configurations.addCacheConfiguration(new InfinispanConfiguration(name, document));
+                }
+                break;
+            case XMLStreamConstants.END_ELEMENT:
+                if ("caches".equals(reader.getName().getLocalPart())) {
+                    return configurations;
+                }
             }
         }
     }

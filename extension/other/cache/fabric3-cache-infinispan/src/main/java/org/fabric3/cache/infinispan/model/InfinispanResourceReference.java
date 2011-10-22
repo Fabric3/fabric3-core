@@ -45,6 +45,7 @@ import org.fabric3.model.type.contract.ServiceContract;
  * @version $Rev$ $Date$
  */
 public class InfinispanResourceReference extends ResourceReferenceDefinition {
+    private static final long serialVersionUID = 7840284656807493613L;
 
     private String cacheName;
 

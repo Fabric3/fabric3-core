@@ -37,17 +37,10 @@
  */
 package org.fabric3.cache.infinispan.runtime;
 
-import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
-import org.fabric3.cache.spi.CacheManager;
-import org.fabric3.cache.spi.CacheRegistry;
-import org.fabric3.host.Fabric3Exception;
-import org.infinispan.config.Configuration;
-import org.infinispan.config.GlobalConfiguration;
-import org.infinispan.manager.DefaultCacheManager;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -56,28 +49,28 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+
+import org.infinispan.config.Configuration;
+import org.infinispan.config.GlobalConfiguration;
+import org.infinispan.manager.DefaultCacheManager;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+
+import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
+import org.fabric3.cache.spi.CacheBuildException;
+import org.fabric3.cache.spi.CacheManager;
 
 /**
  * Manages Infinispan caches on a runtime.
  *
- * @version $Rev: 9971 $ $Date: 2011-02-10 15:55:52 +0100 (Thu, 10 Feb 2011) $
+ * @version $Rev$ $Date$
  */
 @EagerInit
-public class InfinispanCacheManagerWrapper implements CacheManager<InfinispanConfiguration> {
-
+public class InfinispanCacheManager implements CacheManager<InfinispanConfiguration> {
     private DefaultCacheManager cacheManager;
 
-    private CacheRegistry cacheRegistry;
-
-    public InfinispanCacheManagerWrapper(@Reference CacheRegistry cacheRegistry) throws InfinispanException {
-        this.cacheRegistry = cacheRegistry;
-
-        cacheManager = new DefaultCacheManager(GlobalConfiguration.getClusteredDefault());
-        cacheManager.addListener(cacheRegistry);
+    public InfinispanCacheManager() throws InfinispanCacheException {
+        this.cacheManager = new DefaultCacheManager(GlobalConfiguration.getClusteredDefault());
     }
 
     @Destroy
@@ -85,16 +78,14 @@ public class InfinispanCacheManagerWrapper implements CacheManager<InfinispanCon
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-            cacheManager.removeListener(cacheRegistry);
             cacheManager.stop();
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassLoader);
         }
 
-        cacheRegistry.clear();
     }
 
-    public void create(InfinispanConfiguration configuration) throws Fabric3Exception {
+    public void create(InfinispanConfiguration configuration) throws CacheBuildException {
         String config = "";
         try {
             Source source = new DOMSource(configuration.getCacheConfiguration());
@@ -104,11 +95,11 @@ public class InfinispanCacheManagerWrapper implements CacheManager<InfinispanCon
             transformer.transform(source, result);
             config += writer.toString();
         } catch (TransformerConfigurationException e) {
-            throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+            throw new CacheBuildException(e);
         } catch (TransformerException e) {
-            throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+            throw new CacheBuildException(e);
         } catch (TransformerFactoryConfigurationError e) {
-            throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+            throw new CacheBuildException(e);
         }
 
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
@@ -128,11 +119,10 @@ public class InfinispanCacheManagerWrapper implements CacheManager<InfinispanCon
 
             String cacheName = configuration.getCacheName();
             cacheManager.defineConfiguration(cacheName, cacheConfiguration);
-            cacheRegistry.register(cacheName, cacheManager.getCache(cacheName));
         } catch (UnsupportedEncodingException e) {
-            throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+            throw new CacheBuildException(e);
         } catch (IOException e) {
-            throw new InfinispanException("Problem during configuring the DefaultCacheManager for infinispan cache.", e);
+            throw new CacheBuildException(e);
         } finally {
             // Set previously class loader back to thread
             Thread.currentThread().setContextClassLoader(oldClassLoader);
@@ -141,12 +131,10 @@ public class InfinispanCacheManagerWrapper implements CacheManager<InfinispanCon
 
     public void remove(InfinispanConfiguration configuration) {
         String cacheName = configuration.getCacheName();
-
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
             cacheManager.getCache(cacheName).stop();
-            cacheRegistry.unregister(cacheName);
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassLoader);
         }

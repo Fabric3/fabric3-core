@@ -47,11 +47,9 @@ import org.w3c.dom.Document;
  * @version $Rev$ $Date$
  */
 public class InfinispanConfiguration extends CacheConfiguration {
-
     private static final long serialVersionUID = -4317772018610416411L;
 
     private String cacheName;
-
     private Document configuration;
 
     public InfinispanConfiguration(String cacheName, Document configuration) {

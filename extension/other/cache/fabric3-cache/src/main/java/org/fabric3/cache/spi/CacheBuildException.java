@@ -34,59 +34,28 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- */
+*/
+package org.fabric3.cache.spi;
 
-package org.fabric3.cache.infinispan.runtime;
-
-import org.fabric3.cache.spi.CacheRegistry;
-import org.infinispan.notifications.Listener;
-import org.infinispan.notifications.cachemanagerlistener.annotation.CacheStarted;
-import org.infinispan.notifications.cachemanagerlistener.annotation.CacheStopped;
-import org.infinispan.notifications.cachemanagerlistener.event.CacheStartedEvent;
-import org.infinispan.notifications.cachemanagerlistener.event.CacheStoppedEvent;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import org.fabric3.spi.builder.BuilderException;
 
 /**
+ * Denotes an error deploying or undeploying cache resources.
+ *
  * @version $Rev$ $Date$
  */
-@Listener
-public class InfinispanRegistry implements CacheRegistry {
+public class CacheBuildException extends BuilderException {
+    private static final long serialVersionUID = 3793169162642657545L;
 
-    private ConcurrentMap<String, ConcurrentMap> caches = new ConcurrentHashMap<String, ConcurrentMap>();
-
-    public ConcurrentMap getCache(String name) {
-        return caches.get(name);
+    public CacheBuildException(String message) {
+        super(message);
     }
 
-    public Map<String, ConcurrentMap> getCaches() {
-        return Collections.unmodifiableMap(caches);
+    public CacheBuildException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public void register(String name, ConcurrentMap cache) {
-        caches.put(name, cache);
+    public CacheBuildException(Throwable cause) {
+        super(cause);
     }
-
-    public ConcurrentMap unregister(String name) {
-        return caches.remove(name);
-    }
-
-    public void clear() {
-        caches.clear();
-    }
-
-    @CacheStarted
-    public void cacheStarted(CacheStartedEvent event) {
-        String name = event.getCacheName();
-        register(name, event.getCacheManager().getCache(name));
-    }
-
-    @CacheStopped
-    public void cacheStopped(CacheStoppedEvent event) {
-        unregister(event.getCacheName());
-    }
-
 }

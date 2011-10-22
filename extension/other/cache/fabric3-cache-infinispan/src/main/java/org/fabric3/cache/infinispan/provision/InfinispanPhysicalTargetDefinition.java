@@ -45,12 +45,12 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
  * @version $Rev$ $Date$
  */
 public class InfinispanPhysicalTargetDefinition extends PhysicalTargetDefinition {
-
+    private static final long serialVersionUID = -9058247807051651832L;
     private String cacheName;
 
-    public InfinispanPhysicalTargetDefinition(String pCacheName, DataType<?>... types) {
+    public InfinispanPhysicalTargetDefinition(String cacheName, DataType<?>... types) {
         super(types);
-        cacheName = pCacheName;
+        cacheName = cacheName;
     }
 
     public String getCacheName() {

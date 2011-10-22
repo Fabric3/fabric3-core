@@ -22,7 +22,6 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.cache.spi" version="1.9.5"/>
     <import.java package="org.fabric3.resource.spi" version="1.9.5"/>
 
-    <deployable composite="f3:InfinispanRegistryExtension"/>
     <deployable composite="f3:InfinispanControllerExtension" modes="controller vm"/>
 	<deployable composite="f3:InfinispanParticipantExtension" modes="participant vm"/>
 

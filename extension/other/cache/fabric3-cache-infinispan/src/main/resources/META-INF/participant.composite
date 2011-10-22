@@ -21,7 +21,7 @@ Public License. See the accompanying license file for details.
         Used for creating/starting default infinispan cache manager.
     -->
     <component name="InfinispanCacheManager" f3:key="org.fabric3.cache.infinispan.provision.InfinispanConfiguration">
-        <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanCacheManagerWrapper"/>
+        <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanCacheManager"/>
     </component>
 
     <!--

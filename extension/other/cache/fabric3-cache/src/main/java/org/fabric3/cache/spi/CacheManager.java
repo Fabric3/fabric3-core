@@ -37,27 +37,27 @@
 */
 package org.fabric3.cache.spi;
 
-import org.fabric3.host.Fabric3Exception;
-
 /**
  * Responsible for managing caches on a runtime.
  *
  * @version $Rev$ $Date$
  */
 public interface CacheManager<T extends CacheConfiguration> {
-            
+
     /**
      * Creates a cache.
      *
      * @param configuration the cache configuration
+     * @throws CacheBuildException if there is an error creating the cache
      */
-    void create(T configuration) throws Fabric3Exception;
+    void create(T configuration) throws CacheBuildException;
 
     /**
      * Removes a cache.
      *
      * @param configuration the cache configuration
+     * @throws CacheBuildException if there is an error removing the cache
      */
-    void remove(T configuration);
+    void remove(T configuration) throws CacheBuildException;
 
 }

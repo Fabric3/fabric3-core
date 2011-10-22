@@ -38,12 +38,13 @@
 
 package org.fabric3.cache.infinispan.generator;
 
+import org.oasisopen.sca.annotation.EagerInit;
+
 import org.fabric3.cache.infinispan.model.InfinispanResourceReference;
 import org.fabric3.cache.infinispan.provision.InfinispanPhysicalTargetDefinition;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
-import org.oasisopen.sca.annotation.EagerInit;
 
 
 /**
@@ -52,9 +53,9 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class InfinispanResourceReferenceGenerator implements ResourceReferenceGenerator<InfinispanResourceReference> {
 
-    public InfinispanPhysicalTargetDefinition generateWireTarget(LogicalResourceReference<InfinispanResourceReference> logicalResourceReference) throws GenerationException {
-        InfinispanResourceReference ref = logicalResourceReference.getDefinition();
-
-        return new InfinispanPhysicalTargetDefinition(ref.getCacheName());
+    public InfinispanPhysicalTargetDefinition generateWireTarget(LogicalResourceReference<InfinispanResourceReference> logicalResourceReference)
+            throws GenerationException {
+        InfinispanResourceReference reference = logicalResourceReference.getDefinition();
+        return new InfinispanPhysicalTargetDefinition(reference.getCacheName());
     }
 }

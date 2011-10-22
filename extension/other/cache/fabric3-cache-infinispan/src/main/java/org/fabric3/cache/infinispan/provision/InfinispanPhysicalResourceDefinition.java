@@ -47,7 +47,6 @@ import java.util.List;
  * @version $Rev$ $Date$
  */
 public class InfinispanPhysicalResourceDefinition extends PhysicalResourceDefinition {
-
     private static final long serialVersionUID = -6400612928297999316L;
 
     private List<InfinispanConfiguration> configurations = new ArrayList<InfinispanConfiguration>();
