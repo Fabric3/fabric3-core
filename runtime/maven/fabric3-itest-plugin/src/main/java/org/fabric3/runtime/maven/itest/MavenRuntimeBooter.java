@@ -79,6 +79,8 @@ import org.fabric3.host.stream.UrlSource;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.maven.MavenRuntime;
 
+import static org.fabric3.runtime.maven.itest.TestConstants.DOMAIN;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -87,7 +89,6 @@ public class MavenRuntimeBooter {
     private static final String DEFAULT_SYSTEM_CONFIG_DIR = "test-classes" + File.separator + "META-INF" + File.separator;
     private static final String MAVEN2_RUNTIME_IMPL = "org.fabric3.runtime.maven.impl.MavenRuntimeImpl";
     private static final String MAVEN3_RUNTIME_IMPL = "org.fabric3.runtime.maven3.impl.Maven3RuntimeImpl";
-    private static final String DOMAIN = "fabric3://domain";
 
     // configuration elements
     private int mavenVersion;

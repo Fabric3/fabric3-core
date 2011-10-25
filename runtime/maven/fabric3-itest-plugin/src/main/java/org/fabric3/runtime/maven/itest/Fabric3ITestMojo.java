@@ -45,6 +45,8 @@ package org.fabric3.runtime.maven.itest;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -258,7 +260,6 @@ public class Fabric3ITestMojo extends AbstractMojo {
      */
     public RuntimeInformation runtimeInformation;
 
-
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         if (skip) {
@@ -288,9 +289,38 @@ public class Fabric3ITestMojo extends AbstractMojo {
             runner.executeTests(runtime);
         } finally {
             try {
+                tryLatch(runtime);
                 booter.shutdown();
             } catch (Exception e) {
                 // ignore
+            }
+        }
+    }
+
+    /**
+     * Waits on a latch component if one is configured for the test run.
+     *
+     * @param runtime the runtime
+     */
+    private void tryLatch(MavenRuntime runtime) {
+        Object latchComponent = runtime.getComponent(Object.class, TestConstants.TEST_LATCH_SERVICE);
+        if (latchComponent != null) {
+            Class<?> type = latchComponent.getClass();
+            try {
+                Method method = type.getDeclaredMethod("await");
+                getLog().info("Waiting on Fabric3 runtime latch");
+                method.invoke(latchComponent);
+                getLog().info("Fabric3 runtime latch released");
+            } catch (NoSuchMethodException e) {
+                getLog().error("Found latch service " + type + " but it does not declare an await() method");
+            } catch (SecurityException e) {
+                getLog().error("Security exception introspecting latch service", e);
+            } catch (IllegalAccessException e) {
+                getLog().error("Exception attempting to wait on latch service", e);
+            } catch (IllegalArgumentException e) {
+                getLog().error("Exception attempting to wait on latch service", e);
+            } catch (InvocationTargetException e) {
+                getLog().error("Exception attempting to wait on latch service", e);
             }
         }
     }
