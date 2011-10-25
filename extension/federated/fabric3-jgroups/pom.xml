@@ -26,7 +26,17 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.jgroups</groupId>
             <artifactId>jgroups</artifactId>
-            <version>2.10.0.GA</version>
+            <version>3.0.0.CR5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.beanshell</groupId>
+                    <artifactId>bsh</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

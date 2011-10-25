@@ -37,6 +37,9 @@
 */
 package org.fabric3.federation.jgroups;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.jgroups.Address;
 import org.jgroups.Channel;
 import org.jgroups.Message;
@@ -73,6 +76,14 @@ public class DelegatingReceiver implements Receiver {
         }
     }
 
+    public void getState(OutputStream output) throws Exception {
+
+    }
+
+    public void setState(InputStream input) throws Exception {
+
+    }
+
     public void viewAccepted(View new_view) {
 
     }
@@ -85,11 +96,8 @@ public class DelegatingReceiver implements Receiver {
 
     }
 
-    public byte[] getState() {
-        return new byte[0];
-    }
-
-    public void setState(byte[] state) {
+    public void unblock() {
 
     }
+
 }

@@ -37,10 +37,11 @@
 */
 package org.fabric3.federation.jgroups;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.concurrent.Executor;
 
 import org.jgroups.Channel;
-import org.jgroups.ChannelException;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.MessageListener;
@@ -143,11 +144,6 @@ public abstract class AbstractTopologyService {
         return getDomainChannel().isConnected();
     }
 
-    @ManagementOperation(description = "The number of waiting messages in the queue")
-    public int getWaitingMessages() {
-        return getDomainChannel().getNumMessages();
-    }
-
     @ManagementOperation(description = "The number of sent messages")
     public long getSentMessages() {
         return getDomainChannel().getSentMessages();
@@ -174,7 +170,7 @@ public abstract class AbstractTopologyService {
     }
 
     @Init
-    public void init() throws ChannelException {
+    public void init() throws Exception {
         // set the bind address if it is specified in the system configuration and not specified at JVM startup 
         if (defaultBindAddress != null && System.getProperty("jgroups.bind_addr") == null) {
             System.setProperty("jgroups.bind_addr", defaultBindAddress);
@@ -196,7 +192,7 @@ public abstract class AbstractTopologyService {
 
     protected void initializeChannel(Channel channel) {
         // turn off local message reception
-        channel.setOpt(Channel.LOCAL, false);
+        channel.setDiscardOwnMessages(true);
 
         TP transport = channel.getProtocolStack().getTransport();
         // Replace the default thread pool
@@ -224,13 +220,14 @@ public abstract class AbstractTopologyService {
             }
         }
 
-        public byte[] getState() {
-            return new byte[0];
+        public void getState(OutputStream output) throws Exception {
+
         }
 
-        public void setState(byte[] state) {
-            // no-op
+        public void setState(InputStream input) throws Exception {
+
         }
+
     }
 
     protected class Fabric3RequestHandler implements RequestHandler {

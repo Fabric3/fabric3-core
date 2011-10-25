@@ -48,17 +48,13 @@ import java.util.concurrent.Executor;
 
 import org.jgroups.Address;
 import org.jgroups.Channel;
-import org.jgroups.ChannelClosedException;
-import org.jgroups.ChannelException;
-import org.jgroups.ChannelNotConnectedException;
 import org.jgroups.JChannel;
 import org.jgroups.MembershipListener;
 import org.jgroups.Message;
-import org.jgroups.SuspectedException;
-import org.jgroups.TimeoutException;
 import org.jgroups.View;
-import org.jgroups.blocks.GroupRequest;
 import org.jgroups.blocks.MessageDispatcher;
+import org.jgroups.blocks.RequestOptions;
+import org.jgroups.blocks.ResponseMode;
 import org.jgroups.util.Rsp;
 import org.jgroups.util.RspList;
 import org.jgroups.util.UUID;
@@ -163,7 +159,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     }
 
     @Init
-    public void init() throws ChannelException {
+    public void init() throws Exception {
         super.init();
         if (!synchronize) {
             state = UPDATED;
@@ -262,14 +258,22 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         return send(address, command, timeout);
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<Response> sendSynchronous(ResponseCommand command, long timeout) throws MessageException {
         List<Response> values = new ArrayList<Response>();
         List<Address> addresses = helper.getRuntimeAddressesInZone(zoneName, domainChannel.getView());
         Vector<Address> dest = new Vector<Address>(addresses);
         byte[] payload = helper.serialize(command);
         Message message = new Message(null, domainChannel.getAddress(), payload);
-        RspList responses = domainDispatcher.castMessage(dest, message, GroupRequest.GET_ALL, timeout);
-        for (Map.Entry<Address, Rsp> entry : responses.entrySet()) {
+        RequestOptions options = new RequestOptions(ResponseMode.GET_ALL, timeout);
+        RspList responses;
+        try {
+            responses = domainDispatcher.castMessage(dest, message, options);
+        } catch (Exception e) {
+            throw new MessageException("Error sending message", e);
+        }
+        Set<Map.Entry<Address, Rsp<?>>> set = responses.entrySet();
+        for (Map.Entry<Address, Rsp<?>> entry : set) {
             Object val = entry.getValue().getValue();
             assert val instanceof byte[] : " expected byte[] for response";
             Response response = (Response) helper.deserialize((byte[]) val);
@@ -301,21 +305,19 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         }
         try {
 
-            Channel channel = null;
-            if(configuration !=null)
-            {
+            Channel channel;
+            if (configuration != null) {
                 channel = new JChannel(configuration);
-            }else if (channelConfig!=null){
+            } else if (channelConfig != null) {
                 channel = new JChannel(channelConfig);
-            }
-            else{
-               channel = new JChannel();
+            } else {
+                channel = new JChannel();
             }
             channels.put(name, channel);
             DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver, helper, monitor);
             channel.setReceiver(delegatingReceiver);
             channel.connect(info.getDomain().getAuthority() + ":" + name);
-        } catch (ChannelException e) {
+        } catch (Exception e) {
             throw new ZoneChannelException(e);
         }
     }
@@ -337,9 +339,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             byte[] payload = helper.serialize(message);
             Message jMessage = new Message(null, null, payload);
             channel.send(jMessage);
-        } catch (ChannelNotConnectedException e) {
-            throw new MessageException(e);
-        } catch (ChannelClosedException e) {
+        } catch (Exception e) {
             throw new MessageException(e);
         }
     }
@@ -358,9 +358,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             byte[] payload = helper.serialize(message);
             Message jMessage = new Message(address, null, payload);
             channel.send(jMessage);
-        } catch (ChannelNotConnectedException e) {
-            throw new MessageException(e);
-        } catch (ChannelClosedException e) {
+        } catch (Exception e) {
             throw new MessageException(e);
         }
     }
@@ -389,12 +387,11 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             Address sourceAddress = domainChannel.getAddress();
             byte[] payload = helper.serialize(command);
             Message message = new Message(address, sourceAddress, payload);
-            Object val = domainDispatcher.sendMessage(message, GroupRequest.GET_ALL, timeout);
+            RequestOptions options = new RequestOptions(ResponseMode.GET_ALL, timeout);
+            Object val = domainDispatcher.sendMessage(message, options);
             assert val instanceof byte[] : " expected byte[] for response";
             return (Response) helper.deserialize(((byte[]) val));
-        } catch (TimeoutException e) {
-            throw new MessageException("Error sending message to: " + runtimeName, e);
-        } catch (SuspectedException e) {
+        } catch (Exception e) {
             throw new MessageException("Error sending message to: " + runtimeName, e);
         }
     }
@@ -405,9 +402,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             byte[] payload = helper.serialize(command);
             Message message = new Message(address, sourceAddress, payload);
             domainChannel.send(message);
-        } catch (ChannelClosedException e) {
-            throw new MessageException("Error broadcasting message to zone: " + zoneName, e);
-        } catch (ChannelNotConnectedException e) {
+        } catch (Exception e) {
             throw new MessageException("Error broadcasting message to zone: " + zoneName, e);
         }
     }
@@ -493,9 +488,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
                     }
                     update();
                 }
-            } catch (ChannelException e) {
-                monitor.error("Error joining the domain", e);
-            } catch (MessageException e) {
+            } catch (Exception e) {
                 monitor.error("Error joining the domain", e);
             }
         }
@@ -590,6 +583,10 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         }
 
         public void block() {
+            // no-op
+        }
+
+        public void unblock() {
             // no-op
         }
     }

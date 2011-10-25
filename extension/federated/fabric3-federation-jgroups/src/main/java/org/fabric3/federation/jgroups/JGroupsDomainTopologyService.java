@@ -44,27 +44,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
 import org.jgroups.Address;
-import org.jgroups.ChannelClosedException;
-import org.jgroups.ChannelException;
-import org.jgroups.ChannelNotConnectedException;
 import org.jgroups.JChannel;
 import org.jgroups.MembershipListener;
 import org.jgroups.Message;
 import org.jgroups.SuspectedException;
 import org.jgroups.TimeoutException;
 import org.jgroups.View;
-import org.jgroups.blocks.GroupRequest;
 import org.jgroups.blocks.MessageDispatcher;
+import org.jgroups.blocks.RequestOptions;
+import org.jgroups.blocks.ResponseMode;
 import org.jgroups.util.UUID;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Element;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
@@ -87,12 +85,10 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.federation.DomainTopologyService;
 import org.fabric3.spi.federation.ErrorResponse;
 import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.MessageTimeoutException;
 import org.fabric3.spi.federation.RemoteSystemException;
 import org.fabric3.spi.federation.RuntimeInstance;
 import org.fabric3.spi.federation.TopologyListener;
 import org.fabric3.spi.federation.Zone;
-import org.w3c.dom.Element;
 
 /**
  * JGroups implementation of the {@link DomainTopologyService}.
@@ -127,12 +123,11 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     }
 
     @Init
-    public void init() throws ChannelException {
+    public void init() throws Exception {
         super.init();
-        if(channelConfig!=null){
+        if (channelConfig != null) {
             domainChannel = new JChannel(channelConfig);
-        }
-        else{
+        } else {
             domainChannel = new JChannel();
         }
 
@@ -202,9 +197,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                 Message message = new Message(address, domainChannel.getAddress(), payload);
                 domainChannel.send(message);
             }
-        } catch (ChannelClosedException e) {
-            throw new MessageException("Error sending message to zone: " + zoneName, e);
-        } catch (ChannelNotConnectedException e) {
+        } catch (Exception e) {
             throw new MessageException("Error sending message to zone: " + zoneName, e);
         }
     }
@@ -214,9 +207,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         Message message = new Message(null, domainChannel.getAddress(), payload);
         try {
             domainChannel.send(message);
-        } catch (ChannelNotConnectedException e) {
-            throw new MessageException(e);
-        } catch (ChannelClosedException e) {
+        } catch (Exception e) {
             throw new MessageException(e);
         }
     }
@@ -228,7 +219,8 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         for (Address address : addresses) {
             Message message = new Message(address, domainChannel.getAddress(), payload);
             try {
-                Object o = dispatcher.sendMessage(message, GroupRequest.GET_ALL, timeout);
+                RequestOptions options = new RequestOptions(ResponseMode.GET_ALL, timeout);
+                Object o = dispatcher.sendMessage(message, options);
                 if (o instanceof Exception) {
                     // an error was returned by the other end
                     RemoteSystemException response = new RemoteSystemException((Exception) o);
@@ -268,6 +260,11 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
                 response.setRuntimeName(UUID.get(address));
                 responses.add(response);
                 break;
+            } catch (Exception e) {
+                RemoteSystemException response = new RemoteSystemException(e);
+                response.setRuntimeName(UUID.get(address));
+                responses.add(response);
+                break;
             }
         }
         return responses;
@@ -282,12 +279,11 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
             }
             Address address = helper.getRuntimeAddress(runtimeName, view);
             Message message = new Message(address, domainChannel.getAddress(), payload);
-            Object o = dispatcher.sendMessage(message, GroupRequest.GET_ALL, timeout);
+            RequestOptions options = new RequestOptions(ResponseMode.GET_ALL, timeout);
+            Object o = dispatcher.sendMessage(message, options);
             assert o instanceof byte[] : "Expected byte[] but was " + o;
             return (Response) helper.deserialize((byte[]) o);
-        } catch (TimeoutException e) {
-            throw new MessageTimeoutException("Timeout sending message to runtime: " + runtimeName, e);
-        } catch (SuspectedException e) {
+        } catch (Exception e) {
             throw new MessageException("Error sending message to runtime: " + runtimeName, e);
         }
     }
@@ -320,14 +316,14 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     private Set<Zone> getZones(View view) {
         Address controller = domainChannel.getAddress();
         Set<Zone> zones = new HashSet<Zone>();
-        Vector<Address> members = view.getMembers();
+        List<Address> members = view.getMembers();
         for (Address member : members) {
             if (!member.equals(controller)) {
                 String zoneName = helper.getZoneName(member);
                 Map<String, RuntimeInstance> instances = runtimes.get(zoneName);
                 List<RuntimeInstance> list = new ArrayList<RuntimeInstance>(instances.values());
-                Zone zone = new Zone(zoneName, list);
                 if (zoneName != null) {
+                    Zone zone = new Zone(zoneName, list);
                     zones.add(zone);
                 }
             }
@@ -342,7 +338,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
             try {
                 domainChannel.connect(domainName);
                 dispatcher.start();
-            } catch (ChannelException e) {
+            } catch (Exception e) {
                 monitor.error("Error joining the domain", e);
             }
         }
@@ -460,6 +456,10 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         }
 
         public void block() {
+            // no-op
+        }
+
+        public void unblock() {
             // no-op
         }
     }
