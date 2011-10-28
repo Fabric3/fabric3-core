@@ -40,7 +40,9 @@ package org.fabric3.cache.infinispan.runtime;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.management.MBeanServer;
 import javax.transaction.TransactionManager;
 import javax.xml.transform.Source;
@@ -85,6 +87,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
     private Fabric3TransactionManagerLookup txLookup;
 
     private EmbeddedCacheManager cacheManager;
+    private Map<String, Cache<?, ?>> caches = new ConcurrentHashMap<String, Cache<?, ?>>();
 
     public InfinispanCacheManager(@Reference TransactionManager tm, @Reference MBeanServer mBeanServer, @Reference HostInfo info) {
         this.tm = tm;
@@ -99,7 +102,8 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
         globalConfig.transport().machineId(info.getRuntimeName());
         FluentGlobalConfiguration.GlobalJmxStatisticsConfig jmxStatistics = globalConfig.globalJmxStatistics();
         String authority = info.getDomain().getAuthority();
-        jmxStatistics.jmxDomain(authority).mBeanServerLookup(new Fabric3MBeanServerLookup());
+        Fabric3MBeanServerLookup serverLookup = new Fabric3MBeanServerLookup();
+        jmxStatistics.jmxDomain(authority).mBeanServerLookup(serverLookup);
         this.cacheManager = new DefaultCacheManager(globalConfig.build());
     }
 
@@ -110,7 +114,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
 
     @SuppressWarnings({"unchecked"})
     public <CACHE> CACHE getCache(String name) {
-        return (CACHE) cacheManager.getCache(name);
+        return (CACHE) caches.get(name);
     }
 
     public void create(InfinispanCacheConfiguration configuration) throws CacheBuildException {
@@ -123,6 +127,8 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
 
             String cacheName = configuration.getCacheName();
             cacheManager.defineConfiguration(cacheName, cacheConfiguration);
+            Cache<?, ?> cache = cacheManager.getCache(cacheName);
+            caches.put(cacheName, cache);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
@@ -133,7 +139,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-            Cache<Object, Object> cache = cacheManager.getCache(cacheName);
+            Cache<?, ?> cache = caches.get(cacheName);
             if (cache == null) {
                 throw new CacheBuildException("Cache not found: " + cacheName);
             }

@@ -38,6 +38,13 @@
 
 package org.fabric3.cache.infinispan.introspection;
 
+import java.lang.reflect.Member;
+import java.util.concurrent.ConcurrentMap;
+
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+
 import org.fabric3.api.annotation.Resource;
 import org.fabric3.cache.infinispan.model.InfinispanResourceReference;
 import org.fabric3.cache.spi.MissingCacheName;
@@ -47,14 +54,10 @@ import org.fabric3.resource.spi.ResourceTypeHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
-import java.lang.reflect.Member;
-import java.util.concurrent.ConcurrentMap;
 
 /**
+ * Introspects {@link Resource} annotations when used with <code>ConcurrentMap</code> types.
+ *
  * @version $Rev$ $Date$
  */
 @EagerInit
@@ -73,13 +76,13 @@ public class InfinispanResourceTypeHandler implements ResourceTypeHandler {
     }
 
 
-    public ResourceReferenceDefinition createResourceReference(String resourceName, Resource annotation, Member member, IntrospectionContext context) {
+    public ResourceReferenceDefinition createResourceReference(String name, Resource annotation, Member member, IntrospectionContext context) {
         String cacheName = annotation.name();
         if (cacheName.length() == 0) {
             MissingCacheName error = new MissingCacheName(member.getDeclaringClass());
             context.addError(error);
-            return new InfinispanResourceReference(resourceName, contract, false, "error");
+            return new InfinispanResourceReference(name, contract, false, "error");
         }
-        return new InfinispanResourceReference(resourceName, contract, false, cacheName);
+        return new InfinispanResourceReference(name, contract, false, cacheName);
     }
 }

@@ -42,7 +42,7 @@ import org.fabric3.cache.spi.CacheConfiguration;
 import org.w3c.dom.Document;
 
 /**
- * Infinispan cache configuration.
+ * An Infinispan cache configuration.
  *
  * @version $Rev$ $Date$
  */

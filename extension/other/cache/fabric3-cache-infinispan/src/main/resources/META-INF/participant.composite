@@ -7,8 +7,6 @@ Fabric3 is licensed under modified terms of the GNU General
 Public License. See the accompanying license file for details.
 
 
-
-
     $Rev$ $Date$
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
@@ -17,24 +15,15 @@ Public License. See the accompanying license file for details.
            name="InfinispanParticipantExtension"
            autowire="true">
 
-    <!--
-        Used for creating/starting default infinispan cache manager.
-    -->
     <component name="InfinispanCacheManager" f3:key="org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration">
         <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanCacheManager"/>
     </component>
 
-    <!--
-        Create specific cache using infinispan cache manager.
-    -->
     <component name="InfinispanResourceBuilder"
                f3:key="org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition">
         <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanResourceBuilder"/>
     </component>
 
-    <!--
-        Create cache via infinispan registry.
-    -->
     <component name="InfinispanWireAttacher"
                f3:key="org.fabric3.cache.infinispan.provision.InfinispanPhysicalTargetDefinition">
         <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanTargetWireAttacher"/>

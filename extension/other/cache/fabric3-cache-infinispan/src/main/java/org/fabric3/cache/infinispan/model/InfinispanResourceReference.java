@@ -42,6 +42,8 @@ import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
+ * A reference to an Infinispan cache resource.
+ *
  * @version $Rev$ $Date$
  */
 public class InfinispanResourceReference extends ResourceReferenceDefinition {

@@ -45,7 +45,7 @@ package org.fabric3.cache.spi;
 public interface CacheManager<T extends CacheConfiguration> {
 
     /**
-     * Returns a live reference to s cache or null if one is not defined for the given name.
+     * Returns a live, thread-safe reference to a cache or null if one is not defined for the given name.
      *
      * @param name    the cache name
      * @param <CACHE> the cache reference type

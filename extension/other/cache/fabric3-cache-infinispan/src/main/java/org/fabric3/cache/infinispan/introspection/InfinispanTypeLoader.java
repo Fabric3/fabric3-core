@@ -53,7 +53,7 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
- * Loads an implementation-specific cache configurations specified as part of the cache element.
+ * Loads an implementation-specific cache configurations specified as part of the <code>&lt;cache&gt;</code> element.
  *
  * @version $Rev$ $Date$
  */

@@ -69,7 +69,11 @@ public class InfinispanTargetWireAttacher implements TargetWireAttacher<Infinisp
     }
 
     public ObjectFactory<Cache<?, ?>> createObjectFactory(InfinispanPhysicalTargetDefinition target) throws WiringException {
-        Cache<?, ?> cache = cacheManager.getCache(target.getCacheName());
+        String name = target.getCacheName();
+        Cache<?, ?> cache = cacheManager.getCache(name);
+        if (cache == null) {
+            throw new WiringException("Cache not found: " + name);
+        }
         return new SingletonObjectFactory<Cache<?, ?>>(cache);
     }
 }

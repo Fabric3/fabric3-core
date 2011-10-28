@@ -44,7 +44,7 @@ import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
 import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
- * Infinispan cache definition.
+ * An Infinispan cache definition.
  *
  * @version $Rev$ $Date$
  */
