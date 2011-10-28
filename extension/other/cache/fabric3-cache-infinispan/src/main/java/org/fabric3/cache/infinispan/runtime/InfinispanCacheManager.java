@@ -115,7 +115,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
 
     public void create(InfinispanCacheConfiguration configuration) throws CacheBuildException {
         // Set TCCL for JAXB
-        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Configuration cacheConfiguration = parseConfiguration(configuration);
             FluentConfiguration fluent = cacheConfiguration.fluent();
@@ -124,13 +124,13 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
             String cacheName = configuration.getCacheName();
             cacheManager.defineConfiguration(cacheName, cacheConfiguration);
         } finally {
-            Thread.currentThread().setContextClassLoader(oldClassLoader);
+            Thread.currentThread().setContextClassLoader(old);
         }
     }
 
     public void remove(InfinispanCacheConfiguration configuration) throws CacheBuildException {
         String cacheName = configuration.getCacheName();
-        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
             Cache<Object, Object> cache = cacheManager.getCache(cacheName);
@@ -139,7 +139,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
             }
             cache.stop();
         } finally {
-            Thread.currentThread().setContextClassLoader(oldClassLoader);
+            Thread.currentThread().setContextClassLoader(old);
         }
     }
 
