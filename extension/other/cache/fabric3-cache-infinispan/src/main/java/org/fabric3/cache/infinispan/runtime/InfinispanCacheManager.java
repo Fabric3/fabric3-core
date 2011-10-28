@@ -104,7 +104,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
     }
 
     @Destroy
-    public void stopManager() {
+    public void destroy() {
         cacheManager.stop();
     }
 
