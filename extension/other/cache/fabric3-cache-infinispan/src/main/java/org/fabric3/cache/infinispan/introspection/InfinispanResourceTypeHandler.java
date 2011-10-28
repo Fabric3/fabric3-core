@@ -59,7 +59,6 @@ import java.util.concurrent.ConcurrentMap;
  */
 @EagerInit
 public class InfinispanResourceTypeHandler implements ResourceTypeHandler {
-
     private ServiceContract contract;
     private JavaContractProcessor contractProcessor;
 

@@ -38,43 +38,38 @@
 
 package org.fabric3.cache.infinispan.runtime;
 
-import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
+import java.util.List;
+
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
+
+import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
 import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
-import org.fabric3.cache.spi.CacheBuildException;
 import org.fabric3.cache.spi.CacheManager;
-import org.fabric3.host.Fabric3Exception;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.resource.ResourceBuilder;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.EagerInit;
-
-import java.util.List;
 
 /**
  * @version $Rev$ $Date$
  */
 @EagerInit
 public class InfinispanResourceBuilder implements ResourceBuilder<InfinispanPhysicalResourceDefinition> {
-    private CacheManager<InfinispanConfiguration> manager;
+    private CacheManager<InfinispanCacheConfiguration> manager;
 
-    public InfinispanResourceBuilder(@Reference CacheManager<InfinispanConfiguration> manager) {
+    public InfinispanResourceBuilder(@Reference CacheManager<InfinispanCacheConfiguration> manager) {
         this.manager = manager;
     }
 
     public void build(InfinispanPhysicalResourceDefinition definition) throws BuilderException {
-        List<InfinispanConfiguration> configurations = definition.getCacheConfigurations();
-        for (InfinispanConfiguration configuration : configurations) {
-            try {
-                manager.create(configuration);
-            } catch (Fabric3Exception e) {
-                throw new CacheBuildException("Cannot create infinispan cache", e);
-            }
+        List<InfinispanCacheConfiguration> configurations = definition.getCacheConfigurations();
+        for (InfinispanCacheConfiguration configuration : configurations) {
+            manager.create(configuration);
         }
     }
 
     public void remove(InfinispanPhysicalResourceDefinition definition) throws BuilderException {
-        List<InfinispanConfiguration> temp = definition.getCacheConfigurations();
-        for (InfinispanConfiguration configuration : temp) {
+        List<InfinispanCacheConfiguration> configurations = definition.getCacheConfigurations();
+        for (InfinispanCacheConfiguration configuration : configurations) {
             manager.remove(configuration);
         }
     }

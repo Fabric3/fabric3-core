@@ -38,7 +38,7 @@
 package org.fabric3.cache.infinispan.generator;
 
 import org.fabric3.cache.infinispan.model.InfinispanResourceDefinition;
-import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
+import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
 import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.ResourceGenerator;
@@ -57,7 +57,7 @@ import java.util.List;
 public class InfinispanResourceGenerator implements ResourceGenerator<InfinispanResourceDefinition> {
 
     public PhysicalResourceDefinition generateResource(LogicalResource<InfinispanResourceDefinition> resource) throws GenerationException {
-        List<InfinispanConfiguration> cacheConfigurations = resource.getDefinition().getCacheConfigurations();
+        List<InfinispanCacheConfiguration> cacheConfigurations = resource.getDefinition().getCacheConfigurations();
         return new InfinispanPhysicalResourceDefinition(cacheConfigurations);
     }
 }

@@ -40,7 +40,7 @@ package org.fabric3.cache.infinispan.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
+import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
 import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
@@ -51,13 +51,13 @@ import org.fabric3.model.type.component.ResourceDefinition;
 public class InfinispanResourceDefinition extends ResourceDefinition {
     private static final long serialVersionUID = -7153867883574388002L;
 
-    private List<InfinispanConfiguration> configurations = new ArrayList<InfinispanConfiguration>();
+    private List<InfinispanCacheConfiguration> configurations = new ArrayList<InfinispanCacheConfiguration>();
 
-    public void addCacheConfiguration(InfinispanConfiguration configuration) {
+    public void addCacheConfiguration(InfinispanCacheConfiguration configuration) {
         configurations.add(configuration);
     }
 
-    public List<InfinispanConfiguration> getCacheConfigurations() {
+    public List<InfinispanCacheConfiguration> getCacheConfigurations() {
         return configurations;
     }
 }

@@ -37,10 +37,12 @@
  */
 package org.fabric3.cache.infinispan.runtime;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.util.Properties;
+import javax.management.MBeanServer;
+import javax.transaction.TransactionManager;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -50,15 +52,25 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.infinispan.Cache;
 import org.infinispan.config.Configuration;
+import org.infinispan.config.FluentConfiguration;
+import org.infinispan.config.FluentGlobalConfiguration;
 import org.infinispan.config.GlobalConfiguration;
+import org.infinispan.config.InfinispanConfiguration;
+import org.infinispan.jmx.MBeanServerLookup;
 import org.infinispan.manager.DefaultCacheManager;
+import org.infinispan.manager.EmbeddedCacheManager;
+import org.infinispan.transaction.lookup.TransactionManagerLookup;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
+import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
 import org.fabric3.cache.spi.CacheBuildException;
 import org.fabric3.cache.spi.CacheManager;
+import org.fabric3.host.runtime.HostInfo;
 
 /**
  * Manages Infinispan caches on a runtime.
@@ -66,77 +78,103 @@ import org.fabric3.cache.spi.CacheManager;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class InfinispanCacheManager implements CacheManager<InfinispanConfiguration> {
-    private DefaultCacheManager cacheManager;
+public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfiguration> {
+    private TransactionManager tm;
+    private MBeanServer mBeanServer;
+    private HostInfo info;
+    private Fabric3TransactionManagerLookup txLookup;
 
-    public InfinispanCacheManager() throws InfinispanCacheException {
-        this.cacheManager = new DefaultCacheManager(GlobalConfiguration.getClusteredDefault());
+    private EmbeddedCacheManager cacheManager;
+
+    public InfinispanCacheManager(@Reference TransactionManager tm, @Reference MBeanServer mBeanServer, @Reference HostInfo info) {
+        this.tm = tm;
+        this.mBeanServer = mBeanServer;
+        this.info = info;
+        txLookup = new Fabric3TransactionManagerLookup();
+    }
+
+    @Init
+    public void init() {
+        FluentGlobalConfiguration globalConfig = new GlobalConfiguration().fluent();
+        globalConfig.transport().machineId(info.getRuntimeName());
+        FluentGlobalConfiguration.GlobalJmxStatisticsConfig jmxStatistics = globalConfig.globalJmxStatistics();
+        String authority = info.getDomain().getAuthority();
+        jmxStatistics.jmxDomain(authority).mBeanServerLookup(new Fabric3MBeanServerLookup());
+        this.cacheManager = new DefaultCacheManager(globalConfig.build());
     }
 
     @Destroy
     public void stopManager() {
+        cacheManager.stop();
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public <CACHE> CACHE getCache(String name) {
+        return (CACHE) cacheManager.getCache(name);
+    }
+
+    public void create(InfinispanCacheConfiguration configuration) throws CacheBuildException {
+        // Set TCCL for JAXB
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-            cacheManager.stop();
+            Configuration cacheConfiguration = parseConfiguration(configuration);
+            FluentConfiguration fluent = cacheConfiguration.fluent();
+            fluent.transaction().transactionManagerLookup(txLookup);
+
+            String cacheName = configuration.getCacheName();
+            cacheManager.defineConfiguration(cacheName, cacheConfiguration);
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassLoader);
         }
-
     }
 
-    public void create(InfinispanConfiguration configuration) throws CacheBuildException {
-        String config = "";
+    public void remove(InfinispanCacheConfiguration configuration) throws CacheBuildException {
+        String cacheName = configuration.getCacheName();
+        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
         try {
-            Source source = new DOMSource(configuration.getCacheConfiguration());
+            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+            Cache<Object, Object> cache = cacheManager.getCache(cacheName);
+            if (cache == null) {
+                throw new CacheBuildException("Cache not found: " + cacheName);
+            }
+            cache.stop();
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldClassLoader);
+        }
+    }
+
+    private Configuration parseConfiguration(InfinispanCacheConfiguration configuration) throws CacheBuildException {
+        try {
             StringWriter writer = new StringWriter();
             StreamResult result = new StreamResult(writer);
+            Source source = new DOMSource(configuration.getCacheConfiguration());
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.transform(source, result);
-            config += writer.toString();
+            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+            StringReader reader = new StringReader(writer.toString());
+            return InfinispanConfiguration.newInfinispanConfiguration(reader).parseDefaultConfiguration();
         } catch (TransformerConfigurationException e) {
             throw new CacheBuildException(e);
         } catch (TransformerException e) {
             throw new CacheBuildException(e);
         } catch (TransformerFactoryConfigurationError e) {
             throw new CacheBuildException(e);
-        }
-
-        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            /*
-            * A Infinispan workaround for "org.infinispan.CacheException: Unable to construct a GlobalComponentRegistry!"
-            *
-            * This will help find classes.
-            */
-            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(config.getBytes("UTF-8"));
-            //TODO <michal.capo> at this time we are not including any configuration, due to jaxb class loading problem
-
-            Configuration cacheConfiguration = new Configuration();
-            cacheConfiguration.setCacheMode(Configuration.CacheMode.DIST_SYNC);
-
-            String cacheName = configuration.getCacheName();
-            cacheManager.defineConfiguration(cacheName, cacheConfiguration);
-        } catch (UnsupportedEncodingException e) {
-            throw new CacheBuildException(e);
         } catch (IOException e) {
             throw new CacheBuildException(e);
-        } finally {
-            // Set previously class loader back to thread
-            Thread.currentThread().setContextClassLoader(oldClassLoader);
         }
     }
 
-    public void remove(InfinispanConfiguration configuration) {
-        String cacheName = configuration.getCacheName();
-        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-            cacheManager.getCache(cacheName).stop();
-        } finally {
-            Thread.currentThread().setContextClassLoader(oldClassLoader);
+    private class Fabric3MBeanServerLookup implements MBeanServerLookup {
+
+        public MBeanServer getMBeanServer(Properties properties) {
+            return mBeanServer;
+        }
+    }
+
+    private class Fabric3TransactionManagerLookup implements TransactionManagerLookup {
+
+        public TransactionManager getTransactionManager() throws Exception {
+            return tm;
         }
     }
 

@@ -44,6 +44,8 @@ package org.fabric3.cache.spi;
  */
 public interface CacheManager<T extends CacheConfiguration> {
 
+    <CACHE> CACHE getCache(String name);
+
     /**
      * Creates a cache.
      *

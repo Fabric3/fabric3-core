@@ -46,7 +46,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
 import org.fabric3.cache.infinispan.model.InfinispanResourceDefinition;
-import org.fabric3.cache.infinispan.provision.InfinispanConfiguration;
+import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
@@ -75,13 +75,13 @@ public class InfinispanTypeLoader implements TypeLoader<InfinispanResourceDefini
                     String name = reader.getAttributeValue(null, "name");
 
                     if (null == name) {
-                        InvalidValue error = new InvalidValue("You have to specify a cache name. E.g.: <cache name='primaryCache'/>'", reader);
+                        InvalidValue error = new InvalidValue("Cache name not specified", reader);
                         context.addError(error);
                         name = "default";
                     }
-
+                    reader.nextTag(); // skip to cache configuration
                     Document document = helper.transform(reader);
-                    configurations.addCacheConfiguration(new InfinispanConfiguration(name, document));
+                    configurations.addCacheConfiguration(new InfinispanCacheConfiguration(name, document));
                 }
                 break;
             case XMLStreamConstants.END_ELEMENT:
@@ -91,6 +91,7 @@ public class InfinispanTypeLoader implements TypeLoader<InfinispanResourceDefini
             }
         }
     }
+
 }
 
 

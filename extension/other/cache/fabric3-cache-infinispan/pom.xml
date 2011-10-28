@@ -44,15 +44,9 @@ Public License. See the accompanying license file for details.
         </dependency>
 
         <dependency>
-            <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-databinding-jaxb</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-core</artifactId>
-            <version>5.0.1.FINAL</version>
+            <version>5.1.0.BETA3</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jgroups</groupId>
@@ -93,11 +87,13 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

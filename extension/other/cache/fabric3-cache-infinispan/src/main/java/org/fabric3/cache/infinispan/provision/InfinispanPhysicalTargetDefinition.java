@@ -50,7 +50,7 @@ public class InfinispanPhysicalTargetDefinition extends PhysicalTargetDefinition
 
     public InfinispanPhysicalTargetDefinition(String cacheName, DataType<?>... types) {
         super(types);
-        cacheName = cacheName;
+        this.cacheName = cacheName;
     }
 
     public String getCacheName() {

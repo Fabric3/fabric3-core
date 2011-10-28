@@ -49,13 +49,13 @@ import java.util.List;
 public class InfinispanPhysicalResourceDefinition extends PhysicalResourceDefinition {
     private static final long serialVersionUID = -6400612928297999316L;
 
-    private List<InfinispanConfiguration> configurations = new ArrayList<InfinispanConfiguration>();
+    private List<InfinispanCacheConfiguration> configurations = new ArrayList<InfinispanCacheConfiguration>();
 
-    public InfinispanPhysicalResourceDefinition(List<InfinispanConfiguration> configurations) {
+    public InfinispanPhysicalResourceDefinition(List<InfinispanCacheConfiguration> configurations) {
         this.configurations = configurations;
     }
 
-    public List<InfinispanConfiguration> getCacheConfigurations() {
+    public List<InfinispanCacheConfiguration> getCacheConfigurations() {
         return configurations;
     }
 }
