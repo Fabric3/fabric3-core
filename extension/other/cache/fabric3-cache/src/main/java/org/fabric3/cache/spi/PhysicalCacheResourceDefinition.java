@@ -42,7 +42,7 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 /**
  * Base definition for runtime cache resources.
  *
- * @version $Rev: 10855 $ $Date: 2011-10-23 00:18:44 +0200 (Sun, 23 Oct 2011) $
+ * @version $Rev$ $Date$
  */
 public abstract class PhysicalCacheResourceDefinition extends PhysicalResourceDefinition {
     private static final long serialVersionUID = -8599560096261683135L;

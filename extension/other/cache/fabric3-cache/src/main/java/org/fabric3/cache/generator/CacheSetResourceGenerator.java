@@ -56,7 +56,7 @@ import org.fabric3.spi.model.instance.LogicalResource;
 /**
  * Generates a {@link }PhysicalCacheSetDefinition} for a set of cache configurations.
  *
- * @version $Rev: 10858 $ $Date: 2011-10-28 02:42:29 +0200 (Fri, 28 Oct 2011) $
+ * @version $Rev$ $Date$
  */
 @EagerInit
 public class CacheSetResourceGenerator implements ResourceGenerator<CacheSetResourceDefinition> {

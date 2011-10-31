@@ -44,7 +44,7 @@ import org.fabric3.spi.generator.GenerationException;
 /**
  * Specialized generator for runtime cache configuration.
  *
- * @version $Rev: 10862 $ $Date: 2011-10-29 01:41:30 +0200 (Sat, 29 Oct 2011) $
+ * @version $Rev$ $Date$
  */
 public interface CacheResourceGenerator<D extends CacheResourceDefinition> {
 
