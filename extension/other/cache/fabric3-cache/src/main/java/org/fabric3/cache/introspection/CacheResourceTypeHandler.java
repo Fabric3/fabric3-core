@@ -34,40 +34,55 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.cache.infinispan.introspection;
+ */
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
+package org.fabric3.cache.introspection;
+
+import java.lang.reflect.Member;
+import java.util.concurrent.ConcurrentMap;
 
 import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Document;
 
-import org.fabric3.cache.infinispan.model.InfinispanCacheResourceDefinition;
+import org.fabric3.api.annotation.Resource;
+import org.fabric3.cache.model.CacheReferenceDefinition;
+import org.fabric3.cache.spi.MissingCacheName;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.resource.spi.ResourceTypeHandler;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
-import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 
 /**
- * Loads Infinispan cache configurations specified as part of a <code>&lt;cache&gt;</code> element in a composite.
+ * Introspects {@link Resource} annotations when used with <code>ConcurrentMap</code> types.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class InfinispanTypeLoader implements TypeLoader<InfinispanCacheResourceDefinition> {
-    private LoaderHelper helper;
+public class CacheResourceTypeHandler implements ResourceTypeHandler {
+    private ServiceContract contract;
+    private JavaContractProcessor contractProcessor;
 
-    public InfinispanTypeLoader(@Reference LoaderHelper helper) {
-        this.helper = helper;
+    public CacheResourceTypeHandler(@Reference JavaContractProcessor contractProcessor) {
+        this.contractProcessor = contractProcessor;
     }
 
-    public InfinispanCacheResourceDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        Document document = helper.transform(reader);
-        return new InfinispanCacheResourceDefinition(document);
+    @Init
+    public void init() {
+        // introspect the interface once
+        contract = contractProcessor.introspect(ConcurrentMap.class, new DefaultIntrospectionContext());
     }
 
+
+    public ResourceReferenceDefinition createResourceReference(String name, Resource annotation, Member member, IntrospectionContext context) {
+        String cacheName = annotation.name();
+        if (cacheName.length() == 0) {
+            MissingCacheName error = new MissingCacheName(member.getDeclaringClass());
+            context.addError(error);
+            return new CacheReferenceDefinition(name, contract, false, "error");
+        }
+        return new CacheReferenceDefinition(name, contract, false, cacheName);
+    }
 }
-
-
-

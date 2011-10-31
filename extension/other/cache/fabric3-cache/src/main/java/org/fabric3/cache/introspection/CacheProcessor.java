@@ -35,43 +35,67 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
  *
  */
 package org.fabric3.cache.introspection;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
+
 import org.fabric3.api.annotation.Cache;
+import org.fabric3.cache.model.CacheReferenceDefinition;
+import org.fabric3.cache.spi.MissingCacheName;
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
+import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
-import org.oasisopen.sca.annotation.Reference;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
  * Introspects fields, methods and constructor parameters annotated with {@link Cache}.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 10719 $ $Date: 2011-10-01 02:27:41 +0200 (Sat, 01 Oct 2011) $
  */
+@EagerInit
 public class CacheProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Cache, I> {
+    private JavaContractProcessor contractProcessor;
     private IntrospectionHelper helper;
 
-    public CacheProcessor(@Reference IntrospectionHelper helper) {
+    public CacheProcessor(@Reference JavaContractProcessor contractProcessor, @Reference IntrospectionHelper helper) {
         super(Cache.class);
+        this.contractProcessor = contractProcessor;
         this.helper = helper;
     }
 
     public void visitField(Cache annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
+        String name = helper.getSiteName(field, null);
+        FieldInjectionSite site = new FieldInjectionSite(field);
+        Class<?> type = field.getType();
+        ResourceReferenceDefinition definition = create(name, annotation, type, field, context);
+        implementation.getComponentType().add(definition, site);
     }
 
     public void visitMethod(Cache annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
+        if (method.getParameterTypes().length != 1) {
+            InvalidCacheSetter error = new InvalidCacheSetter("Setter must contain one parameter: " + method);
+            context.addError(error);
+            return;
+        }
+        String name = helper.getSiteName(method, null);
+        MethodInjectionSite site = new MethodInjectionSite(method, 0);
+        Class<?> type = method.getParameterTypes()[0];
+        ResourceReferenceDefinition definition = create(name, annotation, type, method, context);
+        implementation.getComponentType().add(definition, site);
     }
 
     public void visitConstructorParameter(Cache annotation,
@@ -80,6 +104,21 @@ public class CacheProcessor<I extends Implementation<? extends InjectingComponen
                                           Class<?> implClass,
                                           I implementation,
                                           IntrospectionContext context) {
+        String name = annotation.name();
+        Class<?> type = constructor.getParameterTypes()[index];
+        ResourceReferenceDefinition definition = create(name, annotation, type, constructor, context);
+        implementation.getComponentType().add(definition);
+    }
+
+    private ResourceReferenceDefinition create(String name, Cache annotation, Class<?> type, Member member, IntrospectionContext context) {
+        ServiceContract contract = contractProcessor.introspect(type, context);
+        String cacheName = annotation.name();
+        if (cacheName.length() == 0) {
+            MissingCacheName error = new MissingCacheName(member.getDeclaringClass());
+            context.addError(error);
+            return new CacheReferenceDefinition(name, contract, false, "error");
+        }
+        return new CacheReferenceDefinition(name, contract, false, cacheName);
     }
 
 

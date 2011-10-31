@@ -69,18 +69,18 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
+import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
 import org.fabric3.cache.spi.CacheBuildException;
 import org.fabric3.cache.spi.CacheManager;
 import org.fabric3.host.runtime.HostInfo;
 
 /**
- * Manages Infinispan caches on a runtime.
+ * Manages Infinispan cache resources on a runtime.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfiguration> {
+public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalResourceDefinition> {
     private TransactionManager tm;
     private MBeanServer mBeanServer;
     private HostInfo info;
@@ -117,15 +117,15 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
         return (CACHE) caches.get(name);
     }
 
-    public void create(InfinispanCacheConfiguration configuration) throws CacheBuildException {
+    public void create(InfinispanPhysicalResourceDefinition resourceDefinition) throws CacheBuildException {
         // Set TCCL for JAXB
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
-            Configuration cacheConfiguration = parseConfiguration(configuration);
+            Configuration cacheConfiguration = parseConfiguration(resourceDefinition);
             FluentConfiguration fluent = cacheConfiguration.fluent();
             fluent.transaction().transactionManagerLookup(txLookup);
 
-            String cacheName = configuration.getCacheName();
+            String cacheName = resourceDefinition.getCacheName();
             cacheManager.defineConfiguration(cacheName, cacheConfiguration);
             Cache<?, ?> cache = cacheManager.getCache(cacheName);
             caches.put(cacheName, cache);
@@ -134,8 +134,8 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
         }
     }
 
-    public void remove(InfinispanCacheConfiguration configuration) throws CacheBuildException {
-        String cacheName = configuration.getCacheName();
+    public void remove(InfinispanPhysicalResourceDefinition resourceDefinition) throws CacheBuildException {
+        String cacheName = resourceDefinition.getCacheName();
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
@@ -149,11 +149,11 @@ public class InfinispanCacheManager implements CacheManager<InfinispanCacheConfi
         }
     }
 
-    private Configuration parseConfiguration(InfinispanCacheConfiguration configuration) throws CacheBuildException {
+    private Configuration parseConfiguration(InfinispanPhysicalResourceDefinition resourceDefinition) throws CacheBuildException {
         try {
             StringWriter writer = new StringWriter();
             StreamResult result = new StreamResult(writer);
-            Source source = new DOMSource(configuration.getCacheConfiguration());
+            Source source = new DOMSource(resourceDefinition.getConfiguration());
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.transform(source, result);
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());

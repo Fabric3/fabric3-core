@@ -37,14 +37,26 @@
 */
 package org.fabric3.cache.introspection;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.oasisopen.sca.Constants;
+import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.cache.model.CacheResource;
+import org.fabric3.cache.model.CacheSetResourceDefinition;
+import org.fabric3.cache.spi.CacheResourceDefinition;
+import org.fabric3.host.Namespaces;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.fabric3.spi.introspection.xml.UnrecognizedElement;
+import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 /**
  * Loads cache configurations specified in a composite. The format of the caches element is:
@@ -59,10 +71,62 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class CacheResourceLoader implements TypeLoader<CacheResource> {
+public class CacheResourceLoader implements TypeLoader<CacheSetResourceDefinition> {
+    private static final QName SCA_TYPE = new QName(Constants.SCA_NS, "caches");
+    private static final QName F3_TYPE = new QName(Namespaces.F3, "caches");
 
-    public CacheResource load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        throw new UnsupportedOperationException();
+    private LoaderRegistry registry;
+
+    public CacheResourceLoader(@Reference LoaderRegistry registry) {
+        this.registry = registry;
+    }
+
+    @Init
+    public void init() {
+        // register under both namespaces
+        registry.registerLoader(F3_TYPE, this);
+        registry.registerLoader(SCA_TYPE, this);
+    }
+
+    @Destroy
+    public void destroy() {
+        registry.unregisterLoader(F3_TYPE);
+        registry.unregisterLoader(SCA_TYPE);
+    }
+
+
+    public CacheSetResourceDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        CacheSetResourceDefinition definition = new CacheSetResourceDefinition();
+        while (true) {
+            switch (reader.next()) {
+            case XMLStreamConstants.START_ELEMENT:
+                if ("cache".equals(reader.getName().getLocalPart())) {
+                    String name = reader.getAttributeValue(null, "name");
+
+                    if (null == name) {
+                        MissingAttribute error = new MissingAttribute("Cache name not specified", reader);
+                        context.addError(error);
+                        name = "default";
+                    }
+
+                    try {
+                        reader.nextTag();
+                        CacheResourceDefinition configuration = registry.load(reader, CacheResourceDefinition.class, context);
+                        configuration.setCacheName(name);
+                        definition.addDefinition(configuration);
+                    } catch (UnrecognizedElementException e) {
+                        UnrecognizedElement error = new UnrecognizedElement(reader);
+                        context.addError(error);
+                        continue;
+                    }
+                }
+                break;
+            case XMLStreamConstants.END_ELEMENT:
+                if ("caches".equals(reader.getName().getLocalPart())) {
+                    return definition;
+                }
+            }
+        }
     }
 
 }

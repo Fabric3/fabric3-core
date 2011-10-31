@@ -34,34 +34,31 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+
 package org.fabric3.cache.infinispan.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.w3c.dom.Document;
 
-import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.cache.spi.CacheResourceDefinition;
 
 /**
- * An Infinispan cache definition.
+ * A parsed Infinispan cache configuration specified in a composite.
  *
  * @version $Rev$ $Date$
  */
-public class InfinispanResourceDefinition extends ResourceDefinition {
-    private static final long serialVersionUID = -7153867883574388002L;
+public class InfinispanCacheResourceDefinition extends CacheResourceDefinition {
+    private static final long serialVersionUID = -4317772018610416411L;
+    private Document configuration;
 
-    private List<InfinispanCacheConfiguration> configurations = new ArrayList<InfinispanCacheConfiguration>();
-
-    public void addCacheConfiguration(InfinispanCacheConfiguration configuration) {
-        configurations.add(configuration);
+    public InfinispanCacheResourceDefinition(Document configuration) {
+        this.configuration = configuration;
     }
 
-    public List<InfinispanCacheConfiguration> getCacheConfigurations() {
-        return configurations;
+    public Document getCacheConfiguration() {
+        return configuration;
     }
+
+
 }
-
-
-
 

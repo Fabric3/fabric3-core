@@ -36,33 +36,31 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.fabric3.cache.infinispan.provision;
+package org.fabric3.cache.provision;
 
-import org.fabric3.cache.spi.CacheConfiguration;
-import org.w3c.dom.Document;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
+import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * An Infinispan cache configuration.
- *
  * @version $Rev$ $Date$
  */
-public class InfinispanCacheConfiguration extends CacheConfiguration {
-    private static final long serialVersionUID = -4317772018610416411L;
+public class PhysicalCacheSetDefinition extends PhysicalResourceDefinition {
+    private static final long serialVersionUID = 5686304373595234795L;
+    private List<PhysicalCacheResourceDefinition> cacheDefinitions = new ArrayList<PhysicalCacheResourceDefinition>();
 
-    private String cacheName;
-    private Document configuration;
 
-    public InfinispanCacheConfiguration(String cacheName, Document configuration) {
-        this.cacheName = cacheName;
-        this.configuration = configuration;
+    public List<PhysicalCacheResourceDefinition> getDefinitions() {
+        return cacheDefinitions;
     }
 
-    public Document getCacheConfiguration() {
-        return configuration;
-    }
-
-    public String getCacheName() {
-        return cacheName;
+    public void addDefinition(PhysicalCacheResourceDefinition definition) {
+        cacheDefinitions.add(definition);
     }
 }
+
+
+
 

@@ -38,25 +38,26 @@
 
 package org.fabric3.cache.infinispan.provision;
 
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.w3c.dom.Document;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
 
 /**
+ * Configuration for creating an Infinispan cache and associated resources on a runtime.
+ *
  * @version $Rev$ $Date$
  */
-public class InfinispanPhysicalResourceDefinition extends PhysicalResourceDefinition {
+public class InfinispanPhysicalResourceDefinition extends PhysicalCacheResourceDefinition {
     private static final long serialVersionUID = -6400612928297999316L;
+    private Document configuration;
 
-    private List<InfinispanCacheConfiguration> configurations = new ArrayList<InfinispanCacheConfiguration>();
-
-    public InfinispanPhysicalResourceDefinition(List<InfinispanCacheConfiguration> configurations) {
-        this.configurations = configurations;
+    public InfinispanPhysicalResourceDefinition(String cacheName, Document configuration) {
+        super(cacheName);
+        this.configuration = configuration;
     }
 
-    public List<InfinispanCacheConfiguration> getCacheConfigurations() {
-        return configurations;
+    public Document getConfiguration() {
+        return configuration;
     }
 }
 

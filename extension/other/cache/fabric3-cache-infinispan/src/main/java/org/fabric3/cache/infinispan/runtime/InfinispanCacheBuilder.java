@@ -38,42 +38,32 @@
 
 package org.fabric3.cache.infinispan.runtime;
 
-import org.infinispan.Cache;
+import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.cache.infinispan.provision.InfinispanPhysicalTargetDefinition;
+import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
+import org.fabric3.cache.spi.CacheBuilder;
 import org.fabric3.cache.spi.CacheManager;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.TargetWireAttacher;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.objectfactory.SingletonObjectFactory;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.builder.BuilderException;
 
 /**
+ * Creates an Infinispan cache node on a runtime.
+ *
  * @version $Rev$ $Date$
  */
-public class InfinispanTargetWireAttacher implements TargetWireAttacher<InfinispanPhysicalTargetDefinition> {
-    private CacheManager<?> cacheManager;
+@EagerInit
+public class InfinispanCacheBuilder implements CacheBuilder<InfinispanPhysicalResourceDefinition> {
+    private CacheManager<InfinispanPhysicalResourceDefinition> manager;
 
-    public InfinispanTargetWireAttacher(@Reference CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
+    public InfinispanCacheBuilder(@Reference(name = "cacheManager") CacheManager<InfinispanPhysicalResourceDefinition> manager) {
+        this.manager = manager;
     }
 
-    public void attach(PhysicalSourceDefinition source, InfinispanPhysicalTargetDefinition target, Wire wire) throws WiringException {
-        throw new UnsupportedOperationException();
+    public void build(InfinispanPhysicalResourceDefinition definition) throws BuilderException {
+        manager.create(definition);
     }
 
-    public void detach(PhysicalSourceDefinition source, InfinispanPhysicalTargetDefinition target) throws WiringException {
-        throw new UnsupportedOperationException();
-    }
-
-    public ObjectFactory<Cache<?, ?>> createObjectFactory(InfinispanPhysicalTargetDefinition target) throws WiringException {
-        String name = target.getCacheName();
-        Cache<?, ?> cache = cacheManager.getCache(name);
-        if (cache == null) {
-            throw new WiringException("Cache not found: " + name);
-        }
-        return new SingletonObjectFactory<Cache<?, ?>>(cache);
+    public void remove(InfinispanPhysicalResourceDefinition definition) throws BuilderException {
+        manager.remove(definition);
     }
 }

@@ -38,11 +38,11 @@
 package org.fabric3.cache.spi;
 
 /**
- * Responsible for managing caches on a runtime.
+ * Implementations manage cache resources for a provider on a runtime.
  *
  * @version $Rev$ $Date$
  */
-public interface CacheManager<T extends CacheConfiguration> {
+public interface CacheManager<T extends PhysicalCacheResourceDefinition> {
 
     /**
      * Returns a live, thread-safe reference to a cache or null if one is not defined for the given name.
@@ -54,18 +54,18 @@ public interface CacheManager<T extends CacheConfiguration> {
     <CACHE> CACHE getCache(String name);
 
     /**
-     * Creates a cache.
+     * Creates resources for a cache.
      *
      * @param configuration the cache configuration
-     * @throws CacheBuildException if there is an error creating the cache
+     * @throws CacheBuildException if there is an error creating the cache resources
      */
     void create(T configuration) throws CacheBuildException;
 
     /**
-     * Removes a cache.
+     * Removes resources for a cache.
      *
      * @param configuration the cache configuration
-     * @throws CacheBuildException if there is an error removing the cache
+     * @throws CacheBuildException if there is an error removing the cache resources
      */
     void remove(T configuration) throws CacheBuildException;
 

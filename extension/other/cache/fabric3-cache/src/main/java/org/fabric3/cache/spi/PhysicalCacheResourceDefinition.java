@@ -34,31 +34,25 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- */
+*/
+package org.fabric3.cache.spi;
 
-package org.fabric3.cache.infinispan.provision;
-
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ * Base definition for runtime cache resources.
+ *
+ * @version $Rev: 10855 $ $Date: 2011-10-23 00:18:44 +0200 (Sun, 23 Oct 2011) $
  */
-public class InfinispanPhysicalTargetDefinition extends PhysicalTargetDefinition {
-    private static final long serialVersionUID = -9058247807051651832L;
+public abstract class PhysicalCacheResourceDefinition extends PhysicalResourceDefinition {
+    private static final long serialVersionUID = -8599560096261683135L;
     private String cacheName;
 
-    public InfinispanPhysicalTargetDefinition(String cacheName, DataType<?>... types) {
-        super(types);
+    protected PhysicalCacheResourceDefinition(String cacheName) {
         this.cacheName = cacheName;
     }
 
     public String getCacheName() {
         return cacheName;
-    }
-
-    @Override
-    public boolean isOptimizable() {
-        return true;
     }
 }

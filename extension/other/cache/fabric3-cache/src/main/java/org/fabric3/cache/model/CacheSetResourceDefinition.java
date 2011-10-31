@@ -34,29 +34,31 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- */
+*/
+package org.fabric3.cache.model;
 
-package org.fabric3.cache.infinispan.model;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.fabric3.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.cache.spi.CacheResourceDefinition;
+import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
- * A reference to an Infinispan cache resource.
+ * A set of cache configurations defined in a composite.
  *
  * @version $Rev$ $Date$
  */
-public class InfinispanResourceReference extends ResourceReferenceDefinition {
-    private static final long serialVersionUID = 7840284656807493613L;
+public class CacheSetResourceDefinition extends ResourceDefinition {
+    private static final long serialVersionUID = 319475664996240639L;
 
-    private String cacheName;
+    private List<CacheResourceDefinition> configurations = new ArrayList<CacheResourceDefinition>();
 
-    public InfinispanResourceReference(String name, ServiceContract serviceContract, boolean optional, String cacheName) {
-        super(name, serviceContract, optional);
-        this.cacheName = cacheName;
+    public void addDefinition(CacheResourceDefinition configuration) {
+        configurations.add(configuration);
     }
 
-    public String getCacheName() {
-        return cacheName;
+    public List<CacheResourceDefinition> getDefinitions() {
+        return configurations;
     }
+
 }

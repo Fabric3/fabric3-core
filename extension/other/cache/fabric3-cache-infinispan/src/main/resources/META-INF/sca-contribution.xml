@@ -20,7 +20,6 @@ Public License. See the accompanying license file for details.
     <import.java package="org.jgroups.*" version="3.0.0"/>
     <import.java package="org.fabric3.spi.*" version="1.9.5"/>
     <import.java package="org.fabric3.cache.spi" version="1.9.5"/>
-    <import.java package="org.fabric3.resource.spi" version="1.9.5"/>
 
     <!-- required to load Infinispan configuration -->
     <f3:provides name="jaxb"/>

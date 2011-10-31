@@ -36,53 +36,27 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.fabric3.cache.infinispan.introspection;
+package org.fabric3.cache.model;
 
-import java.lang.reflect.Member;
-import java.util.concurrent.ConcurrentMap;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.api.annotation.Resource;
-import org.fabric3.cache.infinispan.model.InfinispanResourceReference;
-import org.fabric3.cache.spi.MissingCacheName;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.resource.spi.ResourceTypeHandler;
-import org.fabric3.spi.introspection.DefaultIntrospectionContext;
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 
 /**
- * Introspects {@link Resource} annotations when used with <code>ConcurrentMap</code> types.
+ * A reference to a cache resource.
  *
  * @version $Rev$ $Date$
  */
-@EagerInit
-public class InfinispanResourceTypeHandler implements ResourceTypeHandler {
-    private ServiceContract contract;
-    private JavaContractProcessor contractProcessor;
+public class CacheReferenceDefinition extends ResourceReferenceDefinition {
+    private static final long serialVersionUID = 7840284656807493613L;
 
-    public InfinispanResourceTypeHandler(@Reference JavaContractProcessor contractProcessor) {
-        this.contractProcessor = contractProcessor;
+    private String cacheName;
+
+    public CacheReferenceDefinition(String name, ServiceContract serviceContract, boolean optional, String cacheName) {
+        super(name, serviceContract, optional);
+        this.cacheName = cacheName;
     }
 
-    @Init
-    public void init() {
-        // introspect the interface once
-        contract = contractProcessor.introspect(ConcurrentMap.class, new DefaultIntrospectionContext());
-    }
-
-
-    public ResourceReferenceDefinition createResourceReference(String name, Resource annotation, Member member, IntrospectionContext context) {
-        String cacheName = annotation.name();
-        if (cacheName.length() == 0) {
-            MissingCacheName error = new MissingCacheName(member.getDeclaringClass());
-            context.addError(error);
-            return new InfinispanResourceReference(name, contract, false, "error");
-        }
-        return new InfinispanResourceReference(name, contract, false, cacheName);
+    public String getCacheName() {
+        return cacheName;
     }
 }

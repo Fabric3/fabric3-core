@@ -22,12 +22,6 @@ Public License. See the accompanying license file for details.
     <packaging>sca-contribution-jar</packaging>
 
     <dependencies>
-        <dependency>
-            <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-resource</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>

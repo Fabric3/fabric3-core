@@ -36,41 +36,57 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.fabric3.cache.infinispan.runtime;
+package org.fabric3.cache.runtime;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
-import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
-import org.fabric3.cache.spi.CacheManager;
+import org.fabric3.cache.provision.PhysicalCacheSetDefinition;
+import org.fabric3.cache.spi.CacheBuilder;
+import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.resource.ResourceBuilder;
+import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class InfinispanResourceBuilder implements ResourceBuilder<InfinispanPhysicalResourceDefinition> {
-    private CacheManager<InfinispanCacheConfiguration> manager;
+public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSetDefinition> {
+    private Map<Class<?>, CacheBuilder<?>> builders = new HashMap<Class<?>, CacheBuilder<?>>();
 
-    public InfinispanResourceBuilder(@Reference CacheManager<InfinispanCacheConfiguration> manager) {
-        this.manager = manager;
+    @Reference(required = false)
+    public void setBuilders(Map<Class<?>, CacheBuilder<?>> builders) {
+        this.builders = builders;
     }
 
-    public void build(InfinispanPhysicalResourceDefinition definition) throws BuilderException {
-        List<InfinispanCacheConfiguration> configurations = definition.getCacheConfigurations();
-        for (InfinispanCacheConfiguration configuration : configurations) {
-            manager.create(configuration);
+    @SuppressWarnings({"unchecked"})
+    public void build(PhysicalCacheSetDefinition definition) throws BuilderException {
+        for (PhysicalCacheResourceDefinition cacheDefinition : definition.getDefinitions()) {
+            CacheBuilder builder = getCacheBuilder(cacheDefinition);
+            builder.build(cacheDefinition);
         }
     }
 
-    public void remove(InfinispanPhysicalResourceDefinition definition) throws BuilderException {
-        List<InfinispanCacheConfiguration> configurations = definition.getCacheConfigurations();
-        for (InfinispanCacheConfiguration configuration : configurations) {
-            manager.remove(configuration);
+    @SuppressWarnings({"unchecked"})
+    public void remove(PhysicalCacheSetDefinition definition) throws BuilderException {
+        for (PhysicalCacheResourceDefinition cacheDefinition : definition.getDefinitions()) {
+            CacheBuilder builder = getCacheBuilder(cacheDefinition);
+            builder.remove(cacheDefinition);
         }
     }
+
+    private CacheBuilder<?> getCacheBuilder(PhysicalResourceDefinition cacheDefinition) throws BuilderException {
+        Class<? extends PhysicalResourceDefinition> type = cacheDefinition.getClass();
+        CacheBuilder<?> builder = builders.get(type);
+        if (builder == null) {
+            throw new BuilderException("Cache builder not found for type: " + type);
+        }
+        return builder;
+    }
+
+
 }

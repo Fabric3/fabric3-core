@@ -34,16 +34,44 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.cache.model;
+ */
 
-import org.fabric3.model.type.component.ResourceDefinition;
+package org.fabric3.cache.runtime;
+
+import org.oasisopen.sca.annotation.Reference;
+
+import org.fabric3.cache.provision.CacheTargetDefinition;
+import org.fabric3.spi.builder.WiringException;
+import org.fabric3.spi.builder.component.TargetWireAttacher;
+import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.wire.Wire;
 
 /**
- * A set of cache configurations defined in a composite.
- *
  * @version $Rev$ $Date$
  */
-public class CacheResource extends ResourceDefinition {
-    private static final long serialVersionUID = 319475664996240639L;
+public class CacheTargetWireAttacher implements TargetWireAttacher<CacheTargetDefinition> {
+    private CacheRegistry registry;
+
+    public CacheTargetWireAttacher(@Reference CacheRegistry registry) {
+        this.registry = registry;
+    }
+
+    public void attach(PhysicalSourceDefinition source, CacheTargetDefinition target, Wire wire) throws WiringException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void detach(PhysicalSourceDefinition source, CacheTargetDefinition target) throws WiringException {
+        throw new UnsupportedOperationException();
+    }
+
+    public ObjectFactory<?> createObjectFactory(CacheTargetDefinition target) throws WiringException {
+        String name = target.getCacheName();
+        Object cache = registry.getCache(name);
+        if (cache == null) {
+            throw new WiringException("Cache not found: " + name);
+        }
+        return new SingletonObjectFactory<Object>(cache);
+    }
 }

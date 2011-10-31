@@ -15,18 +15,13 @@ Public License. See the accompanying license file for details.
            name="InfinispanParticipantExtension"
            autowire="true">
 
-    <component name="InfinispanCacheManager" f3:key="org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration">
+    <component name="InfinispanCacheManager" f3:key="org.fabric3.cache.infinispan.model.InfinispanCacheResourceDefinition">
         <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanCacheManager"/>
     </component>
 
-    <component name="InfinispanResourceBuilder"
-               f3:key="org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition">
-        <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanResourceBuilder"/>
-    </component>
-
-    <component name="InfinispanWireAttacher"
-               f3:key="org.fabric3.cache.infinispan.provision.InfinispanPhysicalTargetDefinition">
-        <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanTargetWireAttacher"/>
+    <component name="InfinispanCacheBuilder" f3:key="org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition">
+        <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanCacheBuilder"/>
+        <reference name="cacheManager" target="InfinispanCacheManager"/>
     </component>
 
 </composite>

@@ -37,27 +37,25 @@
  */
 package org.fabric3.cache.infinispan.generator;
 
-import org.fabric3.cache.infinispan.model.InfinispanResourceDefinition;
-import org.fabric3.cache.infinispan.provision.InfinispanCacheConfiguration;
-import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
-import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.ResourceGenerator;
-import org.fabric3.spi.model.instance.LogicalResource;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
+import org.w3c.dom.Document;
 
-import java.util.List;
+import org.fabric3.cache.infinispan.model.InfinispanCacheResourceDefinition;
+import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
+import org.fabric3.cache.spi.CacheResourceGenerator;
+import org.fabric3.spi.generator.GenerationException;
 
 /**
- * Implementation of the Infinispan resource generator.
+ * Generates configuration for creating an Infinispan cache on a runtime.
  *
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class InfinispanResourceGenerator implements ResourceGenerator<InfinispanResourceDefinition> {
+public class InfinispanResourceGenerator implements CacheResourceGenerator<InfinispanCacheResourceDefinition> {
 
-    public PhysicalResourceDefinition generateResource(LogicalResource<InfinispanResourceDefinition> resource) throws GenerationException {
-        List<InfinispanCacheConfiguration> cacheConfigurations = resource.getDefinition().getCacheConfigurations();
-        return new InfinispanPhysicalResourceDefinition(cacheConfigurations);
+    public InfinispanPhysicalResourceDefinition generateResource(InfinispanCacheResourceDefinition definition) throws GenerationException {
+        String name = definition.getCacheName();
+        Document configuration = definition.getCacheConfiguration();
+        return new InfinispanPhysicalResourceDefinition(name, configuration);
     }
 }

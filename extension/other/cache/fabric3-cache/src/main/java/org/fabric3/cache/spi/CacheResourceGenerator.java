@@ -36,24 +36,24 @@
 * If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.fabric3.cache.infinispan.generator;
+package org.fabric3.cache.spi;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
-import org.fabric3.cache.infinispan.model.InfinispanResourceReference;
-import org.fabric3.cache.infinispan.provision.InfinispanPhysicalTargetDefinition;
-import org.fabric3.spi.generator.ResourceReferenceGenerator;
-import org.fabric3.spi.model.instance.LogicalResourceReference;
+import org.fabric3.spi.generator.GenerationException;
 
 
 /**
- * @version $Rev$ $Date$
+ * Specialized generator for runtime cache configuration.
+ *
+ * @version $Rev: 10862 $ $Date: 2011-10-29 01:41:30 +0200 (Sat, 29 Oct 2011) $
  */
-@EagerInit
-public class InfinispanResourceReferenceGenerator implements ResourceReferenceGenerator<InfinispanResourceReference> {
+public interface CacheResourceGenerator<D extends CacheResourceDefinition> {
 
-    public InfinispanPhysicalTargetDefinition generateWireTarget(LogicalResourceReference<InfinispanResourceReference> resourceReference) {
-        InfinispanResourceReference reference = resourceReference.getDefinition();
-        return new InfinispanPhysicalTargetDefinition(reference.getCacheName());
-    }
+    /**
+     * Generate the physical cache definition for a runtime from a cache definition declared in a composite.
+     *
+     * @param resource the cache configuration
+     * @return the physical definition
+     * @throws GenerationException if an error is encountered during generation
+     */
+    PhysicalCacheResourceDefinition generateResource(D resource) throws GenerationException;
 }

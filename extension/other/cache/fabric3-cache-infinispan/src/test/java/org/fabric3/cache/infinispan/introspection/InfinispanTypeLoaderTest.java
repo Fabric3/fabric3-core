@@ -37,50 +37,48 @@
 */
 package org.fabric3.cache.infinispan.introspection;
 
-import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
-import org.fabric3.cache.infinispan.model.InfinispanResourceDefinition;
-import org.fabric3.spi.introspection.DefaultIntrospectionContext;
-import org.fabric3.spi.introspection.xml.LoaderHelper;
-import org.w3c.dom.Document;
-
+import java.io.ByteArrayInputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-import java.io.ByteArrayInputStream;
+
+import junit.framework.TestCase;
+import org.easymock.classextension.EasyMock;
+import org.w3c.dom.Document;
+
+import org.fabric3.cache.infinispan.model.InfinispanCacheResourceDefinition;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 
 /**
- * Unit tests for infinispan configuration loader.
  * @version $Rev$ $Date$
  */
 public class InfinispanTypeLoaderTest extends TestCase {
 
-	private static final String config = "<caches><cache>" +
-			"<namedCache name=\"dataIndexCache\">" +
-			"<loaders passivation=\"false\" preload=\"true\" shared=\"true\">" +
-			"	<loader purgeOnStartup=\"false\" class=\"org.infinispan.loaders.file.FileCacheStore\">" +
-			"	<properties>" +
-			"		<property name=\"location\" value=\"/tmp\" />" +
-			"		<property name=\"streamBufferSize\" value=\"4096\" />" +
-			"	</properties>" +
-			"	</loader>" +
-			"</loaders>" +
-			"</namedCache></cache></caches>";
-	
-	/**
-	 * Test method for {@link InfinispanTypeLoader#load(javax.xml.stream.XMLStreamReader, org.fabric3.spi.introspection.IntrospectionContext)}.
-	 */
-	public final void testLoad() throws Exception {
+    private static final String config = "<caches><cache>" +
+            "<namedCache name=\"dataIndexCache\">" +
+            "<loaders passivation=\"false\" preload=\"true\" shared=\"true\">" +
+            "	<loader purgeOnStartup=\"false\" class=\"org.infinispan.loaders.file.FileCacheStore\">" +
+            "	<properties>" +
+            "		<property name=\"location\" value=\"/tmp\" />" +
+            "		<property name=\"streamBufferSize\" value=\"4096\" />" +
+            "	</properties>" +
+            "	</loader>" +
+            "</loaders>" +
+            "</namedCache></cache></caches>";
+
+    public final void testLoad() throws Exception {
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(config.getBytes()));
         LoaderHelper loaderHelper = EasyMock.createMock(LoaderHelper.class);
         Document doc = EasyMock.createMock(Document.class);
         EasyMock.expect(loaderHelper.transform(reader)).andReturn(doc);
-        
+
         EasyMock.replay(loaderHelper);
-        InfinispanResourceDefinition resource = new InfinispanTypeLoader(loaderHelper).load(reader, context);
+        InfinispanCacheResourceDefinition definition = new InfinispanTypeLoader(loaderHelper).load(reader, context);
+        assertNotNull(definition.getCacheConfiguration());
         EasyMock.verify(loaderHelper);
-	}
+    }
 
 }
 

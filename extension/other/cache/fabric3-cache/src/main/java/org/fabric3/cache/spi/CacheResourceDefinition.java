@@ -40,11 +40,19 @@ package org.fabric3.cache.spi;
 import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
- * Base cache configuration object.
+ * Defines a cache. Providers subclass to provide specific cache configuration.
  *
  * @version $Rev$ $Date$
  */
-public class CacheConfiguration extends ResourceDefinition {
+public abstract class CacheResourceDefinition extends ResourceDefinition {
     private static final long serialVersionUID = -6743311265670833364L;
+    private String cacheName;
 
+    public void setCacheName(String name) {
+        this.cacheName = name;
+    }
+
+    public String getCacheName() {
+        return cacheName;
+    }
 }
