@@ -59,8 +59,8 @@ import org.fabric3.jpa.runtime.emf.EntityManagerFactoryCache;
  * @version $Rev$ $Date$
  */
 public class EntityManagerServiceImpl implements EntityManagerService {
-    // a cache of entity managers double keyed by scope and persistence unit name
-    private Map<Object, Map<String, EntityManager>> cache = new ConcurrentHashMap<Object, Map<String, EntityManager>>();
+    // a cache of entity managers keyed by Transaction and persistence unit name
+    private Map<Key, EntityManager> cache = new ConcurrentHashMap<Key, EntityManager>();
     // tracks which entity managers have joined transactions
     private EntityManagerFactoryCache emfCache;
 
@@ -70,12 +70,8 @@ public class EntityManagerServiceImpl implements EntityManagerService {
 
     public EntityManager getEntityManager(String unitName, HibernateProxy proxy, Transaction transaction) throws EntityManagerCreationException {
         // Note this method is thread-safe as a Transaction is only visible to a single thread at time.
-        EntityManager em = null;
-        Map<String, EntityManager> map = cache.get(transaction);
-        if (map != null) {
-            em = map.get(unitName);
-        }
-
+        Key key = new Key(transaction, unitName);
+        EntityManager em = cache.get(key);
         if (em == null) {
             // no entity manager for the persistence unit associated with the transaction
             EntityManagerFactory emf = emfCache.get(unitName);
@@ -84,21 +80,16 @@ public class EntityManagerServiceImpl implements EntityManagerService {
             }
             em = emf.createEntityManager();
             // don't synchronize on the transaction since it can assume to be bound to a thread at this point
-            registerTransactionScopedSync(proxy, unitName, transaction);
-            if (map == null) {
-                map = new ConcurrentHashMap<String, EntityManager>();
-                cache.put(transaction, map);
-            }
-            map.put(unitName, em);
+            registerTransactionScopedSync(proxy, key);
+            cache.put(key, em);
         }
         return em;
     }
 
-    private void registerTransactionScopedSync(HibernateProxy proxy, String unitName, Transaction transaction)
-            throws EntityManagerCreationException {
+    private void registerTransactionScopedSync(HibernateProxy proxy, Key key) throws EntityManagerCreationException {
         try {
-            TransactionScopedSync sync = new TransactionScopedSync(proxy, unitName, transaction);
-            transaction.registerSynchronization(sync);
+            TransactionScopedSync sync = new TransactionScopedSync(key, proxy);
+            key.transaction.registerSynchronization(sync);
         } catch (RollbackException e) {
             throw new EntityManagerCreationException(e);
         } catch (SystemException e) {
@@ -110,13 +101,11 @@ public class EntityManagerServiceImpl implements EntityManagerService {
      * Callback used with a transaction-scoped EntityManager to remove it from the cache and close it.
      */
     private class TransactionScopedSync implements Synchronization {
-        private String unitName;
-        private Transaction transaction;
+        private Key key;
         private HibernateProxy proxy;
 
-        private TransactionScopedSync(HibernateProxy proxy, String unitName, Transaction transaction) {
-            this.unitName = unitName;
-            this.transaction = transaction;
+        private TransactionScopedSync(Key key, HibernateProxy proxy) {
+            this.key = key;
             this.proxy = proxy;
         }
 
@@ -126,14 +115,35 @@ public class EntityManagerServiceImpl implements EntityManagerService {
 
         public void afterCompletion(int status) {
             proxy.clearEntityManager();
-            Map<String, EntityManager> map = cache.get(transaction);
-            assert map != null;
-            EntityManager manager = map.remove(unitName);
+            EntityManager manager = cache.get(key);
             manager.close();
-            if (map.isEmpty()) {
-                cache.remove(transaction);
-            }
         }
     }
 
+    private class Key {
+        private Transaction transaction;
+        private String unitName;
+
+        private Key(Transaction transaction, String unitName) {
+            this.transaction = transaction;
+            this.unitName = unitName;
+        }
+
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Key key = (Key) o;
+
+            return !(transaction != null ? !transaction.equals(key.transaction) : key.transaction != null) && !(unitName != null ? !unitName.equals(
+                    key.unitName) : key.unitName != null);
+
+        }
+
+        public int hashCode() {
+            int result = transaction != null ? transaction.hashCode() : 0;
+            result = 31 * result + (unitName != null ? unitName.hashCode() : 0);
+            return result;
+        }
+    }
 }
