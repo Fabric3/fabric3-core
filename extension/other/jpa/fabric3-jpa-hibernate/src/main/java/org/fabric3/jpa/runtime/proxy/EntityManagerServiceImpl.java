@@ -51,7 +51,10 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.jpa.runtime.emf.EntityManagerFactoryCache;
 
 /**
- * Implementation that manages a cache of EntityManagers.
+ * Manages a cache of EntityManagers.
+ * <p/>
+ * EntityManager instances (and their underlying Hibernate Sessions) are cached for the duration of the associated JTA transaction and closed when the
+ * transaction commits or rolls back.
  *
  * @version $Rev$ $Date$
  */
@@ -125,8 +128,8 @@ public class EntityManagerServiceImpl implements EntityManagerService {
             proxy.clearEntityManager();
             Map<String, EntityManager> map = cache.get(transaction);
             assert map != null;
-            map.remove(unitName);
-            // TODO check that the JPA provider closes the EntityManager instance, since it is not closed here
+            EntityManager manager = map.remove(unitName);
+            manager.close();
             if (map.isEmpty()) {
                 cache.remove(transaction);
             }
