@@ -43,11 +43,13 @@
  */
 package org.fabric3.transport.jetty.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -55,8 +57,10 @@ import javax.servlet.ServletException;
 import org.eclipse.jetty.jsp.JettyLog;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.session.HashSessionIdManager;
 import org.eclipse.jetty.server.session.SessionHandler;
@@ -127,7 +131,23 @@ public class JettyServiceImpl implements JettyService, Transport {
     private Port selectedHttp;
     private int configuredHttpsPort = -1;
     private Port selectedHttps;
-    //    private String keystore;
+
+    // log file attributes
+    private String logFilename;   //
+    private boolean logExtended;
+    private boolean logAppend;
+    private int logRetainDays;
+    private boolean logPreferProxiedForAddress;
+    private String logDateFormat = "dd/MMM/yyyy:HH:mm:ss Z";
+    private String logFilenameDateFormat;
+    private Locale logLocale = Locale.getDefault();
+    private String logTimeZone = "GMT";
+    private boolean logLatency;
+    private boolean logCookies;
+    private boolean logServer;
+    private boolean logDispatch;
+
+
     private boolean sendServerVersion;
     private boolean debug;
     private Server server;
@@ -229,6 +249,73 @@ public class JettyServiceImpl implements JettyService, Transport {
     @Property(required = false)
     public void setDebug(boolean val) {
         debug = val;
+    }
+
+    @Property(required = false)//
+    public void setLogFilename(String logFilename) {
+        File logDir = new File(hostInfo.getDataDir(), "log");
+        logDir.mkdirs();
+        this.logFilename = new File(logDir, logFilename).getAbsolutePath();
+    }
+
+    @Property(required = false)
+    public void setLogExtended(boolean logExtended) {
+        this.logExtended = logExtended;
+    }
+
+    @Property(required = false) //
+    public void setLogAppend(boolean logAppend) {
+        this.logAppend = logAppend;
+    }
+
+    @Property(required = false) //
+    public void setLogRetainDays(int logRetainDays) {
+        this.logRetainDays = logRetainDays;
+    }
+
+    @Property(required = false)  //
+    public void setLogPreferProxiedForAddress(boolean logPreferProxiedForAddress) {
+        this.logPreferProxiedForAddress = logPreferProxiedForAddress;
+    }
+
+    @Property(required = false)
+    public void setLogDateFormat(String logDateFormat) {
+        this.logDateFormat = logDateFormat;
+    }
+
+    @Property(required = false) //
+    public void setLogFilenameDateFormat(String logFilenameDateFormat) {
+        this.logFilenameDateFormat = logFilenameDateFormat;
+    }
+
+    @Property(required = false) //
+    public void setLogLocale(String logLocale) {
+        this.logLocale = new Locale(logLocale);
+    }
+
+    @Property(required = false)//
+    public void setLogTimeZone(String logTimeZone) {
+        this.logTimeZone = logTimeZone;
+    }
+
+    @Property(required = false)//
+    public void setLogLatency(boolean logLatency) {
+        this.logLatency = logLatency;
+    }
+
+    @Property(required = false) //
+    public void setLogCookies(boolean logCookies) {
+        this.logCookies = logCookies;
+    }
+
+    @Property(required = false)  //
+    public void setLogServer(boolean logServer) {
+        this.logServer = logServer;
+    }
+
+    @Property(required = false)
+    public void setLogDispatch(boolean logDispatch) {
+        this.logDispatch = logDispatch;
     }
 
     @Init
@@ -532,9 +619,14 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     private void initializeHandlers() {
-        // setup the root context handler which dispatches to other contexts based on the servlet path
         statisticsHandler = new ManagedStatisticsHandler();
-        server.setHandler(statisticsHandler);
+        if (logFilename != null) {
+            RequestLogHandler requestLogHandler = createLogHandler();
+            server.setHandler(requestLogHandler);
+        } else {
+            server.setHandler(statisticsHandler);
+        }
+
         rootHandler = new ContextHandlerCollection();
         statisticsHandler.setHandler(rootHandler);
         contextHandler = new ServletContextHandler(rootHandler, ROOT);
@@ -548,12 +640,33 @@ public class JettyServiceImpl implements JettyService, Transport {
         sessionHandler.setHandler(servletHandler);
         contextHandler.setHandler(sessionHandler);
 
+
         try {
             statisticsHandler.start();
             statisticsHandler.startStatisticsCollection();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private RequestLogHandler createLogHandler() {
+        NCSARequestLog requestLog = new NCSARequestLog(logFilename);
+        requestLog.setAppend(logAppend);
+        requestLog.setExtended(logExtended);
+        requestLog.setFilenameDateFormat(logFilenameDateFormat);
+        requestLog.setLogCookies(logCookies);
+        requestLog.setLogDateFormat(logDateFormat);
+        requestLog.setLogDispatch(logDispatch);
+        requestLog.setLogLatency(logLatency);
+        requestLog.setLogLocale(logLocale);
+        requestLog.setLogTimeZone(logTimeZone);
+        requestLog.setPreferProxiedForAddress(logPreferProxiedForAddress);
+        requestLog.setRetainDays(logRetainDays);
+        requestLog.setLogServer(logServer);
+        RequestLogHandler requestLogHandler = new RequestLogHandler();
+        requestLogHandler.setRequestLog(requestLog);
+        requestLogHandler.setHandler(statisticsHandler);
+        return requestLogHandler;
     }
 
     private int parsePortNumber(String portVal, String portType) {

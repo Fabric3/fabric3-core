@@ -20,6 +20,20 @@ Public License. See the accompanying license file for details.
         <property name="httpPort" source="$systemConfig//f3:web.server/f3:http/@port"/>
         <property name="enableHttps" source="$systemConfig//f3:web.server/f3:https/@enabled"/>
         <property name="httpsPort" source="$systemConfig//f3:web.server/f3:https/@port"/>
+        <property name="logFilename" source="$systemConfig//f3:web.server/f3:log/@file"/>
+        <property name="logExtended" source="$systemConfig//f3:web.server/f3:log/@extended"/>
+        <property name="logAppend" source="$systemConfig//f3:web.server/f3:log/@append"/>
+        <property name="logRetainDays" source="$systemConfig//f3:web.server/f3:log/@retain.days"/>
+        <property name="logPreferProxiedForAddress" source="$systemConfig//f3:web.server/f3:log/@prefer.proxied"/>
+        <property name="logFilenameDateFormat" source="$systemConfig//f3:web.server/f3:log/@filename.format"/>
+        <property name="logLocale" source="$systemConfig//f3:web.server/f3:log/@locale"/>
+        <property name="logTimeZone" source="$systemConfig//f3:web.server/f3:log/@time.zone"/>
+        <property name="logLatency" source="$systemConfig//f3:web.server/f3:log/@latency"/>
+        <property name="logCookies" source="$systemConfig//f3:web.server/f3:log/@cookies"/>
+        <property name="logServer" source="$systemConfig//f3:web.server/f3:log/@log.server"/>
+        <property name="logDispatch" source="$systemConfig//f3:web.server/f3:log/@log.dispatch"/>
+        <property name="logDateFormat" source="$systemConfig//f3:web.server/f3:log/@date.format"/>
     </component>
 
 </composite>
+
