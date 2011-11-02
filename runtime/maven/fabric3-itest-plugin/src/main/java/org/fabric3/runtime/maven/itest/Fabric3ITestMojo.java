@@ -287,6 +287,10 @@ public class Fabric3ITestMojo extends AbstractMojo {
             }
             TestRunner runner = new TestRunner(reportsDirectory, trimStackTrace, getLog());
             runner.executeTests(runtime);
+        } catch (RuntimeException e) {
+            // log unexpected errors since Maven sometimes swallows them
+            getLog().error(e);
+            throw e;
         } finally {
             try {
                 tryLatch(runtime);
