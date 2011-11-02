@@ -251,7 +251,7 @@ public class JettyServiceImpl implements JettyService, Transport {
         debug = val;
     }
 
-    @Property(required = false)//
+    @Property(required = false)
     public void setLogFilename(String logFilename) {
         File logDir = new File(hostInfo.getDataDir(), "log");
         logDir.mkdirs();
@@ -263,17 +263,17 @@ public class JettyServiceImpl implements JettyService, Transport {
         this.logExtended = logExtended;
     }
 
-    @Property(required = false) //
+    @Property(required = false)
     public void setLogAppend(boolean logAppend) {
         this.logAppend = logAppend;
     }
 
-    @Property(required = false) //
+    @Property(required = false)
     public void setLogRetainDays(int logRetainDays) {
         this.logRetainDays = logRetainDays;
     }
 
-    @Property(required = false)  //
+    @Property(required = false)
     public void setLogPreferProxiedForAddress(boolean logPreferProxiedForAddress) {
         this.logPreferProxiedForAddress = logPreferProxiedForAddress;
     }
@@ -283,32 +283,32 @@ public class JettyServiceImpl implements JettyService, Transport {
         this.logDateFormat = logDateFormat;
     }
 
-    @Property(required = false) //
+    @Property(required = false)
     public void setLogFilenameDateFormat(String logFilenameDateFormat) {
         this.logFilenameDateFormat = logFilenameDateFormat;
     }
 
-    @Property(required = false) //
+    @Property(required = false)
     public void setLogLocale(String logLocale) {
         this.logLocale = new Locale(logLocale);
     }
 
-    @Property(required = false)//
+    @Property(required = false)
     public void setLogTimeZone(String logTimeZone) {
         this.logTimeZone = logTimeZone;
     }
 
-    @Property(required = false)//
+    @Property(required = false)
     public void setLogLatency(boolean logLatency) {
         this.logLatency = logLatency;
     }
 
-    @Property(required = false) //
+    @Property(required = false)
     public void setLogCookies(boolean logCookies) {
         this.logCookies = logCookies;
     }
 
-    @Property(required = false)  //
+    @Property(required = false)
     public void setLogServer(boolean logServer) {
         this.logServer = logServer;
     }
