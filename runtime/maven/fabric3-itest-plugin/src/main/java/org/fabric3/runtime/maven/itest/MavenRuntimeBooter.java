@@ -157,8 +157,9 @@ public class MavenRuntimeBooter {
             configuration.setExportedPackages(exportedPackages);
 
             coordinator = bootstrapService.createCoordinator(configuration);
-            log.info("Starting Fabric3 Runtime ...");
             coordinator.start();
+            String environment = runtime.getHostInfo().getEnvironment();
+            log.info("Fabric3 started [Environment: " + environment + "]");
             return runtime;
         } catch (InitializationException e) {
             throw new MojoExecutionException("Error booting Fabric3 runtime", e);
@@ -219,8 +220,8 @@ public class MavenRuntimeBooter {
     }
 
     public void shutdown() throws ShutdownException, InterruptedException, ExecutionException {
-        log.info("Stopping Fabric3 Runtime ...");
         coordinator.shutdown();
+        log.info("Fabric3 stopped");
     }
 
     private MavenRuntime instantiateRuntime(RuntimeConfiguration configuration, ClassLoader cl) {

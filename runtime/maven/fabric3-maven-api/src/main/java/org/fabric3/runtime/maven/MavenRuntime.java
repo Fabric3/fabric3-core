@@ -51,6 +51,7 @@ import org.apache.maven.surefire.suite.SurefireTestSuite;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.runtime.Fabric3Runtime;
+import org.fabric3.host.runtime.HostInfo;
 
 /**
  * API for the Maven runtime. The Maven runtime requires system component of type Map<String, Wire> named "TestWireHolder" that contains wires to
@@ -87,4 +88,10 @@ public interface MavenRuntime extends Fabric3Runtime {
      */
     SurefireTestSuite createTestSuite();
 
+    /**
+     * Returns the host info.
+     *
+     * @return the host info
+     */
+    HostInfo getHostInfo();
 }
