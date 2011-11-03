@@ -148,6 +148,10 @@ public class JettyLogger implements Logger {
         return this;
     }
 
+    public void ignore(Throwable throwable) {
+
+    }
+
     private String format(String msg, Object... args) {
         MessageFormat formatter = new MessageFormat(msg);
         return formatter.format(args);

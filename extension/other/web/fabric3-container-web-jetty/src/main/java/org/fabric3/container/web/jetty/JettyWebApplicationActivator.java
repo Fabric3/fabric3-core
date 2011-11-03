@@ -194,7 +194,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         WebAppContext context = new ManagedWebAppContext(resolved.toExternalForm(), contextPath);
         context.setParentLoaderPriority(true);
         InjectingDecorator decorator = new InjectingDecorator(injectors);
-        context.setDecorator(decorator);
+        context.addDecorator(decorator);
         WebAppClassLoader webAppClassLoader;
         webAppClassLoader = new WebAppClassLoader(parentClassLoader, context);
         context.setClassLoader(webAppClassLoader);

@@ -54,7 +54,6 @@ import java.util.concurrent.ExecutorService;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
-import org.eclipse.jetty.jsp.JettyLog;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.NCSARequestLog;
@@ -181,14 +180,6 @@ public class JettyServiceImpl implements JettyService, Transport {
         JettyLogger.setMonitor(monitor);
         if (debug) {
             JettyLogger.enableDebug();
-        }
-        ClassLoader old = Thread.currentThread().getContextClassLoader();
-        try {
-            // Re-route the GlassFish JSP logger. The GlassFish JSP engine is used by Jetty.
-            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-            JettyLog.init();
-        } finally {
-            Thread.currentThread().setContextClassLoader(old);
         }
     }
 

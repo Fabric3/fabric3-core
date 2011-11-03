@@ -108,6 +108,10 @@ public class Fabric3LoginService implements LoginService {
         this.identityService = service;
     }
 
+    public void logout(UserIdentity userIdentity) {
+
+    }
+
     private class UserPrincipal implements Principal {
         private String name;
 

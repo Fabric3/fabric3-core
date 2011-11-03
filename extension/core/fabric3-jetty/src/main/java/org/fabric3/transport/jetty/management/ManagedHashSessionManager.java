@@ -88,7 +88,7 @@ public class ManagedHashSessionManager extends HashSessionManager {
 
     @Override
     @ManagementOperation(description = "Invalidates all live sessions")
-    protected void invalidateSessions() {
+    protected void invalidateSessions() throws Exception {
         super.invalidateSessions();
     }
 
