@@ -105,6 +105,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
         Fabric3MBeanServerLookup serverLookup = new Fabric3MBeanServerLookup();
         jmxStatistics.jmxDomain(authority).mBeanServerLookup(serverLookup);
         this.cacheManager = new DefaultCacheManager(globalConfig.build());
+        cacheManager.start();
     }
 
     @Destroy
