@@ -53,7 +53,7 @@ public interface ImplementationProcessor<I extends Implementation<? extends Comp
      * Introspects an implementation and derives the associated component type. If errors or warnings are encountered, they will be collated in the
      * IntrospectionContext.
      *
-     * @param implementation the implmentation to inspect
+     * @param implementation the implementation to inspect
      * @param context        the introspection context
      */
     void introspect(I implementation, IntrospectionContext context);
