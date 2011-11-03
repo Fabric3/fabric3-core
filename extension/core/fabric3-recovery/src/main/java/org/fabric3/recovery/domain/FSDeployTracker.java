@@ -64,7 +64,7 @@ import org.fabric3.spi.xml.XMLFactory;
 /**
  * Records the current domain state to a journal so it may be replayed when a controller comes back online and resyncs with the domain.
  * <p/>
- * Deployed contributions and composites are written to a file system based journal ad the state of the domain changes (i.e. deployments and
+ * Deployed contributions and composites are written to a file system based journal as the state of the domain changes (i.e. deployments and
  * undeployments are made). On recovery, the journal can be read to reconstitute the current state of the domain.
  *
  * @version $Rev$ $Date$
