@@ -82,6 +82,7 @@ import org.fabric3.host.runtime.HostInfo;
 public class LogbackDispatcher implements MonitorEventDispatcher {
     private static final String DEFAULT_PATTERN = "[%level %thread %d{YY:MM:DD HH:mm:ss.SSS}] %msg%n%ex";
     private HostInfo hostInfo;
+    private boolean additive;
     private boolean configured;
     private LoggerContext context;
     private Logger logger;
@@ -110,6 +111,7 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
      * @param hostInfo the host info
      */
     public LogbackDispatcher(String name, boolean additive, HostInfo hostInfo) {
+        this.additive = additive;
         this.hostInfo = hostInfo;
         context = (LoggerContext) LoggerFactory.getILoggerFactory();
         logger = context.getLogger(name);
@@ -131,6 +133,7 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(context);
             configurator.doConfigure(source);
+            logger.setAdditive(additive); // reset additive as doConfigure() changes it
             configured = true;
         } catch (ParserConfigurationException e) {
             throw new MonitorConfigurationException("Error parsing monitor configuration", e);
