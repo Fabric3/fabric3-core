@@ -165,7 +165,7 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
     }
 
     /**
-     * Replace relative file names in appender configurations with absolute paths under the runtime data/logs directory.
+     * Replace relative file names in appender configurations with absolute paths under the runtime data/log directory.
      *
      * @param element the log configuration
      */

@@ -38,11 +38,16 @@
 package org.fabric3.monitor.runtime;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
@@ -69,6 +74,7 @@ public class MonitorComponentBuilder implements ComponentBuilder<MonitorComponen
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         Element configuration = definition.getConfiguration();
+        addAppenderReferences(configuration.getOwnerDocument(), uri.toString(), configuration);
         try {
             MonitorEventDispatcher dispatcher = factory.createInstance(uri.toString(), configuration, hostInfo);
             return new MonitorComponent(uri, deployable, dispatcher);
@@ -81,4 +87,30 @@ public class MonitorComponentBuilder implements ComponentBuilder<MonitorComponen
     public void dispose(MonitorComponentDefinition definition, MonitorComponent component) throws BuilderException {
         // no-op
     }
+
+
+    private void addAppenderReferences(Document document, String loggerName, Element element) {
+        NodeList elements = element.getElementsByTagName("appender");
+        List<Element> added = new ArrayList<Element>();
+        for (int i = 0; i < elements.getLength(); i++) {
+            Node node = elements.item(i);
+            Node nameAttribute = node.getAttributes().getNamedItem("name");
+            if (nameAttribute != null) {
+                String name = nameAttribute.getNodeValue();
+                Element reference = document.createElement("appender-ref");
+                reference.setAttribute("ref", name);
+                added.add(reference);
+            }
+        }
+        if (!added.isEmpty()) {
+            Element root = document.createElement("logger");
+            root.setAttribute("name", loggerName);
+            element.appendChild(root);
+            for (Element reference : added) {
+                root.appendChild(reference);
+            }
+        }
+    }
+
+
 }
