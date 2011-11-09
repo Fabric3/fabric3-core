@@ -63,6 +63,7 @@ import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.session.HashSessionIdManager;
 import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlet.ServletMapping;
@@ -87,6 +88,7 @@ import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.KeyStoreManager;
+import org.fabric3.spi.threadpool.LongRunnable;
 import org.fabric3.spi.transport.Transport;
 import org.fabric3.transport.jetty.JettyService;
 import org.fabric3.transport.jetty.management.ManagedHashSessionManager;
@@ -152,7 +154,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     private Server server;
     private ManagedServletHandler servletHandler;
     private SelectChannelConnector httpConnector;
-    private ContextAwareSslConnector sslConnector;
+    private SslSelectChannelConnector sslConnector;
 
     private ContextHandlerCollection rootHandler;
     private ManagedStatisticsHandler statisticsHandler;
@@ -525,9 +527,9 @@ public class JettyServiceImpl implements JettyService, Transport {
             String trustStore = keyStoreManager.getTrustStoreLocation().getAbsolutePath();
             String trustPassword = keyStoreManager.getTrustStorePassword();
             String certPassword = keyStoreManager.getCertPassword();
-            httpConnector = new ContextAwareConnector();
+            httpConnector = new SelectChannelConnector();
             httpConnector.setPort(selectedHttp.getNumber());
-            sslConnector = new ContextAwareSslConnector();
+            sslConnector = new SslSelectChannelConnector();
             sslConnector.setAllowRenegotiate(true);
             sslConnector.setPort(selectedHttps.getNumber());
             sslConnector.setKeystore(keystore);
@@ -538,7 +540,7 @@ public class JettyServiceImpl implements JettyService, Transport {
             server.setConnectors(new Connector[]{httpConnector, sslConnector});
         } else {
             // setup HTTP
-            httpConnector = new ContextAwareConnector();
+            httpConnector = new SelectChannelConnector();
             httpConnector.setPort(selectedHttp.getNumber());
             httpConnector.setSoLingerTime(-1);
             server.setConnectors(new Connector[]{httpConnector});
@@ -617,9 +619,12 @@ public class JettyServiceImpl implements JettyService, Transport {
         } else {
             server.setHandler(statisticsHandler);
         }
+        ExecutionContextHandler executionHandler = new ExecutionContextHandler();
+        statisticsHandler.setHandler(executionHandler);
 
         rootHandler = new ContextHandlerCollection();
-        statisticsHandler.setHandler(rootHandler);
+        executionHandler.setHandler(rootHandler);
+
         contextHandler = new ServletContextHandler(rootHandler, ROOT);
         sessionManager = new ManagedHashSessionManager();
         HashSessionIdManager sessionIdManager = new HashSessionIdManager();
@@ -679,7 +684,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     private class Fabric3ThreadPool implements ThreadPool {
 
         public boolean dispatch(Runnable work) {
-            executorService.execute(work);
+            executorService.execute(new JettyRunnable(work));
             return true;
         }
 
@@ -701,6 +706,22 @@ public class JettyServiceImpl implements JettyService, Transport {
             return false;
         }
 
+    }
+
+    /**
+     * Wrapper to signal Jetty selector and acceptor work is long-running to avoid stall detection on indefinite channel select() and accept()
+     * operations.
+     */
+    private class JettyRunnable implements LongRunnable {
+        private Runnable runnable;
+
+        private JettyRunnable(Runnable runnable) {
+            this.runnable = runnable;
+        }
+
+        public void run() {
+            runnable.run();
+        }
     }
 
 }
