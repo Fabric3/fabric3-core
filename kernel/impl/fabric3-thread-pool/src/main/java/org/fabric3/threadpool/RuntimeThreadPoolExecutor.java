@@ -56,6 +56,7 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.spi.threadpool.ExecutionContext;
 import org.fabric3.spi.threadpool.ExecutionContextTunnel;
+import org.fabric3.spi.threadpool.LongRunnable;
 
 /**
  * Processes work using a delegate {@link ThreadPoolExecutor}. This executor records processing statistics as well as monitors for stalled threads.
@@ -322,20 +323,26 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
      */
     private class RunnableWrapper implements Runnable, ExecutionContext {
         private Runnable delegate;
+        private boolean autoStart;
         private Thread currentThread;
 
         private long start = -1;
 
         private RunnableWrapper(Runnable delegate) {
             this.delegate = delegate;
+            autoStart = !(delegate instanceof LongRunnable);
         }
 
         public void run() {
             ExecutionContext old = ExecutionContextTunnel.setThreadExecutionContext(this);
             try {
-                start();
-                delegate.run();
-                stop();
+                if (autoStart) {
+                    start();
+                    delegate.run();
+                    stop();
+                } else {
+                    delegate.run();
+                }
             } finally {
                 ExecutionContextTunnel.setThreadExecutionContext(old);
                 clear();
