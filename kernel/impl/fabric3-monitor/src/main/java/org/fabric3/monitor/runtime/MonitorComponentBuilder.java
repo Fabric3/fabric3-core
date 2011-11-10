@@ -74,7 +74,9 @@ public class MonitorComponentBuilder implements ComponentBuilder<MonitorComponen
         URI uri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         Element configuration = definition.getConfiguration();
-        addAppenderReferences(configuration.getOwnerDocument(), uri.toString(), configuration);
+        if (configuration != null) {
+            addAppenderReferences(configuration.getOwnerDocument(), uri.toString(), configuration);
+        }
         try {
             MonitorEventDispatcher dispatcher = factory.createInstance(uri.toString(), configuration, hostInfo);
             return new MonitorComponent(uri, deployable, dispatcher);
