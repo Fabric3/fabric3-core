@@ -93,7 +93,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
             boolean scaTarget = isScaTarget(reference);
             if (scaTarget || reference.isConcreteBound()) {
                 // reference is targeted using binding.sca or is explicitly bound so it should not be autowired
-                return;
+                continue;
             }
             Multiplicity multiplicityValue = reference.getDefinition().getMultiplicity();
             boolean refMultiplicity = multiplicityValue.equals(Multiplicity.ZERO_N) || multiplicityValue.equals(Multiplicity.ONE_N);
