@@ -235,7 +235,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
     }
 
     private String encodeName(String name) {
-        return "webapps/" + name.toLowerCase();
+        return name.toLowerCase().replace('\n', ' ');
     }
 
 
