@@ -17,10 +17,13 @@
 package org.fabric3.implementation.proxy.jdk;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import org.oasisopen.sca.ServiceReference;
 
 import org.fabric3.spi.wire.InvocationChain;
@@ -39,11 +42,31 @@ public class JDKWireProxyServiceTestCase extends TestCase {
         assertSame(handler, ref);
     }
 
+    public void testEquals() throws Exception {
+        Map<Method, InvocationChain> mapping = new HashMap<Method, InvocationChain>();
+        InvocationChain chain = EasyMock.createMock(InvocationChain.class);
+        EasyMock.replay(chain);
+
+        mapping.put(Foo.class.getMethod("invoke"), chain);
+
+        JDKInvocationHandler<Foo> handler1 = new JDKInvocationHandler<Foo>(Foo.class, null, mapping);
+        JDKInvocationHandler<Foo> handler2 = new JDKInvocationHandler<Foo>(Foo.class, null, mapping);
+
+        Object proxy1 = Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler1);
+        Object proxy2 = Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler2);
+        assertTrue(proxy1.equals(proxy2));
+        EasyMock.verify(chain);
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         proxyService = new JDKWireProxyService(null);
     }
 
     public interface Foo {
+        void invoke();
+
     }
+
+
 }

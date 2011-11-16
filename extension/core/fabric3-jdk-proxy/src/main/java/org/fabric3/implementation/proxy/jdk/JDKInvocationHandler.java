@@ -101,7 +101,7 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         InvocationChain chain = chains.get(method);
         if (chain == null) {
-            return handleProxyMethod(method);
+            return handleProxyMethod(method, args);
         }
 
         Interceptor headInterceptor = chain.getHeadInterceptor();
@@ -166,19 +166,31 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
         return frame;
     }
 
-    private Object handleProxyMethod(Method method) throws InstanceInvocationException {
+    private Object handleProxyMethod(Method method, Object[] args) throws InstanceInvocationException {
         if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
             return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
-        } else if (method.getDeclaringClass().equals(Object.class)
-                && "equals".equals(method.getName())) {
-            // TODO implement
-            throw new UnsupportedOperationException();
-        } else if (Object.class.equals(method.getDeclaringClass())
-                && "hashCode".equals(method.getName())) {
+        } else if (method.getDeclaringClass().equals(Object.class) && "equals".equals(method.getName()) && args.length == 1) {
+            return proxyEquals(args[0]);
+        } else if (Object.class.equals(method.getDeclaringClass()) && "hashCode".equals(method.getName())) {
             return hashCode();
             // TODO better hash algorithm
         }
         String op = method.getName();
         throw new InstanceInvocationException("Operation not configured: " + op);
+    }
+
+    private Object proxyEquals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (!Proxy.isProxyClass(other.getClass())) {
+            return false;
+        }
+        Object otherHandler = Proxy.getInvocationHandler(other);
+        if (!(otherHandler instanceof JDKInvocationHandler)) {
+            return false;
+        }
+        JDKInvocationHandler otherJDKHandler = (JDKInvocationHandler) otherHandler;
+        return chains.equals(otherJDKHandler.chains);
     }
 }
