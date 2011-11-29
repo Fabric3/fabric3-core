@@ -56,6 +56,7 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
     private URL wsdlLocation;
     private String interfaze;
     private URI classLoaderUri;
+    private int retries;
 
     /**
      * Constructor.
@@ -71,6 +72,7 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
      * @param intents                 intents configured at the endpoint level that are provided natively by the Metro
      * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the HTTP configuration or null if defaults should be used
+     * @param retries                 the number of retries to attempt in the event the service is unavailable when an invocation is made
      */
     public MetroJavaTargetDefinition(ReferenceEndpointDefinition endpointDefinition,
                                      String interfaze,
@@ -81,13 +83,15 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
                                      URL wsdlLocation,
                                      List<QName> intents,
                                      SecurityConfiguration securityConfiguration,
-                                     ConnectionConfiguration connectionConfiguration) {
+                                     ConnectionConfiguration connectionConfiguration,
+                                     int retries) {
         super(endpointDefinition, wsdl, intents, securityConfiguration, connectionConfiguration);
         this.generatedInterface = generatedInterface;
         this.classLoaderUri = classLoaderUri;
         this.schemas = schemas;
         this.wsdlLocation = wsdlLocation;
         this.interfaze = interfaze;
+        this.retries = retries;
     }
 
     /**
@@ -136,4 +140,12 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
     }
 
 
+    /**
+     * The number of retries in the event the target service is unavailable during an invocation.
+     *
+     * @return the number of retries
+     */
+    public int getRetries() {
+        return retries;
+    }
 }

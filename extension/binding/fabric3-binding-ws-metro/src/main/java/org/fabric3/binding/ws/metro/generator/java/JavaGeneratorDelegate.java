@@ -320,6 +320,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             classLoaderUri = ((MultiParentClassLoader) serviceClass.getClassLoader()).getName();
         }
 
+        int retries = definition.getRetries();
         return new MetroJavaTargetDefinition(endpointDefinition,
                                              interfaze,
                                              generatedBytes,
@@ -329,7 +330,8 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                                              wsdlLocation,
                                              intentNames,
                                              securityConfiguration,
-                                             connectionConfiguration);
+                                             connectionConfiguration,
+                                             retries);
     }
 
     /**

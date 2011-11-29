@@ -69,7 +69,6 @@ public class XAFileSystemManagerImpl implements XAFileSystemManager {
             Transaction tx1 = tm.getTransaction();
 
             XASession xaSession = xaFileSystem.createSessionForXATransaction();
-
             System.out.println("Enlisting XADisk in the XA transaction.");
             XAResource xarXADisk = xaSession.getXAResource();
             tx1.enlistResource(xarXADisk);

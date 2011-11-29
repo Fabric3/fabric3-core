@@ -66,6 +66,8 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
     private ObjectFactory<?> proxyFactory;
     private Method method;
     private boolean oneWay;
+    private int retries = 0;
+    private InterceptorMonitor monitor;
 
     /**
      * Constructor.
@@ -75,59 +77,96 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
      * @param oneWay                  true if the operation is non-blocking
      * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the underlying HTTP connection configuration or null if defaults should be used
+     * @param retries                 the number of retries to attempt if the service is unavailable
+     * @param monitor                 the monitor
      */
     public MetroJavaTargetInterceptor(ObjectFactory<?> proxyFactory,
                                       Method method,
                                       boolean oneWay,
                                       SecurityConfiguration securityConfiguration,
-                                      ConnectionConfiguration connectionConfiguration) {
+                                      ConnectionConfiguration connectionConfiguration,
+                                      int retries,
+                                      InterceptorMonitor monitor) {
         super(securityConfiguration, connectionConfiguration);
         this.proxyFactory = proxyFactory;
         this.method = method;
         this.oneWay = oneWay;
+        this.retries = retries;
+        this.monitor = monitor;
     }
 
     public Message invoke(Message msg) {
+        Object[] payload = (Object[]) msg.getBody();
+        Object proxy = createProxy();
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
-            Object[] payload = (Object[]) msg.getBody();
+            // Metro stubs attempt to load classes using TCCL (e.g. StAX provider classes) that are visible the extension classloader and not
+            // visible to the application classloader.
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            return invokeRetry(payload, proxy);
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
+        }
+    }
+
+    /**
+     * Invokes the web service proxy, retrying a configured number of times if the service is unavailable.
+     *
+     * @param payload the web service in parameters
+     * @param proxy   the web service proxy
+     * @return the web service out parameters or null
+     */
+    private Message invokeRetry(Object[] payload, Object proxy) {
+        int retry = 0;
+        while (true) {
+            try {
+                if (oneWay) {
+                    method.invoke(proxy, payload);
+                    return NULL_RESPONSE;
+                } else {
+                    Object ret = method.invoke(proxy, payload);
+                    return new MessageImpl(ret, false, null);
+                }
+            } catch (WebServiceException e) {
+                if (e.getCause() instanceof SocketTimeoutException) {
+                    if (retry > retries) {
+                        throw new ServiceUnavailableException(e);
+                    }
+                    monitor.serviceUnavailableRetry(e);
+                    ++retry;
+                } else {
+                    throw new ServiceRuntimeException(e);
+                }
+            } catch (IllegalAccessException e) {
+                throw new AssertionError(e);
+            } catch (InvocationTargetException e) {
+                if (e.getTargetException() instanceof WebServiceException && !(e.getTargetException() instanceof SOAPFaultException)) {
+                    WebServiceException wse = (WebServiceException) e.getTargetException();
+                    if (wse.getCause() instanceof SocketTimeoutException) {
+                        if (retry >= retries) {
+                            throw new ServiceUnavailableException(e);
+                        }
+                        monitor.serviceUnavailableRetry(wse.getCause());
+                        ++retry;
+                    } else {
+                        throw new ServiceRuntimeException(e);
+                    }
+                } else {
+                    return new MessageImpl(e.getTargetException(), true, null);
+                }
+            }
+        }
+    }
+
+    private Object createProxy() {
+        try {
             Object proxy = proxyFactory.getInstance();
             BindingProvider provider = (BindingProvider) proxy;
             configureSecurity(provider);
             configureConnection(provider);
-            // Metro stubs attempt to load classes using TCCL (e.g. StAX provider classes) that are visible the extension classloader and not
-            // visible to the application classloader.
-            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-            if (oneWay) {
-                method.invoke(proxy, payload);
-                return NULL_RESPONSE;
-            } else {
-                Object ret = method.invoke(proxy, payload);
-                return new MessageImpl(ret, false, null);
-            }
-        } catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException) {
-                throw new ServiceUnavailableException(e);
-            } else {
-                throw new ServiceRuntimeException(e);
-            }
-        } catch (IllegalAccessException e) {
-            throw new AssertionError(e);
-        } catch (InvocationTargetException e) {
-            if (e.getTargetException() instanceof WebServiceException && !(e.getTargetException() instanceof SOAPFaultException)) {
-                WebServiceException wse = (WebServiceException) e.getTargetException();
-                if (wse.getCause() instanceof SocketTimeoutException) {
-                    throw new ServiceUnavailableException(e);
-                } else {
-                    throw new ServiceRuntimeException(e);
-                }
-            } else {
-                return new MessageImpl(e.getTargetException(), true, null);
-            }
+            return proxy;
         } catch (ObjectCreationException e) {
             throw new ServiceRuntimeException(e);
-        } finally {
-            Thread.currentThread().setContextClassLoader(old);
         }
     }
 }

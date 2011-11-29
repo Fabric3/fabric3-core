@@ -67,7 +67,7 @@ public class F3SecurityClientTube extends SecurityClientTube {
 
     @Override
     protected void collectPolicies() {
-        // workaround for NPE when polciies only attached at the WSDL operation level
+        // workaround for NPE when policies only attached at the WSDL operation level
         spVersion = SecurityPolicyVersion.SECURITYPOLICY12NS;
         super.collectPolicies();
     }

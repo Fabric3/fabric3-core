@@ -119,7 +119,7 @@ public class TargetUrlResolverImplTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        WsBindingDefinition definition = new WsBindingDefinition("name", URI.create("service"), null, null);
+        WsBindingDefinition definition = new WsBindingDefinition("name", URI.create("service"), null, null, 0);
         LogicalComponent<?> component = new LogicalComponent(null, null, null);
         component.setZone("1");
         LogicalService service = new LogicalService(null, null, component);

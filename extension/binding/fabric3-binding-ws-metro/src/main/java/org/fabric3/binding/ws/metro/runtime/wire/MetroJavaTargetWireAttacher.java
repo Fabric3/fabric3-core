@@ -54,10 +54,12 @@ import javax.xml.ws.WebServiceFeature;
 import com.sun.xml.wss.SecurityEnvironment;
 import org.oasisopen.sca.annotation.Reference;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.MetroJavaTargetDefinition;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
+import org.fabric3.binding.ws.metro.runtime.core.InterceptorMonitor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroJavaTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroProxyObjectFactory;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
@@ -86,6 +88,7 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
     private SecurityEnvironment securityEnvironment;
     private ExecutorService executorService;
     private XMLInputFactory xmlInputFactory;
+    private InterceptorMonitor monitor;
 
 
     public MetroJavaTargetWireAttacher(@Reference ClassLoaderRegistry registry,
@@ -94,7 +97,8 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
                                        @Reference ArtifactCache artifactCache,
                                        @Reference SecurityEnvironment securityEnvironment,
                                        @Reference ExecutorService executorService,
-                                       @Reference XMLFactory xmlFactory) {
+                                       @Reference XMLFactory xmlFactory,
+                                       @Monitor InterceptorMonitor monitor) {
         this.registry = registry;
         this.resolver = resolver;
         this.wireAttacherHelper = wireAttacherHelper;
@@ -102,6 +106,7 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
         this.securityEnvironment = securityEnvironment;
         this.executorService = executorService;
         this.xmlInputFactory = xmlFactory.newInputFactoryInstance();
+        this.monitor = monitor;
     }
 
     public void attach(PhysicalSourceDefinition source, MetroJavaTargetDefinition target, Wire wire) throws WiringException {
@@ -184,17 +189,18 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
         Method[] methods = seiClass.getMethods();
         SecurityConfiguration securityConfiguration = target.getSecurityConfiguration();
         ConnectionConfiguration connectionConfiguration = target.getConnectionConfiguration();
+        int retries = target.getRetries();
         for (InvocationChain chain : wire.getInvocationChains()) {
             Method method = null;
-            for (Method meth : methods) {
-                if (chain.getPhysicalOperation().getName().equals(meth.getName())) {
-                    method = meth;
+            for (Method m : methods) {
+                if (chain.getPhysicalOperation().getName().equals(m.getName())) {
+                    method = m;
                     break;
                 }
             }
             boolean oneWay = chain.getPhysicalOperation().isOneWay();
             MetroJavaTargetInterceptor targetInterceptor =
-                    new MetroJavaTargetInterceptor(proxyFactory, method, oneWay, securityConfiguration, connectionConfiguration);
+                    new MetroJavaTargetInterceptor(proxyFactory, method, oneWay, securityConfiguration, connectionConfiguration, retries, monitor);
             chain.addInterceptor(targetInterceptor);
         }
     }

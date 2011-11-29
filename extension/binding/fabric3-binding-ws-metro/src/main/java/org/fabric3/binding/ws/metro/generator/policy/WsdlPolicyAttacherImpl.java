@@ -46,7 +46,7 @@ import org.w3c.dom.Node;
 import org.fabric3.binding.ws.metro.generator.PolicyExpressionMapping;
 
 /**
- * Default implementation of WsdlPolicyAttacher. Policy expression attachement is performed by cloning the policy expression element and appending it
+ * Default implementation of WsdlPolicyAttacher. Policy expression attachment is performed by cloning the policy expression element and appending it
  * to the list of operations.
  *
  * @version $Rev$ $Date$

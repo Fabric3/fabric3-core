@@ -102,10 +102,11 @@ public class MetroDispatchTargetInterceptor extends AbstractMetroTargetIntercept
             configureSecurity(dispatch);
             configureConnection(dispatch);
             setSOAPAction(dispatch);
+            Source source = new DOMSource(parameter);
+
             // Metro attempts to load classes using TCCL (e.g. StAX provider classes) that are visible the extension classloader and not
             // visible to the application classloader.
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-            Source source = new DOMSource(parameter);
 
             if (oneWay) {
                 dispatch.invokeAsync(source, null);
@@ -132,7 +133,7 @@ public class MetroDispatchTargetInterceptor extends AbstractMetroTargetIntercept
         }
     }
 
-    //FIXME
+    //FIXxME
     private void setSOAPAction(Dispatch<Source> dispatch) {
         Map<String, Object> context = dispatch.getRequestContext();
         context.put(BindingProvider.SOAPACTION_USE_PROPERTY, true);

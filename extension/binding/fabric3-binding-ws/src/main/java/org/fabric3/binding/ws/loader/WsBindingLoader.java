@@ -68,6 +68,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  */
 @EagerInit
 public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
+    private static final String WSDL_NS = "http://www.w3.org/2004/08/wsdl-instance";
     private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
 
     static {
@@ -78,6 +79,7 @@ public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
         ATTRIBUTES.put("requires", "requires");
         ATTRIBUTES.put("policySets", "policySets");
         ATTRIBUTES.put("name", "name");
+        ATTRIBUTES.put("retries", "retries");
     }
 
     private final LoaderHelper loaderHelper;
@@ -91,33 +93,48 @@ public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
         this.loaderHelper = loaderHelper;
     }
 
-    public WsBindingDefinition load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
-        validateAttributes(reader, introspectionContext);
+    public WsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateAttributes(reader, context);
 
         WsBindingDefinition binding = null;
         String uri = null;
         try {
             uri = reader.getAttributeValue(null, "uri");
             String wsdlElement = reader.getAttributeValue(null, "wsdlElement");
-            String wsdlLocation = reader.getAttributeValue("http://www.w3.org/2004/08/wsdl-instance", "wsdlLocation");
+            String wsdlLocation = reader.getAttributeValue(WSDL_NS, "wsdlLocation");
+            int retries = parseRetries(reader, context);
+
             String bindingName = reader.getAttributeValue(null, "name");
             if (uri == null) {
-                binding = new WsBindingDefinition(bindingName, null, wsdlLocation, wsdlElement);
+                binding = new WsBindingDefinition(bindingName, null, wsdlLocation, wsdlElement, retries);
             } else {
                 URI targetUri = new URI(uri);
-                binding = new WsBindingDefinition(bindingName, targetUri, wsdlLocation, wsdlElement);
+                binding = new WsBindingDefinition(bindingName, targetUri, wsdlLocation, wsdlElement, retries);
             }
-            loaderHelper.loadPolicySetsAndIntents(binding, reader, introspectionContext);
+            loaderHelper.loadPolicySetsAndIntents(binding, reader, context);
 
             //Load optional config parameters
             loadConfig(binding, reader);
 
         } catch (URISyntaxException ex) {
             InvalidValue failure = new InvalidValue("The web services binding URI is not a valid: " + uri, reader);
-            introspectionContext.addError(failure);
+            context.addError(failure);
         }
 
         return binding;
+    }
+
+    private int parseRetries(XMLStreamReader reader, IntrospectionContext context) {
+        String retries = reader.getAttributeValue(null, "retries");
+        if (retries != null) {
+            try {
+                return Integer.parseInt(retries);
+            } catch (NumberFormatException e) {
+                InvalidValue error = new InvalidValue("The retries attribute must be a valid number", reader);
+                context.addError(error);
+            }
+        }
+        return 0;
     }
 
     private void loadConfig(WsBindingDefinition bd, XMLStreamReader reader) throws XMLStreamException {
