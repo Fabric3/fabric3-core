@@ -48,6 +48,7 @@ public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
     private String archiveLocation;
     private String errorLocation;
     private String adapterClass;
+    private URI adapterUri;
     private String pattern;
     private long delay;
 
@@ -57,6 +58,7 @@ public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
                                        String archiveLocation,
                                        String errorLocation,
                                        String adapterClass,
+                                       URI adapterUri,
                                        long delay) {
         this.pattern = pattern;
         this.location = location;
@@ -64,34 +66,80 @@ public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
         this.archiveLocation = archiveLocation;
         this.errorLocation = errorLocation;
         this.adapterClass = adapterClass;
+        this.adapterUri = adapterUri;
         this.delay = delay;
         setUri(uri);
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public Strategy getStrategy() {
-        return strategy;
-    }
-
-    public String getArchiveLocation() {
-        return archiveLocation;
-    }
-
-    public String getErrorLocation() {
-        return errorLocation;
-    }
-
-    public String getAdapterClass() {
-        return adapterClass;
-    }
-
+    /**
+     * Returns the pattern to match files on.
+     *
+     * @return the pattern to match files on
+     */
     public String getPattern() {
         return pattern;
     }
 
+    /**
+     * The directory to receive files in. May be relative or absolute. If it is relative, it will be resolved against the runtime data directory.
+     *
+     * @return the directory to receive files in
+     */
+    public String getLocation() {
+        return location;
+    }
+
+    /**
+     * Whether to archive or delete received files
+     *
+     * @return whether to archive or delete received files
+     */
+    public Strategy getStrategy() {
+        return strategy;
+    }
+
+    /**
+     * The directory to archive files to. May be relative or absolute. If it is relative, it will be resolved against the runtime data directory.
+     *
+     * @return the directory to archive files to
+     */
+    public String getArchiveLocation() {
+        return archiveLocation;
+    }
+
+    /**
+     * The directory to place invalid files in. May be relative or absolute. If it is relative, it will be resolved against the runtime data
+     * directory
+     *
+     * @return the directory to place invalid files in
+     */
+    public String getErrorLocation() {
+        return errorLocation;
+    }
+
+    /**
+     * The adapter class for processing received files.
+     *
+     * @return the adapter class for processing received files or null
+     */
+    public String getAdapterClass() {
+        return adapterClass;
+    }
+
+    /**
+     * Returns the URI of the adaptor component for receiving files.
+     *
+     * @return the URI of the adaptor component for receiving files or null
+     */
+    public URI getAdapterUri() {
+        return adapterUri;
+    }
+
+    /**
+     * The delay in milliseconds between directory scans.
+     *
+     * @return he delay in milliseconds between directory scans
+     */
     public long getDelay() {
         return delay;
     }

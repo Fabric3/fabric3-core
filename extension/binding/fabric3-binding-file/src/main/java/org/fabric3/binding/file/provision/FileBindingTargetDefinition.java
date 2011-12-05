@@ -30,6 +30,8 @@
  */
 package org.fabric3.binding.file.provision;
 
+import java.net.URI;
+
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
@@ -42,19 +44,41 @@ public class FileBindingTargetDefinition extends PhysicalTargetDefinition {
 
     private String location;
     private String adapterClass;
+    private URI adapterUri;
 
-    public FileBindingTargetDefinition(String location, String adapterClass) {
+    public FileBindingTargetDefinition(String location, String adapterClass, URI adapterUri) {
         this.location = location;
         this.adapterClass = adapterClass;
+        this.adapterUri = adapterUri;
         setUri(null);
     }
 
+    /**
+     * The directory to receive files in. May be relative or absolute. If it is relative, it will be resolved against the runtime data directory.
+     *
+     * @return the directory to receive files in
+     */
     public String getLocation() {
         return location;
     }
 
+
+    /**
+     * The adapter class for processing received files.
+     *
+     * @return the adapter class for processing received files or null
+     */
     public String getAdapterClass() {
         return adapterClass;
+    }
+
+    /**
+     * Returns the URI of the adaptor component for receiving files.
+     *
+     * @return the URI of the adaptor component for receiving files or null
+     */
+    public URI getAdapterUri() {
+        return adapterUri;
     }
 
 }

@@ -55,6 +55,9 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.AtomicComponent;
+import org.fabric3.spi.component.Component;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.Interceptor;
@@ -69,17 +72,20 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
     private static final ServiceAdapter ADAPTER = new DefaultServiceAdapter();
     private ReceiverManager receiverManager;
     private ClassLoaderRegistry registry;
+    private ComponentManager manager;
     private ReceiverMonitor monitor;
     private File baseDir;
 
     public FileSourceWireAttacher(@Reference ReceiverManager receiverManager,
                                   @Reference ClassLoaderRegistry registry,
+                                  @Reference ComponentManager manager,
                                   @Reference HostInfo hostInfo,
                                   @Monitor ReceiverMonitor monitor) {
         this.receiverManager = receiverManager;
         this.registry = registry;
-        this.baseDir = new File(hostInfo.getDataDir(), "inbox");
+        this.manager = manager;
         this.monitor = monitor;
+        this.baseDir = new File(hostInfo.getDataDir(), "inbox");
     }
 
     public void attach(FileBindingSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
@@ -97,7 +103,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
             chain.addInterceptor(interceptor);
         }
 
-        ServiceAdapter adapter = instantiateAdaptor(source);
+        ServiceAdapter adapter = getAdaptor(source);
 
         long delay = source.getDelay();
 
@@ -157,10 +163,28 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
         return new File(baseDir, location);
     }
 
-    private ServiceAdapter instantiateAdaptor(FileBindingSourceDefinition source) throws WiringException {
+    /**
+     * Instantiates an adaptor class or returns a component instance.
+     *
+     * @param source the definition
+     * @return the adaptor
+     * @throws WiringException if there is an error instantiating the class or returning a component instance.
+     */
+    private ServiceAdapter getAdaptor(FileBindingSourceDefinition source) throws WiringException {
         String adapterClass = source.getAdapterClass();
         if (adapterClass == null) {
-            return ADAPTER;
+            URI adapterUri = source.getAdapterUri();
+            if (adapterUri == null) {
+                return ADAPTER;
+            }
+            Component component = manager.getComponent(adapterUri);
+            if (component == null) {
+                throw new WiringException("Binding adaptor component not found: " + adapterUri);
+            }
+            if (!(component instanceof AtomicComponent)) {
+                throw new WiringException("Adaptor component must implement " + AtomicComponent.class.getName() + ": " + adapterUri);
+            }
+            return new ServiceAdaptorWrapper((AtomicComponent) component);
         }
         URI uri = source.getClassLoaderId();
         ClassLoader loader = registry.getClassLoader(uri);

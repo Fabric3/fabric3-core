@@ -43,6 +43,7 @@ import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.binding.file.model.FileBindingDefinition;
 import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
 import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -64,7 +65,7 @@ public class FileBindingGeneratorTestCase extends TestCase {
     public void testSourceGeneration() throws Exception {
         ServiceContract contract = createServiceContract();
         FileBindingDefinition definition =
-                new FileBindingDefinition("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null, 10);
+                new FileBindingDefinition("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null, null, 10);
         URI uri = URI.create("service");
         LogicalService service = new LogicalService(uri, null, null);
         LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, service);
@@ -79,7 +80,7 @@ public class FileBindingGeneratorTestCase extends TestCase {
         ServiceContract contract = new JavaServiceContract(Object.class); // invalid contract
 
         FileBindingDefinition definition =
-                new FileBindingDefinition("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null, 10);
+                new FileBindingDefinition("binding", null, "location", Strategy.ARCHIVE, "archiveLocation", "error", null, null, 10);
         URI uri = URI.create("service");
         LogicalService service = new LogicalService(uri, null, null);
         LogicalBinding<FileBindingDefinition> logicalBinding = new LogicalBinding<FileBindingDefinition>(definition, service);
@@ -132,7 +133,8 @@ public class FileBindingGeneratorTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        generator = new FileBindingGenerator();
+        HostInfo info = EasyMock.createMock(HostInfo.class);
+        generator = new FileBindingGenerator(info);
         policy = EasyMock.createNiceMock(EffectivePolicy.class);
     }
 }

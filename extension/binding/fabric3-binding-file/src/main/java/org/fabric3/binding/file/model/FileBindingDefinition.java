@@ -58,14 +58,40 @@ public class FileBindingDefinition extends BindingDefinition {
     private String archiveLocation;
     private String errorLocation;
     private String adapterClass;
+    private String adapterUri;
     private long delay;
 
+    /**
+     * Constructor.
+     *
+     * @param name          the binding name
+     * @param location      the directory to receive files in. May be relative or absolute. If it is relative, it will be resolved against the runtime
+     *                      data directory.
+     * @param errorLocation the directory to place invalid files in. May be relative or absolute. If it is relative, it will be resolved against the
+     *                      runtime data directory.
+     */
     public FileBindingDefinition(String name, String location, String errorLocation) {
         super(name, null, BINDING_FILE);
         this.location = location;
         this.errorLocation = errorLocation;
     }
 
+    /**
+     * Constructor.
+     *
+     * @param name            the binding name
+     * @param pattern         the pattern to match files on. May be null.
+     * @param location        the directory to receive files in. May be relative or absolute. If it is relative, it will be resolved against the
+     *                        runtime data directory.
+     * @param strategy        whether to archive or delete received files
+     * @param archiveLocation the directory to archive files to. May be relative or absolute. If it is relative, it will be resolved against the
+     *                        runtime data directory.
+     * @param errorLocation   the directory to place invalid files in. May be relative or absolute. If it is relative, it will be resolved against the
+     *                        runtime data directory.
+     * @param adapterClass    the adapter class for processing received files. May be null.
+     * @param adapterUri      the URI of the adaptor component for receiving files. May be null.
+     * @param delay           the delay in milliseconds between directory scans
+     */
     public FileBindingDefinition(String name,
                                  String pattern,
                                  String location,
@@ -73,6 +99,7 @@ public class FileBindingDefinition extends BindingDefinition {
                                  String archiveLocation,
                                  String errorLocation,
                                  String adapterClass,
+                                 String adapterUri,
                                  long delay) {
         super(name, null, BINDING_FILE);
         this.pattern = pattern;
@@ -81,34 +108,81 @@ public class FileBindingDefinition extends BindingDefinition {
         this.archiveLocation = archiveLocation;
         this.errorLocation = errorLocation;
         this.adapterClass = adapterClass;
+        this.adapterUri = adapterUri;
         this.delay = delay;
     }
 
+    /**
+     * Returns the pattern to match files on.
+     *
+     * @return the pattern to match files on
+     */
     public String getPattern() {
         return pattern;
     }
 
+    /**
+     * The directory to receive files in. May be relative or absolute. If it is relative, it will be resolved against the runtime data directory.
+     *
+     * @return the directory to receive files in
+     */
     public String getLocation() {
         return location;
     }
 
+    /**
+     * Whether to archive or delete received files
+     *
+     * @return whether to archive or delete received files
+     */
     public Strategy getStrategy() {
         return strategy;
     }
 
+    /**
+     * The directory to archive files to. May be relative or absolute. If it is relative, it will be resolved against the runtime data directory.
+     *
+     * @return the directory to archive files to
+     */
     public String getArchiveLocation() {
         return archiveLocation;
     }
 
+    /**
+     * The directory to place invalid files in. May be relative or absolute. If it is relative, it will be resolved against the runtime data
+     * directory
+     *
+     * @return the directory to place invalid files in
+     */
     public String getErrorLocation() {
         return errorLocation;
     }
 
+    /**
+     * The adapter class for processing received files.
+     *
+     * @return the adapter class for processing received files or null
+     */
     public String getAdapterClass() {
         return adapterClass;
     }
 
+    /**
+     * Returns the URI of the adaptor component for receiving files.
+     *
+     * @return the URI of the adaptor component for receiving files or null
+     */
+    public String getAdapterUri() {
+        return adapterUri;
+    }
+
+    /**
+     * The delay in milliseconds between directory scans.
+     *
+     * @return he delay in milliseconds between directory scans
+     */
     public long getDelay() {
         return delay;
     }
+
 }

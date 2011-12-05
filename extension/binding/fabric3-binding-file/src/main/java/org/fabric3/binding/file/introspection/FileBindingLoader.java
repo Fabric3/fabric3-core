@@ -73,6 +73,7 @@ public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
         ATTRIBUTES.add("pattern");
         ATTRIBUTES.add("name");
         ATTRIBUTES.add("adapter");
+        ATTRIBUTES.add("adapter.component");
         ATTRIBUTES.add("delay");
     }
 
@@ -105,11 +106,13 @@ public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
 
         String adapterClass = reader.getAttributeValue(null, "adapter");
 
+        String adapterUri = reader.getAttributeValue(null, "adapter.component");
+
         String pattern = reader.getAttributeValue(null, "pattern");
 
         long delay = parseDelay(reader, context);
         FileBindingDefinition definition =
-                new FileBindingDefinition(bindingName, pattern, location, strategy, archiveLocation, errorLocation, adapterClass, delay);
+                new FileBindingDefinition(bindingName, pattern, location, strategy, archiveLocation, errorLocation, adapterClass, adapterUri, delay);
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
         LoaderUtil.skipToEndElement(reader);

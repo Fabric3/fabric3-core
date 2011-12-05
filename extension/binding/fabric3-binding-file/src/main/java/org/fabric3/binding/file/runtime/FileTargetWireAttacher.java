@@ -50,6 +50,9 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.AtomicComponent;
+import org.fabric3.spi.component.Component;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
@@ -65,9 +68,11 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTar
 
     private ClassLoaderRegistry registry;
     private File baseDir;
+    private ComponentManager manager;
 
-    public FileTargetWireAttacher(@Reference ClassLoaderRegistry registry, @Reference HostInfo hostInfo) {
+    public FileTargetWireAttacher(@Reference ClassLoaderRegistry registry, @Reference ComponentManager manager, @Reference HostInfo hostInfo) {
         this.registry = registry;
+        this.manager = manager;
         this.baseDir = new File(hostInfo.getDataDir(), "outbox");
     }
 
@@ -75,7 +80,7 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTar
         File location = resolve(target.getLocation());
         location.mkdirs();
 
-        ReferenceAdapter adapter = instantiateAdaptor(target);
+        ReferenceAdapter adapter = getAdaptor(target);
         FileSystemInterceptor interceptor = new FileSystemInterceptor(location, adapter);
         for (InvocationChain chain : wire.getInvocationChains()) {
             chain.addInterceptor(interceptor);
@@ -91,7 +96,7 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTar
     }
 
     /**
-     * Resolve the location as an absolute address or relative to the runtime data/inbox directory.
+     * Resolve the location as an absolute address or relative to the runtime data/outbox directory.
      *
      * @param location the location
      * @return the resolved location
@@ -104,12 +109,30 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTar
         return new File(baseDir, location);
     }
 
-    private ReferenceAdapter instantiateAdaptor(FileBindingTargetDefinition target) throws WiringException {
-        String adapterClass = target.getAdapterClass();
+    /**
+     * Instantiates an adaptor class or returns a component instance.
+     *
+     * @param source the definition
+     * @return the adaptor
+     * @throws WiringException if there is an error instantiating the class or returning a component instance.
+     */
+    private ReferenceAdapter getAdaptor(FileBindingTargetDefinition source) throws WiringException {
+        String adapterClass = source.getAdapterClass();
         if (adapterClass == null) {
-            return ADAPTER;
+            URI adapterUri = source.getAdapterUri();
+            if (adapterUri == null) {
+                return ADAPTER;
+            }
+            Component component = manager.getComponent(adapterUri);
+            if (component == null) {
+                throw new WiringException("Binding adaptor component not found: " + adapterUri);
+            }
+            if (!(component instanceof AtomicComponent)) {
+                throw new WiringException("Adaptor component must implement " + AtomicComponent.class.getName() + ": " + adapterUri);
+            }
+            return new ReferenceAdaptorWrapper((AtomicComponent) component);
         }
-        URI uri = target.getClassLoaderId();
+        URI uri = source.getClassLoaderId();
         ClassLoader loader = registry.getClassLoader(uri);
         if (loader == null) {
             // this should not happen

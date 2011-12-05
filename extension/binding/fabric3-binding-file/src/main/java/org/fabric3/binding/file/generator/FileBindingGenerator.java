@@ -32,15 +32,18 @@ package org.fabric3.binding.file.generator;
 
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.binding.file.model.FileBindingDefinition;
 import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
 import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -58,11 +61,17 @@ import org.fabric3.spi.model.type.java.JavaType;
 @EagerInit
 public class FileBindingGenerator implements BindingGenerator<FileBindingDefinition> {
     private static final String REGEX_ALL = ".*";
+    private HostInfo info;
+
     private long defaultDelay = 2000;
 
     @Property(required = false)
     public void setDelay(long delay) {
         this.defaultDelay = delay;
+    }
+
+    public FileBindingGenerator(@Reference HostInfo info) {
+        this.info = info;
     }
 
     public FileBindingSourceDefinition generateSource(LogicalBinding<FileBindingDefinition> binding,
@@ -83,12 +92,14 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         if (errorLocation == null) {
             throw new GenerationException("Error location must be specified on the file binding configuration for " + uri);
         }
-        String listener = definition.getAdapterClass();
+        String adapterClass = definition.getAdapterClass();
+        URI adaptorUri = getAdaptorUri(definition);
+
         long delay = definition.getDelay();
         if (delay == -1) {
             delay = defaultDelay;
         }
-        return new FileBindingSourceDefinition(uri, pattern, location, strategy, archiveLocation, errorLocation, listener, delay);
+        return new FileBindingSourceDefinition(uri, pattern, location, strategy, archiveLocation, errorLocation, adapterClass, adaptorUri, delay);
     }
 
     public FileBindingTargetDefinition generateTarget(LogicalBinding<FileBindingDefinition> binding,
@@ -99,7 +110,8 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         FileBindingDefinition definition = binding.getDefinition();
         String location = definition.getLocation();
         String adapterClass = definition.getAdapterClass();
-        return new FileBindingTargetDefinition(location, adapterClass);
+        URI adaptorUri = getAdaptorUri(definition);
+        return new FileBindingTargetDefinition(location, adapterClass, adaptorUri);
     }
 
     public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<FileBindingDefinition> binding,
@@ -153,5 +165,18 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
             throw new InvalidContractException("File transfer binding contracts must contain one operation");
         }
     }
+
+    private URI getAdaptorUri(FileBindingDefinition definition) throws GenerationException {
+        String uri = definition.getAdapterUri();
+        if (uri == null) {
+            return null;
+        }
+        try {
+            return new URI(info.getDomain().toString() + "/" + uri);
+        } catch (URISyntaxException e) {
+            throw new GenerationException(e);
+        }
+    }
+
 
 }
