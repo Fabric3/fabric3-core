@@ -79,7 +79,7 @@ public class PropertyValue extends ModelObject {
     }
 
     /**
-     * Constructor specifying the name of a property loaded from an exteral resource.
+     * Constructor specifying the name of a property loaded from an external resource.
      *
      * @param name the name of the property which this value is for
      * @param file A URI that the property value can be loaded from
