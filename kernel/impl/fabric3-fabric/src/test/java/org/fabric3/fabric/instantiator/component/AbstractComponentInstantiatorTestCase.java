@@ -45,7 +45,6 @@ package org.fabric3.fabric.instantiator.component;
 
 import java.net.URI;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPathExpressionException;
 
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
@@ -129,12 +128,8 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
 
     public void testUnknownVariable() {
         PropertyValue propertyValue = new PropertyValue("property", "$foo");
-        try {
-            instantiator.deriveValueFromXPath(propertyValue, domain, new StatefulNamespaceContext());
-            fail();
-        } catch (XPathExpressionException e) {
-            // this is ok?
-        }
+        Document value = instantiator.deriveValueFromXPath(propertyValue, domain, new StatefulNamespaceContext());
+        assertNull(value);
     }
 
     protected void setUp() throws Exception {

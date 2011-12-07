@@ -48,4 +48,8 @@ public class PropertyTypeException extends Fabric3RuntimeException {
     public PropertyTypeException(String message) {
         super(message);
     }
+
+    public PropertyTypeException(Throwable cause) {
+        super(cause);
+    }
 }

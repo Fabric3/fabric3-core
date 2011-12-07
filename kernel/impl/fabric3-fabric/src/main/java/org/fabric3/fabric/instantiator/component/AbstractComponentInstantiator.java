@@ -45,6 +45,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -63,6 +64,7 @@ import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
 
 /**
@@ -92,13 +94,13 @@ public abstract class AbstractComponentInstantiator {
 
         Map<String, PropertyValue> propertyValues = definition.getPropertyValues();
         ComponentType componentType = definition.getComponentType();
+        LogicalCompositeComponent parent = component.getParent();
 
         for (Property property : componentType.getProperties().values()) {
-
             String name = property.getName();
             PropertyValue propertyValue = propertyValues.get(name);
-            Document value;
 
+            Document value;
             if (propertyValue == null) {
                 // use default value from component type
                 value = property.getDefaultValue();
@@ -110,8 +112,9 @@ public abstract class AbstractComponentInstantiator {
                 } else if (propertyValue.getSource() != null) {
                     // get the value by evaluating an XPath against the composite properties
                     try {
-                        value = deriveValueFromXPath(propertyValue, component.getParent(), propertyValue.getNamespaceContext());
-                    } catch (XPathExpressionException e) {
+                        NamespaceContext nsContext = propertyValue.getNamespaceContext();
+                        value = deriveValueFromXPath(propertyValue, parent, nsContext);
+                    } catch (PropertyTypeException e) {
                         URI uri = component.getUri();
                         URI contributionUri = component.getDefinition().getContributionUri();
                         InvalidProperty error = new InvalidProperty(name, e, uri, contributionUri);
@@ -151,7 +154,7 @@ public abstract class AbstractComponentInstantiator {
     }
 
     Document deriveValueFromXPath(final PropertyValue propertyValue, final LogicalComponent<?> parent, NamespaceContext nsContext)
-            throws XPathExpressionException {
+            throws PropertyTypeException {
 
         XPathVariableResolver variableResolver = new XPathVariableResolver() {
             public Object resolveVariable(QName qName) {
@@ -169,8 +172,6 @@ public abstract class AbstractComponentInstantiator {
                 }
                 // select the first value
                 return value.getDocumentElement();
-//                return value.getDocumentElement().getChildNodes();
-//               return value.getDocumentElement().getFirstChild();
             }
         };
 
@@ -190,13 +191,7 @@ public abstract class AbstractComponentInstantiator {
         document.appendChild(root);
         String source = propertyValue.getSource();
         try {
-            if (source.startsWith("$")) {
-                // ASM_5039 complex type with multiple values: ensure all values are selected
-                int index = source.indexOf("/");
-                if (index > 0 && index < source.length() - 2 && !source.substring(index + 1, index + 2).equals("/")) {
-                    source = source.substring(0, index) + "/" + source.substring(index);
-                }
-            }
+            source = parseSource(source);
             NodeList result = (NodeList) xpath.evaluate(source, document, XPathConstants.NODESET);
 
             if (result.getLength() == 0) {
@@ -230,19 +225,17 @@ public abstract class AbstractComponentInstantiator {
                 }
             }
         } catch (XPathExpressionException e) {
-            // FIXME rethrow this for now, fix if people find it confusing
-            // the Apache and Sun implementations of XPath throw a nested NullPointerException
-            // if the xpath contains an unresolvable variable. It might be better to throw
-            // a more descriptive cause, but that also might be confusing for people who
-            // are used to this behavior
-            throw e;
-        } catch (PropertyTypeException e) {
-            throw new XPathExpressionException(e);
+            if (e.getCause() instanceof TransformerException) {
+                String message = e.getCause().getMessage();
+                if (message.startsWith("resolveVariable for variable") || message.endsWith("returning null")) {
+                    return null;
+                }
+            }
+            throw new PropertyTypeException(e);
         }
         return document;
 
     }
-
 
     public Document loadValueFromFile(String name, URI fileUri, LogicalComponent<?> parent, InstantiationContext context) {
         try {
@@ -281,6 +274,17 @@ public abstract class AbstractComponentInstantiator {
         } catch (ParserConfigurationException e) {
             throw new AssertionError(e);
         }
+    }
+
+    private String parseSource(String source) {
+        if (source.startsWith("$")) {
+            // ASM_5039 complex type with multiple values: ensure all values are selected
+            int index = source.indexOf("/");
+            if (index > 0 && index < source.length() - 2 && !source.substring(index + 1, index + 2).equals("/")) {
+                source = source.substring(0, index) + "/" + source.substring(index);
+            }
+        }
+        return source;
     }
 
 
