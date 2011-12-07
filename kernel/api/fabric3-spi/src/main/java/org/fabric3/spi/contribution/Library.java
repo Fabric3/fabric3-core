@@ -41,7 +41,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Identifies a native library in an contribution manifest.
+ * Identifies a native library in a contribution manifest.
  *
  * @version $Rev$ $Date$
  */
