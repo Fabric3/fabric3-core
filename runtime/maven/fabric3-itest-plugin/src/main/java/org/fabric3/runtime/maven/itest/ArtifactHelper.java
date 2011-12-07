@@ -378,7 +378,12 @@ public class ArtifactHelper {
         String artifactId = dependency.getArtifactId();
         String version = dependency.getVersion();
         String type = dependency.getType();
-        return artifactFactory.createArtifact(groupId, artifactId, version, Artifact.SCOPE_RUNTIME, type);
+        String classifier = dependency.getClassifier();
+        if (classifier == null) {
+            return artifactFactory.createArtifact(groupId, artifactId, version, Artifact.SCOPE_RUNTIME, type);
+        } else {
+            return artifactFactory.createArtifactWithClassifier(groupId, artifactId, version, type, classifier);
+        }
     }
 
 }
