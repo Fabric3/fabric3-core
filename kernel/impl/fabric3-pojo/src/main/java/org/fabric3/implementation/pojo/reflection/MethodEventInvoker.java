@@ -47,7 +47,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Performs an wire on a method of a given instance
+ * Performs an invocation on a method of a given instance
  *
  * @version $Rev$ $Date$
  */
