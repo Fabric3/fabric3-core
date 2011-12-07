@@ -75,6 +75,10 @@
         <f3:implementation.system class="org.fabric3.contribution.processor.SymLinkContributionProcessor"/>
     </component>
 
+    <component name="CompositeContributionProcessor">
+        <f3:implementation.system class="org.fabric3.contribution.processor.CompositeContributionProcessor"/>
+    </component>
+
     <component name="XmlIndexerRegistry">
         <f3:implementation.system class="org.fabric3.contribution.processor.XmlIndexerRegistryImpl"/>
     </component>
@@ -90,6 +94,14 @@
     <component name="DefinitionsProcessor">
         <f3:implementation.system class="org.fabric3.contribution.processor.DefinitionsProcessor"/>
         <reference name="loader" target="DefinitionsLoader"/>
+    </component>
+
+    <component name="ConfigIndexer">
+        <f3:implementation.system class="org.fabric3.contribution.processor.ConfigIndexer"/>
+    </component>
+
+    <component name="ConfigProcessor">
+        <f3:implementation.system class="org.fabric3.contribution.processor.ConfigProcessor"/>
     </component>
 
     <component name="DeploymentPlanXmlProcessor">
