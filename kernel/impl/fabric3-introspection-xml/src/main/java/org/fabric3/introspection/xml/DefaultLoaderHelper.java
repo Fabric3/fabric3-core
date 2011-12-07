@@ -149,7 +149,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
             String prefix = e.getPrefix();
             URI uri = context.getContributionUri();
             context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in contribution " + uri
-                    + " is invalid", reader));
+                                                            + " is invalid", reader));
         }
     }
 
@@ -285,6 +285,17 @@ public class DefaultLoaderHelper implements LoaderHelper {
                 } else {
                     document.appendChild(child);
                 }
+                int count = reader.getAttributeCount();
+                for (int i = 0; i < count; i++) {
+                    String attrNamespace = reader.getAttributeNamespace(i);
+                    String attrName = reader.getAttributeLocalName(i);
+                    String attrValue = reader.getAttributeValue(i);
+                    if (attrNamespace == null) {
+                        child.setAttribute(attrName, attrValue);
+                    } else {
+                        child.setAttributeNS(attrNamespace, attrName, attrValue);
+                    }
+                }
                 element = child;
                 depth++;
                 break;
@@ -317,6 +328,10 @@ public class DefaultLoaderHelper implements LoaderHelper {
                 } else {
                     element = element.getParentNode();
                 }
+                break;
+            case XMLStreamConstants.END_DOCUMENT:
+                return document;
+
             case ENTITY_REFERENCE:
             case COMMENT:
             case SPACE:
