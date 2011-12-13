@@ -144,8 +144,10 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
                     }
                 }
 
+                // remove all the registered Listeners
+                // Note the listeners must also be unregistered , c.f. FABRICTHREE-630
                 public void contextDestroyed(ServletContextEvent sce) {
-
+                    context.getSessionHandler().clearEventListeners();
                 }
             });
             context.start();
@@ -177,6 +179,9 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         } catch (Exception e) {
             throw new WebApplicationActivationException(e);
         }
+        context.setClassLoader(null);
+        jettyService.removeHandler(context);
+
         monitor.deactivated(holder.getContextPath());
     }
 

@@ -69,5 +69,7 @@ public interface JettyService extends ServletHost {
      */
     void registerHandler(Handler handler);
 
+    void removeHandler(Handler handler);
+
 
 }

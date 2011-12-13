@@ -512,6 +512,10 @@ public class JettyServiceImpl implements JettyService, Transport {
         rootHandler.addHandler(handler);
     }
 
+    public void removeHandler(Handler handler){
+        rootHandler.removeHandler(handler);
+    }
+
     private void initializeConnector() throws IOException, JettyInitializationException {
         selectHttpPort();
         selectHttpsPort();
