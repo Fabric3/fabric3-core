@@ -30,12 +30,6 @@
         </dependency>
 
         <dependency>
-            <groupId>net.java.xadisk</groupId>
-            <artifactId>xadisk</artifactId>
-            <version>1.2</version>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
