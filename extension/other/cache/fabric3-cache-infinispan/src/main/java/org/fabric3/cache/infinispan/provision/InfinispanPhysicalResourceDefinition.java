@@ -38,8 +38,6 @@
 
 package org.fabric3.cache.infinispan.provision;
 
-import org.w3c.dom.Document;
-
 import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
 
 /**
@@ -49,14 +47,25 @@ import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
  */
 public class InfinispanPhysicalResourceDefinition extends PhysicalCacheResourceDefinition {
     private static final long serialVersionUID = -6400612928297999316L;
-    private Document configuration;
+    private String configuration;
 
-    public InfinispanPhysicalResourceDefinition(String cacheName, Document configuration) {
+    /**
+     * Constructor.
+     *
+     * @param cacheName     the unique cache name
+     * @param configuration the Infinispan configuration as specified in the composite cache entry
+     */
+    public InfinispanPhysicalResourceDefinition(String cacheName, String configuration) {
         super(cacheName);
         this.configuration = configuration;
     }
 
-    public Document getConfiguration() {
+    /**
+     * Returns the Infinispan configuration as specified in the composite cache entry.
+     *
+     * @return the Infinispan configuration
+     */
+    public String getCacheConfiguration() {
         return configuration;
     }
 }

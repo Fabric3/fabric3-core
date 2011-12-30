@@ -37,11 +37,14 @@
  */
 package org.fabric3.cache.infinispan.generator;
 
+import javax.xml.transform.TransformerException;
+
 import org.oasisopen.sca.annotation.EagerInit;
 import org.w3c.dom.Document;
 
 import org.fabric3.cache.infinispan.model.InfinispanCacheResourceDefinition;
 import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
+import org.fabric3.cache.infinispan.util.XmlHelper;
 import org.fabric3.cache.spi.CacheResourceGenerator;
 import org.fabric3.spi.generator.GenerationException;
 
@@ -56,6 +59,12 @@ public class InfinispanResourceGenerator implements CacheResourceGenerator<Infin
     public InfinispanPhysicalResourceDefinition generateResource(InfinispanCacheResourceDefinition definition) throws GenerationException {
         String name = definition.getCacheName();
         Document configuration = definition.getCacheConfiguration();
-        return new InfinispanPhysicalResourceDefinition(name, configuration);
+        try {
+            String serialized = XmlHelper.transform(configuration);
+            return new InfinispanPhysicalResourceDefinition(name, serialized);
+        } catch (TransformerException e) {
+            throw new GenerationException(e);
+        }
     }
+
 }

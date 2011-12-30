@@ -17,6 +17,7 @@ Public License. See the accompanying license file for details.
 
     <component name="InfinispanCacheManager" f3:key="org.fabric3.cache.infinispan.model.InfinispanCacheResourceDefinition">
         <f3:implementation.system class="org.fabric3.cache.infinispan.runtime.InfinispanCacheManager"/>
+        <property name="channelConfig" source="$systemConfig//f3:infinispan/f3:jgroups/f3:config"/>
     </component>
 
     <component name="InfinispanCacheBuilder" f3:key="org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition">

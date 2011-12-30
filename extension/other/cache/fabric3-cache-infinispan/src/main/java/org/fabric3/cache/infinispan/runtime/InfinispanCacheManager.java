@@ -38,26 +38,18 @@
 package org.fabric3.cache.infinispan.runtime;
 
 import java.io.ByteArrayInputStream;
-import java.io.StringWriter;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.management.MBeanServer;
 import javax.transaction.TransactionManager;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.infinispan.Cache;
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
-import org.infinispan.configuration.cache.TransactionConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.configuration.global.TransportConfigurationBuilder;
 import org.infinispan.configuration.parsing.ConfigurationBuilderHolder;
@@ -65,20 +57,22 @@ import org.infinispan.configuration.parsing.Parser;
 import org.infinispan.jmx.MBeanServerLookup;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
-import org.infinispan.remoting.transport.jgroups.JGroupsChannelLookup;
 import org.infinispan.remoting.transport.jgroups.JGroupsTransport;
 import org.infinispan.transaction.lookup.TransactionManagerLookup;
-import org.jgroups.Channel;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Element;
 
 import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
+import org.fabric3.cache.infinispan.util.XmlHelper;
 import org.fabric3.cache.spi.CacheBuildException;
 import org.fabric3.cache.spi.CacheManager;
+import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.federation.ZoneChannelException;
 
 /**
  * Manages Infinispan cache resources on a runtime.
@@ -91,21 +85,16 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
     private MBeanServer mBeanServer;
     private HostInfo info;
 
-    private ZoneTopologyService topologyService;
-
     private Fabric3TransactionManagerLookup txLookup;
 
     private EmbeddedCacheManager cacheManager;
     private Map<String, Cache<?, ?>> caches = new ConcurrentHashMap<String, Cache<?, ?>>();
+    private String channelConfig;
 
-    /**
-     * Sets the optional topology service. On single-vM runtimes, the service not present.
-     *
-     * @param topologyService the topology service
-     */
-    @Reference(required = false)
-    public void setTopologyService(ZoneTopologyService topologyService) {
-        this.topologyService = topologyService;
+    @Property(required = false)
+    public void setChannelConfig(Element config) throws TransformerException {
+        Element element = (Element) config.getElementsByTagName("config").item(0);
+        channelConfig = XmlHelper.transform(element);
     }
 
     public InfinispanCacheManager(@Reference TransactionManager tm, @Reference MBeanServer mBeanServer, @Reference HostInfo info) {
@@ -116,10 +105,10 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
     }
 
     @Init
-    public void init() {
+    public void init() throws ZoneChannelException {
         String authority = info.getDomain().getAuthority();
         GlobalConfigurationBuilder builder = new GlobalConfigurationBuilder();
-        configureCluster(authority, builder);
+        configureCluster(builder);
         Fabric3MBeanServerLookup serverLookup = new Fabric3MBeanServerLookup();
         builder.globalJmxStatistics().jmxDomain(authority).mBeanServerLookup(serverLookup);
 
@@ -128,11 +117,8 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
     }
 
     @Destroy
-    public void destroy() {
+    public void destroy() throws ZoneChannelException {
         cacheManager.stop();
-        if (Fabric3ChannelLookup.CHANNEL != null) {
-            Fabric3ChannelLookup.CHANNEL.close();
-        }
     }
 
     @SuppressWarnings({"unchecked"})
@@ -141,7 +127,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
     }
 
     public void create(InfinispanPhysicalResourceDefinition definition) throws CacheBuildException {
-        // Set TCCL for StAX parser
+        // Set TCCL for the StAX parser use by Infinispan
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
@@ -160,8 +146,8 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
         }
     }
 
-    public void remove(InfinispanPhysicalResourceDefinition resourceDefinition) throws CacheBuildException {
-        String cacheName = resourceDefinition.getCacheName();
+    public void remove(InfinispanPhysicalResourceDefinition definition) throws CacheBuildException {
+        String cacheName = definition.getCacheName();
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
@@ -175,36 +161,29 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
         }
     }
 
-    private ConfigurationBuilder parseConfiguration(InfinispanPhysicalResourceDefinition resourceDefinition) throws CacheBuildException {
+    private ConfigurationBuilder parseConfiguration(InfinispanPhysicalResourceDefinition definition) throws CacheBuildException {
         try {
-            StringWriter writer = new StringWriter();
-            StreamResult result = new StreamResult(writer);
-            Source source = new DOMSource(resourceDefinition.getConfiguration());
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.transform(source, result);
-
             Parser parser = new Parser(this.getClass().getClassLoader());
-            ConfigurationBuilderHolder holder = parser.parse(new ByteArrayInputStream(writer.getBuffer().toString().getBytes()));
+            String configuration = definition.getCacheConfiguration();
+            ConfigurationBuilderHolder holder = parser.parse(new ByteArrayInputStream(configuration.getBytes()));
             return holder.newConfigurationBuilder();
-        } catch (TransformerConfigurationException e) {
-            throw new CacheBuildException(e);
-        } catch (TransformerException e) {
-            throw new CacheBuildException(e);
         } catch (TransformerFactoryConfigurationError e) {
             throw new CacheBuildException(e);
         }
     }
 
-    private void configureCluster(String authority, GlobalConfigurationBuilder globalConfig) {
+    private void configureCluster(GlobalConfigurationBuilder builder) throws ZoneChannelException {
         // TODO support the case where a single VM is connecting to an external cache
-        if (topologyService != null) {
-            TransportConfigurationBuilder transportBuilder = globalConfig.transport();
+        if (RuntimeMode.PARTICIPANT == info.getRuntimeMode()) {
+            // runtime is clustered, configure the cache for clustering
+            TransportConfigurationBuilder transportBuilder = builder.transport();
             transportBuilder.machineId(info.getRuntimeName());
-            // transport.clusterName();// set to the cache name
-            JGroupsTransport jgroupsTransport = new JGroupsTransport();
-            transportBuilder.transport(jgroupsTransport);
-            // transport.addProperty(JGroupsTransport.CHANNEL_LOOKUP, Fabric3ChannelLookup.class.getName());
-            // Fabric3ChannelLookup.CHANNEL = topologyService.openChannel("",null,null);  // set to the cache name
+            if (channelConfig != null) {
+                transportBuilder.addProperty(JGroupsTransport.CONFIGURATION_XML, channelConfig);
+            }
+
+            JGroupsTransport transport = new JGroupsTransport();
+            transportBuilder.transport(transport);
         }
     }
 
@@ -222,21 +201,6 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
         }
     }
 
-    private static class Fabric3ChannelLookup implements JGroupsChannelLookup {
-        private static Channel CHANNEL;
-
-        public Channel getJGroupsChannel(Properties p) {
-            return CHANNEL;
-        }
-
-        public boolean shouldStartAndConnect() {
-            return false;
-        }
-
-        public boolean shouldStopAndDisconnect() {
-            return false;
-        }
-    }
 
 }
 

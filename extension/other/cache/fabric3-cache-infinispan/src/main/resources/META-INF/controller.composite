@@ -14,15 +14,12 @@ Public License. See the accompanying license file for details.
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:f3="urn:fabric3.org"
+           xmlns:infinispan="urn:infinispan:config:5.1"
            targetNamespace="urn:fabric3.org"
            name="InfinispanControllerExtension"
            autowire="true">
 
-    <component name="F3InfinispanTypeLoader" f3:key="f3:infinispan">
-        <f3:implementation.system class="org.fabric3.cache.infinispan.introspection.InfinispanTypeLoader"/>
-    </component>
-
-    <component name="SCAInfinispanTypeLoader" f3:key="sca:infinispan">
+    <component name="F3InfinispanTypeLoader" f3:key="infinispan:infinispan">
         <f3:implementation.system class="org.fabric3.cache.infinispan.introspection.InfinispanTypeLoader"/>
     </component>
 
