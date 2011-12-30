@@ -47,7 +47,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.infinispan.Cache;
-import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
@@ -70,7 +69,6 @@ import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefiniti
 import org.fabric3.cache.infinispan.util.XmlHelper;
 import org.fabric3.cache.spi.CacheBuildException;
 import org.fabric3.cache.spi.CacheManager;
-import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.federation.ZoneChannelException;
 
@@ -109,6 +107,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
         String authority = info.getDomain().getAuthority();
         GlobalConfigurationBuilder builder = new GlobalConfigurationBuilder();
         configureCluster(builder);
+
         Fabric3MBeanServerLookup serverLookup = new Fabric3MBeanServerLookup();
         builder.globalJmxStatistics().jmxDomain(authority).mBeanServerLookup(serverLookup);
 
@@ -133,10 +132,11 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
             ConfigurationBuilder builder = parseConfiguration(definition);
+
             builder.transaction().transactionManagerLookup(txLookup);
-            builder.clustering().cacheMode(CacheMode.REPL_SYNC);
 
             Configuration configuration = builder.build();
+
             String cacheName = definition.getCacheName();
             cacheManager.defineConfiguration(cacheName, configuration);
             Cache<?, ?> cache = cacheManager.getCache(cacheName);
@@ -165,7 +165,8 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
         try {
             Parser parser = new Parser(this.getClass().getClassLoader());
             String configuration = definition.getCacheConfiguration();
-            ConfigurationBuilderHolder holder = parser.parse(new ByteArrayInputStream(configuration.getBytes()));
+            ByteArrayInputStream stream = new ByteArrayInputStream(configuration.getBytes());
+            ConfigurationBuilderHolder holder = parser.parse(stream);
             return holder.newConfigurationBuilder();
         } catch (TransformerFactoryConfigurationError e) {
             throw new CacheBuildException(e);
@@ -174,17 +175,13 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
 
     private void configureCluster(GlobalConfigurationBuilder builder) throws ZoneChannelException {
         // TODO support the case where a single VM is connecting to an external cache
-        if (RuntimeMode.PARTICIPANT == info.getRuntimeMode()) {
-            // runtime is clustered, configure the cache for clustering
-            TransportConfigurationBuilder transportBuilder = builder.transport();
-            transportBuilder.machineId(info.getRuntimeName());
-            if (channelConfig != null) {
-                transportBuilder.addProperty(JGroupsTransport.CONFIGURATION_XML, channelConfig);
-            }
-
-            JGroupsTransport transport = new JGroupsTransport();
-            transportBuilder.transport(transport);
+        TransportConfigurationBuilder transportBuilder = builder.transport();
+        transportBuilder.machineId(info.getRuntimeName());
+        if (channelConfig != null) {
+            transportBuilder.addProperty(JGroupsTransport.CONFIGURATION_XML, channelConfig);
         }
+        JGroupsTransport transport = new JGroupsTransport();
+        transportBuilder.transport(transport);
     }
 
     private class Fabric3MBeanServerLookup implements MBeanServerLookup {
