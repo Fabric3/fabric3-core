@@ -50,7 +50,7 @@ public class DuplicateConfiguredProperty extends XmlValidationFailure {
     private ComponentDefinition definition;
 
     public DuplicateConfiguredProperty(String propertyName, ComponentDefinition definition, XMLStreamReader reader) {
-        super("The property " + propertyName + " on component " + definition.getName() + "is configured more than once", reader);
+        super("The property " + propertyName + " on component " + definition.getName() + " is configured more than once", reader);
         this.propertyName = propertyName;
         this.definition = definition;
     }
