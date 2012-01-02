@@ -71,7 +71,7 @@ public class MultiClassLoaderObjectInputStream extends ObjectInputStream {
             URI uri = URI.create(id);
             ClassLoader cl = registry.getClassLoader(uri);
             if (cl == null) {
-                throw new IOException("Contribution not installed. Classloader not found: " + id);
+                throw new IOException("Contribution not installed: " + id);
             }
             return Class.forName(desc.getName(), false, cl);
         }
