@@ -1,12 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="urn:fabric3.org">
     <runtime mode="participant" port.range="8181-8282"/>
-    <federation>
-        <transport>
-            <value>
-                <entry><key>http</key><value>localhost:8181</value></entry>
-                <entry><key>binding.net.http</key><value>localhost:8282</value></entry>
-            </value>
-        </transport>
-    </federation>
 </config>
