@@ -40,6 +40,7 @@ package org.fabric3.implementation.web.introspection;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -72,11 +73,15 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 public class WebComponentLoader implements TypeLoader<WebImplementation> {
 
     private LoaderRegistry registry;
-    private WebImplementationIntrospector introspector;
+    private List<WebImplementationIntrospector> introspectors;
 
-    public WebComponentLoader(@Reference LoaderRegistry registry, @Reference WebImplementationIntrospector introspector) {
+    public WebComponentLoader(@Reference LoaderRegistry registry) {
         this.registry = registry;
-        this.introspector = introspector;
+    }
+
+    @Reference
+    public void setIntrospectors(List<WebImplementationIntrospector> introspectors) {
+        this.introspectors = introspectors;
     }
 
     @Init
@@ -94,7 +99,9 @@ public class WebComponentLoader implements TypeLoader<WebImplementation> {
     public WebImplementation load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
 
         WebImplementation impl = new WebImplementation();
-        introspector.introspect(impl, introspectionContext);
+        for (WebImplementationIntrospector introspector : introspectors) {
+            introspector.introspect(impl, introspectionContext);
+        }
 
         try {
             ComponentType type = impl.getComponentType();
