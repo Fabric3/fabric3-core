@@ -103,6 +103,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
     private DocumentBuilderFactory documentBuilderFactory;
     private PolicyRegistry policyRegistry;
     private boolean strictValidation;
+    private boolean errorChecking = true;
 
     public DefaultLoaderHelper() {
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -118,6 +119,11 @@ public class DefaultLoaderHelper implements LoaderHelper {
     @Property(required = false)
     public void setStrictValidation(boolean strictValidation) {
         this.strictValidation = strictValidation;
+    }
+
+    @Property(required = false)
+    public void setErrorChecking(boolean errorChecking) {
+        this.errorChecking = errorChecking;
     }
 
     public String loadKey(XMLStreamReader reader) {
@@ -245,16 +251,9 @@ public class DefaultLoaderHelper implements LoaderHelper {
     }
 
     public Document loadPropertyValues(XMLStreamReader reader) throws XMLStreamException {
-        DocumentBuilder builder;
-        try {
-            builder = documentBuilderFactory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new AssertionError(e);
-        }
+        Document document = createDocument();
 
         int depth = 0;
-        Document document = builder.newDocument();
-
         Element root = document.createElementNS("", "values");
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             root.setAttributeNS(reader.getAttributeNamespace(i),
@@ -343,14 +342,8 @@ public class DefaultLoaderHelper implements LoaderHelper {
     }
 
     public Document loadPropertyValue(String content) throws XMLStreamException {
-        DocumentBuilder builder;
-        try {
-            builder = documentBuilderFactory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new AssertionError(e);
-        }
+        Document document = createDocument();
 
-        Document document = builder.newDocument();
         Element root = document.createElement("values");
         document.appendChild(root);
         Element element = document.createElement("value");
@@ -367,8 +360,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
             throw new XMLStreamException("The stream needs to be at the start of an element");
         }
 
-        DocumentBuilder builder = getDocumentBuilder();
-        Document document = builder.newDocument();
+        Document document = createDocument();
 
         QName rootName = reader.getName();
         Element root = createElement(reader, document, rootName);
@@ -441,6 +433,16 @@ public class DefaultLoaderHelper implements LoaderHelper {
             prefix = prefix == null ? "xmlns" : "xmlns:" + prefix;
             element.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, prefix, uri);
         }
+    }
+
+    private Document createDocument() throws XMLStreamException {
+        DocumentBuilder builder = getDocumentBuilder();
+        Document document = builder.newDocument();
+
+        if (!errorChecking) {
+            document.setStrictErrorChecking(false);
+        }
+        return document;
     }
 
     private DocumentBuilder getDocumentBuilder() throws XMLStreamException {
