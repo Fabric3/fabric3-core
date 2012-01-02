@@ -368,7 +368,7 @@ public abstract class AbstractDomain implements Domain {
             ResourceElement<QNameSymbol, Composite> element = metadataStore.find(Composite.class, symbol);
             if (element == null) {
                 throw new DeploymentException("Contribution containing the deployable not found: " + deployable
-                        + ". The domain journal (domain.xml) may be out of sync.");
+                                                      + ". The domain journal (domain.xml) may be out of sync.");
             }
             Contribution contribution = element.getResource().getContribution();
             if (contribution == null) {
@@ -644,6 +644,9 @@ public abstract class AbstractDomain implements Domain {
      */
     private synchronized void activateAndDeployDefinitions(URI uri, boolean recover) throws DeploymentException {
         Contribution contribution = metadataStore.find(uri);
+        if (contribution == null) {
+            throw new DeploymentException("Contribution not installed: " + uri);
+        }
         if (ContributionState.INSTALLED != contribution.getState()) {
             throw new ContributionNotInstalledException("Contribution is not installed: " + uri);
         }
