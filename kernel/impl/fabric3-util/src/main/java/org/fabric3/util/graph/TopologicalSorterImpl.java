@@ -118,8 +118,7 @@ public class TopologicalSorterImpl<T> implements TopologicalSorter<T> {
      * @return the total ordering calculated by the topological sort
      * @throws CycleException if a cycle is detected
      */
-    private List<Vertex<T>> sort(DirectedGraph<T> dag, Map<Vertex<T>, AtomicInteger> vertices, List<Vertex<T>> roots)
-            throws CycleException {
+    private List<Vertex<T>> sort(DirectedGraph<T> dag, Map<Vertex<T>, AtomicInteger> vertices, List<Vertex<T>> roots) throws CycleException {
         List<Vertex<T>> visited = new ArrayList<Vertex<T>>();
         int num = vertices.size() + roots.size();
         while (!roots.isEmpty()) {
