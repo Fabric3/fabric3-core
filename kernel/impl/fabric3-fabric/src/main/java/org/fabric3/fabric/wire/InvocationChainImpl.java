@@ -48,7 +48,7 @@ import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
- * Default implementation of an invocation chain
+ * Default implementation of an invocation chain.
  *
  * @version $Rev$ $Date$
  */
