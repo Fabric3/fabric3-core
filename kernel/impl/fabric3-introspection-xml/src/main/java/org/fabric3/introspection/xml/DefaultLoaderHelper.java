@@ -103,7 +103,6 @@ public class DefaultLoaderHelper implements LoaderHelper {
     private DocumentBuilderFactory documentBuilderFactory;
     private PolicyRegistry policyRegistry;
     private boolean strictValidation;
-    private boolean errorChecking = true;
 
     public DefaultLoaderHelper() {
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -119,11 +118,6 @@ public class DefaultLoaderHelper implements LoaderHelper {
     @Property(required = false)
     public void setStrictValidation(boolean strictValidation) {
         this.strictValidation = strictValidation;
-    }
-
-    @Property(required = false)
-    public void setErrorChecking(boolean errorChecking) {
-        this.errorChecking = errorChecking;
     }
 
     public String loadKey(XMLStreamReader reader) {
@@ -437,12 +431,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
 
     private Document createDocument() throws XMLStreamException {
         DocumentBuilder builder = getDocumentBuilder();
-        Document document = builder.newDocument();
-
-        if (!errorChecking) {
-            document.setStrictErrorChecking(false);
-        }
-        return document;
+        return builder.newDocument();
     }
 
     private DocumentBuilder getDocumentBuilder() throws XMLStreamException {
@@ -453,24 +442,25 @@ public class DefaultLoaderHelper implements LoaderHelper {
         }
     }
 
-    /*
-     * Creates the element and populates the namespace declarations and attributes.
+    /**
+     * Creates the element and populates namespace declarations and attributes.
+     *
+     * @param reader   the reader source
+     * @param document the document to update
+     * @param rootName the root element name
+     * @return the element
      */
-
     private Element createElement(XMLStreamReader reader, Document document, QName rootName) {
-
         Element root = document.createElementNS(rootName.getNamespaceURI(), rootName.getLocalPart());
 
         // Handle namespace declarations
         for (int i = 0; i < reader.getNamespaceCount(); i++) {
-
             String prefix = reader.getNamespacePrefix(i);
             String uri = reader.getNamespaceURI(i);
 
             prefix = prefix == null ? "xmlns" : "xmlns:" + prefix;
 
             root.setAttribute(prefix, uri);
-
         }
 
         // Handle attributes
@@ -480,14 +470,16 @@ public class DefaultLoaderHelper implements LoaderHelper {
             String localName = reader.getAttributeLocalName(i);
             String value = reader.getAttributeValue(i);
             String attributePrefix = reader.getAttributePrefix(i);
-            String qualifiedName = attributePrefix == null ? localName : attributePrefix + ":" + localName;
+            String qualifiedName = attributePrefix == null || attributePrefix.length() == 0 ? localName : attributePrefix + ":" + localName;
 
-            root.setAttributeNS(attributeNs, qualifiedName, value);
+            if (attributeNs == null || attributeNs.length() == 0) {
+                root.setAttribute(qualifiedName, value);
+            } else {
+                root.setAttributeNS(attributeNs, qualifiedName, value);
+            }
 
         }
-
         return root;
-
     }
 
 
