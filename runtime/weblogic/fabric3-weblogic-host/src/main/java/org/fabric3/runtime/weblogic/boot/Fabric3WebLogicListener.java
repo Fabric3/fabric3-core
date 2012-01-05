@@ -101,14 +101,14 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             context = event.getServletContext();
             RuntimeMode runtimeMode = getRuntimeMode();
             MBeanServer mBeanServer = getMBeanServer();
-            String pathname = System.getProperty(FABRIC3_HOME);
-            if (pathname == null) {
+            String pathName = System.getProperty(FABRIC3_HOME);
+            if (pathName == null) {
                 event.getServletContext().log("fabric3.home system property not specified");
                 return;
             }
-            File installDirectory = new File(pathname);
+            File installDirectory = new File(pathName);
             if (!installDirectory.exists()) {
-                event.getServletContext().log("fabric3.home directory does not exist: " + pathname);
+                event.getServletContext().log("fabric3.home directory does not exist: " + pathName);
                 return;
             }
             start(runtimeMode, mBeanServer, installDirectory);
@@ -244,6 +244,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             configuration.setUserContributions(result.getUserContributions());
             configuration.setExportedPackages(exportedPackages);
             configuration.setHostCapabilities(getHostCapabilities());
+
             // boot the runtime
             coordinator = bootstrapService.createCoordinator(configuration);
             coordinator.start();
