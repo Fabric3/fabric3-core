@@ -37,6 +37,8 @@
 */
 package org.fabric3.binding.rs.provision;
 
+import java.net.URI;
+
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
@@ -44,4 +46,17 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
  */
 public class RsTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = -4324727803731009324L;
+	
+    private final String rsInterface;
+	
+    public RsTargetDefinition(URI targetURI, String clazz) {
+		super();
+		setUri(targetURI);
+		rsInterface = clazz;
+	}
+
+	public String getProxyInterface() {
+		return rsInterface;
+	}
+    
 }
