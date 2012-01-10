@@ -52,7 +52,7 @@ public class RsClientResponse {
 	}
 
 	public <T extends Annotation> RsClientResponse withAction(T annotation) {
-		if (annotation != null && action == null) {
+		if (annotation != null) {
 			action = annotation;
 		}
 		return this;
@@ -194,7 +194,7 @@ public class RsClientResponse {
 		else  if (action.annotationType() == GET.class) {
 			return builder.get (ClientResponse.class);
 		}
-		return null;
+		throw new WebApplicationException(Status.PRECONDITION_FAILED.ordinal());
 	}
 
 }

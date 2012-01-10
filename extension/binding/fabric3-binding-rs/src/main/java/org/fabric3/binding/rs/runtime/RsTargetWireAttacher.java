@@ -97,9 +97,6 @@ public class RsTargetWireAttacher implements TargetWireAttacher<RsTargetDefiniti
 			RsClientResponse cfg = new RsClientResponse(m.getReturnType(),uri);
 			cfg = cfg.
 			      // Class level  
-				  withAction(intf.getAnnotation(PUT.class)).
-				  withAction(intf.getAnnotation(POST.class)).
-				  withAction(intf.getAnnotation(GET.class)).
 			      withPath(intf.getAnnotation(Path.class)).
 			      withProduces(intf.getAnnotation(Produces.class)).
 			      withConsumes(intf.getAnnotation(Consumes.class)).
