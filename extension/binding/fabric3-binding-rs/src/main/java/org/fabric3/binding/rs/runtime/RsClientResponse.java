@@ -30,7 +30,7 @@ import com.sun.jersey.core.util.StringKeyIgnoreCaseMultivaluedMap;
 /**
  * 
  * Jersey Client REST Response Builder
- * @author ievdokimov
+ * @author palmalcheg
  *
  */
 public class RsClientResponse {
@@ -120,7 +120,7 @@ public class RsClientResponse {
 			return result;		
 		}		
 		// Happens when all Media Types iterated without a luck =((
-		throw new WebApplicationException(Status.UNSUPPORTED_MEDIA_TYPE.ordinal());
+		throw new WebApplicationException(Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
 		
 		 
 	}
@@ -194,7 +194,7 @@ public class RsClientResponse {
 		else  if (action.annotationType() == GET.class) {
 			return builder.get (ClientResponse.class);
 		}
-		throw new WebApplicationException(Status.PRECONDITION_FAILED.ordinal());
+		throw new WebApplicationException(Status.PRECONDITION_FAILED.getStatusCode());
 	}
 
 }
