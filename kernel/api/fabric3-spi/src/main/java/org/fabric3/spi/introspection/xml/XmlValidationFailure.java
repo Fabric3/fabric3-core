@@ -52,6 +52,7 @@ public abstract class XmlValidationFailure extends ValidationFailure {
     private final int column;
     private final String message;
     private String resourceURI;
+    private int offset;
 
     protected XmlValidationFailure(String message, XMLStreamReader reader) {
         this.message = message;
@@ -59,6 +60,7 @@ public abstract class XmlValidationFailure extends ValidationFailure {
         if (location != null) {
             line = location.getLineNumber();
             column = location.getColumnNumber();
+            offset = location.getCharacterOffset();
             resourceURI = location.getSystemId();
         } else {
             resourceURI = "system";
@@ -73,6 +75,10 @@ public abstract class XmlValidationFailure extends ValidationFailure {
 
     public int getColumn() {
         return column;
+    }
+
+    public int getOffset() {
+        return offset;
     }
 
     public String getResourceURI() {
