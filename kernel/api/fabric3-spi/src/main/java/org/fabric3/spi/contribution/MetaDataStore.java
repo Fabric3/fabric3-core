@@ -93,7 +93,7 @@ public interface MetaDataStore {
     <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(Class<V> type, S symbol);
 
     /**
-     * Finds a resource element by its symbol against the given contribution uri. This method assumes the resource and .
+     * Finds a resource element by its symbol against the given contribution uri.
      *
      * @param uri    the contribution URI to resolve against
      * @param type   the class representing the resource
@@ -102,6 +102,16 @@ public interface MetaDataStore {
      * @throws StoreException if an error occurs during resolution
      */
     <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) throws StoreException;
+
+    /**
+     * Returns a collection of resource elements that reference the artifact represented by the given symbol.
+     *
+     * @param uri    the URI of the contribution to use as the search context
+     * @param symbol the artifact symbol
+     * @return the set of resources that reference the artifact
+     * @throws StoreException if an error occurs during resolution
+     */
+    <S extends Symbol> Set<ResourceElement<S, ?>> findReferences(URI uri, S symbol) throws StoreException;
 
 
     /**
@@ -119,6 +129,7 @@ public interface MetaDataStore {
                                                                              Class<V> type,
                                                                              S symbol,
                                                                              IntrospectionContext context) throws StoreException;
+
     /**
      * Resolves an import or returns an empty list if it cannot be satisfied.
      *

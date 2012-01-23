@@ -40,6 +40,8 @@ package org.fabric3.contribution;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +62,7 @@ import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
+import org.fabric3.spi.contribution.ReferenceIntrospector;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.ResourceState;
@@ -74,6 +77,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 public class MetaDataStoreImpl implements MetaDataStore {
     private ProcessorRegistry processorRegistry;
     private ContributionWireInstantiatorRegistry instantiatorRegistry;
+    private Map<Class<?>, ReferenceIntrospector> referenceIntrospectors = new HashMap<Class<?>, ReferenceIntrospector>();
 
     private Map<URI, Contribution> cache = new ConcurrentHashMap<URI, Contribution>();
 
@@ -94,6 +98,11 @@ public class MetaDataStoreImpl implements MetaDataStore {
     @Reference
     public void setInstantiatorRegistry(ContributionWireInstantiatorRegistry instantiatorRegistry) {
         this.instantiatorRegistry = instantiatorRegistry;
+    }
+
+    @Reference(required = false)
+    public void setReferenceIntrospectors(Map<Class<?>, ReferenceIntrospector> referenceIntrospectors) {
+        this.referenceIntrospectors = referenceIntrospectors;
     }
 
     public void store(Contribution contribution) throws StoreException {
@@ -132,6 +141,45 @@ public class MetaDataStoreImpl implements MetaDataStore {
 
     public <S extends Symbol, V extends Serializable> ResourceElement<S, V> find(URI uri, Class<V> type, S symbol) throws StoreException {
         return resolve(uri, type, symbol, null);
+    }
+
+    public <S extends Symbol> Set<ResourceElement<S, ?>> findReferences(URI uri, S symbol) throws StoreException {
+        Contribution contribution = find(uri);
+        if (contribution == null) {
+            String identifier = uri.toString();
+            throw new ContributionResolutionException("Contribution not found: " + identifier, identifier);
+        }
+
+        ResourceElement<S, ?> referred = find(uri, Serializable.class, symbol);
+        if (referred == null) {
+            return Collections.emptySet();
+        }
+        ReferenceIntrospector introspector = referenceIntrospectors.get(referred.getValue().getClass());
+        if (introspector == null) {
+            return Collections.emptySet();
+        }
+
+        Set<ResourceElement<S, ?>> elements = new HashSet<ResourceElement<S, ?>>();
+
+        // check the contribution for referring artifacts
+        findReferences(contribution, referred, elements, introspector);
+
+        // check dependent contributions
+        for (ContributionWire<?, ?> wire : contribution.getWires()) {
+            if (!wire.resolves(symbol)) {
+                // the wire doesn't resolve the specific resource
+                continue;
+            }
+            URI resolvedUri = wire.getExportContributionUri();
+            Contribution resolved = cache.get(resolvedUri);
+            if (resolved == null) {
+                // programming error
+                throw new AssertionError("Dependent contribution not found: " + resolvedUri);
+            }
+            findReferences(resolved, referred, elements, introspector);
+        }
+
+        return elements;
     }
 
     public <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context)
@@ -283,6 +331,21 @@ public class MetaDataStoreImpl implements MetaDataStore {
             }
         }
         return extensions;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private <S extends Symbol> void findReferences(Contribution contribution,
+                                                   ResourceElement<S, ?> referred,
+                                                   Set<ResourceElement<S, ?>> elements,
+                                                   ReferenceIntrospector introspector) {
+
+        for (Resource resource : contribution.getResources()) {
+            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
+                if (introspector.references(referred, element)) {
+                    elements.add((ResourceElement<S, ?>) element);
+                }
+            }
+        }
     }
 
     private Set<Contribution> resolveCapabilities(Contribution contribution, Set<Contribution> extensions) {
