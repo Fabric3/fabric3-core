@@ -88,7 +88,7 @@ public class MetaDataStoreImplFindReferencesTestCase extends TestCase {
         EasyMock.expect(introspector.references(EasyMock.isA(ResourceElement.class), EasyMock.isA(ResourceElement.class))).andReturn(true);
         EasyMock.expect(introspector.references(EasyMock.isA(ResourceElement.class), EasyMock.isA(ResourceElement.class))).andReturn(true);
         EasyMock.replay(introspector);
-        Map map = Collections.singletonMap(Composite.class, introspector);
+        Map map = Collections.singletonMap(Composite.class.getName(), introspector);
         store.setReferenceIntrospectors(map);
         Set<ResourceElement<QNameSymbol, ?>> set = store.findReferences(contributionUri, symbol);
         assertEquals(2, set.size());

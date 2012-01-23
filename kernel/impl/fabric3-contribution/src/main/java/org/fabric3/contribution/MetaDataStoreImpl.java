@@ -77,7 +77,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 public class MetaDataStoreImpl implements MetaDataStore {
     private ProcessorRegistry processorRegistry;
     private ContributionWireInstantiatorRegistry instantiatorRegistry;
-    private Map<Class<?>, ReferenceIntrospector> referenceIntrospectors = new HashMap<Class<?>, ReferenceIntrospector>();
+    private Map<String, ReferenceIntrospector> referenceIntrospectors = new HashMap<String, ReferenceIntrospector>();
 
     private Map<URI, Contribution> cache = new ConcurrentHashMap<URI, Contribution>();
 
@@ -100,9 +100,14 @@ public class MetaDataStoreImpl implements MetaDataStore {
         this.instantiatorRegistry = instantiatorRegistry;
     }
 
+    /**
+     * Sets the reference introspectors, keyed by class name. Class name is used since singleton components only support String-based keys.
+     *
+     * @param introspectors the introspectors.
+     */
     @Reference(required = false)
-    public void setReferenceIntrospectors(Map<Class<?>, ReferenceIntrospector> referenceIntrospectors) {
-        this.referenceIntrospectors = referenceIntrospectors;
+    public void setReferenceIntrospectors(Map<String, ReferenceIntrospector> introspectors) {
+        this.referenceIntrospectors = introspectors;
     }
 
     public void store(Contribution contribution) throws StoreException {
@@ -154,7 +159,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         if (referred == null) {
             return Collections.emptySet();
         }
-        ReferenceIntrospector introspector = referenceIntrospectors.get(referred.getValue().getClass());
+        ReferenceIntrospector introspector = referenceIntrospectors.get(referred.getValue().getClass().getName());
         if (introspector == null) {
             return Collections.emptySet();
         }
