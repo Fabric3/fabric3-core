@@ -60,6 +60,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.implementation.pojo.injection.ArrayMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.ListMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.injection.MapMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.injection.SetMultiplicityObjectFactory;
 import org.fabric3.spi.component.InstanceDestructionException;
@@ -194,14 +195,16 @@ public class SingletonComponent implements ScopedComponent {
     }
 
     /**
-     * Adds an ObjectFactory to be reinjected
+     * Adds an ObjectFactory to be reinjected. Note only String keys are supported for singleton components to avoid a requirement on the transformer
+     * infrastructure.
      *
      * @param injectable    the InjectableAttribute describing the site to reinject
      * @param objectFactory the object factory responsible for supplying a value to reinject
+     * @param key           the key for reference maps
      */
-    public void addObjectFactory(Injectable injectable, ObjectFactory objectFactory) {
+    public void addObjectFactory(Injectable injectable, ObjectFactory objectFactory, Object key) {
         if (InjectableType.REFERENCE == injectable.getType()) {
-            setFactory(injectable, objectFactory);
+            setFactory(injectable, objectFactory, key);
         } else {
             // the factory corresponds to a property or context, which will override previous values if reinjected
             reinjectionMappings.put(objectFactory, injectable);
@@ -259,12 +262,14 @@ public class SingletonComponent implements ScopedComponent {
         }
     }
 
-    private void setFactory(Injectable injectable, ObjectFactory objectFactory) {
+    private void setFactory(Injectable injectable, ObjectFactory objectFactory, Object key) {
         ObjectFactory<?> factory = findFactory(injectable);
         if (factory == null) {
             Class<?> type = getMemberType(injectable);
             if (Map.class.equals(type)) {
-                throw new AssertionError("Map references not supported on Singleton components");
+                MapMultiplicityObjectFactory mapFactory = new MapMultiplicityObjectFactory();
+                mapFactory.addObjectFactory(objectFactory, key);
+                reinjectionMappings.put(mapFactory, injectable);
             } else if (Set.class.equals(type)) {
                 SetMultiplicityObjectFactory setFactory = new SetMultiplicityObjectFactory();
                 setFactory.addObjectFactory(objectFactory, null);

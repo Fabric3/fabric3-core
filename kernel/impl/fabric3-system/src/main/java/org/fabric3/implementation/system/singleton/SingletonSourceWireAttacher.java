@@ -91,6 +91,7 @@ public class SingletonSourceWireAttacher implements SourceWireAttacher<Singleton
         Injectable injectable = source.getInjectable();
         // Add the object factory for the target to be reinjected.
         // The Injectable identifies the injection site (a field or method) on the singleton instance.
-        sourceComponent.addObjectFactory(injectable, objectFactory);
+        String key = source.getKey();
+        sourceComponent.addObjectFactory(injectable, objectFactory, key);
     }
 }
