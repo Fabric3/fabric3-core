@@ -65,6 +65,7 @@ import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.ReferenceIntrospector;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.contribution.ResourceElementUpdater;
 import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -78,6 +79,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     private ProcessorRegistry processorRegistry;
     private ContributionWireInstantiatorRegistry instantiatorRegistry;
     private Map<String, ReferenceIntrospector> referenceIntrospectors = new HashMap<String, ReferenceIntrospector>();
+    private Map<String, ResourceElementUpdater<?>> updaters = new HashMap<String, ResourceElementUpdater<?>>();
 
     private Map<URI, Contribution> cache = new ConcurrentHashMap<URI, Contribution>();
 
@@ -108,6 +110,16 @@ public class MetaDataStoreImpl implements MetaDataStore {
     @Reference(required = false)
     public void setReferenceIntrospectors(Map<String, ReferenceIntrospector> introspectors) {
         this.referenceIntrospectors = introspectors;
+    }
+
+    /**
+     * Sets the element updaters, keyed by class name. Class name is used since singleton components only support String-based keys.
+     *
+     * @param updaters the updaters.
+     */
+    @Reference(required = false)
+    public void setUpdaters(Map<String, ResourceElementUpdater<?>> updaters) {
+        this.updaters = updaters;
     }
 
     public void store(Contribution contribution) throws StoreException {
@@ -183,8 +195,24 @@ public class MetaDataStoreImpl implements MetaDataStore {
             }
             findReferences(resolved, referred, elements, introspector);
         }
-
         return elements;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public <V extends Serializable> void update(URI uri, V value) throws StoreException {
+        String clazz = value.getClass().getName();
+        ResourceElementUpdater<V> updater = (ResourceElementUpdater<V>) updaters.get(clazz);
+        if (updater == null) {
+            String identifier = uri.toString();
+            throw new ContributionUpdateException("Updater not found: " + identifier);
+        }
+        Contribution contribution = find(uri);
+        if (contribution == null) {
+            String identifier = uri.toString();
+            throw new ContributionResolutionException("Contribution not found: " + identifier, identifier);
+        }
+        Set<Contribution> dependentContributions = resolveDependentContributions(uri);
+        updater.update(value, contribution, dependentContributions);
     }
 
     public <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context)

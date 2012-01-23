@@ -189,4 +189,8 @@
         <f3:implementation.system class="org.fabric3.contribution.introspector.CompositeReferenceIntrospector"/>
     </component>
 
+    <component name="CompositeResourceElementUpdater" f3:key="org.fabric3.model.type.component.Composite">
+        <f3:implementation.system class="org.fabric3.contribution.updater.CompositeResourceElementUpdater"/>
+    </component>
+
 </composite>

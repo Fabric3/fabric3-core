@@ -113,6 +113,15 @@ public interface MetaDataStore {
      */
     <S extends Symbol> Set<ResourceElement<S, ?>> findReferences(URI uri, S symbol) throws StoreException;
 
+    /**
+     * Updates a resource element contained in a contribution. All references to the resource will be update in the containing and dependent
+     * contributions.
+     *
+     * @param uri   the contribution URI
+     * @param value the new resource element value
+     * @throws StoreException if an error occurs during update
+     */
+    <V extends Serializable> void update(URI uri, V value) throws StoreException;
 
     /**
      * Resolves a resource element by its symbol against the given contribution uri. Artifacts referenced by this resource will be resolved.
