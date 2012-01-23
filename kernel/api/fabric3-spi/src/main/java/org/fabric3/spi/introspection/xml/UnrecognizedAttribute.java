@@ -56,7 +56,7 @@ public class UnrecognizedAttribute extends XmlValidationFailure {
     /**
      * Constructor.
      *
-     * @param name   the attrbiute name
+     * @param name   the attribute name
      * @param reader the StAX reader positioned on the unrecognized element
      */
     public UnrecognizedAttribute(String name, XMLStreamReader reader) {
