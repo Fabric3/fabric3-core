@@ -235,7 +235,6 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         boolean valid = handleComponent(type, reader, nsContext, childContext);
                         if (!valid) {
                             updateContext(context, childContext, compositeName);
-                            return type;
                         }
                         continue;
                     } else if (WIRE.equals(qname)) {
