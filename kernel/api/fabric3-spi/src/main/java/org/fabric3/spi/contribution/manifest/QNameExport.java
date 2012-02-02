@@ -37,6 +37,10 @@
 */
 package org.fabric3.spi.contribution.manifest;
 
+import javax.xml.namespace.QName;
+
+import org.oasisopen.sca.Constants;
+
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 
@@ -47,11 +51,18 @@ import org.fabric3.spi.contribution.Import;
  */
 public class QNameExport implements Export {
     private static final long serialVersionUID = -6813997109078522174L;
+
+    private static final QName QNAME = new QName(Constants.SCA_NS, "export");
+
     private String namespace;
     private boolean resolved;
 
     public QNameExport(String namespace) {
         this.namespace = namespace;
+    }
+
+    public QName getType() {
+        return QNAME;
     }
 
     public String getNamespace() {
@@ -68,6 +79,10 @@ public class QNameExport implements Export {
 
     public void resolve() {
         resolved = true;
+    }
+
+    public String toString() {
+        return "qname: " + namespace;
     }
 
     @Override

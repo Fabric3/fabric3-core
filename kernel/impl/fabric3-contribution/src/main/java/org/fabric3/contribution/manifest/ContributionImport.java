@@ -41,6 +41,10 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
+import org.oasisopen.sca.Constants;
+
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 
@@ -51,12 +55,18 @@ import org.fabric3.spi.contribution.Import;
  */
 public class ContributionImport implements Import {
     private static final long serialVersionUID = 5947082714758125178L;
+    private static final QName QNAME = new QName(Constants.SCA_NS, "import.contribution");
+
     private URI symbolicUri;
     private Map<URI, Export> resolved;
 
     public ContributionImport(URI symbolicUri) {
         this.symbolicUri = symbolicUri;
         resolved = new HashMap<URI, Export>();
+    }
+
+    public QName getType() {
+        return QNAME;
     }
 
     public URI getLocation() {

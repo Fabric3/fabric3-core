@@ -38,6 +38,7 @@
 package org.fabric3.spi.contribution;
 
 import java.io.Serializable;
+import javax.xml.namespace.QName;
 
 /**
  * A contribution export.
@@ -45,6 +46,13 @@ import java.io.Serializable;
  * @version $Rev$ $Date$
  */
 public interface Export extends Serializable {
+
+    /**
+     * Returns the export type.
+     *
+     * @return the export type
+     */
+    QName getType();
 
     /**
      * Returns true if an import matched the export.

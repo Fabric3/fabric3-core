@@ -40,6 +40,9 @@ package org.fabric3.spi.contribution.manifest;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.namespace.QName;
+
+import org.oasisopen.sca.Constants;
 
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
@@ -51,6 +54,9 @@ import org.fabric3.spi.contribution.Import;
  */
 public class JavaImport implements Import {
     private static final long serialVersionUID = -7863768515125756048L;
+
+    private static final QName QNAME = new QName(Constants.SCA_NS, "import.java");
+
     private URI location;
     private PackageInfo packageInfo;
     private Map<URI, Export> resolved;
@@ -66,6 +72,10 @@ public class JavaImport implements Import {
         this.packageInfo = packageInfo;
         this.location = location;
         resolved = new HashMap<URI, Export>();
+    }
+
+    public QName getType() {
+        return QNAME;
     }
 
     public URI getLocation() {
@@ -99,7 +109,7 @@ public class JavaImport implements Import {
     }
 
     public String toString() {
-        return "[" + packageInfo + "]";
+        return packageInfo.toString();
     }
 
     @Override

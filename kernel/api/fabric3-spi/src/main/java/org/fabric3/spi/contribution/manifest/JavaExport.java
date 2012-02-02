@@ -37,6 +37,10 @@
 */
 package org.fabric3.spi.contribution.manifest;
 
+import javax.xml.namespace.QName;
+
+import org.oasisopen.sca.Constants;
+
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 
@@ -47,6 +51,9 @@ import org.fabric3.spi.contribution.Import;
  */
 public class JavaExport implements Export {
     private static final long serialVersionUID = -1362112844218693711L;
+
+    private static final QName QNAME = new QName(Constants.SCA_NS, "export.java");
+
     private PackageInfo packageInfo;
     private boolean resolved;
 
@@ -55,6 +62,10 @@ public class JavaExport implements Export {
             throw new IllegalStateException("Package info cannot be null");
         }
         this.packageInfo = packageInfo;
+    }
+
+    public QName getType() {
+        return QNAME;
     }
 
     public PackageInfo getPackageInfo() {
@@ -80,7 +91,7 @@ public class JavaExport implements Export {
     }
 
     public String toString() {
-        return "Exported package [" + packageInfo + "]";
+        return packageInfo.toString();
     }
 
     @Override

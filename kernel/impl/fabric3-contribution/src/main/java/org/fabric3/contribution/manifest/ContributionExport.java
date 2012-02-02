@@ -39,6 +39,10 @@ package org.fabric3.contribution.manifest;
 
 import java.net.URI;
 
+import javax.xml.namespace.QName;
+
+import org.oasisopen.sca.Constants;
+
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 
@@ -50,11 +54,18 @@ import org.fabric3.spi.contribution.Import;
  */
 public class ContributionExport implements Export {
     private static final long serialVersionUID = -2400233923134603994L;
+
+    private static final QName QNAME = new QName(Constants.SCA_NS, "export.contribution");
+
     private URI symbolicUri;
     private boolean resolved;
 
     public ContributionExport(URI symbolicUri) {
         this.symbolicUri = symbolicUri;
+    }
+
+    public QName getType() {
+        return QNAME;
     }
 
     public URI getSymbolicUri() {

@@ -41,6 +41,10 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
+import org.oasisopen.sca.Constants;
+
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 
@@ -51,6 +55,9 @@ import org.fabric3.spi.contribution.Import;
  */
 public class QNameImport implements Import {
     private static final long serialVersionUID = 7714960525252585065L;
+
+    private static final QName QNAME = new QName(Constants.SCA_NS, "import");
+
     private String namespace;
     private URI location;
     private Map<URI, Export> resolved;
@@ -65,6 +72,10 @@ public class QNameImport implements Import {
         this.namespace = namespace;
         this.location = location;
         resolved = new HashMap<URI, Export>();
+    }
+
+    public QName getType() {
+        return QNAME;
     }
 
     public String getNamespace() {
@@ -92,7 +103,7 @@ public class QNameImport implements Import {
     }
 
     public String toString() {
-        return "qname [" + namespace + "]";
+        return "qname: " + namespace;
     }
 
     @Override
