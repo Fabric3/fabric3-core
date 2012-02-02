@@ -131,13 +131,21 @@ public interface MetaDataStore {
      * @param symbol  the symbol used to represent the resource element.
      * @param context the context to which validation errors and warnings are reported
      * @return the resource element or null if not found
-     * @throws org.fabric3.host.contribution.StoreException
-     *          if an error occurs during resolution
+     * @throws StoreException if an error occurs during resolution
      */
     <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri,
                                                                              Class<V> type,
                                                                              S symbol,
                                                                              IntrospectionContext context) throws StoreException;
+    /**
+     * Resolves resource elements for a given type that are visible to the contribution.
+     *
+     * @param uri  the contribution to search
+     * @param type the resource element type
+     * @return the collection of resource elements
+     * @throws StoreException if there is an error resolving the resource elements
+     */
+    <V extends Serializable> List<ResourceElement<?, V>> resolve(URI uri, Class<V> type) throws StoreException;
 
     /**
      * Resolves an import or returns an empty list if it cannot be satisfied.

@@ -226,34 +226,46 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return resolve(contribution, type, symbol, context);
     }
 
-    private <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(Contribution contribution,
-                                                                                     Class<V> type,
-                                                                                     S symbol,
-                                                                                     IntrospectionContext context) throws StoreException {
-        ResourceElement<S, V> element;
-        // resolve by delegating to exporting contributions first
-        for (ContributionWire<?, ?> wire : contribution.getWires()) {
-            if (!wire.resolves(symbol)) {
-                // the wire doesn't resolve the specific resource
-                continue;
-            }
-            URI resolvedUri = wire.getExportContributionUri();
-            Contribution resolved = cache.get(resolvedUri);
-            if (resolved == null) {
-                // programming error
-                throw new AssertionError("Dependent contribution not found: " + resolvedUri);
-            }
-            element = resolve(resolved, type, symbol, context);
-            if (element != null) {
-                return element;
-            }
+    @SuppressWarnings({"unchecked"})
+    public <V extends Serializable> List<ResourceElement<?, V>> resolve(URI uri, Class<V> type) throws StoreException {
+        Contribution contribution = find(uri);
+        if (contribution == null) {
+            String identifier = uri.toString();
+            throw new ContributionResolutionException("Contribution not found: " + identifier, identifier);
         }
-        element = resolveInternal(contribution, type, symbol, context);
-        if (element != null) {
-            return element;
+        List<ResourceElement<?, V>> artifacts = new ArrayList<ResourceElement<?, V>>();
+        for (Resource resource : contribution.getResources()) {
+            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
+                Object value = element.getValue();
+                if (value == null) {
+                    continue;
+                }
+                if (value.getClass().isAssignableFrom(type)){
+                    artifacts.add((ResourceElement<?, V>) element);
+                }
+            }
         }
 
-        return null;
+        for (ContributionWire<?, ?> wire : contribution.getWires()) {
+            URI exportingUri = wire.getExportContributionUri();
+            Contribution exporting = find(exportingUri);
+            for (Resource resource : exporting.getResources()) {
+                for (ResourceElement<?, ?> element : resource.getResourceElements()) {
+                    if (!wire.resolves(element.getSymbol())){
+                        // artifact not visible from the importing contribution
+                        continue;
+                    }
+                    Object value = element.getValue();
+                    if (value == null) {
+                        continue;
+                    }
+                    if (value.getClass().isAssignableFrom(type)){
+                        artifacts.add((ResourceElement<?, V>) element);
+                    }
+                }
+            }
+        }
+        return artifacts;
     }
 
     public List<Contribution> resolve(URI uri, Import imprt) {
@@ -364,6 +376,36 @@ public class MetaDataStoreImpl implements MetaDataStore {
             }
         }
         return extensions;
+    }
+
+    private <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(Contribution contribution,
+                                                                                     Class<V> type,
+                                                                                     S symbol,
+                                                                                     IntrospectionContext context) throws StoreException {
+        ResourceElement<S, V> element;
+        // resolve by delegating to exporting contributions first
+        for (ContributionWire<?, ?> wire : contribution.getWires()) {
+            if (!wire.resolves(symbol)) {
+                // the wire doesn't resolve the specific resource
+                continue;
+            }
+            URI resolvedUri = wire.getExportContributionUri();
+            Contribution resolved = cache.get(resolvedUri);
+            if (resolved == null) {
+                // programming error
+                throw new AssertionError("Dependent contribution not found: " + resolvedUri);
+            }
+            element = resolve(resolved, type, symbol, context);
+            if (element != null) {
+                return element;
+            }
+        }
+        element = resolveInternal(contribution, type, symbol, context);
+        if (element != null) {
+            return element;
+        }
+
+        return null;
     }
 
     @SuppressWarnings({"unchecked"})
