@@ -21,7 +21,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.federation.deployment.domain.FederatedDeployer"/>
     </component>
 
-    <!-- this wire reinjects the routing service into the application Domain -->
+    <!-- this wire reinjects the deployer into the application Domain -->
     <wire source="ApplicationDomain/deployer" target="FederatedDeployer"/>
 
     <component name="ControllerRuntimeSyncCommandExecutor">
