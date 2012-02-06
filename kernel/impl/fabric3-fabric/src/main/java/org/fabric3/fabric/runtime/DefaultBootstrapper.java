@@ -322,10 +322,10 @@ public class DefaultBootstrapper implements Bootstrapper {
     private void synthesizeContributions() throws InitializationException {
         try {
             // export packages included in JDK 6
-            synthesizeContribution(HOST_CONTRIBUTION, Java6HostExports.getExports(), hostCapabilities, hostClassLoader);
+            synthesizeContribution(HOST_CONTRIBUTION, Java6HostExports.getExports(), hostCapabilities, hostClassLoader, true);
             // add default boot exports
             exportedPackages.putAll(BootExports.getExports());
-            bootContribution = synthesizeContribution(BOOT_CONTRIBUTION, exportedPackages, Collections.<String>emptyList(), bootClassLoader);
+            bootContribution = synthesizeContribution(BOOT_CONTRIBUTION, exportedPackages, Collections.<String>emptyList(), bootClassLoader, true);
         } catch (ContributionException e) {
             throw new InitializationException(e);
         }
@@ -338,16 +338,19 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @param exportedPackages the packages exported by the contribution
      * @param hostCapabilities the capabilities provided by the contribution
      * @param loader           the classloader
+     * @param extension        true if the contribution is an extension
      * @return the synthesized contribution
      * @throws ContributionException if there is an error synthesizing the contribution
      */
     private Contribution synthesizeContribution(URI contributionUri,
                                                 Map<String, String> exportedPackages,
                                                 List<String> hostCapabilities,
-                                                ClassLoader loader) throws ContributionException {
+                                                ClassLoader loader,
+                                                boolean extension) throws ContributionException {
         Contribution contribution = new Contribution(contributionUri);
         contribution.setState(ContributionState.INSTALLED);
         ContributionManifest manifest = contribution.getManifest();
+        manifest.setExtension(extension);
         // add the ContributionExport
         manifest.addExport(new ContributionExport(contributionUri));
         for (Map.Entry<String, String> entry : exportedPackages.entrySet()) {
