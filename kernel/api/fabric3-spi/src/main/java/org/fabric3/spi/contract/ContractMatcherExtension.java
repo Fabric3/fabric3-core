@@ -40,7 +40,7 @@ package org.fabric3.spi.contract;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * Dermines if <code>ServiceContract</code>s are compatible using a particular mapping, for example, WSDL-to-Java.
+ * Determines if <code>ServiceContract</code>s are compatible using a particular mapping, for example, WSDL-to-Java.
  *
  * @version $Rev$ $Date$
  */
