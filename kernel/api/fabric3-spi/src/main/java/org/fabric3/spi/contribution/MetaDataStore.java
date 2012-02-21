@@ -114,7 +114,7 @@ public interface MetaDataStore {
     <S extends Symbol> Set<ResourceElement<S, ?>> findReferences(URI uri, S symbol) throws StoreException;
 
     /**
-     * Updates a resource element contained in a contribution. All references to the resource will be update in the containing and dependent
+     * Updates a resource element contained in a contribution. All references to the resource will be updated in the containing and dependent
      * contributions.
      *
      * @param uri   the contribution URI
