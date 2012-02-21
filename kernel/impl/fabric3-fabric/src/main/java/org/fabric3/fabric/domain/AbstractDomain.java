@@ -334,6 +334,38 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
+    public synchronized void undeploy(Composite composite) throws DeploymentException {
+        QName deployable = composite.getName();
+        for (DeployListener listener : listeners) {
+            listener.onUndeploy(deployable);
+        }
+
+        LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
+        if (isTransactional()) {
+            domain = CopyUtil.copy(domain);
+        }
+        collector.markForCollection(deployable, domain);
+        try {
+            Deployment deployment = generator.generate(domain, true);
+            collector.collect(domain);
+            Deployment fullDeployment = null;
+            if (generateFullDeployment) {
+                fullDeployment = generator.generate(domain, false);
+            }
+            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
+            deployer.deploy(deploymentPackage);
+            URI uri = composite.getContributionUri();
+            Contribution contribution = metadataStore.find(uri);
+            contribution.releaseLock(deployable);
+        } catch (GenerationException e) {
+            throw new DeploymentException("Error undeploying:" + deployable);
+        }
+        logicalComponentManager.replaceRootComponent(domain);
+        for (DeployListener listener : listeners) {
+            listener.onUndeployCompleted(deployable);
+        }
+    }
+
     public synchronized void activateDefinitions(URI uri) throws DeploymentException {
         activateAndDeployDefinitions(uri, false);
     }

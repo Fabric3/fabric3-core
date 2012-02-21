@@ -156,6 +156,28 @@ public class RuntimeDomainTestCase extends TestCase {
         control.verify();
     }
 
+    public void testUndeployComposite() throws Exception {
+        IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
+        EasyMock.expect(instantiator.include(EasyMock.eq(composite), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
+
+        policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean());
+
+        Deployment deployment = new Deployment("1");
+        EasyMock.expect(generator.generate(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean())).andReturn(deployment).times(2);
+        deployer.deploy(EasyMock.isA(DeploymentPackage.class));
+        EasyMock.expectLastCall().times(2);
+        control.replay();
+
+        domain.include(DEPLOYABLE);
+
+        assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+
+        domain.undeploy(composite);
+        // verify the component contained in the composite was added to the logical model
+        assertNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+        control.verify();
+    }
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
