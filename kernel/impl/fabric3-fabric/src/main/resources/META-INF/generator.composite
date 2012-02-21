@@ -67,6 +67,7 @@
 
     <component name="BindingSelector">
         <f3:implementation.system class="org.fabric3.fabric.binding.BindingSelectorImpl"/>
+        <property name="disable" source ="$systemConfig//f3:bindings/f3:binding.sca/@disable"/>
     </component>
 
     <component name="ConfigurableBindingSelectionStrategy">

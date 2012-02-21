@@ -41,11 +41,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.RuntimeMode;
@@ -73,12 +73,18 @@ import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
  */
 @EagerInit
 public class BindingSelectorImpl implements BindingSelector {
+    private boolean disable;
     private HostInfo info;
     private BindingSelectionStrategy strategy;
     private List<BindingProvider> providers = new ArrayList<BindingProvider>();
 
     public BindingSelectorImpl(@Reference HostInfo info) {
         this.info = info;
+    }
+
+    @Property(required = false)
+    public void setDisable(boolean disable) {
+        this.disable = disable;
     }
 
     /**
@@ -105,7 +111,7 @@ public class BindingSelectorImpl implements BindingSelector {
     }
 
     public void selectBindings(LogicalCompositeComponent domain) throws BindingSelectionException {
-        if (RuntimeMode.CONTROLLER != info.getRuntimeMode()) {
+        if (RuntimeMode.CONTROLLER != info.getRuntimeMode() || disable) {
             // there are no remote wires when the domain is contained withing a single VM (including Participant mode, which has a runtime domain)
             return;
         }
@@ -164,11 +170,11 @@ public class BindingSelectorImpl implements BindingSelector {
                 provider.bind(wire);
                 if (source.getLeafReference().getBindings().isEmpty()) {
                     QName type = result.getType();
-                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the reference: "+ type);
+                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the reference: " + type);
                 }
                 if (target.getLeafService().getBindings().isEmpty()) {
                     QName type = result.getType();
-                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the service: "+ type);
+                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the service: " + type);
                 }
                 wire.setSourceBinding(source.getBindings().get(0));
                 if (!target.getBindings().isEmpty()) {
@@ -205,7 +211,7 @@ public class BindingSelectorImpl implements BindingSelector {
                 provider.bind(channel);
                 if (channel.getBindings().isEmpty()) {
                     QName type = result.getType();
-                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the channel: "+ type);
+                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the channel: " + type);
                 }
                 return;
             }
