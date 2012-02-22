@@ -42,8 +42,8 @@ import javax.xml.namespace.QName;
 import org.fabric3.spi.invocation.Message;
 
 /**
- * Invoked when a message is received over a specific binding that supports handlers. Handlers may populate the message with transport or contextual
- * data.
+ * Invoked when a message is sent or received over a specific binding that supports handlers. Handlers may populate the message with transport or
+ * contextual data and vice-versa.
  *
  * @version $Rev$ $Date$
  */
@@ -57,11 +57,19 @@ public interface BindingHandler<T> {
     QName getType();
 
     /**
-     * Handles the message.
+     * Handles an outbound (reference-side) message.
      *
      * @param context the binding-specific transport context
      * @param message the current message
      */
-    void handle(T context, Message message);
+    void handleOutbound(Message message, T context);
+
+    /**
+     * Handles an inbound (service-side) message.
+     *
+     * @param context the binding-specific transport context
+     * @param message the current message
+     */
+    void handleInbound(T context, Message message);
 
 }
