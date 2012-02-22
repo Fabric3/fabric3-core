@@ -96,6 +96,14 @@ public interface Domain {
     void undeploy(URI uri, boolean force) throws DeploymentException;
 
     /**
+     * Undeploys the composite.
+     *
+     * @param composite the composite
+     * @throws DeploymentException if an error is encountered during undeployment
+     */
+    void undeploy(Composite composite) throws DeploymentException;
+
+    /**
      * Activates a set of definitions contained in the contribution.
      *
      * @param uri the contribution URI
