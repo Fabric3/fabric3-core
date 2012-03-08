@@ -286,7 +286,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
         DestinationType requestDestinationType = requestDestinationDefinition.geType();
         if (DestinationType.QUEUE == requestDestinationType && !(requestDestination instanceof Queue)) {
             throw new WiringException("Destination is not a queue: " + requestDestinationDefinition.getName());
-        } else if (DestinationType.TOPIC == requestDestinationType) {
+        } else if (DestinationType.TOPIC == requestDestinationType && !(requestDestination instanceof Topic)) {
             throw new WiringException("Destination is not a topic: " + requestDestinationDefinition.getName());
         }
     }
