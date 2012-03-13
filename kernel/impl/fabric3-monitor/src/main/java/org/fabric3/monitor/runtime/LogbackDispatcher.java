@@ -40,9 +40,11 @@ package org.fabric3.monitor.runtime;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -51,6 +53,16 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.fabric3.host.monitor.MonitorConfigurationException;
+import org.fabric3.host.monitor.MonitorEvent;
+import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.host.runtime.HostInfo;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -62,17 +74,8 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.status.StatusManager;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import org.fabric3.host.monitor.MonitorConfigurationException;
-import org.fabric3.host.monitor.MonitorEvent;
-import org.fabric3.host.monitor.MonitorEventDispatcher;
-import org.fabric3.host.runtime.HostInfo;
 
 /**
  * Dispatches to one or more Logback appenders. If a configuration is not set, a default one will be created that logs to the console.
@@ -132,6 +135,7 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
             logger.detachAndStopAllAppenders();
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(context);
+            context.reset(); 
             configurator.doConfigure(source);
             logger.setAdditive(additive); // reset additive as doConfigure() changes it
             configured = true;
@@ -224,10 +228,12 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
     private void checkLogErrors() {
         LoggerContext context = logger.getLoggerContext();
         StatusManager sm = context.getStatusManager();
-        if (sm != null && sm.getLevel() == ErrorStatus.ERROR) {
+        long currentTimeMillis = System.currentTimeMillis();
+        StatusChecker sc = new StatusChecker(context); 
+        if (sm != null && !sc.isErrorFree(currentTimeMillis)) {
             List<Status> list = sm.getCopyOfStatusList();
-            SimpleDateFormat format = new SimpleDateFormat(CoreConstants.ISO8601_PATTERN);
-            String time = format.format(new Date(System.currentTimeMillis()));
+            SimpleDateFormat format = new SimpleDateFormat(CoreConstants.ISO8601_PATTERN);            
+			String time = format.format(new Date(currentTimeMillis));
             for (Status status : list) {
                 if (status.getLevel() == ErrorStatus.ERROR) {
                     System.err.println("[ERROR " + Thread.currentThread().getName() + " " + time + "] " + status.getMessage());

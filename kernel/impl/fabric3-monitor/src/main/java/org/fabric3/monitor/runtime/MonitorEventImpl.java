@@ -184,4 +184,8 @@ public class MonitorEventImpl implements MonitorEvent, ILoggingEvent {
         return null;
     }
 
+	public Map<String, String> getMdc() {
+		return null;
+	}
+
 }

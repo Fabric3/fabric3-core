@@ -54,7 +54,7 @@
         <servlet.artifactId>servlet-api</servlet.artifactId>
         <servlet.version>3.0.20100224</servlet.version>
         <jetty.version>8.0.4.v20111024</jetty.version>
-        <logback.version>0.9.20</logback.version>
+        <logback.version>1.0.0</logback.version>
         <atomikos.version>3.7.0</atomikos.version>
     </properties>
 
