@@ -55,10 +55,12 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
  */
 public class JGroupsHelperImplTestCase extends TestCase {
     JGroupsHelperImpl helper;
+    
+    org.jgroups.stack.IpAddress coord_addr = new org.jgroups.stack.IpAddress(9999);
 
 
     public void testZoneLeader() throws Exception {
-        ViewId id = new ViewId(null, 123);
+        ViewId id = new ViewId(coord_addr, 123);
         List<Address> members = new ArrayList<Address>();
         UUID address1 = UUID.randomUUID();
         UUID.add(address1, "domain:participant:zone1:1");
@@ -78,7 +80,7 @@ public class JGroupsHelperImplTestCase extends TestCase {
     }
 
     public void testRuntimeAddressesInZone() throws Exception {
-        ViewId id = new ViewId(null, 123);
+        ViewId id = new ViewId(coord_addr, 123);
         List<Address> members = new ArrayList<Address>();
         UUID address1 = UUID.randomUUID();
         UUID.add(address1, "domain:participant:zone1:1");
@@ -99,8 +101,8 @@ public class JGroupsHelperImplTestCase extends TestCase {
     }
 
     public void testNewRuntimes() throws Exception {
-        ViewId oldId = new ViewId(null, 123);
-        ViewId newId = new ViewId(null, 456);
+        ViewId oldId = new ViewId(coord_addr, 123);
+        ViewId newId = new ViewId(coord_addr, 456);
         List<Address> newMembers = new ArrayList<Address>();
         List<Address> oldMembers = new ArrayList<Address>();
         UUID address1 = UUID.randomUUID();
@@ -118,7 +120,7 @@ public class JGroupsHelperImplTestCase extends TestCase {
 
 
     public void testNewRuntimesOnBootstrap() throws Exception {
-        ViewId newId = new ViewId(null, 456);
+        ViewId newId = new ViewId(coord_addr, 456);
         List<Address> newMembers = new ArrayList<Address>();
         UUID address1 = UUID.randomUUID();
         UUID address2 = UUID.randomUUID();
@@ -132,8 +134,8 @@ public class JGroupsHelperImplTestCase extends TestCase {
     }
 
     public void testNoNewRuntimes() throws Exception {
-        ViewId oldId = new ViewId(null, 123);
-        ViewId newId = new ViewId(null, 456);
+        ViewId oldId = new ViewId(coord_addr, 123);
+        ViewId newId = new ViewId(coord_addr, 456);
         List<Address> newMembers = new ArrayList<Address>();
         List<Address> oldMembers = new ArrayList<Address>();
         UUID address1 = UUID.randomUUID();
@@ -150,8 +152,8 @@ public class JGroupsHelperImplTestCase extends TestCase {
     }
 
     public void testNewZoneLeaders() throws Exception {
-        ViewId oldId = new ViewId(null, 123);
-        ViewId newId = new ViewId(null, 456);
+        ViewId oldId = new ViewId(coord_addr, 123);
+        ViewId newId = new ViewId(coord_addr, 456);
         List<Address> newMembers = new ArrayList<Address>();
         List<Address> oldMembers = new ArrayList<Address>();
         UUID address1 = UUID.randomUUID();
@@ -177,7 +179,7 @@ public class JGroupsHelperImplTestCase extends TestCase {
     }
 
     public void testNewZoneLeadersOnBootstrap() throws Exception {
-        ViewId newId = new ViewId(null, 456);
+        ViewId newId = new ViewId(coord_addr, 456);
         List<Address> newMembers = new ArrayList<Address>();
         UUID address1 = UUID.randomUUID();
         UUID.add(address1, "domain:participant:zone:1");

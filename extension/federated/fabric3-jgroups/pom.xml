@@ -26,7 +26,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.jgroups</groupId>
             <artifactId>jgroups</artifactId>
-            <version>3.0.0.CR5</version>
+            <version>3.0.6.Final</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.beanshell</groupId>
