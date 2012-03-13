@@ -167,7 +167,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
             String configuration = definition.getCacheConfiguration();
             ByteArrayInputStream stream = new ByteArrayInputStream(configuration.getBytes());
             ConfigurationBuilderHolder holder = parser.parse(stream);
-            return holder.newConfigurationBuilder();
+            return holder.newConfigurationBuilder(configuration);
         } catch (TransformerFactoryConfigurationError e) {
             throw new CacheBuildException(e);
         }
