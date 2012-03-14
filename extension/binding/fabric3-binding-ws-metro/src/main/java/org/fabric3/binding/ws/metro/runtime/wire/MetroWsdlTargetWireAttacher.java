@@ -58,7 +58,6 @@ import org.fabric3.binding.ws.metro.runtime.core.MetroDispatchTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
@@ -76,18 +75,15 @@ public class MetroWsdlTargetWireAttacher implements TargetWireAttacher<MetroWsdl
     private SecurityEnvironment securityEnvironment;
     private ExecutorService executorService;
     private ArtifactCache cache;
-    private BindingHandlerRegistry handlerRegistry;
 
     public MetroWsdlTargetWireAttacher(@Reference FeatureResolver resolver,
                                        @Reference SecurityEnvironment securityEnvironment,
                                        @Reference ExecutorService executorService,
-                                       @Reference ArtifactCache cache,
-                                       @Reference BindingHandlerRegistry handlerRegistry) {
+                                       @Reference ArtifactCache cache) {
         this.resolver = resolver;
         this.securityEnvironment = securityEnvironment;
         this.executorService = executorService;
         this.cache = cache;
-        this.handlerRegistry = handlerRegistry;
     }
 
     public void attach(PhysicalSourceDefinition source, MetroWsdlTargetDefinition target, Wire wire) throws WiringException {
@@ -119,7 +115,7 @@ public class MetroWsdlTargetWireAttacher implements TargetWireAttacher<MetroWsdl
         for (InvocationChain chain : wire.getInvocationChains()) {
             boolean oneWay = chain.getPhysicalOperation().isOneWay();
             MetroDispatchTargetInterceptor targetInterceptor =
-                    new MetroDispatchTargetInterceptor(proxyFactory, oneWay, securityConfiguration, connectionConfiguration,handlerRegistry);
+                    new MetroDispatchTargetInterceptor(proxyFactory, oneWay, securityConfiguration, connectionConfiguration);
             chain.addInterceptor(targetInterceptor);
         }
 

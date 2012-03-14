@@ -38,7 +38,6 @@
 package org.fabric3.binding.ws.metro.runtime.core;
 
 import java.util.Map;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -48,16 +47,15 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 
-import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
-import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
+import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.w3c.dom.Node;
 
-import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
+import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
+import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
+import org.fabric3.spi.invocation.Message;
+import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * Interceptor for invoking a JAX-WS <code>Dispatch</code> instance. Used by invocation chains that dispatch to a web service endpoint defined by a
@@ -79,14 +77,12 @@ public class MetroDispatchTargetInterceptor extends AbstractMetroTargetIntercept
      * @param oneWay                  true if the operation is non-blocking
      * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the underlying HTTP connection configuration or null if defaults should be used
-     * @param handlerRegistry 
      */
     public MetroDispatchTargetInterceptor(MetroDispatchObjectFactory dispatchFactory,
                                           boolean oneWay,
                                           SecurityConfiguration securityConfiguration,
-                                          ConnectionConfiguration connectionConfiguration, 
-                                          BindingHandlerRegistry handlerRegistry) {
-        super(securityConfiguration, connectionConfiguration,handlerRegistry);
+                                          ConnectionConfiguration connectionConfiguration) {
+        super(securityConfiguration, connectionConfiguration);
         this.proxyFactory = dispatchFactory;
         this.oneWay = oneWay;
         transformerFactory = TransformerFactory.newInstance();
@@ -105,14 +101,13 @@ public class MetroDispatchTargetInterceptor extends AbstractMetroTargetIntercept
             Dispatch<Source> dispatch = proxyFactory.getInstance();
             configureSecurity(dispatch);
             configureConnection(dispatch);
-            configureHandlers(dispatch);
             setSOAPAction(dispatch);
             Source source = new DOMSource(parameter);
 
             // Metro attempts to load classes using TCCL (e.g. StAX provider classes) that are visible the extension classloader and not
             // visible to the application classloader.
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-            
+
             if (oneWay) {
                 dispatch.invokeAsync(source, null);
                 return NULL_RESPONSE;
@@ -125,7 +120,7 @@ public class MetroDispatchTargetInterceptor extends AbstractMetroTargetIntercept
                 Transformer transformer = transformerFactory.newTransformer();
                 DOMResult result = new DOMResult();
                 transformer.transform(returnSource, result);
-				return new MessageImpl(result.getNode(), false, null);
+                return new MessageImpl(result.getNode(), false, null);
             }
         } catch (InaccessibleWSDLException e) {
             throw new ServiceRuntimeException(e);

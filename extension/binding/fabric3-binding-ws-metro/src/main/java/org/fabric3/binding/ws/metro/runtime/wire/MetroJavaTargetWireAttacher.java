@@ -65,7 +65,6 @@ import org.fabric3.binding.ws.metro.runtime.core.MetroProxyObjectFactory;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -90,7 +89,6 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
     private ExecutorService executorService;
     private XMLInputFactory xmlInputFactory;
     private InterceptorMonitor monitor;
-    private BindingHandlerRegistry handlerRegistry;
 
 
     public MetroJavaTargetWireAttacher(@Reference ClassLoaderRegistry registry,
@@ -100,8 +98,7 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
                                        @Reference SecurityEnvironment securityEnvironment,
                                        @Reference ExecutorService executorService,
                                        @Reference XMLFactory xmlFactory,
-                                       @Monitor InterceptorMonitor monitor,
-                                       @Reference BindingHandlerRegistry handlerRegistry) {
+                                       @Monitor InterceptorMonitor monitor) {
         this.registry = registry;
         this.resolver = resolver;
         this.wireAttacherHelper = wireAttacherHelper;
@@ -110,7 +107,6 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
         this.executorService = executorService;
         this.xmlInputFactory = xmlFactory.newInputFactoryInstance();
         this.monitor = monitor;
-        this.handlerRegistry = handlerRegistry;
     }
 
     public void attach(PhysicalSourceDefinition source, MetroJavaTargetDefinition target, Wire wire) throws WiringException {
@@ -204,7 +200,7 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
             }
             boolean oneWay = chain.getPhysicalOperation().isOneWay();
             MetroJavaTargetInterceptor targetInterceptor =
-                    new MetroJavaTargetInterceptor(proxyFactory, method, oneWay, securityConfiguration, connectionConfiguration, retries, monitor, handlerRegistry);
+                    new MetroJavaTargetInterceptor(proxyFactory, method, oneWay, securityConfiguration, connectionConfiguration, retries, monitor);
             chain.addInterceptor(targetInterceptor);
         }
     }
