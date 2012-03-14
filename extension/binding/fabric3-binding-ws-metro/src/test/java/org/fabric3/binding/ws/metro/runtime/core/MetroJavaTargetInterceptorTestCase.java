@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.oasisopen.sca.ServiceUnavailableException;
 
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
@@ -22,9 +23,10 @@ public class MetroJavaTargetInterceptorTestCase extends TestCase {
     private MockProxyFactory proxyFactory;
     private Method method;
     private InterceptorMonitor monitor;
+    private BindingHandlerRegistry handlerRegistry;
 
     public void testRetries() throws Exception {
-        MetroJavaTargetInterceptor interceptor = new MetroJavaTargetInterceptor(proxyFactory, method, false, null, null, 1, monitor);
+        MetroJavaTargetInterceptor interceptor = new MetroJavaTargetInterceptor(proxyFactory, method, false, null, null, 1, monitor, handlerRegistry);
 
         proxy.invoke();
         EasyMock.expectLastCall().andThrow(new WebServiceException(new SocketTimeoutException()));
@@ -37,7 +39,7 @@ public class MetroJavaTargetInterceptorTestCase extends TestCase {
     }
 
     public void testNoRetry() throws Exception {
-        MetroJavaTargetInterceptor interceptor = new MetroJavaTargetInterceptor(proxyFactory, method, false, null, null, 0, monitor);
+        MetroJavaTargetInterceptor interceptor = new MetroJavaTargetInterceptor(proxyFactory, method, false, null, null, 0, monitor, handlerRegistry);
 
         proxy.invoke();
         EasyMock.expectLastCall().andThrow(new WebServiceException(new SocketTimeoutException()));
@@ -58,6 +60,7 @@ public class MetroJavaTargetInterceptorTestCase extends TestCase {
         proxy = EasyMock.createMock(Service.class);
         proxyFactory = new MockProxyFactory(proxy);
         monitor = EasyMock.createMock(InterceptorMonitor.class);
+        handlerRegistry = EasyMock.createMock(BindingHandlerRegistry.class);
         super.setUp();
     }
 

@@ -40,19 +40,20 @@ package org.fabric3.binding.ws.metro.runtime.core;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
+
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.soap.SOAPFaultException;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-import org.oasisopen.sca.ServiceUnavailableException;
-
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
  * Interceptor for invoking a JAX-WS proxy generated from a Java interface.  Used by invocation chains that dispatch to a web service endpoint defined
@@ -86,8 +87,9 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
                                       SecurityConfiguration securityConfiguration,
                                       ConnectionConfiguration connectionConfiguration,
                                       int retries,
-                                      InterceptorMonitor monitor) {
-        super(securityConfiguration, connectionConfiguration);
+                                      InterceptorMonitor monitor,
+                                      BindingHandlerRegistry handlerRegistry) {
+        super(securityConfiguration, connectionConfiguration,handlerRegistry);
         this.proxyFactory = proxyFactory;
         this.method = method;
         this.oneWay = oneWay;
@@ -164,6 +166,7 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
             BindingProvider provider = (BindingProvider) proxy;
             configureSecurity(provider);
             configureConnection(provider);
+            configureHandlers(provider);
             return proxy;
         } catch (ObjectCreationException e) {
             throw new ServiceRuntimeException(e);

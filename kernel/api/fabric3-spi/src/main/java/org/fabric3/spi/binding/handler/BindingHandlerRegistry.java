@@ -37,6 +37,10 @@
 */
 package org.fabric3.spi.binding.handler;
 
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 /**
  * Registers {@link BindingHandler}s so that they are available to binding extensions and registers binding extensions to receive updates when {@link
  * BindingHandler}s become available.
@@ -72,5 +76,12 @@ public interface BindingHandlerRegistry {
      * @param handler the handler
      */
     void unregister(BindingHandler<?> handler);
+    
+    /**
+     * Get handlers for  a {@link QName} type.
+     *
+     * @param type  the binding type
+     */
+    List<BindingHandler<?>> getBindingHandlers(QName type);
 
 }

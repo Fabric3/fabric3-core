@@ -106,4 +106,12 @@ public class BindingHandlerRegistryImpl implements BindingHandlerRegistry {
             callback.update(Collections.unmodifiableList(list));
         }
     }
+
+	public List<BindingHandler<?>> getBindingHandlers( QName type ) {
+		List<BindingHandler<?>> handlersList = handlers.get( type );
+		if ( handlers != null ) {
+			return Collections.unmodifiableList( handlersList );
+		}
+		return Collections.EMPTY_LIST;
+	}
 }
