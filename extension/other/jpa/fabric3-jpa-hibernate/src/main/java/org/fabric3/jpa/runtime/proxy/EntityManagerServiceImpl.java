@@ -115,7 +115,7 @@ public class EntityManagerServiceImpl implements EntityManagerService {
 
         public void afterCompletion(int status) {
             proxy.clearEntityManager();
-            EntityManager manager = cache.get(key);
+            EntityManager manager = cache.remove(key);
             manager.close();
         }
     }
