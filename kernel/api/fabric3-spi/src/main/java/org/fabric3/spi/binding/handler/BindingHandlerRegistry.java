@@ -37,6 +37,11 @@
 */
 package org.fabric3.spi.binding.handler;
 
+import java.net.URI;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 /**
  * Registers {@link BindingHandler}s so that they are available to binding extensions and registers binding extensions to receive updates when {@link
  * BindingHandler}s become available.
@@ -72,5 +77,23 @@ public interface BindingHandlerRegistry {
      * @param handler the handler
      */
     void unregister(BindingHandler<?> handler);
+    
+    /**
+     * Registers a {@link BindingHandler}.
+     *
+     * @param handler the handler
+     */
+    void register(QName bindingQname, String servicePath, BindingHandlerDefinition definition);
+
+	/**
+	 * 
+	 * @param bindingQname
+	 * @param servicePath
+	 * @param classLoaderURI TODO
+	 * @return a list of related defenitions
+	 */
+	List<BindingHandler<?>> loadBindingHandlers(QName bindingQname, String servicePath, URI classLoaderURI);
+
+	void unregister(QName bindingQname, String path);
 
 }

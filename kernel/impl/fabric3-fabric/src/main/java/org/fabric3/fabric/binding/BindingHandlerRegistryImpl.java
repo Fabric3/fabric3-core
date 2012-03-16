@@ -37,16 +37,21 @@
 */
 package org.fabric3.fabric.binding;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 import org.fabric3.spi.binding.handler.BindingHandler;
+import org.fabric3.spi.binding.handler.BindingHandlerDefinition;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistryCallback;
+import org.fabric3.spi.cm.ComponentManager;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * @version $Rev$ $Date$
@@ -54,6 +59,10 @@ import org.fabric3.spi.binding.handler.BindingHandlerRegistryCallback;
 public class BindingHandlerRegistryImpl implements BindingHandlerRegistry {
     private Map<QName, BindingHandlerRegistryCallback<?>> callbacks = new HashMap<QName, BindingHandlerRegistryCallback<?>>();
     private Map<QName, List<BindingHandler<?>>> handlers = new HashMap<QName, List<BindingHandler<?>>>();
+    
+    private Map<BinderKey, List<BindingHandlerDefinition>> handlerDefenitions = new HashMap<BinderKey, List<BindingHandlerDefinition>>();
+    
+	@Reference private ComponentManager componentManager;
 
     @SuppressWarnings({"unchecked"})
     public synchronized void register(BindingHandlerRegistryCallback callback) {
@@ -106,4 +115,85 @@ public class BindingHandlerRegistryImpl implements BindingHandlerRegistry {
             callback.update(Collections.unmodifiableList(list));
         }
     }
+
+	public void register(QName bindingQname, String path, BindingHandlerDefinition definition) {
+		BinderKey binderKey = new BinderKey( bindingQname , path );
+		List<BindingHandlerDefinition> definitions = handlerDefenitions.get(binderKey);
+		if (definitions == null){
+			definitions = new ArrayList<BindingHandlerDefinition>();
+			handlerDefenitions.put(binderKey, definitions);
+		}
+		definitions.add(definition);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.fabric3.spi.binding.handler.BindingHandlerRegistry#loadBindingHandlers(javax.xml.namespace.QName, java.lang.String)
+	 */
+	public List<BindingHandler<?>> loadBindingHandlers(QName bindingQname, String servicePath, URI classLoaderURI) {
+		BinderKey key = new BinderKey(bindingQname, servicePath);
+		List<BindingHandlerDefinition> definitions = handlerDefenitions.get(key);
+		List<BindingHandler<?>> result = new ArrayList<BindingHandler<?>>();
+		if (definitions != null){
+			for (BindingHandlerDefinition bhd : definitions) {
+				result.add(createHandler( bhd , classLoaderURI ));
+			}
+		}	
+		return result;
+	}
+
+	public void unregister(QName bindingQname, String path) {
+		handlerDefenitions.remove(new BinderKey ( bindingQname , path ));
+	}
+	
+	private BindingHandler<?> createHandler(BindingHandlerDefinition bh, URI clUri) {
+		try {				
+			return new BindingHandlerLazyLoadDecorator(bh.getTarget(), componentManager);
+		} catch (Exception cause) {
+			throw new RuntimeException(cause);
+		}
+	}	
+	
+	
+	private static class BinderKey {
+		
+		private QName type;
+		private String path;
+		
+		public BinderKey(QName bindingQname, String p) {
+			type = bindingQname;
+			path = p;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((path == null) ? 0 : path.hashCode());
+			result = prime * result + ((type == null) ? 0 : type.hashCode());
+			return result;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			BinderKey other = (BinderKey) obj;
+			if (path == null) {
+				if (other.path != null)
+					return false;
+			} else if (!path.equals(other.path))
+				return false;
+			if (type == null) {
+				if (other.type != null)
+					return false;
+			} else if (!type.equals(other.type))
+				return false;
+			return true;
+		}
+		
+	}
 }

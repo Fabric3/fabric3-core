@@ -45,6 +45,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ws.metro.MetroBindingMonitor;
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.host.ServletHost;
 
 /**
@@ -57,20 +58,23 @@ public class EndpointServiceImpl implements EndpointService {
     private MetroBindingMonitor monitor;
 
     private MetroServlet metroServlet;
+	private BindingHandlerRegistry handlerRegistry;
 
     public EndpointServiceImpl(@Reference SecurityEnvironment securityEnvironment,
                                @Reference ExecutorService executorService,
                                @Reference ServletHost servletHost,
+                               @Reference BindingHandlerRegistry handlerRegistry,
                                @Monitor MetroBindingMonitor monitor) {
         this.securityEnvironment = securityEnvironment;
         this.executorService = executorService;
         this.monitor = monitor;
         this.servletHost = servletHost;
+        this.handlerRegistry = handlerRegistry;
     }
 
     @Init
     public void init() {
-        metroServlet = new MetroServlet(executorService, securityEnvironment);
+        metroServlet = new MetroServlet(executorService, securityEnvironment, handlerRegistry );
     }
 
     public void registerService(EndpointConfiguration configuration) throws EndpointException {

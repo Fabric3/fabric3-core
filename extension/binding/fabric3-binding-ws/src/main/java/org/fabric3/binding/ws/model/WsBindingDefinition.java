@@ -44,12 +44,15 @@
 package org.fabric3.binding.ws.model;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
 import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.Constants;
-
 import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.spi.binding.handler.BindingHandlerDefinition;
+import org.oasisopen.sca.Constants;
 
 /**
  * Logical binding definition for web services.
@@ -64,6 +67,7 @@ public class WsBindingDefinition extends BindingDefinition {
     private final String wsdlElement;
     private Map<String, String> configuration;
     private int retries;
+    private List<BindingHandlerDefinition> handlers = new ArrayList<BindingHandlerDefinition>();
 
     /**
      * Constructor
@@ -105,4 +109,11 @@ public class WsBindingDefinition extends BindingDefinition {
     public int getRetries() {
         return retries;
     }
+    
+    public void addHandler(BindingHandlerDefinition bhd) {
+		if (bhd == null) 
+			 return;
+		bhd.setBinderType(BINDING_QNAME);
+		handlers.add(bhd);
+	}
 }
