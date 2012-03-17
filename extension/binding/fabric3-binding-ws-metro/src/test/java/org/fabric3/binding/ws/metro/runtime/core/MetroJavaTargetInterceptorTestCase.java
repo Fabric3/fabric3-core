@@ -2,6 +2,8 @@ package org.fabric3.binding.ws.metro.runtime.core;
 
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
+
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceException;
 
@@ -31,6 +33,7 @@ public class MetroJavaTargetInterceptorTestCase extends TestCase {
         proxy.invoke();
         EasyMock.expectLastCall().andThrow(new WebServiceException(new SocketTimeoutException()));
         proxy.invoke();
+        EasyMock.expect(proxy.getRequestContext()).andReturn(new HashMap<String, Object>());
 
         EasyMock.replay(proxy);
 
@@ -43,6 +46,7 @@ public class MetroJavaTargetInterceptorTestCase extends TestCase {
 
         proxy.invoke();
         EasyMock.expectLastCall().andThrow(new WebServiceException(new SocketTimeoutException()));
+        EasyMock.expect(proxy.getRequestContext()).andReturn(new HashMap<String, Object>());
         EasyMock.replay(proxy);
 
         try {
