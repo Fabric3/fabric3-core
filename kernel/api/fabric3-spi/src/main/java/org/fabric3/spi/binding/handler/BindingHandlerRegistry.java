@@ -37,7 +37,6 @@
 */
 package org.fabric3.spi.binding.handler;
 
-import java.net.URI;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -79,7 +78,7 @@ public interface BindingHandlerRegistry {
     void unregister(BindingHandler<?> handler);
     
     /**
-     * Registers a {@link BindingHandler}.
+     * Registers a {@link BindingHandlerDefinition}.
      *
      * @param handler the handler
      */
@@ -89,11 +88,17 @@ public interface BindingHandlerRegistry {
 	 * 
 	 * @param bindingQname
 	 * @param servicePath
-	 * @param classLoaderURI TODO
 	 * @return a list of related defenitions
 	 */
-	List<BindingHandler<?>> loadBindingHandlers(QName bindingQname, String servicePath, URI classLoaderURI);
+	List<BindingHandler<?>> loadBindingHandlers(QName bindingQname, String servicePath);
 
+	/**
+	 * Unregisters all {@link BindingHandlerDefinition} for provided {@literal path}
+	 *  
+	 * @param bindingQname
+	 * @param path
+	 * 
+	 */
 	void unregister(QName bindingQname, String path);
 
 }

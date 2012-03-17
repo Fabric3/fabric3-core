@@ -249,7 +249,7 @@ public class MetroServlet extends WSServlet {
     
     private void loadHandlers(Binding binding, EndpointConfiguration config) {
     	String servicePath = config.getServicePath();
-    	List<BindingHandler<?>> handlerDefinitions = handlerRegistry.loadBindingHandlers(WsBindingDefinition.BINDING_QNAME, servicePath, null);
+    	List<BindingHandler<?>> handlerDefinitions = handlerRegistry.loadBindingHandlers(WsBindingDefinition.BINDING_QNAME, servicePath);
     	ArrayList<Handler> soapHandlers = new ArrayList<Handler>();
     	for (BindingHandler<?> bh : handlerDefinitions) {
     		soapHandlers.add(new SOAPMessageHandlerAdapter( bh ));

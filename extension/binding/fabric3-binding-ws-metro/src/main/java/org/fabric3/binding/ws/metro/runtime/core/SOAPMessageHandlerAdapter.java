@@ -12,6 +12,12 @@ import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.invocation.MessageImpl;
 
 
+/**
+ * {@link BindingHandler} Adapter for JAX-WS {@link SOAPHandler}
+ * 
+ * @author palmalcheg
+ *
+ */
 public class SOAPMessageHandlerAdapter implements SOAPHandler<SOAPMessageContext>{
 
 	private BindingHandler<SOAPMessage> delegateHandler;

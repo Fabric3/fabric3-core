@@ -12,15 +12,24 @@ import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 
+/**
+ * {@link BindingHandler} decorator performs final connection between Binding and target {@link BindingHandler}.
+ * Lazy loading is used to ensure the full initialization of the both. 
+ * 
+ * @author palmalcheg
+ *
+ * @param <T>
+ */
 public class BindingHandlerLazyLoadDecorator<T> implements BindingHandler<T> {
 	
-	private final URI delegateURI;
+	private static final String FABRIC3_DOMAIN = "fabric3://domain/";
+	private final URI targetBindingHandlerURI;
 	private final ComponentManager componentManager;
 	private AtomicBoolean initialized = new AtomicBoolean(false);
 	private BindingHandler<T> delegate;
 
-	public BindingHandlerLazyLoadDecorator(URI delegateURI, ComponentManager componentManager) {
-		this.delegateURI = delegateURI;
+	public BindingHandlerLazyLoadDecorator(URI uri, ComponentManager componentManager) {
+		this.targetBindingHandlerURI = uri;
 		this.componentManager = componentManager;
 	}
 
@@ -37,10 +46,14 @@ public class BindingHandlerLazyLoadDecorator<T> implements BindingHandler<T> {
 		inject().handleInbound(context, message);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private BindingHandler<T> inject() {
 		if (!initialized.getAndSet(true) || delegate == null){
-			ScopedComponent handlerDelegateComponent = (ScopedComponent) componentManager.getComponent(URI.create("fabric3://domain/"+delegateURI.toString()));
+			ScopedComponent handlerDelegateComponent = (ScopedComponent) componentManager.getComponent(URI.create(FABRIC3_DOMAIN+targetBindingHandlerURI.toString()));
 			try {
+				if (handlerDelegateComponent == null) {
+					throw new IllegalStateException("Domain component with a name "+targetBindingHandlerURI.toString() + " doesn't exists.");
+				}
 				this.delegate =  (BindingHandler<T>) handlerDelegateComponent.getInstance(WorkContextTunnel.getThreadWorkContext());
 			} catch (InstanceLifecycleException e) {
 				throw new RuntimeException(e);

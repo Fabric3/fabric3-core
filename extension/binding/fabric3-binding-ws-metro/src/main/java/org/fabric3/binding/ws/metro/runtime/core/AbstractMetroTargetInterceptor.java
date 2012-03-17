@@ -37,14 +37,20 @@
  */
 package org.fabric3.binding.ws.metro.runtime.core;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.handler.Handler;
 
 import com.sun.xml.ws.developer.JAXWSProperties;
 
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
+import org.fabric3.binding.ws.model.WsBindingDefinition;
+import org.fabric3.spi.binding.handler.BindingHandler;
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.wire.Interceptor;
@@ -60,6 +66,7 @@ public abstract class AbstractMetroTargetInterceptor implements Interceptor {
 
     private SecurityConfiguration securityConfiguration;
     private ConnectionConfiguration connectionConfiguration;
+	private BindingHandlerRegistry handlerRegistry;
 
     /**
      * Constructor.
@@ -67,9 +74,10 @@ public abstract class AbstractMetroTargetInterceptor implements Interceptor {
      * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the underlying HTTP connection configuration or null if defaults should be used
      */
-    public AbstractMetroTargetInterceptor(SecurityConfiguration securityConfiguration, ConnectionConfiguration connectionConfiguration) {
+    public AbstractMetroTargetInterceptor(SecurityConfiguration securityConfiguration, ConnectionConfiguration connectionConfiguration, BindingHandlerRegistry handlerRegistry) {
         this.securityConfiguration = securityConfiguration;
         this.connectionConfiguration = connectionConfiguration;
+        this.handlerRegistry = handlerRegistry;
 
     }
     public Interceptor getNext() {
@@ -123,6 +131,25 @@ public abstract class AbstractMetroTargetInterceptor implements Interceptor {
         if (connectionConfiguration.getClientStreamingChunkSize() != ConnectionConfiguration.DEFAULT) {
             context.put(JAXWSProperties.HTTP_CLIENT_STREAMING_CHUNK_SIZE, connectionConfiguration.getClientStreamingChunkSize());
         }
+    }
+    
+    /**
+     * Configures the outbound HTTP connection.
+     *
+     * @param provider the binding provider for the invocation
+     */
+    protected void loadHandlers(BindingProvider provider) {
+        String endpointPath = (String) provider.getRequestContext().get(BindingProvider.ENDPOINT_ADDRESS_PROPERTY);
+        if (endpointPath == null) {
+        	// Nothing to bind
+        	return;
+        }
+    	List<BindingHandler<?>> handlerDefinitions = handlerRegistry.loadBindingHandlers(WsBindingDefinition.BINDING_QNAME, endpointPath);
+    	ArrayList<Handler> soapHandlers = new ArrayList<Handler>();
+    	for (BindingHandler<?> bh : handlerDefinitions) {
+    		soapHandlers.add(new SOAPMessageHandlerAdapter( bh ));
+		}
+    	provider.getBinding().setHandlerChain(soapHandlers);
     }
 
 }

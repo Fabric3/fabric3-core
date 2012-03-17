@@ -37,7 +37,6 @@
 */
 package org.fabric3.fabric.binding;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -126,16 +125,13 @@ public class BindingHandlerRegistryImpl implements BindingHandlerRegistry {
 		definitions.add(definition);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.fabric3.spi.binding.handler.BindingHandlerRegistry#loadBindingHandlers(javax.xml.namespace.QName, java.lang.String)
-	 */
-	public List<BindingHandler<?>> loadBindingHandlers(QName bindingQname, String servicePath, URI classLoaderURI) {
+	public List<BindingHandler<?>> loadBindingHandlers(QName bindingQname, String servicePath) {
 		BinderKey key = new BinderKey(bindingQname, servicePath);
 		List<BindingHandlerDefinition> definitions = handlerDefenitions.get(key);
 		List<BindingHandler<?>> result = new ArrayList<BindingHandler<?>>();
 		if (definitions != null){
 			for (BindingHandlerDefinition bhd : definitions) {
-				result.add(createHandler( bhd , classLoaderURI ));
+				result.add(createHandler( bhd ));
 			}
 		}	
 		return result;
@@ -145,9 +141,9 @@ public class BindingHandlerRegistryImpl implements BindingHandlerRegistry {
 		handlerDefenitions.remove(new BinderKey ( bindingQname , path ));
 	}
 	
-	private BindingHandler<?> createHandler(BindingHandlerDefinition bh, URI clUri) {
+	private BindingHandler<?> createHandler(BindingHandlerDefinition bh) {
 		try {				
-			return new BindingHandlerLazyLoadDecorator(bh.getTarget(), componentManager);
+			return new BindingHandlerLazyLoadDecorator<Object>(bh.getTarget(), componentManager);
 		} catch (Exception cause) {
 			throw new RuntimeException(cause);
 		}

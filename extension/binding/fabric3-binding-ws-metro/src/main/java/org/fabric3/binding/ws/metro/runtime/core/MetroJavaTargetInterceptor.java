@@ -40,6 +40,8 @@ package org.fabric3.binding.ws.metro.runtime.core;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
+
+import javax.xml.rpc.handler.HandlerRegistry;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.soap.SOAPFaultException;
@@ -49,6 +51,7 @@ import org.oasisopen.sca.ServiceUnavailableException;
 
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -79,6 +82,7 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
      * @param connectionConfiguration the underlying HTTP connection configuration or null if defaults should be used
      * @param retries                 the number of retries to attempt if the service is unavailable
      * @param monitor                 the monitor
+     * @param handlerRegistry 
      */
     public MetroJavaTargetInterceptor(ObjectFactory<?> proxyFactory,
                                       Method method,
@@ -86,8 +90,9 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
                                       SecurityConfiguration securityConfiguration,
                                       ConnectionConfiguration connectionConfiguration,
                                       int retries,
+                                      BindingHandlerRegistry handlerRegistry,
                                       InterceptorMonitor monitor) {
-        super(securityConfiguration, connectionConfiguration);
+        super(securityConfiguration, connectionConfiguration, handlerRegistry);
         this.proxyFactory = proxyFactory;
         this.method = method;
         this.oneWay = oneWay;
@@ -164,6 +169,7 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
             BindingProvider provider = (BindingProvider) proxy;
             configureSecurity(provider);
             configureConnection(provider);
+            loadHandlers(provider);
             return proxy;
         } catch (ObjectCreationException e) {
             throw new ServiceRuntimeException(e);

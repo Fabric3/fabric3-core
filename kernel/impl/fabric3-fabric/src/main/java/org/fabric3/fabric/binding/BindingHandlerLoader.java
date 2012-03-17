@@ -52,12 +52,13 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.spi.binding.handler.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- *   f3:handler Type Loader 
+ *   Type Loader  for <f3:handler> element 
  *   
  *   @author palmalcheg
  */
@@ -69,8 +70,11 @@ public class BindingHandlerLoader implements TypeLoader<BindingHandlerDefinition
     public BindingHandlerDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
         String binderTarget = reader.getAttributeValue(null, "target");
-        URI uri = binderTarget !=null ? URI.create(binderTarget) : null;
-		return new BindingHandlerDefinition(uri);
+        if (binderTarget == null || "".equals(binderTarget)) {
+            context.addError(new InvalidValue("@target either is not specified or is empty", reader));
+            return null;
+        }
+		return new BindingHandlerDefinition(URI.create(binderTarget));
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {

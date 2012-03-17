@@ -38,6 +38,8 @@
 package org.fabric3.binding.ws.metro.runtime.core;
 
 import java.util.Map;
+
+import javax.xml.rpc.handler.HandlerRegistry;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -53,6 +55,7 @@ import org.w3c.dom.Node;
 
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -77,12 +80,14 @@ public class MetroDispatchTargetInterceptor extends AbstractMetroTargetIntercept
      * @param oneWay                  true if the operation is non-blocking
      * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the underlying HTTP connection configuration or null if defaults should be used
+     * @param handlerRegistry         the global binding handler registry
      */
     public MetroDispatchTargetInterceptor(MetroDispatchObjectFactory dispatchFactory,
                                           boolean oneWay,
                                           SecurityConfiguration securityConfiguration,
-                                          ConnectionConfiguration connectionConfiguration) {
-        super(securityConfiguration, connectionConfiguration);
+                                          ConnectionConfiguration connectionConfiguration, 
+                                          BindingHandlerRegistry handlerRegistry) {
+        super(securityConfiguration, connectionConfiguration, handlerRegistry);
         this.proxyFactory = dispatchFactory;
         this.oneWay = oneWay;
         transformerFactory = TransformerFactory.newInstance();
@@ -101,6 +106,7 @@ public class MetroDispatchTargetInterceptor extends AbstractMetroTargetIntercept
             Dispatch<Source> dispatch = proxyFactory.getInstance();
             configureSecurity(dispatch);
             configureConnection(dispatch);
+            loadHandlers(dispatch);
             setSOAPAction(dispatch);
             Source source = new DOMSource(parameter);
 
