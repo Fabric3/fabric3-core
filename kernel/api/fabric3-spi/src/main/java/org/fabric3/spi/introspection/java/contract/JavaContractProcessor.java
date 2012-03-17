@@ -68,7 +68,7 @@ public interface JavaContractProcessor {
      *
      * @param interfaze the Java class to introspect
      * @param baseClass the base class to use for introspecting and resolving generic formal types to actual types. For example, a service contract on
-     *                  a reference may contain a formal type declartion (e.g. T) that is defined by the implementation class where the reference is
+     *                  a reference may contain a formal type declaration (e.g. T) that is defined by the implementation class where the reference is
      *                  injected. The base class may also be the same as the interface to be introspected in cases where a service contract is not
      *                  associated with an implementation class.
      * @param context   the introspection context for reporting errors and warnings
