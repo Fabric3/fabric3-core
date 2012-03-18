@@ -64,7 +64,7 @@ import org.fabric3.spi.contribution.manifest.QNameImport;
 /**
  * @version $Rev$ $Date$
  */
-public class MetaDataStoreUpdateTestCase extends TestCase {
+public class MetaDataStoreUpdaterTestCase extends TestCase {
     private MetaDataStoreImpl store;
     private URI contributionUri;
     private URI otherContributionUri;
@@ -85,7 +85,21 @@ public class MetaDataStoreUpdateTestCase extends TestCase {
         store.update(contributionUri, composite);
 
         EasyMock.verify(updater);
+    }
 
+    @SuppressWarnings({"unchecked"})
+    public void testRemove() throws Exception {
+        store.store(contribution);
+        store.store(otherContribution);
+
+        ResourceElementUpdater<Composite> updater = EasyMock.createMock(ResourceElementUpdater.class);
+        updater.remove(EasyMock.isA(Composite.class), EasyMock.isA(Contribution.class), EasyMock.isA(Set.class));
+        EasyMock.replay(updater);
+        Map map = Collections.singletonMap(Composite.class.getName(), updater);
+        store.setUpdaters(map);
+        store.remove(contributionUri, composite);
+
+        EasyMock.verify(updater);
     }
 
     protected void setUp() throws Exception {

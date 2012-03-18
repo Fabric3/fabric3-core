@@ -124,6 +124,16 @@ public interface MetaDataStore {
     <V extends Serializable> void update(URI uri, V value) throws StoreException;
 
     /**
+     * Removes a resource element from a contribution. References to the element may be replaced by unresolved pointers depending on the resource
+     * type.
+     *
+     * @param uri   the contribution URI
+     * @param value the new resource element value
+     * @throws StoreException if an error occurs during update
+     */
+    <V extends Serializable> void remove(URI uri, V value) throws StoreException;
+
+    /**
      * Resolves a resource element by its symbol against the given contribution uri. Artifacts referenced by this resource will be resolved.
      *
      * @param uri     the contribution URI to resolve against

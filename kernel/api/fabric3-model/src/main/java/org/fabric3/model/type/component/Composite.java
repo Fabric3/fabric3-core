@@ -90,6 +90,10 @@ public class Composite extends ComponentType implements PolicyAware {
     private Map<QName, Object> metadata = new HashMap<QName, Object>();
     private List<Namespace> namespaces;
 
+    // determines if this composite is a pointer. Pointers are references to composites that do not yet exist or have been deleted such
+    // as from an include or implementation.composite. Used primarily in tooling environments.
+    private boolean pointer;
+
     /**
      * Constructor.
      *
@@ -97,6 +101,17 @@ public class Composite extends ComponentType implements PolicyAware {
      */
     public Composite(QName name) {
         this.name = name;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param name    the qualified name of this composite
+     * @param pointer true if this composite is a pointer
+     */
+    public Composite(QName name, boolean pointer) {
+        this.name = name;
+        this.pointer = pointer;
     }
 
     /**
@@ -161,6 +176,15 @@ public class Composite extends ComponentType implements PolicyAware {
      */
     public void setAutowire(Autowire autowire) {
         this.autowire = autowire;
+    }
+
+    /**
+     * Returns true if this composite is a pointer.
+     *
+     * @return true if this composite is a pointer
+     */
+    public boolean isPointer() {
+        return pointer;
     }
 
     @Override

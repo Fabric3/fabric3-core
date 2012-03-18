@@ -198,14 +198,8 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return elements;
     }
 
-    @SuppressWarnings({"unchecked"})
     public <V extends Serializable> void update(URI uri, V value) throws StoreException {
-        String clazz = value.getClass().getName();
-        ResourceElementUpdater<V> updater = (ResourceElementUpdater<V>) updaters.get(clazz);
-        if (updater == null) {
-            String identifier = uri.toString();
-            throw new ContributionUpdateException("Updater not found: " + identifier);
-        }
+        ResourceElementUpdater<V> updater = getUpdater(uri, value);
         Contribution contribution = find(uri);
         if (contribution == null) {
             String identifier = uri.toString();
@@ -214,6 +208,18 @@ public class MetaDataStoreImpl implements MetaDataStore {
         Set<Contribution> dependentContributions = resolveDependentContributions(uri);
         updater.update(value, contribution, dependentContributions);
     }
+
+    public <V extends Serializable> void remove(URI uri, V value) throws StoreException {
+        ResourceElementUpdater<V> updater = getUpdater(uri, value);
+        Contribution contribution = find(uri);
+        if (contribution == null) {
+            String identifier = uri.toString();
+            throw new ContributionResolutionException("Contribution not found: " + identifier, identifier);
+        }
+        Set<Contribution> dependentContributions = resolveDependentContributions(uri);
+        updater.remove(value, contribution, dependentContributions);
+    }
+
 
     public <S extends Symbol, V extends Serializable> ResourceElement<S, V> resolve(URI uri, Class<V> type, S symbol, IntrospectionContext context)
             throws StoreException {
@@ -486,6 +492,17 @@ public class MetaDataStoreImpl implements MetaDataStore {
             }
         }
         return null;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private <V extends Serializable> ResourceElementUpdater<V> getUpdater(URI uri, V value) throws ContributionUpdateException {
+        String clazz = value.getClass().getName();
+        ResourceElementUpdater<V> updater = (ResourceElementUpdater<V>) updaters.get(clazz);
+        if (updater == null) {
+            String identifier = uri.toString();
+            throw new ContributionUpdateException("Updater not found: " + identifier);
+        }
+        return updater;
     }
 
 }
