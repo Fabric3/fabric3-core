@@ -82,7 +82,7 @@ public class JaxbInvoker extends Invoker {
     }
 
     public Object invoke(Packet packet, Method method, Object... args) throws InvocationTargetException {
-        // the work context is populated by the current tubline
+        // the work context is populated by the current tubeline
         WorkContext workContext = (WorkContext) packet.invocationProperties.get(MetroConstants.WORK_CONTEXT);
         if (workContext == null) {
             // programming error

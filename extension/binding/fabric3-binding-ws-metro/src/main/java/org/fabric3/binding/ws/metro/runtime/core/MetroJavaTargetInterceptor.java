@@ -105,7 +105,7 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
         Object proxy = createProxy();
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
-            // Metro stubs attempt to load classes using TCCL (e.g. StAX provider classes) that are visible the extension classloader and not
+            // Metro stubs attempt to load classes using TCCL (e.g. StAX provider classes) that are visible to the extension classloader and not
             // visible to the application classloader.
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             return invokeRetry(payload, proxy);
