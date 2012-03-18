@@ -55,6 +55,7 @@ import org.fabric3.host.Names;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UnresolvedImportException;
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;
@@ -198,7 +199,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return elements;
     }
 
-    public <V extends Serializable> void update(URI uri, V value) throws StoreException {
+    public <V extends Serializable> Set<ModelObject> update(URI uri, V value) throws StoreException {
         ResourceElementUpdater<V> updater = getUpdater(uri, value);
         Contribution contribution = find(uri);
         if (contribution == null) {
@@ -206,10 +207,10 @@ public class MetaDataStoreImpl implements MetaDataStore {
             throw new ContributionResolutionException("Contribution not found: " + identifier, identifier);
         }
         Set<Contribution> dependentContributions = resolveDependentContributions(uri);
-        updater.update(value, contribution, dependentContributions);
+        return updater.update(value, contribution, dependentContributions);
     }
 
-    public <V extends Serializable> void remove(URI uri, V value) throws StoreException {
+    public <V extends Serializable> Set<ModelObject> remove(URI uri, V value) throws StoreException {
         ResourceElementUpdater<V> updater = getUpdater(uri, value);
         Contribution contribution = find(uri);
         if (contribution == null) {
@@ -217,7 +218,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
             throw new ContributionResolutionException("Contribution not found: " + identifier, identifier);
         }
         Set<Contribution> dependentContributions = resolveDependentContributions(uri);
-        updater.remove(value, contribution, dependentContributions);
+        return updater.remove(value, contribution, dependentContributions);
     }
 
 
@@ -246,7 +247,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
                 if (value == null) {
                     continue;
                 }
-                if (value.getClass().isAssignableFrom(type)){
+                if (value.getClass().isAssignableFrom(type)) {
                     artifacts.add((ResourceElement<?, V>) element);
                 }
             }
@@ -257,7 +258,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
             Contribution exporting = find(exportingUri);
             for (Resource resource : exporting.getResources()) {
                 for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                    if (!wire.resolves(element.getSymbol())){
+                    if (!wire.resolves(element.getSymbol())) {
                         // artifact not visible from the importing contribution
                         continue;
                     }
@@ -265,7 +266,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
                     if (value == null) {
                         continue;
                     }
-                    if (value.getClass().isAssignableFrom(type)){
+                    if (value.getClass().isAssignableFrom(type)) {
                         artifacts.add((ResourceElement<?, V>) element);
                     }
                 }

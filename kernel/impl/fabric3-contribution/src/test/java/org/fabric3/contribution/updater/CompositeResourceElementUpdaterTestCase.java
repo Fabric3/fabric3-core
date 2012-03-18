@@ -39,10 +39,12 @@ package org.fabric3.contribution.updater;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.Set;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
@@ -63,7 +65,11 @@ public class CompositeResourceElementUpdaterTestCase extends TestCase {
     private Contribution contribution;
 
     public void testUpdate() throws Exception {
-        updater.update(newComposite, contribution, Collections.<Contribution>emptySet());
+        Set<ModelObject> set = updater.update(newComposite, contribution, Collections.<Contribution>emptySet());
+        assertEquals(2, set.size());
+        assertTrue(set.contains(oldComposite));
+        assertTrue(set.contains(referringComposite));
+
         for (ComponentDefinition child : referringComposite.getDeclaredComponents().values()) {
             Composite composite = (Composite) child.getImplementation().getComponentType();
             assertEquals(newComposite, composite);
@@ -74,7 +80,11 @@ public class CompositeResourceElementUpdaterTestCase extends TestCase {
     }
 
     public void testRemove() throws Exception {
-        updater.remove(oldComposite, contribution, Collections.<Contribution>emptySet());
+        Set<ModelObject> set = updater.remove(oldComposite, contribution, Collections.<Contribution>emptySet());
+        assertEquals(2, set.size());
+        assertTrue(set.contains(oldComposite));
+        assertTrue(set.contains(referringComposite));
+
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                 if (element.getValue() == oldComposite) {
@@ -98,10 +108,11 @@ public class CompositeResourceElementUpdaterTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         updater = new CompositeResourceElementUpdater();
-        QName name = new QName("test", "referred");
-        oldComposite = new Composite(name);
-        newComposite = new Composite(name);
-        referringComposite = new Composite(new QName("test", "referring"));
+        QName referredName = new QName("test", "referred");
+        oldComposite = new Composite(referredName);
+        newComposite = new Composite(referredName);
+        QName referringName = new QName("test", "referring");
+        referringComposite = new Composite(referringName);
 
         ComponentDefinition<CompositeImplementation> child = new ComponentDefinition<CompositeImplementation>("child");
         CompositeImplementation implementation = new CompositeImplementation();
@@ -115,10 +126,18 @@ public class CompositeResourceElementUpdaterTestCase extends TestCase {
         referringComposite.add(include);
 
         contribution = new Contribution(URI.create("contribution"));
-        Resource resource = new Resource(contribution, null, "");
-        QNameSymbol symbol = new QNameSymbol(name);
-        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, referringComposite);
-        resource.addResourceElement(element);
-        contribution.addResource(resource);
+
+        Resource referredResource = new Resource(contribution, null, "");
+        QNameSymbol referredSymbol = new QNameSymbol(referredName);
+        ResourceElement<QNameSymbol, Composite> referredElement = new ResourceElement<QNameSymbol, Composite>(referredSymbol, oldComposite);
+        referredResource.addResourceElement(referredElement);
+        contribution.addResource(referredResource);
+
+        Resource referringResource = new Resource(contribution, null, "");
+        QNameSymbol referringSymbol = new QNameSymbol(referringName);
+        ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(referringSymbol, referringComposite);
+        referringResource.addResourceElement(element);
+
+        contribution.addResource(referringResource);
     }
 }

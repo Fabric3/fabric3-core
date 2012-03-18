@@ -53,6 +53,7 @@ import org.fabric3.contribution.wire.ContributionWireInstantiator;
 import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistryImpl;
 import org.fabric3.contribution.wire.QNameContributionWire;
 import org.fabric3.contribution.wire.QNameWireInstantiator;
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Import;
@@ -78,7 +79,8 @@ public class MetaDataStoreUpdaterTestCase extends TestCase {
         store.store(otherContribution);
 
         ResourceElementUpdater<Composite> updater = EasyMock.createMock(ResourceElementUpdater.class);
-        updater.update(EasyMock.isA(Composite.class), EasyMock.isA(Contribution.class), EasyMock.isA(Set.class));
+        EasyMock.expect(updater.update(EasyMock.isA(Composite.class), EasyMock.isA(Contribution.class), EasyMock.isA(Set.class)))
+                .andReturn(Collections.<ModelObject>emptySet());
         EasyMock.replay(updater);
         Map map = Collections.singletonMap(Composite.class.getName(), updater);
         store.setUpdaters(map);
@@ -93,7 +95,8 @@ public class MetaDataStoreUpdaterTestCase extends TestCase {
         store.store(otherContribution);
 
         ResourceElementUpdater<Composite> updater = EasyMock.createMock(ResourceElementUpdater.class);
-        updater.remove(EasyMock.isA(Composite.class), EasyMock.isA(Contribution.class), EasyMock.isA(Set.class));
+        EasyMock.expect(updater.remove(EasyMock.isA(Composite.class), EasyMock.isA(Contribution.class), EasyMock.isA(Set.class)))
+                .andReturn(Collections.<ModelObject>emptySet());
         EasyMock.replay(updater);
         Map map = Collections.singletonMap(Composite.class.getName(), updater);
         store.setUpdaters(map);

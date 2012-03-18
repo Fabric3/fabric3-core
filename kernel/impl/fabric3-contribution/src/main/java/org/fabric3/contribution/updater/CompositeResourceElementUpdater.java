@@ -37,11 +37,13 @@
 */
 package org.fabric3.contribution.updater;
 
+import java.util.HashSet;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
@@ -62,35 +64,40 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 @EagerInit
 public class CompositeResourceElementUpdater implements ResourceElementUpdater<Composite> {
 
-    public void update(Composite newComposite, Contribution contribution, Set<Contribution> dependentContributions) {
-        updateComposite(newComposite, contribution);
+    public Set<ModelObject> update(Composite newComposite, Contribution contribution, Set<Contribution> dependentContributions) {
+        Set<ModelObject> set = new HashSet<ModelObject>();
+        updateComposite(newComposite, contribution, set);
         QName name = newComposite.getName();
         QNameSymbol symbol = new QNameSymbol(name);
         for (Contribution dependent : dependentContributions) {
             for (ContributionWire<?, ?> wire : dependent.getWires()) {
                 if (wire.resolves(symbol)) {
-                    updateComposite(newComposite, dependent);
+                    updateComposite(newComposite, dependent, set);
                     break;
                 }
             }
         }
+        return set;
     }
 
-    public void remove(Composite composite, Contribution contribution, Set<Contribution> dependentContributions) {
+    public Set<ModelObject> remove(Composite composite, Contribution contribution, Set<Contribution> dependentContributions) {
+        Set<ModelObject> set = new HashSet<ModelObject>();
         QName name = composite.getName();
         Composite pointer = new Composite(name, true);
+        set.add(composite);
         removeComposite(contribution, name);
-        replaceReferences(pointer, contribution);
+        replaceReferences(pointer, contribution, set);
 
         QNameSymbol symbol = new QNameSymbol(name);
         for (Contribution dependent : dependentContributions) {
             for (ContributionWire<?, ?> wire : dependent.getWires()) {
                 if (wire.resolves(symbol)) {
-                    replaceReferences(pointer, dependent);
+                    replaceReferences(pointer, dependent, set);
                     break;
                 }
             }
         }
+        return set;
     }
 
     private void removeComposite(Contribution contribution, QName name) {
@@ -107,9 +114,8 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
         }
     }
 
-
     @SuppressWarnings({"VariableNotUsedInsideIf", "unchecked"})
-    private void updateComposite(Composite newComposite, Contribution contribution) {
+    private void updateComposite(Composite newComposite, Contribution contribution, Set<ModelObject> set) {
         Composite replaced = null;
         QName name = newComposite.getName();
         // replace the composite in the contribution
@@ -121,6 +127,7 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
                     if (oldComposite.getName().equals(name)) {
                         replaced = oldComposite;
                         element.setValue(newComposite);
+                        set.add(newComposite);
                         break;
                     }
                 }
@@ -133,7 +140,7 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
             }
         }
         if (replaced != null) {
-            replaceReferences(newComposite, contribution);
+            replaceReferences(newComposite, contribution, set);
         }
     }
 
@@ -142,8 +149,9 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
      *
      * @param newComposite the updated composite
      * @param contribution the contribution
+     * @param set          the collection of modified elements to update
      */
-    private void replaceReferences(Composite newComposite, Contribution contribution) {
+    private void replaceReferences(Composite newComposite, Contribution contribution, Set<ModelObject> set) {
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement element : resource.getResourceElements()) {
                 Object value = element.getValue();
@@ -155,6 +163,7 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
                             if (implementation.getComponentType().getName().equals(newComposite.getName())) {
                                 // replace with the updated composite
                                 implementation.setComponentType(newComposite);
+                                set.add(current);
                             }
                         }
                     }
@@ -162,6 +171,7 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
                         if (newComposite.getName().equals(include.getIncluded().getName())) {
                             // replace with the updated composite
                             include.setIncluded(newComposite);
+                            set.add(current);
                         }
                     }
                 }

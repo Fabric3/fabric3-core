@@ -40,6 +40,8 @@ package org.fabric3.spi.contribution;
 import java.io.Serializable;
 import java.util.Set;
 
+import org.fabric3.model.type.ModelObject;
+
 /**
  * Dynamically updates a resource element contained in contribution and all references to it, including the transitive set of importing contributions,
  * if any.
@@ -54,8 +56,10 @@ public interface ResourceElementUpdater<V extends Serializable> {
      * @param value                  the new resource element value
      * @param contribution           the containing contribution
      * @param dependentContributions the transitive set of dependent contributions
+     * @return the collection of model object that have been changed by the update. For example, an update to a composite will cause changes in other
+     *         composites that reference it
      */
-    void update(V value, Contribution contribution, Set<Contribution> dependentContributions);
+    Set<ModelObject> update(V value, Contribution contribution, Set<Contribution> dependentContributions);
 
     /**
      * Removes a resource element from a contribution. References to the element may be replaced by unresolved pointers depending on the resource
@@ -64,7 +68,9 @@ public interface ResourceElementUpdater<V extends Serializable> {
      * @param value                  the resource element value to remove
      * @param contribution           the containing contribution
      * @param dependentContributions the transitive set of dependent contributions
+     * @return the collection of model object that have been changed by the removal. For example, a deleted composite will cause changes in other
+     *         composites that reference it. References to deleted elements may be replaced with pointers.
      */
-    void remove(V value, Contribution contribution, Set<Contribution> dependentContributions);
+    Set<ModelObject> remove(V value, Contribution contribution, Set<Contribution> dependentContributions);
 
 }

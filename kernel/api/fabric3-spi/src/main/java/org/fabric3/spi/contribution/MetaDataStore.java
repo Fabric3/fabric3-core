@@ -44,6 +44,7 @@ import java.util.Set;
 
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UnresolvedImportException;
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -119,9 +120,11 @@ public interface MetaDataStore {
      *
      * @param uri   the contribution URI
      * @param value the new resource element value
+     * @return the collection of model object that have been changed by the update. For example, an update to a composite will cause changes in other
+     *         composites that reference it
      * @throws StoreException if an error occurs during update
      */
-    <V extends Serializable> void update(URI uri, V value) throws StoreException;
+    <V extends Serializable> Set<ModelObject> update(URI uri, V value) throws StoreException;
 
     /**
      * Removes a resource element from a contribution. References to the element may be replaced by unresolved pointers depending on the resource
@@ -129,9 +132,11 @@ public interface MetaDataStore {
      *
      * @param uri   the contribution URI
      * @param value the new resource element value
+     * @return the collection of model object that have been changed by the removal. For example, a deleted composite will cause changes in other
+     *         composites that reference it. References to deleted elements may be replaced with pointers.
      * @throws StoreException if an error occurs during update
      */
-    <V extends Serializable> void remove(URI uri, V value) throws StoreException;
+    <V extends Serializable> Set<ModelObject> remove(URI uri, V value) throws StoreException;
 
     /**
      * Resolves a resource element by its symbol against the given contribution uri. Artifacts referenced by this resource will be resolved.
@@ -147,6 +152,7 @@ public interface MetaDataStore {
                                                                              Class<V> type,
                                                                              S symbol,
                                                                              IntrospectionContext context) throws StoreException;
+
     /**
      * Resolves resource elements for a given type that are visible to the contribution.
      *
