@@ -67,7 +67,6 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.ElementLoadFailure;
-import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
@@ -149,16 +148,21 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
 
             try {
                 QNameSymbol symbol = new QNameSymbol(name);
+                Include include = new Include();
+                include.setName(name);
+
                 ResourceElement<QNameSymbol, Composite> element = store.resolve(contributionUri, Composite.class, symbol, context);
                 if (element == null) {
                     String id = name.toString();
-                    MissingComposite failure = new MissingComposite("Composite file not found: " + id, reader);
+                    MissingComposite failure = new MissingComposite("Composite not found: " + id, reader);
                     context.addError(failure);
-                    return null;
+                    // add pointer
+                    URI uri = context.getContributionUri();
+                    Composite pointer = new Composite(name, true, uri);
+                    include.setIncluded(pointer);
+                    return include;
                 }
                 Composite composite = element.getValue();
-                Include include = new Include();
-                include.setName(name);
                 include.setIncluded(composite);
                 return include;
             } catch (StoreException e) {
@@ -177,7 +181,7 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
             Source source = new UrlSource(url);
             composite = registry.load(source, Composite.class, childContext);
         } catch (LoaderException e) {
-            InvalidInclude failure = new InvalidInclude("Error loading include: "+ name, e, reader);
+            InvalidInclude failure = new InvalidInclude("Error loading include: " + name, e, reader);
             context.addError(failure);
             return null;
         }
