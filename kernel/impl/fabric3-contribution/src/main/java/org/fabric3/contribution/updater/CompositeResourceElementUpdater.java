@@ -109,6 +109,9 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
                     Composite candidate = (Composite) element.getValue();
                     if (candidate.getName().equals(name)) {
                         contribution.getResources().remove(resource);
+                        if (contribution.getLockOwners().contains(name)) {
+                            contribution.releaseLock(name);
+                        }
                         return;
                     }
                 }
