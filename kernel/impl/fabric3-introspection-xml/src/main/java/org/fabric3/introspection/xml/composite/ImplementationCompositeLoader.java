@@ -157,6 +157,10 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
                     String id = name.toString();
                     MissingComposite failure = new MissingComposite("Composite not found: " + id, reader);
                     introspectionContext.addError(failure);
+                    // add pointer
+                    URI uri = introspectionContext.getContributionUri();
+                    Composite pointer = new Composite(name, true, uri);
+                    impl.setComponentType(pointer);
                     return impl;
                 }
                 impl.setComponentType(element.getValue());

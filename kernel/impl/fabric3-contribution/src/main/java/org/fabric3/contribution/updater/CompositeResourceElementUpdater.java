@@ -37,6 +37,7 @@
 */
 package org.fabric3.contribution.updater;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.namespace.QName;
@@ -83,7 +84,8 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
     public Set<ModelObject> remove(Composite composite, Contribution contribution, Set<Contribution> dependentContributions) {
         Set<ModelObject> set = new HashSet<ModelObject>();
         QName name = composite.getName();
-        Composite pointer = new Composite(name, true);
+        URI uri = composite.getContributionUri();
+        Composite pointer = new Composite(name, true, uri);
         set.add(composite);
         removeComposite(contribution, name);
         replaceReferences(pointer, contribution, set);

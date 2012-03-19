@@ -108,10 +108,12 @@ public class Composite extends ComponentType implements PolicyAware {
      *
      * @param name    the qualified name of this composite
      * @param pointer true if this composite is a pointer
+     * @param uri     the contribution URI
      */
-    public Composite(QName name, boolean pointer) {
+    public Composite(QName name, boolean pointer, URI uri) {
         this.name = name;
         this.pointer = pointer;
+        this.contributionUri = uri;
     }
 
     /**

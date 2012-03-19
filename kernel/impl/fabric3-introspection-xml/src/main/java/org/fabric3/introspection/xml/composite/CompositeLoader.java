@@ -245,7 +245,9 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         continue;
                     }
                 case END_ELEMENT:
-                    assert COMPOSITE.equals(reader.getName());
+                    if (!COMPOSITE.equals(reader.getName())) {
+                        continue;
+                    }
                     updateAndValidateServicePromotions(type, reader, childContext);
                     updateAndValidateReferencePromotions(type, reader, childContext);
                     updateContext(context, childContext, compositeName);
@@ -335,6 +337,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             context.addError(failure);
             return false;
         }
+        type.add(componentDefinition);
         Implementation<?> implementation = componentDefinition.getImplementation();
         if (implementation == null || implementation.getComponentType() == null) {
             return false;
@@ -349,7 +352,6 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         for (PropertyValue value : componentDefinition.getPropertyValues().values()) {
             value.setNamespaceContext(nsContext);
         }
-        type.add(componentDefinition);
         return true;
     }
 
