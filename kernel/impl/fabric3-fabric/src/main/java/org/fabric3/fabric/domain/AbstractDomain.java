@@ -584,8 +584,8 @@ public abstract class AbstractDomain implements Domain {
         activateDefinitions(contribution);
         InstantiationContext context = logicalModelInstantiator.include(composite, domain);
         if (context.hasErrors()) {
-            contribution.releaseLock(name);
             if (!simulated) {
+                contribution.releaseLock(name);
                 throw new AssemblyException(context.getErrors());
             }
         }
