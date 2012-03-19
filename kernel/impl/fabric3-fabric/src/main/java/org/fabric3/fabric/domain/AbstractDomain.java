@@ -178,18 +178,18 @@ public abstract class AbstractDomain implements Domain {
         for (DeployListener listener : listeners) {
             listener.onDeploy(deployable, plan.getName());
         }
-        instantiateAndDeploy(wrapper, plan);
+        instantiateAndDeploy(wrapper, plan, false);
         for (DeployListener listener : listeners) {
             listener.onDeployCompleted(deployable, plan.getName());
         }
     }
 
-    public synchronized void include(Composite composite) throws DeploymentException {
+    public synchronized void include(Composite composite, boolean simulated) throws DeploymentException {
         QName name = composite.getName();
         for (DeployListener listener : listeners) {
             listener.onDeploy(name, SYNTHETIC_PLAN_NAME);
         }
-        instantiateAndDeploy(composite, SYNTHETIC_PLAN);
+        instantiateAndDeploy(composite, SYNTHETIC_PLAN, simulated);
     }
 
     public synchronized void include(List<URI> uris) throws DeploymentException {
@@ -559,9 +559,10 @@ public abstract class AbstractDomain implements Domain {
      *
      * @param composite the composite to instantiate and deploy
      * @param plan      the deployment plan to use or null
+     * @param simulated true if the deployment is simulated
      * @throws DeploymentException if a deployment error occurs
      */
-    private void instantiateAndDeploy(Composite composite, DeploymentPlan plan) throws DeploymentException {
+    private void instantiateAndDeploy(Composite composite, DeploymentPlan plan, boolean simulated) throws DeploymentException {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
 
         QName name = composite.getName();
@@ -571,37 +572,49 @@ public abstract class AbstractDomain implements Domain {
             throw new ContributionNotInstalledException("Contribution is not installed: " + contribution.getUri());
         }
 
-        try {
-            // check if the deployable has already been deployed by querying the lock owners
-            if (contribution.getLockOwners().contains(name)) {
-                throw new CompositeAlreadyDeployedException("Composite has already been deployed: " + name);
-            }
-            // lock the contribution
-            contribution.acquireLock(name);
-            if (isTransactional()) {
-                domain = CopyUtil.copy(domain);
-            }
-            activateDefinitions(contribution);
-            InstantiationContext context = logicalModelInstantiator.include(composite, domain);
-            if (context.hasErrors()) {
-                contribution.releaseLock(name);
+        // check if the deployable has already been deployed by querying the lock owners
+        if (contribution.getLockOwners().contains(name)) {
+            throw new CompositeAlreadyDeployedException("Composite has already been deployed: " + name);
+        }
+        // lock the contribution
+        contribution.acquireLock(name);
+        if (isTransactional()) {
+            domain = CopyUtil.copy(domain);
+        }
+        activateDefinitions(contribution);
+        InstantiationContext context = logicalModelInstantiator.include(composite, domain);
+        if (context.hasErrors()) {
+            contribution.releaseLock(name);
+            if (!simulated) {
                 throw new AssemblyException(context.getErrors());
             }
+        }
+        try {
             policyAttacher.attachPolicies(domain, true);
-            allocateAndDeploy(domain, plan);
-            logicalComponentManager.replaceRootComponent(domain);
-        } catch (DeploymentException e) {
-            // release the contribution lock if there was an error
-            if (contribution.getLockOwners().contains(name)) {
-                contribution.releaseLock(name);
-            }
-            throw e;
         } catch (PolicyResolutionException e) {
             // release the contribution lock if there was an error
             if (contribution.getLockOwners().contains(name)) {
                 contribution.releaseLock(name);
             }
             throw new DeploymentException(e);
+        }
+        if (!simulated) {
+            try {
+                allocateAndDeploy(domain, plan);
+            } catch (DeploymentException e) {
+                // release the contribution lock if there was an error
+                if (contribution.getLockOwners().contains(name)) {
+                    contribution.releaseLock(name);
+                }
+                throw e;
+            }
+            logicalComponentManager.replaceRootComponent(domain);
+        } else {
+            collector.markAsProvisioned(domain);
+            logicalComponentManager.replaceRootComponent(domain);
+            if (context.hasErrors()) {
+                throw new AssemblyException(context.getErrors());
+            }
         }
     }
 

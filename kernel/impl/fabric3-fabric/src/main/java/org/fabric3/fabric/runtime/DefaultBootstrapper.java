@@ -221,7 +221,7 @@ public class DefaultBootstrapper implements Bootstrapper {
             domain.setProperties(logicalProperty);
 
             // deploy the composite to the runtime domain
-            runtimeDomain.include(composite);
+            runtimeDomain.include(composite, false);
         } catch (DeploymentException e) {
             throw new InitializationException(e);
         }

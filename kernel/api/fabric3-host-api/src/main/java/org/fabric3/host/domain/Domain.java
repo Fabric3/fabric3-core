@@ -81,9 +81,11 @@ public interface Domain {
      * Include a composite in the domain.
      *
      * @param composite the composite to include
+     * @param simulated true if the include is a simulation. Simulated includes skip generation and deployment to runtimes. In addition, simulated
+     *                  deployments are not fail-fast, i.e. they will be completed if assembly errors exist.
      * @throws DeploymentException if an error is encountered during inclusion
      */
-    void include(Composite composite) throws DeploymentException;
+    void include(Composite composite, boolean simulated) throws DeploymentException;
 
     /**
      * Remove all deployables in a contribution from the domain.
