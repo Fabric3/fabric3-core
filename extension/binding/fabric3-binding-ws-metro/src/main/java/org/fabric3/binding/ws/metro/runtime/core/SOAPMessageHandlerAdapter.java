@@ -10,6 +10,8 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextTunnel;
 
 
 /**
@@ -23,7 +25,7 @@ public class SOAPMessageHandlerAdapter implements SOAPHandler<SOAPMessageContext
 	private BindingHandler<SOAPMessage> delegateHandler;
 	
 	public SOAPMessageHandlerAdapter(BindingHandler<?> h) {
-		delegateHandler = (BindingHandler<SOAPMessage>) h;
+		delegateHandler = (BindingHandler) h;
 	}
 
 	public void close(MessageContext mc) {
@@ -35,8 +37,12 @@ public class SOAPMessageHandlerAdapter implements SOAPHandler<SOAPMessageContext
 
 	public boolean handleMessage(SOAPMessageContext smc) {
 		Boolean outbound = (Boolean) smc.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-		MessageImpl msg = new MessageImpl();
-		msg.setBody(smc.getMessage());
+		WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+		if (workContext == null){
+			workContext = new WorkContext();
+			WorkContextTunnel.setThreadWorkContext(workContext);
+		}
+		MessageImpl msg = new MessageImpl(smc.getMessage(),false,workContext);
 		if (outbound){
 			delegateHandler.handleOutbound(msg,smc.getMessage());
 		}
