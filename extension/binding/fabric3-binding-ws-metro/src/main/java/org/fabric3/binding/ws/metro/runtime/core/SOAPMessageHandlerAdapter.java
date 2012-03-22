@@ -8,6 +8,7 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import org.fabric3.binding.ws.metro.runtime.MetroConstants;
 import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
@@ -38,9 +39,9 @@ public class SOAPMessageHandlerAdapter implements SOAPHandler<SOAPMessageContext
 	public boolean handleMessage(SOAPMessageContext smc) {
 		Boolean outbound = (Boolean) smc.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 		WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+		workContext = (WorkContext) (workContext == null ? smc.get(MetroConstants.WORK_CONTEXT): workContext);
 		if (workContext == null){
-			workContext = new WorkContext();
-			WorkContextTunnel.setThreadWorkContext(workContext);
+			throw new AssertionError("Work context not set");
 		}
 		MessageImpl msg = new MessageImpl(smc.getMessage(),false,workContext);
 		if (outbound){

@@ -29,10 +29,10 @@ Public License. See the accompanying license file for details.
                 <tube-factory className="com.sun.xml.ws.assembler.jaxws.TransportTubeFactory"/>
             </client-side>
             <endpoint-side>
+                <tube-factory className="org.fabric3.binding.ws.metro.runtime.core.WorkContextTubeFactory"/>
                 <tube-factory className="com.sun.xml.ws.assembler.jaxws.TransportTubeFactory"/>
                 <tube-factory className="com.sun.xml.ws.dump.MessageDumpingTubeFactory"/>
                 <tube-factory className="com.sun.xml.ws.rx.testing.PacketFilteringTubeFactory"/>
-                <tube-factory className="org.fabric3.binding.ws.metro.runtime.core.WorkContextTubeFactory"/>
                 <tube-factory className="org.fabric3.binding.ws.metro.runtime.security.F3SecurityTubeFactory"/>
                 <tube-factory className="com.sun.xml.ws.rx.mc.runtime.McTubeFactory"/>
                 <tube-factory className="com.sun.xml.ws.assembler.jaxws.AddressingTubeFactory"/>
