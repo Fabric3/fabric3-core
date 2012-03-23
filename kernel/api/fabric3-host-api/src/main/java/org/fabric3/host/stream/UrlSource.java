@@ -51,14 +51,22 @@ import org.fabric3.host.util.FileHelper;
  */
 public class UrlSource implements Source {
 
+    private String systemId;
     private URL url;
 
     public UrlSource(URL url) {
+        systemId = url.toString();
         this.url = url;
     }
 
+    public UrlSource(String systemId, URL url) {
+        this.systemId = systemId;
+        this.url = url;
+    }
+
+
     public String getSystemId() {
-        return url.toString();
+        return systemId;
     }
 
     public URL getBaseLocation() {
