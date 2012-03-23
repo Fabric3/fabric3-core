@@ -142,7 +142,8 @@ public class ContributionServiceImplTestCase extends TestCase {
         store.store(contribution);
         EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
 
-        ContributionSource source = new FileContributionSource(contributionUri, null, -1, "application/xml", false);
+        URL location = new URL("file://location");
+        ContributionSource source = new FileContributionSource(contributionUri, location, -1, "application/xml", false);
         assertEquals(contributionUri, service.store(source));
 
         EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
@@ -153,7 +154,8 @@ public class ContributionServiceImplTestCase extends TestCase {
         store.store(contribution);
         EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
 
-        ContributionSource source = new FileContributionSource(contributionUri, null, -1, "application/xml", false);
+        URL location = new URL("file://location");
+        ContributionSource source = new FileContributionSource(contributionUri, location, -1, "application/xml", false);
         assertTrue(service.store(Collections.singletonList(source)).contains(contributionUri));
 
         EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
@@ -366,8 +368,11 @@ public class ContributionServiceImplTestCase extends TestCase {
         Contribution otherContribution = new Contribution(otherContributionUri);
         otherContribution.getManifest().addRequiredCapability(new Capability("capability", true));
         List<ContributionSource> sources = new ArrayList<ContributionSource>();
-        sources.add(new FileContributionSource(contributionUri, null, -1, "application/xml", false));
-        sources.add(new FileContributionSource(otherContributionUri, null, -1, "application/xml", false));
+        URL location = new URL("file://location");
+        URL otherLocation = new URL("file://otherLocation");
+
+        sources.add(new FileContributionSource(contributionUri, location, -1, "application/xml", false));
+        sources.add(new FileContributionSource(otherContributionUri, otherLocation, -1, "application/xml", false));
         List<Contribution> contributions = new ArrayList<Contribution>();
         contributions.add(contribution);
         contributions.add(otherContribution);
