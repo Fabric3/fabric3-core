@@ -46,8 +46,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.apache.ws.commons.schema</groupId>
             <artifactId>XmlSchema</artifactId>
-            <!-- do not upgrade to 1.4.3 or later until this is fixed: http://issues.apache.org/jira/browse/WSCOMMONS-484 -->
-            <version>1.4.2</version>
+            <version>1.4.7</version>
         </dependency>
 
         <dependency>
