@@ -65,7 +65,8 @@ import org.fabric3.wsdl.factory.Wsdl4JFactory;
  */
 public class EndpointResolverImpl implements EndpointResolver {
     private static final QName SOAP11_ADDRESS = new QName("http://schemas.xmlsoap.org/wsdl/soap/", "address");
-    private static final QName SOAP12_ADDRESS = new QName("http://www.w3.org/2003/05/soap/bindings/HTTP/", "address");
+    private static final QName SOAP12_ADDRESS_OLD = new QName("http://www.w3.org/2003/05/soap/bindings/HTTP/", "address");
+    private static final QName SOAP12_ADDRESS = new QName("http://schemas.xmlsoap.org/wsdl/soap12/", "address");
 
     private Wsdl4JFactory wsdlFactory;
 
@@ -121,7 +122,7 @@ public class EndpointResolverImpl implements EndpointResolver {
         for (Object o : port.getExtensibilityElements()) {
             ExtensibilityElement element = (ExtensibilityElement) o;
             QName elementType = element.getElementType();
-            if (SOAP11_ADDRESS.equals(elementType) || SOAP12_ADDRESS.equals(elementType)) {
+            if (SOAP11_ADDRESS.equals(elementType) || SOAP12_ADDRESS.equals(elementType) || SOAP12_ADDRESS_OLD.equals(elementType)) {
                 try {
                     return new URL(((SOAPAddress) element).getLocationURI());
                 } catch (MalformedURLException e) {
