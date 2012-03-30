@@ -49,6 +49,7 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -65,9 +66,6 @@ import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-import org.oasisopen.sca.ServiceUnavailableException;
-
 import org.fabric3.binding.jms.runtime.common.JmsBadMessageException;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.runtime.common.MessageHelper;
@@ -75,11 +73,14 @@ import org.fabric3.binding.jms.spi.common.CorrelationScheme;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.util.Base64;
 import org.fabric3.spi.wire.Interceptor;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
  * Dispatches an invocation to a destination.
@@ -110,6 +111,7 @@ public class JmsInterceptor implements Interceptor {
     private String jmsType;
     private int priority;
     private Map<String, String> properties;
+	private BindingHandlerRegistry handlerRegistry;
 
     /**
      * Constructor.
@@ -183,8 +185,8 @@ public class JmsInterceptor implements Interceptor {
                 correlationId = UUID.randomUUID().toString();
                 jmsMessage.setJMSCorrelationID(correlationId);
             }
-
-            // enqueue the message
+            JmsHelper.applyHandlers(handlerRegistry,jmsMessage, message, producer.getDestination() , true);
+            // enqueue the message            
             producer.send(jmsMessage);
 
             // if the correlation scheme is configured to use the message id, the correlation id must set after the message is sent since the
@@ -195,7 +197,7 @@ public class JmsInterceptor implements Interceptor {
 
             if (!oneWay) {
                 // request-response, block on response
-                Message resp = receive(correlationId, session);
+                Message resp = receive(correlationId, session);                
                 if (begun) {
                     tm.commit();
                 }
@@ -235,9 +237,13 @@ public class JmsInterceptor implements Interceptor {
             JmsHelper.closeQuietly(connection);
             Thread.currentThread().setContextClassLoader(oldCl);
         }
-    }
+    }  
+	
+	public void setBindingHandlerRegistry(BindingHandlerRegistry handlerRegistry) {
+		this.handlerRegistry = handlerRegistry;
+	}
 
-    public Interceptor getNext() {
+	public Interceptor getNext() {
         return next;
     }
 
@@ -272,6 +278,7 @@ public class JmsInterceptor implements Interceptor {
                 Object payload = MessageHelper.getPayload(resultMessage, payloadTypes.getOutputType());
                 response.setBody(payload);
             }
+            JmsHelper.applyHandlers(handlerRegistry,resultMessage, response, resultMessage.getJMSDestination(), false);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }

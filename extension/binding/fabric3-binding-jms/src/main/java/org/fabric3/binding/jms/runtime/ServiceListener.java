@@ -50,6 +50,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.jms.BytesMessage;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -65,12 +66,14 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.binding.jms.runtime.common.JmsBadMessageException;
+import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.runtime.common.MessageHelper;
 import org.fabric3.binding.jms.spi.common.CorrelationScheme;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
@@ -94,6 +97,7 @@ public class ServiceListener implements MessageListener {
     private ListenerMonitor monitor;
     private XMLFactory xmlFactory;
     private XMLInputFactory xmlInputFactory;
+	private BindingHandlerRegistry handlerRegistry;
 
 
     public ServiceListener(WireHolder wireHolder,
@@ -177,7 +181,12 @@ public class ServiceListener implements MessageListener {
             payload = new Object[]{payload};
         }
         org.fabric3.spi.invocation.Message inMessage = new MessageImpl(payload, false, workContext);
+        
+        JmsHelper.applyHandlers(handlerRegistry, request , inMessage , request.getJMSDestination() , false);
+        
         org.fabric3.spi.invocation.Message outMessage = interceptor.invoke(inMessage);
+        
+        
         if (oneWay) {
             // one-way message, return without waiting for a response
             return;
@@ -238,6 +247,7 @@ public class ServiceListener implements MessageListener {
             }
             producer = responseSession.createProducer(defaultResponseDestination);
         }
+        JmsHelper.applyHandlers(handlerRegistry, request , outMessage , producer.getDestination() , true);
         producer.send(response);
     }
 
@@ -355,5 +365,9 @@ public class ServiceListener implements MessageListener {
             throw new JmsBadMessageException("Error deserializing callframe", ex);
         }
     }
+
+	public void setBindingHandlerRegistry(BindingHandlerRegistry handlerRegistry) {
+		this.handlerRegistry = handlerRegistry;
+	}
 
 }

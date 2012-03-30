@@ -43,15 +43,20 @@
  */
 package org.fabric3.binding.jms.runtime;
 
+import static org.fabric3.binding.jms.spi.common.CacheLevel.ADMINISTERED_OBJECTS;
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_ADMINISTERED_OBJECTS;
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
+import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Queue;
-
-import org.oasisopen.sca.annotation.Reference;
+import javax.jms.Topic;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
@@ -67,6 +72,7 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -76,11 +82,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 import org.fabric3.spi.xml.XMLFactory;
-
-import static org.fabric3.binding.jms.spi.common.CacheLevel.ADMINISTERED_OBJECTS;
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_ADMINISTERED_OBJECTS;
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches a channel or consumer to a JMS destination.
@@ -94,17 +96,20 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
     private MessageContainerManager containerManager;
     private ListenerMonitor monitor;
     private XMLFactory xmlFactory;
+	private BindingHandlerRegistry handlerRegistry;
 
     public JmsSourceWireAttacher(@Reference AdministeredObjectResolver resolver,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
                                  @Reference MessageContainerManager containerManager,
                                  @Reference XMLFactory xmlFactory,
+                                 @Reference BindingHandlerRegistry handlerRegistry,
                                  @Monitor ListenerMonitor monitor) {
         this.resolver = resolver;
         this.classLoaderRegistry = classLoaderRegistry;
         this.containerManager = containerManager;
         this.xmlFactory = xmlFactory;
         this.monitor = monitor;
+        this.handlerRegistry = handlerRegistry;
     }
 
     public void attach(JmsSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {
@@ -121,7 +126,10 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
             Destination requestDestination = objects.getRequestDestination();
             ConnectionFactory responseFactory = objects.getResponseFactory();
             Destination responseDestination = objects.getResponseDestination();
+            
             ServiceListener listener = new ServiceListener(wireHolder, responseDestination, responseFactory, trxType, loader, xmlFactory, monitor);
+            listener.setBindingHandlerRegistry(handlerRegistry);
+            
             configuration.setDestination(requestDestination);
             configuration.setFactory(requestFactory);
             configuration.setMessageListener(listener);
@@ -217,7 +225,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
         DestinationType requestDestinationType = requestDestinationDefinition.geType();
         if (DestinationType.QUEUE == requestDestinationType && !(requestDestination instanceof Queue)) {
             throw new WiringException("Destination is not a queue: " + requestDestinationDefinition.getName());
-        } else if (DestinationType.TOPIC == requestDestinationType) {
+        } else if (DestinationType.TOPIC == requestDestinationType && !(requestDestination instanceof Topic)) {
             throw new WiringException("Destination is not a topic: " + requestDestinationDefinition.getName());
         }
     }

@@ -43,10 +43,21 @@
  */
 package org.fabric3.binding.jms.runtime.common;
 
+import java.util.List;
+
 import javax.jms.Connection;
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
+import javax.jms.Queue;
 import javax.jms.Session;
+import javax.jms.Topic;
+
+import org.fabric3.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.spi.binding.handler.BindingHandler;
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
+import org.fabric3.spi.invocation.Message;
+import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
  * Utility class for managing JMS objects.
@@ -97,5 +108,32 @@ public class JmsHelper {
         } catch (JMSException ignore) {
         }
     }
+    
+    /**
+	 * Apply registered Binding Handlers to JMS transport message
+	 * 
+	 * @param context
+	 * @param message
+	 * @param outbound
+	 * @throws JMSException 
+	 */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public static void applyHandlers(BindingHandlerRegistry handlerRegistry ,javax.jms.Message context , Message message, Destination destination, boolean outbound) throws JMSException {
+		if (handlerRegistry == null || destination == null)
+			  return;
+		if (message.getWorkContext() == null){
+			message.setWorkContext(WorkContextTunnel.getThreadWorkContext());
+		}
+		String serviceName = destination instanceof Topic ? ((Topic)destination).getTopicName() : ((Queue)destination).getQueueName();
+		List<BindingHandler<?>> handlers = handlerRegistry.loadBindingHandlers(JmsBindingDefinition.BINDING_QNAME, serviceName);
+		for (BindingHandler bh : handlers) {
+			if (outbound){
+				bh.handleOutbound(message, context);
+			}
+			else {
+				bh.handleInbound(context, message);
+			}
+		}
+	}
 
 }

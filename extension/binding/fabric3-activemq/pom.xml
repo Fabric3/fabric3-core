@@ -43,7 +43,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-core</artifactId>
-            <version>5.4.2</version>
+            <version>5.5.1</version>
             <exclusions>
                 <!-- Exclude clogging as it interferes with classloading. It is replaced by SLF4J below. -->
                 <exclusion>
@@ -79,7 +79,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-pool</artifactId>
-            <version>5.4.2</version>
+            <version>5.5.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>
@@ -105,7 +105,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.5.6</version>
+            <version>1.6.4</version>
         </dependency>
 
         <dependency>
@@ -139,6 +139,17 @@ Public License. See the accompanying license file for details.
             <scope>test</scope>
         </dependency>
     </dependencies>
+    
+    <dependencyManagement>
+      <dependencies>
+            <dependency>
+		      <groupId>org.slf4j</groupId>
+		      <artifactId>slf4j-api</artifactId>
+		      <version>1.6.4</version>
+		    </dependency>
+      </dependencies>
+    </dependencyManagement>
+    
     <build>
         <plugins>
             <plugin>

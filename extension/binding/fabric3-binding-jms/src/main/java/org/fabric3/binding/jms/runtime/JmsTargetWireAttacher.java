@@ -66,13 +66,13 @@ import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
@@ -85,14 +85,17 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
     private AdministeredObjectResolver resolver;
     private TransactionManager tm;
     private ClassLoaderRegistry classLoaderRegistry;
+	private BindingHandlerRegistry handlerRegistry;
 
 
     public JmsTargetWireAttacher(@Reference AdministeredObjectResolver resolver,
                                  @Reference TransactionManager tm,
-                                 @Reference ClassLoaderRegistry classLoaderRegistry) {
+                                 @Reference ClassLoaderRegistry classLoaderRegistry,
+                                 @Reference BindingHandlerRegistry handlerRegistry) {
         this.resolver = resolver;
         this.tm = tm;
         this.classLoaderRegistry = classLoaderRegistry;
+        this.handlerRegistry = handlerRegistry;
     }
 
     public void attach(PhysicalSourceDefinition source, JmsTargetDefinition target, Wire wire) throws WiringException {
@@ -124,7 +127,8 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
             processJmsHeaders(configuration, metadata);
             OperationPayloadTypes payloadTypes = resolveOperation(operationName, types);
             configuration.setPayloadType(payloadTypes);
-            Interceptor interceptor = new JmsInterceptor(configuration);
+            JmsInterceptor interceptor = new JmsInterceptor(configuration);
+            interceptor.setBindingHandlerRegistry(handlerRegistry);
             chain.addInterceptor(interceptor);
         }
 

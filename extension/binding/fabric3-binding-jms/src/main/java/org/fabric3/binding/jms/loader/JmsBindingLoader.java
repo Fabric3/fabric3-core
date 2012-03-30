@@ -44,6 +44,7 @@
 package org.fabric3.binding.jms.loader;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.namespace.NamespaceContext;
@@ -70,13 +71,17 @@ import org.fabric3.binding.jms.spi.common.MessageSelection;
 import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
 import org.fabric3.binding.jms.spi.common.PropertyAwareObject;
 import org.fabric3.binding.jms.spi.common.ResponseDefinition;
+import org.fabric3.spi.binding.handler.BindingHandlerDefinition;
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
+import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
+import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -126,7 +131,8 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         ATTRIBUTES.add("min.receivers");
     }
 
-
+    private LoaderRegistry registry;
+	private BindingHandlerRegistry handlerRegistry;
     private LoaderHelper loaderHelper;
     private int defaultResponseTimeout = 600000;  // set the default response wait to 10 minutes
     private int defaultTransactionTimeout = 30; // in seconds
@@ -149,8 +155,12 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
      *
      * @param loaderHelper the loaderHelper
      */
-    public JmsBindingLoader(@Reference LoaderHelper loaderHelper) {
+    public JmsBindingLoader(@Reference LoaderHelper loaderHelper,
+    		                @Reference LoaderRegistry registry,
+                            @Reference BindingHandlerRegistry handlerRegistry) {
         this.loaderHelper = loaderHelper;
+        this.registry = registry;
+        this.handlerRegistry = handlerRegistry;
     }
 
     public JmsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -181,6 +191,8 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 
         loadFabric3Attributes(metadata, reader, context);
+        
+        ArrayList<BindingHandlerDefinition> handlerDefinitions = new ArrayList<BindingHandlerDefinition>();
 
         String name;
         while (true) {
@@ -188,7 +200,15 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
             switch (reader.next()) {
             case START_ELEMENT:
                 name = reader.getName().getLocalPart();
-                if ("destination".equals(name)) {
+                if ("handler".equals(name)) {
+					try {
+						BindingHandlerDefinition bhd = registry.load(reader, BindingHandlerDefinition.class, context);
+						handlerDefinitions.add(bhd);
+					} catch (UnrecognizedElementException e) {
+						InvalidJmsBinding failure = new InvalidJmsBinding("The jms binding handler defenition is not a valid: " + e.getMessage(), reader);
+			            context.addError(failure);
+					}					
+                } else if ("destination".equals(name)) {
                     if (uri != null) {
                         InvalidJmsBinding error =
                                 new InvalidJmsBinding("A destination cannot be defined in a JMS uri and as part of the binding.jms element", reader);
@@ -220,18 +240,23 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 name = reader.getName().getLocalPart();
                 if ("binding.jms".equals(name)) {
                     // needed for callbacks
-                    String target;
+                    String target = null;
                     DestinationDefinition destinationDefinition = metadata.getDestination();
                     if (destinationDefinition != null) {
                         target = destinationDefinition.getName();
                         URI bindingUri = URI.create("jms://" + target);
-                        definition.setGeneratedTargetUri(bindingUri);
+                        definition.setGeneratedTargetUri(bindingUri);                        
                     } else if (metadata.getActivationSpec() != null) {
                         target = metadata.getActivationSpec().getName();
                         URI bindingUri = URI.create("jms://" + target);
                         definition.setGeneratedTargetUri(bindingUri);
-                    }
+                    }                    
                     validate(definition, reader, context);
+					if (target != null) {
+						for (BindingHandlerDefinition bhd : handlerDefinitions) {
+							handlerRegistry.register(JmsBindingDefinition.BINDING_QNAME, target, bhd);
+						}
+					}
                     return definition;
                 }
                 break;
