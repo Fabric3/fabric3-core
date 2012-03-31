@@ -38,6 +38,7 @@
 package org.fabric3.binding.ws.metro.generator.resolver;
 
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -46,7 +47,6 @@ import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensibilityElement;
-import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
 
@@ -124,9 +124,14 @@ public class EndpointResolverImpl implements EndpointResolver {
             QName elementType = element.getElementType();
             if (SOAP11_ADDRESS.equals(elementType) || SOAP12_ADDRESS.equals(elementType) || SOAP12_ADDRESS_OLD.equals(elementType)) {
                 try {
-                    return new URL(((SOAPAddress) element).getLocationURI());
+                	Method m = element.getClass().getMethod("getLocationURI");
+                	String locationURI = (String) m.invoke(element);
+                    return new URL(locationURI);
                 } catch (MalformedURLException e) {
                     throw new EndpointResolutionException("Invalid URL specified for port " + port.getName(), e);
+                }
+                catch (Exception e) {
+                    throw new EndpointResolutionException("Unable to resolve address for port " + port.getName(), e);
                 }
             }
         }
