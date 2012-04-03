@@ -112,6 +112,7 @@ public class JmsInterceptor implements Interceptor {
     private int priority;
     private Map<String, String> properties;
 	private BindingHandlerRegistry handlerRegistry;
+	private String bindingName;
 
     /**
      * Constructor.
@@ -185,7 +186,7 @@ public class JmsInterceptor implements Interceptor {
                 correlationId = UUID.randomUUID().toString();
                 jmsMessage.setJMSCorrelationID(correlationId);
             }
-            JmsHelper.applyHandlers(handlerRegistry,jmsMessage, message, producer.getDestination() , true);
+            JmsHelper.applyHandlers(handlerRegistry,jmsMessage, message, bindingName , true);
             // enqueue the message            
             producer.send(jmsMessage);
 
@@ -278,7 +279,7 @@ public class JmsInterceptor implements Interceptor {
                 Object payload = MessageHelper.getPayload(resultMessage, payloadTypes.getOutputType());
                 response.setBody(payload);
             }
-            JmsHelper.applyHandlers(handlerRegistry,resultMessage, response, resultMessage.getJMSDestination(), false);
+            JmsHelper.applyHandlers(handlerRegistry,resultMessage, response, bindingName, false);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
@@ -373,5 +374,9 @@ public class JmsInterceptor implements Interceptor {
         String encoded = Base64.encode(bas.toByteArray());
         jmsMessage.setStringProperty("f3Context", encoded);
     }
+
+	public void setBindingName(String name) {
+		this.bindingName = name;
+	}
 
 }

@@ -128,7 +128,9 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
             OperationPayloadTypes payloadTypes = resolveOperation(operationName, types);
             configuration.setPayloadType(payloadTypes);
             JmsInterceptor interceptor = new JmsInterceptor(configuration);
+            target.getMetadata().getDestination().getName();
             interceptor.setBindingHandlerRegistry(handlerRegistry);
+            interceptor.setBindingName(target.getMetadata().getDestination().getName());
             chain.addInterceptor(interceptor);
         }
 

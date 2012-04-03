@@ -129,6 +129,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
             
             ServiceListener listener = new ServiceListener(wireHolder, responseDestination, responseFactory, trxType, loader, xmlFactory, monitor);
             listener.setBindingHandlerRegistry(handlerRegistry);
+            listener.setBindingName(source.getMetadata().getDestination().getName());
             
             configuration.setDestination(requestDestination);
             configuration.setFactory(requestFactory);

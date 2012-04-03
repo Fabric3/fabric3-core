@@ -98,6 +98,7 @@ public class ServiceListener implements MessageListener {
     private XMLFactory xmlFactory;
     private XMLInputFactory xmlInputFactory;
 	private BindingHandlerRegistry handlerRegistry;
+	private String bindingName;
 
 
     public ServiceListener(WireHolder wireHolder,
@@ -182,7 +183,7 @@ public class ServiceListener implements MessageListener {
         }
         org.fabric3.spi.invocation.Message inMessage = new MessageImpl(payload, false, workContext);
         
-        JmsHelper.applyHandlers(handlerRegistry, request , inMessage , request.getJMSDestination() , false);
+        JmsHelper.applyHandlers(handlerRegistry, request , inMessage , bindingName , false);
         
         org.fabric3.spi.invocation.Message outMessage = interceptor.invoke(inMessage);
         
@@ -247,7 +248,7 @@ public class ServiceListener implements MessageListener {
             }
             producer = responseSession.createProducer(defaultResponseDestination);
         }
-        JmsHelper.applyHandlers(handlerRegistry, request , outMessage , producer.getDestination() , true);
+        JmsHelper.applyHandlers(handlerRegistry, request , outMessage , bindingName , true);
         producer.send(response);
     }
 
@@ -368,6 +369,10 @@ public class ServiceListener implements MessageListener {
 
 	public void setBindingHandlerRegistry(BindingHandlerRegistry handlerRegistry) {
 		this.handlerRegistry = handlerRegistry;
+	}
+
+	public void setBindingName(String name) {
+		this.bindingName = name;
 	}
 
 }
