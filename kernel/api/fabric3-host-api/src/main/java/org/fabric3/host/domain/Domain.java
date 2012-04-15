@@ -101,9 +101,10 @@ public interface Domain {
      * Undeploys the composite.
      *
      * @param composite the composite
+     * @param simulated true if the include is a simulation. Simulated includes skip generation and deployment to runtimes.
      * @throws DeploymentException if an error is encountered during undeployment
      */
-    void undeploy(Composite composite) throws DeploymentException;
+    void undeploy(Composite composite, boolean simulated) throws DeploymentException;
 
     /**
      * Activates a set of definitions contained in the contribution.

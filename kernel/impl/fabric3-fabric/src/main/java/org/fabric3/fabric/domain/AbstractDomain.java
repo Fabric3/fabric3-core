@@ -334,7 +334,7 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-    public synchronized void undeploy(Composite composite) throws DeploymentException {
+    public synchronized void undeploy(Composite composite, boolean simulated) throws DeploymentException {
         QName deployable = composite.getName();
         for (DeployListener listener : listeners) {
             listener.onUndeploy(deployable);
@@ -346,14 +346,18 @@ public abstract class AbstractDomain implements Domain {
         }
         collector.markForCollection(deployable, domain);
         try {
-            Deployment deployment = generator.generate(domain, true);
-            collector.collect(domain);
-            Deployment fullDeployment = null;
-            if (generateFullDeployment) {
-                fullDeployment = generator.generate(domain, false);
+            if (!simulated) {
+                Deployment deployment = generator.generate(domain, true);
+                collector.collect(domain);
+                Deployment fullDeployment = null;
+                if (generateFullDeployment) {
+                    fullDeployment = generator.generate(domain, false);
+                }
+                DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
+                deployer.deploy(deploymentPackage);
+            } else {
+                collector.collect(domain);
             }
-            DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
-            deployer.deploy(deploymentPackage);
             URI uri = composite.getContributionUri();
             Contribution contribution = metadataStore.find(uri);
             contribution.releaseLock(deployable);
