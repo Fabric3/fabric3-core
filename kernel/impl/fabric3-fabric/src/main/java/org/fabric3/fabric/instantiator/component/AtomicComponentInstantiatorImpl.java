@@ -78,10 +78,19 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
 
     @SuppressWarnings({"unchecked"})
     public LogicalComponent instantiate(ComponentDefinition<?> definition, LogicalCompositeComponent parent, InstantiationContext context) {
-        Implementation<?> impl = definition.getImplementation();
-        ComponentType componentType = impl.getComponentType();
         URI uri = URI.create(parent.getUri() + "/" + definition.getName());
         LogicalComponent<?> component = new LogicalComponent(uri, definition, parent);
+        if (parent.getComponent(uri) != null) {
+            DuplicateComponent error = new DuplicateComponent(uri, parent);
+            context.addError(error);
+        }
+        parent.addComponent(component);
+
+        Implementation<?> impl = definition.getImplementation();
+        if (impl == null) {
+            return component;
+        }
+        ComponentType componentType = impl.getComponentType();
         if (componentTypeOverride) {
             // SCA policy conformance: override policy sets configured on the component type
             component.getPolicySets().removeAll(definition.getPolicySets());
@@ -92,11 +101,6 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
         createProducers(definition, component, componentType);
         createConsumers(definition, component, componentType);
         createResourceReferences(component, componentType);
-        if (parent.getComponent(uri) != null) {
-            DuplicateComponent error = new DuplicateComponent(uri, definition.getContributionUri());
-            context.addError(error);
-        }
-        parent.addComponent(component);
         return component;
     }
 

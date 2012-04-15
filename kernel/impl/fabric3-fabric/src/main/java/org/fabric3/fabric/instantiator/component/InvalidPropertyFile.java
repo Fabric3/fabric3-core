@@ -40,8 +40,10 @@ package org.fabric3.fabric.instantiator.component;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * @version $Rev$ $Date$
@@ -51,8 +53,8 @@ public class InvalidPropertyFile extends AssemblyFailure {
     private Throwable cause;
     private final URI file;
 
-    public InvalidPropertyFile(String name, Throwable cause, URI file, URI componentUri, URI contributionUri) {
-        super(componentUri, contributionUri);
+    public InvalidPropertyFile(String name, LogicalComponent component, Throwable cause, URI file) {
+        super(component.getUri(), component.getDefinition().getContributionUri(), Collections.singletonList(component));
         this.name = name;
         this.cause = cause;
         this.file = file;

@@ -37,15 +37,16 @@
 */
 package org.fabric3.fabric.instantiator.promotion;
 
-import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.LogicalReference;
 
 public class InvalidNumberOfTargets extends AssemblyFailure {
     private String message;
 
-    public InvalidNumberOfTargets(String message, URI componentUri, URI contributionUri) {
-        super(componentUri, contributionUri);
+    public InvalidNumberOfTargets(String message, LogicalReference reference) {
+        super(reference.getParent().getUri(), reference.getParent().getDefinition().getContributionUri(), Collections.singletonList(reference));
         this.message = message;
     }
 

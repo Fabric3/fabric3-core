@@ -115,7 +115,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         wireInstantiator.instantiateCompositeWires(composite, component, context);
         channelInstantiator.instantiateChannels(composite, component, context);
         if (parent.getComponent(uri) != null) {
-            DuplicateComponent error = new DuplicateComponent(uri, definition.getContributionUri());
+            DuplicateComponent error = new DuplicateComponent(uri, parent);
             context.addError(error);
         }
         parent.addComponent(component);

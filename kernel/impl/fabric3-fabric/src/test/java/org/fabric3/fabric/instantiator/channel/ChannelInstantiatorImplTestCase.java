@@ -45,7 +45,9 @@ import junit.framework.TestCase;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
+import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
@@ -94,7 +96,8 @@ public class ChannelInstantiatorImplTestCase extends TestCase {
         composite.add(channel);
 
         URI parentUri = URI.create("parent");
-        parent = new LogicalCompositeComponent(parentUri, null, null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>("parent");
+        parent = new LogicalCompositeComponent(parentUri, definition, null);
         context = new InstantiationContext();
 
     }

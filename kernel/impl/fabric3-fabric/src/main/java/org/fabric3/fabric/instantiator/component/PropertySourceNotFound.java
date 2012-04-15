@@ -37,9 +37,10 @@
 */
 package org.fabric3.fabric.instantiator.component;
 
-import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * @version $Rev$ $Date$
@@ -47,8 +48,8 @@ import org.fabric3.host.domain.AssemblyFailure;
 public class PropertySourceNotFound extends AssemblyFailure {
     private String name;
 
-    public PropertySourceNotFound(String name, URI componentUri, URI contributionUri) {
-        super(componentUri, contributionUri);
+    public PropertySourceNotFound(String name, LogicalComponent<?> component) {
+        super(component.getUri(), component.getDefinition().getContributionUri(), Collections.singletonList(component));
         this.name = name;
     }
 

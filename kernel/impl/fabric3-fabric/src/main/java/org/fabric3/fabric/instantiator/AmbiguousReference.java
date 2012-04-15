@@ -38,8 +38,10 @@
 package org.fabric3.fabric.instantiator;
 
 import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.LogicalReference;
 
 public class AmbiguousReference extends AssemblyFailure {
     private URI referenceUri;
@@ -48,14 +50,12 @@ public class AmbiguousReference extends AssemblyFailure {
     /**
      * Constructor.
      *
-     * @param referenceUri         the URI of the logical reference that is invalid
-     * @param componentUri         the URI of the component containing the reference
+     * @param source               the reference source
      * @param promotedComponentUri the promoted component URI.
-     * @param contributionUri      the contribution containing the component
      */
-    public AmbiguousReference(URI referenceUri, URI componentUri, URI promotedComponentUri, URI contributionUri) {
-        super(componentUri, contributionUri);
-        this.referenceUri = referenceUri;
+    public AmbiguousReference(LogicalReference source, URI promotedComponentUri) {
+        super(source.getParent().getUri(), source.getParent().getDefinition().getContributionUri(), Collections.singletonList(source));
+        this.referenceUri = source.getUri();
         this.promotedComponentUri = promotedComponentUri;
     }
 

@@ -37,7 +37,6 @@
 */
 package org.fabric3.fabric.instantiator;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -134,9 +133,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         for (Property property : composite.getProperties().values()) {
             String name = property.getName();
             if (domain.getAllProperties().containsKey(name)) {
-                URI parentUri = domain.getUri();
-                URI contributionUri = domain.getDefinition().getContributionUri();
-                DuplicateProperty error = new DuplicateProperty(name, parentUri, contributionUri);
+                DuplicateProperty error = new DuplicateProperty(name, domain);
                 context.addError(error);
             } else {
                 Document value = property.getDefaultValue();

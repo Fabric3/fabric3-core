@@ -38,20 +38,18 @@
 package org.fabric3.fabric.instantiator.wire;
 
 import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.util.UriHelper;
 
 public class WireSourceAmbiguousReference extends AssemblyFailure {
     private URI sourceUri;
 
-    public WireSourceAmbiguousReference(URI sourceUri, URI compositeUri, URI contributionUri) {
-        super(compositeUri, contributionUri);
+    public WireSourceAmbiguousReference(URI sourceUri, LogicalCompositeComponent composite) {
+        super(composite.getUri(), composite.getDefinition().getContributionUri(), Collections.singletonList(composite));
         this.sourceUri = sourceUri;
-    }
-
-    public URI getSourceUri() {
-        return sourceUri;
     }
 
     public String getMessage() {

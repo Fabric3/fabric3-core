@@ -38,16 +38,18 @@
 package org.fabric3.fabric.instantiator.wire;
 
 import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.LogicalReference;
 
 public class TargetComponentNotFound extends AssemblyFailure {
     private URI referenceUri;
     private URI targetUri;
 
-    public TargetComponentNotFound(URI referenceUri, URI targetUri, URI componentUri, URI contributionUri) {
-        super(componentUri, contributionUri);
-        this.referenceUri = referenceUri;
+    public TargetComponentNotFound(LogicalReference reference, URI targetUri) {
+        super(reference.getParent().getUri(), reference.getParent().getDefinition().getContributionUri(), Collections.singletonList(reference));
+        this.referenceUri = reference.getUri();
         this.targetUri = targetUri;
     }
 

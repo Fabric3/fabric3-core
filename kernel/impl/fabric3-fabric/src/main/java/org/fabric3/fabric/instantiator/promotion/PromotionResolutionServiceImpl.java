@@ -109,11 +109,7 @@ public class PromotionResolutionServiceImpl implements PromotionResolutionServic
         LogicalComponent<?> promotedComponent = composite.getComponent(promotedComponentUri);
 
         if (promotedComponent == null) {
-            LogicalComponent<?> parent = logicalService.getParent();
-            URI componentUri = parent.getUri();
-            URI serviceUri = logicalService.getUri();
-            URI contributionUri = parent.getDefinition().getContributionUri();
-            PromotedComponentNotFound error = new PromotedComponentNotFound(serviceUri, promotedComponentUri, componentUri, contributionUri);
+            PromotedComponentNotFound error = new PromotedComponentNotFound(logicalService, promotedComponentUri);
             context.addError(error);
             return;
         }
@@ -152,19 +148,17 @@ public class PromotionResolutionServiceImpl implements PromotionResolutionServic
             LogicalComponent<?> promotedComponent = parent.getComponent(promotedComponentUri);
 
             if (promotedComponent == null) {
-                raiseComponentNotFoundError(reference, promotedComponentUri, parent, context);
+                raiseComponentNotFoundError(reference, promotedComponentUri, context);
                 return;
             }
 
             if (promotedReferenceName == null) {
                 Collection<LogicalReference> componentReferences = promotedComponent.getReferences();
                 if (componentReferences.size() == 0) {
-                    raiseReferenceNotFoundError(promotedReferenceName, promotedComponentUri, parent, context);
+                    raiseReferenceNotFoundError(promotedReferenceName, promotedComponentUri, reference, context);
                     return;
                 } else if (componentReferences.size() > 1) {
-                    URI referenceUri = reference.getUri();
-                    URI contributionUri = parent.getDefinition().getContributionUri();
-                    AmbiguousReference error = new AmbiguousReference(referenceUri, parent.getUri(), promotedComponentUri, contributionUri);
+                    AmbiguousReference error = new AmbiguousReference(reference, promotedComponentUri);
                     context.addError(error);
                     return;
                 }
@@ -176,7 +170,7 @@ public class PromotionResolutionServiceImpl implements PromotionResolutionServic
             } else {
                 LogicalReference promotedReference = promotedComponent.getReference(promotedReferenceName);
                 if (promotedReference == null) {
-                    raiseReferenceNotFoundError(promotedReferenceName, promotedComponentUri, parent, context);
+                    raiseReferenceNotFoundError(promotedReferenceName, promotedComponentUri, reference, context);
                     return;
                 }
                 // mark the promoted reference as resolved but not the current reference being evaluated since it may by at the top of the promotion
@@ -188,47 +182,34 @@ public class PromotionResolutionServiceImpl implements PromotionResolutionServic
 
     }
 
-    private void raiseReferenceNotFoundError(String referenceName, URI uri, LogicalCompositeComponent parent, InstantiationContext context) {
+    private void raiseReferenceNotFoundError(String referenceName, URI uri, LogicalReference reference, InstantiationContext context) {
         String msg = "Reference " + referenceName + " not found on component " + uri;
-        URI componentUri = parent.getUri();
-        URI contributionUri = parent.getDefinition().getContributionUri();
-        ReferenceNotFound error = new ReferenceNotFound(msg, referenceName, componentUri, contributionUri);
+        ReferenceNotFound error = new ReferenceNotFound(msg, reference);
         context.addError(error);
     }
 
-    private void raiseComponentNotFoundError(LogicalReference reference, URI uri, LogicalCompositeComponent parent, InstantiationContext context) {
-        URI componentUri = parent.getUri();
-        URI referenceUri = reference.getUri();
-        URI contributionUri = parent.getDefinition().getContributionUri();
-        PromotedComponentNotFound error = new PromotedComponentNotFound(referenceUri, uri, componentUri, contributionUri);
+    private void raiseComponentNotFoundError(LogicalReference reference, URI uri, InstantiationContext context) {
+        PromotedComponentNotFound error = new PromotedComponentNotFound(reference, uri);
         context.addError(error);
     }
 
     private void raiseServiceNotFoundError(LogicalService service, URI uri, String name, InstantiationContext context) {
         String message = "Service " + name + " promoted from " + service.getUri() + " not found on component " + uri;
-        URI componentUri = service.getParent().getUri();
-        URI contributionUri = service.getParent().getDefinition().getContributionUri();
-        URI serviceUri = service.getUri();
-        ServiceNotFound error = new ServiceNotFound(message, serviceUri, componentUri, contributionUri);
+        ServiceNotFound error = new ServiceNotFound(message, service);
         context.addError(error);
     }
 
     private void raiseNoServiceError(LogicalService service, URI uri, InstantiationContext context) {
         LogicalComponent<?> parent = service.getParent();
-        URI componentUri = parent.getUri();
-        URI contributionUri = parent.getDefinition().getContributionUri();
         String msg = "No services available on component: " + uri;
-        NoServiceOnComponent error = new NoServiceOnComponent(msg, componentUri, contributionUri);
+        NoServiceOnComponent error = new NoServiceOnComponent(msg, parent);
         context.addError(error);
     }
 
     private void raiseAmbiguousServiceError(LogicalService service, URI uri, InstantiationContext context) {
         String msg = "The promoted service " + service.getUri() + " must explicitly specify the service it is promoting on component "
                 + uri + " as the component has more than one service";
-        LogicalComponent<?> parent = service.getParent();
-        URI componentUri = parent.getUri();
-        URI contributionUri = parent.getDefinition().getContributionUri();
-        AmbiguousService error = new AmbiguousService(msg, componentUri, contributionUri);
+        AmbiguousService error = new AmbiguousService(msg, service);
         context.addError(error);
     }
 

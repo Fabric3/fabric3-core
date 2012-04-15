@@ -38,16 +38,18 @@
 package org.fabric3.fabric.instantiator.component;
 
 import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * @version $Rev$ $Date$
  */
 public class DuplicateComponent extends AssemblyFailure {
 
-    public DuplicateComponent(URI componentUri, URI contributionUri) {
-        super(componentUri, contributionUri);
+    public DuplicateComponent(URI componentUri, LogicalCompositeComponent composite) {
+        super(componentUri, composite.getDefinition().getContributionUri(), Collections.singletonList(composite));
     }
 
     public String getMessage() {

@@ -37,15 +37,16 @@
 */
 package org.fabric3.fabric.instantiator.promotion;
 
-import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.Bindable;
 
 public class MutuallyExclusiveIntents extends AssemblyFailure {
     private String message;
 
-    public MutuallyExclusiveIntents(String message, URI componentUri, URI contributionUri) {
-        super(componentUri, contributionUri);
+    public MutuallyExclusiveIntents(String message, Bindable bindable) {
+        super(bindable.getParent().getUri(), bindable.getParent().getDefinition().getContributionUri(), Collections.singletonList(bindable));
         this.message = message;
     }
 

@@ -38,6 +38,7 @@
 package org.fabric3.host.domain;
 
 import java.net.URI;
+import java.util.List;
 
 /**
  * Base class for recoverable errors updating the domain assembly encountered during a deployment.
@@ -47,16 +48,19 @@ import java.net.URI;
 public abstract class AssemblyFailure {
     private URI componentUri;
     private URI contributionUri;
+    private List<?> sources;
 
     /**
      * Constructor.
      *
      * @param componentUri    the URI of the component associated with the failure.
      * @param contributionUri the URI of the contribution the component is part of.
+     * @param sources         the error sources
      */
-    public AssemblyFailure(URI componentUri, URI contributionUri) {
+    public AssemblyFailure(URI componentUri, URI contributionUri, List<?> sources) {
         this.componentUri = componentUri;
         this.contributionUri = contributionUri;
+        this.sources = sources;
     }
 
     /**
@@ -84,5 +88,14 @@ public abstract class AssemblyFailure {
      */
     public String getMessage() {
         return "";
+    }
+
+    /**
+     * Returns the failure sources.
+     *
+     * @return the failure sources
+     */
+    public List<?> getSources() {
+        return sources;
     }
 }

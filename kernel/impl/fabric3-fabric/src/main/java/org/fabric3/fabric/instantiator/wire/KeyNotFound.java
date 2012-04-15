@@ -38,15 +38,17 @@
 package org.fabric3.fabric.instantiator.wire;
 
 import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.LogicalReference;
 
 public class KeyNotFound extends AssemblyFailure {
     private URI referenceUri;
 
-    public KeyNotFound(URI referenceUri, URI targetUri, URI contributionUri) {
-        super(targetUri, contributionUri);
-        this.referenceUri = referenceUri;
+    public KeyNotFound(LogicalReference reference) {
+        super(reference.getParent().getUri(), reference.getParent().getDefinition().getContributionUri(), Collections.singletonList(reference));
+        this.referenceUri = reference.getUri();
     }
 
     public String getMessage() {

@@ -37,22 +37,17 @@
 */
 package org.fabric3.fabric.instantiator;
 
-import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.LogicalReference;
 
 public class ReferenceNotFound extends AssemblyFailure {
     private String message;
-    private String referenceName;
 
-    public ReferenceNotFound(String message, String referenceName, URI componentUri, URI contributionUri) {
-        super(componentUri, contributionUri);
+    public ReferenceNotFound(String message, LogicalReference reference) {
+        super(reference.getParent().getUri(), reference.getParent().getDefinition().getContributionUri(), Collections.singletonList(reference));
         this.message = message;
-        this.referenceName = referenceName;
-    }
-
-    public String getReferenceName() {
-        return referenceName;
     }
 
     public String getMessage() {

@@ -37,22 +37,17 @@
 */
 package org.fabric3.fabric.instantiator;
 
-import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.Bindable;
 
 public class ServiceNotFound extends AssemblyFailure {
     private String message;
-    private URI serviceUri;
 
-    public ServiceNotFound(String message, URI serviceUri, URI componentUri, URI contributionUri) {
-        super(componentUri, contributionUri);
+    public ServiceNotFound(String message, Bindable bindable) {
+        super(bindable.getParent().getUri(), bindable.getParent().getDefinition().getContributionUri(), Collections.singletonList(bindable));
         this.message = message;
-        this.serviceUri = serviceUri;
-    }
-
-    public URI getServiceUri() {
-        return serviceUri;
     }
 
     public String getMessage() {

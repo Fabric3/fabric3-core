@@ -172,7 +172,7 @@ public class RuntimeDomainTestCase extends TestCase {
 
         assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
 
-        domain.undeploy(composite);
+        domain.undeploy(composite, false);
         // verify the component contained in the composite was added to the logical model
         assertNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
         control.verify();

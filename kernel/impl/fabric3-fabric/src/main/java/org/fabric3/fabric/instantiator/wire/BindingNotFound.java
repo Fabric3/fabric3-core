@@ -37,9 +37,10 @@
 */
 package org.fabric3.fabric.instantiator.wire;
 
-import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.Bindable;
 
 
 /**
@@ -50,8 +51,8 @@ import org.fabric3.host.domain.AssemblyFailure;
 public class BindingNotFound extends AssemblyFailure {
     private String message;
 
-    public BindingNotFound(String message, URI compositeUri, URI contributionUri) {
-        super(compositeUri, contributionUri);
+    public BindingNotFound(String message, Bindable bindable) {
+        super(bindable.getParent().getUri(), bindable.getParent().getDefinition().getContributionUri(), Collections.singletonList(bindable));
         this.message = message;
     }
 

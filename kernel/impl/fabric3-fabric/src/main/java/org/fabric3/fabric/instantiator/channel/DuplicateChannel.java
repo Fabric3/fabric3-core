@@ -38,16 +38,18 @@
 package org.fabric3.fabric.instantiator.channel;
 
 import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * @version $Rev$ $Date$
  */
 public class DuplicateChannel extends AssemblyFailure {
 
-    public DuplicateChannel(URI channelUri, URI contributionUri) {
-        super(channelUri, contributionUri);
+    public DuplicateChannel(URI channelUri, LogicalCompositeComponent composite) {
+        super(channelUri, composite.getDefinition().getContributionUri(), Collections.singletonList(composite));
     }
 
     public String getMessage() {

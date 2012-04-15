@@ -37,15 +37,16 @@
 */
 package org.fabric3.fabric.instantiator;
 
-import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.LogicalComponent;
 
 public class NoServiceOnComponent extends AssemblyFailure {
     private String message;
 
-    public NoServiceOnComponent(String message, URI componentUri, URI contributionUri) {
-        super(componentUri, contributionUri);
+    public NoServiceOnComponent(String message, LogicalComponent component) {
+        super(component.getUri(), component.getDefinition().getContributionUri(), Collections.singletonList(component));
         this.message = message;
     }
 

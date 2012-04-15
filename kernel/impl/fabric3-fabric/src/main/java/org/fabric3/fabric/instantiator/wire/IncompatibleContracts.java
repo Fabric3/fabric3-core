@@ -38,8 +38,10 @@
 package org.fabric3.fabric.instantiator.wire;
 
 import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.LogicalReference;
 
 /**
  * Thrown when an attempt is made to wire a reference to a service with incompatible contracts.
@@ -54,15 +56,13 @@ public class IncompatibleContracts extends AssemblyFailure {
     /**
      * Constructor.
      *
-     * @param referenceUri    the URI of the reference
-     * @param serviceUri      the URI of the service
-     * @param componentUri    the URI of the component associated with the failure.
-     * @param message         the reported contract matching error
-     * @param contributionUri the contribution containing the component
+     * @param reference  the reference
+     * @param serviceUri the URI of the service
+     * @param message    the reported contract matching error
      */
-    public IncompatibleContracts(URI referenceUri, URI serviceUri, URI componentUri, String message, URI contributionUri) {
-        super(componentUri, contributionUri);
-        this.referenceUri = referenceUri;
+    public IncompatibleContracts(LogicalReference reference, URI serviceUri, String message) {
+        super(reference.getParent().getUri(), reference.getParent().getDefinition().getContributionUri(), Collections.singletonList(reference));
+        this.referenceUri = reference.getUri();
         this.serviceUri = serviceUri;
         this.message = message;
     }

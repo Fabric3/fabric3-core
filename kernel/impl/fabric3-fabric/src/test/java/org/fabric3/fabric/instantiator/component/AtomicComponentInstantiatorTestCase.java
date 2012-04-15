@@ -63,6 +63,7 @@ import org.fabric3.model.type.component.ComponentProducer;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.ComponentService;
 import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Multiplicity;
@@ -224,7 +225,8 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
         createResource(component);
 
         URI parentUri = URI.create("parent");
-        parent = new LogicalCompositeComponent(parentUri, null, null);
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>("parent");
+        parent = new LogicalCompositeComponent(parentUri, definition, null);
 
         context = new InstantiationContext();
         instantiator = new AtomicComponentInstantiatorImpl();

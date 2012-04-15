@@ -253,12 +253,10 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         for (Intent intent : resolved) {
             for (QName exclude : intent.getExcludes()) {
                 if (intents.contains(exclude)) {
-                    LogicalComponent<?> component = bindable.getParent();
-                    URI componentUri = component.getUri();
-                    URI contributionUri = component.getDefinition().getContributionUri();
                     String prefix = bindable instanceof LogicalReference ? "Reference " : "Service ";
                     MutuallyExclusiveIntents error = new MutuallyExclusiveIntents(prefix + bindable.getUri()
-                            + " is configured with mutually exclusive intents: " + intent.getName() + "," + exclude, componentUri, contributionUri);
+                                                                                          + " is configured with mutually exclusive intents: "
+                                                                                          + intent.getName() + "," + exclude, bindable);
                     context.addError(error);
                 }
             }
@@ -317,19 +315,16 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
                 || !reference.getBindings().isEmpty()
                 || reference.getAutowire() == Autowire.ON
                 || reference.getComponentReference() != null) {     // Reference should not be configured in the component.
-                                                                    // If it is (i.e. getComponentReference() != null, avoid check and return true.
+            // If it is (i.e. getComponentReference() != null, avoid check and return true.
             return true;
         }
         Multiplicity multiplicity = reference.getDefinition().getMultiplicity();
-        LogicalComponent<?> component = reference.getParent();
-        URI componentUri = component.getUri();
-        URI contributionUri = component.getDefinition().getContributionUri();
         switch (multiplicity) {
         case ONE_N:
             if (targets.size() < 1) {
                 URI referenceName = reference.getUri();
-                InvalidNumberOfTargets error = new InvalidNumberOfTargets("At least one target must be configured for reference: "
-                        + referenceName, componentUri, contributionUri);
+                InvalidNumberOfTargets error =
+                        new InvalidNumberOfTargets("At least one target must be configured for reference: " + referenceName, reference);
                 context.addError(error);
                 return false;
             }
@@ -337,14 +332,15 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         case ONE_ONE:
             if (targets.size() < 1) {
                 URI referenceName = reference.getUri();
-                InvalidNumberOfTargets error = new InvalidNumberOfTargets("At least one target must be configured for reference " +
-                        "(no targets configured): " + referenceName, componentUri, contributionUri);
+                InvalidNumberOfTargets error = new InvalidNumberOfTargets("At least one target must be configured for reference "
+                                                                                  + "(no targets configured): " + referenceName, reference);
                 context.addError(error);
                 return false;
             } else if (targets.size() > 1) {
                 URI referenceName = reference.getUri();
-                InvalidNumberOfTargets error = new InvalidNumberOfTargets("Only one target must be configured for reference " +
-                        "(multiple targets configured via promotions): " + referenceName, componentUri, contributionUri);
+                InvalidNumberOfTargets error = new InvalidNumberOfTargets("Only one target must be configured for reference "
+                                                                                  + "(multiple targets configured via promotions): "
+                                                                                  + referenceName, reference);
                 context.addError(error);
                 return false;
             }
@@ -355,8 +351,9 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         case ZERO_ONE:
             if (targets.size() > 1) {
                 URI referenceName = reference.getUri();
-                InvalidNumberOfTargets error = new InvalidNumberOfTargets("At most one target must be configured for reference " +
-                        "(multiple targets configured via promotions): " + referenceName, componentUri, contributionUri);
+                InvalidNumberOfTargets error = new InvalidNumberOfTargets("At most one target must be configured for reference "
+                                                                                  + "(multiple targets configured via promotions): "
+                                                                                  + referenceName, reference);
                 context.addError(error);
                 return false;
             }

@@ -37,9 +37,10 @@
 */
 package org.fabric3.fabric.instantiator;
 
-import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * @version $Rev$ $Date$
@@ -47,8 +48,8 @@ import org.fabric3.host.domain.AssemblyFailure;
 public class DuplicateProperty extends AssemblyFailure {
     private String propertyName;
 
-    public DuplicateProperty(String propertyName, URI componentUri, URI contributionUri) {
-        super(componentUri, contributionUri);
+    public DuplicateProperty(String propertyName, LogicalCompositeComponent composite) {
+        super(composite.getUri(), composite.getDefinition().getContributionUri(), Collections.singletonList(composite));
         this.propertyName = propertyName;
     }
 

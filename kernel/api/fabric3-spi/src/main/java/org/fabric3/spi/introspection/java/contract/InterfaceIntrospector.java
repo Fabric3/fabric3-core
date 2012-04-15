@@ -60,7 +60,7 @@ public interface InterfaceIntrospector {
      *
      * @param contract the service contract to update
      * @param type     the interface to evaluate
-     * @param context  the validation cotnext to report errors and warnings.
+     * @param context  the validation context to report errors and warnings.
      */
     void introspect(ServiceContract contract, Type type, IntrospectionContext context);
 

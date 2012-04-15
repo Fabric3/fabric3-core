@@ -139,7 +139,7 @@ public class DeploymentsResourceServiceTestCase extends TestCase {
         EasyMock.replay(store, request);
 
         service.undeploy("thecontribution");
-        
+
         EasyMock.verify(store, request);
     }
 
@@ -168,7 +168,7 @@ public class DeploymentsResourceServiceTestCase extends TestCase {
     private class MockFailure extends AssemblyFailure {
 
         public MockFailure() {
-            super(URI.create("components"), URI.create("contribution1"));
+            super(URI.create("components"), URI.create("contribution1"), Collections.emptyList());
         }
     }
 }

@@ -59,7 +59,7 @@ public class ChannelInstantiatorImpl implements ChannelInstantiator {
         for (ChannelDefinition definition : composite.getChannels().values()) {
             URI uri = URI.create(parent.getUri() + "/" + definition.getName());
             if (parent.getChannel(uri) != null) {
-                DuplicateChannel error = new DuplicateChannel(uri, definition.getContributionUri());
+                DuplicateChannel error = new DuplicateChannel(uri, parent);
                 context.addError(error);
                 continue;
             }

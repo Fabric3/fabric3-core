@@ -37,7 +37,6 @@
 */
 package org.fabric3.fabric.instantiator.wire;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.namespace.QName;
@@ -163,10 +162,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         boolean targeted = !logicalReference.getLeafReference().getWires().isEmpty();
         if (!targeted && logicalReference.getDefinition().isRequired() && !logicalReference.isConcreteBound()) {
             String referenceUri = logicalReference.getUri().toString();
-            URI componentUri = component.getUri();
-            URI contributionUri = component.getDefinition().getContributionUri();
-            ReferenceNotFound error =
-                    new ReferenceNotFound("Unable to resolve reference " + referenceUri, referenceUri, componentUri, contributionUri);
+            ReferenceNotFound error = new ReferenceNotFound("Unable to resolve reference " + referenceUri, logicalReference);
             context.addError(error);
         } else if (targeted) {
             logicalReference.setResolved(true);

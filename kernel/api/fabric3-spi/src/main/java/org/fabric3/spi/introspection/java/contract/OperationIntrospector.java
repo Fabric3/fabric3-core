@@ -61,7 +61,7 @@ public interface OperationIntrospector {
      *
      * @param operation the operation to update
      * @param method    the method to evaluate
-     * @param context   the validation cotnext to report errors and warnings.
+     * @param context   the validation context to report errors and warnings.
      */
     void introspect(Operation operation, Method method, IntrospectionContext context);
 

@@ -115,9 +115,7 @@ public abstract class AbstractComponentInstantiator {
                         NamespaceContext nsContext = propertyValue.getNamespaceContext();
                         value = deriveValueFromXPath(propertyValue, parent, nsContext);
                     } catch (PropertyTypeException e) {
-                        URI uri = component.getUri();
-                        URI contributionUri = component.getDefinition().getContributionUri();
-                        InvalidProperty error = new InvalidProperty(name, e, uri, contributionUri);
+                        InvalidProperty error = new InvalidProperty(name, component, e);
                         context.addError(error);
                         return;
                     }
@@ -129,9 +127,7 @@ public abstract class AbstractComponentInstantiator {
             }
             if (property.isRequired() && value == null) {
                 // The XPath expression returned an empty value. Since the property is required, throw an exception
-                URI uri = component.getUri();
-                URI contributionUri = component.getDefinition().getContributionUri();
-                PropertySourceNotFound error = new PropertySourceNotFound(name, uri, contributionUri);
+                PropertySourceNotFound error = new PropertySourceNotFound(name, component);
                 context.addError(error);
             } else if (!property.isRequired() && value == null) {
                 // The XPath expression returned an empty value. Since the property is optional, ignore it
@@ -260,15 +256,11 @@ public abstract class AbstractComponentInstantiator {
             }
             return document;
         } catch (IOException e) {
-            URI uri = parent.getUri();
-            URI contributionUri = parent.getDefinition().getContributionUri();
-            InvalidPropertyFile error = new InvalidPropertyFile(name, e, fileUri, uri, contributionUri);
+            InvalidPropertyFile error = new InvalidPropertyFile(name, parent, e, fileUri);
             context.addError(error);
             return null;
         } catch (SAXException e) {
-            URI uri = parent.getUri();
-            URI contributionUri = parent.getDefinition().getContributionUri();
-            InvalidPropertyFile error = new InvalidPropertyFile(name, e, fileUri, uri, contributionUri);
+            InvalidPropertyFile error = new InvalidPropertyFile(name, parent, e, fileUri);
             context.addError(error);
             return null;
         } catch (ParserConfigurationException e) {

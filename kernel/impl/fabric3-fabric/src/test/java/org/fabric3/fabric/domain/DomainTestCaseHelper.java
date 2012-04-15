@@ -44,6 +44,7 @@
 package org.fabric3.fabric.domain;
 
 import java.net.URI;
+import java.util.Collections;
 import javax.xml.namespace.QName;
 
 import org.easymock.EasyMock;
@@ -99,7 +100,7 @@ public class DomainTestCaseHelper {
                 logicalComponent.setDeployable(DEPLOYABLE);
                 domainComposite.addComponent(logicalComponent);
                 InstantiationContext context = new InstantiationContext();
-                context.addError(new AssemblyFailure(COMPONENT_URI, CONTRIBUTION_URI) {
+                context.addError(new AssemblyFailure(COMPONENT_URI, CONTRIBUTION_URI, Collections.emptyList()) {
                 });
                 return context;
             }

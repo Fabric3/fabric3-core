@@ -38,16 +38,18 @@
 package org.fabric3.fabric.instantiator;
 
 import java.net.URI;
+import java.util.Collections;
 
 import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.spi.model.instance.Bindable;
 
 public class PromotedComponentNotFound extends AssemblyFailure {
     private URI promotedComponentUri;
     private URI bindableUri;
 
-    public PromotedComponentNotFound(URI bindableUri, URI promotedComponentUri, URI componentUri, URI contributionUri) {
-        super(componentUri, contributionUri);
-        this.bindableUri = bindableUri;
+    public PromotedComponentNotFound(Bindable bindable, URI promotedComponentUri) {
+        super(bindable.getParent().getUri(), bindable.getParent().getDefinition().getContributionUri(), Collections.singletonList(bindable));
+        this.bindableUri = bindable.getUri();
         this.promotedComponentUri = promotedComponentUri;
     }
 
