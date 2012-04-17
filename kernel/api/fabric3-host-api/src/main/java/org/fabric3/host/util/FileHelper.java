@@ -196,6 +196,8 @@ public class FileHelper {
      * @throws IOException          if the directory cannot be created
      */
     public static void forceMkdir(File directory) throws IOException {
+        if(directory == null)
+            return;
         if (directory.exists()) {
             if (directory.isFile()) {
                 String message =
@@ -331,6 +333,8 @@ public class FileHelper {
      * @throws IOException in case cleaning is unsuccessful
      */
     public static void cleanDirectory(File directory) throws IOException {
+        if(directory == null)
+            return;
         if (!directory.exists()) {
             String message = directory + " does not exist";
             throw new IllegalArgumentException(message);
@@ -520,7 +524,7 @@ public class FileHelper {
                 throw new IOException("Destination '" + destFile + "' directory cannot be created");
             }
         }
-        if (!(destFile.exists() && destFile.canWrite())) {
+        if (destFile.exists() && !destFile.canWrite()) {
             throw new IOException("Destination '" + destFile + "' exists but is read-only");
         }
         doCopyFile(srcFile, destFile, preserveFileDate);
