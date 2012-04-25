@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import junit.framework.TestCase;
@@ -14,6 +16,8 @@ import junit.framework.TestCase;
 public class FileHelperTestCase extends TestCase {
 
     private String tmpPath;
+    private final char fileSep = File.separatorChar;
+
     public FileHelperTestCase() {
         super();
         tmpPath = System.getProperty("java.io.tmpdir")+"/f3";
@@ -93,8 +97,8 @@ public class FileHelperTestCase extends TestCase {
     public void testToFile() throws Exception {
         URL url = null;
         assertNull(FileHelper.toFile(url));
-        url = new URL("file:///my%20docs/file.txt");
-        assertEquals("/my docs/file.txt",FileHelper.toFile(url).getAbsolutePath());
+        url = new URL("file:///"+tmpPath+"/my%20docs/file.txt");
+        assertEquals(tmpPath + fileSep + "my docs" + fileSep + "file.txt", FileHelper.toFile(url).getAbsolutePath());
         url = new URL("ftp:///should/be/null");
         assertNull(FileHelper.toFile(url));
     }
@@ -103,7 +107,7 @@ public class FileHelperTestCase extends TestCase {
         URL url = null;
         assertNull(FileHelper.toFile(url));
         url = new URL("file:///my%20docs/file.txt");
-        assertEquals("/my docs/file.txt", FileHelper.toFileString(url));
+        assertEquals(fileSep +"my docs"+fileSep+"file.txt", FileHelper.toFileString(url));
         url = new URL("ftp:///should/be/null");
         assertNull(FileHelper.toFile(url));
     }
@@ -153,17 +157,19 @@ public class FileHelperTestCase extends TestCase {
         assertFalse(destDir.exists());
 
         long lastModified = System.currentTimeMillis() - 1000000;
-        long actualModified = 0L;
+        Map<String, Long> tstampMap = new HashMap<String, Long>(sourceDir.list().length);
+
         for (File file : sourceDir.listFiles()) {
-            if(file.isFile())
+            if(file.isFile()){
                 file.setLastModified(lastModified);
-            actualModified = file.lastModified();
+                tstampMap.put(file.getName(),file.lastModified());
+            }
         }
 
         FileHelper.copyDirectory(sourceDir,destDir,true);
         for (File file : destDir.listFiles()) {
             if(file.isFile())
-                assertEquals(actualModified, file.lastModified());
+                assertEquals(tstampMap.get(file.getName()).longValue(), file.lastModified());
         }
 
         FileHelper.forceDelete(destDir);
@@ -171,7 +177,7 @@ public class FileHelperTestCase extends TestCase {
         FileHelper.copyDirectory(sourceDir,destDir,false);
         for (File file : destDir.listFiles()) {
             if (file.isFile())
-                assertFalse(actualModified == file.lastModified());
+                assertFalse(lastModified == file.lastModified());
         }
 
         FileHelper.forceDelete(destDir);
@@ -280,6 +286,7 @@ public class FileHelperTestCase extends TestCase {
         Scanner scanner = new Scanner(destFile,"UTF-8");
         String returned = scanner.nextLine();
         assertEquals(testData,returned);
+        scanner.close();
         forceDelete(destFile);
     }
 
