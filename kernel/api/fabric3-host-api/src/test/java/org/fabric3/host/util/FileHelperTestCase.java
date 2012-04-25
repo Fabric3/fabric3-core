@@ -20,7 +20,10 @@ public class FileHelperTestCase extends TestCase {
 
     public FileHelperTestCase() {
         super();
-        tmpPath = System.getProperty("java.io.tmpdir")+"/f3";
+        String tmpDirName = System.getProperty("java.io.tmpdir");
+        File tmp = new File(tmpDirName);
+        String absolutePath = tmp.getAbsolutePath();
+		tmpPath = absolutePath+fileSep+"f3";
         File f = new File(tmpPath);
         f.mkdirs();
         f.deleteOnExit();
