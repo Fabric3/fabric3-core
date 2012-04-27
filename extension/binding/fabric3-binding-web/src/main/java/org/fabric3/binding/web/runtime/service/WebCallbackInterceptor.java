@@ -61,7 +61,7 @@ public class WebCallbackInterceptor implements Interceptor {
 
     public Message invoke(Message msg) {
         String id = msg.getWorkContext().peekCallFrame().getCorrelationId(String.class);
-        Broadcaster broadcaster = broadcasterManager.getServiceBroadcaster(id);
+        Broadcaster broadcaster = broadcasterManager.getServiceBroadcaster(id, null);
         Object body = msg.getBody();
         Object content = ((Object[]) body)[0];
         broadcaster.broadcast(content);

@@ -37,6 +37,7 @@
 */
 package org.fabric3.binding.web.runtime.common;
 
+import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.Broadcaster;
 
 /**
@@ -52,7 +53,7 @@ public interface BroadcasterManager {
      * @param path the path
      * @return the Broadcaster
      */
-    Broadcaster getChannelBroadcaster(String path);
+    Broadcaster getChannelBroadcaster(String path, AtmosphereConfig config);
 
     /**
      * Returns the Broadcaster for the HTTP URL path, creating one if necessary.
@@ -60,7 +61,7 @@ public interface BroadcasterManager {
      * @param path the path
      * @return the Broadcaster
      */
-    Broadcaster getServiceBroadcaster(String path);
+    Broadcaster getServiceBroadcaster(String path, AtmosphereConfig config);
 
     /**
      * Disposes a Broadcaster for the HTTP URL path.

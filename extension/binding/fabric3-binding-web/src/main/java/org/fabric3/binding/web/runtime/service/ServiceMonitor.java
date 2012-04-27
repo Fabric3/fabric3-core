@@ -50,6 +50,9 @@ public interface ServiceMonitor {
 
     @Info("Channel HTTP/Websocket endpoint removed at {0}")
     void removedEndpoint(String path);
+    
+    @Info("Event {0}")
+    void eventing(String event);
 
     @Severe("HTTP/websocket error encountered: {0}")
     void error(Throwable e);

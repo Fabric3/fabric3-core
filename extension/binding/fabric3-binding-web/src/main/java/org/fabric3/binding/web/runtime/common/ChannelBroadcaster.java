@@ -40,9 +40,8 @@ package org.fabric3.binding.web.runtime.common;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
+import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.cpr.BroadcasterFuture;
@@ -68,19 +67,19 @@ import org.fabric3.spi.transform.Transformer;
 public class ChannelBroadcaster extends DefaultBroadcaster {
     private Transformer<Object, String> jsonTransformer;
 
-    public ChannelBroadcaster(String path, Transformer<Object, String> jsonTransformer) {
-        super(path);
+    public ChannelBroadcaster(String path, Transformer<Object, String> jsonTransformer, AtmosphereConfig config) {
+        super(path, config);
         this.jsonTransformer = jsonTransformer;
     }
 
     @Override
     @SuppressWarnings({"unchecked"})
-    protected void broadcast(AtmosphereResource<?, ?> resource, AtmosphereResourceEvent event) {
-        serialize((AtmosphereResource<HttpServletRequest, HttpServletResponse>) resource);
+    protected void broadcast(AtmosphereResource resource, AtmosphereResourceEvent event) {
+        serialize((AtmosphereResource) resource);
         super.broadcast(resource, event);
     }
 
-    private void serialize(AtmosphereResource<HttpServletRequest, HttpServletResponse> resource) {
+    private void serialize(AtmosphereResource resource) {
         AtmosphereResourceEvent resourceEvent = resource.getAtmosphereResourceEvent();
         Object event = resourceEvent.getMessage();
         if (event instanceof EventWrapper) {
@@ -113,7 +112,7 @@ public class ChannelBroadcaster extends DefaultBroadcaster {
         }
         BroadcasterFuture<Object> future = new BroadcasterFuture<Object>(msg);
         future.done();
-        push(new Entry(msg, null, future));
+        push(new Entry(msg, null, future, true));
         return cast(future);
     }
 
@@ -125,19 +124,19 @@ public class ChannelBroadcaster extends DefaultBroadcaster {
         }
         BroadcasterFuture<Object> future = new BroadcasterFuture<Object>(msg);
         future.done();
-        push(new Entry(msg, r, future));
+        push(new Entry(msg, r, future, true));
         return cast(future);
     }
-
+    
     @Override
-    public Future<Object> broadcast(Object msg, Set<AtmosphereResource<?, ?>> subset) {
-        msg = filter(msg);
+    public <Object> Future<Object> broadcast(Object msg, Set<AtmosphereResource> subset) {
+        msg = cast(filter(msg));
         if (msg == null) {
             return null;
         }
-        BroadcasterFuture<Object> future = new BroadcasterFuture<Object>(msg);
+        BroadcasterFuture<?> future = new BroadcasterFuture<Object>(msg);
         future.done();
-        push(new Entry(msg, subset, future));
+        push(new Entry(msg, subset, future, true));
         return cast(future);
     }
 

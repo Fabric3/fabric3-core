@@ -38,41 +38,66 @@
 package org.fabric3.binding.web.runtime.service;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
 
-import org.atmosphere.cpr.AtmosphereHandler;
+import org.atmosphere.cpr.ApplicationConfig;
+import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
-import org.atmosphere.cpr.AtmosphereResourceEvent;
+import org.atmosphere.cpr.AtmosphereResource.TRANSPORT;
+import org.atmosphere.cpr.AtmosphereResponse;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.handler.AbstractReflectorAtmosphereHandler;
-import org.atmosphere.websocket.WebSocketHttpServletResponse;
-
-import static org.fabric3.binding.web.runtime.service.ServiceConstants.FABRIC3_BROADCASTER;
+import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 
 /**
  * @version $Rev: 9435 $ $Date: 2010-09-09 17:31:45 +0200 (Thu, 09 Sep 2010) $
  */
 public class ServiceWebSocketHandler extends AbstractReflectorAtmosphereHandler {
-    private AtmosphereHandler<HttpServletRequest, HttpServletResponse> handler;
+	
+	 private ServiceManager serviceManager;
+	 private BroadcasterManager broadcasterManager;
+	 private ServiceMonitor monitor;
+	 
 
-    public ServiceWebSocketHandler(AtmosphereHandler<HttpServletRequest, HttpServletResponse> handler) {
-        this.handler = handler;
+    public ServiceWebSocketHandler(ServiceManager _serviceManager, BroadcasterManager _broadcasterManager, ServiceMonitor _monitor) {
+    	this.serviceManager = _serviceManager;
+        this.broadcasterManager = _broadcasterManager;
+        this.monitor = _monitor;        
+    } 
+    
+
+    public void onRequest(AtmosphereResource resource) throws IOException {
+    	AtmosphereRequest req = resource.getRequest();
+        AtmosphereResponse res = resource.getResponse();
+        String method = req.getMethod();
+        
+        // Suspend the response.
+        if ("GET".equalsIgnoreCase(method)) {
+        	UUID uuid = UUID.randomUUID();
+            // Log all events on the console, including WebSocket events.
+            resource.addEventListener( new WebSocketServiceListener( uuid, monitor, serviceManager) );
+
+            res.setContentType("text/html;charset=ISO-8859-1");
+            
+            Broadcaster b = broadcasterManager.getServiceBroadcaster(uuid.toString(), resource.getAtmosphereConfig());
+            resource.setBroadcaster(b);
+
+            if (resource.transport() == TRANSPORT.LONG_POLLING) {
+                req.setAttribute(ApplicationConfig.RESUME_ON_BROADCAST, Boolean.TRUE);
+                resource.suspend(-1, false);
+            } else {
+                resource.suspend(-1);
+            }
+        } else if ("POST".equalsIgnoreCase(method)) {
+        	res.setStatus(500);
+        	monitor.error(new UnsupportedOperationException("No inbound messages allowed."));
+        }        
     }
 
-    public void onRequest(AtmosphereResource<HttpServletRequest, HttpServletResponse> resource) throws IOException {
-        Broadcaster broadcaster = (Broadcaster) resource.getRequest().getAttribute(FABRIC3_BROADCASTER);
-        resource.setBroadcaster(broadcaster);
-        if (!resource.getResponse().getClass().isAssignableFrom(WebSocketHttpServletResponse.class)) {
-            // not a websocket request
-            handler.onRequest(resource);
-        } else {
-            resource.suspend(-1, false);
-        }
-    }
+	public void destroy() {
+	}
+	
+	
 
-    @Override
-    public void onStateChange(AtmosphereResourceEvent<HttpServletRequest, HttpServletResponse> event) throws IOException {
-        super.onStateChange(event);
-    }
+	
 }

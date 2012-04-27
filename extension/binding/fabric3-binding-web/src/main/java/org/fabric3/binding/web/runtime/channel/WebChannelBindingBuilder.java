@@ -38,11 +38,14 @@
 package org.fabric3.binding.web.runtime.channel;
 
 import java.net.URI;
+import java.util.Collection;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 
-import org.atmosphere.cpr.AtmosphereServlet;
+import org.atmosphere.cpr.ApplicationConfig;
+import org.atmosphere.cpr.AtmosphereFramework;
 import org.atmosphere.cpr.Broadcaster;
-import org.atmosphere.handler.ReflectorServletProcessor;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -59,6 +62,8 @@ import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.util.UriHelper;
 
@@ -76,18 +81,22 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
     private PubSubManager pubSubManager;
     private ServletHost servletHost;
 
-    private AtmosphereServlet gatewayServlet;
+    private AtmosphereFramework atmosphereFramework;
     private long timeout = 1000 * 10 * 60;
     private ChannelMonitor monitor;
 
+	private ClassLoaderRegistry classLoaderRegistry;
+    
     public WebChannelBindingBuilder(@Reference BroadcasterManager broadcasterManager,
                                     @Reference PubSubManager pubSubManager,
                                     @Reference ServletHost servletHost,
+                                    @Reference ClassLoaderRegistry classLoaderRegistry,
                                     @Monitor ChannelMonitor monitor) {
         this.broadcasterManager = broadcasterManager;
         this.pubSubManager = pubSubManager;
         this.servletHost = servletHost;
         this.monitor = monitor;
+        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     /**
@@ -108,31 +117,30 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
      */
     @Init
     public void init() throws ServletException {
-        GatewayServletContext context = new GatewayServletContext(CONTEXT_PATH);
+    	GatewayServletContext context = new GatewayServletContext(CONTEXT_PATH, classLoaderRegistry);
         // TODO support other configuration as specified in AtmosphereServlet init()
-        context.setInitParameter(AtmosphereServlet.PROPERTY_SESSION_SUPPORT, "false");
-        context.setInitParameter(AtmosphereServlet.WEBSOCKET_ATMOSPHEREHANDLER, "false");   // turn the handler off as it is overriden below
-        context.setInitParameter(AtmosphereServlet.WEBSOCKET_SUPPORT, "true");
+        context.setInitParameter(ApplicationConfig.PROPERTY_SESSION_SUPPORT, "false");
+//        context.setInitParameter(AtmosphereServlet.WEBSOCKET_ATMOSPHEREHANDLER, "false");   // turn the handler off as it is overriden below
+        
+        context.setInitParameter(ApplicationConfig.WEBSOCKET_SUPPORT, "true");
+        context.setInitParameter(ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT, "true");
 
         GatewayServletConfig config = new GatewayServletConfig(context);
+        
+        org.atmosphere.cpr.AtmosphereServlet atmosphereServlet = new org.atmosphere.cpr.AtmosphereServlet(false,false);
+        atmosphereServlet.init(config);
+        
+        atmosphereFramework = atmosphereServlet.framework();
 
-        gatewayServlet = new ChannelGatewayServlet(servletHost, pubSubManager);
-        gatewayServlet.init(config);
-
-        ChannelRouter router = new ChannelRouter(pubSubManager, monitor);
-
-        ReflectorServletProcessor processor = new ReflectorServletProcessor();
-        processor.setServlet(router);
-        processor.init(config);
-        ChannelWebSocketHandler webSocketHandler = new ChannelWebSocketHandler(processor, broadcasterManager);
-        gatewayServlet.addAtmosphereHandler("/*", webSocketHandler);
-        servletHost.registerMapping(CONTEXT_PATH, gatewayServlet);
+        ChannelWebSocketHandler webSocketHandler = new ChannelWebSocketHandler( broadcasterManager, pubSubManager, monitor );
+        atmosphereFramework.addAtmosphereHandler("/*", webSocketHandler);
+        servletHost.registerMapping(CONTEXT_PATH, atmosphereServlet);
     }
 
     @Destroy
     public void destroy() {
         servletHost.unregisterMapping(CONTEXT_PATH);
-        gatewayServlet.destroy();
+        atmosphereFramework.destroy();
     }
 
     public void build(WebChannelBindingDefinition definition, Channel channel) throws BuilderException {
@@ -142,7 +150,7 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
         // setup the subscriber infrastructure
         if (OperationsAllowed.SUBSCRIBE == allowed || OperationsAllowed.ALL == allowed) {
             // create the subscriber responsible for broadcasting channel events to suspended clients
-            Broadcaster broadcaster = broadcasterManager.getChannelBroadcaster(path);
+            Broadcaster broadcaster = broadcasterManager.getChannelBroadcaster(path, atmosphereFramework.getAtmosphereConfig());
             EventStream stream = new BroadcasterEventStream(broadcaster);
             ChannelSubscriber subscriber = new ChannelSubscriberImpl(stream, timeout);
             channel.subscribe(sourceUri, subscriber);
@@ -189,5 +197,6 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
         String prefix = CONTEXT_PATH.substring(0, CONTEXT_PATH.length() - 1);
         monitor.removedChannelEndpoint(prefix + path);
 
-    }
+    }    
+    
 }

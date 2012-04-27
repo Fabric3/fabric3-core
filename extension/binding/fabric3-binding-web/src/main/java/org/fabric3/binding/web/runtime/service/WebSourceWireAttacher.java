@@ -39,14 +39,8 @@ package org.fabric3.binding.web.runtime.service;
 
 import javax.servlet.ServletException;
 
-import org.atmosphere.cpr.AtmosphereServlet;
-import org.atmosphere.handler.ReflectorServletProcessor;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-
+import org.atmosphere.cpr.ApplicationConfig;
+import org.atmosphere.cpr.AtmosphereFramework;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.web.provision.WebSourceDefinition;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
@@ -54,11 +48,17 @@ import org.fabric3.binding.web.runtime.common.GatewayServletConfig;
 import org.fabric3.binding.web.runtime.common.GatewayServletContext;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches a service to the gateway servlet that accepts incoming websocket connections using Atmosphere. The gateway servlet is responsible for
@@ -74,17 +74,20 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
     private BroadcasterManager broadcasterManager;
     private ServletHost servletHost;
     private long timeout = 1000 * 10 * 60;
-    private ServiceGatewayServlet gatewayServlet;
+    private AtmosphereFramework atmosphereFramework;
     private ServiceMonitor monitor;
+	private ClassLoaderRegistry classLoaderRegistry;
 
     public WebSourceWireAttacher(@Reference ServiceManager serviceManager,
                                  @Reference BroadcasterManager broadcasterManager,
                                  @Reference ServletHost servletHost,
+                                 @Reference ClassLoaderRegistry classLoaderRegistry,
                                  @Monitor ServiceMonitor monitor) {
         this.broadcasterManager = broadcasterManager;
         this.serviceManager = serviceManager;
         this.servletHost = servletHost;
         this.monitor = monitor;
+        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     /**
@@ -99,31 +102,27 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
 
     @Init
     public void init() throws ServletException {
-        GatewayServletContext context = new GatewayServletContext(CONTEXT_PATH);
+        GatewayServletContext context = new GatewayServletContext(CONTEXT_PATH,classLoaderRegistry);
         // TODO support other configuration as specified in AtmosphereServlet init()
-        context.setInitParameter(AtmosphereServlet.PROPERTY_SESSION_SUPPORT, "false");
-        context.setInitParameter(AtmosphereServlet.WEBSOCKET_ATMOSPHEREHANDLER, "false");   // turn the handler off as it is overriden below
-        context.setInitParameter(AtmosphereServlet.WEBSOCKET_SUPPORT, "true");
+        context.setInitParameter(ApplicationConfig.PROPERTY_SESSION_SUPPORT, "false");
+        context.setInitParameter(ApplicationConfig.WEBSOCKET_SUPPORT, "true");
+        context.setInitParameter(ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT, "true");
 
         GatewayServletConfig config = new GatewayServletConfig(context);
-
-        gatewayServlet = new ServiceGatewayServlet(serviceManager, broadcasterManager, servletHost, monitor);
+        
+        org.atmosphere.cpr.AtmosphereServlet  gatewayServlet =  new org.atmosphere.cpr.AtmosphereServlet(false,false);
         gatewayServlet.init(config);
-
-        ServiceRouter router = new ServiceRouter(timeout);
-
-        ReflectorServletProcessor processor = new ReflectorServletProcessor();
-        processor.setServlet(router);
-        processor.init(config);
-        ServiceWebSocketHandler webSocketHandler = new ServiceWebSocketHandler(processor);
-        gatewayServlet.addAtmosphereHandler("/*", webSocketHandler);
+        atmosphereFramework = gatewayServlet.framework();
+        
+        ServiceWebSocketHandler webSocketHandler = new ServiceWebSocketHandler(serviceManager,broadcasterManager,monitor);
+        atmosphereFramework.addAtmosphereHandler("/*", webSocketHandler);
         servletHost.registerMapping(CONTEXT_PATH, gatewayServlet);
     }
 
     @Destroy
     public void destroy() {
         servletHost.unregisterMapping(CONTEXT_PATH);
-        gatewayServlet.destroy();
+        atmosphereFramework.destroy();
     }
 
     public void attach(WebSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WiringException {

@@ -41,11 +41,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.AtmosphereServlet;
+import org.atmosphere.cpr.AtmosphereResource.TRANSPORT;
 
 import org.fabric3.spi.channel.EventStream;
-
-import static org.atmosphere.cpr.AtmosphereServlet.ATMOSPHERE_RESOURCE;
 
 /**
  * Implements GET semantics for the RESTful publish/subscribe where a GET will either result in the creation of a websocket connection for clients
@@ -61,7 +62,7 @@ public class ChannelSubscriberImpl implements ChannelSubscriber {
      * Constructor.
      *
      * @param stream  the event stream for the channel that is being subscribed to
-     * @param timeout the client connection timeout
+     * @param timeout the client connection timeout 
      */
     public ChannelSubscriberImpl(EventStream stream, long timeout) {
         streams.add(stream);
@@ -69,11 +70,16 @@ public class ChannelSubscriberImpl implements ChannelSubscriber {
     }
 
     public void subscribe(HttpServletRequest request) {
-        AtmosphereResource<?, ?> resource = (AtmosphereResource<?, ?>) request.getAttribute(ATMOSPHERE_RESOURCE);
+        AtmosphereResource resource = (AtmosphereResource) request.getAttribute(ApplicationConfig.ATMOSPHERE_RESOURCE);
         if (resource == null) {
             throw new IllegalStateException("Web binding extension not properly configured");
         }
-        resource.suspend(timeout);
+        if (resource.transport() == TRANSPORT.LONG_POLLING ) {
+        	request.setAttribute(ApplicationConfig.RESUME_ON_BROADCAST, Boolean.TRUE);
+            resource.suspend(timeout, false);
+        } else {
+        	resource.suspend(timeout);
+        }        
     }
 
     public List<EventStream> getEventStreams() {

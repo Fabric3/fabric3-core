@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.Broadcaster;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -70,21 +71,21 @@ public class BroadcasterManagerImpl implements BroadcasterManager {
         this.registry = registry;
     }
 
-    public Broadcaster getChannelBroadcaster(String path) {
+    public Broadcaster getChannelBroadcaster(String path , AtmosphereConfig config) {
         Broadcaster broadcaster = broadcasters.get(path);
         if (broadcaster == null) {
             initializeTransformer();
-            broadcaster = new ChannelBroadcaster(path, jsonTransformer);
+            broadcaster = new ChannelBroadcaster(path, jsonTransformer, config);
             broadcasters.put(path, broadcaster);
         }
         return broadcaster;
     }
 
-    public Broadcaster getServiceBroadcaster(String path) {
+    public Broadcaster getServiceBroadcaster(String path, AtmosphereConfig config) {
         Broadcaster broadcaster = broadcasters.get(path);
         if (broadcaster == null) {
             initializeTransformer();
-            broadcaster = new ServiceBroadcaster(path);
+            broadcaster = new ServiceBroadcaster(path, config);
             broadcasters.put(path, broadcaster);
         }
         return broadcaster;

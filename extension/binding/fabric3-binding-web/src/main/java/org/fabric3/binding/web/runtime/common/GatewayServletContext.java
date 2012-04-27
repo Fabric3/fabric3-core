@@ -39,7 +39,9 @@ package org.fabric3.binding.web.runtime.common;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.EventListener;
@@ -57,13 +59,18 @@ import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.classloader.MultiParentClassLoader;
+
 public class GatewayServletContext implements ServletContext {
     private final static String WEB_INF = "/WEB-INF/classes/";
     private String contextPath;
     private Map<String, String> initParams = new HashMap<String, String>();
+	private String serverInfo = "Fabric3";
 
-    public GatewayServletContext(String contextPath) {
+    public GatewayServletContext(String contextPath, ClassLoaderRegistry classLoaderRegistry) {
         this.contextPath = contextPath;
+        attachJettyIfAny(classLoaderRegistry);
     }
 
     public String getContextPath() {
@@ -102,7 +109,7 @@ public class GatewayServletContext implements ServletContext {
     }
 
     public String getServerInfo() {
-        return "Fabric3";
+        return serverInfo;
     }
 
     public String getServletContextName() {
@@ -275,5 +282,45 @@ public class GatewayServletContext implements ServletContext {
 
     public void removeAttribute(String name) {
 
+    }
+
+	public void setServerInfo(String serverInfo) {
+		this.serverInfo = serverInfo;
+	}
+	
+	private void attachJettyIfAny(ClassLoaderRegistry classLoaderRegistry) {
+    	// org.atmosphere.cpr.DefaultAsyncSupportResolver
+    	String[] jettySupport = {"org.mortbay.util.ajax.Continuation",  // Jetty 
+    			                 "org.eclipse.jetty.continuation.Servlet3Continuation" , // Jetty 8 
+    			                 "org.eclipse.jetty.servlet.ServletContextHandler" // Jetty 7 
+    			                 };
+    	int bestMatch = 0;
+    	ClassLoader jettyCandidate = null;
+    	ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+    	if (contextClassLoader instanceof MultiParentClassLoader){
+    		Map<URI, ClassLoader> map = classLoaderRegistry.getClassLoaders();
+    		Collection<ClassLoader> classLoaders = map.values();
+    		for (ClassLoader cl : classLoaders) {
+    			if (cl != contextClassLoader) {
+    				int currentMatch = 0;
+	    			for (String className : jettySupport) {	    				
+	    				try {
+							cl.loadClass(className);
+							currentMatch ++;
+							if (currentMatch > bestMatch) {
+								jettyCandidate = cl;
+								bestMatch = currentMatch;
+							}
+						} catch (ClassNotFoundException e) {
+							continue;
+						}
+	    			}		
+	    		}		
+			}
+    		if (jettyCandidate!=null && jettyCandidate instanceof MultiParentClassLoader){
+    			((MultiParentClassLoader)contextClassLoader).addExtensionClassLoader((MultiParentClassLoader) jettyCandidate);
+    			serverInfo = "JETTY.8.0.0";
+    		}
+    	}
     }
 }

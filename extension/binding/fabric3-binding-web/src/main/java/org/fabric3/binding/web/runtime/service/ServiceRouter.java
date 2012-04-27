@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.atmosphere.cpr.AtmosphereResource;
 
-import static org.atmosphere.cpr.AtmosphereServlet.ATMOSPHERE_RESOURCE;
+import static org.atmosphere.cpr.FrameworkConfig.ATMOSPHERE_RESOURCE;
 
 /**
  * @version $Rev$ $Date$
@@ -65,7 +65,7 @@ public class ServiceRouter extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        AtmosphereResource<?, ?> resource = (AtmosphereResource<?, ?>) request.getAttribute(ATMOSPHERE_RESOURCE);
+        AtmosphereResource resource = (AtmosphereResource) request.getAttribute(ATMOSPHERE_RESOURCE);
         if (resource == null) {
             throw new IllegalStateException("Web binding extension not properly configured");
         }

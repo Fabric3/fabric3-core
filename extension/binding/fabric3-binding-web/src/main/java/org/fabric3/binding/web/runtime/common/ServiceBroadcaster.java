@@ -41,6 +41,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.cpr.BroadcasterFuture;
@@ -51,13 +52,13 @@ import org.atmosphere.cpr.DefaultBroadcaster;
  */
 public class ServiceBroadcaster extends DefaultBroadcaster {
 
-    public ServiceBroadcaster(String path) {
-        super(path);
+    public ServiceBroadcaster(String path , AtmosphereConfig config) {
+        super(path, config);
     }
 
     @Override
     @SuppressWarnings({"unchecked"})
-    protected void broadcast(AtmosphereResource<?, ?> resource, AtmosphereResourceEvent event) {
+    protected void broadcast(AtmosphereResource resource, AtmosphereResourceEvent event) {
         super.broadcast(resource, event);
     }
 
@@ -69,7 +70,7 @@ public class ServiceBroadcaster extends DefaultBroadcaster {
         }
         BroadcasterFuture<Object> future = new BroadcasterFuture<Object>(msg);
         future.done();
-        push(new Entry(msg, null, future));
+        push(new Entry(msg, null, future, true));
         return cast(future);
     }
 
@@ -81,19 +82,19 @@ public class ServiceBroadcaster extends DefaultBroadcaster {
         }
         BroadcasterFuture<Object> future = new BroadcasterFuture<Object>(msg);
         future.done();
-        push(new Entry(msg, r, future));
+        push(new Entry(msg, r, future, true));
         return cast(future);
     }
 
     @Override
-    public Future<Object> broadcast(Object msg, Set<AtmosphereResource<?, ?>> subset) {
-        msg = filter(msg);
+    public <Object> Future<Object> broadcast(Object msg, Set<AtmosphereResource> subset) {
+        msg = cast(filter(msg));
         if (msg == null) {
             return null;
         }
         BroadcasterFuture<Object> future = new BroadcasterFuture<Object>(msg);
         future.done();
-        push(new Entry(msg, subset, future));
+        push(new Entry(msg, subset, future, true));
         return cast(future);
     }
 
@@ -103,7 +104,7 @@ public class ServiceBroadcaster extends DefaultBroadcaster {
     }
 
     @Override
-    public Future<?> scheduleFixedBroadcast(final Object o, long period, TimeUnit t) {
+    public Future<Object> scheduleFixedBroadcast(final Object o, long period, TimeUnit t) {
         throw new UnsupportedOperationException();
     }
 

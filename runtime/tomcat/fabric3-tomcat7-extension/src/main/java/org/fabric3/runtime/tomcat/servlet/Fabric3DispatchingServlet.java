@@ -47,13 +47,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.catalina.comet.CometEvent;
+import org.apache.catalina.comet.CometProcessor;
+
 /**
  * A servlet registered in the Tomcat host runtime that forwards requests to other servlets. For example, servlets that handle requests destined to
  * services sent using HTTP-based bindings.
  *
  * @version $Rev: 10247 $ $Date: 2011-04-27 14:57:56 +0300 (Wed, 27 Apr 2011) $
  */
-public class Fabric3DispatchingServlet extends HttpServlet {
+public class Fabric3DispatchingServlet extends HttpServlet implements CometProcessor {
     private static final long serialVersionUID = -8765328474350267313L;
 
     private Map<String, Servlet> servlets = new ConcurrentHashMap<String, Servlet>();
@@ -104,5 +107,36 @@ public class Fabric3DispatchingServlet extends HttpServlet {
         servlet.destroy();
         return servlet;
     }
+
+	public void event(CometEvent event) throws IOException, ServletException {
+		HttpServletRequest req = event.getHttpServletRequest();
+		HttpServletResponse resp = event.getHttpServletResponse();
+		String path = req.getPathInfo();
+        Servlet servlet = servlets.get(path);
+        if (servlet == null) {
+            int i;
+            servlet = servlets.get(path + "/*");
+            if (servlet == null) {
+                while ((i = path.lastIndexOf("/")) >= 0) {
+                    servlet = servlets.get(path.substring(0, i) + "/*");
+                    if (servlet != null) {
+                        break;
+                    }
+                    path = path.substring(0, i);
+                }
+            }
+            if (servlet == null) {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                resp.getWriter().write("No servlet registered for path: " + req.getPathInfo());
+                return;
+            }
+        }
+        if (servlet instanceof CometProcessor) {
+        	((CometProcessor)servlet).event(event);
+        }
+        else {
+        	servlet.service(req, resp);
+        }
+	}
 
 }

@@ -14,8 +14,5 @@ Public License. See the accompanying license file for details.
               f3:extension="true"
               f3:description="Web binding extension">
     <import.java package="org.fabric3.spi.*" version="1.9.5"/>
-    <import.java package="org.eclipse.jetty.continuation" version="8.0.0.M1"/>
-    <import.java package="org.eclipse.jetty.websocket" version="8.0.0.M1"/>
-
-   <deployable composite="f3:WebBindingExtension"/>
+    <deployable composite="f3:WebBindingExtension"/>
 </contribution>
