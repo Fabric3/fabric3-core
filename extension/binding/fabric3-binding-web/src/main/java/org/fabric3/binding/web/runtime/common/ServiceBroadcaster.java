@@ -88,7 +88,7 @@ public class ServiceBroadcaster extends DefaultBroadcaster {
 
     @Override
     public <Object> Future<Object> broadcast(Object msg, Set<AtmosphereResource> subset) {
-        msg = cast(filter(msg));
+        msg = (Object)filter(msg);
         if (msg == null) {
             return null;
         }

@@ -51,7 +51,6 @@
                 <include>javax.xml:webservices-api-osgi</include>
                 <include>javax.ws.rs:jsr311-api</include>
                 <include>stax:stax-api</include>
-                <include>org.atmosphere:atmosphere-compat-jetty</include>
             </includes>
             <outputDirectory>fabric3/host</outputDirectory>
         </dependencySet>

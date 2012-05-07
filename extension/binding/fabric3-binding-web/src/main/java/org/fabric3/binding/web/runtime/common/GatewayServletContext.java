@@ -59,6 +59,7 @@ import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
+import org.atmosphere.cpr.DefaultAsyncSupportResolver;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 
@@ -289,10 +290,9 @@ public class GatewayServletContext implements ServletContext {
 	}
 	
 	private void attachJettyIfAny(ClassLoaderRegistry classLoaderRegistry) {
-    	// org.atmosphere.cpr.DefaultAsyncSupportResolver
-    	String[] jettySupport = {"org.mortbay.util.ajax.Continuation",  // Jetty 
-    			                 "org.eclipse.jetty.continuation.Servlet3Continuation" , // Jetty 8 
-    			                 "org.eclipse.jetty.servlet.ServletContextHandler" // Jetty 7 
+    	String[] jettySupport = {DefaultAsyncSupportResolver.JETTY,  
+    			                 DefaultAsyncSupportResolver.JETTY_7 ,
+    			                 DefaultAsyncSupportResolver.JETTY_8
     			                 };
     	int bestMatch = 0;
     	ClassLoader jettyCandidate = null;
