@@ -38,6 +38,8 @@
 package org.fabric3.runtime.tomcat.activator;
 
 import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Severe;
+import org.fabric3.container.web.spi.WebApplicationActivationException;
 
 /**
  * @version $Rev: 9763 $ $Date: 2011-01-03 02:48:06 +0200 (Mon, 03 Jan 2011) $
@@ -49,6 +51,9 @@ public interface ActivatorMonitor {
 
     @Info("Web application deactivated: [{0}]")
     void deactivated(String path);
+
+    @Severe("Web application error : [{0}, {1}]")
+	void error(String uri, WebApplicationActivationException e);
 
 
 }

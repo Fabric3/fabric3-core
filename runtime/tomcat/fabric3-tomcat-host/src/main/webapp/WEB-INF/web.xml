@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_5.xsd">
+
+	<display-name>Fabric3 Host Web Application</display-name>
+
+	<servlet>
+		<servlet-name>Fabric3HostServlet</servlet-name>
+		<servlet-class>org.fabric3.tomcat.host.Fabric3HostServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Fabric3HostServlet</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+
+	<!--  security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Fabric3 Manager commands</web-resource-name>
+			<url-pattern>/f3-manager/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>			
+			<role-name>f3-manager</role-name>
+		</auth-constraint>
+	</security-constraint -->
+
+	<!-- Define the Login Configuration for this Application -->
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>Tomcat Host Manager Application</realm-name>
+	</login-config>
+
+	<security-role>
+		<description>The role that is required to execute Fabric3 Manager commands</description>
+		<role-name>f3-manager</role-name>
+	</security-role>
+
+
+</web-app>

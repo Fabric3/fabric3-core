@@ -34,20 +34,20 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.fabric3.runtime.tomcat.activator;
 
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.apache.catalina.Container;
-import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
@@ -65,154 +65,171 @@ import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Activates a web component in the host Tomcat runtime.
- *
+ * 
  * @version $Rev: 10721 $ $Date: 2011-10-03 01:01:56 +0300 (Mon, 03 Oct 2011) $
  */
 public class TomcatWebApplicationActivator implements WebApplicationActivator {
-    private ConnectorService connectorService;
-    private ClassLoaderRegistry classLoaderRegistry;
-    private ContributionResolver resolver;
-    private Connector connector;
-    // mappings from component URI to Tomcat context path
-    private Map<URI, String> mappings = new ConcurrentHashMap<URI, String>();
-    private ActivatorMonitor monitor;
+	private ConnectorService connectorService;
+	private ClassLoaderRegistry classLoaderRegistry;
+	private ContributionResolver resolver;
+	private Connector connector;
+	// mappings from component URI to Tomcat context path
+	private Map<URI, String> mappings = new ConcurrentHashMap<URI, String>();
+	private ActivatorMonitor monitor;
 
-    public TomcatWebApplicationActivator(@Reference ConnectorService connectorService,
-                                         @Reference ClassLoaderRegistry registry,
-                                         @Reference ContributionResolver resolver,
-                                         @Monitor ActivatorMonitor monitor) {
-        this.connectorService = connectorService;
-        this.classLoaderRegistry = registry;
-        this.resolver = resolver;
-        this.monitor = monitor;
-    }
+	public TomcatWebApplicationActivator(
+			@Reference ConnectorService connectorService,
+			@Reference ClassLoaderRegistry registry,
+			@Reference ContributionResolver resolver,
+			@Monitor ActivatorMonitor monitor) {
+		this.connectorService = connectorService;
+		this.classLoaderRegistry = registry;
+		this.resolver = resolver;
+		this.monitor = monitor;
+	}
 
-    @Init
-    public void init() throws ServletHostException {
-        connector = connectorService.getConnector();
-    }
+	@Init
+	public void init() throws ServletHostException {
+		connector = connectorService.getConnector();
+	}
 
-    public ClassLoader getWebComponentClassLoader(URI componentId) {
-        return classLoaderRegistry.getClassLoader(componentId);
-    }
+	@Destroy
+	public void cleanWebApps() {
+		Set<URI> webApps = mappings.keySet();
+		for (URI webApp : webApps) {
+			try {
+				deactivate(webApp);
+			} catch (WebApplicationActivationException e) {
+				monitor.error( webApp.toString() , e ); 
+			}
+		}
+	}
 
-    public ServletContext activate(String contextPath,
-                                   URI uri,
-                                   URI parentClassLoaderId,
-                                   Map<String, List<Injector<?>>> injectors,
-                                   ComponentContext componentContext) throws WebApplicationActivationException {
-        if (mappings.containsKey(uri)) {
-            throw new WebApplicationActivationException("Mapping already exists: " + uri.toString());
-        }
-        contextPath = "/" + contextPath;
-        try {
-            // resolve the url to a local artifact
-            URL resolved = resolver.resolve(uri);
-            ClassLoader parentClassLoader = createParentClassLoader(parentClassLoaderId, uri);
-            StandardContext context = createContext(contextPath, resolved.getFile(), parentClassLoader, injectors);
-            for (Container container : connector.getService().getContainer().findChildren()) {
-                if (container instanceof StandardHost) {
-                    container.addChild(context);
-                }
-            }
-            // Setup the session listener to inject reference proxies in newly created sessions.
-            // Note this must be performed after the context is added as a child to StandardHost as doing so
-            // starts the context which results in the application lifecycle listeners being reset.
-            List<Injector<HttpSession>> sessionInjectors = List.class.cast(injectors.get(SESSION_CONTEXT_SITE));
-            InjectingSessionListener listener = new InjectingSessionListener(sessionInjectors);
-            Object[] listeners = context.getApplicationLifecycleListeners();
-            Object[] newListeners = new Object[listeners.length + 1];
-            System.arraycopy(listeners, 0, newListeners, 0, listeners.length);
-            newListeners[listeners.length] = listener;
-            context.setApplicationLifecycleListeners(newListeners);
+	public ClassLoader getWebComponentClassLoader(URI componentId) {
+		return classLoaderRegistry.getClassLoader(componentId);
+	}
 
-            ServletContext servletContext = context.getServletContext();
-            // make references available in the servlet context
-            injectServletContext(servletContext, injectors);
+	public ServletContext activate(String contextPath, URI uri,
+			URI parentClassLoaderId, Map<String, List<Injector<?>>> injectors,
+			ComponentContext componentContext)
+			throws WebApplicationActivationException {
+		if (mappings.containsKey(uri)) {
+			throw new WebApplicationActivationException(
+					"Mapping already exists: " + uri.toString());
+		}
+		contextPath = "/" + contextPath;
+		try {
+			// resolve the url to a local artifact
+			URL resolved = resolver.resolve(uri);
+			ClassLoader parentClassLoader = createParentClassLoader(
+					parentClassLoaderId, uri);
+			StandardContext context = createContext(contextPath,
+					resolved.getFile(), parentClassLoader, injectors);
+			for (Container container : connector.getService().getContainer()
+					.findChildren()) {
+				if (container instanceof StandardHost) {
+					container.addChild(context);
+				}
+			}
+			// Setup the session listener to inject reference proxies in newly
+			// created sessions.
+			// Note this must be performed after the context is added as a child
+			// to StandardHost as doing so
+			// starts the context which results in the application lifecycle
+			// listeners being reset.
+			List<Injector<HttpSession>> sessionInjectors = List.class.cast(injectors.get(SESSION_CONTEXT_SITE));
+			InjectingSessionListener listener = new InjectingSessionListener(
+					sessionInjectors);
+			Object[] listeners = context.getApplicationLifecycleListeners();
+			Object[] newListeners = new Object[listeners.length + 1];
+			System.arraycopy(listeners, 0, newListeners, 0, listeners.length);
+			newListeners[listeners.length] = listener;
+			context.setApplicationLifecycleListeners(newListeners);
 
-            mappings.put(uri, contextPath);
-            monitor.activated(contextPath);
-            return servletContext;
-        } catch (Exception e) {
-            throw new WebApplicationActivationException(e);
-        }
+			ServletContext servletContext = context.getServletContext();
+			// make references available in the servlet context
+			injectServletContext(servletContext, injectors);
 
-    }
+			mappings.put(uri, contextPath);
+			monitor.activated(contextPath);
+			return servletContext;
+		} catch (Exception e) {
+			throw new WebApplicationActivationException(e);
+		}
 
-    public void deactivate(URI uri) throws WebApplicationActivationException {
-        String contextPath = mappings.remove(uri);
-        if (contextPath == null) {
-            throw new WebApplicationActivationException("Context not registered for component: " + uri);
-        }
-        StandardContext context = null;
-        try {
-            for (Container container : connector.getService().getContainer().findChildren()) {
-                if (container instanceof StandardHost) {
-                    context = (StandardContext) container.findChild(contextPath);
-                    container.removeChild(context);
-                    try {
-                        context.destroy();
-                    } catch (Exception e) {
-                        throw new WebApplicationActivationException(e);
-                    }
-                    break;
-                }
-            }
-            if (context == null) {
-                throw new WebApplicationActivationException("Context not found for: " + contextPath);
-            }
-            context.stop();
-            monitor.deactivated(contextPath);
-        } catch (LifecycleException e) {
-            throw new WebApplicationActivationException(e);
-        }
-    }
+	}
 
-    private ClassLoader createParentClassLoader(URI parentClassLoaderId, URI id) {
-        ClassLoader cl = classLoaderRegistry.getClassLoader(parentClassLoaderId);
-        return new MultiParentClassLoader(id, cl);
-    }
+	public void deactivate(URI uri) throws WebApplicationActivationException {
+		String contextPath = mappings.remove(uri);
+		if (contextPath == null) {
+			throw new WebApplicationActivationException("Context not registered for component: " + uri);
+		}
+		StandardContext context = null;
+		for (Container container : connector.getService().getContainer()
+				.findChildren()) {
+			if (container instanceof StandardHost) {
+				context = (StandardContext) container.findChild(contextPath);
+				container.removeChild(context);
+				monitor.deactivated(contextPath);
+				break;
+			}
+		}
+	}
 
-    private StandardContext createContext(String path, String docBase, ClassLoader classLoader, Map<String, List<Injector<?>>> injectors) {
-        StandardContext context = new StandardContext();
-        ContextConfig config = new ContextConfig();
-        context.addLifecycleListener(config);
-        context.setParentClassLoader(classLoader);
-        
-        for (Container container : connector.getService().getContainer().findChildren()) {
-            if (container instanceof StandardHost) {
-            	context.setParent(container);
-            }
-        }
-        
-        context.setPath(path);
-        context.setDocBase(docBase);
-        
-        Fabric3Loader loader = new Fabric3Loader(classLoader);
-        context.setLoader(loader);
-        // turn off unpacking so Tomcat does not copy the extracted WAR to the /webapps directory and autodeploy it on a subsequent boot
-        context.setUnpackWAR(false);
-        Fabric3InstanceManager instanceManager = new Fabric3InstanceManager(injectors,classLoader);
-        context.setInstanceManager(instanceManager);
-        context.getServletContext().setAttribute(InstanceManager.class.getName(), instanceManager);
-        return (context);
-    }
+	private ClassLoader createParentClassLoader(URI parentClassLoaderId, URI id) {
+		ClassLoader cl = classLoaderRegistry
+				.getClassLoader(parentClassLoaderId);
+		return new MultiParentClassLoader(id, cl);
+	}
 
-    @SuppressWarnings({"unchecked"})
-    private void injectServletContext(ServletContext servletContext, Map<String, List<Injector<?>>> injectors) throws ObjectCreationException {
-        List<Injector<?>> list = injectors.get(SERVLET_CONTEXT_SITE);
-        if (list == null) {
-            // nothing to inject
-            return;
-        }
-        for (Injector injector : list) {
-            injector.inject(servletContext);
-        }
-    }
+	private StandardContext createContext(String path, String docBase,
+			ClassLoader classLoader, Map<String, List<Injector<?>>> injectors) {
+		StandardContext context = new StandardContext();
+		ContextConfig config = new ContextConfig();
+		context.addLifecycleListener(config);
+		context.setParentClassLoader(classLoader);
+
+		for (Container container : connector.getService().getContainer()
+				.findChildren()) {
+			if (container instanceof StandardHost) {
+				context.setParent(container);
+			}
+		}
+
+		context.setPath(path);
+		context.setDocBase(docBase);
+
+		Fabric3Loader loader = new Fabric3Loader(classLoader);
+		context.setLoader(loader);
+		// turn off unpacking so Tomcat does not copy the extracted WAR to the
+		// /webapps directory and autodeploy it on a subsequent boot
+		context.setUnpackWAR(false);
+		Fabric3InstanceManager instanceManager = new Fabric3InstanceManager(
+				injectors, classLoader);
+		context.setInstanceManager(instanceManager);
+		context.getServletContext().setAttribute(
+				InstanceManager.class.getName(), instanceManager);
+		return (context);
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	private void injectServletContext(ServletContext servletContext,
+			Map<String, List<Injector<?>>> injectors)
+			throws ObjectCreationException {
+		List<Injector<?>> list = injectors.get(SERVLET_CONTEXT_SITE);
+		if (list == null) {
+			// nothing to inject
+			return;
+		}
+		for (Injector injector : list) {
+			injector.inject(servletContext);
+		}
+	}
 
 }
