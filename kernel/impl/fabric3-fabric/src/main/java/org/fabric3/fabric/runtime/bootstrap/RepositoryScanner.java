@@ -83,24 +83,26 @@ public class RepositoryScanner {
             }
         });
         List<ContributionSource> sources = new ArrayList<ContributionSource>();
-        for (File file : files) {
-            try {
-                URL location = file.toURI().toURL();
-                ContributionSource source;
-                if (file.isDirectory()) {
-                    // create synthetic contributions from directories contained in the repository
-                    URI uri = URI.create("f3-" + file.getName());
-                    source = new SyntheticContributionSource(uri, location, extension);
-
-                } else {
-                    URI uri = URI.create(file.getName());
-                    source = new FileContributionSource(uri, location, -1, extension);
-                }
-                sources.add(source);
-            } catch (MalformedURLException e) {
-                throw new ScanException("Error loading contribution:" + file.getName(), e);
-            }
-        }
+        if (files != null) {
+	        for (File file : files) {
+	            try {
+	                URL location = file.toURI().toURL();
+	                ContributionSource source;
+	                if (file.isDirectory()) {
+	                    // create synthetic contributions from directories contained in the repository
+	                    URI uri = URI.create("f3-" + file.getName());
+	                    source = new SyntheticContributionSource(uri, location, extension);
+	
+	                } else {
+	                    URI uri = URI.create(file.getName());
+	                    source = new FileContributionSource(uri, location, -1, extension);
+	                }
+	                sources.add(source);
+	            } catch (MalformedURLException e) {
+	                throw new ScanException("Error loading contribution:" + file.getName(), e);
+	            }
+	        }
+        }    
         return sources;
     }
 
