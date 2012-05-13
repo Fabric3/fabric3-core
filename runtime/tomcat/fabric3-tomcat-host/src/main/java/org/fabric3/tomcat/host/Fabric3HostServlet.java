@@ -49,246 +49,224 @@ import org.w3c.dom.Document;
 
 public class Fabric3HostServlet extends HttpServlet implements ContainerServlet {
 
-	private static final String CATALINA_BASE_PROP = "catalina.base";
+    private static final String CATALINA_BASE_PROP = "catalina.base";
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final String[] PACKAGES = new String[] { 
-		"javax.xml.bind.",
-		"javax.xml.ws.", 
-		"javax.xml.soap." };
+    private static final String[] PACKAGES = new String[] { "javax.xml.bind.", "javax.xml.ws.", "javax.xml.soap." };
 
-	private static final String RUNTIME_MODE = "vm";
+    private static final String RUNTIME_MODE = "vm";
 
-	private static final String FABRIC3_HOME = "fabric3";
+    private static final String FABRIC3_HOME = "fabric3";
 
-	private RuntimeCoordinator coordinator;
-	private ServerMonitor monitor;
+    private RuntimeCoordinator coordinator;
+    private ServerMonitor monitor;
 
-	private Wrapper wrapper;
+    private Wrapper wrapper;
 
-	private Host host;
+    private Host host;
 
-	private synchronized void init(Service service, String runtimeId, String f3_HomePath , boolean firstInitTime) {
-		try {
+    private synchronized void init(Service service, String runtimeId, String f3_HomePath, boolean firstInitTime) {
+        try {
 
-			String catalinaInstall = System.getProperty(CATALINA_BASE_PROP);
-			File catalinaInstallDir = new File(catalinaInstall); 
-			File installDirectory = new File(catalinaInstallDir, f3_HomePath);
-			
-			if (!installDirectory.exists() && firstInitTime){
-				installDirectory = findInstallationDirectory(catalinaInstallDir);
-			}
-			if (installDirectory == null){
-				throw new Fabric3HostException("No Fabric3 installation found.");
-			}
-			
-			File extensionsDir = new File(installDirectory, "extensions");
+            String catalinaInstall = System.getProperty(CATALINA_BASE_PROP);
+            File catalinaInstallDir = new File(catalinaInstall);
+            File installDirectory = new File(catalinaInstallDir, f3_HomePath);
 
-			// calculate config directories based on the mode the runtime is
-			// booted in
-			File runtimeDir = getRuntimeDirectory(installDirectory, runtimeId);
-			File configDir = BootstrapHelper.getDirectory(runtimeDir, "config");
+            if (!installDirectory.exists() && firstInitTime) {
+                installDirectory = findInstallationDirectory(catalinaInstallDir);
+            }
+            if (installDirectory == null) {
+                throw new Fabric3HostException("No Fabric3 installation found.");
+            }
 
-			// create the classloaders for booting the runtime
-			File bootDir = BootstrapHelper.getDirectory(installDirectory,"boot");
-			File hostDir = BootstrapHelper.getDirectory(installDirectory,"host");
+            File extensionsDir = new File(installDirectory, "extensions");
 
-			ClassLoader systemClassLoader = getClass().getClassLoader();
-			ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, PACKAGES);
-			ClassLoader hostLoader = BootstrapHelper.createClassLoader(maskingClassLoader, hostDir);
-			ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
+            // calculate config directories based on the mode the runtime is
+            // booted in
+            File runtimeDir = getRuntimeDirectory(installDirectory, runtimeId);
+            File configDir = BootstrapHelper.getDirectory(runtimeDir, "config");
 
-			BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
+            // create the classloaders for booting the runtime
+            File bootDir = BootstrapHelper.getDirectory(installDirectory, "boot");
+            File hostDir = BootstrapHelper.getDirectory(installDirectory, "host");
 
-			// load the system configuration
-			Document systemConfig = bootstrapService
-					.loadSystemConfig(configDir);
+            ClassLoader systemClassLoader = getClass().getClassLoader();
+            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, PACKAGES);
+            ClassLoader hostLoader = BootstrapHelper.createClassLoader(maskingClassLoader, hostDir);
+            ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
-			URI domainName = bootstrapService.parseDomainName(systemConfig);
-			String zoneName = bootstrapService.parseZoneName(systemConfig);
-			RuntimeMode mode = bootstrapService.parseRuntimeMode(systemConfig);
+            BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
 
-			String environment = bootstrapService
-					.parseEnvironment(systemConfig);
+            // load the system configuration
+            Document systemConfig = bootstrapService.loadSystemConfig(configDir);
 
-			String runtimeName = bootstrapService.getRuntimeName(domainName,
-					zoneName, runtimeId, mode);
+            URI domainName = bootstrapService.parseDomainName(systemConfig);
+            String zoneName = bootstrapService.parseZoneName(systemConfig);
+            RuntimeMode mode = bootstrapService.parseRuntimeMode(systemConfig);
 
-			List<File> deployDirs = bootstrapService
-					.parseDeployDirectories(systemConfig);
+            String environment = bootstrapService.parseEnvironment(systemConfig);
 
-			// create the HostInfo and runtime
-			HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName,
-					mode, domainName, environment, runtimeDir, configDir,
-					extensionsDir, deployDirs);
+            String runtimeName = bootstrapService.getRuntimeName(domainName, zoneName, runtimeId, mode);
 
-			// clear out the tmp directory
-			if (firstInitTime) {
-			    FileHelper.cleanDirectory(hostInfo.getTempDir());
-			}
+            List<File> deployDirs = bootstrapService.parseDeployDirectories(systemConfig);
 
-			// use the Tomcat JMX server
-			MBeanServer mBeanServer = MBeanUtils.createServer();
+            // create the HostInfo and runtime
+            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName, mode, domainName, environment, runtimeDir, configDir, extensionsDir,
+                    deployDirs);
 
-			// create and configure the monitor dispatchers
-			MonitorEventDispatcher runtimeDispatcher = bootstrapService
-					.createMonitorDispatcher(RUNTIME_MONITOR, systemConfig,
-							hostInfo);
-			MonitorEventDispatcher appDispatcher = bootstrapService
-					.createMonitorDispatcher(APP_MONITOR, systemConfig,
-							hostInfo);
+            // clear out the tmp directory
+            if (firstInitTime) {
+                FileHelper.cleanDirectory(hostInfo.getTempDir());
+            }
 
-			RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(
-					hostInfo, mBeanServer, runtimeDispatcher, appDispatcher);
+            // use the Tomcat JMX server
+            MBeanServer mBeanServer = MBeanUtils.createServer();
 
-			Fabric3Runtime runtime = bootstrapService
-					.createDefaultRuntime(runtimeConfig);
+            // create and configure the monitor dispatchers
+            MonitorEventDispatcher runtimeDispatcher = bootstrapService.createMonitorDispatcher(RUNTIME_MONITOR, systemConfig, hostInfo);
+            MonitorEventDispatcher appDispatcher = bootstrapService.createMonitorDispatcher(APP_MONITOR, systemConfig, hostInfo);
 
-			URL systemComposite = new File(bootDir, "system.composite").toURI()
-					.toURL();
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, runtimeDispatcher, appDispatcher);
 
-			ScanResult result = bootstrapService.scanRepository(hostInfo);
+            Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
-			List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
-			ComponentRegistration registration = new ComponentRegistration(
-					"CatalinaService", Service.class, service, false);
-			registrations.add(registration);
+            URL systemComposite = new File(bootDir, "system.composite").toURI().toURL();
 
-			BootConfiguration configuration = new BootConfiguration();
-			configuration.setRuntime(runtime);
-			configuration.setHostClassLoader(hostLoader);
-			configuration.setBootClassLoader(bootLoader);
-			configuration.setSystemCompositeUrl(systemComposite);
-			configuration.setSystemConfig(systemConfig);
-			configuration.setExtensionContributions(result
-					.getExtensionContributions());
-			configuration.setUserContributions(result.getUserContributions());
-			configuration.addRegistrations(registrations);
+            ScanResult result = bootstrapService.scanRepository(hostInfo);
 
-			// boot the runtime
-			coordinator = bootstrapService.createCoordinator(configuration);
-			coordinator.start();
-			MonitorProxyService monitorService = runtime.getComponent(
-					MonitorProxyService.class, MONITOR_FACTORY_URI);
-			monitor = monitorService.createMonitor(ServerMonitor.class,
-					RUNTIME_MONITOR_CHANNEL_URI);
-			monitor.started(mode.toString());
-		} catch (Exception e) {
-			if (monitor != null) {
-				// there could have been an error initializing the monitor
-				monitor.runError(e);
-			}
-			throw new Fabric3HostException(e);
-		}
-	}
+            List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
+            ComponentRegistration registration = new ComponentRegistration("CatalinaService", Service.class, service, false);
+            registrations.add(registration);
 
-	private void stop() {
-		try {
-			if (coordinator != null) {
-				monitor.stopped();
-				coordinator.shutdown();
-			}
-		} catch (ShutdownException ex) {
-			monitor.runError(ex);
-			throw new Fabric3HostException(ex);
-		} 
-	}
+            BootConfiguration configuration = new BootConfiguration();
+            configuration.setRuntime(runtime);
+            configuration.setHostClassLoader(hostLoader);
+            configuration.setBootClassLoader(bootLoader);
+            configuration.setSystemCompositeUrl(systemComposite);
+            configuration.setSystemConfig(systemConfig);
+            configuration.setExtensionContributions(result.getExtensionContributions());
+            configuration.setUserContributions(result.getUserContributions());
+            configuration.addRegistrations(registrations);
 
-	private File getRuntimeDirectory(File installDirectory, String runtimeName) {
-		File rootRuntimeDir = new File(installDirectory, "runtimes");
-		File runtimeDir = new File(rootRuntimeDir, runtimeName);
-		if (!runtimeDir.exists()) {
-			throw new IllegalArgumentException(
-					"Runtime directory does not exist:" + runtimeDir);
-		}
-		return runtimeDir;
-	}
+            // boot the runtime
+            coordinator = bootstrapService.createCoordinator(configuration);
+            coordinator.start();
+            MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
+            monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
+            monitor.started(mode.toString());
+        } catch (Exception e) {
+            if (monitor != null) {
+                // there could have been an error initializing the monitor
+                monitor.runError(e);
+            }
+            throw new Fabric3HostException(e);
+        }
+    }
 
-	public Wrapper getWrapper() {
-		return wrapper;
-	}
+    private void stop() {
+        try {
+            if (coordinator != null) {
+                monitor.stopped();
+                coordinator.shutdown();
+            }
+        } catch (ShutdownException ex) {
+            monitor.runError(ex);
+            throw new Fabric3HostException(ex);
+        }
+    }
 
-	public void setWrapper(Wrapper wrapper) {
-		this.wrapper = wrapper;
-		if (wrapper != null) {
-			Context context = (Context) wrapper.getParent();
-			host = (Host) context.getParent();
-		}
-	}
+    private File getRuntimeDirectory(File installDirectory, String runtimeName) {
+        File rootRuntimeDir = new File(installDirectory, "runtimes");
+        File runtimeDir = new File(rootRuntimeDir, runtimeName);
+        if (!runtimeDir.exists()) {
+            throw new IllegalArgumentException("Runtime directory does not exist:" + runtimeDir);
+        }
+        return runtimeDir;
+    }
 
-	public interface ServerMonitor {
+    public Wrapper getWrapper() {
+        return wrapper;
+    }
 
-		@Severe("Run error:")
-		void runError(Exception e);
+    public void setWrapper(Wrapper wrapper) {
+        this.wrapper = wrapper;
+        if (wrapper != null) {
+            Context context = (Context) wrapper.getParent();
+            host = (Host) context.getParent();
+        }
+    }
 
-		@Info("Fabric3 ready [Mode:{0}]")
-		void started(String mode);
+    public interface ServerMonitor {
 
-		@Info("Fabric3 shutdown")
-		void stopped();
+        @Severe("Run error:")
+        void runError(Exception e);
 
-	}
+        @Info("Fabric3 ready [Mode:{0}]")
+        void started(String mode);
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		new Thread(new Runnable() {
-			public void run() {
-				if (host != null) {
-					Engine engine = (Engine) host.getParent();
-					init(engine.getService(), RUNTIME_MODE, FABRIC3_HOME,true);
-				}
-			}
-		}).start();
-	}
+        @Info("Fabric3 shutdown")
+        void stopped();
 
-	@Override
-	public void destroy() {
-		super.destroy();
-		stop();
-	}
+    }
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		super.doGet(req, resp);
-		String restart = req.getParameter("restart");
-		String runtime_mode = req.getParameter("runtime_mode");
-		String f3_home_path = req.getParameter("fabric3_home");
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        new Thread(new Runnable() {
+            public void run() {
+                if (host != null) {
+                    Engine engine = (Engine) host.getParent();
+                    init(engine.getService(), RUNTIME_MODE, FABRIC3_HOME, true);
+                }
+            }
+        }).start();
+    }
 
-		runtime_mode = runtime_mode == null ? RUNTIME_MODE : runtime_mode;
-		f3_home_path = f3_home_path == null ? FABRIC3_HOME : f3_home_path;
+    @Override
+    public void destroy() {
+        super.destroy();
+        stop();
+    }
 
-		if (restart != null && Boolean.parseBoolean(restart)) {
-			destroy();
-			Engine engine = (Engine) host.getParent();
-			init(engine.getService(), runtime_mode, f3_home_path, false);
-		}	
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doGet(req, resp);
+        String restart = req.getParameter("restart");
+        String runtime_mode = req.getParameter("runtime_mode");
+        String f3_home_path = req.getParameter("fabric3_home");
 
-	}
+        runtime_mode = runtime_mode == null ? RUNTIME_MODE : runtime_mode;
+        f3_home_path = f3_home_path == null ? FABRIC3_HOME : f3_home_path;
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		doGet(req, resp);		
-	}
-	
-	private File findInstallationDirectory ( File currentDirectory ){
-		if (FABRIC3_HOME.equals(currentDirectory.getName())){
-			return currentDirectory;
-		}
-		File[] directories = currentDirectory.listFiles(new FileFilter() {					
-			public boolean accept(File file) {
-				return file.isDirectory();
-			}
-		});		
-		for (File dir : directories) {
-			File candidate = findInstallationDirectory(dir);
-			if (candidate != null)
-			    return candidate;			
-		}
-		return null;
-	}
+        if (restart != null && Boolean.parseBoolean(restart)) {
+            destroy();
+            Engine engine = (Engine) host.getParent();
+            init(engine.getService(), runtime_mode, f3_home_path, false);
+        }
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+
+    private File findInstallationDirectory(File currentDirectory) {
+        if (FABRIC3_HOME.equals(currentDirectory.getName()) && new File(currentDirectory, "host").exists()) {
+            return currentDirectory;
+        }
+        File[] directories = currentDirectory.listFiles(new FileFilter() {
+            public boolean accept(File file) {
+                return file.isDirectory();
+            }
+        });
+        for (File dir : directories) {
+            File candidate = findInstallationDirectory(dir);
+            if (candidate != null)
+                return candidate;
+        }
+        return null;
+    }
 
 }
