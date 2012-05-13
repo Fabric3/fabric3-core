@@ -37,9 +37,12 @@
 */
 package org.fabric3.binding.web.runtime.service;
 
+import java.util.concurrent.ExecutorService;
+
 import javax.servlet.ServletException;
 
 import org.atmosphere.cpr.ApplicationConfig;
+import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.web.provision.WebSourceDefinition;
@@ -76,18 +79,22 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
     private long timeout = 1000 * 10 * 60;
     private AtmosphereFramework atmosphereFramework;
     private ServiceMonitor monitor;
-	private ClassLoaderRegistry classLoaderRegistry;
+    private ClassLoaderRegistry classLoaderRegistry;
+
+    private ExecutorService threadPool;
 
     public WebSourceWireAttacher(@Reference ServiceManager serviceManager,
                                  @Reference BroadcasterManager broadcasterManager,
                                  @Reference ServletHost servletHost,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
+                                 @Reference ExecutorService threadPool,
                                  @Monitor ServiceMonitor monitor) {
         this.broadcasterManager = broadcasterManager;
         this.serviceManager = serviceManager;
         this.servletHost = servletHost;
         this.monitor = monitor;
         this.classLoaderRegistry = classLoaderRegistry;
+        this.threadPool = threadPool;
     }
 
     /**
@@ -107,16 +114,23 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
         context.setInitParameter(ApplicationConfig.PROPERTY_SESSION_SUPPORT, "false");
         context.setInitParameter(ApplicationConfig.WEBSOCKET_SUPPORT, "true");
         context.setInitParameter(ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT, "true");
+        context.setInitParameter(ApplicationConfig.BROADCASTER_SHARABLE_THREAD_POOLS, "true");
 
         GatewayServletConfig config = new GatewayServletConfig(context);
         
-        org.atmosphere.cpr.AtmosphereServlet  gatewayServlet =  new org.atmosphere.cpr.AtmosphereServlet(false,false);
-        gatewayServlet.init(config);
-        atmosphereFramework = gatewayServlet.framework();
+        org.atmosphere.cpr.AtmosphereServlet atmosphereServlet = new org.atmosphere.cpr.AtmosphereServlet(false,false);
+        atmosphereFramework = atmosphereServlet.framework();
+        
+        // Configure external thread pool
+        AtmosphereConfig atmosphereConfig = atmosphereFramework.getAtmosphereConfig();
+        atmosphereConfig.properties().put("executorService", threadPool);
+        atmosphereConfig.properties().put("asyncWriteService", threadPool);
+        
+        atmosphereServlet.init(config);
         
         ServiceWebSocketHandler webSocketHandler = new ServiceWebSocketHandler(serviceManager,broadcasterManager,monitor);
         atmosphereFramework.addAtmosphereHandler("/*", webSocketHandler);
-        servletHost.registerMapping(CONTEXT_PATH, gatewayServlet);
+        servletHost.registerMapping(CONTEXT_PATH, atmosphereServlet);
     }
 
     @Destroy

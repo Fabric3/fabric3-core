@@ -38,12 +38,12 @@
 package org.fabric3.binding.web.runtime.channel;
 
 import java.net.URI;
-import java.util.Collection;
-import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import javax.servlet.ServletException;
 
 import org.atmosphere.cpr.ApplicationConfig;
+import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
 import org.atmosphere.cpr.Broadcaster;
 import org.oasisopen.sca.annotation.Destroy;
@@ -63,7 +63,6 @@ import org.fabric3.spi.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.util.UriHelper;
 
@@ -85,18 +84,21 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
     private long timeout = 1000 * 10 * 60;
     private ChannelMonitor monitor;
 
-	private ClassLoaderRegistry classLoaderRegistry;
+    private ClassLoaderRegistry classLoaderRegistry;
+    private ExecutorService threadPool;
     
     public WebChannelBindingBuilder(@Reference BroadcasterManager broadcasterManager,
                                     @Reference PubSubManager pubSubManager,
                                     @Reference ServletHost servletHost,
                                     @Reference ClassLoaderRegistry classLoaderRegistry,
+                                    @Reference ExecutorService threadPool,
                                     @Monitor ChannelMonitor monitor) {
         this.broadcasterManager = broadcasterManager;
         this.pubSubManager = pubSubManager;
         this.servletHost = servletHost;
         this.monitor = monitor;
         this.classLoaderRegistry = classLoaderRegistry;
+        this.threadPool = threadPool;
     }
 
     /**
@@ -124,14 +126,20 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
         
         context.setInitParameter(ApplicationConfig.WEBSOCKET_SUPPORT, "true");
         context.setInitParameter(ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT, "true");
+        context.setInitParameter(ApplicationConfig.BROADCASTER_SHARABLE_THREAD_POOLS, "true");
 
         GatewayServletConfig config = new GatewayServletConfig(context);
         
         org.atmosphere.cpr.AtmosphereServlet atmosphereServlet = new org.atmosphere.cpr.AtmosphereServlet(false,false);
+        atmosphereFramework = atmosphereServlet.framework();
+        
+        // Configure external thread pool
+        AtmosphereConfig atmosphereConfig = atmosphereFramework.getAtmosphereConfig();
+        atmosphereConfig.properties().put("executorService", threadPool);
+        atmosphereConfig.properties().put("asyncWriteService", threadPool);
+        
         atmosphereServlet.init(config);
         
-        atmosphereFramework = atmosphereServlet.framework();
-
         ChannelWebSocketHandler webSocketHandler = new ChannelWebSocketHandler( broadcasterManager, pubSubManager, monitor );
         atmosphereFramework.addAtmosphereHandler("/*", webSocketHandler);
         servletHost.registerMapping(CONTEXT_PATH, atmosphereServlet);
