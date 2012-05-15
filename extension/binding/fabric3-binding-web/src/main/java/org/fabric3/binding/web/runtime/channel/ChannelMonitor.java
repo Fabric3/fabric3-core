@@ -37,6 +37,7 @@
 */
 package org.fabric3.binding.web.runtime.channel;
 
+import org.fabric3.api.annotation.monitor.Debug;
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 
@@ -57,10 +58,10 @@ public interface ChannelMonitor {
     @Severe("Error replicating event to zone members")
     void replicationError(Throwable t);
 
-    @Info("Atmosphere channel event {0}")
+    @Debug("Atmosphere channel event {0}")
 	void eventing(String string);
     
-    @Info("HTTP/Websocket channel event {0}")
+    @Debug("HTTP/Websocket channel event {0}")
 	void eventingWS(String string);
     
 }

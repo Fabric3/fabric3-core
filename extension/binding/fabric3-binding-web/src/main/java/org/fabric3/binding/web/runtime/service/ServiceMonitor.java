@@ -37,6 +37,7 @@
 */
 package org.fabric3.binding.web.runtime.service;
 
+import org.fabric3.api.annotation.monitor.Debug;
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 
@@ -51,7 +52,7 @@ public interface ServiceMonitor {
     @Info("Channel HTTP/Websocket endpoint removed at {0}")
     void removedEndpoint(String path);
     
-    @Info("Event {0}")
+    @Debug("Event {0}")
     void eventing(String event);
 
     @Severe("HTTP/websocket error encountered: {0}")
