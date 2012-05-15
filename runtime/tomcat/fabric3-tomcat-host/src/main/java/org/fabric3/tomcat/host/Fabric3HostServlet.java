@@ -66,17 +66,18 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
 
     private Host host;
 
+	private File installDirectory;
+
     private synchronized void init(Service service, String runtimeId, String f3_HomePath, boolean firstInitTime) {
         try {
 
             String catalinaInstall = System.getProperty(CATALINA_BASE_PROP);
             File catalinaInstallDir = new File(catalinaInstall);
-            File installDirectory = new File(catalinaInstallDir, f3_HomePath);
 
-            if (!installDirectory.exists() && firstInitTime) {
+            if (firstInitTime) {
                 installDirectory = findInstallationDirectory(catalinaInstallDir);
             }
-            if (installDirectory == null) {
+            else if (installDirectory == null) {
                 throw new Fabric3HostException("No Fabric3 installation found.");
             }
 
