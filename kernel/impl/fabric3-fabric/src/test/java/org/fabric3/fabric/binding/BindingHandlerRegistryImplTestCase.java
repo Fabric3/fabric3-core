@@ -85,7 +85,7 @@ public class BindingHandlerRegistryImplTestCase extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        registry = new BindingHandlerRegistryImpl();
+        registry = new BindingHandlerRegistryImpl(null);
         handler = EasyMock.createMock(BindingHandler.class);
         EasyMock.expect(handler.getType()).andReturn(BINDING).anyTimes();
 
