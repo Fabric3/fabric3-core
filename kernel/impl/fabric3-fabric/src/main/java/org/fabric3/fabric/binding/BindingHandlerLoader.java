@@ -44,6 +44,7 @@
 package org.fabric3.fabric.binding;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
@@ -58,7 +59,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
- * Type Loader  for <f3:handler> element.
+ * Type loader for the <f3:handler> element.
  *
  * @version $Rev$ $Date$
  */
@@ -69,12 +70,20 @@ public class BindingHandlerLoader implements TypeLoader<BindingHandlerDefinition
 
     public BindingHandlerDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
-        String binderTarget = reader.getAttributeValue(null, "target");
-        if (binderTarget == null || "".equals(binderTarget)) {
-            context.addError(new InvalidValue("@target either is not specified or is empty", reader));
+        String target = reader.getAttributeValue(null, "target");
+        if (target == null || "".equals(target)) {
+            InvalidValue error = new InvalidValue("Target attribute is not specified", reader);
+            context.addError(error);
             return null;
         }
-        return new BindingHandlerDefinition(URI.create(binderTarget));
+        try {
+            URI targetUri = new URI(target);
+            return new BindingHandlerDefinition(targetUri);
+        } catch (URISyntaxException e) {
+            InvalidValue error = new InvalidValue("Target attribute is not a valid URI: " + target, reader);
+            context.addError(error);
+            return null;
+        }
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
