@@ -47,12 +47,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
+
+import org.oasisopen.sca.Constants;
 
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.spi.binding.handler.BindingHandlerDefinition;
-import org.oasisopen.sca.Constants;
 
 /**
  * Logical binding definition for web services.
@@ -109,11 +109,12 @@ public class WsBindingDefinition extends BindingDefinition {
     public int getRetries() {
         return retries;
     }
-    
+
     public void addHandler(BindingHandlerDefinition bhd) {
-		if (bhd == null) 
-			 return;
-		bhd.setBinderType(BINDING_QNAME);
-		handlers.add(bhd);
-	}
+        if (bhd == null) {
+            return;
+        }
+        bhd.setBindingType(BINDING_QNAME);
+        handlers.add(bhd);
+    }
 }

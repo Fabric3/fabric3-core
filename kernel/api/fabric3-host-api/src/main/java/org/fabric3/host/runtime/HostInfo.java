@@ -108,9 +108,9 @@ public interface HostInfo {
     File getTempDir();
 
     /**
-     * Returns the temporary directory where native are extracted.
+     * Returns the temporary directory where native libraries are extracted.
      *
-     * @return the temporary directory where native are extracted
+     * @return the temporary directory where native libraries are extracted
      */
     File getNativeLibraryDir();
 

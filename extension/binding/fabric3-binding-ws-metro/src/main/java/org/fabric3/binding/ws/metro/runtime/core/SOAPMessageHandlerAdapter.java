@@ -1,7 +1,6 @@
 package org.fabric3.binding.ws.metro.runtime.core;
 
 import java.util.Set;
-
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.MessageContext;
@@ -16,45 +15,43 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
 
 
 /**
- * {@link BindingHandler} Adapter for JAX-WS {@link SOAPHandler}
- * 
- * @author palmalcheg
+ * {@link BindingHandler} Adapter for JAX-WS {@link SOAPHandler}.
  *
+ * @version $Rev$ $Date$
  */
-public class SOAPMessageHandlerAdapter implements SOAPHandler<SOAPMessageContext>{
+public class SOAPMessageHandlerAdapter implements SOAPHandler<SOAPMessageContext> {
 
-	private BindingHandler<SOAPMessage> delegateHandler;
-	
-	public SOAPMessageHandlerAdapter(BindingHandler<?> h) {
-		delegateHandler = (BindingHandler) h;
-	}
+    private BindingHandler<SOAPMessage> delegateHandler;
 
-	public void close(MessageContext mc) {
-	}
+    public SOAPMessageHandlerAdapter(BindingHandler<?> handler) {
+        delegateHandler = (BindingHandler) handler;
+    }
 
-	public boolean handleFault(SOAPMessageContext smc) {
-		return true;
-	}
+    public void close(MessageContext mc) {
+    }
 
-	public boolean handleMessage(SOAPMessageContext smc) {
-		Boolean outbound = (Boolean) smc.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-		WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
-		workContext = (WorkContext) (workContext == null ? smc.get(MetroConstants.WORK_CONTEXT): workContext);
-		if (workContext == null){
-			throw new AssertionError("Work context not set");
-		}
-		MessageImpl msg = new MessageImpl(smc.getMessage(),false,workContext);
-		if (outbound){
-			delegateHandler.handleOutbound(msg,smc.getMessage());
-		}
-		else {
-			delegateHandler.handleInbound(smc.getMessage(),msg);
-		}
-		return true;
-	}
+    public boolean handleFault(SOAPMessageContext smc) {
+        return true;
+    }
 
-	public Set<QName> getHeaders() {
-		return null;
-	}
+    public boolean handleMessage(SOAPMessageContext smc) {
+        Boolean outbound = (Boolean) smc.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        workContext = (WorkContext) (workContext == null ? smc.get(MetroConstants.WORK_CONTEXT) : workContext);
+        if (workContext == null) {
+            throw new AssertionError("Work context not set");
+        }
+        MessageImpl msg = new MessageImpl(smc.getMessage(), false, workContext);
+        if (outbound) {
+            delegateHandler.handleOutbound(msg, smc.getMessage());
+        } else {
+            delegateHandler.handleInbound(smc.getMessage(), msg);
+        }
+        return true;
+    }
+
+    public Set<QName> getHeaders() {
+        return null;
+    }
 
 }

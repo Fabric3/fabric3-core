@@ -94,7 +94,8 @@ public class OASISReferenceProcessor<I extends Implementation<? extends Injectin
     public void visitConstructorParameter(Reference annotation,
                                           Constructor<?> constructor,
                                           int index,
-                                          Class<?> implClass, I implementation,
+                                          Class<?> implClass,
+                                          I implementation,
                                           IntrospectionContext context) {
 
         String name = helper.getSiteName(constructor, index, annotation.name());

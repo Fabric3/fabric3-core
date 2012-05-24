@@ -44,43 +44,40 @@
 package org.fabric3.spi.binding.handler;
 
 import java.net.URI;
-
 import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
  * Logical binding definition for handlers .
- * 
- * @author palmalcheg
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class BindingHandlerDefinition extends ResourceDefinition {
-	private static final long serialVersionUID = -2097314069798596206L;
+    private static final long serialVersionUID = -2097314069798596206L;
 
-	private URI target;
-	private QName binderType;
+    private URI target;
+    private QName bindingType;
 
-	public QName getBinderType() {
-		return binderType;
-	}
+    /**
+     * Constructor
+     *
+     * @param target the handler component URI
+     */
+    public BindingHandlerDefinition(URI target) {
+        this.target = target;
+    }
 
-	public void setBinderType(QName binderType) {
-		this.binderType = binderType;
-	}
+    public QName getBindingType() {
+        return bindingType;
+    }
 
-	/**
-	 * Constructor
-	 */
-	public BindingHandlerDefinition(URI target) {
-		this.target = target;
-	}
+    public void setBindingType(QName bindingType) {
+        this.bindingType = bindingType;
+    }
 
-	public URI getTarget() {
-		return target;
-	}
+    public URI getTarget() {
+        return target;
+    }
 
-	public void setTarget(URI target) {
-		this.target = target;
-	}
 }

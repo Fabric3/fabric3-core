@@ -38,8 +38,8 @@
 package org.fabric3.binding.ws.metro.util;
 
 /**
- * Updates the application classloader with visibility to Meto classes. Metro requires a Metro proxy interface to be visible to the classloader that
- * loaded the SEI class.To enable this, dynamically add the Metro extension classloader as a parent to the classloader that loaded the SEI class if
+ * Updates the application classloader with visibility to Metro classes. Metro requires a Metro proxy interface to be visible to the classloader that
+ * loaded the SEI class. To enable this, dynamically add the Metro extension classloader as a parent to the classloader that loaded the SEI class if
  * the host supports classloader isolation. Note that the latter may be different than the application classloader (e.g. in the Maven iTest runtime,
  * the SEI class will be loaded by the host classloader, not the classloader representing the application.
  *

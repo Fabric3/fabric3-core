@@ -46,26 +46,26 @@ package org.fabric3.fabric.binding;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.spi.binding.handler.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
-import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- *   Type Loader  for <f3:handler> element 
- *   
- *   @author palmalcheg
+ * Type Loader  for <f3:handler> element.
+ *
+ * @version $Rev$ $Date$
  */
 @EagerInit
 public class BindingHandlerLoader implements TypeLoader<BindingHandlerDefinition> {
-   
-	private static final List<String> ATTRIBUTES = Arrays.asList("target");
+
+    private static final List<String> ATTRIBUTES = Arrays.asList("target");
 
     public BindingHandlerDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
@@ -74,7 +74,7 @@ public class BindingHandlerLoader implements TypeLoader<BindingHandlerDefinition
             context.addError(new InvalidValue("@target either is not specified or is empty", reader));
             return null;
         }
-		return new BindingHandlerDefinition(URI.create(binderTarget));
+        return new BindingHandlerDefinition(URI.create(binderTarget));
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
@@ -85,7 +85,6 @@ public class BindingHandlerLoader implements TypeLoader<BindingHandlerDefinition
             }
         }
     }
-    
-   
+
 
 }

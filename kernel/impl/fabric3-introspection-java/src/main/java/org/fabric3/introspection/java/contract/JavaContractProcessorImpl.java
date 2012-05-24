@@ -107,12 +107,6 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
         if (callback != null) {
             Class<?> callbackClass = callback.value();
             introspectCallback(interfaze, callbackClass, contract, context);
-        } else {
-            org.oasisopen.sca.annotation.Callback oasisCallback = interfaze.getAnnotation(org.oasisopen.sca.annotation.Callback.class);
-            if (oasisCallback != null) {
-                Class<?> callbackClass = oasisCallback.value();
-                introspectCallback(interfaze, callbackClass, contract, context);
-            }
         }
         return contract;
     }
