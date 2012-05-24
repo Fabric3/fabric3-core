@@ -54,6 +54,8 @@ import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.ResourceElementUpdater;
+import org.fabric3.spi.contribution.ResourceState;
+import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 
 /**
@@ -121,30 +123,28 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
 
     @SuppressWarnings({"VariableNotUsedInsideIf", "unchecked"})
     private void updateComposite(Composite newComposite, Contribution contribution, Set<ModelObject> set) {
-        Composite replaced = null;
         QName name = newComposite.getName();
         // replace the composite in the contribution
+        boolean replaced = false;
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement element : resource.getResourceElements()) {
-                Object value = element.getValue();
-                if (value instanceof Composite) {
-                    Composite oldComposite = (Composite) value;
-                    if (oldComposite.getName().equals(name)) {
-                        replaced = oldComposite;
-                        element.setValue(newComposite);
-                        set.add(newComposite);
-                        break;
-                    }
+                Symbol symbol = element.getSymbol();
+                if (symbol instanceof QNameSymbol && ((QNameSymbol) symbol).getKey().equals(name)) {
+                    replaced = true;
+                    element.setValue(newComposite);
+                    resource.setState(ResourceState.PROCESSED);
+                    set.add(newComposite);
+                    break;
                 }
-                if (replaced != null) {
+                if (replaced) {
                     break;
                 }
             }
-            if (replaced != null) {
+            if (replaced) {
                 break;
             }
         }
-        if (replaced != null) {
+        if (replaced) {
             replaceReferences(newComposite, contribution, set);
         }
     }
@@ -183,4 +183,5 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
             }
         }
     }
+
 }
