@@ -228,7 +228,6 @@ public class MetroServlet extends WSServlet {
         if (adapter != null) {
             container.removeEndpoint(adapter);
         }
-        handlerRegistry.unregister(WsBindingDefinition.BINDING_QNAME, path);
     }
 
     /**
@@ -249,12 +248,13 @@ public class MetroServlet extends WSServlet {
     
     private void loadHandlers(Binding binding, EndpointConfiguration config) {
     	String servicePath = config.getServicePath();
-    	List<BindingHandler<?>> handlerDefinitions = handlerRegistry.loadBindingHandlers(WsBindingDefinition.BINDING_QNAME, servicePath);
-    	ArrayList<Handler> soapHandlers = new ArrayList<Handler>();
-    	for (BindingHandler<?> bh : handlerDefinitions) {
-    		soapHandlers.add(new SOAPMessageHandlerAdapter( bh ));
-		}
-    	binding.setHandlerChain(soapHandlers);
+// TODO re-enable
+//    	List<BindingHandler<?>> handlerDefinitions = handlerRegistry.loadBindingHandlers(WsBindingDefinition.BINDING_QNAME, servicePath);
+//    	ArrayList<Handler> soapHandlers = new ArrayList<Handler>();
+//    	for (BindingHandler<?> bh : handlerDefinitions) {
+//    		soapHandlers.add(new SOAPMessageHandlerAdapter( bh ));
+//		}
+//    	binding.setHandlerChain(soapHandlers);
     }
 
 }

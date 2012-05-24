@@ -44,7 +44,6 @@
 package org.fabric3.binding.jms.loader;
 
 import java.io.ByteArrayInputStream;
-import java.net.URI;
 import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -64,7 +63,6 @@ import org.fabric3.binding.jms.spi.common.HeadersDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.MessageSelection;
 import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
-import org.fabric3.spi.binding.handler.BindingHandlerDefinition;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -117,14 +115,14 @@ public class JMSBindingLoaderTestCase extends TestCase {
                     "      <property name='prop1'>val</property>" +
                     "   </messageSelection>" +
                     "</binding.jms>";
-    
-    private static final String BINDING_HANDLER=
-        "   <binding.jms>" +
-                "   <destination jndiName='serviceQueue' type='queue' create='always'>" +
+
+    private static final String BINDING_HANDLER =
+            "   <binding.jms>" +
+                    "   <destination jndiName='serviceQueue' type='queue' create='always'>" +
                     "         <property name='prop1'>val</property> " +
                     "      </destination>" +
                     "         <f3:handler target=\"SomeHandler\" xmlns:f3=\"urn:fabric3.org\" />" +
-                "</binding.jms>";
+                    "</binding.jms>";
 
     private XMLInputFactory factory;
     private JmsBindingLoader loader;
@@ -207,29 +205,21 @@ public class JMSBindingLoaderTestCase extends TestCase {
         assertEquals("val", messageSelection.getProperties().get("prop1"));
 
     }
-    
+
     public void testBindingHandler() throws Exception {
         XMLStreamReader streamReader = factory.createXMLStreamReader(new ByteArrayInputStream(BINDING_HANDLER.getBytes()));
         streamReader.nextTag();
-        
-        LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
-        LoaderRegistry registry =  EasyMock.createStrictMock(LoaderRegistry.class);
-    	BindingHandlerRegistry handlerRegistry = EasyMock.createStrictMock(BindingHandlerRegistry.class);
-    	
-    	BindingHandlerDefinition value = new BindingHandlerDefinition(URI.create("SomeHandler"));
-    	
-		EasyMock.expect(registry.load(streamReader, BindingHandlerDefinition.class, context)).andReturn(value);
-    	
-    	handlerRegistry.register(JmsBindingDefinition.BINDING_QNAME, "serviceQueue", value);
-    	EasyMock.expectLastCall().times(1);
-    	
-        EasyMock.replay(helper,registry,handlerRegistry);
 
-        JmsBindingLoader loader = new JmsBindingLoader(helper,registry,handlerRegistry);
+        LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
+        LoaderRegistry registry = EasyMock.createStrictMock(LoaderRegistry.class);
+
+        EasyMock.replay(helper, registry);
+
+        JmsBindingLoader loader = new JmsBindingLoader(helper, registry);
 
         loader.load(streamReader, context);
-        
-        EasyMock.verify(helper,registry,handlerRegistry);
+
+        EasyMock.verify(helper, registry);
     }
 
     @Override
@@ -238,11 +228,11 @@ public class JMSBindingLoaderTestCase extends TestCase {
         factory = XMLInputFactory.newInstance();
 
         LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
-        LoaderRegistry registry =  EasyMock.createNiceMock(LoaderRegistry.class);
-    	BindingHandlerRegistry handlerRegistry = EasyMock.createNiceMock(BindingHandlerRegistry.class);
-        EasyMock.replay(helper,registry,handlerRegistry);
+        LoaderRegistry registry = EasyMock.createNiceMock(LoaderRegistry.class);
+        BindingHandlerRegistry handlerRegistry = EasyMock.createNiceMock(BindingHandlerRegistry.class);
+        EasyMock.replay(helper, registry, handlerRegistry);
 
-        loader = new JmsBindingLoader(helper,registry,handlerRegistry);
+        loader = new JmsBindingLoader(helper, registry);
         context = new DefaultIntrospectionContext();
-    } 
+    }
 }

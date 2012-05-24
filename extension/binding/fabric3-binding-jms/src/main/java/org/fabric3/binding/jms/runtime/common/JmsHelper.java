@@ -116,20 +116,20 @@ public class JmsHelper {
 	 */
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void applyHandlers(BindingHandlerRegistry handlerRegistry ,javax.jms.Message context , Message message, String bindingName, boolean outbound) throws JMSException {
-		if (handlerRegistry == null || bindingName == null)
-			  return;
-		if (message.getWorkContext() == null){
-			message.setWorkContext(WorkContextTunnel.getThreadWorkContext());
-		}		
-		List<BindingHandler<?>> handlers = handlerRegistry.loadBindingHandlers(JmsBindingDefinition.BINDING_QNAME, bindingName);
-		for (BindingHandler bh : handlers) {
-			if (outbound){
-				bh.handleOutbound(message, context);
-			}
-			else {
-				bh.handleInbound(context, message);
-			}
-		}
+//		if (handlerRegistry == null || bindingName == null)
+//			  return;
+//		if (message.getWorkContext() == null){
+//			message.setWorkContext(WorkContextTunnel.getThreadWorkContext());
+//		}
+//		List<BindingHandler<?>> handlers = handlerRegistry.loadBindingHandlers(JmsBindingDefinition.BINDING_QNAME, bindingName);
+//		for (BindingHandler bh : handlers) {
+//			if (outbound){
+//				bh.handleOutbound(message, context);
+//			}
+//			else {
+//				bh.handleInbound(context, message);
+//			}
+//		}
 	}
 
 }

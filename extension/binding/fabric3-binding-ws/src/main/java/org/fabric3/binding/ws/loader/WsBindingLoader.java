@@ -43,29 +43,30 @@
  */
 package org.fabric3.binding.ws.loader;
 
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
+
 import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.spi.binding.handler.BindingHandlerDefinition;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
+import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
  * @version $Revision$ $Date$
@@ -87,54 +88,77 @@ public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
     }
 
     private final LoaderHelper loaderHelper;
-	private final LoaderRegistry registry;
-	private BindingHandlerRegistry handlerRegistry;
+    private final LoaderRegistry registry;
 
     /**
      * Constructor.
      *
      * @param loaderHelper the policy helper
+     * @param registry     the loader registry
      */
-    public WsBindingLoader(@Reference LoaderHelper loaderHelper,
-    		               @Reference LoaderRegistry registry,
-    		               @Reference BindingHandlerRegistry handlerRegistry) {
+    public WsBindingLoader(@Reference LoaderHelper loaderHelper, @Reference LoaderRegistry registry) {
         this.loaderHelper = loaderHelper;
         this.registry = registry;
-        this.handlerRegistry = handlerRegistry;
     }
 
+    @SuppressWarnings({"unchecked"})
     public WsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
 
-        WsBindingDefinition binding = null;
-        String uri = null;
-        try {
-            uri = reader.getAttributeValue(null, "uri");
-            String wsdlElement = reader.getAttributeValue(null, "wsdlElement");
-            String wsdlLocation = reader.getAttributeValue(WSDL_NS, "wsdlLocation");
-            int retries = parseRetries(reader, context);
+        String wsdlElement = reader.getAttributeValue(null, "wsdlElement");
+        String wsdlLocation = reader.getAttributeValue(WSDL_NS, "wsdlLocation");
+        int retries = parseRetries(reader, context);
 
-            String bindingName = reader.getAttributeValue(null, "name");
-            if (uri == null) {
-                binding = new WsBindingDefinition(bindingName, null, wsdlLocation, wsdlElement, retries);
-            } else {
-                URI targetUri = new URI(uri);
-                binding = new WsBindingDefinition(bindingName, targetUri, wsdlLocation, wsdlElement, retries);
+        String bindingName = reader.getAttributeValue(null, "name");
+
+        URI targetUri = parseTargetUri(reader, context);
+
+        WsBindingDefinition binding = new WsBindingDefinition(bindingName, targetUri, wsdlLocation, wsdlElement, retries);
+
+        loaderHelper.loadPolicySetsAndIntents(binding, reader, context);
+
+        //Load optional sub elements config parameters
+        while (true) {
+            switch (reader.next()) {
+            case START_ELEMENT:
+                try {
+                    Object elementValue = registry.load(reader, Object.class, context);
+                    if (elementValue instanceof BindingHandlerDefinition) {
+                        binding.addHandler((BindingHandlerDefinition) elementValue);
+                    } else if (elementValue instanceof Map) {
+                        binding.setConfiguration((Map<String, String>) elementValue);
+                    }
+                } catch (UnrecognizedElementException e) {
+                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    context.addError(failure);
+                }
+
+                break;
+            case END_ELEMENT:
+                String name = reader.getName().getLocalPart();
+                if ("binding.ws".equals(name)) {
+                    return binding;
+                }
+                break;
+            case XMLStreamConstants.END_DOCUMENT:
+                // avoid infinite loop if end element not present
+                return binding;
             }
-            loaderHelper.loadPolicySetsAndIntents(binding, reader, context);
+        }
+    }
 
-            //Load optional config parameters
-            loadConfig(binding, reader, context);
-
-        } catch (URISyntaxException ex) {
-            InvalidValue failure = new InvalidValue("The web services binding URI is not a valid: " + uri, reader);
-            context.addError(failure);
-        } catch (UnrecognizedElementException e) {
-        	InvalidValue failure = new InvalidValue("The web services binding URI is not a valid: " + uri, reader);
-            context.addError(failure);
-		}
-
-        return binding;
+    private URI parseTargetUri(XMLStreamReader reader, IntrospectionContext context) {
+        String uri = reader.getAttributeValue(null, "uri");
+        URI targetUri = null;
+        if (uri != null) {
+            try {
+                targetUri = new URI(uri);
+            } catch (URISyntaxException ex) {
+                InvalidValue failure = new InvalidValue("The web services binding URI is not a valid: " + uri, reader);
+                context.addError(failure);
+            }
+        }
+        return targetUri;
     }
 
     private int parseRetries(XMLStreamReader reader, IntrospectionContext context) {
@@ -149,35 +173,6 @@ public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
         }
         return 0;
     }
-
-    private void loadConfig(WsBindingDefinition bd, XMLStreamReader reader,IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
-        Map<String, String> configuration = null;
-        String name;
-        while (true) {
-            switch (reader.next()) {
-            case START_ELEMENT:
-                name = reader.getName().getLocalPart();
-                if ("handler".equals(name)) {
-					BindingHandlerDefinition bhd = registry.load(reader, BindingHandlerDefinition.class, context);
-					handlerRegistry.register(WsBindingDefinition.BINDING_QNAME, bd.getTargetUri().toString(), bhd);
-                } else if ("configuration".equals(name)) {
-                    configuration = new HashMap<String, String>();
-                } else if (configuration != null) {
-                    String value = reader.getElementText();
-                    configuration.put(name, value);
-                }
-                break;
-            case END_ELEMENT:
-                name = reader.getName().getLocalPart();
-                if ("configuration".equals(name)) {
-                    bd.setConfiguration(configuration);
-                } else if ("binding.ws".equals(name)) {
-                    return;
-                }
-                break;
-            }
-        }
-    }   
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {

@@ -144,12 +144,13 @@ public abstract class AbstractMetroTargetInterceptor implements Interceptor {
         	// Nothing to bind
         	return;
         }
-    	List<BindingHandler<?>> handlerDefinitions = handlerRegistry.loadBindingHandlers(WsBindingDefinition.BINDING_QNAME, endpointPath);
-    	ArrayList<Handler> soapHandlers = new ArrayList<Handler>();
-    	for (BindingHandler<?> bh : handlerDefinitions) {
-    		soapHandlers.add(new SOAPMessageHandlerAdapter( bh ));
-		}
-    	provider.getBinding().setHandlerChain(soapHandlers);
+// TODO re-enable
+//    	List<BindingHandler<?>> handlerDefinitions = handlerRegistry.loadBindingHandlers(WsBindingDefinition.BINDING_QNAME, endpointPath);
+//    	ArrayList<Handler> soapHandlers = new ArrayList<Handler>();
+//    	for (BindingHandler<?> bh : handlerDefinitions) {
+//    		soapHandlers.add(new SOAPMessageHandlerAdapter( bh ));
+//		}
+//    	provider.getBinding().setHandlerChain(soapHandlers);
     }
 
 }
