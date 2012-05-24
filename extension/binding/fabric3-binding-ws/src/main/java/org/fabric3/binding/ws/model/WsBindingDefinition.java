@@ -44,6 +44,7 @@
 package org.fabric3.binding.ws.model;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -79,46 +80,30 @@ public class WsBindingDefinition extends BindingDefinition {
      * @param retries      the number of retries in the event the target service is unavailable during an invocation
      */
     public WsBindingDefinition(String name, URI targetUri, String wsdlLocation, String wsdlElement, int retries) {
-        this(name, targetUri, wsdlLocation, wsdlElement, retries, Collections.<BindingHandlerDefinition>emptyList());
-    }
-
-    /**
-     * Constructor
-     *
-     * @param name         the binding name. May be null
-     * @param targetUri    the target binding URI. May be null
-     * @param wsdlLocation the WSDL location. May be null
-     * @param wsdlElement  the SCA WSDL element expression. May be null
-     * @param retries      the number of retries in the event the target service is unavailable during an invocation
-     * @param handlers     any applicable binding handlers
-     */
-    public WsBindingDefinition(String name,
-                               URI targetUri,
-                               String wsdlLocation,
-                               String wsdlElement,
-                               int retries,
-                               List<BindingHandlerDefinition> handlers) {
         super(name, targetUri, BINDING_QNAME);
         this.wsdlElement = wsdlElement;
         this.wsdlLocation = wsdlLocation;
         this.retries = retries;
-        this.handlers = handlers;
+        this.handlers = new ArrayList<BindingHandlerDefinition>();
+        this.configuration = Collections.emptyMap();
     }
 
+    /**
+     * Returns the SCA expression pointing to the WSDL element this endpoint should use or null.
+     *
+     * @return the SCA expression or null
+     */
     public String getWsdlElement() {
         return wsdlElement;
     }
 
+    /**
+     * Returns the location of the endpoint WSDL or null if not specified.
+     *
+     * @return the location of the endpoint WSDL
+     */
     public String getWsdlLocation() {
         return wsdlLocation;
-    }
-
-    public Map<String, String> getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(Map<String, String> configuration) {
-        this.configuration = configuration;
     }
 
     /**
@@ -137,5 +122,32 @@ public class WsBindingDefinition extends BindingDefinition {
      */
     public List<BindingHandlerDefinition> getHandlers() {
         return handlers;
+    }
+
+    /**
+     * Adds a binding handler definition.
+     *
+     * @param handler the binding handler definition
+     */
+    public void addHandler(BindingHandlerDefinition handler) {
+        handlers.add(handler);
+    }
+
+    /**
+     * Returns optional binding configuration.
+     *
+     * @return optional binding configuration
+     */
+    public Map<String, String> getConfiguration() {
+        return configuration;
+    }
+
+    /**
+     * Sets optional configuration for the binding.
+     *
+     * @param configuration optional configuration for the binding
+     */
+    public void setConfiguration(Map<String, String> configuration) {
+        this.configuration = configuration;
     }
 }

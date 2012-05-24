@@ -46,6 +46,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>${servlet.groupId}</groupId>
             <artifactId>${servlet.artifactId}</artifactId>
             <version>${servlet.version}</version>
