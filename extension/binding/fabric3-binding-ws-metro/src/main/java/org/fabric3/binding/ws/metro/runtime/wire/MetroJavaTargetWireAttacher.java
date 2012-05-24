@@ -158,7 +158,7 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
                                                                             securityEnvironment,
                                                                             xmlInputFactory);
 
-                attacheInterceptors(seiClass, target, wire, proxyFactory);
+                attachInterceptors(seiClass, target, wire, proxyFactory);
             } finally {
                 Thread.currentThread().setContextClassLoader(old);
             }
@@ -189,7 +189,7 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
         return schemas;
     }
 
-    private void attacheInterceptors(Class<?> seiClass, MetroJavaTargetDefinition target, Wire wire, ObjectFactory<?> proxyFactory) {
+    private void attachInterceptors(Class<?> seiClass, MetroJavaTargetDefinition target, Wire wire, ObjectFactory<?> proxyFactory) {
         Method[] methods = seiClass.getMethods();
         SecurityConfiguration securityConfiguration = target.getSecurityConfiguration();
         ConnectionConfiguration connectionConfiguration = target.getConnectionConfiguration();
