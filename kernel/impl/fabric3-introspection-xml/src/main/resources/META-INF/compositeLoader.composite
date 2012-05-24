@@ -104,5 +104,9 @@
         <f3:implementation.system class="org.fabric3.introspection.xml.binding.BindingHandlerLoader"/>
     </component>
 
+    <component name="ConfigurationLoader" f3:key="sca:configuration">
+        <f3:implementation.system class="org.fabric3.introspection.xml.common.ConfigurationLoader"/>
+    </component>
+
 
 </composite>
