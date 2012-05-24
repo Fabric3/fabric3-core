@@ -44,7 +44,6 @@
 package org.fabric3.spi.binding.handler;
 
 import java.net.URI;
-import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.component.ResourceDefinition;
 
@@ -57,7 +56,6 @@ public class BindingHandlerDefinition extends ResourceDefinition {
     private static final long serialVersionUID = -2097314069798596206L;
 
     private URI target;
-    private QName bindingType;
 
     /**
      * Constructor
@@ -66,14 +64,6 @@ public class BindingHandlerDefinition extends ResourceDefinition {
      */
     public BindingHandlerDefinition(URI target) {
         this.target = target;
-    }
-
-    public QName getBindingType() {
-        return bindingType;
-    }
-
-    public void setBindingType(QName bindingType) {
-        this.bindingType = bindingType;
     }
 
     public URI getTarget() {

@@ -44,7 +44,7 @@
 package org.fabric3.binding.ws.model;
 
 import java.net.URI;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
@@ -67,7 +67,7 @@ public class WsBindingDefinition extends BindingDefinition {
     private final String wsdlElement;
     private Map<String, String> configuration;
     private int retries;
-    private List<BindingHandlerDefinition> handlers = new ArrayList<BindingHandlerDefinition>();
+    private List<BindingHandlerDefinition> handlers;
 
     /**
      * Constructor
@@ -79,10 +79,30 @@ public class WsBindingDefinition extends BindingDefinition {
      * @param retries      the number of retries in the event the target service is unavailable during an invocation
      */
     public WsBindingDefinition(String name, URI targetUri, String wsdlLocation, String wsdlElement, int retries) {
+        this(name, targetUri, wsdlLocation, wsdlElement, retries, Collections.<BindingHandlerDefinition>emptyList());
+    }
+
+    /**
+     * Constructor
+     *
+     * @param name         the binding name. May be null
+     * @param targetUri    the target binding URI. May be null
+     * @param wsdlLocation the WSDL location. May be null
+     * @param wsdlElement  the SCA WSDL element expression. May be null
+     * @param retries      the number of retries in the event the target service is unavailable during an invocation
+     * @param handlers     any applicable binding handlers
+     */
+    public WsBindingDefinition(String name,
+                               URI targetUri,
+                               String wsdlLocation,
+                               String wsdlElement,
+                               int retries,
+                               List<BindingHandlerDefinition> handlers) {
         super(name, targetUri, BINDING_QNAME);
         this.wsdlElement = wsdlElement;
         this.wsdlLocation = wsdlLocation;
         this.retries = retries;
+        this.handlers = handlers;
     }
 
     public String getWsdlElement() {
@@ -110,11 +130,12 @@ public class WsBindingDefinition extends BindingDefinition {
         return retries;
     }
 
-    public void addHandler(BindingHandlerDefinition bhd) {
-        if (bhd == null) {
-            return;
-        }
-        bhd.setBindingType(BINDING_QNAME);
-        handlers.add(bhd);
+    /**
+     * Returns the applicable binding handlers for this definition.
+     *
+     * @return the applicable binding handlers for this definition.
+     */
+    public List<BindingHandlerDefinition> getHandlers() {
+        return handlers;
     }
 }
