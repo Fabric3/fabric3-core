@@ -43,6 +43,8 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+
 /**
  * Wire source definition for services that use Java interface-based contracts.
  *
@@ -68,6 +70,7 @@ public class MetroJavaSourceDefinition extends MetroSourceDefinition {
      * @param schemas            the schemas imported by the generated WSDL or null
      * @param providedIntents    intents configured at the endpoint level that are provided natively by the Metro
      * @param wsdlLocation       optional URL to the WSDL location
+     * @param handlers           optional binding handlers
      */
     public MetroJavaSourceDefinition(ServiceEndpointDefinition endpointDefinition,
                                      String interfaze,
@@ -76,8 +79,9 @@ public class MetroJavaSourceDefinition extends MetroSourceDefinition {
                                      String wsdl,
                                      Map<String, String> schemas,
                                      List<QName> providedIntents,
-                                     URL wsdlLocation) {
-        super(endpointDefinition, wsdl, providedIntents);
+                                     URL wsdlLocation,
+                                     List<PhysicalBindingHandlerDefinition> handlers) {
+        super(endpointDefinition, wsdl, providedIntents, handlers);
         this.interfaze = interfaze;
         this.generatedInterface = generatedInterface;
         this.classLoaderUri = classLoaderUri;

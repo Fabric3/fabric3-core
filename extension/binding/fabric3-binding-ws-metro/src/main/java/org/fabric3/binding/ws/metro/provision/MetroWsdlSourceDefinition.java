@@ -40,6 +40,7 @@ package org.fabric3.binding.ws.metro.provision;
 import java.util.List;
 import javax.xml.namespace.QName;
 
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalDataTypes;
 
 /**
@@ -56,9 +57,13 @@ public class MetroWsdlSourceDefinition extends MetroSourceDefinition {
      * @param endpointDefinition endpoint metadata
      * @param wsdl               the WSDL document as a string
      * @param intents            intents configured at the endpoint level that are provided natively by the Metro
+     * @param handlers           optional binding handlers
      */
-    public MetroWsdlSourceDefinition(ServiceEndpointDefinition endpointDefinition, String wsdl, List<QName> intents) {
-        super(endpointDefinition, wsdl, intents);
+    public MetroWsdlSourceDefinition(ServiceEndpointDefinition endpointDefinition,
+                                     String wsdl,
+                                     List<QName> intents,
+                                     List<PhysicalBindingHandlerDefinition> handlers) {
+        super(endpointDefinition, wsdl, intents, handlers);
         physicalDataTypes.clear();
         physicalDataTypes.add(PhysicalDataTypes.DOM);
     }

@@ -77,12 +77,14 @@ import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 import org.fabric3.binding.ws.model.WsBindingDefinition;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.wsdl.factory.Wsdl4JFactory;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 
@@ -100,19 +102,22 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
     private Wsdl4JFactory wsdlFactory;
     private TargetUrlResolver targetUrlResolver;
     private TransformerFactory transformerFactory;
+    private HostInfo info;
 
     public WsdlGeneratorDelegate(@Reference WsdlResolver wsdlResolver,
                                  @Reference EndpointResolver endpointResolver,
                                  @Reference WsdlSynthesizer wsdlSynthesizer,
                                  @Reference WsdlPolicyAttacher policyAttacher,
                                  @Reference Wsdl4JFactory wsdlFactory,
-                                 @Reference TargetUrlResolver targetUrlResolver) {
+                                 @Reference TargetUrlResolver targetUrlResolver,
+                                 @Reference HostInfo info) {
         this.wsdlResolver = wsdlResolver;
         this.endpointResolver = endpointResolver;
         this.wsdlSynthesizer = wsdlSynthesizer;
         this.policyAttacher = policyAttacher;
         this.wsdlFactory = wsdlFactory;
         this.targetUrlResolver = targetUrlResolver;
+        this.info = info;
         transformerFactory = TransformerFactory.newInstance();
     }
 
@@ -176,6 +181,8 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
         // Note operation level provided intents are not currently supported. Intents are mapped to JAX-WS features, which are per endpoint.
         List<PolicyExpressionMapping> mappings = GenerationHelper.createMappings(policy);
 
+        List<PhysicalBindingHandlerDefinition> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), binding.getDefinition());
+
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
@@ -190,7 +197,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
             Thread.currentThread().setContextClassLoader(old);
         }
 
-        return new MetroWsdlSourceDefinition(endpointDefinition, serializedWsdl, intentNames);
+        return new MetroWsdlSourceDefinition(endpointDefinition, serializedWsdl, intentNames, handlers);
     }
 
     public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
@@ -276,6 +283,9 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
         // map operation-level policies
         List<PolicyExpressionMapping> mappings = GenerationHelper.createMappings(policy);
 
+        // create handler definitions
+        List<PhysicalBindingHandlerDefinition> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), definition);
+
         String serializedWsdl;
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
@@ -305,7 +315,8 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
                                              serializedWsdl,
                                              intentNames,
                                              securityConfiguration,
-                                             connectionConfiguration);
+                                             connectionConfiguration,
+                                             handlers);
     }
 
 

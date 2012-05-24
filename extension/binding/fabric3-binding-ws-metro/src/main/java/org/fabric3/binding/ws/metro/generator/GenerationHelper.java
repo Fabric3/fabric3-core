@@ -57,9 +57,11 @@ import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.spi.binding.handler.BindingHandlerDefinition;
 import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.util.UriHelper;
 
 /**
@@ -209,6 +211,18 @@ public class GenerationHelper {
         }
         return configuration;
     }
+
+
+    public static List<PhysicalBindingHandlerDefinition> generateBindingHandlers(URI domainUri, WsBindingDefinition definition) {
+        List<PhysicalBindingHandlerDefinition> handlers = new ArrayList<PhysicalBindingHandlerDefinition>();
+        for (BindingHandlerDefinition handlerDefinition : definition.getHandlers()) {
+            // URIs specified in handler elements in a composite are relative and must be made absolute
+            URI resolvedUri = URI.create(domainUri.toString() + "/" + handlerDefinition.getTarget());
+            handlers.add(new PhysicalBindingHandlerDefinition(resolvedUri));
+        }
+        return handlers;
+    }
+
 
     /**
      * Returns the WSDL name for an operation following JAX-WS rules. Namely, if present the <code>@WebMethod.operationName()</code> attribute value

@@ -99,6 +99,7 @@ import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
@@ -175,6 +176,9 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         // Note operation level provided intents are not currently supported. Intents are mapped to JAX-WS features, which are per endpoint.
         List<PolicyExpressionMapping> mappings = GenerationHelper.createMappings(policy, serviceClass);
 
+        // create handler definitions
+        List<PhysicalBindingHandlerDefinition> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), definition);
+
         byte[] generatedBytes = null;
         String wsdl = null;
         Map<String, String> schemas = Collections.emptyMap();
@@ -213,7 +217,8 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                                                  wsdl,
                                                  schemas,
                                                  intentNames,
-                                                 wsdlLocation);
+                                                 wsdlLocation,
+                                                 handlers);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
@@ -270,6 +275,8 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
         // map operation-level policies
         List<PolicyExpressionMapping> mappings = GenerationHelper.createMappings(policy, serviceClass);
+
+        List<PhysicalBindingHandlerDefinition> handlers = GenerationHelper.generateBindingHandlers(info.getDomain(), definition);
 
         byte[] generatedBytes = null;
         String wsdl = null;
@@ -331,7 +338,8 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                                              intentNames,
                                              securityConfiguration,
                                              connectionConfiguration,
-                                             retries);
+                                             retries,
+                                             handlers);
     }
 
     /**
@@ -497,6 +505,5 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         }
         return endpointDefinition;
     }
-
 
 }

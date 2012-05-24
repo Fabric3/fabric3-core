@@ -43,6 +43,8 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+
 /**
  * Reference-side wire target information defined by a Java interface.
  *
@@ -73,6 +75,7 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
      * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the HTTP configuration or null if defaults should be used
      * @param retries                 the number of retries to attempt in the event the service is unavailable when an invocation is made
+     * @param handlers                optional binding handlers
      */
     public MetroJavaTargetDefinition(ReferenceEndpointDefinition endpointDefinition,
                                      String interfaze,
@@ -84,8 +87,9 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
                                      List<QName> intents,
                                      SecurityConfiguration securityConfiguration,
                                      ConnectionConfiguration connectionConfiguration,
-                                     int retries) {
-        super(endpointDefinition, wsdl, intents, securityConfiguration, connectionConfiguration);
+                                     int retries,
+                                     List<PhysicalBindingHandlerDefinition> handlers) {
+        super(endpointDefinition, wsdl, intents, securityConfiguration, connectionConfiguration, handlers);
         this.generatedInterface = generatedInterface;
         this.classLoaderUri = classLoaderUri;
         this.schemas = schemas;

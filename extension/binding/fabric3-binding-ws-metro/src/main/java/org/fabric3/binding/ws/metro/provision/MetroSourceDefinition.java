@@ -40,6 +40,7 @@ package org.fabric3.binding.ws.metro.provision;
 import java.util.List;
 import javax.xml.namespace.QName;
 
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
@@ -52,6 +53,7 @@ public abstract class MetroSourceDefinition extends PhysicalSourceDefinition {
     private List<QName> intents;
     private String wsdl;
     private ServiceEndpointDefinition endpointDefinition;
+    private List<PhysicalBindingHandlerDefinition> handlers;
 
     /**
      * Constructor.
@@ -59,11 +61,16 @@ public abstract class MetroSourceDefinition extends PhysicalSourceDefinition {
      * @param endpointDefinition endpoint metadata
      * @param intents            intents configured at the endpoint level that are provided natively by the Metro
      * @param wsdl               the WSDL. May be null, in which case the WSDL will be introspected when the endpoint is provisioned.
+     * @param handlers           optional binding handlers
      */
-    public MetroSourceDefinition(ServiceEndpointDefinition endpointDefinition, String wsdl, List<QName> intents) {
+    public MetroSourceDefinition(ServiceEndpointDefinition endpointDefinition,
+                                 String wsdl,
+                                 List<QName> intents,
+                                 List<PhysicalBindingHandlerDefinition> handlers) {
         this.endpointDefinition = endpointDefinition;
         this.wsdl = wsdl;
         this.intents = intents;
+        this.handlers = handlers;
     }
 
     /**
@@ -88,5 +95,12 @@ public abstract class MetroSourceDefinition extends PhysicalSourceDefinition {
         return wsdl;
     }
 
-
+    /**
+     * Returns the optional handlers to engage when processing an invocation.
+     *
+     * @return the optional handlers to engage when processing an invocation.
+     */
+    public List<PhysicalBindingHandlerDefinition> getHandlers() {
+        return handlers;
+    }
 }
