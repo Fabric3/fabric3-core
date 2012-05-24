@@ -145,7 +145,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
             for (Resource resource : contribution.getResources()) {
                 for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                     if (element.getSymbol().equals(symbol)) {
-                        if (ResourceState.PROCESSED != resource.getState()) {
+                        if (ResourceState.UNPROCESSED == resource.getState()) {
                             // this is a programming error as resolve(Symbol) should only be called after contribution resources have been processed
                             throw new AssertionError("Attempt to resolve a resource before it is processed or is in error");
                         }
@@ -473,7 +473,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                 if (element.getSymbol().equals(symbol)) {
-                    if (ResourceState.PROCESSED != resource.getState() && context == null) {
+                    if (ResourceState.UNPROCESSED == resource.getState() && context == null) {
                         String identifier = resource.getSource().getSystemId();
                         throw new AssertionError("Resource not resolved: " + identifier);
                     } else if (ResourceState.UNPROCESSED == resource.getState() && context != null) {
