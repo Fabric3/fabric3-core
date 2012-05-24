@@ -19,9 +19,4 @@
         <f3:implementation.system class="org.fabric3.fabric.binding.BindingHandlerRegistryImpl"/>
     </component>
     
-    <component name="BindingHandlerLoader" f3:key="f3:handler">
-        <f3:implementation.system class="org.fabric3.fabric.binding.BindingHandlerLoader"/>
-    </component>
-
-
 </composite>

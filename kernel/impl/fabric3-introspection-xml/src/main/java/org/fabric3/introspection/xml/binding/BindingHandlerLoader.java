@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.binding;
+package org.fabric3.introspection.xml.binding;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -65,8 +65,8 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  */
 @EagerInit
 public class BindingHandlerLoader implements TypeLoader<BindingHandlerDefinition> {
-
     private static final List<String> ATTRIBUTES = Arrays.asList("target");
+    private static final BindingHandlerDefinition INVALID_DEFINITION = new BindingHandlerDefinition(URI.create("Invalid"));
 
     public BindingHandlerDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
@@ -74,7 +74,7 @@ public class BindingHandlerLoader implements TypeLoader<BindingHandlerDefinition
         if (target == null || "".equals(target)) {
             InvalidValue error = new InvalidValue("Target attribute is not specified", reader);
             context.addError(error);
-            return null;
+            return INVALID_DEFINITION;
         }
         try {
             URI targetUri = new URI(target);
@@ -82,7 +82,7 @@ public class BindingHandlerLoader implements TypeLoader<BindingHandlerDefinition
         } catch (URISyntaxException e) {
             InvalidValue error = new InvalidValue("Target attribute is not a valid URI: " + target, reader);
             context.addError(error);
-            return null;
+            return INVALID_DEFINITION;
         }
     }
 
