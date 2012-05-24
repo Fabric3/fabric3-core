@@ -53,7 +53,7 @@ public class MetroWsdlSourceDefinition extends MetroSourceDefinition {
     /**
      * Constructor.
      *
-     * @param endpointDefinition endpoint metadta
+     * @param endpointDefinition endpoint metadata
      * @param wsdl               the WSDL document as a string
      * @param intents            intents configured at the endpoint level that are provided natively by the Metro
      */
