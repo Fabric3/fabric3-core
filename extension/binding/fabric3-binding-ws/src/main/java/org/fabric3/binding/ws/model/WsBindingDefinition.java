@@ -116,7 +116,8 @@ public class WsBindingDefinition extends BindingDefinition {
     }
 
     /**
-     * Returns the applicable binding handlers for this definition.
+     * Returns the applicable binding handlers for this definition. Note that order is significant: at runtime, the handlers should be engaged in the
+     * order they appear in this list.
      *
      * @return the applicable binding handlers for this definition.
      */
