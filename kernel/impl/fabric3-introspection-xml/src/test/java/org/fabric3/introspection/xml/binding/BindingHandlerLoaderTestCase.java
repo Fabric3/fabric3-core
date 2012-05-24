@@ -12,6 +12,7 @@ import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.spi.binding.handler.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
+import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * @version $Rev$ $Date$
@@ -19,6 +20,7 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 public class BindingHandlerLoaderTestCase extends TestCase {
     private static final String XML_VALID = "<handler xmlns='" + Namespaces.F3 + "' target='TestComponent'/>";
     private static final String XML_NO_TARGET = "<handler xmlns='" + Namespaces.F3 + "'/>";
+    private static final String XML_INVALID_ATTRIBUTE = "<handler xmlns='" + Namespaces.F3 + "' target='TestComponent' invalid='TestComponent'/>";
 
     private DefaultIntrospectionContext context;
     private BindingHandlerLoader loader;
@@ -38,7 +40,14 @@ public class BindingHandlerLoaderTestCase extends TestCase {
         loader.load(reader, context);
         assertEquals(1, context.getErrors().size());
         assertTrue(context.getErrors().get(0) instanceof InvalidValue);
+    }
 
+    public void testInvalidAttribute() throws Exception {
+        XMLStreamReader reader = createReader(XML_INVALID_ATTRIBUTE);
+
+        loader.load(reader, context);
+        assertEquals(1, context.getErrors().size());
+        assertTrue(context.getErrors().get(0) instanceof UnrecognizedAttribute);
     }
 
     protected void setUp() throws Exception {
