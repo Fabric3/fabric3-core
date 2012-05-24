@@ -65,6 +65,7 @@ public class MetroBindingGenerator implements BindingGenerator<WsBindingDefiniti
         this.delegates = delegates;
     }
 
+    @SuppressWarnings({"unchecked"})
     public MetroSourceDefinition generateSource(LogicalBinding<WsBindingDefinition> binding,
                                                 ServiceContract contract,
                                                 List<LogicalOperation> operations,
@@ -73,6 +74,7 @@ public class MetroBindingGenerator implements BindingGenerator<WsBindingDefiniti
         return delegate.generateSource(binding, contract, policy);
     }
 
+    @SuppressWarnings({"unchecked"})
     public PhysicalTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
                                                    ServiceContract contract,
                                                    List<LogicalOperation> operations,
@@ -81,6 +83,7 @@ public class MetroBindingGenerator implements BindingGenerator<WsBindingDefiniti
         return delegate.generateTarget(binding, contract, policy);
     }
 
+    @SuppressWarnings({"unchecked"})
     public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<WsBindingDefinition> serviceBinding,
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
