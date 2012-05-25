@@ -50,10 +50,11 @@ public interface BindingHandlerRegistry {
     /**
      * Creates and returns a {@link BindingHandler} for the given definition.
      *
+     * @param type       the context type support by the handler
      * @param definition the definition
      * @return the handler
      */
-    BindingHandler<?> createHandler(PhysicalBindingHandlerDefinition definition);
+    <T> BindingHandler<T> createHandler(Class<T> type, PhysicalBindingHandlerDefinition definition);
 
     /**
      * Registers to receive callbacks when {@link BindingHandler}s for a binding become available.

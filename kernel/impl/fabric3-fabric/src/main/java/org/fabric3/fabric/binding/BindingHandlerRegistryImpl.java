@@ -65,8 +65,8 @@ public class BindingHandlerRegistryImpl implements BindingHandlerRegistry {
         this.componentManager = componentManager;
     }
 
-    public BindingHandler<?> createHandler(PhysicalBindingHandlerDefinition definition) {
-        return new BindingHandlerLazyLoadDecorator<Object>(definition.getHandlerUri(), componentManager);
+    public <T> BindingHandler<T> createHandler(Class<T> type, PhysicalBindingHandlerDefinition definition) {
+        return new BindingHandlerLazyLoadDecorator<T>(definition.getHandlerUri(), componentManager);
     }
 
     @SuppressWarnings({"unchecked"})
