@@ -40,10 +40,12 @@ package org.fabric3.binding.ws.metro.runtime.wire;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.soap.SOAPMessage;
+import javax.xml.ws.handler.Handler;
 
 import org.fabric3.binding.ws.metro.provision.MetroJavaTargetDefinition;
 import org.fabric3.binding.ws.metro.provision.MetroSourceDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
+import org.fabric3.binding.ws.metro.runtime.core.SOAPMessageHandlerAdapter;
 import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
@@ -72,14 +74,14 @@ public abstract class AbstractMetroSourceWireAttacher<T extends MetroSourceDefin
         throw new UnsupportedOperationException();
     }
 
-    protected List<BindingHandler<SOAPMessage>> createHandlers(MetroSourceDefinition target) {
+    protected List<Handler> createHandlers(MetroSourceDefinition target) {
         if (target.getHandlers().isEmpty()) {
             return null;
         }
-        List<BindingHandler<SOAPMessage>> handlers = new ArrayList<BindingHandler<SOAPMessage>>();
+        List<Handler> handlers = new ArrayList<Handler>();
         for (PhysicalBindingHandlerDefinition handlerDefinition : target.getHandlers()) {
             BindingHandler<SOAPMessage> handler = handlerRegistry.createHandler(SOAPMessage.class, handlerDefinition);
-            handlers.add(handler);
+            handlers.add(new SOAPMessageHandlerAdapter(handler));
         }
         return handlers;
     }

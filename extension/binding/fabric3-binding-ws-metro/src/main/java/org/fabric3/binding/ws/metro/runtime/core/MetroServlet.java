@@ -48,7 +48,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -56,10 +55,6 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.Binding;
 import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.handler.Handler;
-
-import org.fabric3.binding.ws.model.WsBindingDefinition;
-import org.fabric3.spi.binding.handler.BindingHandler;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 
 import com.sun.xml.ws.api.BindingID;
 import com.sun.xml.ws.api.WSBinding;
@@ -92,7 +87,6 @@ public class MetroServlet extends WSServlet {
     private volatile F3ServletDelegate delegate;
     private F3Container container;
     private WSEndpoint<?> mexEndpoint;
-    private BindingHandlerRegistry handlerRegistry;
 
     /**
      * Constructor
@@ -100,10 +94,9 @@ public class MetroServlet extends WSServlet {
      * @param executorService     the executor service for dispatching invocations
      * @param securityEnvironment the Fabric3 implementation of the Metro SecurityEnvironment SPI
      */
-    public MetroServlet(ExecutorService executorService, SecurityEnvironment securityEnvironment, BindingHandlerRegistry handlerRegistry) {
+    public MetroServlet(ExecutorService executorService, SecurityEnvironment securityEnvironment) {
         this.executorService = executorService;
         this.securityEnvironment = securityEnvironment;
-        this.handlerRegistry = handlerRegistry;
     }
 
     @Override
@@ -178,10 +171,10 @@ public class MetroServlet extends WSServlet {
             Invoker invoker = configuration.getInvoker();
             QName serviceName = configuration.getServiceName();
             QName portName = configuration.getPortName();
-           
+
             // Fetch the handlers 
             loadHandlers(binding, configuration);
-            
+
             WSEndpoint<?> wsEndpoint = WSEndpoint.create(seiClass,
                                                          false,
                                                          invoker,
@@ -193,12 +186,12 @@ public class MetroServlet extends WSServlet {
                                                          metadata,
                                                          null,
                                                          true);
-            wsEndpoint.setExecutor(executorService);            
-            
-            
+            wsEndpoint.setExecutor(executorService);
+
+
             ServletAdapter adapter = servletAdapterFactory.createAdapter(servicePath, servicePath, wsEndpoint);
             delegate.registerServletAdapter(adapter, F3Provider.class.getClassLoader());
-            
+
             String mexPath = servicePath + MEX_SUFFIX;
             ServletAdapter mexAdapter = servletAdapterFactory.createAdapter(mexPath, mexPath, mexEndpoint);
             delegate.registerServletAdapter(mexAdapter, F3Provider.class.getClassLoader());
@@ -245,16 +238,13 @@ public class MetroServlet extends WSServlet {
         }
         return delegate;
     }
-    
+
     private void loadHandlers(Binding binding, EndpointConfiguration config) {
-    	String servicePath = config.getServicePath();
-// TODO re-enable
-//    	List<BindingHandler<?>> handlerDefinitions = handlerRegistry.loadBindingHandlers(WsBindingDefinition.BINDING_QNAME, servicePath);
-//    	ArrayList<Handler> soapHandlers = new ArrayList<Handler>();
-//    	for (BindingHandler<?> bh : handlerDefinitions) {
-//    		soapHandlers.add(new SOAPMessageHandlerAdapter( bh ));
-//		}
-//    	binding.setHandlerChain(soapHandlers);
+        List<Handler> handlers = config.getHandlers();
+        if (handlers == null) {
+            return;
+        }
+        binding.setHandlerChain(handlers);
     }
 
 }

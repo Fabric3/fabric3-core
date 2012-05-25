@@ -40,7 +40,9 @@ package org.fabric3.binding.ws.metro.runtime.core;
 import java.net.URL;
 import java.util.List;
 import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.handler.Handler;
 
 import com.sun.xml.ws.api.BindingID;
 import com.sun.xml.ws.api.server.Invoker;
@@ -61,6 +63,7 @@ public class EndpointConfiguration {
     private URL generatedWsdl;
     private List<URL> generatedSchemas;
     private URL wsdlLocation;
+    private List<Handler> handlers;
 
     /**
      * Constructor that takes a WSDL document at a given URL. If the URL is null, a WSDL will be generated from the service endpoint interface.
@@ -75,6 +78,7 @@ public class EndpointConfiguration {
      * @param bindingId        Binding ID to use.
      * @param generatedWsdl    the generated WSDL used for WSIT configuration or null if no policy is configured
      * @param generatedSchemas the handles to schemas (XSDs) imported by the WSDL or null if none exist
+     * @param handlers         the binding handlers, may be null
      */
     public EndpointConfiguration(Class<?> seiClass,
                                  QName serviceName,
@@ -85,7 +89,8 @@ public class EndpointConfiguration {
                                  WebServiceFeature[] features,
                                  BindingID bindingId,
                                  URL generatedWsdl,
-                                 List<URL> generatedSchemas) {
+                                 List<URL> generatedSchemas,
+                                 List<Handler> handlers) {
         this.seiClass = seiClass;
         this.serviceName = serviceName;
         this.portName = portName;
@@ -96,6 +101,7 @@ public class EndpointConfiguration {
         this.bindingId = bindingId;
         this.generatedWsdl = generatedWsdl;
         this.generatedSchemas = generatedSchemas;
+        this.handlers = handlers;
     }
 
     public URL getWsdlLocation() {
@@ -136,5 +142,9 @@ public class EndpointConfiguration {
 
     public Class<?> getSeiClass() {
         return seiClass;
+    }
+
+    public List<Handler> getHandlers() {
+        return handlers;
     }
 }

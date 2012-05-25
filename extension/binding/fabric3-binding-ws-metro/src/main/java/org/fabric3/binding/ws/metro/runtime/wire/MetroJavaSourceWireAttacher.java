@@ -47,6 +47,8 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.handler.Handler;
+import javax.xml.ws.handler.soap.SOAPHandler;
 
 import com.sun.xml.ws.api.BindingID;
 import org.oasisopen.sca.annotation.Reference;
@@ -141,9 +143,9 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
                     path = "/" + path;
                 }
 
-                List<BindingHandler<SOAPMessage>> handlers = null;
+                List<Handler> handlers = createHandlers(source);
 
-                JaxbInvoker invoker = new JaxbInvoker(invocationChains, handlers);
+                JaxbInvoker invoker = new JaxbInvoker(invocationChains);
                 EndpointConfiguration configuration = new EndpointConfiguration(seiClass,
                                                                                 serviceName,
                                                                                 portName,
@@ -153,7 +155,8 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
                                                                                 features,
                                                                                 bindingId,
                                                                                 generatedWsdl,
-                                                                                generatedSchemas);
+                                                                                generatedSchemas,
+                                                                                handlers);
 
                 endpointService.registerService(configuration);
             } finally {

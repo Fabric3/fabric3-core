@@ -42,8 +42,8 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.handler.Handler;
 
 import com.sun.xml.ws.api.BindingID;
 import org.oasisopen.sca.annotation.Reference;
@@ -59,7 +59,6 @@ import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
 import org.fabric3.binding.ws.metro.util.BindingIdResolver;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
-import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
@@ -111,9 +110,9 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
             URL wsdlLocation = cache.cache(servicePath, new ByteArrayInputStream(wsdl.getBytes()));
             List<URL> generatedSchemas = null;
 
-            List<BindingHandler<SOAPMessage>> handlers = null;
+            List<Handler> handlers = createHandlers(source);
 
-            DocumentInvoker invoker = new DocumentInvoker(invocationChains, handlers);
+            DocumentInvoker invoker = new DocumentInvoker(invocationChains);
             EndpointConfiguration configuration = new EndpointConfiguration(F3Provider.class,
                                                                             serviceName,
                                                                             portName,
@@ -123,7 +122,8 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
                                                                             features,
                                                                             bindingId,
                                                                             null,
-                                                                            generatedSchemas);
+                                                                            generatedSchemas,
+                                                                            handlers);
             endpointService.registerService(configuration);
         } catch (CacheException e) {
             throw new WiringException(e);
