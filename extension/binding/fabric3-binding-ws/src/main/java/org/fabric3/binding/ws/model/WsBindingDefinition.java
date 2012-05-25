@@ -53,7 +53,7 @@ import javax.xml.namespace.QName;
 import org.oasisopen.sca.Constants;
 
 import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.spi.binding.handler.BindingHandlerDefinition;
+import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
 /**
  * Logical binding definition for web services.

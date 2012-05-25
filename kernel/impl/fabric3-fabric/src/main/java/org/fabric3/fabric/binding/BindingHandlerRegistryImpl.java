@@ -47,10 +47,10 @@ import javax.xml.namespace.QName;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.binding.handler.BindingHandler;
-import org.fabric3.spi.binding.handler.BindingHandlerDefinition;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistryCallback;
 import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 
 /**
  * @version $Rev$ $Date$
@@ -65,10 +65,9 @@ public class BindingHandlerRegistryImpl implements BindingHandlerRegistry {
         this.componentManager = componentManager;
     }
 
-    public BindingHandler<?> createHandler(BindingHandlerDefinition definition) {
-        return new BindingHandlerLazyLoadDecorator<Object>(definition.getTarget(), componentManager);
+    public BindingHandler<?> createHandler(PhysicalBindingHandlerDefinition definition) {
+        return new BindingHandlerLazyLoadDecorator<Object>(definition.getHandlerUri(), componentManager);
     }
-
 
     @SuppressWarnings({"unchecked"})
     public synchronized void register(BindingHandlerRegistryCallback callback) {

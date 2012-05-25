@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.binding.handler;
+package org.fabric3.spi.model.type.binding;
 
 import java.net.URI;
 

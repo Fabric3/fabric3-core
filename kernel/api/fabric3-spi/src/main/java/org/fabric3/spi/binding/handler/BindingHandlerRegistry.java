@@ -37,6 +37,8 @@
 */
 package org.fabric3.spi.binding.handler;
 
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+
 /**
  * Registers {@link BindingHandler}s so that they are available to binding extensions and registers binding extensions to receive updates when {@link
  * BindingHandler}s become available.
@@ -51,7 +53,7 @@ public interface BindingHandlerRegistry {
      * @param definition the definition
      * @return the handler
      */
-    BindingHandler<?> createHandler(BindingHandlerDefinition definition);
+    BindingHandler<?> createHandler(PhysicalBindingHandlerDefinition definition);
 
     /**
      * Registers to receive callbacks when {@link BindingHandler}s for a binding become available.
