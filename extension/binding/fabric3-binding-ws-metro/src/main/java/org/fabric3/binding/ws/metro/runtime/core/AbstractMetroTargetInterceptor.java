@@ -37,20 +37,17 @@
  */
 package org.fabric3.binding.ws.metro.runtime.core;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
+import javax.xml.ws.handler.soap.SOAPHandler;
 
 import com.sun.xml.ws.developer.JAXWSProperties;
 
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
-import org.fabric3.binding.ws.model.WsBindingDefinition;
-import org.fabric3.spi.binding.handler.BindingHandler;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.wire.Interceptor;
@@ -64,22 +61,23 @@ public abstract class AbstractMetroTargetInterceptor implements Interceptor {
     // blank response for one-way operations
     protected static final Message NULL_RESPONSE = new MessageImpl();
 
-    private SecurityConfiguration securityConfiguration;
-    private ConnectionConfiguration connectionConfiguration;
-	private BindingHandlerRegistry handlerRegistry;
+    private SecurityConfiguration securityConfig;
+    private ConnectionConfiguration connectionConfig;
+    private List<Handler> handlers;
 
     /**
      * Constructor.
      *
-     * @param securityConfiguration   the security configuration or null if security is not configured
-     * @param connectionConfiguration the underlying HTTP connection configuration or null if defaults should be used
+     * @param securityConfig the security configuration or null if security is not configured
+     * @param connConfig     the underlying HTTP connection configuration or null if defaults should be used
+     * @param handlers       optional handlers, may be null.
      */
-    public AbstractMetroTargetInterceptor(SecurityConfiguration securityConfiguration, ConnectionConfiguration connectionConfiguration, BindingHandlerRegistry handlerRegistry) {
-        this.securityConfiguration = securityConfiguration;
-        this.connectionConfiguration = connectionConfiguration;
-        this.handlerRegistry = handlerRegistry;
-
+    public AbstractMetroTargetInterceptor(SecurityConfiguration securityConfig, ConnectionConfiguration connConfig, List<Handler> handlers) {
+        this.securityConfig = securityConfig;
+        this.connectionConfig = connConfig;
+        this.handlers = handlers;
     }
+
     public Interceptor getNext() {
         return null;
     }
@@ -95,7 +93,7 @@ public abstract class AbstractMetroTargetInterceptor implements Interceptor {
      * @param provider the binding provider for the invocation
      */
     protected void configureSecurity(BindingProvider provider) {
-        if (securityConfiguration == null) {
+        if (securityConfig == null) {
             // no security
             return;
         }
@@ -103,11 +101,11 @@ public abstract class AbstractMetroTargetInterceptor implements Interceptor {
         // Places authentication information in the invocation context, which is used by the Fabric3 security environment to include the
         // credentials in the message header.
         Map<String, Object> context = provider.getRequestContext();
-        if (securityConfiguration.getUsername() != null) {
-            context.put(MetroConstants.USERNAME, securityConfiguration.getUsername());
-            context.put(MetroConstants.PASSWORD, securityConfiguration.getPassword());
-        } else if (securityConfiguration.getAlias() != null) {
-            context.put(MetroConstants.KEYSTORE_ALIAS, securityConfiguration.getAlias());
+        if (securityConfig.getUsername() != null) {
+            context.put(MetroConstants.USERNAME, securityConfig.getUsername());
+            context.put(MetroConstants.PASSWORD, securityConfig.getPassword());
+        } else if (securityConfig.getAlias() != null) {
+            context.put(MetroConstants.KEYSTORE_ALIAS, securityConfig.getAlias());
         }
     }
 
@@ -117,40 +115,37 @@ public abstract class AbstractMetroTargetInterceptor implements Interceptor {
      * @param provider the binding provider for the invocation
      */
     protected void configureConnection(BindingProvider provider) {
-        if (connectionConfiguration == null) {
+        if (connectionConfig == null) {
             // use defaults
             return;
         }
         Map<String, Object> context = provider.getRequestContext();
-        if (connectionConfiguration.getConnectTimeout() != ConnectionConfiguration.DEFAULT) {
-            context.put(JAXWSProperties.CONNECT_TIMEOUT, connectionConfiguration.getConnectTimeout());
+        if (connectionConfig.getConnectTimeout() != ConnectionConfiguration.DEFAULT) {
+            context.put(JAXWSProperties.CONNECT_TIMEOUT, connectionConfig.getConnectTimeout());
         }
-        if (connectionConfiguration.getRequestTimeout() != ConnectionConfiguration.DEFAULT) {
-            context.put(JAXWSProperties.REQUEST_TIMEOUT, connectionConfiguration.getRequestTimeout());
+        if (connectionConfig.getRequestTimeout() != ConnectionConfiguration.DEFAULT) {
+            context.put(JAXWSProperties.REQUEST_TIMEOUT, connectionConfig.getRequestTimeout());
         }
-        if (connectionConfiguration.getClientStreamingChunkSize() != ConnectionConfiguration.DEFAULT) {
-            context.put(JAXWSProperties.HTTP_CLIENT_STREAMING_CHUNK_SIZE, connectionConfiguration.getClientStreamingChunkSize());
+        if (connectionConfig.getClientStreamingChunkSize() != ConnectionConfiguration.DEFAULT) {
+            context.put(JAXWSProperties.HTTP_CLIENT_STREAMING_CHUNK_SIZE, connectionConfig.getClientStreamingChunkSize());
         }
     }
-    
+
     /**
      * Configures the outbound HTTP connection.
      *
      * @param provider the binding provider for the invocation
      */
     protected void loadHandlers(BindingProvider provider) {
+        if (handlers == null) {
+            return;
+        }
         String endpointPath = (String) provider.getRequestContext().get(BindingProvider.ENDPOINT_ADDRESS_PROPERTY);
         if (endpointPath == null) {
-        	// Nothing to bind
-        	return;
+            // Nothing to bind
+            return;
         }
-// TODO re-enable
-//    	List<BindingHandler<?>> handlerDefinitions = handlerRegistry.loadBindingHandlers(WsBindingDefinition.BINDING_QNAME, endpointPath);
-//    	ArrayList<Handler> soapHandlers = new ArrayList<Handler>();
-//    	for (BindingHandler<?> bh : handlerDefinitions) {
-//    		soapHandlers.add(new SOAPMessageHandlerAdapter( bh ));
-//		}
-//    	provider.getBinding().setHandlerChain(soapHandlers);
+        provider.getBinding().setHandlerChain(handlers);
     }
 
 }

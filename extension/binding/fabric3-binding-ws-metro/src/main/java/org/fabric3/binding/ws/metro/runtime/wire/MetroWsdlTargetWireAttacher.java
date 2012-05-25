@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.handler.Handler;
 
 import com.sun.xml.wss.SecurityEnvironment;
 import org.oasisopen.sca.annotation.Reference;
@@ -76,7 +77,7 @@ public class MetroWsdlTargetWireAttacher implements TargetWireAttacher<MetroWsdl
     private SecurityEnvironment securityEnvironment;
     private ExecutorService executorService;
     private ArtifactCache cache;
-	private BindingHandlerRegistry handlerRegistry;
+    private BindingHandlerRegistry handlerRegistry;
 
     public MetroWsdlTargetWireAttacher(@Reference FeatureResolver resolver,
                                        @Reference SecurityEnvironment securityEnvironment,
@@ -116,10 +117,13 @@ public class MetroWsdlTargetWireAttacher implements TargetWireAttacher<MetroWsdl
 
         SecurityConfiguration securityConfiguration = target.getSecurityConfiguration();
         ConnectionConfiguration connectionConfiguration = target.getConnectionConfiguration();
+
+        List<Handler> handlers = null;
+
         for (InvocationChain chain : wire.getInvocationChains()) {
             boolean oneWay = chain.getPhysicalOperation().isOneWay();
             MetroDispatchTargetInterceptor targetInterceptor =
-                    new MetroDispatchTargetInterceptor(proxyFactory, oneWay, securityConfiguration, connectionConfiguration, handlerRegistry);
+                    new MetroDispatchTargetInterceptor(proxyFactory, oneWay, securityConfiguration, connectionConfiguration, handlers);
             chain.addInterceptor(targetInterceptor);
         }
 

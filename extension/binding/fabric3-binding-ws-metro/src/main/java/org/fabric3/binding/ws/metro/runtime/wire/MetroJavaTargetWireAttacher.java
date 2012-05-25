@@ -48,8 +48,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPMessage;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.handler.Handler;
 
 import com.sun.xml.wss.SecurityEnvironment;
 import org.oasisopen.sca.annotation.Reference;
@@ -65,6 +67,7 @@ import org.fabric3.binding.ws.metro.runtime.core.MetroProxyObjectFactory;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
+import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
@@ -90,7 +93,7 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
     private ExecutorService executorService;
     private XMLInputFactory xmlInputFactory;
     private InterceptorMonitor monitor;
-	private BindingHandlerRegistry handlerRegistry;
+    private BindingHandlerRegistry handlerRegistry;
 
 
     public MetroJavaTargetWireAttacher(@Reference ClassLoaderRegistry registry,
@@ -149,16 +152,18 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
 
                 WebServiceFeature[] features = resolver.getFeatures(requestedIntents);
 
+                List<Handler> handlers = null;
                 ObjectFactory<?> proxyFactory = new MetroProxyObjectFactory(endpointDefinition,
                                                                             wsdlLocation,
                                                                             generatedWsdl,
                                                                             seiClass,
                                                                             features,
+                                                                            handlers,
                                                                             executorService,
                                                                             securityEnvironment,
                                                                             xmlInputFactory);
+                attachInterceptors(seiClass, target, wire, proxyFactory, handlers);
 
-                attachInterceptors(seiClass, target, wire, proxyFactory);
             } finally {
                 Thread.currentThread().setContextClassLoader(old);
             }
@@ -189,7 +194,11 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
         return schemas;
     }
 
-    private void attachInterceptors(Class<?> seiClass, MetroJavaTargetDefinition target, Wire wire, ObjectFactory<?> proxyFactory) {
+    private void attachInterceptors(Class<?> seiClass,
+                                    MetroJavaTargetDefinition target,
+                                    Wire wire,
+                                    ObjectFactory<?> proxyFactory,
+                                    List<Handler> handlers) {
         Method[] methods = seiClass.getMethods();
         SecurityConfiguration securityConfiguration = target.getSecurityConfiguration();
         ConnectionConfiguration connectionConfiguration = target.getConnectionConfiguration();
@@ -203,8 +212,14 @@ public class MetroJavaTargetWireAttacher implements TargetWireAttacher<MetroJava
                 }
             }
             boolean oneWay = chain.getPhysicalOperation().isOneWay();
-            MetroJavaTargetInterceptor targetInterceptor =
-                    new MetroJavaTargetInterceptor(proxyFactory, method, oneWay, securityConfiguration, connectionConfiguration, retries, handlerRegistry, monitor);
+            MetroJavaTargetInterceptor targetInterceptor = new MetroJavaTargetInterceptor(proxyFactory,
+                                                                                          method,
+                                                                                          oneWay,
+                                                                                          securityConfiguration,
+                                                                                          connectionConfiguration,
+                                                                                          retries,
+                                                                                          handlers,
+                                                                                          monitor);
             chain.addInterceptor(targetInterceptor);
         }
     }

@@ -40,10 +40,10 @@ package org.fabric3.binding.ws.metro.runtime.core;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
-
-import javax.xml.rpc.handler.HandlerRegistry;
+import java.util.List;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceException;
+import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -51,7 +51,6 @@ import org.oasisopen.sca.ServiceUnavailableException;
 
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -81,8 +80,8 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
      * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the underlying HTTP connection configuration or null if defaults should be used
      * @param retries                 the number of retries to attempt if the service is unavailable
+     * @param handlers                messages handlers or null
      * @param monitor                 the monitor
-     * @param handlerRegistry 
      */
     public MetroJavaTargetInterceptor(ObjectFactory<?> proxyFactory,
                                       Method method,
@@ -90,9 +89,9 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
                                       SecurityConfiguration securityConfiguration,
                                       ConnectionConfiguration connectionConfiguration,
                                       int retries,
-                                      BindingHandlerRegistry handlerRegistry,
+                                      List<Handler> handlers,
                                       InterceptorMonitor monitor) {
-        super(securityConfiguration, connectionConfiguration, handlerRegistry);
+        super(securityConfiguration, connectionConfiguration, handlers);
         this.proxyFactory = proxyFactory;
         this.method = method;
         this.oneWay = oneWay;

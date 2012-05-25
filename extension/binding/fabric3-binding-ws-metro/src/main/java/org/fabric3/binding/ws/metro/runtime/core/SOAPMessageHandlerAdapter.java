@@ -7,8 +7,11 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import org.oasisopen.sca.ServiceRuntimeException;
+
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
 import org.fabric3.spi.binding.handler.BindingHandler;
+import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
@@ -20,18 +23,10 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
  * @version $Rev$ $Date$
  */
 public class SOAPMessageHandlerAdapter implements SOAPHandler<SOAPMessageContext> {
-
     private BindingHandler<SOAPMessage> delegateHandler;
 
-    public SOAPMessageHandlerAdapter(BindingHandler<?> handler) {
-        delegateHandler = (BindingHandler) handler;
-    }
-
-    public void close(MessageContext mc) {
-    }
-
-    public boolean handleFault(SOAPMessageContext smc) {
-        return true;
+    public SOAPMessageHandlerAdapter(BindingHandler<SOAPMessage> handler) {
+        delegateHandler = handler;
     }
 
     public boolean handleMessage(SOAPMessageContext smc) {
@@ -39,9 +34,9 @@ public class SOAPMessageHandlerAdapter implements SOAPHandler<SOAPMessageContext
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
         workContext = (WorkContext) (workContext == null ? smc.get(MetroConstants.WORK_CONTEXT) : workContext);
         if (workContext == null) {
-            throw new AssertionError("Work context not set");
+            throw new ServiceRuntimeException("Work context not set");
         }
-        MessageImpl msg = new MessageImpl(smc.getMessage(), false, workContext);
+        Message msg = new MessageImpl(smc.getMessage(), false, workContext);
         if (outbound) {
             delegateHandler.handleOutbound(msg, smc.getMessage());
         } else {
@@ -52,6 +47,13 @@ public class SOAPMessageHandlerAdapter implements SOAPHandler<SOAPMessageContext
 
     public Set<QName> getHeaders() {
         return null;
+    }
+
+    public void close(MessageContext mc) {
+    }
+
+    public boolean handleFault(SOAPMessageContext smc) {
+        return true;
     }
 
 }

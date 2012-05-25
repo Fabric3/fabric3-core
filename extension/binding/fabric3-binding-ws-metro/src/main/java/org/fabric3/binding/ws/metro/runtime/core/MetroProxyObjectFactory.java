@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import javax.xml.namespace.QName;
@@ -52,6 +53,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.handler.Handler;
 
 import com.sun.xml.ws.api.WSService;
 import com.sun.xml.ws.api.model.wsdl.WSDLModel;
@@ -102,6 +104,7 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
      * @param wsitConfiguration   WSIT policy configuration for the proxy, or null if policy is not configured
      * @param seiClass            the target SEI
      * @param features            web services features to enable on the generated proxy
+     * @param handlers            the handlers or null
      * @param executorService     the executor service used for dispatching invocations
      * @param securityEnvironment the Metro host runtime security SPI implementation
      * @param xmlInputFactory     the StAX XML factory to use for WSDL parsing
@@ -111,7 +114,7 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
                                    URL wsitConfiguration,
                                    Class<?> seiClass,
                                    WebServiceFeature[] features,
-                                   ExecutorService executorService,
+                                   List<Handler> handlers, ExecutorService executorService,
                                    SecurityEnvironment securityEnvironment,
                                    XMLInputFactory xmlInputFactory) {
         this.serviceName = endpointDefinition.getServiceName();

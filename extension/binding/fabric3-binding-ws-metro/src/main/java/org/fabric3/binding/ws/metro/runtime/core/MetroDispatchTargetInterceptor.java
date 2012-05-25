@@ -37,9 +37,8 @@
  */
 package org.fabric3.binding.ws.metro.runtime.core;
 
+import java.util.List;
 import java.util.Map;
-
-import javax.xml.rpc.handler.HandlerRegistry;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -48,6 +47,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
+import javax.xml.ws.handler.Handler;
 
 import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -55,7 +55,6 @@ import org.w3c.dom.Node;
 
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -63,7 +62,7 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 /**
  * Interceptor for invoking a JAX-WS <code>Dispatch</code> instance. Used by invocation chains that dispatch to a web service endpoint defined by a
  * WSDL contract (as opposed to a Java interface).
- * <p>
+ * <p/>
  * This interceptor requires message payloads to be a DOM type.
  *
  * @version $Rev: 7476 $ $Date: 2009-08-15 01:25:27 -0400 (Sat, 15 Aug 2009) $
@@ -80,14 +79,14 @@ public class MetroDispatchTargetInterceptor extends AbstractMetroTargetIntercept
      * @param oneWay                  true if the operation is non-blocking
      * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the underlying HTTP connection configuration or null if defaults should be used
-     * @param handlerRegistry         the global binding handler registry
+     * @param handlers                message handlers or null
      */
     public MetroDispatchTargetInterceptor(MetroDispatchObjectFactory dispatchFactory,
                                           boolean oneWay,
                                           SecurityConfiguration securityConfiguration,
-                                          ConnectionConfiguration connectionConfiguration, 
-                                          BindingHandlerRegistry handlerRegistry) {
-        super(securityConfiguration, connectionConfiguration, handlerRegistry);
+                                          ConnectionConfiguration connectionConfiguration,
+                                          List<Handler> handlers) {
+        super(securityConfiguration, connectionConfiguration, handlers);
         this.proxyFactory = dispatchFactory;
         this.oneWay = oneWay;
         transformerFactory = TransformerFactory.newInstance();
