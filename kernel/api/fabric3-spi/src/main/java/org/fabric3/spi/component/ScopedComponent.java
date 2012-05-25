@@ -43,7 +43,7 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * A component whose implementation instances are managed by a {@link ScopeContainer}. This interface defines callbacks used by the scope container to
- * change a the state of an implementation.
+ * change the state of an implementation.
  *
  * @version $Rev$ $Date$
  */
