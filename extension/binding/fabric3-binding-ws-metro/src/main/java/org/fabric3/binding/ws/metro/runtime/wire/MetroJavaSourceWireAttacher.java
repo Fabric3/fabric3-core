@@ -62,6 +62,7 @@ import org.fabric3.binding.ws.metro.util.BindingIdResolver;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
 import org.fabric3.spi.binding.handler.BindingHandler;
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
@@ -85,8 +86,9 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
                                        @Reference BindingIdResolver bindingIdResolver,
                                        @Reference WireAttacherHelper wireAttacherHelper,
                                        @Reference ArtifactCache artifactCache,
-                                       @Reference EndpointService endpointService) {
-        super(endpointService);
+                                       @Reference EndpointService endpointService,
+                                       @Reference BindingHandlerRegistry handlerRegistry) {
+        super(endpointService, handlerRegistry);
         this.classLoaderRegistry = classLoaderRegistry;
         this.featureResolver = featureResolver;
         this.bindingIdResolver = bindingIdResolver;

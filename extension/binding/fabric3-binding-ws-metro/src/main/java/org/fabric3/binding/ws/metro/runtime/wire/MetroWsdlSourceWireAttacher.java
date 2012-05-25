@@ -60,6 +60,7 @@ import org.fabric3.binding.ws.metro.util.BindingIdResolver;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
 import org.fabric3.spi.binding.handler.BindingHandler;
+import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.wire.InvocationChain;
@@ -78,8 +79,9 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
     public MetroWsdlSourceWireAttacher(@Reference FeatureResolver featureResolver,
                                        @Reference BindingIdResolver bindingIdResolver,
                                        @Reference EndpointService endpointService,
-                                       @Reference ArtifactCache cache) {
-        super(endpointService);
+                                       @Reference ArtifactCache cache,
+                                       @Reference BindingHandlerRegistry handlerRegistry) {
+        super(endpointService, handlerRegistry);
         this.featureResolver = featureResolver;
         this.bindingIdResolver = bindingIdResolver;
         this.cache = cache;

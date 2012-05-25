@@ -40,46 +40,37 @@ package org.fabric3.binding.ws.metro.runtime.wire;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.soap.SOAPMessage;
+import javax.xml.ws.handler.Handler;
 
-import org.fabric3.binding.ws.metro.provision.MetroJavaTargetDefinition;
-import org.fabric3.binding.ws.metro.provision.MetroSourceDefinition;
-import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
+import org.fabric3.binding.ws.metro.provision.MetroTargetDefinition;
+import org.fabric3.binding.ws.metro.runtime.core.SOAPMessageHandlerAdapter;
 import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.builder.component.SourceWireAttacher;
+import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Base source wire attacher that provisions web service endpoints.
+ * Base {@link TargetWireAttacher} functionality for web services.
  *
- * @version $Rev: 7467 $ $Date: 2009-08-06 18:57:21 +0200 (Thu, 06 Aug 2009) $
+ * @version $Rev$ $Date$
  */
-public abstract class AbstractMetroSourceWireAttacher<T extends MetroSourceDefinition> implements SourceWireAttacher<T> {
-    protected EndpointService endpointService;
+public abstract class AbstractMetroTargetWireAttacher<T extends PhysicalTargetDefinition> implements TargetWireAttacher<T> {
     private BindingHandlerRegistry handlerRegistry;
 
-    public AbstractMetroSourceWireAttacher(EndpointService endpointService, BindingHandlerRegistry handlerRegistry) {
-        this.endpointService = endpointService;
+    public AbstractMetroTargetWireAttacher(BindingHandlerRegistry handlerRegistry) {
         this.handlerRegistry = handlerRegistry;
     }
 
-    public void detachObjectFactory(T source, PhysicalTargetDefinition target) {
-    }
-
-    public void attachObjectFactory(T source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target) {
-        throw new UnsupportedOperationException();
-    }
-
-    protected List<BindingHandler<SOAPMessage>> createHandlers(MetroSourceDefinition target) {
+    protected List<Handler> createHandlers(MetroTargetDefinition target) {
         if (target.getHandlers().isEmpty()) {
             return null;
         }
-        List<BindingHandler<SOAPMessage>> handlers = new ArrayList<BindingHandler<SOAPMessage>>();
+        List<Handler> handlers = new ArrayList<Handler>();
         for (PhysicalBindingHandlerDefinition handlerDefinition : target.getHandlers()) {
             BindingHandler<SOAPMessage> handler = handlerRegistry.createHandler(SOAPMessage.class, handlerDefinition);
-            handlers.add(handler);
+            SOAPMessageHandlerAdapter adaptor = new SOAPMessageHandlerAdapter(handler);
+            handlers.add(adaptor);
         }
         return handlers;
     }
