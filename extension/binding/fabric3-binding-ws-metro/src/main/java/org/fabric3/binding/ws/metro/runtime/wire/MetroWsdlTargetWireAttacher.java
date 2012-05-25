@@ -108,22 +108,24 @@ public class MetroWsdlTargetWireAttacher implements TargetWireAttacher<MetroWsdl
         }
 
 
+        SecurityConfiguration securityConfiguration = target.getSecurityConfiguration();
+        ConnectionConfiguration connectionConfiguration = target.getConnectionConfiguration();
+        List<Handler> handlers = null;
+
         MetroDispatchObjectFactory proxyFactory = new MetroDispatchObjectFactory(endpointDefinition,
                                                                                  wsdlLocation,
                                                                                  null,
+                                                                                 securityConfiguration,
+                                                                                 connectionConfiguration,
+                                                                                 handlers,
                                                                                  features,
                                                                                  executorService,
                                                                                  securityEnvironment);
 
-        SecurityConfiguration securityConfiguration = target.getSecurityConfiguration();
-        ConnectionConfiguration connectionConfiguration = target.getConnectionConfiguration();
-
-        List<Handler> handlers = null;
 
         for (InvocationChain chain : wire.getInvocationChains()) {
             boolean oneWay = chain.getPhysicalOperation().isOneWay();
-            MetroDispatchTargetInterceptor targetInterceptor =
-                    new MetroDispatchTargetInterceptor(proxyFactory, oneWay, securityConfiguration, connectionConfiguration, handlers);
+            MetroDispatchTargetInterceptor targetInterceptor =  new MetroDispatchTargetInterceptor(proxyFactory, oneWay);
             chain.addInterceptor(targetInterceptor);
         }
 

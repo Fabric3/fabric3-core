@@ -50,6 +50,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
@@ -67,10 +68,11 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
+import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Creates a service proxy that can be shared among invocation chains of a wire. The proxy must be lazily created as opposed to during wire attachment
@@ -78,7 +80,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  *
  * @version $Rev$ $Date$
  */
-public class MetroProxyObjectFactory implements ObjectFactory<Object> {
+public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory<Object> {
     private static final QName DEFINITIONS = new QName("http://schemas.xmlsoap.org/wsdl/", "definitions");
     private static final EntityResolver RESOLVER = new NullResolver();
 
@@ -99,24 +101,30 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
     /**
      * Constructor.
      *
-     * @param endpointDefinition  the target endpoint definition
-     * @param wsdlLocation        the location of the target service WSDL
-     * @param wsitConfiguration   WSIT policy configuration for the proxy, or null if policy is not configured
-     * @param seiClass            the target SEI
-     * @param features            web services features to enable on the generated proxy
-     * @param handlers            the handlers or null
-     * @param executorService     the executor service used for dispatching invocations
-     * @param securityEnvironment the Metro host runtime security SPI implementation
-     * @param xmlInputFactory     the StAX XML factory to use for WSDL parsing
+     * @param endpointDefinition      the target endpoint definition
+     * @param wsdlLocation            the location of the target service WSDL
+     * @param wsitConfiguration       WSIT policy configuration for the proxy, or null if policy is not configured
+     * @param seiClass                the target SEI
+     * @param features                web services features to enable on the generated proxy
+     * @param securityConfiguration   the security configuration or null if security is not configured
+     * @param connectionConfiguration the underlying HTTP connection configuration or null if defaults should be used
+     * @param handlers                messages handlers or null
+     * @param executorService         the executor service used for dispatching invocations
+     * @param securityEnvironment     the Metro host runtime security SPI implementation
+     * @param xmlInputFactory         the StAX XML factory to use for WSDL parsing
      */
     public MetroProxyObjectFactory(ReferenceEndpointDefinition endpointDefinition,
                                    URL wsdlLocation,
                                    URL wsitConfiguration,
                                    Class<?> seiClass,
                                    WebServiceFeature[] features,
-                                   List<Handler> handlers, ExecutorService executorService,
+                                   SecurityConfiguration securityConfiguration,
+                                   ConnectionConfiguration connectionConfiguration,
+                                   List<Handler> handlers,
+                                   ExecutorService executorService,
                                    SecurityEnvironment securityEnvironment,
                                    XMLInputFactory xmlInputFactory) {
+        super(securityConfiguration, connectionConfiguration, handlers);
         this.serviceName = endpointDefinition.getServiceName();
         this.serviceNameDefault = endpointDefinition.isDefaultServiceName();
         this.portTypeName = endpointDefinition.getPortTypeName();
@@ -184,7 +192,11 @@ public class MetroProxyObjectFactory implements ObjectFactory<Object> {
             // use the kernel scheduler for dispatching
             service.setExecutor(executorService);
             service.getPorts();
-            return service.getPort(portName, seiClass, features);
+            BindingProvider port = (BindingProvider) service.getPort(portName, seiClass, features);
+            configureConnection(port);
+            configureSecurity(port);
+            configureHandlers(port);
+            return port;
         } catch (InaccessibleWSDLException e) {
             throw new ObjectCreationException(e);
         } catch (MalformedURLException e) {

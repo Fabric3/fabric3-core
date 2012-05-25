@@ -40,27 +40,32 @@ package org.fabric3.binding.ws.metro.runtime.core;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.handler.Handler;
 
 import com.sun.xml.ws.api.WSService;
 import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
 import com.sun.xml.wss.SecurityEnvironment;
 
+import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
+import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Creates JAX-WS <code>Dispatch</code> instances that can be shared among wire invocation chains.
  *
  * @version $Rev$ $Date$
  */
-public class MetroDispatchObjectFactory implements ObjectFactory<Dispatch<Source>> {
+public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFactory<Dispatch<Source>> {
     private QName serviceName;
     private QName portName;
     private WebServiceFeature[] features;
@@ -73,19 +78,26 @@ public class MetroDispatchObjectFactory implements ObjectFactory<Dispatch<Source
     /**
      * Constructor.
      *
-     * @param endpointDefinition  the target endpoint definition
-     * @param wsdlLocation        the WSDL defining the target service contract
-     * @param wsitConfiguration   WSIT policy configuration for the proxy, or null if policy is not configured
-     * @param features            web services features to enable on the generated proxy
-     * @param executorService     the executor service used for dispatching invocations
-     * @param securityEnvironment the Metro host runtime security SPI implementation
+     * @param endpointDefinition      the target endpoint definition
+     * @param wsdlLocation            the WSDL defining the target service contract
+     * @param wsitConfiguration       WSIT policy configuration for the proxy, or null if policy is not configured
+     * @param securityConfiguration   the security configuration or null if security is not configured
+     * @param connectionConfiguration the underlying HTTP connection configuration or null if defaults should be used
+     * @param handlers                messages handlers or null
+     * @param features                web services features to enable on the generated proxy
+     * @param executorService         the executor service used for dispatching invocations
+     * @param securityEnvironment     the Metro host runtime security SPI implementation
      */
     public MetroDispatchObjectFactory(ReferenceEndpointDefinition endpointDefinition,
                                       URL wsdlLocation,
                                       File wsitConfiguration,
+                                      SecurityConfiguration securityConfiguration,
+                                      ConnectionConfiguration connectionConfiguration,
+                                      List<Handler> handlers,
                                       WebServiceFeature[] features,
                                       ExecutorService executorService,
                                       SecurityEnvironment securityEnvironment) {
+        super(securityConfiguration, connectionConfiguration, handlers);
         this.wsdlLocation = wsdlLocation;
         this.serviceName = endpointDefinition.getServiceName();
         this.portName = endpointDefinition.getPortName();
@@ -127,7 +139,12 @@ public class MetroDispatchObjectFactory implements ObjectFactory<Dispatch<Source
             service = WSService.create(wsdlLocation, serviceName, params);
             // use the kernel scheduler for dispatching
             service.setExecutor(executorService);
-            return service.createDispatch(portName, Source.class, Service.Mode.PAYLOAD, features);
+            Dispatch<Source> dispatch = service.createDispatch(portName, Source.class, Service.Mode.PAYLOAD, features);
+            configureConnection(dispatch);
+            configureSecurity(dispatch);
+            configureHandlers(dispatch);
+            setSOAPAction(dispatch);
+            return dispatch;
         } catch (InaccessibleWSDLException e) {
             throw new ObjectCreationException(e);
         } catch (MalformedURLException e) {
@@ -137,5 +154,10 @@ public class MetroDispatchObjectFactory implements ObjectFactory<Dispatch<Source
 
     }
 
+    private void setSOAPAction(Dispatch<Source> dispatch) {
+        Map<String, Object> context = dispatch.getRequestContext();
+        context.put(BindingProvider.SOAPACTION_USE_PROPERTY, true);
+        context.put(BindingProvider.SOAPACTION_URI_PROPERTY, "");
+    }
 
 }

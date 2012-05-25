@@ -24,7 +24,7 @@ public class MetroJavaTargetInterceptorTestCase extends TestCase {
     private InterceptorMonitor monitor;
 
     public void testRetries() throws Exception {
-        MetroJavaTargetInterceptor interceptor = new MetroJavaTargetInterceptor(proxyFactory, method, false, null, null, 1, null, monitor);
+        MetroJavaTargetInterceptor interceptor = new MetroJavaTargetInterceptor(proxyFactory, method, false, 1, monitor);
 
         proxy.invoke();
         EasyMock.expectLastCall().andThrow(new WebServiceException(new SocketTimeoutException()));
@@ -37,7 +37,7 @@ public class MetroJavaTargetInterceptorTestCase extends TestCase {
     }
 
     public void testNoRetry() throws Exception {
-        MetroJavaTargetInterceptor interceptor = new MetroJavaTargetInterceptor(proxyFactory, method, false, null, null, 0, null , monitor);
+        MetroJavaTargetInterceptor interceptor = new MetroJavaTargetInterceptor(proxyFactory, method, false, 0 , monitor);
 
         proxy.invoke();
         EasyMock.expectLastCall().andThrow(new WebServiceException(new SocketTimeoutException()));

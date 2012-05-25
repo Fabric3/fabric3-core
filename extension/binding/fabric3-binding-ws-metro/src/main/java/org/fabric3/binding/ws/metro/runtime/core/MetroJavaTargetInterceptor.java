@@ -40,17 +40,12 @@ package org.fabric3.binding.ws.metro.runtime.core;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
-import java.util.List;
-import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceException;
-import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 
-import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
-import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -77,21 +72,14 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
      * @param proxyFactory            the service proxy factory
      * @param method                  method corresponding to the invoked operation
      * @param oneWay                  true if the operation is non-blocking
-     * @param securityConfiguration   the security configuration or null if security is not configured
-     * @param connectionConfiguration the underlying HTTP connection configuration or null if defaults should be used
      * @param retries                 the number of retries to attempt if the service is unavailable
-     * @param handlers                messages handlers or null
      * @param monitor                 the monitor
      */
     public MetroJavaTargetInterceptor(ObjectFactory<?> proxyFactory,
                                       Method method,
                                       boolean oneWay,
-                                      SecurityConfiguration securityConfiguration,
-                                      ConnectionConfiguration connectionConfiguration,
                                       int retries,
-                                      List<Handler> handlers,
                                       InterceptorMonitor monitor) {
-        super(securityConfiguration, connectionConfiguration, handlers);
         this.proxyFactory = proxyFactory;
         this.method = method;
         this.oneWay = oneWay;
@@ -164,12 +152,7 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
 
     private Object createProxy() {
         try {
-            Object proxy = proxyFactory.getInstance();
-            BindingProvider provider = (BindingProvider) proxy;
-            configureSecurity(provider);
-            configureConnection(provider);
-            loadHandlers(provider);
-            return proxy;
+            return proxyFactory.getInstance();
         } catch (ObjectCreationException e) {
             throw new ServiceRuntimeException(e);
         }
