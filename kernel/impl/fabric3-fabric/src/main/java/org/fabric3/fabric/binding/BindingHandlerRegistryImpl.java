@@ -65,6 +65,11 @@ public class BindingHandlerRegistryImpl implements BindingHandlerRegistry {
         this.componentManager = componentManager;
     }
 
+    public BindingHandler<?> createHandler(BindingHandlerDefinition definition) {
+        return new BindingHandlerLazyLoadDecorator<Object>(definition.getTarget(), componentManager);
+    }
+
+
     @SuppressWarnings({"unchecked"})
     public synchronized void register(BindingHandlerRegistryCallback callback) {
         QName binding = callback.getType();
@@ -114,14 +119,6 @@ public class BindingHandlerRegistryImpl implements BindingHandlerRegistry {
         BindingHandlerRegistryCallback callback = callbacks.get(binding);
         if (callback != null) {
             callback.update(Collections.unmodifiableList(list));
-        }
-    }
-
-    private BindingHandler<?> createHandler(BindingHandlerDefinition bh) {
-        try {
-            return new BindingHandlerLazyLoadDecorator<Object>(bh.getTarget(), componentManager);
-        } catch (Exception cause) {
-            throw new RuntimeException(cause);
         }
     }
 

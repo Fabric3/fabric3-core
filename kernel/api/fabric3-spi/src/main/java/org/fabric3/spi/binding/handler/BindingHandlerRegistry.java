@@ -46,6 +46,14 @@ package org.fabric3.spi.binding.handler;
 public interface BindingHandlerRegistry {
 
     /**
+     * Creates and returns a {@link BindingHandler} for the given definition.
+     *
+     * @param definition the definition
+     * @return the handler
+     */
+    BindingHandler<?> createHandler(BindingHandlerDefinition definition);
+
+    /**
      * Registers to receive callbacks when {@link BindingHandler}s for a binding become available.
      *
      * @param callback the callback
@@ -72,5 +80,5 @@ public interface BindingHandlerRegistry {
      * @param handler the handler
      */
     void unregister(BindingHandler<?> handler);
-    
+
 }
