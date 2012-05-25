@@ -129,9 +129,11 @@ public class JettyServiceImpl implements JettyService, Transport {
     private final Object joinLock = new Object();
     private boolean enableHttps;
     private int configuredHttpPort = -1;
+    private String configuredHttpHost;
     private Port selectedHttp;
     private int configuredHttpsPort = -1;
     private Port selectedHttps;
+    private String configuredHttpsHost;
 
     // log file attributes
     private String logFilename;   //
@@ -223,6 +225,11 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     @Property(required = false)
+    public void setHttpHost(String host){
+        configuredHttpHost = host;
+    }
+
+    @Property(required = false)
     public void setHttpsPort(String httpsPort) {
         String[] tokens = httpsPort.split("-");
         if (tokens.length == 1) {
@@ -232,6 +239,11 @@ public class JettyServiceImpl implements JettyService, Transport {
         } else if (tokens.length == 2) {
             throw new IllegalArgumentException("Port ranges no longer supported via HTTP configuration. Use the runtime port.range attribute");
         }
+    }
+
+    @Property(required = false)
+    public void setHttpsHost(String host){
+        configuredHttpsHost = host;
     }
 
     @Property(required = false)
@@ -536,6 +548,7 @@ public class JettyServiceImpl implements JettyService, Transport {
             sslConnector = new SslSelectChannelConnector();
             sslConnector.setAllowRenegotiate(true);
             sslConnector.setPort(selectedHttps.getNumber());
+            sslConnector.setHost(configuredHttpsHost);
             sslConnector.setKeystore(keystore);
             sslConnector.setKeyPassword(keyPassword);
             sslConnector.setPassword(certPassword);
@@ -547,6 +560,7 @@ public class JettyServiceImpl implements JettyService, Transport {
             httpConnector = new SelectChannelConnector();
             httpConnector.setPort(selectedHttp.getNumber());
             httpConnector.setSoLingerTime(-1);
+            httpConnector.setHost(configuredHttpHost);
             server.setConnectors(new Connector[]{httpConnector});
         }
     }

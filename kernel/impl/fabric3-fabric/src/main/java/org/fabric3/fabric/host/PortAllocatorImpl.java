@@ -40,6 +40,7 @@ package org.fabric3.fabric.host;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -76,6 +77,7 @@ import org.fabric3.spi.host.PortAllocator;
 public class PortAllocatorImpl implements PortAllocator {
     private int min = NOT_ALLOCATED;
     private int max = NOT_ALLOCATED;
+    private String configuredHost;
     private Map<String, List<Port>> allocated = new HashMap<String, List<Port>>();
     private LinkedList<Integer> unallocated = new LinkedList<Integer>();
 
@@ -89,6 +91,11 @@ public class PortAllocatorImpl implements PortAllocator {
         } else {
             throw new IllegalArgumentException("Invalid port range specified in the runtime system configuration");
         }
+    }
+
+    @Property(required = false)
+    public void setHost(String host){
+        configuredHost = host;
     }
 
     @Init
@@ -265,10 +272,14 @@ public class PortAllocatorImpl implements PortAllocator {
     private SocketPair lockPort(int port) {
         try {
             ServerSocket serverSocket = new ServerSocket();
-            InetSocketAddress socketAddress = new InetSocketAddress(port);
+
+            InetAddress address = null;
+            if(configuredHost != null)
+                address = InetAddress.getByName(configuredHost);
+            InetSocketAddress socketAddress = new InetSocketAddress(address,port);
             serverSocket.setReuseAddress(true);
             serverSocket.bind(socketAddress);
-            DatagramSocket datagramSocket = new DatagramSocket(port);
+            DatagramSocket datagramSocket = new DatagramSocket(port,address);
             datagramSocket.setReuseAddress(true);
             return new SocketPair(serverSocket, datagramSocket);
         } catch (IOException e) {
