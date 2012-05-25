@@ -42,6 +42,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.WebServiceFeature;
 
 import com.sun.xml.ws.api.BindingID;
@@ -58,6 +59,7 @@ import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
 import org.fabric3.binding.ws.metro.util.BindingIdResolver;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
+import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.wire.InvocationChain;
@@ -107,7 +109,9 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
             URL wsdlLocation = cache.cache(servicePath, new ByteArrayInputStream(wsdl.getBytes()));
             List<URL> generatedSchemas = null;
 
-            DocumentInvoker invoker = new DocumentInvoker(invocationChains);
+            List<BindingHandler<SOAPMessage>> handlers = null;
+
+            DocumentInvoker invoker = new DocumentInvoker(invocationChains, handlers);
             EndpointConfiguration configuration = new EndpointConfiguration(F3Provider.class,
                                                                             serviceName,
                                                                             portName,

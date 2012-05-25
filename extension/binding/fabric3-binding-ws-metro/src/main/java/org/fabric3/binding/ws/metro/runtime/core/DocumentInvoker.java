@@ -62,6 +62,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
+import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
@@ -76,15 +77,18 @@ import org.fabric3.spi.wire.InvocationChain;
  * @version $Rev$ $Date$
  */
 public class DocumentInvoker extends Invoker {
+    private List<BindingHandler<SOAPMessage>> handlers;
     private Map<String, InvocationChain> chains = new HashMap<String, InvocationChain>();
     private MessageFactory factory;
 
     /**
      * Constructor.
      *
-     * @param chains the invocation chains for the wire.
+     * @param chains   the invocation chains for the wire.
+     * @param handlers binding handlers, may be null
      */
-    public DocumentInvoker(List<InvocationChain> chains) {
+    public DocumentInvoker(List<InvocationChain> chains, List<BindingHandler<SOAPMessage>> handlers) {
+        this.handlers = handlers;
         for (InvocationChain chain : chains) {
             this.chains.put(chain.getPhysicalOperation().getName(), chain);
         }
@@ -103,7 +107,7 @@ public class DocumentInvoker extends Invoker {
     }
 
     public Object invoke(Packet packet, Method method, Object... args) throws InvocationTargetException {
-        // the work context is populated by the current tubline
+        // the work context is populated by the current tubeline
         WorkContext workContext = (WorkContext) packet.invocationProperties.get(MetroConstants.WORK_CONTEXT);
         if (workContext == null) {
             // programming error
@@ -128,6 +132,7 @@ public class DocumentInvoker extends Invoker {
             throw new AssertionError("No invocation chain found for WSDL operation: " + operationName);
         }
         Interceptor head = chains.get(operationName).getHeadInterceptor();
+        invokeHandlers(packet, input);
         Message ret = head.invoke(input);
 
         Object body = ret.getBody();
@@ -162,11 +167,25 @@ public class DocumentInvoker extends Invoker {
             // FIXME If SOAPFault, get details and use SAAJ to create SOAPMessage otherwise system exception and do below
             // The following only works for Java exceptions
             com.sun.xml.ws.api.message.Message fault = SOAPFaultBuilder.createSOAPFaultMessage(SOAPVersion.SOAP_11, null, e);
-            SOAPMessage message = fault.readAsSOAPMessage();
-            return message;
+            return fault.readAsSOAPMessage();
         } catch (SOAPException e2) {
             throw new WebServiceException(e2);
         }
     }
+
+
+    private void invokeHandlers(Packet packet, Message input) throws InvocationTargetException {
+        if (handlers != null) {
+            try {
+                SOAPMessage soapMessage = packet.getMessage().readAsSOAPMessage();
+                for (BindingHandler<SOAPMessage> handler : handlers) {
+                    handler.handleInbound(soapMessage, input);
+                }
+            } catch (SOAPException e) {
+                throw new InvocationTargetException(e);
+            }
+        }
+    }
+
 
 }

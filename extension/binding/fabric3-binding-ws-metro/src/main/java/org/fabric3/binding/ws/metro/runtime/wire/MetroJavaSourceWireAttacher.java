@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.WebServiceFeature;
 
 import com.sun.xml.ws.api.BindingID;
@@ -60,6 +61,7 @@ import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
 import org.fabric3.binding.ws.metro.util.BindingIdResolver;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
+import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
@@ -136,7 +138,10 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
                 if (!path.startsWith("/")) {
                     path = "/" + path;
                 }
-                JaxbInvoker invoker = new JaxbInvoker(invocationChains);
+
+                List<BindingHandler<SOAPMessage>> handlers = null;
+
+                JaxbInvoker invoker = new JaxbInvoker(invocationChains, handlers);
                 EndpointConfiguration configuration = new EndpointConfiguration(seiClass,
                                                                                 serviceName,
                                                                                 portName,

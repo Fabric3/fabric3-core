@@ -48,12 +48,15 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.WebServiceContext;
 
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.server.Invoker;
 
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
+import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
@@ -68,14 +71,17 @@ import org.fabric3.spi.wire.InvocationChain;
  * @version $Rev$ $Date$
  */
 public class JaxbInvoker extends Invoker {
+    private List<BindingHandler<SOAPMessage>> handlers;
     private Map<String, InvocationChain> chains = new HashMap<String, InvocationChain>();
 
     /**
      * Constructor.
      *
-     * @param chains Invocation chains.
+     * @param chains   Invocation chains.
+     * @param handlers optional handlers, may be null
      */
-    public JaxbInvoker(List<InvocationChain> chains) {
+    public JaxbInvoker(List<InvocationChain> chains, List<BindingHandler<SOAPMessage>> handlers) {
+        this.handlers = handlers;
         for (InvocationChain chain : chains) {
             this.chains.put(chain.getPhysicalOperation().getName(), chain);
         }
@@ -88,9 +94,12 @@ public class JaxbInvoker extends Invoker {
             // programming error
             throw new AssertionError("Work context not set");
         }
-        Message input = new MessageImpl(args, false, workContext);
 
+        Message input = new MessageImpl(args, false, workContext);
         Interceptor head = chains.get(method.getName()).getHeadInterceptor();
+
+        invokeHandlers(packet, input);
+
         Message ret = head.invoke(input);
 
         if (!ret.isFault()) {
@@ -106,6 +115,19 @@ public class JaxbInvoker extends Invoker {
      */
     @Override
     public void start(WebServiceContext wsc) {
+    }
+
+    private void invokeHandlers(Packet packet, Message input) throws InvocationTargetException {
+        if (handlers != null) {
+            try {
+                SOAPMessage soapMessage = packet.getMessage().readAsSOAPMessage();
+                for (BindingHandler<SOAPMessage> handler : handlers) {
+                    handler.handleInbound(soapMessage, input);
+                }
+            } catch (SOAPException e) {
+                throw new InvocationTargetException(e);
+            }
+        }
     }
 
 }
