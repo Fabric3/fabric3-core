@@ -16,9 +16,8 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
  * @version $Rev$ $Date$
  */
 public class BindingHandlerLazyLoadDecoratorTestCase extends TestCase {
-
-
     private static final URI HANDLER_URI = URI.create("handler");
+
     private ScopedComponent component;
     private ComponentManager componentManager;
     private BindingHandlerLazyLoadDecorator<Object> decorator;
@@ -35,7 +34,6 @@ public class BindingHandlerLazyLoadDecoratorTestCase extends TestCase {
         EasyMock.verify(component, componentManager, handler);
     }
 
-    @Override
     public void setUp() throws Exception {
         super.setUp();
         component = EasyMock.createMock(ScopedComponent.class);
@@ -47,7 +45,6 @@ public class BindingHandlerLazyLoadDecoratorTestCase extends TestCase {
 
     }
 
-    @Override
     public void tearDown() throws Exception {
         super.tearDown();
         WorkContextTunnel.setThreadWorkContext(null);
