@@ -44,10 +44,15 @@
 package org.fabric3.binding.jms.generator;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_XA_CONNECTION_FACTORY;
 
@@ -99,6 +104,16 @@ public class JmsGeneratorHelper {
         } else if (factory.getTemplateName() != null) {
             factory.setName(specifier);
         }
+    }
+
+    public static List<PhysicalBindingHandlerDefinition> generateBindingHandlers(URI domainUri, JmsBindingDefinition definition) {
+        List<PhysicalBindingHandlerDefinition> handlers = new ArrayList<PhysicalBindingHandlerDefinition>();
+        for (BindingHandlerDefinition handlerDefinition : definition.getHandlers()) {
+            // URIs specified in handler elements in a composite are relative and must be made absolute
+            URI resolvedUri = URI.create(domainUri.toString() + "/" + handlerDefinition.getTarget());
+            handlers.add(new PhysicalBindingHandlerDefinition(resolvedUri));
+        }
+        return handlers;
     }
 
     private static String getSpecifier(URI uri) {

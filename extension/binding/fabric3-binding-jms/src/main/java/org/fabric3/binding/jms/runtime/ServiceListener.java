@@ -73,6 +73,7 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
+import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.MessageImpl;
@@ -99,6 +100,7 @@ public class ServiceListener implements MessageListener {
     private XMLInputFactory xmlInputFactory;
 	private BindingHandlerRegistry handlerRegistry;
 	private String bindingName;
+    private List<BindingHandler<Message>> handlers;
 
 
     public ServiceListener(WireHolder wireHolder,
@@ -107,6 +109,7 @@ public class ServiceListener implements MessageListener {
                            TransactionType transactionType,
                            ClassLoader classLoader,
                            XMLFactory xmlFactory,
+                           List<BindingHandler<Message>> handlers,
                            ListenerMonitor monitor) {
         this.wireHolder = wireHolder;
         this.defaultResponseDestination = defaultResponseDestination;
@@ -114,6 +117,7 @@ public class ServiceListener implements MessageListener {
         this.transactionType = transactionType;
         this.classLoader = classLoader;
         this.xmlFactory = xmlFactory;
+        this.handlers = handlers;
         this.monitor = monitor;
         invocationChainMap = new HashMap<String, InvocationChainHolder>();
         for (InvocationChainHolder chainHolder : wireHolder.getInvocationChains()) {
@@ -182,9 +186,9 @@ public class ServiceListener implements MessageListener {
             payload = new Object[]{payload};
         }
         org.fabric3.spi.invocation.Message inMessage = new MessageImpl(payload, false, workContext);
-        
-        JmsHelper.applyHandlers(handlerRegistry, request , inMessage , bindingName , false);
-        
+
+        applyHandlers(request, inMessage);
+
         org.fabric3.spi.invocation.Message outMessage = interceptor.invoke(inMessage);
         
         
@@ -248,7 +252,6 @@ public class ServiceListener implements MessageListener {
             }
             producer = responseSession.createProducer(defaultResponseDestination);
         }
-        JmsHelper.applyHandlers(handlerRegistry, request , outMessage , bindingName , true);
         producer.send(response);
     }
 
@@ -374,5 +377,14 @@ public class ServiceListener implements MessageListener {
 	public void setBindingName(String name) {
 		this.bindingName = name;
 	}
+
+    private void applyHandlers(Message request, org.fabric3.spi.invocation.Message inMessage) {
+        if (handlers != null) {
+            for (BindingHandler<Message> handler : handlers) {
+                handler.handleInbound(request, inMessage);
+            }
+        }
+    }
+
 
 }

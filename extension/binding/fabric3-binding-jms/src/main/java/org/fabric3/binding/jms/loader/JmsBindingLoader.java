@@ -79,6 +79,9 @@ import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
+import org.fabric3.spi.introspection.xml.UnrecognizedElement;
+import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
+import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -181,6 +184,7 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
 
         loadFabric3Attributes(metadata, reader, context);
 
+
         String name;
         while (true) {
 
@@ -188,14 +192,13 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
             case START_ELEMENT:
                 name = reader.getName().getLocalPart();
                 if ("handler".equals(name)) {
-// TODO add to JMS binding definition
-//                    try {
-//                        // BindingHandlerDefinition bindingDefinition = registry.load(reader, BindingHandlerDefinition.class, context);
-//                    } catch (UnrecognizedElementException e) {
-//                        InvalidJmsBinding failure =
-//                                new InvalidJmsBinding("The jms binding handler defenition is not a valid: " + e.getMessage(), reader);
-//                        context.addError(failure);
-//                    }
+                    try {
+                        BindingHandlerDefinition handler = registry.load(reader, BindingHandlerDefinition.class, context);
+                        definition.addHandler(handler);
+                    } catch (UnrecognizedElementException e) {
+                        UnrecognizedElement failure = new UnrecognizedElement(reader);
+                        context.addError(failure);
+                    }
                 } else if ("destination".equals(name)) {
                     if (uri != null) {
                         InvalidJmsBinding error =
@@ -228,14 +231,13 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
                 name = reader.getName().getLocalPart();
                 if ("binding.jms".equals(name)) {
                     // needed for callbacks
-                    String target = null;
                     DestinationDefinition destinationDefinition = metadata.getDestination();
                     if (destinationDefinition != null) {
-                        target = destinationDefinition.getName();
+                        String target = destinationDefinition.getName();
                         URI bindingUri = URI.create("jms://" + target);
                         definition.setGeneratedTargetUri(bindingUri);
                     } else if (metadata.getActivationSpec() != null) {
-                        target = metadata.getActivationSpec().getName();
+                        String target = metadata.getActivationSpec().getName();
                         URI bindingUri = URI.create("jms://" + target);
                         definition.setGeneratedTargetUri(bindingUri);
                     }

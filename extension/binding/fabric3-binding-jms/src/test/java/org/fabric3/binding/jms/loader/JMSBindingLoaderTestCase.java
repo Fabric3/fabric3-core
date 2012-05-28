@@ -44,6 +44,7 @@
 package org.fabric3.binding.jms.loader;
 
 import java.io.ByteArrayInputStream;
+import java.net.URI;
 import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -68,6 +69,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
 public class JMSBindingLoaderTestCase extends TestCase {
     // wireFormat; activation spec; messageSelection
@@ -127,6 +129,7 @@ public class JMSBindingLoaderTestCase extends TestCase {
     private XMLInputFactory factory;
     private JmsBindingLoader loader;
     private IntrospectionContext context;
+    private BindingHandlerRegistry handlerRegistry;
 
     public void testGeneralParse() throws Exception {
         XMLStreamReader streamReader = factory.createXMLStreamReader(new ByteArrayInputStream(JMS_BINDING.getBytes()));
@@ -207,30 +210,31 @@ public class JMSBindingLoaderTestCase extends TestCase {
     }
 
     public void testBindingHandler() throws Exception {
-        XMLStreamReader streamReader = factory.createXMLStreamReader(new ByteArrayInputStream(BINDING_HANDLER.getBytes()));
-        streamReader.nextTag();
+        XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(BINDING_HANDLER.getBytes()));
+        reader.nextTag();
 
         LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
         LoaderRegistry registry = EasyMock.createStrictMock(LoaderRegistry.class);
 
-        EasyMock.replay(helper, registry);
+        URI uri = URI.create("TestHandler");
+        EasyMock.expect(registry.load(reader,BindingHandlerDefinition.class,context)).andReturn(new BindingHandlerDefinition(uri));
+        EasyMock.replay(helper, handlerRegistry, registry);
 
         JmsBindingLoader loader = new JmsBindingLoader(helper, registry);
 
-        loader.load(streamReader, context);
+        loader.load(reader, context);
 
-        EasyMock.verify(helper, registry);
+        EasyMock.verify(helper, handlerRegistry, registry);
     }
 
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
         factory = XMLInputFactory.newInstance();
 
         LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
         LoaderRegistry registry = EasyMock.createNiceMock(LoaderRegistry.class);
-        BindingHandlerRegistry handlerRegistry = EasyMock.createNiceMock(BindingHandlerRegistry.class);
-        EasyMock.replay(helper, registry, handlerRegistry);
+        handlerRegistry = EasyMock.createNiceMock(BindingHandlerRegistry.class);
+        EasyMock.replay(helper, registry);
 
         loader = new JmsBindingLoader(helper, registry);
         context = new DefaultIntrospectionContext();

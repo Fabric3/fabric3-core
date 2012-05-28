@@ -43,14 +43,18 @@
  */
 package org.fabric3.binding.jms.runtime;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Topic;
 import javax.transaction.TransactionManager;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.ws.handler.Handler;
 
 import org.oasisopen.sca.annotation.Reference;
 
@@ -66,10 +70,12 @@ import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
@@ -116,6 +122,8 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
         // resolve the connection factories and destinations for the wire
         resolveAdministeredObjects(target, wireConfiguration);
 
+        List<BindingHandler<Message>> handlers = createHandlers(target);
+
         List<OperationPayloadTypes> types = target.getPayloadTypes();
         for (InvocationChain chain : wire.getInvocationChains()) {
             // setup operation-specific configuration and create an interceptor
@@ -127,7 +135,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
             processJmsHeaders(configuration, metadata);
             OperationPayloadTypes payloadTypes = resolveOperation(operationName, types);
             configuration.setPayloadType(payloadTypes);
-            JmsInterceptor interceptor = new JmsInterceptor(configuration);
+            JmsInterceptor interceptor = new JmsInterceptor(configuration, handlers);
             target.getMetadata().getDestination().getName();
             interceptor.setBindingHandlerRegistry(handlerRegistry);
             interceptor.setBindingName(target.getMetadata().getDestination().getName());
@@ -305,6 +313,19 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
         }
         // programming error
         throw new AssertionError("Error resolving operation: " + operationName);
+    }
+
+
+    private List<BindingHandler<Message>> createHandlers(JmsTargetDefinition target) {
+        if (target.getHandlers().isEmpty()) {
+            return null;
+        }
+        List<BindingHandler<Message>> handlers = new ArrayList<BindingHandler<Message>>();
+        for (PhysicalBindingHandlerDefinition handlerDefinition : target.getHandlers()) {
+            BindingHandler<Message> handler = handlerRegistry.createHandler(Message.class, handlerDefinition);
+            handlers.add(handler);
+        }
+        return handlers;
     }
 
 }

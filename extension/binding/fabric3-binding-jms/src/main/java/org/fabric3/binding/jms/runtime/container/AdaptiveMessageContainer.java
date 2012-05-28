@@ -151,6 +151,7 @@ public class AdaptiveMessageContainer {
         setIdleLimit(configuration.getIdleLimit());
 
         setRecoveryInterval(configuration.getRecoveryInterval());
+
         // TODO additional configuration
         // container.setLocalDelivery();
 

@@ -44,12 +44,15 @@
 package org.fabric3.binding.jms.model;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.Constants;
 
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
 /**
  * Encapsulates JMS binding configuration specified in a composite.
@@ -62,6 +65,7 @@ public class JmsBindingDefinition extends BindingDefinition {
     public static final QName BINDING_QNAME = new QName(Constants.SCA_NS, "binding.jms");
     private URI generatedTargetUri;
     private JmsBindingMetadata metadata;
+    private List<BindingHandlerDefinition> handlers;
 
     /**
      * Constructor.
@@ -92,6 +96,7 @@ public class JmsBindingDefinition extends BindingDefinition {
     public JmsBindingDefinition(String bindingName, URI targetURI, JmsBindingMetadata metadata) {
         super(bindingName, targetURI, BINDING_QNAME);
         this.metadata = metadata;
+        handlers = new ArrayList<BindingHandlerDefinition>();
         addRequiredCapability("jms");
     }
 
@@ -111,5 +116,25 @@ public class JmsBindingDefinition extends BindingDefinition {
     public URI getTargetUri() {
         return generatedTargetUri;
     }
+
+    /**
+     * Returns the applicable binding handlers for this definition. Note that order is significant: at runtime, the handlers should be engaged in the
+     * order they appear in this list.
+     *
+     * @return the applicable binding handlers for this definition.
+     */
+    public List<BindingHandlerDefinition> getHandlers() {
+        return handlers;
+    }
+
+    /**
+     * Adds a binding handler definition.
+     *
+     * @param handler the binding handler definition
+     */
+    public void addHandler(BindingHandlerDefinition handler) {
+        handlers.add(handler);
+    }
+
 
 }

@@ -55,6 +55,7 @@ import java.util.List;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
@@ -70,12 +71,15 @@ import org.fabric3.binding.jms.spi.common.DestinationType;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
+import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
@@ -127,7 +131,8 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
             ConnectionFactory responseFactory = objects.getResponseFactory();
             Destination responseDestination = objects.getResponseDestination();
             
-            ServiceListener listener = new ServiceListener(wireHolder, responseDestination, responseFactory, trxType, loader, xmlFactory, monitor);
+            List<BindingHandler<Message>> handlers = createHandlers(source);
+            ServiceListener listener = new ServiceListener(wireHolder, responseDestination, responseFactory, trxType, loader, xmlFactory, handlers, monitor);
             listener.setBindingHandlerRegistry(handlerRegistry);
             listener.setBindingName(source.getMetadata().getDestination().getName());
             
@@ -137,6 +142,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
             configuration.setUri(serviceUri);
             configuration.setType(trxType);
             populateConfiguration(configuration, source.getMetadata());
+
             if (containerManager.isRegistered(serviceUri)) {
                 // the wire has changed and it is being reprovisioned
                 containerManager.unregister(serviceUri);
@@ -294,6 +300,18 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
         public Destination getResponseDestination() {
             return responseDestination;
         }
+    }
+
+    private List<BindingHandler<Message>> createHandlers(JmsSourceDefinition source) {
+        if (source.getHandlers().isEmpty()) {
+            return null;
+        }
+        List<BindingHandler<Message>> handlers = new ArrayList<BindingHandler<Message>>();
+        for (PhysicalBindingHandlerDefinition handlerDefinition : source.getHandlers()) {
+            BindingHandler<Message> handler = handlerRegistry.createHandler(Message.class, handlerDefinition);
+            handlers.add(handler);
+        }
+        return handlers;
     }
 
 }

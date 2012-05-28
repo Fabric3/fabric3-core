@@ -49,6 +49,7 @@ import java.util.List;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.model.type.contract.DataType;
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
@@ -61,6 +62,7 @@ public class JmsSourceDefinition extends PhysicalSourceDefinition {
     private JmsBindingMetadata metadata;
     private TransactionType transactionType;
     private List<OperationPayloadTypes> payloadTypes;
+    private List<PhysicalBindingHandlerDefinition> handlers;
 
     /**
      * Constructor.
@@ -69,11 +71,17 @@ public class JmsSourceDefinition extends PhysicalSourceDefinition {
      * @param metadata        metadata used to create a JMS message consumer.
      * @param payloadTypes    the JMS payload types keyed by operation name
      * @param transactionType the transaction type
+     * @param handlers        binding handlers to be engaged for the service
      */
-    public JmsSourceDefinition(URI uri, JmsBindingMetadata metadata, List<OperationPayloadTypes> payloadTypes, TransactionType transactionType) {
+    public JmsSourceDefinition(URI uri,
+                               JmsBindingMetadata metadata,
+                               List<OperationPayloadTypes> payloadTypes,
+                               TransactionType transactionType,
+                               List<PhysicalBindingHandlerDefinition> handlers) {
         this.metadata = metadata;
         this.transactionType = transactionType;
         this.payloadTypes = payloadTypes;
+        this.handlers = handlers;
         setUri(uri);
     }
 
@@ -84,17 +92,20 @@ public class JmsSourceDefinition extends PhysicalSourceDefinition {
      * @param metadata        metadata used to create a JMS message consumer.
      * @param payloadTypes    the JMS payload types keyed by operation name
      * @param transactionType the transaction type
+     * @param handlers        binding handlers to be engaged for the service
      * @param types           the allowable datatypes. For example, this may be used to constrain a source type to string XML
      */
     public JmsSourceDefinition(URI uri, JmsBindingMetadata metadata,
                                List<OperationPayloadTypes> payloadTypes,
                                TransactionType transactionType,
+                               List<PhysicalBindingHandlerDefinition> handlers,
                                DataType<?>... types) {
         super(types);
         setUri(uri);
         this.metadata = metadata;
         this.transactionType = transactionType;
         this.payloadTypes = payloadTypes;
+        this.handlers = handlers;
     }
 
 
@@ -110,8 +121,7 @@ public class JmsSourceDefinition extends PhysicalSourceDefinition {
         return transactionType;
     }
 
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
+    public List<PhysicalBindingHandlerDefinition> getHandlers() {
+        return handlers;
     }
-
 }

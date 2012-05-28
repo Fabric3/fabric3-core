@@ -237,5 +237,4 @@ public class ContainerConfiguration {
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }
-
 }

@@ -39,11 +39,13 @@
 package org.fabric3.binding.jms.runtime.container;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.transaction.TransactionManager;
 
 import org.oasisopen.sca.annotation.Property;
@@ -55,6 +57,7 @@ import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeStart;

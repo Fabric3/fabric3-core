@@ -68,6 +68,7 @@ import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.host.Namespaces;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -77,6 +78,7 @@ import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.type.xsd.XSDType;
 
 /**
@@ -95,12 +97,14 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
     private static final DataType<?> ANY = new XSDType(String.class, new QName(XSDType.XSD_NS, "anyType"));
 
     private PayloadTypeIntrospector introspector;
+    private HostInfo info;
 
     // optional provisioner for host runtimes to receive callbacks
     private JmsResourceProvisioner provisioner;
 
-    public JmsBindingGenerator(@Reference PayloadTypeIntrospector introspector) {
+    public JmsBindingGenerator(@Reference PayloadTypeIntrospector introspector, @Reference HostInfo info) {
         this.introspector = introspector;
+        this.info = info;
     }
 
     @Reference(required = false)
@@ -126,16 +130,18 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
 
         List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
         URI uri = binding.getDefinition().getTargetUri();
+
+        List<PhysicalBindingHandlerDefinition> handlers = JmsGeneratorHelper.generateBindingHandlers(info.getDomain(), binding.getDefinition());
         JmsSourceDefinition definition = null;
         for (OperationPayloadTypes types : payloadTypes) {
             if (PayloadType.XML == types.getInputType()) {
                 // set the source type to string XML
-                definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, ANY);
+                definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, handlers, ANY);
                 break;
             }
         }
         if (definition == null) {
-            definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType);
+            definition = new JmsSourceDefinition(uri, metadata, payloadTypes, transactionType, handlers);
         }
         if (provisioner != null) {
             provisioner.generateSource(definition);
@@ -160,15 +166,16 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
 
         List<OperationPayloadTypes> payloadTypes = processPayloadTypes(contract);
 
+        List<PhysicalBindingHandlerDefinition> handlers = JmsGeneratorHelper.generateBindingHandlers(info.getDomain(), binding.getDefinition());
         JmsTargetDefinition definition = null;
         for (OperationPayloadTypes types : payloadTypes) {
             if (PayloadType.XML == types.getInputType()) {
-                definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, ANY);
+                definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, handlers, ANY);
                 break;
             }
         }
         if (definition == null) {
-            definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType);
+            definition = new JmsTargetDefinition(uri, metadata, payloadTypes, transactionType, handlers);
         }
         if (provisioner != null) {
             provisioner.generateTarget(definition);
