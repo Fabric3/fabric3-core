@@ -43,7 +43,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-core</artifactId>
-            <version>5.5.1</version>
+            <version>5.6.0</version>
             <exclusions>
                 <!-- Exclude clogging as it interferes with classloading. It is replaced by SLF4J below. -->
                 <exclusion>
@@ -71,6 +71,18 @@ Public License. See the accompanying license file for details.
                     <artifactId>servlet-api</artifactId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.fusesource.fuse-extra</groupId>
+                    <artifactId>fusemq-leveldb</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.activemq.protobuf</groupId>
+                    <artifactId>activemq-protobuf</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.fusesource.mqtt-client</groupId>
+                    <artifactId>mqtt-client</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>org.springframework</groupId>
                     <artifactId>spring-context</artifactId>
                 </exclusion>
@@ -79,7 +91,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-pool</artifactId>
-            <version>5.5.1</version>
+            <version>5.6.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>
