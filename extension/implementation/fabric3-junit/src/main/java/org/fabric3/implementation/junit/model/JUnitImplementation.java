@@ -73,4 +73,8 @@ public class JUnitImplementation extends Implementation<InjectingComponentType> 
         return implementationClass;
     }
 
+    public String getArtifactName() {
+        return getImplementationClass();
+    }
+
 }

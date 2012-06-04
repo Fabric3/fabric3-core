@@ -69,4 +69,9 @@ public class CompositeImplementation extends Implementation<Composite> {
         this.name = name;
     }
 
+    public String getArtifactName() {
+        return name == null ? null : name.toString();
+    }
+
+
 }

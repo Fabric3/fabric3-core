@@ -68,4 +68,9 @@ public class JavaImplementation extends Implementation<InjectingComponentType> {
     public void setImplementationClass(String implementationClass) {
         this.implementationClass = implementationClass;
     }
+
+    public String getArtifactName() {
+        return getImplementationClass();
+    }
+
 }

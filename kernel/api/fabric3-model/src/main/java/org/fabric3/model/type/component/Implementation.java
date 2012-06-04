@@ -104,11 +104,19 @@ public abstract class Implementation<T extends ComponentType> extends AbstractPo
     }
 
     /**
+     * Returns the implementation artifact name.
+     *
+     * @return the implementation artifact name
+     */
+    public String getArtifactName() {
+        return null;
+    }
+
+    /**
      * Returns the XML element corresponding to this type.
      *
      * @return the XML element corresponding to this type
      */
     public abstract QName getType();
-
 
 }
