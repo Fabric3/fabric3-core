@@ -21,7 +21,7 @@ Public License. See the accompanying license file for details.
     <packaging>pom</packaging>
 
     <properties>
-        <drools.version>5.2.0.Final</drools.version>
+        <drools.version>5.4.0.Final</drools.version>
     </properties>
     
     <modules>

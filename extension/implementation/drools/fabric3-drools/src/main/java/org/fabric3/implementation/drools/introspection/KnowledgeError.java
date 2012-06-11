@@ -60,7 +60,7 @@ public class KnowledgeError extends XmlValidationFailure {
         StringBuilder builder = new StringBuilder("The following rules errors were encountered:\n");
         for (KnowledgeBuilderError error : errors) {
             builder.append(error.getMessage()).append("[");
-            int[] errorLines = error.getErrorLines();
+            int[] errorLines = error.getLines();
             for (int i = 0, errorLinesLength = errorLines.length; i < errorLinesLength - 1; i++) {
                 int line = errorLines[i];
                 builder.append(line).append(",");
