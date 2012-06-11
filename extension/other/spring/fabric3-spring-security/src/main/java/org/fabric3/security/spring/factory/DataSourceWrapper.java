@@ -95,11 +95,7 @@ public class DataSourceWrapper implements DataSource {
     }
 
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        try {
-            return getDataSource().getParentLogger();
-        } catch (SQLException e) {
-            throw new SQLFeatureNotSupportedException(e);
-        }
+        throw new SQLFeatureNotSupportedException();
     }
 
     private DataSource getDataSource() throws SQLException {
