@@ -42,6 +42,7 @@ import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.binding.zeromq.runtime.JDK7WorkaroundHelper;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
@@ -153,8 +154,8 @@ public class NonReliableSubscriberTestCase extends TestCase {
 
         EasyMock.verify(monitor);
         EasyMock.verify(poller);
-        EasyMock.verify(context);
-        EasyMock.verify(socket);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
         EasyMock.verify(head);
         EasyMock.verify(manager);
     }
@@ -229,9 +230,9 @@ public class NonReliableSubscriberTestCase extends TestCase {
         EasyMock.verify(monitor);
         EasyMock.verify(poller);
         EasyMock.verify(poller2);
-        EasyMock.verify(context);
-        EasyMock.verify(socket);
-        EasyMock.verify(socket2);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket2);
         EasyMock.verify(head);
         EasyMock.verify(manager);
     }
@@ -291,8 +292,8 @@ public class NonReliableSubscriberTestCase extends TestCase {
 
         EasyMock.verify(monitor);
         EasyMock.verify(poller);
-        EasyMock.verify(context);
-        EasyMock.verify(socket);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
         EasyMock.verify(head);
         EasyMock.verify(manager);
     }

@@ -39,6 +39,7 @@ import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.binding.zeromq.runtime.JDK7WorkaroundHelper;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
@@ -98,7 +99,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         }
         multiplexer.close();
         EasyMock.verify(manager);
-        EasyMock.verify(context);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
 
     }
 
@@ -128,7 +129,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         multiplexer.close();
 
         EasyMock.verify(manager);
-        EasyMock.verify(context);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
     }
 
     public void testUpdateAdd() throws Exception {
@@ -206,12 +207,9 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
 
         multiplexer.close();
 
-        EasyMock.verify(context);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
         EasyMock.verify(manager);
-        EasyMock.verify(socket1);
-        EasyMock.verify(socket2);
-        EasyMock.verify(socket3);
-        EasyMock.verify(socket4);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket1, socket2, socket3, socket4);
     }
 
     public void testUpdateRemove() throws Exception {
@@ -274,12 +272,9 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
 
         multiplexer.close();
 
-        EasyMock.verify(context);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
         EasyMock.verify(manager);
-        EasyMock.verify(socket1);
-        EasyMock.verify(socket2);
-        EasyMock.verify(socket3);
-        EasyMock.verify(socket4);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket1, socket2, socket3, socket4);
 
     }
 

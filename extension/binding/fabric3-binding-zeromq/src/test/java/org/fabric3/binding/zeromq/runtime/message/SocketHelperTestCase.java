@@ -35,6 +35,7 @@ import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.binding.zeromq.runtime.JDK7WorkaroundHelper;
 
 /**
  * Implementations dispatch messages over a ZeroMQ socket.
@@ -49,7 +50,7 @@ public final class SocketHelperTestCase extends TestCase {
         EasyMock.replay(socket);
 
         SocketHelper.configure(socket, metadata);
-        EasyMock.verify(socket);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
     }
 
     public void testHighWater() throws Exception {
@@ -58,7 +59,7 @@ public final class SocketHelperTestCase extends TestCase {
         EasyMock.replay(socket);
 
         SocketHelper.configure(socket, metadata);
-        EasyMock.verify(socket);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
     }
 
     public void testMulticastRate() throws Exception {
@@ -67,7 +68,7 @@ public final class SocketHelperTestCase extends TestCase {
         EasyMock.replay(socket);
 
         SocketHelper.configure(socket, metadata);
-        EasyMock.verify(socket);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
     }
 
     public void testMulticastRecovery() throws Exception {
@@ -76,7 +77,7 @@ public final class SocketHelperTestCase extends TestCase {
         EasyMock.replay(socket);
 
         SocketHelper.configure(socket, metadata);
-        EasyMock.verify(socket);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
     }
 
     public void testReceiveBuffer() throws Exception {
@@ -85,7 +86,7 @@ public final class SocketHelperTestCase extends TestCase {
         EasyMock.replay(socket);
 
         SocketHelper.configure(socket, metadata);
-        EasyMock.verify(socket);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
     }
 
     public void testSendBuffer() throws Exception {
@@ -94,7 +95,7 @@ public final class SocketHelperTestCase extends TestCase {
         EasyMock.replay(socket);
 
         SocketHelper.configure(socket, metadata);
-        EasyMock.verify(socket);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
     }
 
     @Override

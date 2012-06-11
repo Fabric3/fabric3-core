@@ -39,6 +39,7 @@ import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.binding.zeromq.runtime.JDK7WorkaroundHelper;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
@@ -104,7 +105,7 @@ public class NonReliablePublisherTestCase extends TestCase {
 
         EasyMock.verify(monitor);
         EasyMock.verify(manager);
-        EasyMock.verify(context);
-        EasyMock.verify(socket);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
     }
 }

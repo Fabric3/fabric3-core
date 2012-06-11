@@ -40,6 +40,7 @@ import org.easymock.classextension.EasyMock;
 import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.binding.zeromq.runtime.JDK7WorkaroundHelper;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
@@ -145,7 +146,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         broker.connectToSender("id", URI.create("wire"), chains, metadata, getClass().getClassLoader());
         broker.releaseSender("id", URI.create("wire"));
 
-        EasyMock.verify(context);
+        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
         EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain, managementService);
     }
 
