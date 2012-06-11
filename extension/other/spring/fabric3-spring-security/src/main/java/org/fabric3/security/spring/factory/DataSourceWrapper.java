@@ -40,6 +40,8 @@ package org.fabric3.security.spring.factory;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 import org.fabric3.datasource.spi.DataSourceRegistry;
@@ -90,6 +92,14 @@ public class DataSourceWrapper implements DataSource {
 
     public int getLoginTimeout() throws SQLException {
         return getDataSource().getLoginTimeout();
+    }
+
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        try {
+            return getDataSource().getParentLogger();
+        } catch (SQLException e) {
+            throw new SQLFeatureNotSupportedException(e);
+        }
     }
 
     private DataSource getDataSource() throws SQLException {

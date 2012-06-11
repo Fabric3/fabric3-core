@@ -38,7 +38,9 @@
 package org.fabric3.tx.atomikos.datasource;
 
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Collections;
+import java.util.logging.Logger;
 
 import com.atomikos.datasource.pool.ConnectionFactory;
 import com.atomikos.jdbc.AbstractDataSourceBean;
@@ -95,6 +97,10 @@ public class DataSourceWrapperTestCase extends TestCase {
 
         public boolean isWrapperFor(Class<?> iface) throws SQLException {
             return false;
+        }
+
+        public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+            return null;
         }
     }
 }
