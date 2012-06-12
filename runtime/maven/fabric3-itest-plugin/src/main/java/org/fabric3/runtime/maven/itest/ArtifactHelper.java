@@ -195,9 +195,9 @@ public class ArtifactHelper {
 
         // add commons annotations dependency
         Dependency jsr250API = new Dependency();
-        jsr250API.setGroupId("org.apache.geronimo.specs");
-        jsr250API.setArtifactId("geronimo-annotation_1.0_spec");
-        jsr250API.setVersion("1.1");
+        jsr250API.setGroupId("org.codehaus.fabric3.api");
+        jsr250API.setArtifactId("javax-annotation");
+        jsr250API.setVersion("1.0.1");
         hostArtifacts.addAll(resolveArtifacts(jsr250API, Collections.<ArtifactRepository>emptySet(), true));
 
         // add JAXB API dependency
@@ -206,13 +206,6 @@ public class ArtifactHelper {
         jaxbAPI.setArtifactId("jaxb-api-osgi");
         jaxbAPI.setVersion("2.2-promoted-b50");
         hostArtifacts.addAll(resolveArtifacts(jaxbAPI, Collections.<ArtifactRepository>emptySet(), true));
-
-        // ad web services API
-        Dependency wsAPI = new Dependency();
-        wsAPI.setGroupId("javax.xml");
-        wsAPI.setArtifactId("webservices-api-osgi");
-        wsAPI.setVersion("2.0-b24");
-        hostArtifacts.addAll(resolveArtifacts(wsAPI, Collections.<ArtifactRepository>emptySet(), true));
 
         // add JAX-RS API
         Dependency rsAPI = new Dependency();

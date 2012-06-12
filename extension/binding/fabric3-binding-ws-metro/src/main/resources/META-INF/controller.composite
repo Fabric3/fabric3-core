@@ -58,4 +58,9 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.JavaGeneratorDelegate"/>
     </component>
 
+    <component name="MetroContributionServiceListener">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.contribution.MetroContributionServiceListener"/>
+    </component>
+
+
 </composite>

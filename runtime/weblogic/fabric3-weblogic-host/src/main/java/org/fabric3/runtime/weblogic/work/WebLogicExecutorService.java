@@ -38,6 +38,7 @@
 package org.fabric3.runtime.weblogic.work;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
@@ -51,14 +52,12 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-
-import weblogic.logging.LoggingHelper;
-
 import commonj.work.Work;
 import commonj.work.WorkException;
 import commonj.work.WorkManager;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import weblogic.logging.LoggingHelper;
 
 /**
  * Delegates to a WebLogic <code>WorkManager</code>.
@@ -73,61 +72,75 @@ import commonj.work.WorkManager;
 public class WebLogicExecutorService implements ExecutorService {
     private WorkManager workManager;
     private Logger logger;
-    
+
     public WebLogicExecutorService() {
         // can't use a monitor since this is a primordial service
         logger = LoggingHelper.getServerLogger();
     }
 
     @Init
-    public void init() {
+    public void init() throws ExecutorInitException {
         // returns the default work manager
         workManager = getDefaultWorkManager();
     }
-    
-    private WorkManager getDefaultWorkManager() {
-    	WorkManager wm = null;
-    	ClassLoader classLoader = WorkManager.class.getClassLoader();
-		try {
-    		 // prior 10.3.5 version
-    		 Class<?> clazz = Class.forName("com.bea.core.workmanager.WorkManagerFactory", true, classLoader);    		 
-    		 Method defaultMethod = clazz.getMethod("getDefault", new Class[0] );
-    		 wm = (WorkManager) defaultMethod.invoke(null, new Object[0]);
-    	 }   
-    	 catch (Exception e) {    
-    		 // TODO : exception monitoring
-		 }
-    	 if (wm != null) 
-    		 return wm;
-    	 Object wmObj = null;
-    	 try {
-    		 // 10.3.5 and upper version
-    		 Class<?> wmWLSFactoryClass = Class.forName("weblogic.work.WorkManagerFactory", true, classLoader);    		  
-    		 Method instanceMethod = wmWLSFactoryClass.getMethod("getInstance", new Class[0] );
-    		 Method defaultMethod = wmWLSFactoryClass.getMethod("getDefault", new Class[0] );    		 
-    		 Object wmWLSFactory = instanceMethod.invoke(null, new Object[0]);
-    		 wmObj = defaultMethod.invoke(wmWLSFactory, new Object[0]);
-    		 Class<?> wmCommonJClass = Class.forName("weblogic.work.commonj.CommonjWorkManagerImpl", true, classLoader);
-    		 Class<?> wmWLSInterface = Class.forName("weblogic.work.WorkManager", true, classLoader);
-    		 Constructor<?> wmCommonJConstructor = wmCommonJClass.getConstructor(new Class[]{wmWLSInterface});
-    		 wm = (WorkManager) wmCommonJConstructor.newInstance(new Object[]{wmObj});
-    	 }   	 
-    	 catch (Exception e) {
-    		 // TODO : exception monitoring
-		 }	
-    	 // Finally, check Work Manager is created
-    	 if (wm == null)
-			 throw new IllegalStateException("No WorkManager was created");
-		 return wm;
+
+    private WorkManager getDefaultWorkManager() throws ExecutorInitException {
+        WorkManager wm = null;
+        ClassLoader classLoader = WorkManager.class.getClassLoader();
+        try {
+            // prior 10.3.5 version
+            Class<?> clazz = Class.forName("com.bea.core.workmanager.WorkManagerFactory", true, classLoader);
+            Method defaultMethod = clazz.getMethod("getDefault", new Class[0]);
+            wm = (WorkManager) defaultMethod.invoke(null, new Object[0]);
+        } catch (ClassNotFoundException e) {
+            logger.log(Level.FINEST, "Did not initialize com.bea.core.workmanager.WorkManagerFactory", e);
+        } catch (NoSuchMethodException e) {
+            logger.log(Level.FINEST, "Did not initialize com.bea.core.workmanager.WorkManagerFactory", e);
+        } catch (InvocationTargetException e) {
+            logger.log(Level.FINEST, "Did not initialize com.bea.core.workmanager.WorkManagerFactory", e);
+        } catch (IllegalAccessException e) {
+            logger.log(Level.FINEST, "Did not initialize com.bea.core.workmanager.WorkManagerFactory", e);
+        }
+        if (wm != null) {
+            return wm;
+        }
+        Object wmObj;
+        try {
+            // 10.3.5 and upper version
+            Class<?> wmWLSFactoryClass = Class.forName("weblogic.work.WorkManagerFactory", true, classLoader);
+            Method instanceMethod = wmWLSFactoryClass.getMethod("getInstance", new Class[0]);
+            Method defaultMethod = wmWLSFactoryClass.getMethod("getDefault", new Class[0]);
+            Object wmWLSFactory = instanceMethod.invoke(null, new Object[0]);
+            wmObj = defaultMethod.invoke(wmWLSFactory, new Object[0]);
+            Class<?> wmCommonJClass = Class.forName("weblogic.work.commonj.CommonjWorkManagerImpl", true, classLoader);
+            Class<?> wmWLSInterface = Class.forName("weblogic.work.WorkManager", true, classLoader);
+            Constructor<?> wmCommonJConstructor = wmCommonJClass.getConstructor(new Class[]{wmWLSInterface});
+            wm = (WorkManager) wmCommonJConstructor.newInstance(new Object[]{wmObj});
+        } catch (NoSuchMethodException e) {
+            throw new ExecutorInitException(e);
+        } catch (IllegalAccessException e) {
+            throw new ExecutorInitException(e);
+        } catch (InstantiationException e) {
+            throw new ExecutorInitException(e);
+        } catch (InvocationTargetException e) {
+            throw new ExecutorInitException(e);
+        } catch (ClassNotFoundException e) {
+            throw new ExecutorInitException(e);
+        }
+        return wm;
     }
-    
+
     public void execute(Runnable command) {
         try {
-        	if (workManager==null){
-        		workManager = getDefaultWorkManager();
-        	}
-        	workManager.schedule(new CommonJWorkWrapper(command));
+            if (workManager == null) {
+                workManager = getDefaultWorkManager();
+            }
+            workManager.schedule(new CommonJWorkWrapper(command));
         } catch (WorkException e) {
+            LogRecord record = new LogRecord(Level.SEVERE, "Error submitting work");
+            record.setThrown(e);
+            logger.log(record);
+        } catch (ExecutorInitException e) {
             LogRecord record = new LogRecord(Level.SEVERE, "Error submitting work");
             record.setThrown(e);
             logger.log(record);

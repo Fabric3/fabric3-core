@@ -25,6 +25,10 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.binding.ws.provision" version="1.9.5"/>
     <import.java package="org.fabric3.binding.ws.model" version="1.9.5"/>
 
+    <!-- export SAAJ classes used by application-level WS handlers -->
+    <export.java package="javax.xml.soap.*" version="1.3.0"/>
+    <export.java package="javax.xml.ws.*" version="2.2.0"/>  <!--soap   -->
+
     <deployable composite="f3:MetroControllerExtension" modes="controller vm"/>
     <deployable composite="f3:MetroParticipantExtension" modes="participant vm"/>
     <deployable composite="f3:MetroBinding"/>

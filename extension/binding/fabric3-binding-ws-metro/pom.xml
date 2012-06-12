@@ -88,15 +88,16 @@ Public License. See the accompanying license file for details.
         </dependency>
 
         <dependency>
+            <groupId>javax.xml</groupId>
+            <artifactId>webservices-api-osgi</artifactId>
+            <version>${web.services.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.sun.xml.ws</groupId>
             <artifactId>webservices-osgi</artifactId>
             <version>${web.services.version}</version>
             <exclusions>
-                <exclusion>
-                    <!-- included in host dependencies -->
-                    <groupId>javax.xml</groupId>
-                    <artifactId>webservices-api-osgi</artifactId>
-                </exclusion>
                 <exclusion>
                     <!-- included in the JAXB extension -->
                     <groupId>com.sun.xml.bind</groupId>
@@ -137,13 +138,6 @@ Public License. See the accompanying license file for details.
             <groupId>com.sun.xml.fastinfoset</groupId>
             <artifactId>FastInfoset</artifactId>
             <version>1.2.7</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.xml</groupId>
-            <artifactId>webservices-api-osgi</artifactId>
-            <version>${web.services.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
