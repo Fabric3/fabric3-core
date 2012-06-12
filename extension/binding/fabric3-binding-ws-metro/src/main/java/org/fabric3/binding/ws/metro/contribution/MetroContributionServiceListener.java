@@ -9,6 +9,8 @@ import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
 
 /**
+ * Adds WS API exports to application contributions.
+ *
  * @version $Rev$ $Date$
  */
 public class MetroContributionServiceListener implements ContributionServiceListener {
@@ -19,7 +21,7 @@ public class MetroContributionServiceListener implements ContributionServiceList
         PackageInfo saajInfo = new PackageInfo("javax.xml.soap.*");
         saajInfo.setMinVersion(new Version("1.3.0"));
         saajImport = new JavaImport(saajInfo);
-        PackageInfo wsInfo = new PackageInfo("javax.xml.ws.*");  //soap
+        PackageInfo wsInfo = new PackageInfo("javax.xml.ws.*");
         wsInfo.setMinVersion(new Version("2.2.0"));
         wsImport = new JavaImport(wsInfo);
     }
@@ -39,7 +41,7 @@ public class MetroContributionServiceListener implements ContributionServiceList
                 if (name.equals("javax.xml.soap.*")) {
                     // already explicitly imported
                     saajImported = true;
-                } else if (name.equals("javax.xml.ws.*")) {   //soap
+                } else if (name.equals("javax.xml.ws.*")) {
                     // already explicitly imported
                     wsImported = true;
                 }
