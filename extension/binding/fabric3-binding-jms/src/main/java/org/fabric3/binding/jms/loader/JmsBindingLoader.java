@@ -70,7 +70,6 @@ import org.fabric3.binding.jms.spi.common.MessageSelection;
 import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
 import org.fabric3.binding.jms.spi.common.PropertyAwareObject;
 import org.fabric3.binding.jms.spi.common.ResponseDefinition;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
@@ -132,7 +131,6 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
     }
 
     private LoaderRegistry registry;
-    private BindingHandlerRegistry handlerRegistry;
     private LoaderHelper loaderHelper;
     private int defaultResponseTimeout = 600000;  // set the default response wait to 10 minutes
     private int defaultTransactionTimeout = 30; // in seconds
