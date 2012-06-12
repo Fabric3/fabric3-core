@@ -217,17 +217,6 @@ public final class Java6HostExports {
         hostMap.put("javax.xml.crypto.dsig.spec", "0.0");
         hostMap.put("javax.xml.crypto.dsig.spec", "1.0");
 
-        hostMap.put("javax.jws", "2.0");
-        hostMap.put("javax.jws.soap", "2.0");
-        hostMap.put("javax.xml.soap", "1.3.0");
-        hostMap.put("javax.xml.ws", "2.2");
-        hostMap.put("javax.xml.ws.handler", "2.2");
-        hostMap.put("javax.xml.ws.handler.soap", "2.2");
-        hostMap.put("javax.xml.ws.http", "2.2");
-        hostMap.put("javax.xml.ws.soap", "2.2");
-        hostMap.put("javax.xml.ws.spi", "2.2");
-        hostMap.put("javax.xml.ws.wsaddressing", "2.2");
-
         // Commons annotations included
         hostMap.put("javax.annotation", "0.0");
         hostMap.put("javax.annotation", "1.0.0");
