@@ -285,7 +285,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
     private static RuntimeMode getRuntimeMode() {
         // TODO implement by introspecting MBeans
-        String mode = System.getProperty(FABRIC3_MODE);
+        String mode = System.getProperty(FABRIC3_MODE, "vm");
         if ("controller".equals(mode)) {
             return RuntimeMode.CONTROLLER;
         } else if ("participant".equals(mode)) {
