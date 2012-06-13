@@ -38,6 +38,7 @@
 package org.fabric3.runtime.weblogic.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -122,7 +123,8 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
         if (path == null) {
-            throw new IllegalStateException("No servlet registered for empty path");
+            notFound(resp);
+            return;
         }
         Servlet servlet = servlets.get(path);
         if (servlet == null) {
@@ -138,7 +140,8 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
                 }
             }
             if (servlet == null) {
-                throw new IllegalStateException("No servlet registered for path: " + path);
+                notFound(resp);
+                return;
             }
         }
         servlet.service(req, resp);
@@ -159,5 +162,13 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
     public Servlet unregisterMapping(String path) {
         return servlets.remove(path);
     }
+
+    private void notFound(HttpServletResponse resp) throws IOException {
+        resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        PrintWriter writer = resp.getWriter();
+        writer.print("Resource not found");
+        writer.close();
+    }
+
 
 }
