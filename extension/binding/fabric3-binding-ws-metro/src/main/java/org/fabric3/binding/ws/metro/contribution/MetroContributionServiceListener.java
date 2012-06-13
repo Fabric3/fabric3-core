@@ -16,14 +16,22 @@ import org.fabric3.spi.contribution.manifest.PackageInfo;
 public class MetroContributionServiceListener implements ContributionServiceListener {
     private JavaImport saajImport;
     private JavaImport wsImport;
+    private JavaImport sunSaajImport;
 
     public MetroContributionServiceListener() {
-        PackageInfo saajInfo = new PackageInfo("javax.xml.soap.*");
-        saajInfo.setMinVersion(new Version("1.3.0"));
-        saajImport = new JavaImport(saajInfo);
+        // JAX-WS classes
         PackageInfo wsInfo = new PackageInfo("javax.xml.ws.*");
         wsInfo.setMinVersion(new Version("2.2.0"));
         wsImport = new JavaImport(wsInfo);
+
+        // SAAJ API and implementation
+        PackageInfo saajInfo = new PackageInfo("javax.xml.soap.*");
+        saajInfo.setMinVersion(new Version("1.3.0"));
+        saajImport = new JavaImport(saajInfo);
+
+        PackageInfo sunSaajInfo = new PackageInfo("com.sun.xml.messaging.saaj.*");
+        sunSaajInfo.setMinVersion(new Version("2.0.1"));
+        sunSaajImport = new JavaImport(sunSaajInfo);
     }
 
     public void onProcessManifest(Contribution contribution) {
@@ -33,17 +41,20 @@ public class MetroContributionServiceListener implements ContributionServiceList
         }
         boolean saajImported = false;
         boolean wsImported = false;
+        boolean sunImported = false;
+
         ContributionManifest manifest = contribution.getManifest();
         for (Import imprt : manifest.getImports()) {
             if (imprt instanceof JavaImport) {
                 JavaImport contributionImport = (JavaImport) imprt;
                 String name = contributionImport.getPackageInfo().getName();
+                // check if already explicitly imported
                 if (name.equals("javax.xml.soap.*")) {
-                    // already explicitly imported
                     saajImported = true;
                 } else if (name.equals("javax.xml.ws.*")) {
-                    // already explicitly imported
                     wsImported = true;
+                } else if (name.equals("com.sun.xml.messaging.saaj.*")) {
+                    sunImported = true;
                 }
             }
         }
@@ -52,6 +63,9 @@ public class MetroContributionServiceListener implements ContributionServiceList
         }
         if (!wsImported) {
             manifest.addImport(wsImport);
+        }
+        if (!sunImported) {
+            manifest.addImport(sunSaajImport);
         }
     }
 
