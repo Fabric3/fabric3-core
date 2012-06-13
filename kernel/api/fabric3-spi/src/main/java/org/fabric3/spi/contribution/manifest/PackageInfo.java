@@ -258,7 +258,7 @@ public final class PackageInfo extends Versionable {
         for (String packageName : exportPackage.packageNames) {
             if ("*".equals(packageName)) {
                 // export wild card found, packages match
-                break;
+                return true;
             } else if (packageNames.length - 1 >= i && !packageName.equals(packageNames[i])) {
                 return false;
             }
@@ -267,7 +267,11 @@ public final class PackageInfo extends Versionable {
                 return false;
             }
         }
-        return true;
+        if (packageNames.length > 0 && "*".equals(packageNames[packageNames.length - 1])) {
+            // match case e.g. export: "javax.jms"  import: "javax.jms.*"
+            return exportPackage.packageNames.length == packageNames.length - 1;
+        }
+        return exportPackage.packageNames.length == packageNames.length;
     }
 
 

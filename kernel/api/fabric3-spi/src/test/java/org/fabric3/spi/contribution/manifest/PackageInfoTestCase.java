@@ -121,7 +121,7 @@ public class PackageInfoTestCase extends TestCase {
     }
 
     /**
-     * Versions specified without a range default to minium inclusive with a maximum to infinity
+     * Versions specified without a range default to minimum inclusive with a maximum to infinity
      */
     public void testMatchVersionOSGiDefault() throws Exception {
         Version min = new Version(1, 0, 0);
@@ -185,6 +185,34 @@ public class PackageInfoTestCase extends TestCase {
     public void testMatchWildCardExport() throws Exception {
         PackageInfo imprt = new PackageInfo("org.fabric3.api");
         PackageInfo export = new PackageInfo("org.fabric3.api.*");
+        assertTrue(imprt.matches(export));
+    }
+
+    public void testMatchWildCardExportReverse() throws Exception {
+        PackageInfo imprt = new PackageInfo("javax.jms.*");
+        imprt.setMinVersion(new Version("1.1.1"));
+        PackageInfo export = new PackageInfo("javax.jms");
+        export.setMinVersion(new Version("1.1.1"));
+        assertTrue(imprt.matches(export));
+    }
+
+    public void testMatchWildCardExportToNonWildcard() throws Exception {
+        PackageInfo imprt = new PackageInfo("javax.jms");
+        imprt.setMinVersion(new Version("1.1.1"));
+        PackageInfo export = new PackageInfo("javax.jms.*");
+        export.setMinVersion(new Version("1.1.1"));
+        assertTrue(imprt.matches(export));
+    }
+
+    public void testMatchWildCardExportReverseNoMatch() throws Exception {
+        PackageInfo imprt = new PackageInfo("javax.xml.ws.*");
+        PackageInfo export = new PackageInfo("javax.xml");
+        assertFalse(imprt.matches(export));
+    }
+
+    public void testMatchExportReverse() throws Exception {
+        PackageInfo imprt = new PackageInfo("javax.xml.bind.annotation.adaptors");
+        PackageInfo export = new PackageInfo("javax.xml.bind.*");
         assertTrue(imprt.matches(export));
     }
 
