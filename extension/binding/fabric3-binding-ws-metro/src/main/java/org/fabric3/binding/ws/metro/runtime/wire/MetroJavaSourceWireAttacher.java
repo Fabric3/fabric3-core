@@ -45,10 +45,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.handler.Handler;
-import javax.xml.ws.handler.soap.SOAPHandler;
 
 import com.sun.xml.ws.api.BindingID;
 import org.oasisopen.sca.annotation.Reference;
@@ -63,7 +61,6 @@ import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
 import org.fabric3.binding.ws.metro.util.BindingIdResolver;
 import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
-import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
