@@ -48,7 +48,7 @@
         </dependency>
 
         <dependency>
-            <groupId>stax</groupId>
+            <groupId>javax.xml.stream</groupId>
             <artifactId>stax-api</artifactId>
             <version>${stax.api.version}</version>
             <scope>provided</scope>
@@ -76,7 +76,7 @@
 
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
+            <artifactId>woodstox-core-asl</artifactId>
             <version>${woodstox.version}</version>
             <scope>test</scope>
         </dependency>

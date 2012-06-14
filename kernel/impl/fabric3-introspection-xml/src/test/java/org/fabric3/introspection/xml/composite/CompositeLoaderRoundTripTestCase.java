@@ -84,7 +84,7 @@ public class CompositeLoaderRoundTripTestCase extends TestCase {
         assertFalse(ctx.hasErrors());
         assertEquals(2, composite.getNamespaces().size());
         for (Namespace namespace : composite.getNamespaces()) {
-            assertTrue(namespace.getPrefix() == null || "f3".equals(namespace.getPrefix()));
+            assertTrue(namespace.getPrefix() == null || namespace.getPrefix().length() == 0 || "f3".equals(namespace.getPrefix()));
         }
         // verify order of reads
         assertTrue(stack.get(0) instanceof Comment);

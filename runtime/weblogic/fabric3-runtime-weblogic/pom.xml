@@ -112,7 +112,7 @@ Public License. See the accompanying license file for details.
 
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
+            <artifactId>woodstox-core-asl</artifactId>
             <version>${woodstox.version}</version>
             <scope>runtime</scope>
         </dependency>

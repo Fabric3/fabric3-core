@@ -52,7 +52,8 @@
                 <include>org.codehaus.fabric3.api:javax-annotation</include>
                 <include>javax.xml.bind:jaxb-api-osgi</include>
                 <include>javax.ws.rs:jsr311-api</include>
-                <include>stax:stax-api</include>
+                <include>javax.xml.stream:stax-api</include>
+                <include>org.codehaus.woodstox:stax2-api</include>
                 <include>junit:junit</include>
             </includes>
             <outputDirectory>host</outputDirectory>
@@ -74,7 +75,7 @@
                 <include>org.codehaus.fabric3:fabric3-system</include>
                 <include>org.codehaus.fabric3:fabric3-thread-pool</include>
                 <include>jaxen:jaxen</include>
-                <include>org.codehaus.woodstox:wstx-asl</include>
+                <include>org.codehaus.woodstox:woodstox-core-asl</include>
                 <include>ch.qos.logback:logback-classic</include>
                 <include>ch.qos.logback:logback-core</include>
                 <include>org.slf4j:slf4j-api</include>

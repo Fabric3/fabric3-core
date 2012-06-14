@@ -31,7 +31,7 @@ Public License. See the accompanying license file for details.
         </dependency>
 
         <dependency>
-            <groupId>stax</groupId>
+            <groupId>javax.xml.stream</groupId>
             <artifactId>stax-api</artifactId>
             <version>${stax.api.version}</version>
         </dependency>

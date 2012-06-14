@@ -30,7 +30,7 @@ Public License. See the accompanying license file for details.
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>stax</groupId>
+            <groupId>javax.xml.stream</groupId>
             <artifactId>stax-api</artifactId>
             <version>${stax.api.version}</version>
             <scope>provided</scope>

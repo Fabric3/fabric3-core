@@ -118,7 +118,7 @@ licensed under the Apache 2.0 license.
 
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
+            <artifactId>woodstox-core-asl</artifactId>
             <version>${woodstox.version}</version>
             <scope>runtime</scope>
         </dependency>
