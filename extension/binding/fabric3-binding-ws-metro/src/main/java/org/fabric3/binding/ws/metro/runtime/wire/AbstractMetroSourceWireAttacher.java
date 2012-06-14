@@ -59,12 +59,16 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  * @version $Rev: 7467 $ $Date: 2009-08-06 18:57:21 +0200 (Thu, 06 Aug 2009) $
  */
 public abstract class AbstractMetroSourceWireAttacher<T extends MetroSourceDefinition> implements SourceWireAttacher<T> {
+    private static final java.lang.String META_FACTORY_CLASS_PROPERTY = "javax.xml.soap.MetaFactory";
+
     protected EndpointService endpointService;
     private BindingHandlerRegistry handlerRegistry;
 
     public AbstractMetroSourceWireAttacher(EndpointService endpointService, BindingHandlerRegistry handlerRegistry) {
         this.endpointService = endpointService;
         this.handlerRegistry = handlerRegistry;
+        // set the SAAJ implementation to the one provided by Metro
+        System.setProperty(META_FACTORY_CLASS_PROPERTY, "com.sun.xml.messaging.saaj.soap.SAAJMetaFactoryImpl");
     }
 
     public void detachObjectFactory(T source, PhysicalTargetDefinition target) {
