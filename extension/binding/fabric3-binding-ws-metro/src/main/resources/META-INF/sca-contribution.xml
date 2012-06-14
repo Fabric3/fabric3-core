@@ -28,6 +28,7 @@ Public License. See the accompanying license file for details.
     <!-- export SAAJ classes used by application-level WS handlers -->
     <export.java package="javax.xml.soap.*" version="1.3.0"/>
     <export.java package="javax.xml.ws.*" version="2.2.0"/>
+    <export.java package="com.sun.xml.messaging.saaj.*" version="2.2.0"/>
 
     <deployable composite="f3:MetroControllerExtension" modes="controller vm"/>
     <deployable composite="f3:MetroParticipantExtension" modes="participant vm"/>
