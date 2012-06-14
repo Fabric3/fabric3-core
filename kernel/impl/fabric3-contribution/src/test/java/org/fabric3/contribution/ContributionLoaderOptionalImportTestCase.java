@@ -95,8 +95,9 @@ public class ContributionLoaderOptionalImportTestCase extends TestCase {
     private URL locationUrl;
 
     public void testOptionalImportLoad() throws Exception {
-        EasyMock.replay(classLoaderRegistry, store, processorRegistry, builder);
-        ContributionLoaderImpl loader = new ContributionLoaderImpl(classLoaderRegistry, store, processorRegistry, generators, builder, info);
+        ContributionLoaderMonitor monitor = EasyMock.createNiceMock(ContributionLoaderMonitor.class);
+        EasyMock.replay(classLoaderRegistry, store, processorRegistry, builder, monitor);
+        ContributionLoaderImpl loader = new ContributionLoaderImpl(classLoaderRegistry, store, processorRegistry, generators, builder, info, monitor);
 
         MultiParentClassLoader classLoader = (MultiParentClassLoader) loader.load(contribution);
         assertTrue(classLoader.getParents().contains(hostClassLoader));
@@ -121,14 +122,14 @@ public class ContributionLoaderOptionalImportTestCase extends TestCase {
         setupGenerators();
 
         processorRegistry = EasyMock.createMock(ClasspathProcessorRegistry.class);
-        List<URL>  classpath = Collections.emptyList();
+        List<URL> classpath = Collections.emptyList();
         EasyMock.expect(processorRegistry.process(locationUrl, Collections.<Library>emptyList())).andReturn(classpath);
 
         builder = EasyMock.createMock(ClassLoaderWireBuilder.class);
 
         info = EasyMock.createMock(HostInfo.class);
         EasyMock.expect(info.getTempDir()).andReturn(new File(""));
-         
+
         EasyMock.expect(info.supportsClassLoaderIsolation()).andReturn(true);
         EasyMock.replay(info);
 

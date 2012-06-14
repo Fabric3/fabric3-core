@@ -211,6 +211,8 @@ public class ClassLoaderBuilderImplTestCase extends TestCase {
         tracker = EasyMock.createMock(ClassLoaderTracker.class);
         store = EasyMock.createMock(MetaDataStore.class);
         info = EasyMock.createMock(HostInfo.class);
-        builder = new ClassLoaderBuilderImpl(wireBuilder, classLoaderRegistry, processorRegistry, resolver, tracker, store, info);
+        ClassLoaderBuilderMonitor monitor = EasyMock.createNiceMock(ClassLoaderBuilderMonitor.class);
+
+        builder = new ClassLoaderBuilderImpl(wireBuilder, classLoaderRegistry, processorRegistry, resolver, tracker, store, info, monitor);
     }
 }

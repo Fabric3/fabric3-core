@@ -54,6 +54,8 @@ import java.util.List;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
+import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.classloader.ClassLoaderListener;
 import org.fabric3.spi.builder.classloader.ClassLoaderWireBuilder;
@@ -92,7 +94,8 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
                                   @Reference ContributionResolver resolver,
                                   @Reference ClassLoaderTracker tracker,
                                   @Reference MetaDataStore metaDataStore,
-                                  @Reference HostInfo info) {
+                                  @Reference HostInfo info,
+                                  @Monitor ClassLoaderBuilderMonitor monitor) {
         this.wireBuilder = wireBuilder;
         this.classLoaderRegistry = classLoaderRegistry;
         this.classpathProcessorRegistry = classpathProcessorRegistry;
@@ -101,12 +104,7 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
         this.metaDataStore = metaDataStore;
         this.info = info;
         this.listeners = Collections.emptyList();
-        try {
-            sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
-            sysPathsField.setAccessible(true);
-        } catch (NoSuchFieldException e) {
-            throw new AssertionError(e);
-        }
+        initializeSysPaths(info, monitor);
 
     }
 
@@ -232,10 +230,34 @@ public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {
      * @param loader the classloader
      */
     private void setSysPathsField(MultiParentClassLoader loader) {
+        if (sysPathsField == null) {
+            // not supported on this JVM
+            return;
+        }
         try {
             sysPathsField.set(loader, null);
         } catch (IllegalAccessException e) {
             throw new AssertionError(e);
+        }
+    }
+
+    /**
+     * Performs a workaround to enable specifying the path for native libraries on a per-extension classloader basis.
+     *
+     * @param info    the runtime info
+     * @param monitor the monitor
+     */
+    private void initializeSysPaths(HostInfo info, ClassLoaderBuilderMonitor monitor) {
+        try {
+            sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
+            sysPathsField.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            // fail silently since sys_paths may not be supported on all JVMs, e.g. J9
+            if (RuntimeMode.PARTICIPANT == info.getRuntimeMode()) {
+                // only issue info if on participant since contribution loading will issue a warning as well. In VM mode where the two subsystems
+                // are collocated, this would result in duplicate messages
+                monitor.nativeLibrariesNotSupported();
+            }
         }
     }
 

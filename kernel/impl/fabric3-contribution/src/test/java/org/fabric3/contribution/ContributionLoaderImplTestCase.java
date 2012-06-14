@@ -103,8 +103,10 @@ public class ContributionLoaderImplTestCase extends TestCase {
     private URL locationUrl;
 
     public void testLoad() throws Exception {
-        EasyMock.replay(classLoaderRegistry, store, processorRegistry, builder);
-        ContributionLoaderImpl loader = new ContributionLoaderImpl(classLoaderRegistry, store, processorRegistry, generators, builder, info);
+        ContributionLoaderMonitor monitor = EasyMock.createNiceMock(ContributionLoaderMonitor.class);
+        EasyMock.replay(classLoaderRegistry, store, processorRegistry, builder, monitor);
+
+        ContributionLoaderImpl loader = new ContributionLoaderImpl(classLoaderRegistry, store, processorRegistry, generators, builder, info, monitor);
 
         MultiParentClassLoader classLoader = (MultiParentClassLoader) loader.load(contribution);
         assertTrue(classLoader.getParents().contains(hostClassLoader));
@@ -140,7 +142,7 @@ public class ContributionLoaderImplTestCase extends TestCase {
         setupGenerators();
 
         processorRegistry = EasyMock.createMock(ClasspathProcessorRegistry.class);
-        List<URL>  classpath = Collections.singletonList(locationUrl);
+        List<URL> classpath = Collections.singletonList(locationUrl);
         EasyMock.expect(processorRegistry.process(locationUrl, Collections.<Library>emptyList())).andReturn(classpath);
 
         builder = EasyMock.createMock(ClassLoaderWireBuilder.class);

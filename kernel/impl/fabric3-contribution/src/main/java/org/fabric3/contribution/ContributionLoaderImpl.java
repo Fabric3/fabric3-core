@@ -49,6 +49,7 @@ import java.util.Set;
 
 import org.oasisopen.sca.annotation.Reference;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.contribution.manifest.ContributionExport;
 import org.fabric3.contribution.manifest.ContributionImport;
 import org.fabric3.host.contribution.ContributionInUseException;
@@ -90,7 +91,8 @@ public class ContributionLoaderImpl implements ContributionLoader {
                                   @Reference ClasspathProcessorRegistry classpathProcessorRegistry,
                                   @Reference Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators,
                                   @Reference ClassLoaderWireBuilder builder,
-                                  @Reference HostInfo info) {
+                                  @Reference HostInfo info,
+                                  @Monitor ContributionLoaderMonitor monitor) {
         this.classLoaderRegistry = classLoaderRegistry;
         this.store = store;
         this.classpathProcessorRegistry = classpathProcessorRegistry;
@@ -105,7 +107,8 @@ public class ContributionLoaderImpl implements ContributionLoader {
             sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
             sysPathsField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            throw new AssertionError(e);
+            // sys_paths not available on some JVMs, e.g. IBM J9
+            monitor.nativeLibrariesNotSupported();
         }
     }
 

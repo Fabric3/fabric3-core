@@ -86,9 +86,11 @@ public class ContributionLoaderImplUnloadTestCase extends TestCase {
     public void testUnLoad() throws Exception {
         MultiParentClassLoader contributionClassLoader = new MultiParentClassLoader(contributionUri, getClass().getClassLoader());
         EasyMock.expect(classLoaderRegistry.unregister(EasyMock.eq(contributionUri))).andReturn(contributionClassLoader);
-        EasyMock.replay(classLoaderRegistry, store, processorRegistry, builder);
 
-        ContributionLoaderImpl loader = new ContributionLoaderImpl(classLoaderRegistry, store, processorRegistry, generators, builder, info);
+        ContributionLoaderMonitor monitor = EasyMock.createNiceMock(ContributionLoaderMonitor.class);
+        EasyMock.replay(classLoaderRegistry, store, processorRegistry, builder, monitor);
+
+        ContributionLoaderImpl loader = new ContributionLoaderImpl(classLoaderRegistry, store, processorRegistry, generators, builder, info, monitor);
 
         loader.unload(contribution);
 
@@ -98,8 +100,9 @@ public class ContributionLoaderImplUnloadTestCase extends TestCase {
     public void testErrorDependentUnLoad() throws Exception {
         dependentContribution.setState(ContributionState.INSTALLED);
 
-        EasyMock.replay(classLoaderRegistry, store, processorRegistry, builder);
-        ContributionLoaderImpl loader = new ContributionLoaderImpl(classLoaderRegistry, store, processorRegistry, generators, builder, info);
+        ContributionLoaderMonitor monitor = EasyMock.createNiceMock(ContributionLoaderMonitor.class);
+        EasyMock.replay(classLoaderRegistry, store, processorRegistry, builder, monitor);
+        ContributionLoaderImpl loader = new ContributionLoaderImpl(classLoaderRegistry, store, processorRegistry, generators, builder, info, monitor);
 
         try {
             loader.unload(contribution);
