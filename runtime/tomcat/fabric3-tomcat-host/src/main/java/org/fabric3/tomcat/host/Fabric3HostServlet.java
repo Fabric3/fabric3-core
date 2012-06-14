@@ -1,10 +1,5 @@
 package org.fabric3.tomcat.host;
 
-import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
-import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
-import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
-import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -12,7 +7,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.management.MBeanServer;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -27,6 +21,8 @@ import org.apache.catalina.Host;
 import org.apache.catalina.Service;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.mbeans.MBeanUtils;
+import org.w3c.dom.Document;
+
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.host.RuntimeMode;
@@ -38,6 +34,7 @@ import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
+import org.fabric3.host.runtime.HiddenPackages;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.runtime.RuntimeConfiguration;
@@ -45,15 +42,18 @@ import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
-import org.w3c.dom.Document;
+
+import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
+import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
+import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
+import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
+import static org.fabric3.host.runtime.BootstrapHelper.createHostInfo;
 
 public class Fabric3HostServlet extends HttpServlet implements ContainerServlet {
 
     private static final String CATALINA_BASE_PROP = "catalina.base";
 
     private static final long serialVersionUID = 1L;
-
-    private static final String[] PACKAGES = new String[] { "javax.xml.bind.", "javax.xml.ws.", "javax.xml.soap." };
 
     private static final String RUNTIME_MODE = "vm";
 
@@ -66,9 +66,9 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
 
     private Host host;
 
-	private File installDirectory;
+    private File installDirectory;
 
-    private synchronized void init(Service service, String runtimeId, String f3_HomePath, boolean firstInitTime) {
+    private synchronized void init(Service service, String runtimeId, boolean firstInitTime) {
         try {
 
             String catalinaInstall = System.getProperty(CATALINA_BASE_PROP);
@@ -76,8 +76,7 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
 
             if (firstInitTime) {
                 installDirectory = findInstallationDirectory(catalinaInstallDir);
-            }
-            else if (installDirectory == null) {
+            } else if (installDirectory == null) {
                 throw new Fabric3HostException("No Fabric3 installation found.");
             }
 
@@ -93,7 +92,7 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
             File hostDir = BootstrapHelper.getDirectory(installDirectory, "host");
 
             ClassLoader systemClassLoader = getClass().getClassLoader();
-            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, PACKAGES);
+            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, HiddenPackages.getPackages());
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(maskingClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
@@ -113,8 +112,7 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
             List<File> deployDirs = bootstrapService.parseDeployDirectories(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName, mode, domainName, environment, runtimeDir, configDir, extensionsDir,
-                    deployDirs);
+            HostInfo hostInfo = createHostInfo(runtimeName, mode, domainName, environment, runtimeDir, configDir, extensionsDir, deployDirs);
 
             // clear out the tmp directory
             if (firstInitTime) {
@@ -218,7 +216,7 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
             public void run() {
                 if (host != null) {
                     Engine engine = (Engine) host.getParent();
-                    init(engine.getService(), RUNTIME_MODE, FABRIC3_HOME, true);
+                    init(engine.getService(), RUNTIME_MODE, true);
                 }
             }
         }).start();
@@ -243,7 +241,7 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
         if (restart != null && Boolean.parseBoolean(restart)) {
             destroy();
             Engine engine = (Engine) host.getParent();
-            init(engine.getService(), runtime_mode, f3_home_path, false);
+            init(engine.getService(), runtime_mode, false);
         }
 
     }
