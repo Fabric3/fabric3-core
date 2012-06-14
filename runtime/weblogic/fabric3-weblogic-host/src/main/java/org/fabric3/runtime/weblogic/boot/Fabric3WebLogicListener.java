@@ -173,7 +173,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             // set the context classloader to the host classloader
             ClassLoader systemClassLoader = Thread.currentThread().getContextClassLoader();
 
-            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, HiddenPackages.getPackages(), HiddenPackages.getResources());
+            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, WebLogicHiddenPackages.getPackages(), WebLogicHiddenPackages.getResources());
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(maskingClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 

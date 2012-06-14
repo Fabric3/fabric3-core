@@ -35,22 +35,33 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.runtime.standalone.server;
+package org.fabric3.runtime.weblogic.boot;
+
+import org.fabric3.host.runtime.HiddenPackages;
 
 /**
  * @version $Rev$ $Date$
  */
-public final class HiddenPackages {
-    private static final String[] PACKAGES = new String[]{
-            "javax.xml.bind.",
-            "javax.xml.ws.",
-            "javax.xml.soap."
-    };
+public final class WebLogicHiddenPackages {
+    private static final String[] PACKAGES;
+    private static final String[] RESOURCES = new String[]{"weblogic!", "com.sun.xml.ws."};
+
+    static {
+        String[] hidden = HiddenPackages.getPackages();
+        PACKAGES = new String[hidden.length + 2];
+        System.arraycopy(hidden, 0, PACKAGES, 0, hidden.length);
+        PACKAGES[4] = "weblogic.xml.saaj.";
+        PACKAGES[5] = "antlr.";
+    }
 
     public static String[] getPackages() {
         return PACKAGES;
     }
 
-    private HiddenPackages() {
+    public static String[] getResources() {
+        return RESOURCES;
+    }
+
+    private WebLogicHiddenPackages() {
     }
 }
