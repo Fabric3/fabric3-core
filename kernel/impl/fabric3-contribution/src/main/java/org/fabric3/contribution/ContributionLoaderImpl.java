@@ -260,6 +260,9 @@ public class ContributionLoaderImpl implements ContributionLoader {
      * @param loader the classloader
      */
     private void setSysPathsField(MultiParentClassLoader loader) {
+        if (sysPathsField == null) {
+            return;
+        }
         try {
             sysPathsField.set(loader, null);
         } catch (IllegalAccessException e) {
