@@ -254,7 +254,7 @@ public class ContributionLoaderImpl implements ContributionLoader {
     }
 
     /**
-     * Sets the native libraries path by setting the classlaoder's sysPathsField to null. This will force the classloader to reinitialize the field to
+     * Sets the native libraries path by setting the classloader sysPathsField to null. This will force the classloader to reinitialize the field to
      * JAVA_LIBRARY_PATH.
      *
      * @param loader the classloader
