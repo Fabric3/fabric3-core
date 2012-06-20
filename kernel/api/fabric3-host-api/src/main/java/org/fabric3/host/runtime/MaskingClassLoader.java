@@ -39,10 +39,7 @@ package org.fabric3.host.runtime;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
 
 /**
  * Prevents packages and resources from being loaded by child classloaders. Used to allow a Fabric3 runtime to load alternative versions or
@@ -51,8 +48,10 @@ import java.util.List;
  * @version $Rev$ $Date$
  */
 public class MaskingClassLoader extends ClassLoader {
+    private static final ResourceFilter EMPTY_FILTER = new ResourceFilter(new String[0]);
+
     private String[] packageMasks;
-    private String[] resourceMasks;
+    private ResourceFilter filter = EMPTY_FILTER;
 
     /**
      * Constructor that masks one or more Java packages.
@@ -74,7 +73,7 @@ public class MaskingClassLoader extends ClassLoader {
      */
     public MaskingClassLoader(ClassLoader parent, String[] packageMasks, String[] resourceMasks) {
         this(parent, packageMasks);
-        this.resourceMasks = resourceMasks;
+        filter = new ResourceFilter(resourceMasks);
     }
 
     @Override
@@ -86,63 +85,24 @@ public class MaskingClassLoader extends ClassLoader {
         return super.loadClass(name, resolve);
     }
 
-    @Override
     public URL getResource(String name) {
         URL url = super.getResource(name);
-        return filterResource(url);
+        return filter.filterResource(url);
     }
 
     public Enumeration<URL> getResources(String name) throws IOException {
         Enumeration<URL> enumeration = super.getResources(name);
-        return filterResources(enumeration);
+        return filter.filterResources(enumeration);
     }
 
-    @Override
     protected URL findResource(String name) {
         URL url = super.findResource(name);
-        return filterResource(url);
+        return filter.filterResource(url);
     }
 
-    @Override
     protected Enumeration<URL> findResources(String name) throws IOException {
         Enumeration<URL> enumeration = super.findResources(name);
-        return filterResources(enumeration);
+        return filter.filterResources(enumeration);
     }
 
-    private URL filterResource(URL url) {
-        if (url == null) {
-            return null;
-        }
-        if (resourceMasks != null) {
-            String str = url.toString();
-            for (String mask : resourceMasks) {
-                if (str.contains(mask)) {
-                    return null;
-                }
-            }
-        }
-        return url;
-    }
-
-    private Enumeration<URL> filterResources(Enumeration<URL> enumeration) {
-        if (resourceMasks == null || enumeration == null) {
-            return enumeration;
-        }
-        List<URL> resources = Collections.list(enumeration);
-        List<URL> maskedResources = new ArrayList<URL>(resources.size());
-        for (URL resource : resources) {
-            String str = resource.toString();
-            boolean toInclude = true;
-            for (String mask : packageMasks) {
-                if (str.contains(mask)) {
-                    toInclude = false;
-                    break;
-                }
-            }
-            if (toInclude) {
-                maskedResources.add(resource);
-            }
-        }
-        return Collections.enumeration(maskedResources);
-    }
 }

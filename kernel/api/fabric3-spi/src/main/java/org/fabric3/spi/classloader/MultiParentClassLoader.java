@@ -46,7 +46,6 @@ package org.fabric3.spi.classloader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -56,6 +55,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import sun.security.util.SecurityConstants;
+
+import org.fabric3.host.classloader.DelegatingResourceClassLoader;
 
 /**
  * A classloader implementation that supports a multi-parent hierarchy and extension resolution mechanism. Class resolution is performed in the
@@ -76,10 +77,11 @@ import sun.security.util.SecurityConstants;
  *
  * @version $Rev$ $Date$
  */
-public class MultiParentClassLoader extends URLClassLoader {
+public class MultiParentClassLoader extends DelegatingResourceClassLoader {
     private static final URL[] NOURLS = {};
 
     private final URI name;
+
     private final List<ClassLoader> parents = new CopyOnWriteArrayList<ClassLoader>();
     private final List<MultiParentClassLoader> extensions = new CopyOnWriteArrayList<MultiParentClassLoader>();
 
@@ -291,7 +293,6 @@ public class MultiParentClassLoader extends URLClassLoader {
         }
         return Collections.enumeration(resources);
     }
-
 
     public String toString() {
         return name.toString();

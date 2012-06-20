@@ -37,13 +37,18 @@
 */
 package org.fabric3.fabric.builder.classloader;
 
+import java.net.URL;
+
+import org.fabric3.host.classloader.DelegatingResourceClassLoader;
+
 /**
  * A bridging classloader that filters class and resource loading to a specified set of classes. This is used to enforce the semantics of a
  * JavaContributionWire.
  *
  * @version $Rev$ $Date$
  */
-public class ClassLoaderWireFilter extends ClassLoader {
+public class ClassLoaderWireFilter extends DelegatingResourceClassLoader {
+    private static final URL[] NO_URLS = new URL[0];
     private String[] importedPackage;
 
     /**
@@ -53,7 +58,7 @@ public class ClassLoaderWireFilter extends ClassLoader {
      * @param importedPackage the package the wire imports
      */
     public ClassLoaderWireFilter(ClassLoader parent, String importedPackage) {
-        super(parent);
+        super(NO_URLS, parent);
         this.importedPackage = importedPackage.split("\\.");
     }
 

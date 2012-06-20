@@ -50,13 +50,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarFile;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.Version;
+import org.fabric3.host.classloader.DelegatingResourceClassLoader;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.util.OSHelper;
 
@@ -162,7 +162,7 @@ public final class BootstrapHelper {
                 throw new AssertionError();
             }
         }
-        return new URLClassLoader(urls, parent);
+        return new DelegatingResourceClassLoader(urls, parent);
     }
 
     /**

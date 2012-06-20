@@ -53,6 +53,7 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.xml.bind.JAXBContext;
 
 import org.w3c.dom.Document;
 
@@ -90,6 +91,8 @@ import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
 public class Fabric3WebLogicListener implements ServletContextListener {
     private static final String FABRIC3_HOME = "fabric3.home";
     private static final String FABRIC3_MODE = "fabric3.mode";
+    private static final String[] HIDDEN_RESOURCES = new String[]{"weblogic!", "com.sun.xml.ws.", "jaxb.properties"};
+
 
     private ServletContext context;
     private RuntimeCoordinator coordinator;
@@ -139,6 +142,10 @@ public class Fabric3WebLogicListener implements ServletContextListener {
      * @param installDirectory the directory containing the Fabric3 runtime image
      */
     public void start(RuntimeMode runtimeMode, MBeanServer mBeanServer, File installDirectory) {
+
+        // override EclipseLink JAXB with the Sun JAXB RI
+        System.setProperty(JAXBContext.class.getName(),"com.sun.xml.bind.v2.ContextFactory");
+
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             //  calculate config directories based on the mode the runtime is booted in
@@ -173,7 +180,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             // set the context classloader to the host classloader
             ClassLoader systemClassLoader = Thread.currentThread().getContextClassLoader();
 
-            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, WebLogicHiddenPackages.getPackages(), WebLogicHiddenPackages.getResources());
+            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, WebLogicHiddenPackages.getPackages(), HIDDEN_RESOURCES);
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(maskingClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 
