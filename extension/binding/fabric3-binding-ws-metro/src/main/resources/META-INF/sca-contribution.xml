@@ -30,9 +30,11 @@ Public License. See the accompanying license file for details.
     <export.java package="javax.xml.ws.*" version="2.2.0"/>
     <export.java package="com.sun.xml.messaging.saaj.*" version="2.2.0"/>
 
+    <!-- MetroBinding must be the first composite deployed as it configures the Metro extension -->
+    <deployable composite="f3:MetroBinding"/>
     <deployable composite="f3:MetroControllerExtension" modes="controller vm"/>
     <deployable composite="f3:MetroParticipantExtension" modes="participant vm"/>
-    <deployable composite="f3:MetroBinding"/>
+
     <f3:extends name="jaxws"/>
     <f3:provides name="jaxb"/>
 

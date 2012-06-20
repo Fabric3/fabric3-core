@@ -51,6 +51,9 @@ import org.oasisopen.sca.annotation.Property;
  */
 @EagerInit
 public class MetroBinding {
+    private static final String META_FACTORY_CLASS_PROPERTY = "javax.xml.soap.MetaFactory";
+    private static final String MESSAGE_FACTORY_CLASS_PROPERTY = "javax.xml.soap.MessageFactory";
+
     private Level logLevel = Level.WARNING;
 
     @Property(required = false)
@@ -60,6 +63,18 @@ public class MetroBinding {
 
     @Init
     public void init() {
+        // setup the SAAJ implementation
+        String vm = System.getProperty("java.vm.name");
+        if (vm != null && vm.contains("IBM J9 VM")) {
+            // the Metro SAAJ implementation is incompatible with the IBM J9 VM, use the one provided by J9 instead
+            System.setProperty(META_FACTORY_CLASS_PROPERTY, "com.sun.xml.internal.messaging.saaj.soap.SAAJMetaFactoryImpl");
+            System.setProperty(MESSAGE_FACTORY_CLASS_PROPERTY, "com.sun.xml.internal.messaging.saaj.soap.ver1_1.SOAPMessageFactory1_1Impl");
+        } else {
+            // set the SAAJ implementation to the one provided by Metro
+            System.setProperty(META_FACTORY_CLASS_PROPERTY, "com.sun.xml.messaging.saaj.soap.SAAJMetaFactoryImpl");
+            System.setProperty(MESSAGE_FACTORY_CLASS_PROPERTY, "com.sun.xml.messaging.saaj.soap.ver1_1.SOAPMessageFactory1_1Impl");
+        }
+
         // turn down Metro logging
         Logger.getLogger("javax.enterprise.resource.webservices").setLevel(logLevel);
         // turn monitoring off as management is handled by the Fabric3 JMX infrastructure
