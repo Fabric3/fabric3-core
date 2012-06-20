@@ -50,7 +50,6 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,6 +76,8 @@ import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
+import org.fabric3.host.classloader.DelegatingResourceClassLoader;
+import org.fabric3.host.runtime.HiddenPackages;
 import org.fabric3.host.runtime.MaskingClassLoader;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.maven.MavenRuntime;
@@ -253,7 +254,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
      *
      * @parameter
      */
-    public String[] hiddenPackages = new String[]{"javax.xml.bind.", "javax.xml.ws.", "javax.xml.soap.", "org.springframework."};
+    public String[] hiddenPackages = HiddenPackages.getPackages();
 
     /**
      * @component
@@ -455,7 +456,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
                 log.debug("  " + url);
             }
         }
-        return new URLClassLoader(urls, parent);
+        return new DelegatingResourceClassLoader(urls, parent);
     }
 
     /**
@@ -479,7 +480,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
             }
 
         }
-        return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
+        return new DelegatingResourceClassLoader(urls.toArray(new URL[urls.size()]), parent);
     }
 
     /**
