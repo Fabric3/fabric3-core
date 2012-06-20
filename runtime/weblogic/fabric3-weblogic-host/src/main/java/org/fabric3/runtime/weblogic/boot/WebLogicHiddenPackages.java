@@ -44,24 +44,18 @@ import org.fabric3.host.runtime.HiddenPackages;
  */
 public final class WebLogicHiddenPackages {
     private static final String[] PACKAGES;
-    private static final String[] RESOURCES = new String[]{"weblogic!", "com.sun.xml.ws."};
 
     static {
         String[] hidden = HiddenPackages.getPackages();
         PACKAGES = new String[hidden.length + 2];
         System.arraycopy(hidden, 0, PACKAGES, 0, hidden.length);
-        PACKAGES[4] = "weblogic.xml.saaj.";
-        PACKAGES[5] = "antlr.";
+        PACKAGES[PACKAGES.length - 2] = "weblogic.xml.saaj.";
+        PACKAGES[PACKAGES.length - 1] = "antlr.";
     }
 
     public static String[] getPackages() {
         return PACKAGES;
     }
 
-    public static String[] getResources() {
-        return RESOURCES;
-    }
 
-    private WebLogicHiddenPackages() {
-    }
 }
