@@ -47,8 +47,17 @@ public final class HiddenPackages {
     private static final String[] PACKAGES = new String[]{
             "javax.xml.bind.",
             "javax.xml.ws.",
-            "javax.xml.soap.",
-            "com.sun.xml."
+            "com.sun.xml.jaxws.",
+            "com.sun.xml.messaging.",
+            "com.sun.xml.registry.",
+            "com.sun.xml.rpc.",
+            "com.sun.xml.security.",
+            "com.sun.xml.stream.",
+            "com.sun.xml.ws.",
+            "com.sun.xml.wss.",
+            "com.sun.xml.xwss.",
+            "com.sun.xml.bind.",
+            "org.springframework."
     };
 
     public static String[] getPackages() {
