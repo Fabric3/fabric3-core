@@ -54,7 +54,7 @@ import org.w3c.dom.Document;
 
 import org.fabric3.contribution.manifest.ContributionExport;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
-import org.fabric3.fabric.runtime.bootstrap.BootExports;
+import org.fabric3.host.runtime.BootExports;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapAssemblyFactory;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapCompositeFactory;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;

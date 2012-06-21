@@ -35,9 +35,8 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.runtime.bootstrap;
+package org.fabric3.host.runtime;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,21 +52,19 @@ public final class BootExports {
 
     static {
 
-        Map<String, String> bootMap = new HashMap<String, String>();
+        BOOT_EXPORTS = new HashMap<String, String>();
 
         // Fabric3 packages
-        bootMap.put("org.fabric3.api.*", Names.VERSION);
-        bootMap.put("org.fabric3.spi.*", Names.VERSION);
-        bootMap.put("org.fabric3.util.*", Names.VERSION);
-        bootMap.put("org.fabric3.host.*", Names.VERSION);
-        bootMap.put("org.fabric3.management.*", Names.VERSION);
-        bootMap.put("org.fabric3.model.*", Names.VERSION);
-        bootMap.put("org.fabric3.implementation.pojo.*", Names.VERSION);
-        BOOT_EXPORTS = Collections.unmodifiableMap(bootMap);
+        BOOT_EXPORTS.put("org.fabric3.api.*", Names.VERSION);
+        BOOT_EXPORTS.put("org.fabric3.spi.*", Names.VERSION);
+        BOOT_EXPORTS.put("org.fabric3.util.*", Names.VERSION);
+        BOOT_EXPORTS.put("org.fabric3.host.*", Names.VERSION);
+        BOOT_EXPORTS.put("org.fabric3.management.*", Names.VERSION);
+        BOOT_EXPORTS.put("org.fabric3.model.*", Names.VERSION);
+        BOOT_EXPORTS.put("org.fabric3.implementation.pojo.*", Names.VERSION);
 
         // Third-party packages
-        bootMap.put("org.slf4j.*", "1.5.0");
-        bootMap.put("com.ctc.wstx.*", "3.2.9");
+        BOOT_EXPORTS.put("com.ctc.wstx.*", "4.1.3");
     }
 
     private BootExports() {
@@ -75,6 +72,10 @@ public final class BootExports {
 
     public static Map<String, String> getExports() {
         return BOOT_EXPORTS;
+    }
+
+    public static void addExport(String pkg, String version) {
+        BOOT_EXPORTS.put(pkg, version);
     }
 
 }

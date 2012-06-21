@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.runtime.bootstrap;
+package org.fabric3.host.runtime;
 
 import junit.framework.TestCase;
 
