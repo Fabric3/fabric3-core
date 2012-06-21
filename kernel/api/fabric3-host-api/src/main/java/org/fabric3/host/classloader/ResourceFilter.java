@@ -38,22 +38,56 @@
 package org.fabric3.host.classloader;
 
 import java.net.URL;
-
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
+ * Filters resources against a collection of masks.
+ *
  * @version $Rev$ $Date$
  */
-public class DelegatingResourceClassLoaderTestCase extends TestCase {
+public class ResourceFilter {
+    private String[] resourceMasks;
 
-    public void testGetResource() throws Exception {
-        DelegatingResourceClassLoader classLoader = new DelegatingResourceClassLoader(new URL[0], getClass().getClassLoader());
-        assertNotNull(classLoader.getResource(getClass().getName().replace(".", "/") + ".class"));
+    public ResourceFilter(String[] resourceMasks) {
+        this.resourceMasks = resourceMasks;
     }
 
-    public void testGetResources() throws Exception {
-        DelegatingResourceClassLoader classLoader = new DelegatingResourceClassLoader(new URL[0], getClass().getClassLoader());
-        assertTrue(classLoader.getResources(getClass().getName().replace(".", "/") + ".class").hasMoreElements());
+    public URL filterResource(URL url) {
+        if (url == null || resourceMasks.length == 0) {
+            return url;
+        }
+        String str = url.toString();
+        for (String mask : resourceMasks) {
+            if (str.contains(mask)) {
+                return null;
+            }
+        }
+        return url;
+    }
+
+    public Enumeration<URL> filterResources(Enumeration<URL> enumeration) {
+        if (resourceMasks == null || enumeration == null || resourceMasks.length == 0) {
+            return enumeration;
+        }
+        List<URL> resources = Collections.list(enumeration);
+        List<URL> maskedResources = new ArrayList<URL>(resources.size());
+        for (URL resource : resources) {
+            String str = resource.toString();
+            boolean toInclude = true;
+            for (String mask : resourceMasks) {
+                if (str.contains(mask)) {
+                    toInclude = false;
+                    break;
+                }
+            }
+            if (toInclude) {
+                maskedResources.add(resource);
+            }
+        }
+        return Collections.enumeration(maskedResources);
     }
 
 }

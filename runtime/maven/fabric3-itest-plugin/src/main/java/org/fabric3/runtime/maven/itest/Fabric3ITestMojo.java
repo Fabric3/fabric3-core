@@ -78,7 +78,7 @@ import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.classloader.DelegatingResourceClassLoader;
 import org.fabric3.host.runtime.HiddenPackages;
-import org.fabric3.host.runtime.MaskingClassLoader;
+import org.fabric3.host.classloader.MaskingClassLoader;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.maven.MavenRuntime;
 
