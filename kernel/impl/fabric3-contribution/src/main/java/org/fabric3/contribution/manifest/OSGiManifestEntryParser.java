@@ -1,6 +1,6 @@
 /*
 * Fabric3
-* Copyright (c) 2009-2011 Metaform Systems
+* Copyright (c) 2009-2012 Metaform Systems
 *
 * Fabric3 is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as
@@ -40,9 +40,9 @@ package org.fabric3.contribution.manifest;
 /**
  * Parses OSGi headers, which are of the form:
  * <pre>
- *    header ::= clause ( Õ,Õ clause )
- *    clause ::= path ( Õ;Õ path ) *
- *                 ( Õ;Õ parameter ) *
+ *    header ::= clause ( ï¿½,ï¿½ clause )
+ *    clause ::= path ( ï¿½;ï¿½ path ) *
+ *                 ( ï¿½;ï¿½ parameter ) *
  * </pre>
  *
  * @version $Rev$ $Date$

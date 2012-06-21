@@ -1,6 +1,6 @@
 /*
 * Fabric3
-* Copyright (c) 2009-2011 Metaform Systems
+* Copyright (c) 2009-2012 Metaform Systems
 *
 * Fabric3 is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as
@@ -209,11 +209,11 @@ public class DependencyResolverImpl implements DependencyResolver {
      * The following OSGi resolution algorithm defined in R4 Section 3.1 is followed:
      * <p/>
      * <p/>
-     * <strong>External</strong> Ð If the import resolves to an export statement in another bundle, then the overlapping export definition in this
+     * <strong>External</strong> ï¿½ If the import resolves to an export statement in another bundle, then the overlapping export definition in this
      * contribution is discarded.
      * <p/>
      * <p/>
-     * <strong>Internal</strong> Ð If the import is resolved to an export statement in this module, then the overlapping import definition in this
+     * <strong>Internal</strong> ï¿½ If the import is resolved to an export statement in this module, then the overlapping import definition in this
      * contribution is discarded.
      * <p/>
      * <p/>

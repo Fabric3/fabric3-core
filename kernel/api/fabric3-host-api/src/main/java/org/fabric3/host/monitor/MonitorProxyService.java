@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2011 Metaform Systems
+ * Copyright (c) 2009-2012 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -48,7 +48,7 @@ import java.net.URI;
 /**
  * Creates monitor proxies that send {@link MonitorEvent}s to a channel.
  *
- * @version $Rev: 7146 $ $Date: 2009-06-14 16:28:54 -0700 (Sun, 14 Jun 2009) $
+ * @version $Rev$ $Date$
  */
 public interface MonitorProxyService {
 
