@@ -37,6 +37,7 @@
 */
 package org.fabric3.spi.introspection.xml;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.stream.XMLStreamReader;
@@ -49,12 +50,19 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractValidatingTypeLoader<OUTPUT> implements TypeLoader<OUTPUT> {
-    protected Set<String> ATTRIBUTES = new HashSet<String>();
+    protected Set<String> attributes = new HashSet<String>();
+
+    protected void addAttributes(String... attributes) {
+        if (attributes == null) {
+            throw new IllegalArgumentException("Attributes cannot be null");
+        }
+        this.attributes.addAll(Arrays.asList(attributes));
+    }
 
     protected void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.contains(name)) {
+            if (!attributes.contains(name)) {
                 context.addError(new UnrecognizedAttribute(name, reader));
             }
         }

@@ -86,7 +86,7 @@ public class AbstractValidatingTypeLoaderTestCase extends TestCase {
             }
         };
 
-        loader.ATTRIBUTES.add("name");
+        loader.attributes.add("name");
         factory = XMLInputFactory.newInstance();
         context = new DefaultIntrospectionContext();
     }
