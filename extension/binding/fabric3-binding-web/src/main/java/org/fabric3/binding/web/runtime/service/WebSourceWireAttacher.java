@@ -38,17 +38,23 @@
 package org.fabric3.binding.web.runtime.service;
 
 import java.util.concurrent.ExecutorService;
-
 import javax.servlet.ServletException;
 
 import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.web.provision.WebSourceDefinition;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.binding.web.runtime.common.GatewayServletConfig;
 import org.fabric3.binding.web.runtime.common.GatewayServletContext;
+import org.fabric3.binding.web.runtime.common.LongRunningExecutorService;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -57,11 +63,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches a service to the gateway servlet that accepts incoming websocket connections using Atmosphere. The gateway servlet is responsible for
@@ -94,7 +95,7 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
         this.servletHost = servletHost;
         this.monitor = monitor;
         this.classLoaderRegistry = classLoaderRegistry;
-        this.threadPool = threadPool;
+        this.threadPool = new LongRunningExecutorService(threadPool);
     }
 
     /**
@@ -109,7 +110,7 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
 
     @Init
     public void init() throws ServletException {
-        GatewayServletContext context = new GatewayServletContext(CONTEXT_PATH,classLoaderRegistry);
+        GatewayServletContext context = new GatewayServletContext(CONTEXT_PATH, classLoaderRegistry);
         // TODO support other configuration as specified in AtmosphereServlet init()
         context.setInitParameter(ApplicationConfig.PROPERTY_SESSION_SUPPORT, "false");
         context.setInitParameter(ApplicationConfig.WEBSOCKET_SUPPORT, "true");
@@ -117,18 +118,18 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
         context.setInitParameter(ApplicationConfig.BROADCASTER_SHARABLE_THREAD_POOLS, "true");
 
         GatewayServletConfig config = new GatewayServletConfig(context);
-        
-        org.atmosphere.cpr.AtmosphereServlet atmosphereServlet = new org.atmosphere.cpr.AtmosphereServlet(false,false);
+
+        org.atmosphere.cpr.AtmosphereServlet atmosphereServlet = new org.atmosphere.cpr.AtmosphereServlet(false, false);
         atmosphereFramework = atmosphereServlet.framework();
-        
+
         // Configure external thread pool
         AtmosphereConfig atmosphereConfig = atmosphereFramework.getAtmosphereConfig();
         atmosphereConfig.properties().put("executorService", threadPool);
         atmosphereConfig.properties().put("asyncWriteService", threadPool);
-        
+
         atmosphereServlet.init(config);
-        
-        ServiceWebSocketHandler webSocketHandler = new ServiceWebSocketHandler(serviceManager,broadcasterManager,monitor);
+
+        ServiceWebSocketHandler webSocketHandler = new ServiceWebSocketHandler(serviceManager, broadcasterManager, monitor);
         atmosphereFramework.addAtmosphereHandler("/*", webSocketHandler);
         servletHost.registerMapping(CONTEXT_PATH, atmosphereServlet);
     }

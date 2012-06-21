@@ -58,6 +58,7 @@ import org.fabric3.binding.web.provision.WebChannelBindingDefinition;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.binding.web.runtime.common.GatewayServletConfig;
 import org.fabric3.binding.web.runtime.common.GatewayServletContext;
+import org.fabric3.binding.web.runtime.common.LongRunningExecutorService;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.channel.Channel;
@@ -98,7 +99,7 @@ public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChanne
         this.servletHost = servletHost;
         this.monitor = monitor;
         this.classLoaderRegistry = classLoaderRegistry;
-        this.threadPool = threadPool;
+        this.threadPool = new LongRunningExecutorService(threadPool);
     }
 
     /**
