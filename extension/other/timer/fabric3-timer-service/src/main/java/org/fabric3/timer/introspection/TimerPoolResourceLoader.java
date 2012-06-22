@@ -43,18 +43,20 @@ import javax.xml.stream.XMLStreamReader;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.timer.model.TimerPoolResource;
 
 /**
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class TimerPoolResourceLoader implements TypeLoader<TimerPoolResource> {
+public class TimerPoolResourceLoader extends AbstractValidatingTypeLoader<TimerPoolResource> {
+    public TimerPoolResourceLoader() {
+        addAttributes("name", "size");
+    }
 
     public TimerPoolResource load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
@@ -76,15 +78,6 @@ public class TimerPoolResourceLoader implements TypeLoader<TimerPoolResource> {
                 InvalidValue error = new InvalidValue("Invalid core size specified for timer pool", reader, e);
                 context.addError(error);
                 return new TimerPoolResource(name);
-            }
-        }
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"name".equals(name) && !"size".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
             }
         }
     }

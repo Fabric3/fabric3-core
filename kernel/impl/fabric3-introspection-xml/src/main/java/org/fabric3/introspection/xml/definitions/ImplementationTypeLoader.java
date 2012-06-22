@@ -54,13 +54,12 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.definitions.ImplementationType;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loader for definitions.
@@ -68,12 +67,13 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ImplementationTypeLoader implements TypeLoader<ImplementationType> {
+public class ImplementationTypeLoader extends AbstractValidatingTypeLoader<ImplementationType> {
 
     private final LoaderHelper helper;
 
     public ImplementationTypeLoader(@Reference LoaderHelper helper) {
         this.helper = helper;
+        addAttributes("name","alwaysProvides","mayProvide");
     }
 
     public ImplementationType load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -100,15 +100,6 @@ public class ImplementationTypeLoader implements TypeLoader<ImplementationType> 
 
         }
         return null;
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"name".equals(name) && !"alwaysProvides".equals(name) && !"mayProvide".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
 }

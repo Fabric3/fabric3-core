@@ -48,8 +48,8 @@ import org.fabric3.host.Version;
 import org.fabric3.spi.contribution.Library;
 import org.fabric3.spi.contribution.OperatingSystemSpec;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -61,9 +61,13 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class LibraryLoader implements TypeLoader<Library> {
+public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {
     private static final String OS = "os";
     private static final String LIBRARY = "library";
+
+    public LibraryLoader() {
+        addAttributes("name","processor","version","min","max","minInclusive","maxInclusive");
+    }
 
     public Library load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateLibraryAttributes(reader, context);
@@ -108,7 +112,7 @@ public class LibraryLoader implements TypeLoader<Library> {
      * @return the parsed entry or null
      */
     private OperatingSystemSpec parseOperatingSystem(XMLStreamReader reader, IntrospectionContext context) {
-        validateOperatingSystemAttributes(reader, context);
+        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingPackage failure = new MissingPackage("No name specified for operating systems declaration", reader);
@@ -185,15 +189,6 @@ public class LibraryLoader implements TypeLoader<Library> {
         }
     }
 
-    private void validateOperatingSystemAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"name".equals(name) && !"processor".equals(name) && !"version".equals(name) && !"min".equals(name) && !"max".equals(name)
-                    && !"minInclusive".equals(name) && !"maxInclusive".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
 
 
 }

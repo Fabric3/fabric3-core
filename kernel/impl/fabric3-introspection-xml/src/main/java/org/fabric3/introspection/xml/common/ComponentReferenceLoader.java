@@ -44,9 +44,7 @@
 package org.fabric3.introspection.xml.common;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -67,7 +65,6 @@ import org.fabric3.spi.introspection.xml.InvalidTargetException;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
@@ -83,23 +80,13 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<ComponentReference> {
     private static final QName REFERENCE = new QName(SCA_NS, "reference");
     private static final QName CALLBACK = new QName(SCA_NS, "callback");
-    private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
-
-    static {
-        ATTRIBUTES.put("name", "name");
-        ATTRIBUTES.put("autowire", "autowire");
-        ATTRIBUTES.put("target", "target");
-        ATTRIBUTES.put("multiplicity", "multiplicity");
-        ATTRIBUTES.put("requires", "requires");
-        ATTRIBUTES.put("policySets", "policySets");
-        ATTRIBUTES.put("nonOverridable", "nonOverridable");
-     }
 
     private LoaderHelper loaderHelper;
     private boolean roundTrip;
 
     public ComponentReferenceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         super(registry);
+        addAttributes("name","autowire","target","multiplicity","requires","policySets","nonOverridable");
         this.loaderHelper = loaderHelper;
     }
 
@@ -254,12 +241,4 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
         }
     }
 
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.containsKey(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
 }

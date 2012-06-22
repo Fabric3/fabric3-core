@@ -43,7 +43,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.TypeLoader;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 
 /**
  * Processes a <code>extends</code> element in a contribution manifest
@@ -51,9 +51,14 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ExtendsLoader implements TypeLoader<ExtendsDeclaration> {
+public class ExtendsLoader extends AbstractValidatingTypeLoader<ExtendsDeclaration> {
+
+    public ExtendsLoader() {
+        addAttributes("name");
+    }
 
     public ExtendsDeclaration load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingPackage failure = new MissingPackage("No name specified for extends declaration", reader);

@@ -70,7 +70,6 @@ public class ImplementationMockLoader implements TypeLoader<ImplementationMock> 
      *
      * @param componentTypeLoader Component type loader.
      */
-    @SuppressWarnings("deprecation")
     public ImplementationMockLoader(@Reference MockComponentTypeLoader componentTypeLoader) {
         this.componentTypeLoader = componentTypeLoader;
     }

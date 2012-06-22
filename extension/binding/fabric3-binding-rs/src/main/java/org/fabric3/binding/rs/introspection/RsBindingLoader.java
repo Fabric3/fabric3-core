@@ -47,25 +47,27 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.rs.model.RsBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class RsBindingLoader implements TypeLoader<RsBindingDefinition> {
+public class RsBindingLoader extends AbstractValidatingTypeLoader<RsBindingDefinition> {
 
     private final LoaderHelper loaderHelper;
 
     public RsBindingLoader(@Reference LoaderHelper loaderHelper) {
         this.loaderHelper = loaderHelper;
+        addAttributes("requires", "name", "policySets", "uri");
     }
 
     public RsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateAttributes(reader, context);
 
         String bindingName = reader.getAttributeValue(null, "name");
         String uriStr = reader.getAttributeValue(null, "uri");

@@ -45,8 +45,6 @@ package org.fabric3.introspection.xml.composite;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -71,7 +69,6 @@ import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loader that handles &lt;include&gt; elements.
@@ -80,15 +77,6 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  */
 public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
     private static final QName INCLUDE = new QName(Constants.SCA_NS, "include");
-
-    private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
-
-    static {
-        ATTRIBUTES.put("name", "name");
-        ATTRIBUTES.put("scdlResource", "scdlResource");
-        ATTRIBUTES.put("requires", "requires");
-    }
-
     private MetaDataStore store;
 
     /**
@@ -97,7 +85,7 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
      * @param registry the loader registry
      */
     public IncludeLoader(LoaderRegistry registry) {
-        super(registry);
+        this(registry, null);
     }
 
     /**
@@ -110,6 +98,7 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
     public IncludeLoader(@Reference LoaderRegistry registry, @Reference(required = false) MetaDataStore store) {
         super(registry);
         this.store = store;
+        addAttributes("name", "scdlResource", "requires");
     }
 
     public QName getXMLType() {
@@ -195,15 +184,6 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
         include.setScdlLocation(url);
         include.setIncluded(composite);
         return include;
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.containsKey(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
 }

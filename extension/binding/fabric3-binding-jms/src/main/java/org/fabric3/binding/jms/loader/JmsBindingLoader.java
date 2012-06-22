@@ -71,13 +71,12 @@ import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
 import org.fabric3.binding.jms.spi.common.PropertyAwareObject;
 import org.fabric3.binding.jms.spi.common.ResponseDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
@@ -94,42 +93,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  * @version $Revision$ $Date$
  */
 @EagerInit
-public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
-
-    private static final Set<String> ATTRIBUTES = new HashSet<String>();
-
-    static {
-        ATTRIBUTES.add("uri");
-        ATTRIBUTES.add("activationSpec");
-        ATTRIBUTES.add("wireFormat");
-        ATTRIBUTES.add("jndiURL");
-        ATTRIBUTES.add("initialContextFactory");
-        ATTRIBUTES.add("requires");
-        ATTRIBUTES.add("messageSelection");
-        ATTRIBUTES.add("policySets");
-        ATTRIBUTES.add("create");
-        ATTRIBUTES.add("type");
-        ATTRIBUTES.add("destination");
-        ATTRIBUTES.add("connectionFactory");
-        ATTRIBUTES.add("messageSelection");
-        ATTRIBUTES.add("connectionFactory.template");
-        ATTRIBUTES.add("type");
-        ATTRIBUTES.add("timeToLive");
-        ATTRIBUTES.add("resourceAdapter");
-        ATTRIBUTES.add("priority");
-        ATTRIBUTES.add("deliveryMode");
-        ATTRIBUTES.add("correlationScheme");
-        ATTRIBUTES.add("name");
-        ATTRIBUTES.add("cache");
-        ATTRIBUTES.add("idle.limit");
-        ATTRIBUTES.add("receive.timeout");
-        ATTRIBUTES.add("response.timeout");
-        ATTRIBUTES.add("max.messages");
-        ATTRIBUTES.add("recovery.interval");
-        ATTRIBUTES.add("max.receivers");
-        ATTRIBUTES.add("min.receivers");
-    }
-
+public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDefinition> {
     private LoaderRegistry registry;
     private LoaderHelper loaderHelper;
     private int defaultResponseTimeout = 600000;  // set the default response wait to 10 minutes
@@ -151,6 +115,35 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
     public JmsBindingLoader(@Reference LoaderHelper loaderHelper, @Reference LoaderRegistry registry) {
         this.loaderHelper = loaderHelper;
         this.registry = registry;
+        addAttributes("uri",
+                      "activationSpec",
+                      "wireFormat",
+                      "jndiURL",
+                      "initialContextFactory",
+                      "requires",
+                      "messageSelection",
+                      "policySets",
+                      "create",
+                      "type",
+                      "destination",
+                      "connectionFactory",
+                      "messageSelection",
+                      "connectionFactory.template",
+                      "type",
+                      "timeToLive",
+                      "resourceAdapter",
+                      "priority",
+                      "deliveryMode",
+                      "correlationScheme",
+                      "name",
+                      "cache",
+                      "idle.limit",
+                      "receive.timeout",
+                      "response.timeout",
+                      "max.messages",
+                      "recovery.interval",
+                      "max.receivers",
+                      "min.receivers");
     }
 
     public JmsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -561,15 +554,6 @@ public class JmsBindingLoader implements TypeLoader<JmsBindingDefinition> {
         String key = reader.getAttributeValue(null, "name");
         String value = reader.getElementText();
         parent.addProperty(key, value);
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.contains(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
     private void validate(JmsBindingDefinition definition, XMLStreamReader reader, IntrospectionContext context) {

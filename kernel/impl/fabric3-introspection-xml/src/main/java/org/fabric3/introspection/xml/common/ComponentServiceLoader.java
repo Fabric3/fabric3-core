@@ -60,7 +60,6 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
@@ -81,6 +80,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
 
     public ComponentServiceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         super(registry);
+        addAttributes("name", "requires", "policySets");
         this.loaderHelper = loaderHelper;
     }
 
@@ -173,13 +173,5 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
         }
     }
 
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"name".equals(name) && !"requires".equals(name) && !"policySets".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
 
 }

@@ -58,12 +58,11 @@ import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.CompositeService;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
@@ -76,7 +75,7 @@ import static org.oasisopen.sca.Constants.SCA_NS;
  *
  * @version $Rev$ $Date$
  */
-public class CompositeServiceLoader implements TypeLoader<CompositeService> {
+public class CompositeServiceLoader extends AbstractValidatingTypeLoader<CompositeService> {
     private static final QName CALLBACK = new QName(SCA_NS, "callback");
     private LoaderRegistry registry;
     private LoaderHelper loaderHelper;
@@ -85,6 +84,7 @@ public class CompositeServiceLoader implements TypeLoader<CompositeService> {
     public CompositeServiceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         this.registry = registry;
         this.loaderHelper = loaderHelper;
+        addAttributes("name","requires","promote","policySets");
     }
 
     @Property(required = false)
@@ -179,15 +179,6 @@ public class CompositeServiceLoader implements TypeLoader<CompositeService> {
                     break;
                 }
                 return service;
-            }
-        }
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"name".equals(name) && !"requires".equals(name) && !"promote".equals(name) && !"policySets".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
             }
         }
     }

@@ -45,9 +45,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Processes an <code>import.contribution</code> element in a contribution manifest
@@ -55,8 +54,12 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ContributionImportLoader implements TypeLoader<ContributionImport> {
+public class ContributionImportLoader extends AbstractValidatingTypeLoader<ContributionImport> {
     private URI INVALID_URI = URI.create("invalid");
+
+    public ContributionImportLoader() {
+        addAttributes("uri");
+    }
 
     public ContributionImport load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
@@ -76,12 +79,4 @@ public class ContributionImportLoader implements TypeLoader<ContributionImport> 
         return new ContributionImport(INVALID_URI);
     }
 
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"uri".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
 }

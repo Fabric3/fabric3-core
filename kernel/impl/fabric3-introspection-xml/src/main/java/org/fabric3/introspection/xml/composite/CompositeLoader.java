@@ -44,7 +44,6 @@
 package org.fabric3.introspection.xml.composite;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -85,7 +84,6 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 import org.fabric3.spi.util.UriHelper;
@@ -108,21 +106,6 @@ import static org.fabric3.spi.introspection.xml.CompositeConstants.WIRE;
  */
 @EagerInit
 public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
-
-    private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
-
-    static {
-        ATTRIBUTES.put("name", "name");
-        ATTRIBUTES.put("autowire", "autowire");
-        ATTRIBUTES.put("targetNamespace", "targetNamespace");
-        ATTRIBUTES.put("local", "local");
-        ATTRIBUTES.put("requires", "requires");
-        ATTRIBUTES.put("policySets", "policySets");
-        ATTRIBUTES.put("constrainingType", "constrainingType");
-        ATTRIBUTES.put("channel", "channel");
-        ATTRIBUTES.put("schemaLocation", "schemaLocation");
-    }
-
     private TypeLoader<CompositeService> serviceLoader;
     private TypeLoader<CompositeReference> referenceLoader;
     private TypeLoader<Property> propertyLoader;
@@ -138,9 +121,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
      * @param loaderHelper   helper the helper
      */
     public CompositeLoader(LoaderRegistry registry, TypeLoader<Property> propertyLoader, LoaderHelper loaderHelper) {
-        super(registry);
-        this.propertyLoader = propertyLoader;
-        this.loaderHelper = loaderHelper;
+        this(registry, null, null, propertyLoader, null, loaderHelper);
     }
 
     /**
@@ -162,6 +143,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                            @Reference ContractMatcher contractMatcher,
                            @Reference LoaderHelper loaderHelper) {
         super(registry);
+        addAttributes("name","autowire","targetNamespace","local","requires","policySets","constrainingType","channel","schemaLocation");
         this.serviceLoader = serviceLoader;
         this.referenceLoader = referenceLoader;
         this.propertyLoader = propertyLoader;
@@ -445,15 +427,6 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             }
         }
         type.add(include);
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.containsKey(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
     private void updateAndValidateServicePromotions(Composite type, XMLStreamReader reader, IntrospectionContext context) {

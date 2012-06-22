@@ -52,9 +52,9 @@ import org.w3c.dom.Document;
 
 import org.fabric3.model.type.component.Property;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
-import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
@@ -62,7 +62,7 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  *
  * @version $Rev$ $Date$
  */
-public class PropertyLoader implements TypeLoader<Property> {
+public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
     private static final String NAME = "name";
     private static final String MANY = "many";
     private static final String MUST_SUPPLY = "mustSupply";
@@ -76,6 +76,7 @@ public class PropertyLoader implements TypeLoader<Property> {
 
     public PropertyLoader(@Reference LoaderHelper helper) {
         this.helper = helper;
+        addAttributes(NAME, MANY, MUST_SUPPLY, TYPE, SOURCE, ELEMENT, VALUE);
     }
 
     @org.oasisopen.sca.annotation.Property(required = false)
@@ -160,16 +161,6 @@ public class PropertyLoader implements TypeLoader<Property> {
         }
 
         return property;
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!NAME.equals(name) && !MANY.equals(name) && !MUST_SUPPLY.equals(name) && !TYPE.equals(name) && !SOURCE.equals(name)
-                    && !ELEMENT.equals(name) && !VALUE.equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
 }

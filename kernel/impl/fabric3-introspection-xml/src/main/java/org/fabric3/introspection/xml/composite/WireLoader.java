@@ -53,23 +53,23 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.model.type.component.Target;
 import org.fabric3.model.type.component.WireDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidTargetException;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class WireLoader implements TypeLoader<WireDefinition> {
+public class WireLoader extends AbstractValidatingTypeLoader<WireDefinition> {
     private LoaderHelper helper;
     private boolean roundTrip;
 
     public WireLoader(@Reference LoaderHelper helper) {
         this.helper = helper;
+        addAttributes("source", "target", "requires", "replace");
     }
 
     @Property(required = false)
@@ -111,15 +111,6 @@ public class WireLoader implements TypeLoader<WireDefinition> {
         }
 
         return definition;
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"source".equals(name) && !"target".equals(name) && !"requires".equals(name) && !"replace".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
 }

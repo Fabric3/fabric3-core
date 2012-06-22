@@ -43,6 +43,7 @@ import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 
@@ -52,7 +53,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public abstract class AbstractExtensibleTypeLoader<T> implements TypeLoader<T> {
+public abstract class AbstractExtensibleTypeLoader<T> extends AbstractValidatingTypeLoader<T> {
     protected LoaderRegistry registry;
 
     protected AbstractExtensibleTypeLoader(LoaderRegistry registry) {

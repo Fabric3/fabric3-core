@@ -45,8 +45,6 @@ package org.fabric3.introspection.xml.composite;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -71,7 +69,6 @@ import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loader that handles an &lt;implementation.composite&gt; element.
@@ -80,19 +77,13 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  */
 @EagerInit
 public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<CompositeImplementation> {
-    private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
     private static final QName IMPL = new QName(Constants.SCA_NS, "implementation.composite");
-
-    static {
-        ATTRIBUTES.put("name", "name");
-        ATTRIBUTES.put("scdlResource", "scdlResource");
-        ATTRIBUTES.put("requires", "requires");
-    }
 
     private final MetaDataStore store;
 
     public ImplementationCompositeLoader(@Reference LoaderRegistry registry, @Reference MetaDataStore store) {
         super(registry);
+        addAttributes("name", "scdlResource", "requires");
         this.store = store;
     }
 
@@ -173,15 +164,6 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
             }
         }
 
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.containsKey(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
 }

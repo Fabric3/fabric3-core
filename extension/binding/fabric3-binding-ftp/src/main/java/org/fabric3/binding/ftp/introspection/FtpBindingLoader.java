@@ -48,19 +48,17 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.binding.ftp.model.FtpBindingDefinition;
 import org.fabric3.binding.ftp.model.TransferMode;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 
 /**
  * @version $Rev$ $Date$
  */
-public class FtpBindingLoader implements TypeLoader<FtpBindingDefinition> {
-
+public class FtpBindingLoader extends AbstractValidatingTypeLoader<FtpBindingDefinition> {
     private final LoaderHelper loaderHelper;
 
     /**
@@ -70,6 +68,7 @@ public class FtpBindingLoader implements TypeLoader<FtpBindingDefinition> {
      */
     public FtpBindingLoader(@Reference LoaderHelper loaderHelper) {
         this.loaderHelper = loaderHelper;
+        addAttributes("uri","requires","policySets","mode","tmpFileSuffix");
     }
 
     public FtpBindingDefinition load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
@@ -150,16 +149,6 @@ public class FtpBindingLoader implements TypeLoader<FtpBindingDefinition> {
                     context.addError(error);
                     return false;
                 }
-            }
-        }
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"uri".equals(name) && !"requires".equals(name) && !"policySets".equals(name) && !"mode".equals(name) &&
-                    !"tmpFileSuffix".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
             }
         }
     }

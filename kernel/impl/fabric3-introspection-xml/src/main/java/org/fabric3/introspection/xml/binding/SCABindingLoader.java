@@ -53,7 +53,6 @@ import org.fabric3.spi.introspection.xml.InvalidTargetException;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 import org.fabric3.spi.model.type.binding.SCABinding;
@@ -75,6 +74,7 @@ public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding> {
         super(registry);
         this.registry = registry;
         this.helper = helper;
+        addAttributes("uri", "requires", "policySets", "name");
     }
 
     public QName getXMLType() {
@@ -112,15 +112,6 @@ public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding> {
                 if ("binding.sca".equals(reader.getName().getLocalPart())) {
                     return binding;
                 }
-            }
-        }
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"uri".equals(name) && !"requires".equals(name) && !"policySets".equals(name) && !"name".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
             }
         }
     }

@@ -45,11 +45,10 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loads a Java component implementation in a composite.
@@ -57,7 +56,7 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class JavaImplementationLoader implements TypeLoader<JavaImplementation> {
+public class JavaImplementationLoader extends AbstractValidatingTypeLoader<JavaImplementation> {
     private JavaImplementationProcessor implementationProcessor;
     private LoaderHelper loaderHelper;
 
@@ -65,6 +64,7 @@ public class JavaImplementationLoader implements TypeLoader<JavaImplementation> 
     public JavaImplementationLoader(@Reference JavaImplementationProcessor implementationProcessor, @Reference LoaderHelper loaderHelper) {
         this.implementationProcessor = implementationProcessor;
         this.loaderHelper = loaderHelper;
+        addAttributes("class", "requires", "policySets");
     }
 
 
@@ -86,15 +86,5 @@ public class JavaImplementationLoader implements TypeLoader<JavaImplementation> 
         implementationProcessor.introspect(implementation, introspectionContext);
         return implementation;
     }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"class".equals(name) && !"requires".equals(name) && !"policySets".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
-
 
 }

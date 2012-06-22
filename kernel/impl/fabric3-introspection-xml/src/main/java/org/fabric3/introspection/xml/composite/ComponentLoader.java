@@ -43,7 +43,6 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
@@ -85,7 +84,6 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
@@ -107,15 +105,6 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private static final QName REFERENCE = new QName(SCA_NS, "reference");
     private static final QName PRODUCER = new QName(SCA_NS, "producer");
     private static final QName CONSUMER = new QName(SCA_NS, "consumer");
-    private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
-
-    static {
-        ATTRIBUTES.put("name", "name");
-        ATTRIBUTES.put("autowire", "autowire");
-        ATTRIBUTES.put("requires", "requires");
-        ATTRIBUTES.put("policySets", "policySets");
-        ATTRIBUTES.put("key", "key");
-    }
 
     private LoaderHelper loaderHelper;
     private ContractMatcher contractMatcher;
@@ -128,20 +117,20 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param loaderHelper the helper
      */
     public ComponentLoader(LoaderRegistry registry, LoaderHelper loaderHelper) {
-        super(registry);
-        this.loaderHelper = loaderHelper;
-    }
-
-    @org.oasisopen.sca.annotation.Property(required = false)
-    public void setRoundTrip(boolean roundTrip) {
-        this.roundTrip = roundTrip;
+        this(registry, loaderHelper, null);
     }
 
     @Constructor
     public ComponentLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper, @Reference ContractMatcher contractMatcher) {
         super(registry);
+        addAttributes("name", "autowire", "requires", "policySets", "key");
         this.loaderHelper = loaderHelper;
         this.contractMatcher = contractMatcher;
+    }
+
+    @org.oasisopen.sca.annotation.Property(required = false)
+    public void setRoundTrip(boolean roundTrip) {
+        this.roundTrip = roundTrip;
     }
 
     @SuppressWarnings({"VariableNotUsedInsideIf"})
@@ -628,14 +617,6 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
 
     }
 
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.containsKey(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
 
 }
 

@@ -57,12 +57,12 @@ import org.fabric3.model.type.definitions.IntentQualifier;
 import org.fabric3.model.type.definitions.PolicyPhase;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
@@ -71,11 +71,12 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class PolicySetLoader implements TypeLoader<PolicySet> {
+public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
 
     private final LoaderHelper helper;
 
     public PolicySetLoader(@Reference LoaderHelper helper) {
+        addAttributes("name","provides","appliesTo","phase","attachTo");
         this.helper = helper;
     }
 
@@ -228,15 +229,6 @@ public class PolicySetLoader implements TypeLoader<PolicySet> {
         URI uri = context.getContributionUri();
         context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
                 + " is invalid", reader));
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"name".equals(name) && !"provides".equals(name) && !"appliesTo".equals(name) && !"phase".equals(name) && !"attachTo".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
     private void validate(PolicySet policySet, XMLStreamReader reader, IntrospectionContext context) {

@@ -47,10 +47,10 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TemplateRegistry;
-import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
  * General class for loading template definitions such as <code>&lt;binding.template&gt;</code>. This class is general and is designed to be
@@ -59,7 +59,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class TemplateLoader implements TypeLoader<ModelObject> {
+public class TemplateLoader extends AbstractValidatingTypeLoader<ModelObject> {
     private TemplateRegistry registry;
     private Class<? extends ModelObject> expectedType;
 
@@ -71,9 +71,12 @@ public class TemplateLoader implements TypeLoader<ModelObject> {
         } catch (ClassNotFoundException e) {
             throw new AssertionError(e);
         }
+        addAttributes("name");
     }
 
     public ModelObject load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateAttributes(reader, context);
+
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingAttribute error = new MissingAttribute("Attribute name must be specified", reader);

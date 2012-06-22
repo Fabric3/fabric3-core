@@ -54,12 +54,11 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.definitions.BindingType;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loader for definitions.
@@ -67,12 +66,13 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class BindingTypeLoader implements TypeLoader<BindingType> {
+public class BindingTypeLoader extends AbstractValidatingTypeLoader<BindingType> {
 
     private final LoaderHelper helper;
 
     public BindingTypeLoader(@Reference LoaderHelper helper) {
         this.helper = helper;
+        addAttributes("name", "alwaysProvides", "mayProvide");
     }
 
     public BindingType load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -80,7 +80,7 @@ public class BindingTypeLoader implements TypeLoader<BindingType> {
 
         String name = reader.getAttributeValue(null, "name");
         QName qName = LoaderUtil.getQName(name, context.getTargetNamespace(), reader.getNamespaceContext());
-        
+
         Set<QName> alwaysProvides;
         try {
             alwaysProvides = helper.parseListOfQNames(reader, "alwaysProvides");
@@ -91,21 +91,11 @@ public class BindingTypeLoader implements TypeLoader<BindingType> {
             String prefix = e.getPrefix();
             URI uri = context.getContributionUri();
             context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
-                    + " is invalid", reader));
+                                                            + " is invalid", reader));
         }
         return null;
 
 
     }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"name".equals(name) && !"alwaysProvides".equals(name) && !"mayProvide".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
-
 
 }

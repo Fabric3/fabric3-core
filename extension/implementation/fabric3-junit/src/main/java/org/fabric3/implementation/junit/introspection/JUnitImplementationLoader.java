@@ -48,8 +48,7 @@ import org.fabric3.implementation.junit.model.JUnitBindingDefinition;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -58,12 +57,13 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class JUnitImplementationLoader implements TypeLoader<JUnitImplementation> {
+public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUnitImplementation> {
 
     private final JUnitImplementationProcessor implementationProcessor;
 
     public JUnitImplementationLoader(@Reference JUnitImplementationProcessor implementationProcessor) {
         this.implementationProcessor = implementationProcessor;
+        addAttributes("class","requires","policySets");
     }
 
     public JUnitImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -122,15 +122,5 @@ public class JUnitImplementationLoader implements TypeLoader<JUnitImplementation
             }
         }
     }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"class".equals(name) && !"requires".equals(name) && !"policySets".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
-
 
 }

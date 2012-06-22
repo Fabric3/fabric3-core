@@ -51,13 +51,13 @@ import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.IntentType;
 import org.fabric3.model.type.definitions.Qualifier;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -68,13 +68,14 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  *
  * @version $Rev$ $Date$
  */
-public class IntentLoader implements TypeLoader<Intent> {
+public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
     private static final QName QUALIFIER = new QName(Constants.SCA_NS, "qualifier");
 
     private LoaderHelper helper;
 
     public IntentLoader(@Reference LoaderHelper helper) {
         this.helper = helper;
+        addAttributes("name","constrains","requires","excludes","intentType","appliesTo","mutuallyExclusive");
     }
 
     public Intent load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -172,16 +173,6 @@ public class IntentLoader implements TypeLoader<Intent> {
             }
         }
 
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"name".equals(name) && !"constrains".equals(name) && !"requires".equals(name) && !"excludes".equals(name)
-                    && !"intentType".equals(name) && !"appliesTo".equals(name) && !"mutuallyExclusive".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
 }

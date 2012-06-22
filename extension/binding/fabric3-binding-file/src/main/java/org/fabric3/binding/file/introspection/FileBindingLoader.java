@@ -37,8 +37,6 @@
  */
 package org.fabric3.binding.file.introspection;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -48,12 +46,11 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.binding.file.model.FileBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loads a <code>binding.file</code> element in a composite.
@@ -61,25 +58,21 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
-    private static final Set<String> ATTRIBUTES = new HashSet<String>();
-
-    static {
-        ATTRIBUTES.add("requires");
-        ATTRIBUTES.add("location");
-        ATTRIBUTES.add("archive.location");
-        ATTRIBUTES.add("error.location");
-        ATTRIBUTES.add("strategy");
-        ATTRIBUTES.add("pattern");
-        ATTRIBUTES.add("name");
-        ATTRIBUTES.add("adapter");
-        ATTRIBUTES.add("adapter.component");
-        ATTRIBUTES.add("delay");
-    }
-
+public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingDefinition> {
     private final LoaderHelper loaderHelper;
 
     public FileBindingLoader(@Reference LoaderHelper loaderHelper) {
+        addAttributes("requires",
+                      "location",
+                      "archive.location",
+                      "error.location",
+                      "strategy",
+                      "pattern",
+                      "name",
+                      "adapter",
+                      "adapter.component",
+                      "policySets",
+                      "delay");
         this.loaderHelper = loaderHelper;
     }
 
@@ -142,12 +135,4 @@ public class FileBindingLoader implements TypeLoader<FileBindingDefinition> {
         return delay;
     }
 
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.contains(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
 }

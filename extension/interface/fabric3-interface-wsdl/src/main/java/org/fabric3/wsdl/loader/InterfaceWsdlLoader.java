@@ -53,14 +53,13 @@ import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.ElementLoadFailure;
 import org.fabric3.spi.introspection.xml.IncompatibleContracts;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.wsdl.contribution.WsdlServiceContractSymbol;
 import org.fabric3.wsdl.contribution.impl.PortTypeNotFound;
@@ -72,7 +71,7 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
  * @version $Revision$ $Date$
  */
 @EagerInit
-public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
+public class InterfaceWsdlLoader extends AbstractValidatingTypeLoader<WsdlServiceContract> {
     private MetaDataStore store;
     private ContractMatcher matcher;
     private LoaderHelper helper;
@@ -81,10 +80,12 @@ public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
         this.store = store;
         this.matcher = matcher;
         this.helper = helper;
+        addAttributes("interface", "callbackInterface", "remotable", "requires");
     }
 
     public WsdlServiceContract load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
+        validateRemotable(reader, context);
         WsdlServiceContract wsdlContract = processInterface(reader, context);
         processCallbackInterface(reader, wsdlContract, context);
         helper.loadPolicySetsAndIntents(wsdlContract, reader, context);
@@ -121,7 +122,7 @@ public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
                 if (!result.isAssignable()) {
                     IncompatibleContracts error =
                             new IncompatibleContracts("The callback contract specified on interface.wsdl is not compatible with" +
-                                    " the one specified in the WSDL portType: " + result.getError(), reader);
+                                                              " the one specified in the WSDL portType: " + result.getError(), reader);
                     context.addError(error);
                 }
             }
@@ -136,7 +137,7 @@ public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
             String localExpression = uri.getFragment();
             if (localExpression == null || !localExpression.toLowerCase().startsWith("wsdl.porttype(") || !localExpression.endsWith(")")) {
                 InvalidValue error = new InvalidValue("A port type expression must be specified of the form <namespace>#wsdl.portType(portType): "
-                        + portType, reader);
+                                                              + portType, reader);
                 context.addError(error);
                 return null;
             }
@@ -169,16 +170,6 @@ public class InterfaceWsdlLoader implements TypeLoader<WsdlServiceContract> {
         WsdlServiceContract contract = element.getValue();
         // return a copy as it may be modified
         return contract.copy();
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"interface".equals(name) && !"callbackInterface".equals(name) && !"remotable".equals(name) && !"requires".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-        validateRemotable(reader, context);
     }
 
     private void validateRemotable(XMLStreamReader reader, IntrospectionContext context) {

@@ -52,10 +52,9 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loads information for a system implementation
@@ -63,9 +62,9 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class SystemImplementationLoader implements TypeLoader<SystemImplementation> {
+public class SystemImplementationLoader extends AbstractValidatingTypeLoader<SystemImplementation> {
 
-    private final ImplementationProcessor<SystemImplementation> implementationProcessor;
+    private ImplementationProcessor<SystemImplementation> implementationProcessor;
 
     /**
      * Constructor.
@@ -74,10 +73,10 @@ public class SystemImplementationLoader implements TypeLoader<SystemImplementati
      */
     public SystemImplementationLoader(@Reference ImplementationProcessor<SystemImplementation> implementationProcessor) {
         this.implementationProcessor = implementationProcessor;
+        addAttributes("class");
     }
 
     public SystemImplementation load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
-        assert SystemImplementation.IMPLEMENTATION_SYSTEM.equals(reader.getName());
         validateAttributes(reader, introspectionContext);
         String implClass = reader.getAttributeValue(null, "class");
         if (implClass == null) {
@@ -92,15 +91,5 @@ public class SystemImplementationLoader implements TypeLoader<SystemImplementati
         implementationProcessor.introspect(implementation, introspectionContext);
         return implementation;
     }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"class".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
-
 
 }

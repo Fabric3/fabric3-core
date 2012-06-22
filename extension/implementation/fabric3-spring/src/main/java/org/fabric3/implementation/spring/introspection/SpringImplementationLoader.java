@@ -49,11 +49,10 @@ import org.fabric3.implementation.spring.model.SpringComponentType;
 import org.fabric3.implementation.spring.model.SpringImplementation;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loads a Spring component implementation in a composite.
@@ -61,7 +60,7 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class SpringImplementationLoader implements TypeLoader<SpringImplementation> {
+public class SpringImplementationLoader extends AbstractValidatingTypeLoader<SpringImplementation> {
     private SpringImplementationProcessor processor;
     private LoaderHelper loaderHelper;
 
@@ -69,6 +68,7 @@ public class SpringImplementationLoader implements TypeLoader<SpringImplementati
     public SpringImplementationLoader(@Reference SpringImplementationProcessor processor, @Reference LoaderHelper loaderHelper) {
         this.processor = processor;
         this.loaderHelper = loaderHelper;
+        addAttributes("location", "requires", "policySets");
     }
 
     public SpringImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -93,15 +93,6 @@ public class SpringImplementationLoader implements TypeLoader<SpringImplementati
         implementation.setComponentType(type);
         return implementation;
 
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"location".equals(name) && !"requires".equals(name) && !"policySets".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
     /**

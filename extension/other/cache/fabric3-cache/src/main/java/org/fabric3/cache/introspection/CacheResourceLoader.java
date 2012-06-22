@@ -52,9 +52,9 @@ import org.fabric3.cache.model.CacheSetResourceDefinition;
 import org.fabric3.cache.spi.CacheResourceDefinition;
 import org.fabric3.host.Namespaces;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
@@ -71,7 +71,7 @@ import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class CacheResourceLoader implements TypeLoader<CacheSetResourceDefinition> {
+public class CacheResourceLoader extends AbstractValidatingTypeLoader<CacheSetResourceDefinition> {
     private static final QName SCA_TYPE = new QName(Constants.SCA_NS, "caches");
     private static final QName F3_TYPE = new QName(Namespaces.F3, "caches");
 
@@ -79,6 +79,7 @@ public class CacheResourceLoader implements TypeLoader<CacheSetResourceDefinitio
 
     public CacheResourceLoader(@Reference LoaderRegistry registry) {
         this.registry = registry;
+        addAttributes("name");
     }
 
     @Init
@@ -96,6 +97,7 @@ public class CacheResourceLoader implements TypeLoader<CacheSetResourceDefinitio
 
 
     public CacheSetResourceDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateAttributes(reader, context);
         CacheSetResourceDefinition definition = new CacheSetResourceDefinition();
         while (true) {
             switch (reader.next()) {

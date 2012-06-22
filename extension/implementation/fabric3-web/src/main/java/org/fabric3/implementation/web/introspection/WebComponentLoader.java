@@ -58,11 +58,11 @@ import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.ElementLoadFailure;
 import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
-import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
  * Loads <code><implementation.web></code> from a composite.
@@ -70,8 +70,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class WebComponentLoader implements TypeLoader<WebImplementation> {
-
+public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplementation> {
     private LoaderRegistry registry;
     private List<WebImplementationIntrospector> introspectors;
 
@@ -97,7 +96,7 @@ public class WebComponentLoader implements TypeLoader<WebImplementation> {
     }
 
     public WebImplementation load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
-
+        validateAttributes(reader, introspectionContext);
         WebImplementation impl = new WebImplementation();
         for (WebImplementationIntrospector introspector : introspectors) {
             introspector.introspect(impl, introspectionContext);

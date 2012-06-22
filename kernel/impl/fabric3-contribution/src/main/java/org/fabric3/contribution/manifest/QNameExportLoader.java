@@ -44,8 +44,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.spi.contribution.manifest.QNameExport;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 
 /**
  * Processes a QName-based <code>export</code> element in a contribution manifest
@@ -53,7 +52,11 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class QNameExportLoader implements TypeLoader<QNameExport> {
+public class QNameExportLoader extends AbstractValidatingTypeLoader<QNameExport> {
+
+    public QNameExportLoader() {
+        addAttributes("namespace");
+    }
 
     public QNameExport load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
@@ -64,15 +67,6 @@ public class QNameExportLoader implements TypeLoader<QNameExport> {
             return null;
         }
         return new QNameExport(ns);
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"namespace".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
 }

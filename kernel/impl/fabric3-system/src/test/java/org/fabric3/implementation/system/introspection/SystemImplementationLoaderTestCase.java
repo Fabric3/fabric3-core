@@ -43,14 +43,12 @@
  */
 package org.fabric3.implementation.system.introspection;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.host.Namespaces;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
@@ -59,8 +57,6 @@ import org.fabric3.spi.introspection.java.ImplementationProcessor;
  * @version $Rev$ $Date$
  */
 public class SystemImplementationLoaderTestCase extends TestCase {
-
-    public static final QName SYSTEM_IMPLEMENTATION = new QName(Namespaces.F3, "implementation.system");
     private IntrospectionContext context;
     private XMLStreamReader reader;
     private ImplementationProcessor<SystemImplementation> implementationProcessor;
@@ -71,7 +67,6 @@ public class SystemImplementationLoaderTestCase extends TestCase {
         EasyMock.replay(implementationProcessor);
 
         EasyMock.expect(reader.getAttributeCount()).andReturn(0);
-        EasyMock.expect(reader.getName()).andReturn(SYSTEM_IMPLEMENTATION);
         EasyMock.expect(reader.getAttributeValue(null, "class")).andReturn(getClass().getName());
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
         EasyMock.replay(reader);

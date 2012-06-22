@@ -42,12 +42,12 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
+import org.fabric3.host.Version;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
-import org.fabric3.host.Version;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
  * Loads an <code>export.java</code> entry in a contribution manifest.
@@ -55,10 +55,15 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class JavaExportLoader implements TypeLoader<JavaExport> {
+public class JavaExportLoader extends AbstractValidatingTypeLoader<JavaExport> {
 
+    public JavaExportLoader() {
+        addAttributes("package", "required", "version", "min", "location", "minInclusive", "max", "maxInclusive");
+    }
 
     public JavaExport load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateAttributes(reader, context);
+
         String statement = reader.getAttributeValue(null, "package");
         if (statement == null) {
             MissingPackage failure = new MissingPackage("No package name specified", reader);

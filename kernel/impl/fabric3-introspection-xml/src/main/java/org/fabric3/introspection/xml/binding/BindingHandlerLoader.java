@@ -45,18 +45,15 @@ package org.fabric3.introspection.xml.binding;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
+import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
 /**
  * Type loader for the <f3:handler> element.
@@ -64,9 +61,12 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class BindingHandlerLoader implements TypeLoader<BindingHandlerDefinition> {
-    private static final List<String> ATTRIBUTES = Arrays.asList("target");
+public class BindingHandlerLoader extends AbstractValidatingTypeLoader<BindingHandlerDefinition> {
     private static final BindingHandlerDefinition INVALID_DEFINITION = new BindingHandlerDefinition(URI.create("Invalid"));
+
+    public BindingHandlerLoader() {
+        addAttributes("target");
+    }
 
     public BindingHandlerDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
@@ -83,15 +83,6 @@ public class BindingHandlerLoader implements TypeLoader<BindingHandlerDefinition
             InvalidValue error = new InvalidValue("Target attribute is not a valid URI: " + target, reader);
             context.addError(error);
             return INVALID_DEFINITION;
-        }
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.contains(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
         }
     }
 

@@ -39,8 +39,6 @@ package org.fabric3.binding.zeromq.introspection;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -50,11 +48,10 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loads a <code>binding.zeromq</code> element in a composite.
@@ -62,24 +59,23 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ZeroMQBindingLoader implements TypeLoader<ZeroMQBindingDefinition> {
+public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBindingDefinition> {
     private final LoaderHelper loaderHelper;
-    private static final Set<String> ATTRIBUTES = new HashSet<String>();
-
-    static {
-        ATTRIBUTES.add("target");
-        ATTRIBUTES.add("host");
-        ATTRIBUTES.add("name");
-        ATTRIBUTES.add("high.water");
-        ATTRIBUTES.add("multicast.rate");
-        ATTRIBUTES.add("multicast.recovery");
-        ATTRIBUTES.add("send.buffer");
-        ATTRIBUTES.add("receive.buffer");
-        ATTRIBUTES.add("wireFormat");
-    }
 
     public ZeroMQBindingLoader(@Reference LoaderHelper loaderHelper) {
         this.loaderHelper = loaderHelper;
+        addAttributes("name",
+                      "requires",
+                      "policySets",
+                      "target",
+                      "host",
+                      "name",
+                      "high.water",
+                      "multicast.rate",
+                      "multicast.recovery",
+                      "send.buffer",
+                      "receive.buffer",
+                      "wireFormat");
     }
 
     public ZeroMQBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -136,12 +132,4 @@ public class ZeroMQBindingLoader implements TypeLoader<ZeroMQBindingDefinition> 
         }
     }
 
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.contains(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
 }

@@ -46,9 +46,7 @@ package org.fabric3.introspection.xml.common;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -63,7 +61,6 @@ import org.fabric3.model.type.component.ComponentConsumer;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
@@ -78,17 +75,12 @@ import static org.oasisopen.sca.Constants.SCA_NS;
  */
 public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<ComponentConsumer> {
     private static final QName CONSUMER = new QName(SCA_NS, "consumer");
-    private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
-
-    static {
-        ATTRIBUTES.put("name", "name");
-        ATTRIBUTES.put("source", "source");
-    }
 
     private boolean roundTrip;
 
     public ComponentConsumerLoader(@Reference LoaderRegistry registry) {
         super(registry);
+        addAttributes("name", "source");
     }
 
     @Property(required = false)
@@ -102,6 +94,7 @@ public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Compon
 
     public ComponentConsumer load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
+
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingProducerName failure = new MissingProducerName(reader);
@@ -173,12 +166,4 @@ public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Compon
         }
     }
 
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.containsKey(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
 }

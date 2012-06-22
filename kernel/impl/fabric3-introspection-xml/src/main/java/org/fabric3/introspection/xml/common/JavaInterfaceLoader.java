@@ -54,18 +54,17 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.ResourceNotFound;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loads a Java interface definition from an XML-based assembly file
  *
  * @version $Rev$ $Date$
  */
-public class JavaInterfaceLoader implements TypeLoader<ServiceContract> {
+public class JavaInterfaceLoader extends AbstractValidatingTypeLoader<ServiceContract> {
 
     private final JavaContractProcessor contractProcessor;
     private final IntrospectionHelper helper;
@@ -74,6 +73,7 @@ public class JavaInterfaceLoader implements TypeLoader<ServiceContract> {
                                @Reference IntrospectionHelper helper) {
         this.contractProcessor = contractProcessor;
         this.helper = helper;
+        addAttributes("interface","callbackInterface");
     }
 
     public ServiceContract load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -121,15 +121,6 @@ public class JavaInterfaceLoader implements TypeLoader<ServiceContract> {
             serviceContract.setCallbackContract(callbackContract);
         }
         return serviceContract;
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"interface".equals(name) && !"callbackInterface".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
 }

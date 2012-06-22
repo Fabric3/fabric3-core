@@ -48,8 +48,8 @@ import org.fabric3.host.Version;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
  * Processes a <code>import.java</code> element in a contribution manifest
@@ -57,9 +57,15 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class JavaImportLoader implements TypeLoader<JavaImport> {
+public class JavaImportLoader extends AbstractValidatingTypeLoader<JavaImport> {
+
+    public JavaImportLoader() {
+        addAttributes("package", "required", "version", "min", "location", "minInclusive", "max", "maxInclusive");
+    }
 
     public JavaImport load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateAttributes(reader, context);
+
         String statement = reader.getAttributeValue(null, "package");
         if (statement == null) {
             MissingPackage failure = new MissingPackage("No package name specified", reader);
@@ -145,4 +151,5 @@ public class JavaImportLoader implements TypeLoader<JavaImport> {
         boolean maxInclusive = maxInclusiveAttr == null || Boolean.parseBoolean(maxInclusiveAttr);
         return new PackageInfo(statement, minimum, minInclusive, maximum, maxInclusive, required);
     }
+
 }

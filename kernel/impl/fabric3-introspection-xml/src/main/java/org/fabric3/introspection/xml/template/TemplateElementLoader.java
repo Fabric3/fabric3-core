@@ -52,12 +52,12 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.DuplicateTemplateException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TemplateRegistry;
-import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 /**
@@ -66,7 +66,7 @@ import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
  * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 @EagerInit
-public class TemplateElementLoader implements TypeLoader<ModelObject> {
+public class TemplateElementLoader extends AbstractValidatingTypeLoader<ModelObject> {
     private static final QName QNAME = new QName(Namespaces.F3, "template");
     private static final QName LAX_QNAME = new QName("", "template");
 
@@ -76,6 +76,7 @@ public class TemplateElementLoader implements TypeLoader<ModelObject> {
     public TemplateElementLoader(@Reference LoaderRegistry loaderRegistry, @Reference TemplateRegistry templateRegistry) {
         this.loaderRegistry = loaderRegistry;
         this.templateRegistry = templateRegistry;
+        addAttributes("name");
     }
 
     @Init
@@ -91,6 +92,7 @@ public class TemplateElementLoader implements TypeLoader<ModelObject> {
     }
 
     public ModelObject load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingAttribute error = new MissingAttribute("Template name not specified", reader);

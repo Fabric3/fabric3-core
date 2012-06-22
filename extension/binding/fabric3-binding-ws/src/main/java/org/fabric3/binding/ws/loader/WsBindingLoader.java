@@ -45,7 +45,6 @@ package org.fabric3.binding.ws.loader;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -55,15 +54,14 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.ws.model.WsBindingDefinition;
-import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
+import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -72,21 +70,8 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  * @version $Revision$ $Date$
  */
 @EagerInit
-public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
+public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefinition> {
     private static final String WSDL_NS = "http://www.w3.org/2004/08/wsdl-instance";
-    private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
-
-    static {
-        ATTRIBUTES.put("uri", "uri");
-        ATTRIBUTES.put("impl", "impl");
-        ATTRIBUTES.put("wsdlElement", "wsdlElement");
-        ATTRIBUTES.put("wsdlLocation", "wsdlLocation");
-        ATTRIBUTES.put("requires", "requires");
-        ATTRIBUTES.put("policySets", "policySets");
-        ATTRIBUTES.put("name", "name");
-        ATTRIBUTES.put("retries", "retries");
-    }
-
     private final LoaderHelper loaderHelper;
     private final LoaderRegistry registry;
 
@@ -99,6 +84,7 @@ public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
     public WsBindingLoader(@Reference LoaderHelper loaderHelper, @Reference LoaderRegistry registry) {
         this.loaderHelper = loaderHelper;
         this.registry = registry;
+        addAttributes("uri","impl","wsdlElement","wsdlLocation","requires","policySets","name","retries");
     }
 
     @SuppressWarnings({"unchecked"})
@@ -172,15 +158,6 @@ public class WsBindingLoader implements TypeLoader<WsBindingDefinition> {
             }
         }
         return 0;
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.containsKey(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
 }

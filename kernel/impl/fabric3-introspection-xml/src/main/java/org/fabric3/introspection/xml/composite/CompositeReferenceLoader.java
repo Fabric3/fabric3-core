@@ -46,9 +46,7 @@ package org.fabric3.introspection.xml.composite;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -64,12 +62,11 @@ import org.fabric3.model.type.component.CompositeReference;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
@@ -81,19 +78,8 @@ import static org.oasisopen.sca.Constants.SCA_NS;
  *
  * @version $Rev$ $Date$
  */
-public class CompositeReferenceLoader implements TypeLoader<CompositeReference> {
+public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<CompositeReference> {
     private static final QName CALLBACK = new QName(SCA_NS, "callback");
-    private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
-
-    static {
-        ATTRIBUTES.put("name", "name");
-        ATTRIBUTES.put("autowire", "autowire");
-        ATTRIBUTES.put("promote", "promote");
-        ATTRIBUTES.put("multiplicity", "multiplicity");
-        ATTRIBUTES.put("requires", "requires");
-        ATTRIBUTES.put("policySets", "policySets");
-    }
-
     private LoaderRegistry registry;
     private LoaderHelper loaderHelper;
     private boolean roundTrip;
@@ -101,6 +87,7 @@ public class CompositeReferenceLoader implements TypeLoader<CompositeReference> 
     public CompositeReferenceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         this.registry = registry;
         this.loaderHelper = loaderHelper;
+        addAttributes("name","autowire","promote","multiplicity","requires","policySets");
     }
 
     @Property(required = false)
@@ -215,14 +202,4 @@ public class CompositeReferenceLoader implements TypeLoader<CompositeReference> 
         }
 
     }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.containsKey(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
-
 }

@@ -45,8 +45,6 @@ package org.fabric3.introspection.xml.composite;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -67,7 +65,6 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loads property values configured on a component.
@@ -76,22 +73,11 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  */
 public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyValue> {
     private static final QName PROPERTY = new QName(Constants.SCA_NS, "property");
-    private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
-
-    static {
-        ATTRIBUTES.put("name", "name");
-        ATTRIBUTES.put("source", "source");
-        ATTRIBUTES.put("file", "file");
-        ATTRIBUTES.put("type", "type");
-        ATTRIBUTES.put("element", "element");
-        ATTRIBUTES.put("value", "value");
-        ATTRIBUTES.put("many", "many");
-    }
-
     private final LoaderHelper helper;
 
     public PropertyValueLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper helper) {
         super(registry);
+        addAttributes("name", "source", "file", "type", "element", "value", "many");
         this.helper = helper;
     }
 
@@ -199,15 +185,6 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
             return PropertyMany.MANY;
         }
         return PropertyMany.SINGLE;
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.containsKey(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
 }

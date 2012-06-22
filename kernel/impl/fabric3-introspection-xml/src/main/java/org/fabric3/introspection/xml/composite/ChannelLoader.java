@@ -44,8 +44,6 @@
 package org.fabric3.introspection.xml.composite;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -63,7 +61,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
@@ -80,18 +77,13 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinition> {
 
     private static final QName CHANNEL = new QName(SCA_NS, "channel");
-    private static final Map<String, String> ATTRIBUTES = new HashMap<String, String>();
-
-    static {
-        ATTRIBUTES.put("name", "name");
-        ATTRIBUTES.put("requires", "name");
-    }
 
     private LoaderHelper loaderHelper;
     private boolean roundTrip;
 
     public ChannelLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         super(registry);
+        addAttributes("name", "requires");
         this.loaderHelper = loaderHelper;
     }
 
@@ -102,6 +94,7 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
 
     public ChannelDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
+
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingAttribute failure = new MissingAttribute("Component name not specified", reader);
@@ -157,15 +150,6 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
 
     public QName getXMLType() {
         return CHANNEL;
-    }
-
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!ATTRIBUTES.containsKey(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
     }
 
 }

@@ -46,11 +46,10 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.binding.web.common.OperationsAllowed;
 import org.fabric3.binding.web.model.WebBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loads <code>binding.web</code> elements in a composite.
@@ -58,11 +57,12 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class WebBindingLoader implements TypeLoader<WebBindingDefinition> {
+public class WebBindingLoader extends AbstractValidatingTypeLoader<WebBindingDefinition> {
     private LoaderHelper loaderHelper;
 
     public WebBindingLoader(@Reference LoaderHelper loaderHelper) {
         this.loaderHelper = loaderHelper;
+        addAttributes("allowed", "name", "policySets", "requires");
     }
 
     public WebBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -91,13 +91,5 @@ public class WebBindingLoader implements TypeLoader<WebBindingDefinition> {
         return definition;
     }
 
-    private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
-        for (int i = 0; i < reader.getAttributeCount(); i++) {
-            String name = reader.getAttributeLocalName(i);
-            if (!"allowed".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
-            }
-        }
-    }
 
 }
