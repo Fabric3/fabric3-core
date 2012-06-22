@@ -58,7 +58,7 @@ public interface ScopeContainerMonitor {
     @Severe("Error")
     void error(Exception e);
 
-    @Severe("Error destroying component")
+    @Severe("Error initializing component")
     void eagerInitializationError(URI componentId, Exception e);
 
     @Severe("Error destroying component")
