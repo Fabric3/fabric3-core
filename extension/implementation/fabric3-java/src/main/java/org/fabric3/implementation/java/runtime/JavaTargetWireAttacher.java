@@ -83,7 +83,7 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefi
         JavaComponent target = (JavaComponent) component;
 
         Class<?> implementationClass = target.getImplementationClass();
-        ClassLoader loader = implementationClass.getClassLoader();
+        ClassLoader loader = classLoaderRegistry.getClassLoader(targetDefinition.getClassLoaderId());
 
         // attach the invoker interceptor to forward invocation chains
         for (InvocationChain chain : wire.getInvocationChains()) {
