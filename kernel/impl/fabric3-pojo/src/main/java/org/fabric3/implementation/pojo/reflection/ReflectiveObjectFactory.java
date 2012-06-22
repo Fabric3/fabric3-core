@@ -90,7 +90,7 @@ public class ReflectiveObjectFactory<T> implements ObjectFactory<T> {
                         if (paramType.isPrimitive() && params[i] == null) {
                             throw new NullPrimitiveException(name, i);
                         }
-                        if (params[i] != null && paramType.isInstance(params[i])) {
+                        if (params[i] != null && !paramType.isInstance(params[i])) {
                             throw new IncompatibleArgumentException(name, i, params[i].getClass().getName());
                         }
                     }
