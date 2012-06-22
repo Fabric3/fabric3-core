@@ -47,6 +47,8 @@ import java.util.Set;
 
 import org.oasisopen.sca.annotation.Reference;
 
+import org.fabric3.api.annotation.Producer;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
@@ -137,8 +139,26 @@ public class JavaHeuristic implements HeuristicProcessor<JavaImplementation> {
                 }
             }
             if (selected == null) {
-                context.addError(new NoConstructorFound(implClass));
-                return null;
+                // no annotation present, look for a ctor with @Reference or @Producer or @Monitor
+                for (Constructor<?> constructor : constructors) {
+                    for (Annotation[] annotations : constructor.getParameterAnnotations()) {
+                        for (Annotation annotation : annotations) {
+                            if (annotation.annotationType().equals(Reference.class)
+                                    || annotation.annotationType().equals(Producer.class)
+                                    || annotation.annotationType().equals(Monitor.class)) {
+                                if (selected != null) {
+                                    context.addError(new AmbiguousConstructor(implClass));
+                                    return null;
+                                }
+                                selected = constructor;
+                            }
+                        }
+                    }
+                }
+                if (selected == null) {
+                    context.addError(new NoConstructorFound(implClass));
+                    return null;
+                }
             }
         }
         return new Signature(selected);
