@@ -40,8 +40,10 @@ package org.fabric3.binding.rs.generator;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
-
 import javax.xml.namespace.QName;
+
+import org.oasisopen.sca.Constants;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.binding.rs.model.RsBindingDefinition;
 import org.fabric3.binding.rs.provision.AuthenticationType;
@@ -55,8 +57,6 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Implementation of the REST binding generator.
@@ -86,15 +86,14 @@ public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition>
                                              ServiceContract contract,
                                              List<LogicalOperation> operations,
                                              EffectivePolicy policy) throws GenerationException {
-		RsTargetDefinition definition = new RsTargetDefinition(binding.getDefinition().getTargetUri(), contract.getQualifiedInterfaceName());
-    	return definition;
+        return new RsTargetDefinition(binding.getDefinition().getTargetUri(), contract.getQualifiedInterfaceName());
     }
 
     public PhysicalTargetDefinition generateServiceBindingTarget(LogicalBinding<RsBindingDefinition> binding,
                                                                  ServiceContract contract,
                                                                  List<LogicalOperation> operations,
                                                                  EffectivePolicy policy) throws GenerationException {
-        return generateTarget(binding,contract,operations,policy);
+        return generateTarget(binding, contract, operations, policy);
     }
 
     private AuthenticationType calculateAuthenticationType(LogicalBinding<RsBindingDefinition> binding, List<LogicalOperation> operations) {
