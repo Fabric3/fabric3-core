@@ -49,6 +49,7 @@ import java.util.ListIterator;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.fabric.executor.ExecutorNotFoundException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.command.Command;
@@ -136,6 +137,10 @@ public class LocalDeployer implements Deployer {
             if (scopeRegistry != null) {
                 scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
             }
+        } catch (ExecutorNotFoundException ex) {
+            // this is thrown when an error occurs during bootstrap: some of the command executors may not have be deployed at this point, which
+            // results in an ExecutorNotFoundException. Log an ignore
+            monitor.rollbackAborted();
         } catch (ExecutionException ex) {
             monitor.rollbackError("local", ex);
         } catch (InstanceLifecycleException ex) {

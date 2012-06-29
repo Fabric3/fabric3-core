@@ -59,6 +59,7 @@ import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.host.Fabric3Exception;
 import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.classloader.MaskingClassLoader;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
@@ -69,7 +70,6 @@ import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HiddenPackages;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.classloader.MaskingClassLoader;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
@@ -261,8 +261,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
             // there could have been an error initializing the monitor
             monitor.exited(ex);
         } else {
-            // throw the exception if the monitor is not available, e.g. due to an error
-            throw new Fabric3ServerException(ex);
+            ex.printStackTrace();
         }
     }
 

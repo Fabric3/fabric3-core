@@ -47,6 +47,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -80,6 +81,7 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
         }
     };
 
+    private final URI componentUri;
     private final Class<?> implementationClass;
     private final Constructor<?> constructor;
     private final List<Injectable> cdiSources;
@@ -90,13 +92,15 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
     private final ClassLoader cl;
     private final boolean reinjectable;
 
-    public ReflectiveImplementationManagerFactory(Constructor<?> constructor,
+    public ReflectiveImplementationManagerFactory(URI componentUri,
+                                                  Constructor<?> constructor,
                                                   List<Injectable> cdiSources,
                                                   Map<InjectionSite, Injectable> postConstruction,
                                                   Method initMethod,
                                                   Method destroyMethod,
                                                   boolean reinjectable,
                                                   ClassLoader cl) {
+        this.componentUri = componentUri;
         this.implementationClass = constructor.getDeclaringClass();
         this.constructor = constructor;
         this.cdiSources = cdiSources;
@@ -116,7 +120,7 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
         Injectable[] attributes = mappings.keySet().toArray(new Injectable[mappings.size()]);
         Injector<Object>[] injectors = mappings.values().toArray(new Injector[mappings.size()]);
 
-        return new ReflectiveImplementationManager(factory, attributes, injectors, initInvoker, destroyInvoker, reinjectable, cl);
+        return new ReflectiveImplementationManager(componentUri, factory, attributes, injectors, initInvoker, destroyInvoker, reinjectable, cl);
     }
 
     public Class<?> getImplementationClass() {

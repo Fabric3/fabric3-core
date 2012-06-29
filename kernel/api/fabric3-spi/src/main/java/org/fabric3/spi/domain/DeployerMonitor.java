@@ -44,6 +44,7 @@
 package org.fabric3.spi.domain;
 
 import org.fabric3.api.annotation.monitor.Debug;
+import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
@@ -62,7 +63,10 @@ public interface DeployerMonitor {
     @Severe("Error raised when deploying to runtime {0}: \n {1}")
     void deploymentError(String runtime, Throwable e);
 
-    @Severe("Error raised when rolling back deployment for zone {0}:")
+    @Severe("Error raised when rolling back deployment for zone: {0}")
     void rollbackError(String message, Throwable e);
+
+    @Info("Rollback aborted because runtime is in bootstrap phase")
+    void rollbackAborted();
 
 }

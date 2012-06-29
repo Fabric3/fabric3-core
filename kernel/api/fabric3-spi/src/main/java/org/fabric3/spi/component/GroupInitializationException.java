@@ -43,62 +43,44 @@
  */
 package org.fabric3.spi.component;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.util.List;
+import java.net.URI;
+import java.util.Set;
 
 /**
  * @version $Rev$ $Date$
  */
 public class GroupInitializationException extends InstanceLifecycleException {
     private static final long serialVersionUID = 2049226987838195489L;
-    private final List<Exception> causes;
+    private final Set<URI> componentUris;
 
     /**
      * Exception indicating a problem initializing a group of components.
      *
-     * @param causes the individual exceptions that occurred
+     * @param componentUris of the components that issued errors
      */
-    public GroupInitializationException(List<Exception> causes) {
-        super("Error initializing components");
-        this.causes = causes;
+    public GroupInitializationException(Set<URI> componentUris) {
+        this.componentUris = componentUris;
     }
 
     /**
-     * Return the exceptions that occurred as the group was initialized.
+     * Returns the URIs of components that were in error when the group was initialized.
      *
-     * @return a list of exceptions that occurred
+     * @return an ordered set of component uris
      */
-    public List<Exception> getCauses() {
-        return causes;
+    public Set<URI> getComponentUris() {
+        return componentUris;
     }
 
-    /**
-     * Override stacktrace output to include all causes.
-     *
-     * @param printStream the stream to write to
-     */
     @Override
-    public void printStackTrace(PrintStream printStream) {
-        PrintWriter writer = new PrintWriter(printStream);
-        printStackTrace(writer);
-    }
-
-    /**
-     * Override stacktrace output to include all causes.
-     *
-     * @param writer the writer to use
-     */
-    @Override
-    public void printStackTrace(PrintWriter writer) {
-        writer.println(toString());
-        printStackTraceElements(writer);
-        writer.println("-------------------------------------------------------------------------------");
-        for (Exception cause : causes) {
-            writer.print("Caused by: ");
-            cause.printStackTrace(writer);
-            writer.println("-------------------------------------------------------------------------------");
+    public String getMessage() {
+        StringBuilder builder = new StringBuilder("Initialization errors were encountered with the following components:\n");
+        for (URI uri : componentUris) {
+            builder.append(uri).append("\n");
         }
-        writer.flush();
+        return builder.toString();
+    }
+
+    public String toString() {
+        return "Error initializing components";
     }
 }

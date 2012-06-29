@@ -43,6 +43,7 @@
  */
 package org.fabric3.implementation.pojo.reflection;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,6 +62,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  * @version $Rev$ $Date$
  */
 public class ReflectiveImplementationManager implements ImplementationManager {
+    private URI componentUri;
     private final ObjectFactory<?> constructor;
     private Injectable[] injectables;
     private final Injector<Object>[] injectors;
@@ -70,13 +72,15 @@ public class ReflectiveImplementationManager implements ImplementationManager {
     private final boolean reinjectable;
     private Set<Injector<Object>> updatedInjectors;
 
-    public ReflectiveImplementationManager(ObjectFactory<?> constructor,
+    public ReflectiveImplementationManager(URI componentUri,
+                                           ObjectFactory<?> constructor,
                                            Injectable[] injectables,
                                            Injector<Object>[] injectors,
                                            EventInvoker initInvoker,
                                            EventInvoker destroyInvoker,
                                            boolean reinjectable,
                                            ClassLoader cl) {
+        this.componentUri = componentUri;
         this.constructor = constructor;
         this.injectables = injectables;
         this.injectors = injectors;
@@ -121,7 +125,7 @@ public class ReflectiveImplementationManager implements ImplementationManager {
                 WorkContextTunnel.setThreadWorkContext(context);
                 initInvoker.invokeEvent(instance);
             } catch (ObjectCallbackException e) {
-                throw new InstanceInitException(e.getMessage(), e);
+                throw new InstanceInitException("Error initializing instance for: " + componentUri, e);
             } finally {
                 Thread.currentThread().setContextClassLoader(oldCl);
                 WorkContextTunnel.setThreadWorkContext(oldWorkContext);
@@ -145,13 +149,13 @@ public class ReflectiveImplementationManager implements ImplementationManager {
                 }
             }
         } catch (ObjectCallbackException e) {
-            throw new InstanceDestructionException(e.getMessage(), e);
+            throw new InstanceDestructionException("Error destroying instance for: " + componentUri, e);
         }
     }
 
     public void reinject(Object instance) throws InstanceLifecycleException {
         if (!reinjectable) {
-            throw new IllegalStateException("Implementation is not reinjectable");
+            throw new IllegalStateException("Implementation is not reinjectable:" + componentUri);
         }
         try {
             for (Injector<Object> injector : updatedInjectors) {
@@ -159,13 +163,13 @@ public class ReflectiveImplementationManager implements ImplementationManager {
             }
             updatedInjectors.clear();
         } catch (ObjectCreationException ex) {
-            throw new InstanceLifecycleException("Unable to reinject references", ex);
+            throw new InstanceLifecycleException("Unable to reinject references on component: " + componentUri, ex);
         }
     }
 
     public void updated(Object instance, String referenceName) {
         if (instance != null && !reinjectable) {
-            throw new IllegalStateException("Implementation is not reinjectable");
+            throw new IllegalStateException("Implementation is not reinjectable: " + componentUri);
         }
         for (int i = 0; i < injectables.length; i++) {
             Injectable attribute = injectables[i];
@@ -180,7 +184,7 @@ public class ReflectiveImplementationManager implements ImplementationManager {
 
     public void removed(Object instance, String referenceName) {
         if (instance != null && !reinjectable) {
-            throw new IllegalStateException("Implementation is not reinjectable");
+            throw new IllegalStateException("Implementation is not reinjectable: " + componentUri);
         }
         for (int i = 0; i < injectables.length; i++) {
             Injectable attribute = injectables[i];

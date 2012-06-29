@@ -53,7 +53,6 @@ import java.io.PrintWriter;
 public abstract class Fabric3Exception extends Exception {
     private static final long serialVersionUID = -7847121698339635268L;
     private final String identifier;
-    private boolean logged;
 
     /**
      * Override constructor from Exception.
@@ -131,24 +130,6 @@ public abstract class Fabric3Exception extends Exception {
      */
     public String getIdentifier() {
         return identifier;
-    }
-
-    /**
-     * Returns true if the exception was logged.
-     *
-     * @return true if the exception was logged
-     */
-    public boolean isLogged() {
-        return logged;
-    }
-
-    /**
-     * Sets if the exception has been logged.
-     *
-     * @param logged if the exception has been logged
-     */
-    public void setLogged(boolean logged) {
-        this.logged = logged;
     }
 
     protected void printStackTraceElements(PrintWriter writer) {

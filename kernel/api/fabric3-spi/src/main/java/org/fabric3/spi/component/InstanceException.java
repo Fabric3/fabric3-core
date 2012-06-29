@@ -51,8 +51,7 @@ package org.fabric3.spi.component;
 public abstract class InstanceException extends ComponentException {
     private static final long serialVersionUID = -4583076670812682224L;
 
-    public InstanceException(Throwable cause) {
-        super(cause);
+    protected InstanceException() {
     }
 
     public InstanceException(String message) {

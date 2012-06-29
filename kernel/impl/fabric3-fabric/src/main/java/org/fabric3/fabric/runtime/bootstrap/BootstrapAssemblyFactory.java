@@ -78,6 +78,7 @@ import org.fabric3.fabric.executor.BuildComponentCommandExecutor;
 import org.fabric3.fabric.executor.ChannelConnectionCommandExecutor;
 import org.fabric3.fabric.executor.CommandExecutorRegistryImpl;
 import org.fabric3.fabric.executor.ConnectionCommandExecutor;
+import org.fabric3.fabric.executor.ContextMonitor;
 import org.fabric3.fabric.executor.StartComponentCommandExecutor;
 import org.fabric3.fabric.executor.StartContextCommandExecutor;
 import org.fabric3.fabric.generator.CommandGenerator;
@@ -314,15 +315,16 @@ public class BootstrapAssemblyFactory {
         Connector connector = createConnector(componentManager, transformerRegistry, classLoaderRegistry, monitorService);
 
         CommandExecutorRegistryImpl commandRegistry = new CommandExecutorRegistryImpl();
-        commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry));
-        BuildComponentCommandExecutor executor =
-                createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry, managementService);
-        commandRegistry.register(BuildComponentCommand.class, executor);
-        commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
-        commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
-        commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(componentManager, commandRegistry));
-        commandRegistry.register(ChannelConnectionCommand.class, new ChannelConnectionCommandExecutor(commandRegistry));
         try {
+            ContextMonitor contextMonitor = monitorService.createMonitor(ContextMonitor.class, Names.RUNTIME_MONITOR_CHANNEL_URI);
+            commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry, contextMonitor));
+            BuildComponentCommandExecutor executor =
+                    createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry, managementService);
+            commandRegistry.register(BuildComponentCommand.class, executor);
+            commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
+            commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
+            commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(componentManager, commandRegistry));
+            commandRegistry.register(ChannelConnectionCommand.class, new ChannelConnectionCommandExecutor(commandRegistry));
             ReplicationMonitor monitor = monitorService.createMonitor(ReplicationMonitor.class, Names.RUNTIME_MONITOR_CHANNEL_URI);
             commandRegistry.register(BuildChannelsCommand.class, new BuildChannelsCommandExecutor(channelManager, null, commandRegistry, monitor));
         } catch (MonitorCreationException e) {

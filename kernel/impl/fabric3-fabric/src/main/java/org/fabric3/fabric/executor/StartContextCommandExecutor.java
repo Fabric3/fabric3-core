@@ -54,12 +54,12 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.fabric.command.StartContextCommand;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ComponentException;
+import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
@@ -84,9 +84,8 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
         this.monitor = monitor;
     }
 
-    public StartContextCommandExecutor(ScopeRegistry scopeRegistry) {
-        this.compositeScopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
-        this.domainScopeContainer = scopeRegistry.getScopeContainer(Scope.DOMAIN);
+    public StartContextCommandExecutor(ScopeRegistry scopeRegistry, @Monitor ContextMonitor monitor) {
+        this(null, scopeRegistry, monitor);
     }
 
     @Init
@@ -103,11 +102,13 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
                 // domain scope not available during bootstrap
                 domainScopeContainer.startContext(deployable, workContext);
             }
-            if (monitor != null && command.isLog()) {
+            if (command.isLog()) {
                 monitor.deployed(deployable);
             }
+        } catch (GroupInitializationException e) {
+            throw new ExecutionException(e);
         } catch (ComponentException e) {
-            throw new ExecutionException("Error executing command", e);
+            throw new ExecutionException(e);
         }
     }
 

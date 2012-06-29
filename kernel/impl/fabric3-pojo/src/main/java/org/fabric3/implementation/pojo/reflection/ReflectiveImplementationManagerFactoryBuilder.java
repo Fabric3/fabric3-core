@@ -45,6 +45,7 @@ package org.fabric3.implementation.pojo.reflection;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -74,9 +75,11 @@ public class ReflectiveImplementationManagerFactoryBuilder implements Implementa
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public ReflectiveImplementationManagerFactory build(ImplementationManagerDefinition definition, ClassLoader cl) throws ImplementationBuildException {
+    public ReflectiveImplementationManagerFactory build(ImplementationManagerDefinition definition, ClassLoader cl)
+            throws ImplementationBuildException {
 
         try {
+            URI componentUri = definition.getComponentUri();
             String className = definition.getImplementationClass();
             Class<?> implClass = classLoaderRegistry.loadClass(cl, className);
             Constructor<?> ctr = getConstructor(implClass, definition.getConstructor());
@@ -103,7 +106,14 @@ public class ReflectiveImplementationManagerFactoryBuilder implements Implementa
             List<Injectable> construction = Arrays.asList(cdiSources);
             boolean reinjectable = definition.isReinjectable();
 
-            return new ReflectiveImplementationManagerFactory(ctr, construction, postConstruction, initMethod, destroyMethod, reinjectable, cl);
+            return new ReflectiveImplementationManagerFactory(componentUri,
+                                                              ctr,
+                                                              construction,
+                                                              postConstruction,
+                                                              initMethod,
+                                                              destroyMethod,
+                                                              reinjectable,
+                                                              cl);
         } catch (ClassNotFoundException ex) {
             throw new ImplementationBuildException(ex);
         } catch (NoSuchMethodException ex) {

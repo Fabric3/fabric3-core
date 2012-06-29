@@ -44,6 +44,7 @@
 package org.fabric3.implementation.pojo.provision;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,6 +59,7 @@ import org.fabric3.spi.model.type.java.Signature;
  */
 public class ImplementationManagerDefinition implements Serializable {
     private static final long serialVersionUID = 3516497485593609161L;
+
     private String implementationClass;
     private Signature constructor;
     private Signature initMethod;
@@ -66,6 +68,25 @@ public class ImplementationManagerDefinition implements Serializable {
     private Map<InjectionSite, Injectable> construction = new HashMap<InjectionSite, Injectable>();
     private Map<InjectionSite, Injectable> postConstruction = new HashMap<InjectionSite, Injectable>();
     private Map<InjectionSite, Injectable> reinjection = new HashMap<InjectionSite, Injectable>();
+    private URI componentUri;
+
+    /**
+     * Returns the component URI for this implementation definition.
+     *
+     * @return the component URI for this implementation definition
+     */
+    public URI getComponentUri() {
+        return componentUri;
+    }
+
+    /**
+     * Sets the component URI for this implementation definition.
+     *
+     * @param componentUri the component URI for this implementation definition
+     */
+    public void setComponentUri(URI componentUri) {
+        this.componentUri = componentUri;
+    }
 
     /**
      * Returns the signature of the constructor that should be used.
@@ -183,4 +204,5 @@ public class ImplementationManagerDefinition implements Serializable {
     public void setReinjectable(boolean reinjectable) {
         this.reinjectable = reinjectable;
     }
+
 }

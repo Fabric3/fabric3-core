@@ -46,6 +46,7 @@ package org.fabric3.implementation.pojo.reflection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -94,13 +95,14 @@ public class ReflectiveImplementationManagerFactoryTestCase extends TestCase {
     public void testConstructorArgs() {
         ctrNames.add(intProperty);
         ctrNames.add(stringProperty);
-        provider = new ReflectiveImplementationManagerFactory(argConstructor,
-                                                         ctrNames,
-                                                         sites,
-                                                         null,
-                                                         null,
-                                                         false,
-                                                         Foo.class.getClassLoader());
+        provider = new ReflectiveImplementationManagerFactory(URI.create("TestComponent"),
+                                                              argConstructor,
+                                                              ctrNames,
+                                                              sites,
+                                                              null,
+                                                              null,
+                                                              false,
+                                                              Foo.class.getClassLoader());
         provider.setObjectFactory(intProperty, intFactory);
         provider.setObjectFactory(stringProperty, stringFactory);
         ObjectFactory<?>[] args = provider.getConstructorParameterFactories(ctrNames);
@@ -164,13 +166,14 @@ public class ReflectiveImplementationManagerFactoryTestCase extends TestCase {
         stringSetter = Foo.class.getMethod("setStringField", String.class);
         ctrNames = new ArrayList<Injectable>();
         sites = new HashMap<InjectionSite, Injectable>();
-        provider = new ReflectiveImplementationManagerFactory(noArgConstructor,
-                                                         ctrNames,
-                                                         sites,
-                                                         null,
-                                                         null,
-                                                         false,
-                                                         Foo.class.getClassLoader());
+        provider = new ReflectiveImplementationManagerFactory(URI.create("TestComponent"),
+                                                              noArgConstructor,
+                                                              ctrNames,
+                                                              sites,
+                                                              null,
+                                                              null,
+                                                              false,
+                                                              Foo.class.getClassLoader());
         intFactory = EasyMock.createMock(ObjectFactory.class);
         stringFactory = EasyMock.createMock(ObjectFactory.class);
         EasyMock.expect(intFactory.getInstance()).andReturn(34);

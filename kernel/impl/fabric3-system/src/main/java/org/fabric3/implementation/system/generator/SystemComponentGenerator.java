@@ -87,6 +87,7 @@ public class SystemComponentGenerator implements ComponentGenerator<LogicalCompo
         InjectingComponentType type = implementation.getComponentType();
 
         ImplementationManagerDefinition managerDefinition = new ImplementationManagerDefinition();
+        managerDefinition.setComponentUri(component.getUri());
         managerDefinition.setReinjectable(true);
         managerDefinition.setConstructor(type.getConstructor());
         managerDefinition.setInitMethod(type.getInitMethod());

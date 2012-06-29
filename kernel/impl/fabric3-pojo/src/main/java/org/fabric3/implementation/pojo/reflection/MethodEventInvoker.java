@@ -69,15 +69,20 @@ public class MethodEventInvoker implements EventInvoker {
         try {
             method.invoke(instance);
         } catch (IllegalArgumentException e) {
-            String name = method.toString();
-            throw new ObjectCallbackException("Exception thrown by method: " + name, e.getCause());
+            String signature = getSignature();
+            throw new ObjectCallbackException("Invalid arguments provided when invoking method: " + signature, e.getCause());
         } catch (IllegalAccessException e) {
-            String name = method.getName();
-            throw new AssertionError("Method is not accessible: " + name);
+            String signature = getSignature();
+            throw new ObjectCallbackException("Method is not accessible: " + signature);
         } catch (InvocationTargetException e) {
-            String name = method.getName();
-            throw new ObjectCallbackException("Exception thrown by callback method:" + name, e.getCause());
+            String signature = getSignature();
+            throw new ObjectCallbackException("Exception thrown when invoking method: " + signature, e.getCause());
         }
+    }
+
+    private String getSignature() {
+        String name = method.getName();
+        return method.getDeclaringClass().getName() + "." + name + "()";
     }
 
 }

@@ -51,10 +51,6 @@ package org.fabric3.spi.component;
 public class InstanceDestructionException extends InstanceLifecycleException {
     private static final long serialVersionUID = -2273266145088833083L;
 
-    public InstanceDestructionException(String message) {
-        super(message);
-    }
-
     public InstanceDestructionException(String message, Throwable cause) {
         super(message, cause);
     }

@@ -42,7 +42,6 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.InstanceException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -82,7 +81,7 @@ public class MockComponent implements AtomicComponent {
         try {
             return objectFactory.getInstance();
         } catch (ObjectCreationException e) {
-            throw new InstanceLifecycleException(e);
+            throw new InstanceLifecycleException("Error creating instance for: " + componentId, e);
         }
     }
 

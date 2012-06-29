@@ -43,13 +43,16 @@
  */
 package org.fabric3.fabric.component.scope;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -275,16 +278,17 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
      * @throws GroupInitializationException if one or more components threw an exception during initialization
      */
     private void initializeComponents(List<ScopedComponent> components, WorkContext workContext) throws GroupInitializationException {
-        List<Exception> causes = null;
+        Set<URI> causes = null;
         for (ScopedComponent component : components) {
             try {
                 getInstance(component, workContext);
             } catch (Exception e) {
-                monitor.eagerInitializationError(component.getUri(), e);
                 if (causes == null) {
-                    causes = new ArrayList<Exception>();
+                    causes = new LinkedHashSet<URI>();
                 }
-                causes.add(e);
+                URI uri = component.getUri();
+                monitor.initializationError(uri, component.getDeployable(), e);
+                causes.add(uri);
             }
         }
         if (causes != null) {
@@ -309,13 +313,13 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
                 }
                 toDestroy = instances.remove(instances.size() - 1);
             }
+            ScopedComponent component = toDestroy.component;
             try {
-                ScopedComponent component = toDestroy.component;
                 Object instance = toDestroy.instance;
                 component.stopInstance(instance, workContext);
             } catch (InstanceDestructionException e) {
                 // log the error from destroy but continue
-                monitor.destructionError(e);
+                monitor.destructionError(component.getUri(), component.getDeployable(), e);
             }
         }
     }
