@@ -50,8 +50,8 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.w3c.dom.Element;
 
+import org.fabric3.api.MonitorEvent;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 
 /**

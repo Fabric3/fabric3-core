@@ -48,7 +48,7 @@ import ch.qos.logback.classic.spi.ThrowableProxy;
 import org.slf4j.Marker;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.host.monitor.MonitorEvent;
+import org.fabric3.api.MonitorEvent;
 import org.fabric3.host.monitor.Monitorable;
 
 /**

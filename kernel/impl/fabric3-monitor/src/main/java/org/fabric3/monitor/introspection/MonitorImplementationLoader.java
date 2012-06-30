@@ -53,10 +53,9 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.fabric3.host.monitor.MonitorEvent;
+import org.fabric3.api.MonitorEvent;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.contract.DataType;

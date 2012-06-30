@@ -70,8 +70,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import org.fabric3.api.MonitorEvent;
 import org.fabric3.host.monitor.MonitorConfigurationException;
-import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.runtime.HostInfo;
 

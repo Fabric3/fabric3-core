@@ -43,8 +43,8 @@ import java.text.MessageFormat;
 import java.util.Map;
 
 import org.fabric3.api.MonitorChannel;
+import org.fabric3.api.MonitorEvent;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.host.monitor.Monitorable;
 import org.fabric3.spi.channel.EventStreamHandler;
 

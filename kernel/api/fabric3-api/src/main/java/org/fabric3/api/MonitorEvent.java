@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.host.monitor;
+package org.fabric3.api;
 
 import java.io.Serializable;
 
@@ -56,7 +56,7 @@ public interface MonitorEvent extends Serializable {
     public String getRuntime();
 
     /**
-     * Returns the name of the {@link Monitorable} which originated the event.
+     * Returns the name of the object (such as a component) which originated the event.
      *
      * @return the Monitorable name
      */

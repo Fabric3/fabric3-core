@@ -52,7 +52,7 @@ import weblogic.logging.LoggingHelper;
 import weblogic.logging.WLLevel;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.host.monitor.MonitorEvent;
+import org.fabric3.api.MonitorEvent;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 
 /**

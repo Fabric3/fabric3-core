@@ -39,7 +39,7 @@ package org.fabric3.spi.monitor;
 
 import java.lang.reflect.Array;
 
-import org.fabric3.host.monitor.MonitorEvent;
+import org.fabric3.api.MonitorEvent;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.spi.channel.EventStreamHandler;
 

@@ -46,8 +46,8 @@ package org.fabric3.runtime.maven.itest;
 import org.apache.maven.plugin.logging.Log;
 import org.w3c.dom.Element;
 
+import org.fabric3.api.MonitorEvent;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.host.monitor.MonitorEvent;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 
 /**

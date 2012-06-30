@@ -39,6 +39,8 @@ package org.fabric3.host.monitor;
 
 import org.w3c.dom.Element;
 
+import org.fabric3.api.MonitorEvent;
+
 /**
  * Dispatches a {@link MonitorEvent} to a subsystem such as logging or management infrastructure.
  *

@@ -36,7 +36,7 @@
  * the same infrastructure as used by fabric3 itself, allowing events from
  * applications, the fabric3 runtime and the host itself to all be handled
  * by the host's logging infrastructure. These events can be combined in one stream
- * or seperated as supported by the host infrastructure.
+ * or separated as supported by the host infrastructure.
  *
  * To use this framework, application code should define a component-specific interface
  * defining the monitoring events that it wishes to send and mark a field, setter or

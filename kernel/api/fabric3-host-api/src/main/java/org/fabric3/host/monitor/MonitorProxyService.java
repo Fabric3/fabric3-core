@@ -45,6 +45,8 @@ package org.fabric3.host.monitor;
 
 import java.net.URI;
 
+import org.fabric3.api.MonitorEvent;
+
 /**
  * Creates monitor proxies that send {@link MonitorEvent}s to a channel.
  *
