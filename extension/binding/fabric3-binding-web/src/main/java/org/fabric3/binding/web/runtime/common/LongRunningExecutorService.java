@@ -9,6 +9,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.fabric3.spi.threadpool.ExecutionContext;
+import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 import org.fabric3.spi.threadpool.LongRunnable;
 
 /**
@@ -87,6 +89,11 @@ public class LongRunningExecutorService implements ExecutorService {
         }
 
         public void run() {
+            ExecutionContext context = ExecutionContextTunnel.getThreadExecutionContext();
+            if (context != null) {
+                // Fix for FABRICTHREE-651
+                context.clear();
+            }
             delegate.run();
         }
     }
