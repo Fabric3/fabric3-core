@@ -16,7 +16,7 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.transaction.xa" version="1.1.0"/>
     <import.java package="javax.persistence" version="1.0.0"/>
     <import.java package="org.hibernate.*" version="1.1.0"/>
-    <export.java package="org.springframework.*" version="3.0.2"/>
+    <export.java package="org.springframework.*" version="3.1.1"/>
     <f3:extends name="spring-library"/>
 
 </contribution>

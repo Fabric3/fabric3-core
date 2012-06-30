@@ -62,7 +62,7 @@ public class SpringSecuritySubject implements SecuritySubject, Principal {
 
     public SpringSecuritySubject(Authentication authentication) {
         this.authentication = authentication;
-        Collection<GrantedAuthority> authorities = authentication.getAuthorities();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         roles = new HashSet<Role>();
         Set<Principal> principals = new HashSet<Principal>();
         for (GrantedAuthority authority : authorities) {
