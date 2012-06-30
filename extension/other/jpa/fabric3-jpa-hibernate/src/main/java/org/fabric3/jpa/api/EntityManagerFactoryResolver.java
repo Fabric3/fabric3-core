@@ -39,8 +39,6 @@ package org.fabric3.jpa.api;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.fabric3.jpa.common.PersistenceOverrides;
-
 /**
  * Resolves EntityManagerFactor instances.
  *

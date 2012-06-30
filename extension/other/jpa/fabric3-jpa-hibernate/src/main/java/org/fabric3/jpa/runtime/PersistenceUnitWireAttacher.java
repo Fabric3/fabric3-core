@@ -44,7 +44,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.JpaResolutionException;
-import org.fabric3.jpa.common.PersistenceOverrides;
+import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.provision.PersistenceUnitTargetDefinition;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;

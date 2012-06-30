@@ -44,7 +44,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.JpaResolutionException;
-import org.fabric3.jpa.common.PersistenceOverrides;
+import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.provision.SessionTargetDefinition;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxyFactory;

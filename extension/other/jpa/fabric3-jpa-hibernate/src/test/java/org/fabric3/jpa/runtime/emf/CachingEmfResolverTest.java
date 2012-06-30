@@ -44,7 +44,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
-import org.fabric3.jpa.common.PersistenceOverrides;
+import org.fabric3.jpa.api.PersistenceOverrides;
 
 /**
  * @version $Rev$ $Date$

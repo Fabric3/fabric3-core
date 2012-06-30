@@ -42,7 +42,7 @@ import java.util.Collections;
 
 import junit.framework.TestCase;
 
-import org.fabric3.jpa.common.PersistenceOverrides;
+import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.spi.contribution.Contribution;
 
 /**

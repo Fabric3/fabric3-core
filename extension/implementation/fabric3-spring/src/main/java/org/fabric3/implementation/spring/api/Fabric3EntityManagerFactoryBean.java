@@ -46,7 +46,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.JpaResolutionException;
-import org.fabric3.jpa.common.PersistenceOverrides;
+import org.fabric3.jpa.api.PersistenceOverrides;
 
 import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;
 

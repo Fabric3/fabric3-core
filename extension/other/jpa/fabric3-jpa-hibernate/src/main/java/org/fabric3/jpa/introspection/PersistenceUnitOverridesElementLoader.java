@@ -52,7 +52,7 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.Namespaces;
-import org.fabric3.jpa.common.PersistenceOverrides;
+import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.override.DuplicateOverridesException;
 import org.fabric3.jpa.override.OverrideRegistry;
 import org.fabric3.model.type.ModelObject;

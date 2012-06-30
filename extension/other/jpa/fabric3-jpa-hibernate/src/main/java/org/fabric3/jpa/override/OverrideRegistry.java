@@ -39,7 +39,7 @@ package org.fabric3.jpa.override;
 
 import java.net.URI;
 
-import org.fabric3.jpa.common.PersistenceOverrides;
+import org.fabric3.jpa.api.PersistenceOverrides;
 
 /**
  * Manages persistence context overrides.

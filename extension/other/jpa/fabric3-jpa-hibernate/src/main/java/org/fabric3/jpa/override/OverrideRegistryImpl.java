@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.oasisopen.sca.annotation.Service;
 
-import org.fabric3.jpa.common.PersistenceOverrides;
+import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionServiceListener;
 

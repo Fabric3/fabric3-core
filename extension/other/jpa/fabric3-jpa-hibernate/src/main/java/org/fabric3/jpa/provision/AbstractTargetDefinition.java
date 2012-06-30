@@ -39,7 +39,7 @@ package org.fabric3.jpa.provision;
 
 import java.util.Collections;
 
-import org.fabric3.jpa.common.PersistenceOverrides;
+import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**

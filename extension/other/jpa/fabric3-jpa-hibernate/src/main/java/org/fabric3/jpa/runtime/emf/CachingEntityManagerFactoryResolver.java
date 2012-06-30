@@ -55,7 +55,7 @@ import org.fabric3.host.Names;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.F3TransactionManagerLookup;
 import org.fabric3.jpa.api.JpaResolutionException;
-import org.fabric3.jpa.common.PersistenceOverrides;
+import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.monitor.MonitorService;
 
