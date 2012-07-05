@@ -75,7 +75,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectionSite;
 
-import static org.fabric3.container.web.spi.WebApplicationActivator.CONTEXT_ATTRIBUTE;
 import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEXT_ATTRIBUTE;
 import static org.fabric3.implementation.web.provision.WebConstants.SERVLET_CONTEXT_SITE;
 import static org.fabric3.implementation.web.provision.WebConstants.SESSION_CONTEXT_SITE;
@@ -98,9 +97,9 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
     public PhysicalComponentDefinition generate(LogicalComponent<WebImplementation> component) throws GenerationException {
         ComponentDefinition<WebImplementation> definition = component.getDefinition();
         WebComponentType componentType = definition.getImplementation().getComponentType();
-        URI componentId = component.getUri();
-        // the context URL for the web application is derived from the component name relative to the domain
-        String contextUrl = info.getDomain().relativize(componentId).toString();
+
+        String contextUrl = calculateContextUrl(component);
+
         WebComponentDefinition physical = new WebComponentDefinition();
         physical.setContextUrl(contextUrl);
         Map<String, Map<String, InjectionSite>> sites = generateInjectionMapping(componentType);
@@ -213,6 +212,22 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
                 physical.setPropertyDefinition(definition);
             }
         }
+    }
+
+    /**
+     * Derives the context URL for the web application relative to the domain.
+     *
+     * @param component the component
+     * @return the context URL
+     */
+    private String calculateContextUrl(LogicalComponent<WebImplementation> component) {
+        URI contextUri = component.getDefinition().getImplementation().getUri();
+        if (contextUri == null) {
+            // the context URL for the web application is derived from the component name if a URI is not specified
+            contextUri = component.getUri();
+        }
+        return info.getDomain().relativize(contextUri).toString();
+
     }
 
 

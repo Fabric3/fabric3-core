@@ -39,6 +39,8 @@ package org.fabric3.implementation.web.introspection;
 
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +62,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.ElementLoadFailure;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
@@ -76,6 +79,7 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
 
     public WebComponentLoader(@Reference LoaderRegistry registry) {
         this.registry = registry;
+        addAttributes("uri");
     }
 
     @Reference
@@ -95,17 +99,21 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
         registry.unregisterLoader(WebImplementation.IMPLEMENTATION_WEBAPP);
     }
 
-    public WebImplementation load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
-        validateAttributes(reader, introspectionContext);
-        WebImplementation impl = new WebImplementation();
+    public WebImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        validateAttributes(reader, context);
+
+        URI uri = parseUri(reader, context);
+        WebImplementation impl = new WebImplementation(uri);
+
+
         for (WebImplementationIntrospector introspector : introspectors) {
-            introspector.introspect(impl, introspectionContext);
+            introspector.introspect(impl, context);
         }
 
         try {
             ComponentType type = impl.getComponentType();
             // FIXME we should allow implementation to specify the component type;
-            ComponentType componentType = loadComponentType(introspectionContext);
+            ComponentType componentType = loadComponentType(context);
             for (Map.Entry<String, ReferenceDefinition> entry : componentType.getReferences().entrySet()) {
                 type.add(entry.getValue());
             }
@@ -117,12 +125,31 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
                 // ignore since we allow component types not to be specified in the web app 
             } else {
                 ElementLoadFailure failure = new ElementLoadFailure("Error loading web.componentType", e, reader);
-                introspectionContext.addError(failure);
+                context.addError(failure);
                 return null;
             }
         }
         LoaderUtil.skipToEndElement(reader);
         return impl;
+    }
+
+    private URI parseUri(XMLStreamReader reader, IntrospectionContext context) {
+        URI uri = null;
+        String uriStr = reader.getAttributeValue(null, "uri");
+        if (uriStr != null) {
+            if (uriStr.length() < 1) {
+                InvalidValue failure = new InvalidValue("Web component URI must specify a value", reader);
+                context.addError(failure);
+            } else {
+                try {
+                    uri = new URI(uriStr);
+                } catch (URISyntaxException e) {
+                    InvalidValue failure = new InvalidValue("Web component URI is not a valid: " + uri, reader);
+                    context.addError(failure);
+                }
+            }
+        }
+        return uri;
     }
 
     private ComponentType loadComponentType(IntrospectionContext context) throws LoaderException {

@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.web.model;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.fabric3.host.Namespaces;
@@ -54,8 +55,29 @@ public class WebImplementation extends Implementation<WebComponentType> {
     public static final QName IMPLEMENTATION_WEBAPP = new QName(Namespaces.F3, "web");
     public static final QName IMPLEMENTATION_WEB = new QName(org.oasisopen.sca.Constants.SCA_NS, "implementation.web");
 
+    private URI uri;
+
+    /**
+     * Default constructor. Used to create a web component implementation whose web app context URL will be constructed using the component URI.
+     */
+    public WebImplementation() {
+    }
+
+    /**
+     * Constructor. Used to create a web component implementation whose web app context URL will be constructed using the component URI.
+     *
+     * @param uri the URI used when creating the web app context URL.
+     */
+    public WebImplementation(URI uri) {
+        this.uri = uri;
+    }
+
     public QName getType() {
         return IMPLEMENTATION_WEB;
+    }
+
+    public URI getUri() {
+        return uri;
     }
 
 }
