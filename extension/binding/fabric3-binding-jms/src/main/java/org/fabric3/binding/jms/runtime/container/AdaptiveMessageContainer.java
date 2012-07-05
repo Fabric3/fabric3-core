@@ -863,7 +863,17 @@ public class AdaptiveMessageContainer {
                 consumer = createConsumer(session);
             }
             // wait for a message, blocking for the timeout period, which, if 0, will be indefinitely
-            Message message = consumer.receive(receiveTimeout);
+            Message message = null;
+            try {
+                message = consumer.receive(receiveTimeout);
+            } catch (JMSException e) {
+                if (e.getCause() instanceof InterruptedException) {
+                    // some providers may throw an InterruptedException if the receiver is blocking when the runtime is signalled to shutdown
+                    // ignore the exception
+                } else {
+                    throw e;
+                }
+            }
             if (message != null) {
                 if (!isRunning()) {
                     // container is shutting down.

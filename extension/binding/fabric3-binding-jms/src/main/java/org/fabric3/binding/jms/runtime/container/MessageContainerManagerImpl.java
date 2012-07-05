@@ -39,25 +39,22 @@
 package org.fabric3.binding.jms.runtime.container;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.transaction.TransactionManager;
 
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.jms.spi.common.TransactionType;
-import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeStart;
@@ -78,6 +75,7 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
     private static final int DEFAULT_TRX_TIMEOUT = 30;
     private Map<URI, AdaptiveMessageContainer> containers = new ConcurrentHashMap<URI, AdaptiveMessageContainer>();
     private boolean started;
+    private boolean pausedOnStart;
     private EventService eventService;
     private ExecutorService executorService;
     private TransactionManager tm;
@@ -106,6 +104,11 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
             throw new IllegalArgumentException("Invalid transaction timeout: " + timeout);
         }
         this.transactionTimeout = timeout;
+    }
+
+    @Property(required = false)
+    public void setPauseOnStart(boolean pauseOnStart) {
+        this.pausedOnStart = pauseOnStart;
     }
 
     @Init
@@ -139,11 +142,16 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         }
         for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
             try {
-                entry.getValue().start();
+                if (pausedOnStart) {
+                    entry.getValue().initialize();
+                } else {
+                    entry.getValue().start();
+                }
             } catch (JMSException e) {
                 managerMonitor.startError(entry.getKey(), e);
             }
         }
+        pausedOnStart = false;
         started = true;
     }
 
@@ -224,13 +232,17 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
             // start receiving messages after the runtime has started
             for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
                 try {
-                    entry.getValue().initialize();
+                    if (!pausedOnStart) {
+                        entry.getValue().initialize();
+                    }
                     managerMonitor.registerListener(entry.getKey());
                 } catch (JMSException e) {
                     managerMonitor.startError(entry.getKey(), e);
                 }
             }
-            started = true;
+            if (!pausedOnStart) {
+                started = true;
+            }
 
         }
     }

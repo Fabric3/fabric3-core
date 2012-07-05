@@ -76,7 +76,6 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import org.fabric3.spi.binding.handler.BindingHandler;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
@@ -112,8 +111,6 @@ public class JmsInterceptor implements Interceptor {
     private String jmsType;
     private int priority;
     private Map<String, String> properties;
-    private BindingHandlerRegistry handlerRegistry;
-    private String bindingName;
     private List<BindingHandler<javax.jms.Message>> handlers;
 
     /**
@@ -247,10 +244,6 @@ public class JmsInterceptor implements Interceptor {
         }
     }
 
-    public void setBindingHandlerRegistry(BindingHandlerRegistry handlerRegistry) {
-        this.handlerRegistry = handlerRegistry;
-    }
-
     public Interceptor getNext() {
         return next;
     }
@@ -379,10 +372,6 @@ public class JmsInterceptor implements Interceptor {
         stream.close();
         String encoded = Base64.encode(bas.toByteArray());
         jmsMessage.setStringProperty("f3Context", encoded);
-    }
-
-    public void setBindingName(String name) {
-        this.bindingName = name;
     }
 
     private void applyHandlers(Message message, javax.jms.Message jmsMessage) {

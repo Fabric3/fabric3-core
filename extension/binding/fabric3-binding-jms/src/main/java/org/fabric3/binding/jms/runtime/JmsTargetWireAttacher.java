@@ -53,8 +53,6 @@ import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Topic;
 import javax.transaction.TransactionManager;
-import javax.xml.soap.SOAPMessage;
-import javax.xml.ws.handler.Handler;
 
 import org.oasisopen.sca.annotation.Reference;
 
@@ -91,7 +89,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
     private AdministeredObjectResolver resolver;
     private TransactionManager tm;
     private ClassLoaderRegistry classLoaderRegistry;
-	private BindingHandlerRegistry handlerRegistry;
+    private BindingHandlerRegistry handlerRegistry;
 
 
     public JmsTargetWireAttacher(@Reference AdministeredObjectResolver resolver,
@@ -137,8 +135,6 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
             configuration.setPayloadType(payloadTypes);
             JmsInterceptor interceptor = new JmsInterceptor(configuration, handlers);
             target.getMetadata().getDestination().getName();
-            interceptor.setBindingHandlerRegistry(handlerRegistry);
-            interceptor.setBindingName(target.getMetadata().getDestination().getName());
             chain.addInterceptor(interceptor);
         }
 
