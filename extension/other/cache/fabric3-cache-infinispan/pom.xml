@@ -40,7 +40,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-core</artifactId>
-            <version>5.1.2.FINAL</version>
+            <version>5.1.5.FINAL</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jgroups</groupId>
@@ -90,23 +90,6 @@ Public License. See the accompanying license file for details.
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>jboss-public-repository-group</id>
-            <name>JBoss Public Maven Repository Group</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
