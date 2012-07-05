@@ -135,7 +135,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, definition.getCallbackBindings(), reader, context);
+                            BindingHelper.configureName(binding, definition.getCallbackBindings(), reader, context);
                         }
                         boolean check = BindingHelper.checkDuplicateNames(binding, definition.getCallbackBindings(), reader, context);
                         if (check) {
@@ -145,7 +145,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, definition.getBindings(), reader, context);
+                            BindingHelper.configureName(binding, definition.getBindings(), reader, context);
                         }
                         boolean check = BindingHelper.checkDuplicateNames(binding, definition.getBindings(), reader, context);
                         if (check) {

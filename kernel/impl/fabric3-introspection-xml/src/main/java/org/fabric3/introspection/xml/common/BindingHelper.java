@@ -51,25 +51,23 @@ public class BindingHelper {
     /**
      * Configures the default binding name if no name is specified in a composite.
      *
-     * @param binding     the binding
-     * @param defaultName the default name to use
-     * @param bindings    the existing configured bindings parsed prior to this one
-     * @param reader      the stream reader
-     * @param context     the introspection context
+     * @param binding  the binding
+     * @param bindings the existing configured bindings parsed prior to this one
+     * @param reader   the stream reader
+     * @param context  the introspection context
      */
     public static void configureName(BindingDefinition binding,
-                                     String defaultName,
                                      List<BindingDefinition> bindings,
                                      XMLStreamReader reader,
                                      IntrospectionContext context) {
-        for (BindingDefinition entry : bindings) {
-            if (defaultName.equals(entry.getName())) {
-                BindingNameNotConfigured error = new BindingNameNotConfigured(defaultName, reader);
-                context.addError(error);
-                return;
-            }
+        String name = binding.getType().getLocalPart();
+        if (searchName(name, bindings)) {
+            binding.setName(name);
+            BindingNameNotConfigured error = new BindingNameNotConfigured(binding.getType().toString(), reader);
+            context.addError(error);
+        } else {
+            binding.setName(name);
         }
-        binding.setName(defaultName);
     }
 
 
@@ -96,4 +94,15 @@ public class BindingHelper {
         }
         return true;
     }
+
+    private static boolean searchName(String name, List<BindingDefinition> bindings) {
+        for (BindingDefinition entry : bindings) {
+            if (name.equals(entry.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }

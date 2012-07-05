@@ -165,7 +165,7 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, reference.getCallbackBindings(), reader, context);
+                            BindingHelper.configureName(binding, reference.getCallbackBindings(), reader, context);
                         }
                         boolean check = BindingHelper.checkDuplicateNames(binding, reference.getCallbackBindings(), reader, context);
                         if (check) {
@@ -174,7 +174,7 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, reference.getBindings(), reader, context);
+                            BindingHelper.configureName(binding, reference.getBindings(), reader, context);
                         }
                         boolean check = BindingHelper.checkDuplicateNames(binding, reference.getBindings(), reader, context);
                         if (check) {

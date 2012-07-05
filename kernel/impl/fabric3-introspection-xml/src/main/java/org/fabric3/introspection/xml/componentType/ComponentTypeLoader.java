@@ -199,7 +199,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, def.getCallbackBindings(), reader, context);
+                            BindingHelper.configureName(binding, def.getCallbackBindings(), reader, context);
                         }
                         boolean check = BindingHelper.checkDuplicateNames(binding, def.getCallbackBindings(), reader, context);
                         if (check) {
@@ -208,7 +208,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, def.getBindings(), reader, context);
+                            BindingHelper.configureName(binding, def.getBindings(), reader, context);
                         }
                         boolean check = BindingHelper.checkDuplicateNames(binding, def.getBindings(), reader, context);
                         if (check) {
@@ -285,7 +285,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, reference.getCallbackBindings(), reader, context);
+                            BindingHelper.configureName(binding, reference.getCallbackBindings(), reader, context);
                         }
                         boolean check = BindingHelper.checkDuplicateNames(binding, reference.getCallbackBindings(), reader, context);
                         if (check) {
@@ -294,7 +294,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, name, reference.getBindings(), reader, context);
+                            BindingHelper.configureName(binding, reference.getBindings(), reader, context);
                         }
                         boolean check = BindingHelper.checkDuplicateNames(binding, reference.getBindings(), reader, context);
                         if (check) {

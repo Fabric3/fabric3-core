@@ -71,13 +71,38 @@ public class BindingHelperTestCase extends TestCase {
 
         IntrospectionContext context = new DefaultIntrospectionContext();
 
-        BindingHelper.configureName(newBinding, "service", bindings, reader, context);
+        BindingHelper.configureName(newBinding, bindings, reader, context);
 
         assertTrue(context.getErrors().isEmpty());
     }
 
+    /**
+     * Tests that two bindings configured with the default name and
+     * @throws Exception
+     */
     @SuppressWarnings({"serial"})
     public void testBindingError() throws Exception {
+        BindingDefinition existingBinding1 = new BindingDefinition("name", URI.create("target"), QNAME) {
+        };
+
+        BindingDefinition existingBinding2 = new BindingDefinition(QNAME.getLocalPart(), URI.create("target"), QNAME) {
+        };
+
+        List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
+        bindings.add(existingBinding1);
+        bindings.add(existingBinding2);
+
+        BindingDefinition newBinding = new BindingDefinition(URI.create("endpoint"), QNAME) {
+        };
+
+        IntrospectionContext context = new DefaultIntrospectionContext();
+
+        BindingHelper.configureName(newBinding, bindings, reader, context);
+
+        assertTrue(context.getErrors().get(0) instanceof BindingNameNotConfigured);
+    }
+
+    public void testSyntheticBindingName() throws Exception {
         BindingDefinition existingBinding = new BindingDefinition("service", URI.create("target"), QNAME) {
         };
         List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
@@ -88,9 +113,9 @@ public class BindingHelperTestCase extends TestCase {
 
         IntrospectionContext context = new DefaultIntrospectionContext();
 
-        BindingHelper.configureName(newBinding, "service", bindings, reader, context);
+        BindingHelper.configureName(newBinding, bindings, reader, context);
 
-        assertTrue(context.getErrors().get(0) instanceof BindingNameNotConfigured);
+        assertTrue(context.getErrors().isEmpty());
     }
 
 
