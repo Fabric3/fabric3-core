@@ -140,6 +140,9 @@ public class XmlResourceProcessor implements ResourceProcessor {
         try {
             stream = resource.getSource().openStream();
             reader = xmlFactory.createXMLStreamReader(stream);
+            if (reader.getLocation().getSystemId() == null) {
+                reader = new LocationAwareXMLStreamReader(reader, resource.getSource().getSystemId());
+            }
             if (skipToFirstTag(reader)) {
                 resource.setState(ResourceState.PROCESSED);
                 return;
