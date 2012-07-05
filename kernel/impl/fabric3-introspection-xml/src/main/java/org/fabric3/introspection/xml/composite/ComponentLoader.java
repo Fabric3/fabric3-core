@@ -292,6 +292,17 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             return;
         }
 
+        if (!reference.getCallbackBindings().isEmpty()) {
+            if (typeReference != null) {
+                if (typeReference.getServiceContract() != null && typeReference.getServiceContract().getCallbackContract() == null) {
+                    InvalidServiceContract failure = new InvalidServiceContract(
+                            "Reference is configured with a callback binding but its service contract is not bidirectional: " + name,
+                            reader);
+                    context.addError(failure);
+                }
+
+            }
+        }
         processReferenceContract(reference, typeReference, reader, context);
 
         if (definition.getReferences().containsKey(name)) {
