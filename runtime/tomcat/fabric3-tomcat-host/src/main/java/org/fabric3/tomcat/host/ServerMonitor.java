@@ -48,8 +48,8 @@ public interface ServerMonitor {
     @Severe("Run error:")
     void runError(Exception e);
 
-    @Info("Fabric3 ready [Mode:{0}]")
-    void started(String mode);
+    @Info("Fabric3 ready [Mode:{0}, Environment: {1}]")
+    void started(String mode, String environment);
 
     @Info("Fabric3 shutdown")
     void stopped();

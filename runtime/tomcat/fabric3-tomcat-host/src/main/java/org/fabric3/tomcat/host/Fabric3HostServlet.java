@@ -238,7 +238,7 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
             coordinator.start();
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
             monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
-            monitor.started(mode.toString());
+            monitor.started(mode.toString(), environment);
         } catch (Fabric3Exception e) {
             throw new ServletException(e);
         } catch (IOException e) {
