@@ -30,17 +30,11 @@
 
     <dependencySets>
 
-        
-        <!-- copy dependencies used by the host api to the Tomcat lib directory -->
         <dependencySet>
             <includes>
-                <include>org.codehaus.fabric3.tomcat:fabric3-tomcat-server</include>
-                <include>org.codehaus.fabric3.spec:sca-api</include>
-                <include>org.codehaus.fabric3:fabric3-api</include>
-                <include>org.codehaus.fabric3:fabric3-model</include>
-                <include>org.codehaus.fabric3:fabric3-host-api</include>
+                <include>*:war</include>
             </includes>
-            <outputDirectory>lib</outputDirectory>
+            <outputDirectory>fabric3/webapp</outputDirectory>
         </dependencySet>
 
         <!-- copy shared classes to the host directory -->
@@ -82,7 +76,7 @@
         <!-- copy extension modules to the extensions directory-->
         <dependencySet>
             <includes>
-                <include>org.codehaus.fabric3.tomcat:fabric3-tomcat-extension</include>
+                <include>org.codehaus.fabric3.tomcat:fabric3-tomcat7-extension</include>
                 <include>org.codehaus.fabric3:fabric3-management-rest</include>
                 <include>org.codehaus.fabric3:fabric3-databinding-json</include>
                 <include>org.codehaus.fabric3:fabric3-management-jmx</include>

@@ -26,13 +26,15 @@ Public License. See the accompanying license file for details.
 
         <dependency>
             <groupId>org.codehaus.fabric3.tomcat</groupId>
-            <artifactId>fabric3-tomcat-server</artifactId>
+            <artifactId>fabric3-tomcat-host</artifactId>
             <version>${project.version}</version>
+            <!--<classifier>war</classifier>-->
+            <type>war</type>
         </dependency>
 
         <dependency>
             <groupId>org.codehaus.fabric3.tomcat</groupId>
-            <artifactId>fabric3-tomcat-extension</artifactId>
+            <artifactId>fabric3-tomcat7-extension</artifactId>
             <version>${project.version}</version>
         </dependency>
 
