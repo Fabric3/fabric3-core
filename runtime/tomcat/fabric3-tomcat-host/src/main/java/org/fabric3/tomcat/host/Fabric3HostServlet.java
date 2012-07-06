@@ -63,8 +63,6 @@ import org.apache.catalina.Wrapper;
 import org.apache.catalina.mbeans.MBeanUtils;
 import org.w3c.dom.Document;
 
-import org.fabric3.api.annotation.monitor.Info;
-import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.host.Fabric3Exception;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.classloader.MaskingClassLoader;
@@ -131,6 +129,27 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
         stop();
     }
 
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doGet(req, resp);
+
+        if (!restartEnabled) {
+            notAuthorized(resp);
+            return;
+        }
+
+        if (!hasAdminRole(req, resp)) {
+            return;
+        }
+
+        boolean restart = Boolean.parseBoolean(req.getParameter("restart"));
+
+        if (restart) {
+            destroy();
+            Engine engine = (Engine) host.getParent();
+            init(engine.getService(), false);
+        }
+
+    }
 
     private synchronized void init(Service service, boolean firstInitTime) throws ServletException {
         try {
@@ -245,41 +264,6 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
             throw new IllegalArgumentException("Runtime directory does not exist:" + runtimeDir);
         }
         return runtimeDir;
-    }
-
-    public interface ServerMonitor {
-
-        @Severe("Run error:")
-        void runError(Exception e);
-
-        @Info("Fabric3 ready [Mode:{0}]")
-        void started(String mode);
-
-        @Info("Fabric3 shutdown")
-        void stopped();
-
-    }
-
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
-
-        if (!restartEnabled) {
-            notAuthorized(resp);
-            return;
-        }
-
-        if (!hasAdminRole(req, resp)) {
-            return;
-        }
-
-        boolean restart = Boolean.parseBoolean(req.getParameter("restart"));
-
-        if (restart) {
-            destroy();
-            Engine engine = (Engine) host.getParent();
-            init(engine.getService(), false);
-        }
-
     }
 
     private boolean hasAdminRole(HttpServletRequest req, HttpServletResponse resp) throws IOException {
