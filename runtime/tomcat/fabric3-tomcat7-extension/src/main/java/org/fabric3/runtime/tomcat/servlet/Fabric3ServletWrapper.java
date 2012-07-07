@@ -48,7 +48,6 @@ import org.apache.catalina.core.StandardWrapper;
  * @version $Rev: 9763 $ $Date: 2011-01-03 02:48:06 +0200 (Mon, 03 Jan 2011) $
  */
 public class Fabric3ServletWrapper extends StandardWrapper {
-    private static final long serialVersionUID = 5964251269623540037L;
     private Servlet servlet;
 
     public Fabric3ServletWrapper(Servlet servlet) {
