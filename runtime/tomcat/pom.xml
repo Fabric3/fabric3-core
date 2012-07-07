@@ -30,10 +30,8 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>fabric3-tomcat-extension</module>
-		<module>fabric3-tomcat-server</module>
-		<module>fabric3-runtime-tomcat</module>
         <module>fabric3-tomcat-host</module>
         <module>fabric3-tomcat7-extension</module>
+        <module>fabric3-runtime-tomcat</module>
 	</modules>
 </project>
