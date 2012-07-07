@@ -46,5 +46,10 @@ import org.apache.catalina.connector.Connector;
  */
 public interface ConnectorService {
 
+    /**
+     * Returns the Tomcat HTTP connector.
+     *
+     * @return the connector
+     */
     Connector getConnector();
 }
