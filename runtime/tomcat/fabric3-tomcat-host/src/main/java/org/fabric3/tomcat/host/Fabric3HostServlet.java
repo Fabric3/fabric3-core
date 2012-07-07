@@ -240,8 +240,18 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
             monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
             monitor.started(mode.toString(), environment);
         } catch (Fabric3Exception e) {
+            if (monitor != null) {
+                monitor.runError(e);
+            } else {
+                e.printStackTrace();
+            }
             throw new ServletException(e);
         } catch (IOException e) {
+            if (monitor != null) {
+                monitor.runError(e);
+            } else {
+                e.printStackTrace();
+            }
             throw new ServletException(e);
         }
     }
