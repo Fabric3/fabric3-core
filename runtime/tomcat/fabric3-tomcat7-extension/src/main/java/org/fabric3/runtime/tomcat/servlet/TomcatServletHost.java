@@ -41,7 +41,6 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
 import org.apache.catalina.Container;
-import org.apache.catalina.Service;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
@@ -61,17 +60,14 @@ import org.fabric3.spi.host.ServletHost;
  */
 @EagerInit
 public class TomcatServletHost implements ServletHost {
-    private Service service;
     private ConnectorService connectorService;
     private int defaultHttpPort = 8080;   // default Tomcat port
     private String servicePath = "";      // context path for bound services; defaults to the root context
     private int defaultHttpsPort = -1;
-    private Connector connector;
     private Fabric3DispatchingServlet dispatchingServlet;
 
 
-    public TomcatServletHost(@Reference Service service, @Reference ConnectorService connectorService) {
-        this.service = service;
+    public TomcatServletHost(@Reference ConnectorService connectorService) {
         this.connectorService = connectorService;
     }
 
@@ -87,7 +83,7 @@ public class TomcatServletHost implements ServletHost {
 
     @Init
     public void init() throws ServletHostException {
-        connector = connectorService.getConnector();
+        Connector connector = connectorService.getConnector();
         dispatchingServlet = new Fabric3DispatchingServlet();
         Fabric3ServletWrapper wrapper = new Fabric3ServletWrapper(dispatchingServlet);
         wrapper.setName("Fabric3Servlet");
@@ -97,7 +93,7 @@ public class TomcatServletHost implements ServletHost {
                 if (child != null) {
                     container.removeChild(child);
                 }
-                StandardContext context = createContext("", ".");
+                StandardContext context = createContext(servicePath, ".");
                 context.addChild(wrapper);
                 context.addServletMapping("/*", "Fabric3Servlet");
                 container.addChild(context);

@@ -27,6 +27,7 @@ Copyright (c) 2009-2012 Metaform Systems
     <component name="TomcatServletHost">
         <f3:implementation.system class="org.fabric3.runtime.tomcat.servlet.TomcatServletHost"/>
         <property name="httpPort" source="$systemConfig//f3:tomcat/@httpPort"/>
+        <property name="servicePath" source="$systemConfig//f3:tomcat/@service.path"/>
     </component>
 
     <component name="TomcatWebApplicationActivator">
