@@ -78,7 +78,7 @@ public class MonitorComponentBuilder implements ComponentBuilder<MonitorComponen
             addAppenderReferences(configuration.getOwnerDocument(), uri.toString(), configuration);
         }
         try {
-            MonitorEventDispatcher dispatcher = factory.createInstance(uri.toString(), configuration, hostInfo);
+            MonitorEventDispatcher dispatcher = factory.createInstance(uri.toString(), configuration, hostInfo.getDataDir());
             return new MonitorComponent(uri, deployable, dispatcher);
         } catch (MonitorConfigurationException e) {
             throw new MonitorComponentBuildException(e);

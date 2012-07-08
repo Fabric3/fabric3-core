@@ -37,15 +37,16 @@
 */
 package org.fabric3.runtime.weblogic.monitor;
 
+import java.io.File;
+
 import org.w3c.dom.Element;
 
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
-import org.fabric3.host.runtime.HostInfo;
 
 /**
- * Creates {@link MonitorEventDispatcher} instances which dispatch to the WebLogic logging infrastrucure.
+ * Creates {@link MonitorEventDispatcher} instances which dispatch to the WebLogic logging infrastructure.
  *
  * @version $Rev: 9016 $ $Date: 2010-05-20 14:28:14 +0200 (Thu, 20 May 2010) $
  */
@@ -56,7 +57,7 @@ public class WebLogicMonitorEventDispatcherFactory implements MonitorEventDispat
         dispatcher = new WebLogicMonitorEventDispatcher();
     }
 
-    public MonitorEventDispatcher createInstance(String name, Element configuration, HostInfo info) throws MonitorConfigurationException {
+    public MonitorEventDispatcher createInstance(String name, Element configuration, File logDirectory) throws MonitorConfigurationException {
         return dispatcher;
     }
 }

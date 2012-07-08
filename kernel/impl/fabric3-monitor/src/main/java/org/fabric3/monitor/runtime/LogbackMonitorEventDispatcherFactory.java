@@ -37,12 +37,13 @@
 */
 package org.fabric3.monitor.runtime;
 
+import java.io.File;
+
 import org.w3c.dom.Element;
 
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
-import org.fabric3.host.runtime.HostInfo;
 
 /**
  * Creates {@link MonitorEventDispatcher} instances which dispatch to Logback.
@@ -51,8 +52,8 @@ import org.fabric3.host.runtime.HostInfo;
  */
 public class LogbackMonitorEventDispatcherFactory implements MonitorEventDispatcherFactory {
 
-    public MonitorEventDispatcher createInstance(String name, Element configuration, HostInfo hostInfo) throws MonitorConfigurationException {
-        LogbackDispatcher dispatcher = new LogbackDispatcher(name, hostInfo);
+    public MonitorEventDispatcher createInstance(String name, Element configuration, File logDirectory) throws MonitorConfigurationException {
+        LogbackDispatcher dispatcher = new LogbackDispatcher(name, logDirectory);
         if (configuration != null) {
             dispatcher.configure(configuration);
         }

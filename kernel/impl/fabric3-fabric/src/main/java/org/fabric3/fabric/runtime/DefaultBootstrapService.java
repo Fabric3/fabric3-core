@@ -133,7 +133,8 @@ public class DefaultBootstrapService implements BootstrapService {
         // set additive to true to use the root appender for the runtime log context hierarchy; otherwise set to false
         // for the application hierarchy in order for application events to be logged to the app monitor hierarchy
         boolean additive = !BootConstants.APP_MONITOR.equals(elementName);
-        LogbackDispatcher dispatcher = new LogbackDispatcher(elementName, additive, hostInfo);
+        File dataDir = hostInfo.getDataDir();
+        LogbackDispatcher dispatcher = new LogbackDispatcher(elementName, additive, dataDir);
         Element element = systemConfigLoader.getMonitorConfiguration(elementName, systemConfig);
         if (element != null) {
             dispatcher.configure(element);

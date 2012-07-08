@@ -73,7 +73,6 @@ import org.xml.sax.InputSource;
 import org.fabric3.api.MonitorEvent;
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
-import org.fabric3.host.runtime.HostInfo;
 
 /**
  * Dispatches to one or more Logback appenders. If a configuration is not set, a default one will be created that logs to the console.
@@ -82,11 +81,11 @@ import org.fabric3.host.runtime.HostInfo;
  */
 public class LogbackDispatcher implements MonitorEventDispatcher {
     private static final String DEFAULT_PATTERN = "[%level %thread %d{YY:MM:DD HH:mm:ss.SSS}] %msg%n%ex";
-    private HostInfo hostInfo;
     private boolean additive;
     private boolean configured;
     private LoggerContext context;
     private Logger logger;
+    private File logDirectory;
 
     static {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger(Logger.ROOT_LOGGER_NAME).detachAndStopAllAppenders();
@@ -95,25 +94,25 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
     /**
      * Constructor which delegates to a log context that uses a private appender configuration and does not send messages to parent appenders.
      *
-     * @param name     the log context name
-     * @param hostInfo the host info
+     * @param name         the log context name
+     * @param logDirectory the directory to write logs
      */
-    public LogbackDispatcher(String name, HostInfo hostInfo) {
+    public LogbackDispatcher(String name, File logDirectory) {
         // by default do not send log messages to parent appenders
-        this(name, false, hostInfo);
+        this(name, false, logDirectory);
     }
 
     /**
      * Constructor.
      *
-     * @param name     the log context name
-     * @param additive true if the log context should use parent appenders; otherwise the log context uses a private appender configuration and does
-     *                 not send messages to parent appenders.
-     * @param hostInfo the host info
+     * @param name         the log context name
+     * @param additive     true if the log context should use parent appenders; otherwise the log context uses a private appender configuration and
+     *                     does not send messages to parent appenders.
+     * @param logDirectory the directory to write logs
      */
-    public LogbackDispatcher(String name, boolean additive, HostInfo hostInfo) {
+    public LogbackDispatcher(String name, boolean additive, File logDirectory) {
         this.additive = additive;
-        this.hostInfo = hostInfo;
+        this.logDirectory = logDirectory;
         context = (LoggerContext) LoggerFactory.getILoggerFactory();
         logger = context.getLogger(name);
         logger.setAdditive(additive);
@@ -172,7 +171,7 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
      */
     private void expandLogFileNames(Element element) {
         NodeList files = element.getElementsByTagName("file");
-        File dir = new File(hostInfo.getDataDir(), "log");
+        File dir = new File(logDirectory, "log");
         for (int i = 0; i < files.getLength(); i++) {
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -226,11 +225,11 @@ public class LogbackDispatcher implements MonitorEventDispatcher {
         LoggerContext context = logger.getLoggerContext();
         StatusManager sm = context.getStatusManager();
         long currentTimeMillis = System.currentTimeMillis();
-        StatusChecker sc = new StatusChecker(context); 
+        StatusChecker sc = new StatusChecker(context);
         if (sm != null && !sc.isErrorFree(currentTimeMillis)) {
             List<Status> list = sm.getCopyOfStatusList();
-            SimpleDateFormat format = new SimpleDateFormat(CoreConstants.ISO8601_PATTERN);            
-			String time = format.format(new Date(currentTimeMillis));
+            SimpleDateFormat format = new SimpleDateFormat(CoreConstants.ISO8601_PATTERN);
+            String time = format.format(new Date(currentTimeMillis));
             for (Status status : list) {
                 if (status.getLevel() == ErrorStatus.ERROR) {
                     System.err.println("[ERROR " + Thread.currentThread().getName() + " " + time + "] " + status.getMessage());

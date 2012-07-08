@@ -37,13 +37,14 @@
 */
 package org.fabric3.runtime.maven.itest;
 
+import java.io.File;
+
 import org.apache.maven.plugin.logging.Log;
 import org.w3c.dom.Element;
 
 import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
-import org.fabric3.host.runtime.HostInfo;
 
 /**
  * Creates {@link MonitorEventDispatcher} instances which dispatch to the Maven logging infrastructure.
@@ -57,7 +58,7 @@ public class MavenMonitorEventDispatcherFactory implements MonitorEventDispatche
         dispatcher = new MavenMonitorEventDispatcher(log);
     }
 
-    public MonitorEventDispatcher createInstance(String name, Element configuration, HostInfo info) throws MonitorConfigurationException {
+    public MonitorEventDispatcher createInstance(String name, Element configuration, File logDirectory) throws MonitorConfigurationException {
         return dispatcher;
     }
 }
