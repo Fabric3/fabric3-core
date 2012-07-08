@@ -75,7 +75,7 @@ public class ChannelBroadcaster extends DefaultBroadcaster {
     @Override
     @SuppressWarnings({"unchecked"})
     protected void broadcast(AtmosphereResource resource, AtmosphereResourceEvent event) {
-        serialize((AtmosphereResource) resource);
+        serialize(resource);
         super.broadcast(resource, event);
     }
 
@@ -104,9 +104,9 @@ public class ChannelBroadcaster extends DefaultBroadcaster {
         }
     }
 
-    @Override
-    public Future<Object> broadcast(Object msg) {
-        msg = filter(msg);
+    @SuppressWarnings({"unchecked"})
+    public <T> Future<T> broadcast(T msg) {
+        msg = (T)filter(msg);
         if (msg == null) {
             return null;
         }
@@ -116,9 +116,9 @@ public class ChannelBroadcaster extends DefaultBroadcaster {
         return cast(future);
     }
 
-    @Override
-    public Future<Object> broadcast(Object msg, AtmosphereResource r) {
-        msg = filter(msg);
+    @SuppressWarnings({"unchecked"})
+    public <T> Future<T> broadcast(T msg, AtmosphereResource r) {
+        msg = (T)filter(msg);
         if (msg == null) {
             return null;
         }
@@ -127,10 +127,10 @@ public class ChannelBroadcaster extends DefaultBroadcaster {
         push(new Entry(msg, r, future, true));
         return cast(future);
     }
-    
-    @Override
-    public <Object> Future<Object> broadcast(Object msg, Set<AtmosphereResource> subset) {
-        msg = (Object)filter(msg);
+
+    @SuppressWarnings({"unchecked"})
+    public <T> Future<T> broadcast(T msg, Set<AtmosphereResource> subset) {
+        msg = (T)filter(msg);
         if (msg == null) {
             return null;
         }
@@ -140,13 +140,11 @@ public class ChannelBroadcaster extends DefaultBroadcaster {
         return cast(future);
     }
 
-    @Override
-    public Future<Object> delayBroadcast(final Object o, long delay, TimeUnit t) {
+    public <T> Future<T> delayBroadcast(T o, long delay, TimeUnit t) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public Future<?> scheduleFixedBroadcast(final Object o, long period, TimeUnit t) {
+    public Future<?> scheduleFixedBroadcast(Object o, long period, TimeUnit t) {
         throw new UnsupportedOperationException();
     }
 

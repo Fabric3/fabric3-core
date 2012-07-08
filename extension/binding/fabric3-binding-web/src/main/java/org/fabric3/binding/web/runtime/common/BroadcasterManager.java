@@ -50,7 +50,8 @@ public interface BroadcasterManager {
     /**
      * Returns the Broadcaster for the HTTP URL path, creating one if necessary.
      *
-     * @param path the path
+     * @param path   the path
+     * @param config the Atmosphere configuration
      * @return the Broadcaster
      */
     Broadcaster getChannelBroadcaster(String path, AtmosphereConfig config);
@@ -58,7 +59,8 @@ public interface BroadcasterManager {
     /**
      * Returns the Broadcaster for the HTTP URL path, creating one if necessary.
      *
-     * @param path the path
+     * @param path   the path
+     * @param config the Atmosphere configuration
      * @return the Broadcaster
      */
     Broadcaster getServiceBroadcaster(String path, AtmosphereConfig config);
