@@ -37,6 +37,8 @@
 */
 package org.fabric3.contribution;
 
+import org.fabric3.spi.contribution.DependencyException;
+
 /**
  * @version $Rev$ $Date$
  */

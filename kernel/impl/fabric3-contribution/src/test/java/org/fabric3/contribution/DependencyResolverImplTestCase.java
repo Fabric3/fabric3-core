@@ -50,6 +50,7 @@ import org.fabric3.contribution.wire.QNameContributionWire;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
+import org.fabric3.spi.contribution.DependencyException;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.manifest.QNameExport;
 import org.fabric3.spi.contribution.manifest.QNameImport;

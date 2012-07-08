@@ -37,6 +37,7 @@
 */
 package org.fabric3.contribution;
 
+import org.fabric3.spi.contribution.DependencyException;
 import org.fabric3.spi.contribution.Import;
 
 /**

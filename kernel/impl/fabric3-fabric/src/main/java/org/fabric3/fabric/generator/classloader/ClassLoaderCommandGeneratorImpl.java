@@ -46,8 +46,8 @@ import java.util.Map;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.contribution.DependencyException;
-import org.fabric3.contribution.DependencyResolver;
+import org.fabric3.spi.contribution.DependencyException;
+import org.fabric3.spi.contribution.DependencyResolver;
 import org.fabric3.fabric.command.AttachExtensionCommand;
 import org.fabric3.fabric.command.ProvisionClassloaderCommand;
 import org.fabric3.fabric.command.UnprovisionClassloaderCommand;

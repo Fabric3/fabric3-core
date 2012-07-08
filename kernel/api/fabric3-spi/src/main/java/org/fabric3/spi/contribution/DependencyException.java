@@ -35,36 +35,25 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.contribution;
+package org.fabric3.spi.contribution;
 
-import java.util.List;
-
-import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.host.Fabric3Exception;
 
 /**
- * Resolves contribution dependencies.
- *
  * @version $Rev$ $Date$
  */
-public interface DependencyResolver {
+public class DependencyException extends Fabric3Exception {
+    private static final long serialVersionUID = 6940240224473955250L;
 
-    /**
-     * Resolves dependencies for the given contributions. An ordered list is returned based on a reverse topological sort of contribution resolved
-     * imports and capability requirements.
-     *
-     * @param contributions the  list of contributions to order
-     * @return the ordered list of contributions
-     * @throws DependencyException if an error occurs ordering the contributions such as an unresolvable import or dependency cycle
-     */
-    List<Contribution> resolve(List<Contribution> contributions) throws DependencyException;
+    public DependencyException(String message) {
+        super(message);
+    }
 
-    /**
-     * Orders a list of contributions to uninstall. Ordering is calculated by topologically sorting the list based on resolved contribution imports
-     * and capability requirements.
-     *
-     * @param contributions the contributions to order
-     * @return the ordered list of contributions
-     */
-    List<Contribution> orderForUninstall(List<Contribution> contributions);
+    public DependencyException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
+    public DependencyException(Throwable cause) {
+        super(cause);
+    }
 }

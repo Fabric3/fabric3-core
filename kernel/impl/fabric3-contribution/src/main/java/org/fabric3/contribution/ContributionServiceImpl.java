@@ -85,6 +85,8 @@ import org.fabric3.host.contribution.ContributionAlreadyInstalledException;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.contribution.ContributionState;
+import org.fabric3.spi.contribution.DependencyException;
+import org.fabric3.spi.contribution.DependencyResolver;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;

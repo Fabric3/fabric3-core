@@ -40,6 +40,7 @@ package org.fabric3.contribution;
 import java.util.List;
 
 import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.DependencyException;
 import org.fabric3.util.graph.Cycle;
 
 /**

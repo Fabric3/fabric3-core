@@ -47,7 +47,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.contribution.DependencyResolver;
+import org.fabric3.spi.contribution.DependencyResolver;
 import org.fabric3.fabric.command.AttachExtensionCommand;
 import org.fabric3.fabric.command.ProvisionClassloaderCommand;
 import org.fabric3.fabric.command.UnprovisionClassloaderCommand;

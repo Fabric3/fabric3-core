@@ -52,6 +52,8 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.ContributionWire;
+import org.fabric3.spi.contribution.DependencyException;
+import org.fabric3.spi.contribution.DependencyResolver;
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.contribution.MetaDataStore;
