@@ -60,8 +60,8 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.util.IOHelper;
-import org.fabric3.spi.contribution.Library;
-import org.fabric3.spi.contribution.OperatingSystemSpec;
+import org.fabric3.spi.model.os.Library;
+import org.fabric3.spi.model.os.OperatingSystemSpec;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 

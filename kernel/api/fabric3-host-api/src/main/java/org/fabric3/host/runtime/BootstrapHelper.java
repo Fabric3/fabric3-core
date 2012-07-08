@@ -57,6 +57,7 @@ import java.util.jar.JarFile;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.Version;
 import org.fabric3.host.classloader.DelegatingResourceClassLoader;
+import org.fabric3.host.os.OperatingSystem;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.util.OSHelper;
 

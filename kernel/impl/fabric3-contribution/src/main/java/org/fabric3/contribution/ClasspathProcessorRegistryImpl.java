@@ -41,11 +41,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.spi.contribution.Library;
+import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 

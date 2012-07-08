@@ -38,7 +38,7 @@
 package org.fabric3.spi.contribution.manifest;
 
 import org.fabric3.host.Version;
-import org.fabric3.spi.contribution.Versionable;
+import org.fabric3.spi.model.version.Versionable;
 
 /**
  * Represents Java package information specified in a Java import or export contribution manifest declaration.

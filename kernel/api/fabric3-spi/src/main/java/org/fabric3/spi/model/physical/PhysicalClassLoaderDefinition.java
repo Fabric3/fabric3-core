@@ -44,7 +44,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.spi.contribution.Library;
+import org.fabric3.spi.model.os.Library;
 
 /**
  * Used to provision classloaders on a runtime. Defined classloaders correspond to a contribution.

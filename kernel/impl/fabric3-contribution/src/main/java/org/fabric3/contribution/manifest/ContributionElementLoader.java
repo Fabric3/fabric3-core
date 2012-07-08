@@ -59,7 +59,7 @@ import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
-import org.fabric3.spi.contribution.Library;
+import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
 import org.fabric3.spi.introspection.xml.InvalidValue;

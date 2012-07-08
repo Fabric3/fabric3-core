@@ -44,8 +44,8 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.spi.contribution.Library;
-import org.fabric3.spi.contribution.OperatingSystemSpec;
+import org.fabric3.spi.model.os.Library;
+import org.fabric3.spi.model.os.OperatingSystemSpec;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 
 /**

@@ -69,7 +69,7 @@ import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
 import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.runtime.OperatingSystem;
+import org.fabric3.host.os.OperatingSystem;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ShutdownException;

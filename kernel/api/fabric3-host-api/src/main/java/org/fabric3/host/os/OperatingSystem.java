@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.host.runtime;
+package org.fabric3.host.os;
 
 import org.fabric3.host.Version;
 

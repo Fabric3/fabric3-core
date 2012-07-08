@@ -35,14 +35,14 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.contribution;
+package org.fabric3.spi.model.version;
 
 import java.io.Serializable;
 
 import org.fabric3.host.Version;
 
 /**
- * A contribution manifest attribute that is used to specfify a version range.
+ * A contribution manifest attribute that is used to specify a version range.
  *
  * @version $Rev$ $Date$
  */

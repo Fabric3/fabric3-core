@@ -46,6 +46,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.fabric3.host.contribution.Deployable;
+import org.fabric3.spi.model.os.Library;
 
 /**
  * A contribution manifest.

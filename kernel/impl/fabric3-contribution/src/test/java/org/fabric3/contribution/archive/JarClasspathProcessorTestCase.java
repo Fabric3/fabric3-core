@@ -46,7 +46,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.contribution.Library;
+import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
 /**

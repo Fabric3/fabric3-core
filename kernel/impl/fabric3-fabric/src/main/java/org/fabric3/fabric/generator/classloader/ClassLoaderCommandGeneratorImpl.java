@@ -55,7 +55,7 @@ import org.fabric3.host.Names;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;
-import org.fabric3.spi.contribution.Library;
+import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.generator.ClassLoaderWireGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;

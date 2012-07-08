@@ -41,7 +41,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import org.fabric3.spi.contribution.Library;
+import org.fabric3.spi.model.os.Library;
 
 /**
  * Constructs a classpath based on the contents of an archive. Implementations introspect archives and place any required artifacts on the classpath.

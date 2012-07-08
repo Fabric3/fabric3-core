@@ -48,6 +48,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.os.OperatingSystem;
 
 /**
  * Default HostInfo implementation.

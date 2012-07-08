@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.runtime.OperatingSystem;
+import org.fabric3.host.os.OperatingSystem;
 import org.fabric3.runtime.maven.MavenHostInfo;
 
 /**

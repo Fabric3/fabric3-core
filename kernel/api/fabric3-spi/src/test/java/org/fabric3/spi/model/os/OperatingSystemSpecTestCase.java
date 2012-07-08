@@ -35,12 +35,12 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.contribution;
+package org.fabric3.spi.model.os;
 
 import junit.framework.TestCase;
 
 import org.fabric3.host.Version;
-import org.fabric3.host.runtime.OperatingSystem;
+import org.fabric3.host.os.OperatingSystem;
 
 /**
  * @version $Rev$ $Date$
