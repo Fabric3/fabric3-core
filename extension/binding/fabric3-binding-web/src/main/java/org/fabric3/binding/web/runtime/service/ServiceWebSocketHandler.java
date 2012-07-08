@@ -47,38 +47,40 @@ import org.atmosphere.cpr.AtmosphereResource.TRANSPORT;
 import org.atmosphere.cpr.AtmosphereResponse;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.handler.AbstractReflectorAtmosphereHandler;
+
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 
 /**
  * @version $Rev: 9435 $ $Date: 2010-09-09 17:31:45 +0200 (Thu, 09 Sep 2010) $
  */
 public class ServiceWebSocketHandler extends AbstractReflectorAtmosphereHandler {
-	
-	 private ServiceManager serviceManager;
-	 private BroadcasterManager broadcasterManager;
-	 private ServiceMonitor monitor;
-	 
 
-    public ServiceWebSocketHandler(ServiceManager _serviceManager, BroadcasterManager _broadcasterManager, ServiceMonitor _monitor) {
-    	this.serviceManager = _serviceManager;
-        this.broadcasterManager = _broadcasterManager;
-        this.monitor = _monitor;        
-    } 
-    
+    private ServiceManager serviceManager;
+    private BroadcasterManager broadcasterManager;
+    private ServiceMonitor monitor;
+
+
+    public ServiceWebSocketHandler(ServiceManager serviceManager, BroadcasterManager broadcasterManager, ServiceMonitor monitor) {
+        this.serviceManager = serviceManager;
+        this.broadcasterManager = broadcasterManager;
+        this.monitor = monitor;
+    }
+
 
     public void onRequest(AtmosphereResource resource) throws IOException {
-    	AtmosphereRequest req = resource.getRequest();
+        AtmosphereRequest req = resource.getRequest();
         AtmosphereResponse res = resource.getResponse();
         String method = req.getMethod();
-        
+
         // Suspend the response.
         if ("GET".equalsIgnoreCase(method)) {
-        	UUID uuid = UUID.randomUUID();
+            UUID uuid = UUID.randomUUID();
             // Log all events on the console, including WebSocket events.
-            resource.addEventListener( new WebSocketServiceListener( uuid, monitor, serviceManager) );
+            WebSocketServiceListener listener = new WebSocketServiceListener(uuid, monitor, serviceManager);
+            resource.addEventListener(listener);
 
             res.setContentType("text/html;charset=ISO-8859-1");
-            
+
             Broadcaster b = broadcasterManager.getServiceBroadcaster(uuid.toString(), resource.getAtmosphereConfig());
             resource.setBroadcaster(b);
 
@@ -89,15 +91,13 @@ public class ServiceWebSocketHandler extends AbstractReflectorAtmosphereHandler 
                 resource.suspend(-1);
             }
         } else if ("POST".equalsIgnoreCase(method)) {
-        	res.setStatus(500);
-        	monitor.error(new UnsupportedOperationException("No inbound messages allowed."));
-        }        
+            res.setStatus(500);
+            monitor.error(new UnsupportedOperationException("No inbound messages allowed."));
+        }
     }
 
-	public void destroy() {
-	}
-	
-	
+    public void destroy() {
+    }
 
-	
+
 }

@@ -40,6 +40,7 @@ package org.fabric3.binding.web.runtime.service;
 import java.util.concurrent.ExecutorService;
 import javax.servlet.ServletException;
 
+import org.atmosphere.cache.HeaderBroadcasterCache;
 import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
@@ -116,7 +117,7 @@ public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefini
         context.setInitParameter(ApplicationConfig.WEBSOCKET_SUPPORT, "true");
         context.setInitParameter(ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT, "true");
         context.setInitParameter(ApplicationConfig.BROADCASTER_SHARABLE_THREAD_POOLS, "true");
-
+        context.setInitParameter(ApplicationConfig.BROADCASTER_CACHE, HeaderBroadcasterCache.class.getName());
         GatewayServletConfig config = new GatewayServletConfig(context);
 
         org.atmosphere.cpr.AtmosphereServlet atmosphereServlet = new org.atmosphere.cpr.AtmosphereServlet(false, false);
