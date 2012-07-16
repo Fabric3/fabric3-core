@@ -39,6 +39,7 @@ package org.fabric3.contribution.updater;
 
 import java.net.URI;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
@@ -105,16 +106,19 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
     }
 
     private void removeComposite(Contribution contribution, QName name) {
-        for (Resource resource : contribution.getResources()) {
-            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
-                if (element.getValue() instanceof Composite) {
-                    Composite candidate = (Composite) element.getValue();
-                    if (candidate.getName().equals(name)) {
-                        contribution.getResources().remove(resource);
-                        if (contribution.getLockOwners().contains(name)) {
-                            contribution.releaseLock(name);
+        List<Resource> resources = contribution.getResources();
+        synchronized (resources) {
+            for (Resource resource : resources) {
+                for (ResourceElement<?, ?> element : resource.getResourceElements()) {
+                    if (element.getValue() instanceof Composite) {
+                        Composite candidate = (Composite) element.getValue();
+                        if (candidate.getName().equals(name)) {
+                            resources.remove(resource);
+                            if (contribution.getLockOwners().contains(name)) {
+                                contribution.releaseLock(name);
+                            }
+                            return;
                         }
-                        return;
                     }
                 }
             }
@@ -126,26 +130,29 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
         QName name = newComposite.getName();
         // replace the composite in the contribution
         boolean replaced = false;
-        for (Resource resource : contribution.getResources()) {
-            for (ResourceElement element : resource.getResourceElements()) {
-                Symbol symbol = element.getSymbol();
-                if (symbol instanceof QNameSymbol && ((QNameSymbol) symbol).getKey().equals(name)) {
-                    replaced = true;
-                    element.setValue(newComposite);
-                    resource.setState(ResourceState.PROCESSED);
-                    set.add(newComposite);
-                    break;
+        List<Resource> resources = contribution.getResources();
+        synchronized (resources) {
+            for (Resource resource : resources) {
+                for (ResourceElement element : resource.getResourceElements()) {
+                    Symbol symbol = element.getSymbol();
+                    if (symbol instanceof QNameSymbol && ((QNameSymbol) symbol).getKey().equals(name)) {
+                        replaced = true;
+                        element.setValue(newComposite);
+                        resource.setState(ResourceState.PROCESSED);
+                        set.add(newComposite);
+                        break;
+                    }
+                    if (replaced) {
+                        break;
+                    }
                 }
                 if (replaced) {
                     break;
                 }
             }
             if (replaced) {
-                break;
+                replaceReferences(newComposite, contribution, set);
             }
-        }
-        if (replaced) {
-            replaceReferences(newComposite, contribution, set);
         }
     }
 
@@ -157,26 +164,29 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
      * @param set          the collection of modified elements to update
      */
     private void replaceReferences(Composite newComposite, Contribution contribution, Set<ModelObject> set) {
-        for (Resource resource : contribution.getResources()) {
-            for (ResourceElement element : resource.getResourceElements()) {
-                Object value = element.getValue();
-                if (value instanceof Composite) {
-                    Composite current = (Composite) value;
-                    for (ComponentDefinition component : current.getDeclaredComponents().values()) {
-                        if (component.getImplementation() instanceof CompositeImplementation) {
-                            CompositeImplementation implementation = (CompositeImplementation) component.getImplementation();
-                            if (implementation.getComponentType().getName().equals(newComposite.getName())) {
-                                // replace with the updated composite
-                                implementation.setComponentType(newComposite);
-                                set.add(current);
+        List<Resource> resources = contribution.getResources();
+        synchronized (resources) {
+            for (Resource resource : resources) {
+                for (ResourceElement element : resource.getResourceElements()) {
+                    Object value = element.getValue();
+                    if (value instanceof Composite) {
+                        Composite current = (Composite) value;
+                        for (ComponentDefinition component : current.getDeclaredComponents().values()) {
+                            if (component.getImplementation() instanceof CompositeImplementation) {
+                                CompositeImplementation implementation = (CompositeImplementation) component.getImplementation();
+                                if (implementation.getComponentType().getName().equals(newComposite.getName())) {
+                                    // replace with the updated composite
+                                    implementation.setComponentType(newComposite);
+                                    set.add(current);
+                                }
                             }
                         }
-                    }
-                    for (Include include : current.getIncludes().values()) {
-                        if (newComposite.getName().equals(include.getIncluded().getName())) {
-                            // replace with the updated composite
-                            include.setIncluded(newComposite);
-                            set.add(current);
+                        for (Include include : current.getIncludes().values()) {
+                            if (newComposite.getName().equals(include.getIncluded().getName())) {
+                                // replace with the updated composite
+                                include.setIncluded(newComposite);
+                                set.add(current);
+                            }
                         }
                     }
                 }
