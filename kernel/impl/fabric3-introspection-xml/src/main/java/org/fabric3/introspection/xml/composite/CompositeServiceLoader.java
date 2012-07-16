@@ -84,7 +84,7 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
     public CompositeServiceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         this.registry = registry;
         this.loaderHelper = loaderHelper;
-        addAttributes("name","requires","promote","policySets");
+        addAttributes("name", "requires", "promote", "policySets");
     }
 
     @Property(required = false)
@@ -110,6 +110,11 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
             uri = loaderHelper.parseUri(promote);
         } catch (URISyntaxException e) {
             InvalidValue error = new InvalidValue("Invalid promote URI specified on service " + name, reader, e);
+            context.addError(error);
+            uri = URI.create("");
+        }
+        if (uri == null) {
+            InvalidValue error = new InvalidValue("Empty promote URI specified on service " + name, reader);
             context.addError(error);
             uri = URI.create("");
         }
