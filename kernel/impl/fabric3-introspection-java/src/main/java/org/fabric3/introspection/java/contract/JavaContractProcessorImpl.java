@@ -256,7 +256,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
         for (Operation entry : operations) {
             String name = method.getName();
             if (entry.getName().equals(name)) {
-                OverloadedOperation error = new OverloadedOperation(name);
+                OverloadedOperation error = new OverloadedOperation(method.toString());
                 context.addError(error);
             }
         }
