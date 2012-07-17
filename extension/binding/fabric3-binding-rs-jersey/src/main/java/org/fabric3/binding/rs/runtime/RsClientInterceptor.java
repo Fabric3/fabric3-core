@@ -88,11 +88,11 @@ public class RsClientInterceptor implements Interceptor {
         RsClientResponse cfg = new RsClientResponse(m.getReturnType(), uri);
         cfg = cfg.
                 // Class level
-                        withPath(interfaze.getAnnotation(Path.class)).
+                withPath(interfaze.getAnnotation(Path.class)).
                 withProduces(interfaze.getAnnotation(Produces.class)).
                 withConsumes(interfaze.getAnnotation(Consumes.class)).
                 // Method level overriding
-                        withAction(m.getAnnotation(PUT.class)).
+                withAction(m.getAnnotation(PUT.class)).
                 withAction(m.getAnnotation(POST.class)).
                 withAction(m.getAnnotation(GET.class)).
                 withPath(m.getAnnotation(Path.class)).

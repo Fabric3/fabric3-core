@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
+ * @version $Rev$ $Date$
  */
 public class RsContainerManagerImpl implements RsContainerManager {
     private Map<URI, RsContainer> containers = new ConcurrentHashMap<URI, RsContainer>();

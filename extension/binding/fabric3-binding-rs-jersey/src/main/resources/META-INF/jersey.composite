@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (c) 2009-2012 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
+           name="RsJerseyExtension"
+           autowire="true">
+
+
+    <component name="RsContainerManager">
+        <f3:implementation.system class="org.fabric3.binding.rs.runtime.RsContainerManagerImpl"/>
+    </component>
+
+    <component name="RsSourceWireAttacher" f3:key="org.fabric3.binding.rs.provision.RsSourceDefinition">
+        <f3:implementation.system class="org.fabric3.binding.rs.runtime.RsSourceWireAttacher"/>
+    </component>
+    
+    <component name="RsTargetWireAttacher" f3:key="org.fabric3.binding.rs.provision.RsTargetDefinition">
+        <f3:implementation.system class="org.fabric3.binding.rs.runtime.RsTargetWireAttacher"/>
+    </component>
+
+</composite>

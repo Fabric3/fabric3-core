@@ -22,16 +22,5 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.rs.generator.RsBindingGenerator"/>
     </component>
 
-    <component name="RsContainerManager">
-        <f3:implementation.system class="org.fabric3.binding.rs.runtime.RsContainerManagerImpl"/>
-    </component>
-
-    <component name="RsSourceWireAttacher" f3:key="org.fabric3.binding.rs.provision.RsSourceDefinition">
-        <f3:implementation.system class="org.fabric3.binding.rs.runtime.RsSourceWireAttacher"/>
-    </component>
-    
-    <component name="RsTargetWireAttacher" f3:key="org.fabric3.binding.rs.provision.RsTargetDefinition">
-        <f3:implementation.system class="org.fabric3.binding.rs.runtime.RsTargetWireAttacher"/>
-    </component>
 
 </composite>
