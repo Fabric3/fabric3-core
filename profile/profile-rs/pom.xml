@@ -27,7 +27,13 @@
             <artifactId>fabric3-binding-rs</artifactId>
             <version>${project.version}</version>
         </dependency>
-      
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-binding-rs-jersey</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-jaxb</artifactId>
