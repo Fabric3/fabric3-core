@@ -91,7 +91,6 @@ import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
 public class Fabric3WebLogicListener implements ServletContextListener {
     private static final String FABRIC3_HOME = "fabric3.home";
     private static final String FABRIC3_MODE = "fabric3.mode";
-    private static final String[] HIDDEN_RESOURCES = new String[]{"weblogic!", "com.sun.xml.ws.", "jaxb.properties"};
 
 
     private ServletContext context;
@@ -144,7 +143,15 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     public void start(RuntimeMode runtimeMode, MBeanServer mBeanServer, File installDirectory) {
 
         // override EclipseLink JAXB with the Sun JAXB RI
-        System.setProperty(JAXBContext.class.getName(),"com.sun.xml.bind.v2.ContextFactory");
+        System.setProperty(JAXBContext.class.getName(), "com.sun.xml.bind.v2.ContextFactory");
+
+        String vm = System.getProperty("java.vm.name");
+        if (vm != null && vm.contains("IBM J9 VM")) {
+            // J9 does not contain the Sun Xerxes implementation which is referenced by libraries such as Metro WS
+            System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+            System.setProperty("javax.xml.transform.TransformerFactory", "com.ibm.xtq.xslt.jaxp.compiler.TransformerFactoryImpl");
+            System.setProperty("javax.xml.parsers.SAXParserFactory", "org.apache.xerces.jaxp.SAXParserFactoryImpl");
+        }
 
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
@@ -180,7 +187,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             // set the context classloader to the host classloader
             ClassLoader systemClassLoader = Thread.currentThread().getContextClassLoader();
 
-            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, WebLogicHiddenPackages.getPackages(), HIDDEN_RESOURCES);
+            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, WebLogicHiddenPackages.getPackages(), true);
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(maskingClassLoader, hostDir);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, bootDir);
 

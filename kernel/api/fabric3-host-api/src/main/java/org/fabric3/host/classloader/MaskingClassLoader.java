@@ -40,6 +40,7 @@ package org.fabric3.host.classloader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.NoSuchElementException;
 
 /**
  * Prevents packages and resources from being loaded by child classloaders. Used to allow a Fabric3 runtime to load alternative versions or
@@ -48,10 +49,19 @@ import java.util.Enumeration;
  * @version $Rev$ $Date$
  */
 public class MaskingClassLoader extends ClassLoader {
-    private static final ResourceFilter EMPTY_FILTER = new ResourceFilter(new String[0]);
+
+    private static final Enumeration<URL> EMPTY = new Enumeration<URL>() {
+        public boolean hasMoreElements() {
+            return false;
+        }
+
+        public URL nextElement() {
+            throw new NoSuchElementException();
+        }
+    };
 
     private String[] packageMasks;
-    private ResourceFilter filter = EMPTY_FILTER;
+    private boolean maskResources;
 
     /**
      * Constructor that masks one or more Java packages.
@@ -60,8 +70,7 @@ public class MaskingClassLoader extends ClassLoader {
      * @param packageMasks the packages to mask
      */
     public MaskingClassLoader(ClassLoader parent, String... packageMasks) {
-        super(parent);
-        this.packageMasks = packageMasks;
+       this(parent, packageMasks, false);
     }
 
     /**
@@ -69,14 +78,29 @@ public class MaskingClassLoader extends ClassLoader {
      *
      * @param parent        the parent classloader
      * @param packageMasks  the packages to mask
-     * @param resourceMasks the resource pattern to mask. For performance purposes, only a String.contains() will be performed for each mask value.
+     * @param maskResources true if resources should be masked. For performance reasons (String compare is too slow for resources since they are not
+     *                      cached like class bytecode), either all resources are masked or none are.
      */
-    public MaskingClassLoader(ClassLoader parent, String[] packageMasks, String[] resourceMasks) {
-        this(parent, packageMasks);
-        filter = new ResourceFilter(resourceMasks);
+    public MaskingClassLoader(ClassLoader parent, String[] packageMasks, boolean maskResources) {
+        super(parent);
+        this.packageMasks = packageMasks;
+        this.maskResources = maskResources;
     }
 
-    @Override
+    public URL getResource(String name) {
+        if (maskResources) {
+            return null;
+        }
+        return super.getResource(name);
+    }
+
+    public Enumeration<URL> getResources(String name) throws IOException {
+        if (maskResources){
+            return EMPTY;
+        }
+        return super.getResources(name);
+    }
+
     protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         for (String mask : packageMasks) {
             if (name.startsWith(mask))
@@ -85,24 +109,18 @@ public class MaskingClassLoader extends ClassLoader {
         return super.loadClass(name, resolve);
     }
 
-    public URL getResource(String name) {
-        URL url = super.getResource(name);
-        return filter.filterResource(url);
-    }
-
-    public Enumeration<URL> getResources(String name) throws IOException {
-        Enumeration<URL> enumeration = super.getResources(name);
-        return filter.filterResources(enumeration);
-    }
-
     protected URL findResource(String name) {
-        URL url = super.findResource(name);
-        return filter.filterResource(url);
+        if (maskResources){
+            return null;
+        }
+       return super.findResource(name);
     }
 
     protected Enumeration<URL> findResources(String name) throws IOException {
-        Enumeration<URL> enumeration = super.findResources(name);
-        return filter.filterResources(enumeration);
+        if (maskResources) {
+            return EMPTY;
+        }
+        return super.findResources(name);
     }
 
 }
