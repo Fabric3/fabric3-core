@@ -99,8 +99,10 @@ public class MetroServlet extends WSServlet {
         this.securityEnvironment = securityEnvironment;
     }
 
-    @Override
-    public void init(ServletConfig servletConfig) throws ServletException {
+    public synchronized void init(ServletConfig servletConfig) throws ServletException {
+        if (delegate != null) {
+            return;
+        }
         super.init(servletConfig);
         ServletContext servletContext = servletConfig.getServletContext();
         // Setup the WSIT endpoint that handles WS-MEX requests for registered endpoints. The TCCL must be set for JAXB.
@@ -131,7 +133,7 @@ public class MetroServlet extends WSServlet {
         }
     }
 
-    public void registerService(EndpointConfiguration configuration) {
+    public synchronized void registerService(EndpointConfiguration configuration) {
         if (delegate == null) {
             // servlet has not be initialized, delay service registration
             configurations.add(configuration);
@@ -188,7 +190,6 @@ public class MetroServlet extends WSServlet {
                                                          true);
             wsEndpoint.setExecutor(executorService);
 
-
             ServletAdapter adapter = servletAdapterFactory.createAdapter(servicePath, servicePath, wsEndpoint);
             delegate.registerServletAdapter(adapter, F3Provider.class.getClassLoader());
 
@@ -205,7 +206,7 @@ public class MetroServlet extends WSServlet {
      *
      * @param path the endpoint path
      */
-    public void unregisterService(String path) {
+    public synchronized void unregisterService(String path) {
         if (delegate == null) {
             // case where the endpoint is undeployed before it has been activated
             for (Iterator<EndpointConfiguration> it = configurations.iterator(); it.hasNext();) {
