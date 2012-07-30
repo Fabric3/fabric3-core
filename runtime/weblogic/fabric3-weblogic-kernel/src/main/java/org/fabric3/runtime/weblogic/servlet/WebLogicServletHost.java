@@ -43,6 +43,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -75,6 +76,8 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
     private Map<String, Servlet> servlets = new ConcurrentHashMap<String, Servlet>();
     private int httpPort;
     private int httpsPort;
+    private AtomicBoolean initialized = new AtomicBoolean();
+    private ServletConfig config;
 
     public WebLogicServletHost(@Reference MBeanServer mBeanServer) {
         this.mBeanServer = mBeanServer;
@@ -95,7 +98,6 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
             return;
         }
         httpsPort = new URL(httpsUrl).getPort();
-
     }
 
     public String getHostType() {
@@ -118,6 +120,8 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
         for (Servlet servlet : servlets.values()) {
             servlet.init(config);
         }
+        this.config = config;
+        initialized.set(true);
     }
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -150,6 +154,14 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
     public void registerMapping(String path, Servlet servlet) {
         if (servlets.containsKey(path)) {
             throw new IllegalStateException("Servlet already registered at path: " + path);
+        }
+        if (initialized.get()) {
+            // initialization done previously, initialize this servlet now
+            try {
+                servlet.init(config);
+            } catch (ServletException e) {
+                log("Error initializing servlet for path: " + path, e);
+            }
         }
         servlets.put(path, servlet);
     }
