@@ -40,14 +40,17 @@ package org.fabric3.runtime.weblogic.federation;
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import javax.management.JMException;
+import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameAlreadyBoundException;
 import javax.naming.NameNotFoundException;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
 import org.oasisopen.sca.annotation.EagerInit;
@@ -78,6 +81,7 @@ import org.fabric3.spi.federation.ZoneChannelException;
 import org.fabric3.spi.federation.ZoneTopologyService;
 
 import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CONTEXT;
+import static org.fabric3.runtime.weblogic.federation.Constants.DYNAMIC_CHANNEL_CONTEXT;
 import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONTEXT;
 
 /**
@@ -103,6 +107,8 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     private String adminServerUrl = "t3://localhost:7001";
     private boolean synchronize = true;
     private String zoneName;
+
+    private List<ChannelOpenRequest> channelRequests = new ArrayList<ChannelOpenRequest>();
 
     public WebLogicZoneTopologyService(@Reference EventService eventService,
                                        @Reference SerializationService serializationService,
@@ -197,12 +203,75 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         throw new UnsupportedOperationException();
     }
 
-    public Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException {
-        throw new UnsupportedOperationException();
+    public Response sendSynchronous(String destinationName, ResponseCommand command, long timeout) throws MessageException {
+        Context rootContext = null;
+        try {
+            rootContext = getRootContext();
+            byte[] payload = serializationService.serialize(command);
+            NamingEnumeration<Binding> enumeration = rootContext.listBindings(PARTICIPANT_CONTEXT);
+            while (enumeration.hasMoreElements()) {
+                Binding binding = enumeration.next();
+                if (RuntimeChannel.class.getName().equals(binding.getClassName())) {
+                    RuntimeChannel channel = (RuntimeChannel) binding.getObject();
+                    if (destinationName.equals(channel.getRuntimeName())) {
+                        byte[] responsePayload = runtimeChannel.sendSynchronous(payload);
+                        return serializationService.deserialize(Response.class, responsePayload);
+                    }
+                }
+            }
+            throw new MessageException("Runtime not found: " + destinationName);
+        } catch (NamingException e) {
+            throw new MessageException(e);
+        } catch (RemoteException e) {
+            throw new MessageException(e);
+        } catch (ChannelException e) {
+            throw new MessageException(e);
+        } catch (IOException e) {
+            throw new MessageException(e);
+        } catch (ClassNotFoundException e) {
+            throw new MessageException(e);
+        } finally {
+            JndiHelper.close(rootContext);
+        }
     }
 
     public List<Response> sendSynchronous(ResponseCommand command, long timeout) throws MessageException {
-        throw new UnsupportedOperationException();
+        List<Response> responses = new ArrayList<Response>();
+        Context rootContext = null;
+        try {
+            rootContext = getRootContext();
+            byte[] payload = serializationService.serialize(command);
+            NamingEnumeration<Binding> enumeration = rootContext.listBindings(PARTICIPANT_CONTEXT);
+            if (!enumeration.hasMoreElements()) {
+                throw new MessageException("No runtimes in domain");
+            }
+            while (enumeration.hasMoreElements()) {
+                Binding binding = enumeration.next();
+                if (RuntimeChannel.class.getName().equals(binding.getClassName())) {
+                    RuntimeChannel channel = (RuntimeChannel) binding.getObject();
+                    if (runtimeName.equals(channel.getRuntimeName())) {
+                        // don't send to self
+                        continue;
+                    }
+                    byte[] responsePayload = channel.sendSynchronous(payload);
+                    Response response = serializationService.deserialize(Response.class, responsePayload);
+                    responses.add(response);
+                }
+            }
+            return responses;
+        } catch (NamingException e) {
+            throw new MessageException(e);
+        } catch (RemoteException e) {
+            throw new MessageException(e);
+        } catch (ChannelException e) {
+            throw new MessageException(e);
+        } catch (IOException e) {
+            throw new MessageException(e);
+        } catch (ClassNotFoundException e) {
+            throw new MessageException(e);
+        } finally {
+            JndiHelper.close(rootContext);
+        }
     }
 
     public void sendAsynchronousToController(Command command) throws MessageException {
@@ -210,19 +279,96 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     }
 
     public void openChannel(String name, String configuration, MessageReceiver receiver) throws ZoneChannelException {
-        throw new UnsupportedOperationException();
+        Context rootContext = null;
+        Context dynamicChannelContext = null;
+        try {
+            rootContext = getRootContext();
+            dynamicChannelContext = JndiHelper.getContext(DYNAMIC_CHANNEL_CONTEXT, rootContext);
+            RuntimeChannelImpl channel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, receiver, monitor);
+            dynamicChannelContext.bind(name + ":" + runtimeName, channel);
+        } catch (NamingException e) {
+            // controller may not be available
+            monitor.errorMessage("Controller not available - queueing request for retry", e);
+            channelRequests.add(new ChannelOpenRequest(name, receiver));
+        } finally {
+            JndiHelper.close(rootContext, dynamicChannelContext);
+        }
     }
 
     public void closeChannel(String name) throws ZoneChannelException {
-        throw new UnsupportedOperationException();
+        Context rootContext = null;
+        Context dynamicChannelContext = null;
+        try {
+            rootContext = getRootContext();
+            dynamicChannelContext = JndiHelper.getContext(DYNAMIC_CHANNEL_CONTEXT, rootContext);
+            dynamicChannelContext.unbind(name + ":" + runtimeName);
+        } catch (NamingException e) {
+            throw new ZoneChannelException(e);
+        } finally {
+            JndiHelper.close(rootContext, dynamicChannelContext);
+        }
     }
 
     public void sendAsynchronous(String name, Serializable message) throws MessageException {
-        throw new UnsupportedOperationException();
+        Context rootContext = null;
+        try {
+            rootContext = getRootContext();
+            byte[] payload = serializationService.serialize(message);
+            NamingEnumeration<Binding> enumeration = rootContext.listBindings(DYNAMIC_CHANNEL_CONTEXT);
+            while (enumeration.hasMoreElements()) {
+                Binding binding = enumeration.next();
+                if (RuntimeChannel.class.getName().equals(binding.getClassName())) {
+                    RuntimeChannel channel = (RuntimeChannel) binding.getObject();
+                    if (binding.getName().startsWith(name + ":")) {
+                        if (channel.getRuntimeName().equals(runtimeName)) {
+                            // don't send to self
+                            continue;
+                        }
+                        channel.publish(payload);
+                    }
+                }
+            }
+        } catch (NamingException e) {
+            throw new MessageException(e);
+        } catch (RemoteException e) {
+            throw new MessageException(e);
+        } catch (ChannelException e) {
+            throw new MessageException(e);
+        } catch (IOException e) {
+            throw new MessageException(e);
+        } finally {
+            JndiHelper.close(rootContext);
+        }
     }
 
-    public void sendAsynchronous(String runtimeName, String name, Serializable message) throws MessageException {
-        throw new UnsupportedOperationException();
+    public void sendAsynchronous(String destinationName, String name, Serializable message) throws MessageException {
+        Context rootContext = null;
+        try {
+            rootContext = getRootContext();
+            byte[] payload = serializationService.serialize(message);
+            NamingEnumeration<Binding> enumeration = rootContext.listBindings(DYNAMIC_CHANNEL_CONTEXT);
+            while (enumeration.hasMoreElements()) {
+                Binding binding = enumeration.next();
+                if (RuntimeChannel.class.getName().equals(binding.getClassName())) {
+                    RuntimeChannel channel = (RuntimeChannel) binding.getObject();
+                    if (binding.getName().equals(name + ":" + destinationName)) {
+                        channel.publish(payload);
+                        return;
+                    }
+                }
+            }
+            throw new MessageException("Runtime not found: " + destinationName);
+        } catch (NamingException e) {
+            throw new MessageException(e);
+        } catch (RemoteException e) {
+            throw new MessageException(e);
+        } catch (ChannelException e) {
+            throw new MessageException(e);
+        } catch (IOException e) {
+            throw new MessageException(e);
+        } finally {
+            JndiHelper.close(rootContext);
+        }
     }
 
     /**
@@ -233,18 +379,15 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     private boolean initJndiContexts() {
         monitor.connectingToAdminServer();
         Context rootContext;
+        Context participantContext = null;
+        Context controllerContext = null;
+        Context dynamicChannelContext = null;
         try {
-            // lookup the controller context on the admin server
-            Hashtable<String, String> env = new Hashtable<String, String>();
-            env.put(Context.INITIAL_CONTEXT_FACTORY, JNDI_FACTORY);
-            env.put(Context.PROVIDER_URL, adminServerUrl);
-            rootContext = new InitialContext(env);
+            rootContext = getRootContext();
         } catch (NamingException e) {
             monitor.errorMessage("Error connecting to admin server", e);
             return false;
         }
-        Context controllerContext = null;
-        Context participantContext = null;
         try {
             controllerContext = JndiHelper.getContext(CONTROLLER_CONTEXT, rootContext);
             try {
@@ -259,13 +402,32 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
             } catch (NameAlreadyBoundException e) {
                 participantContext.rebind(runtimeName, runtimeChannel);
             }
+
+            dynamicChannelContext = JndiHelper.getContext(DYNAMIC_CHANNEL_CONTEXT, rootContext);
+
+            // initialize dynamic channels
+            for (ChannelOpenRequest request : channelRequests) {
+                MessageReceiver receiver = request.getReceiver();
+                RuntimeChannelImpl channel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, receiver, monitor);
+                dynamicChannelContext.bind(request.getName() + ":" + runtimeName, channel);
+            }
+
             return true;
         } catch (NamingException e) {
             monitor.errorMessage("Error joining the domain", e);
             return false;
         } finally {
-            JndiHelper.close(rootContext, participantContext, controllerContext);
+            JndiHelper.close(participantContext, controllerContext, rootContext, dynamicChannelContext);
         }
+    }
+
+    private Context getRootContext() throws NamingException {
+        Context rootContext;// lookup the controller context on the admin server
+        Hashtable<String, String> env = new Hashtable<String, String>();
+        env.put(Context.INITIAL_CONTEXT_FACTORY, JNDI_FACTORY);
+        env.put(Context.PROVIDER_URL, adminServerUrl);
+        rootContext = new InitialContext(env);
+        return rootContext;
     }
 
     /**
@@ -354,6 +516,24 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
                 }
 
             }
+        }
+    }
+
+    private class ChannelOpenRequest {
+        private String name;
+        private MessageReceiver receiver;
+
+        private ChannelOpenRequest(String name, MessageReceiver receiver) {
+            this.name = name;
+            this.receiver = receiver;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public MessageReceiver getReceiver() {
+            return receiver;
         }
     }
 

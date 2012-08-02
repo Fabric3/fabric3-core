@@ -76,4 +76,12 @@ public interface RuntimeChannel extends Remote {
      */
     void send(byte[] payload) throws RemoteException, ChannelException;
 
+    /**
+     * Publishes a message to the runtime. Used for dynamic channels.
+     *
+     * @param payload the serialized message
+     * @throws RemoteException  if a remote communication error occurs
+     * @throws ChannelException if an error processing the message occurs
+     */
+    void publish(byte[] payload) throws RemoteException, ChannelException;
 }

@@ -50,4 +50,6 @@ public interface Constants {
 
     String PARTICIPANT_CONTEXT = "Fabric3Participants";
 
+    String DYNAMIC_CHANNEL_CONTEXT = "Fabric3DynamicChannels";
+
 }

@@ -78,7 +78,9 @@ public final class JndiHelper {
         if (contexts != null) {
             for (Context context : contexts) {
                 try {
-                    context.close();
+                    if (context != null) {
+                        context.close();
+                    }
                 } catch (NamingException e) {
                     e.printStackTrace();
                 }

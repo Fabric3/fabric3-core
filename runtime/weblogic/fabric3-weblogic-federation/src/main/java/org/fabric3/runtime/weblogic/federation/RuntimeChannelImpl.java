@@ -48,6 +48,7 @@ import org.fabric3.spi.command.Response;
 import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.federation.MessageReceiver;
 
 /**
  * Standard implementation of a RuntimeChannel.
@@ -59,14 +60,24 @@ public class RuntimeChannelImpl implements RuntimeChannel {
     private CommandExecutorRegistry executorRegistry;
     private SerializationService serializationService;
     private WebLogicTopologyMonitor monitor;
+    private MessageReceiver messageReceiver;
 
     public RuntimeChannelImpl(String runtimeName,
                               CommandExecutorRegistry executorRegistry,
                               SerializationService serializationService,
                               WebLogicTopologyMonitor monitor) {
+        this(runtimeName, executorRegistry, serializationService, null, monitor);
+    }
+
+    public RuntimeChannelImpl(String runtimeName,
+                              CommandExecutorRegistry executorRegistry,
+                              SerializationService serializationService,
+                              MessageReceiver messageReceiver,
+                              WebLogicTopologyMonitor monitor) {
         this.runtimeName = runtimeName;
         this.executorRegistry = executorRegistry;
         this.serializationService = serializationService;
+        this.messageReceiver = messageReceiver;
         this.monitor = monitor;
     }
 
@@ -106,4 +117,17 @@ public class RuntimeChannelImpl implements RuntimeChannel {
         }
     }
 
+    public void publish(byte[] payload) throws RemoteException, ChannelException {
+        if (messageReceiver == null) {
+            throw new ChannelException("Channel not configured with a message receiver");
+        }
+        try {
+            Object message = serializationService.deserialize(Object.class, payload);
+            messageReceiver.onMessage(message);
+        } catch (IOException e) {
+            throw new ChannelException(e);
+        } catch (ClassNotFoundException e) {
+            throw new ChannelException(e);
+        }
+    }
 }
