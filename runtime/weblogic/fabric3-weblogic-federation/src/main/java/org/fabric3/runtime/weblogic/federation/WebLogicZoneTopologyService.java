@@ -281,11 +281,19 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     public void openChannel(String name, String configuration, MessageReceiver receiver) throws ZoneChannelException {
         Context rootContext = null;
         Context dynamicChannelContext = null;
+        RuntimeChannelImpl channel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, receiver, monitor);
         try {
             rootContext = getRootContext();
             dynamicChannelContext = JndiHelper.getContext(DYNAMIC_CHANNEL_CONTEXT, rootContext);
-            RuntimeChannelImpl channel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, receiver, monitor);
             dynamicChannelContext.bind(name + ":" + runtimeName, channel);
+        } catch (NameAlreadyBoundException e) {
+            try {
+                dynamicChannelContext.rebind(name + ":" + runtimeName, channel);
+            } catch (NamingException ex) {
+                // controller may not be available
+                monitor.errorMessage("Controller not available - queueing request for retry", ex);
+                channelRequests.add(new ChannelOpenRequest(name, receiver));
+            }
         } catch (NamingException e) {
             // controller may not be available
             monitor.errorMessage("Controller not available - queueing request for retry", e);
@@ -409,7 +417,11 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
             for (ChannelOpenRequest request : channelRequests) {
                 MessageReceiver receiver = request.getReceiver();
                 RuntimeChannelImpl channel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, receiver, monitor);
-                dynamicChannelContext.bind(request.getName() + ":" + runtimeName, channel);
+                try {
+                    dynamicChannelContext.bind(request.getName() + ":" + runtimeName, channel);
+                } catch (NameAlreadyBoundException e) {
+                    dynamicChannelContext.rebind(request.getName() + ":" + runtimeName, channel);
+                }
             }
 
             return true;
