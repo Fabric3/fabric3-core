@@ -37,6 +37,7 @@
 */
 package org.fabric3.runtime.weblogic.federation;
 
+import org.fabric3.api.annotation.monitor.Debug;
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 
@@ -53,6 +54,9 @@ public interface WebLogicTopologyMonitor {
     @Severe
     void errorMessage(String message, Throwable error);
 
+    @Severe
+    void errorMessage(String message);
+
     @Info("Attempting to connect to admin server")
     void connectingToAdminServer();
 
@@ -67,4 +71,7 @@ public interface WebLogicTopologyMonitor {
 
     @Info("No managed servers found")
     void noManagedServers();
+
+    @Debug
+    void errorDetail(Exception e);
 }

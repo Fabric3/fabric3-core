@@ -49,7 +49,6 @@ import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameAlreadyBoundException;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
@@ -386,24 +385,15 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
      */
     private boolean initJndiContexts() {
         monitor.connectingToAdminServer();
-        Context rootContext;
+        Context rootContext = null;
         Context participantContext = null;
         Context controllerContext = null;
         Context dynamicChannelContext = null;
         try {
             rootContext = getRootContext();
-        } catch (NamingException e) {
-            monitor.errorMessage("Error connecting to admin server", e);
-            return false;
-        }
-        try {
             controllerContext = JndiHelper.getContext(CONTROLLER_CONTEXT, rootContext);
-            try {
-                // lookup the controller channel RMI stub
-                controllerChannel = (RuntimeChannel) controllerContext.lookup(Constants.CONTROLLER_CHANNEL);
-            } catch (NameNotFoundException e) {
-                monitor.errorMessage("Unable to contact admin server", e);
-            }
+            // lookup the controller channel RMI stub
+            controllerChannel = (RuntimeChannel) controllerContext.lookup(Constants.CONTROLLER_CHANNEL);
             participantContext = JndiHelper.getContext(PARTICIPANT_CONTEXT, rootContext);
             try {
                 participantContext.bind(runtimeName, runtimeChannel);
@@ -426,7 +416,8 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
 
             return true;
         } catch (NamingException e) {
-            monitor.errorMessage("Error joining the domain", e);
+            monitor.errorMessage("Error joining the domain. Scheduled for retry.");
+            monitor.error(e);
             return false;
         } finally {
             JndiHelper.close(participantContext, controllerContext, rootContext, dynamicChannelContext);
@@ -456,6 +447,10 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         Response response;
         try {
             byte[] payload = serializationService.serialize(command);
+            if (controllerChannel == null) {
+                // controller not available
+                return false;
+            }
             byte[] responsePayload = controllerChannel.sendSynchronous(payload);
             response = serializationService.deserialize(Response.class, responsePayload);
         } catch (RemoteException e) {
@@ -522,7 +517,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
                     return;
                 }
                 try {
-                    Thread.sleep(30000);  // wait 30 seconds
+                    Thread.sleep(10000);  // wait 10 seconds
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
