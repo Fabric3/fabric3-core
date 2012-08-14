@@ -290,12 +290,14 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
                 dynamicChannelContext.rebind(name + ":" + runtimeName, channel);
             } catch (NamingException ex) {
                 // controller may not be available
-                monitor.errorMessage("Controller not available - queueing request for retry", ex);
+                monitor.errorMessage("Controller not available - queueing request for retry");
+                monitor.errorDetail(ex);
                 channelRequests.add(new ChannelOpenRequest(name, receiver));
             }
         } catch (NamingException e) {
             // controller may not be available
-            monitor.errorMessage("Controller not available - queueing request for retry", e);
+            monitor.errorMessage("Controller not available - queueing request for retry");
+            monitor.errorDetail(e);
             channelRequests.add(new ChannelOpenRequest(name, receiver));
         } finally {
             JndiHelper.close(rootContext, dynamicChannelContext);
@@ -417,7 +419,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
             return true;
         } catch (NamingException e) {
             monitor.errorMessage("Error joining the domain. Scheduled for retry.");
-            monitor.error(e);
+            monitor.errorDetail(e);
             return false;
         } finally {
             JndiHelper.close(participantContext, controllerContext, rootContext, dynamicChannelContext);
