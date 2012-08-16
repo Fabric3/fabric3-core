@@ -347,7 +347,7 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
 
                 int state = (Integer) mBeanServer.getAttribute(componentRuntime, "DeploymentState");
 
-                // Ff the deployment state is activated, bind immediately. Otherwise, do so asynchronously.
+                // If the deployment state is activated, bind immediately. Otherwise, do so asynchronously.
                 // Note that an MBean NotificationListener cannot be used as the WLS MBean does not emmit notifications.
                 if (WLS_ACTIVATED_STATE == state) {
                     bindController();
