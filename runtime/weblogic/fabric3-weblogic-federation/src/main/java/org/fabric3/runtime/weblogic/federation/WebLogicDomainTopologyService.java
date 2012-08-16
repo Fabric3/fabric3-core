@@ -45,6 +45,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.JMException;
+import javax.management.MBeanException;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -76,6 +84,7 @@ import org.fabric3.spi.federation.MessageException;
 import org.fabric3.spi.federation.RuntimeInstance;
 import org.fabric3.spi.federation.Zone;
 
+import static org.fabric3.runtime.weblogic.api.Constants.WLS_RUNTIME_SERVICE_MBEAN;
 import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CHANNEL;
 import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONTEXT;
 
@@ -87,10 +96,16 @@ import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONT
 @Service(DomainTopologyService.class)
 @EagerInit
 public class WebLogicDomainTopologyService implements DomainTopologyService {
+    private static final String FABRIC3_WEBLOGIC_HOST = "fabric3-weblogic-host";
+
+    // The WLS application activated state. Other WLS states:  UNPREPARED = 0; PREPARED = 1; NEW = 3; UPDATE_PENDING = 4
+    private static final int WLS_ACTIVATED_STATE = 2;
+
     private String runtimeName = "controller";
     private CommandExecutorRegistry executorRegistry;
     private EventService eventService;
     private SerializationService serializationService;
+    private MBeanServer mBeanServer;
     private WebLogicTopologyMonitor monitor;
     private InitialContext rootContext;
     private EventContext participantContext;
@@ -98,10 +113,12 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
     public WebLogicDomainTopologyService(@Reference CommandExecutorRegistry executorRegistry,
                                          @Reference EventService eventService,
                                          @Reference SerializationService serializationService,
+                                         @Reference MBeanServer mBeanServer,
                                          @Monitor WebLogicTopologyMonitor monitor) {
         this.executorRegistry = executorRegistry;
         this.eventService = eventService;
         this.serializationService = serializationService;
+        this.mBeanServer = mBeanServer;
         this.monitor = monitor;
     }
 
@@ -117,7 +134,6 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
             rootContext.close();
         }
         if (participantContext != null) {
-//            participantContext.removeNamingListener();
             participantContext.close();
         }
     }
@@ -270,30 +286,119 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
         }
     }
 
+    private void bindController() {
+        try {
+            RuntimeChannel controllerChannel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, monitor);
+            rootContext = new InitialContext();
+            Context controllerContext = JndiHelper.getContext(Constants.CONTROLLER_CONTEXT, rootContext);
+            try {
+                controllerContext.bind(CONTROLLER_CHANNEL, controllerChannel);
+            } catch (NameAlreadyBoundException e) {
+                controllerContext.rebind(CONTROLLER_CHANNEL, controllerChannel);
+            }
+            Context ctx = JndiHelper.getContext(PARTICIPANT_CONTEXT, rootContext);
+            assert ctx instanceof EventContext;
+            participantContext = (EventContext) ctx;
+        } catch (NamingException e) {
+            monitor.errorMessage("Error initializing domain topology service", e);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * Joins the domain by binding controller federation channels into the JNDI tree.
+     * <p/>
+     * Note that joining may happen asynchronously if the F3 host application has not been activated. This is to avoid the race condition where an
+     * application is deployed and a participant attempts to provision a contribution over HTTP before the provisioning servlet has been initialized
+     * (.cf FABRICTHREE-662).
+     */
     private class JoinDomainListener implements Fabric3EventListener<JoinDomain> {
 
         public void onEvent(JoinDomain event) {
             try {
-                RuntimeChannel controllerChannel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, monitor);
-                rootContext = new InitialContext();
-                Context controllerContext = JndiHelper.getContext(Constants.CONTROLLER_CONTEXT, rootContext);
-                try {
-                    controllerContext.bind(CONTROLLER_CHANNEL, controllerChannel);
-                } catch (NameAlreadyBoundException e) {
-                    controllerContext.rebind(CONTROLLER_CHANNEL, controllerChannel);
+                // lookup the component runtime MBean containing the current app deployment state
+                ObjectName serverRuntime = (ObjectName) mBeanServer.getAttribute(WLS_RUNTIME_SERVICE_MBEAN, "ServerRuntime");
+                ObjectName[] applicationRuntimes = (ObjectName[]) mBeanServer.getAttribute(serverRuntime, "ApplicationRuntimes");
+                ObjectName applicationRuntime = null;
+                for (ObjectName runtime : applicationRuntimes) {
+                    if (runtime.getKeyProperty("Name").contains(FABRIC3_WEBLOGIC_HOST)) {
+                        applicationRuntime = runtime;
+                        break;
+                    }
                 }
-                Context ctx = JndiHelper.getContext(PARTICIPANT_CONTEXT, rootContext);
-                assert ctx instanceof EventContext;
-                participantContext = (EventContext) ctx;
-//                ParticipantContextListener listener = new ParticipantContextListener();
-//                participantContext.addNamingListener("", EventContext.ONELEVEL_SCOPE, listener);
-            } catch (NamingException e) {
-                monitor.errorMessage("Error initializing domain topology service", e);
-            } catch (RuntimeException e) {
-                e.printStackTrace();
-                throw e;
+                if (applicationRuntime == null) {
+                    monitor.errorMessage("Application runtime MBean not found. Federation and cluster communication disabled.");
+                    return;
+                }
+                ObjectName[] componentRuntimes = ((ObjectName[]) mBeanServer.getAttribute(applicationRuntime, "ComponentRuntimes"));
+                ObjectName componentRuntime = null;
+                for (ObjectName runtime : componentRuntimes) {
+                    if (runtime.getKeyProperty("ApplicationRuntime").contains(FABRIC3_WEBLOGIC_HOST)) {
+                        componentRuntime = runtime;
+                        break;
+                    }
+                }
+                if (componentRuntime == null) {
+                    monitor.errorMessage("Component runtime MBean not found. Federation and cluster communication disabled.");
+                    return;
+                }
+
+                int state = (Integer) mBeanServer.getAttribute(componentRuntime, "DeploymentState");
+
+                // Ff the deployment state is activated, bind immediately. Otherwise, do so asynchronously.
+                // Note that an MBean NotificationListener cannot be used as the WLS MBean does not emmit notifications.
+                if (WLS_ACTIVATED_STATE == state) {
+                    bindController();
+                } else {
+                    Executors.newSingleThreadExecutor().submit(new DeploymentStateListener(componentRuntime));
+                }
+            } catch (JMException e) {
+                monitor.errorMessage("Error retrieving deployment state. Federation disabled", e);
+
             }
         }
+    }
+
+    /**
+     * Binds the controller to the JNDI tree asynchronously.
+     */
+    private class DeploymentStateListener implements Runnable {
+        private ObjectName componentRuntime;
+
+        private DeploymentStateListener(ObjectName componentRuntime) {
+            this.componentRuntime = componentRuntime;
+        }
+
+        public void run() {
+            while (true) {
+                try {
+                    int state = (Integer) mBeanServer.getAttribute(componentRuntime, "DeploymentState");
+                    if (WLS_ACTIVATED_STATE == state) {
+                        bindController();
+                        return;
+                    }
+                    // wait one second
+                    Thread.sleep(1000);
+                } catch (MBeanException e) {
+                    monitor.errorMessage("Error retrieving deployment state. Federation disabled", e);
+                    return;
+                } catch (AttributeNotFoundException e) {
+                    monitor.errorMessage("Error retrieving deployment state. Federation disabled", e);
+                    return;
+                } catch (InstanceNotFoundException e) {
+                    monitor.errorMessage("Error retrieving deployment state. Federation disabled", e);
+                    return;
+                } catch (ReflectionException e) {
+                    monitor.errorMessage("Error retrieving deployment state. Federation disabled", e);
+                    return;
+                } catch (InterruptedException e) {
+                    Thread.interrupted();
+                }
+            }
+        }
+
     }
 
 

@@ -418,7 +418,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
 
             return true;
         } catch (NamingException e) {
-            monitor.errorMessage("Error joining the domain. Scheduled for retry.");
+            monitor.errorMessage("Error joining the domain, possibly because the controller is not available. Scheduled for retry.");
             monitor.errorDetail(e);
             return false;
         } finally {
@@ -470,7 +470,6 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
             monitor.error(e);
             return false;
         }
-        assert response instanceof RuntimeUpdateResponse;
         RuntimeUpdateResponse updateResponse = (RuntimeUpdateResponse) response;
         if (!updateResponse.isUpdated()) {
             // not updated, wait until a controller becomes available
