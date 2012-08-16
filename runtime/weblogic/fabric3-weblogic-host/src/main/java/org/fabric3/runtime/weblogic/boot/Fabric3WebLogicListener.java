@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -57,7 +58,6 @@ import javax.xml.bind.JAXBContext;
 
 import org.w3c.dom.Document;
 
-import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.classloader.MaskingClassLoader;
@@ -91,18 +91,22 @@ import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
 public class Fabric3WebLogicListener implements ServletContextListener {
     private static final String FABRIC3_HOME = "fabric3.home";
     private static final String FABRIC3_MODE = "fabric3.mode";
+    private static final String FABRIC3_WEBLOGIC_HOST = "fabric3-weblogic-host";
 
+    // The WLS application activated state. Other WLS states:  UNPREPARED = 0; PREPARED = 1; NEW = 3; UPDATE_PENDING = 4
+    private static final int WLS_ACTIVATED_STATE = 2;
 
     private ServletContext context;
     private RuntimeCoordinator coordinator;
     private ServerMonitor monitor;
-
 
     public void contextInitialized(ServletContextEvent event) {
         try {
             context = event.getServletContext();
             RuntimeMode runtimeMode = getRuntimeMode();
             MBeanServer mBeanServer = getMBeanServer();
+            ObjectName componentRuntime = getComponentRuntimeMBean(mBeanServer);
+
             String pathName = System.getProperty(FABRIC3_HOME);
             if (pathName == null) {
                 event.getServletContext().log("fabric3.home system property not specified");
@@ -113,8 +117,10 @@ public class Fabric3WebLogicListener implements ServletContextListener {
                 event.getServletContext().log("fabric3.home directory does not exist: " + pathName);
                 return;
             }
-            start(runtimeMode, mBeanServer, installDirectory);
+            prepare(runtimeMode, mBeanServer, installDirectory, componentRuntime);
         } catch (NamingException e) {
+            context.log("Error initializing Fabric3", e);
+        } catch (JMException e) {
             context.log("Error initializing Fabric3", e);
         }
     }
@@ -134,13 +140,14 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     }
 
     /**
-     * Starts the runtime in a blocking fashion and only returns after it has been released from another thread.
+     * Prepares the runtime.
      *
      * @param runtimeMode      the mode to start the runtime in
      * @param mBeanServer      the WebLogic runtime mBeanServer
      * @param installDirectory the directory containing the Fabric3 runtime image
+     * @param componentRuntime the component runtime MBean used to determine the state of the F3 host web application
      */
-    public void start(RuntimeMode runtimeMode, MBeanServer mBeanServer, File installDirectory) {
+    public void prepare(RuntimeMode runtimeMode, MBeanServer mBeanServer, File installDirectory, ObjectName componentRuntime) {
 
         // override EclipseLink JAXB with the Sun JAXB RI
         System.setProperty(JAXBContext.class.getName(), "com.sun.xml.bind.v2.ContextFactory");
@@ -261,11 +268,14 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             // boot the runtime
             coordinator = bootstrapService.createCoordinator(configuration);
-            coordinator.start();
+            coordinator.prepare();
             context.setAttribute(RUNTIME_ATTRIBUTE, runtime);
+
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
             monitor = monitorService.createMonitor(ServerMonitor.class, Names.RUNTIME_MONITOR_CHANNEL_URI);
-            monitor.started(runtimeMode.toString());
+
+            start(mBeanServer, componentRuntime, runtimeMode);
+
         } catch (RuntimeException e) {
             context.log("Error initializing Fabric3", e);
         } catch (Exception e) {
@@ -273,6 +283,81 @@ public class Fabric3WebLogicListener implements ServletContextListener {
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
+    }
+
+    /**
+     * Starts the runtime. If the host web application is in the active state, the runtime will be started synchronously. If not, the runtime will be
+     * started on a separate thread after the web application state has been transitioned to active. Starting the runtime asynchronously avoids race
+     * conditions where a deployment is sent to participants and the host web app is not initialized prior to participants attempting to resolve
+     * contributions (.cf FABRICTHREE-662).
+     *
+     * @param mBeanServer      the MBean server
+     * @param componentRuntime the component runtime MBean
+     * @param runtimeMode      the runtime mode
+     */
+    public void start(final MBeanServer mBeanServer, final ObjectName componentRuntime, final RuntimeMode runtimeMode) {
+        try {
+            int state = (Integer) mBeanServer.getAttribute(componentRuntime, "DeploymentState");
+
+            // If the deployment state is activated, start immediately. Otherwise, do so asynchronously.
+            // Note that an MBean NotificationListener cannot be used as the WLS MBean does not emmit notifications.
+            if (WLS_ACTIVATED_STATE == state) {
+                coordinator.joinAndStart();
+                monitor.started(runtimeMode.toString());
+            } else {
+                Executors.newSingleThreadExecutor().submit(new Runnable() {
+                    public void run() {
+                        while (true) {
+                            try {
+                                int state = (Integer) mBeanServer.getAttribute(componentRuntime, "DeploymentState");
+                                if (WLS_ACTIVATED_STATE == state) {
+                                    coordinator.joinAndStart();
+                                    monitor.started(runtimeMode.toString());
+                                    return;
+                                }
+                                Thread.sleep(1000); // wait a second and retry
+                            } catch (JMException e) {
+                                monitor.errorMessage("Error retrieving deployment state. Federation disabled", e);
+                            } catch (InterruptedException e) {
+                                Thread.interrupted();
+                            }
+                        }
+                    }
+                });
+            }
+        } catch (JMException e) {
+            monitor.errorMessage("Error retrieving deployment state. Federation disabled", e);
+        }
+    }
+
+    private ObjectName getComponentRuntimeMBean(MBeanServer mBeanServer) throws JMException {
+        // lookup the component runtime MBean containing the current app deployment state
+        ObjectName serverRuntime = (ObjectName) mBeanServer.getAttribute(Constants.WLS_RUNTIME_SERVICE_MBEAN, "ServerRuntime");
+        ObjectName[] applicationRuntimes = (ObjectName[]) mBeanServer.getAttribute(serverRuntime, "ApplicationRuntimes");
+        ObjectName applicationRuntime = null;
+        for (ObjectName runtime : applicationRuntimes) {
+            if (runtime.getKeyProperty("Name").contains(FABRIC3_WEBLOGIC_HOST)) {
+                applicationRuntime = runtime;
+                break;
+            }
+        }
+        if (applicationRuntime == null) {
+            monitor.errorMessage("Application runtime MBean not found. Federation and cluster communication disabled.");
+            return null;
+        }
+        ObjectName[] componentRuntimes = ((ObjectName[]) mBeanServer.getAttribute(applicationRuntime, "ComponentRuntimes"));
+        ObjectName componentRuntime = null;
+        for (ObjectName runtime : componentRuntimes) {
+            if (runtime.getKeyProperty("ApplicationRuntime").contains(FABRIC3_WEBLOGIC_HOST)) {
+                componentRuntime = runtime;
+                break;
+            }
+        }
+        if (componentRuntime == null) {
+            monitor.errorMessage("Component runtime MBean not found. Federation and cluster communication disabled.");
+            return null;
+        }
+        return componentRuntime;
     }
 
     private Map<String, String> getExportedPackages() {
@@ -323,16 +408,6 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             current = mbServer.getAttribute((ObjectName) current, token);
         }
         return (String) current;
-    }
-
-    public interface ServerMonitor {
-
-        @Info("Fabric3 ready [Mode:{0}]")
-        void started(String mode);
-
-        @Info("Fabric3 shutdown")
-        void stopped();
-
     }
 
 }
