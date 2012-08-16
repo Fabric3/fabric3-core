@@ -90,6 +90,11 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     }
 
     public void start() throws InitializationException {
+        prepare();
+        joinAndStart();
+    }
+
+    public void prepare() throws InitializationException {
         // boot primordial services
         runtime.boot();
 
@@ -104,12 +109,16 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         // load and initialize runtime extension components and the local runtime domain
         loadExtensions();
 
-        EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
+        EventService eventService = runtime.getComponent(EventService.class);
         eventService.publish(new ExtensionsInitialized());
 
         // initiate local runtime recovery
         recover(eventService);
 
+    }
+
+    public void joinAndStart() {
+        EventService eventService = runtime.getComponent(EventService.class);
         eventService.publish(new JoinDomain());
 
         // initiate domain recovery
@@ -123,14 +132,16 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         state = RuntimeState.STARTED;
     }
 
+
     public void shutdown() throws ShutdownException {
         if (state == RuntimeState.STARTED) {
-            EventService eventService = runtime.getComponent(EventService.class, EVENT_SERVICE_URI);
+            EventService eventService = runtime.getComponent(EventService.class);
             eventService.publish(new RuntimeStop());
             runtime.destroy();
         }
         state = RuntimeState.SHUTDOWN;
     }
+
 
     /**
      * Loads runtime extensions.
@@ -139,7 +150,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
      */
     private void loadExtensions() throws InitializationException {
         List<ContributionSource> contributions = configuration.getExtensionContributions();
-        ContributionService contributionService = runtime.getComponent(ContributionService.class, CONTRIBUTION_SERVICE_URI);
+        ContributionService contributionService = runtime.getComponent(ContributionService.class);
         Domain domain = runtime.getComponent(Domain.class, RUNTIME_DOMAIN_SERVICE_URI);
         try {
             // process manifests and order the contributions

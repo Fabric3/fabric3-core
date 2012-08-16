@@ -58,11 +58,25 @@ public interface RuntimeCoordinator {
     RuntimeState getState();
 
     /**
-     * Boots the runtime, synchronizes it with the domain, and places it in a state to receive requests.
+     * Prepares the runtime, synchronizes it with the domain, and places it in a state to receive requests. Equivalent to calling {@link #prepare()}
+     * and {@link #joinAndStart()}.
      *
      * @throws InitializationException if an error occurs starting the runtime
      */
     void start() throws InitializationException;
+
+    /**
+     * Prepares the runtime by performing bootstrap, extension initialization, and local recovery. Used in runtime hosts that require additional
+     * initialization steps prior to placing Fabric3 in a state to receive requests.
+     *
+     * @throws InitializationException if an error occurs preparing the runtime
+     */
+    public void prepare() throws InitializationException;
+
+    /**
+     * Performs domain synchronization, domain recovery and places the runtime in a state to receive requests.
+     */
+    public void joinAndStart();
 
     /**
      * Shuts the runtime down, stopping it from receiving requests and detaching it from the domain. In-flight synchronous operations will be allowed
