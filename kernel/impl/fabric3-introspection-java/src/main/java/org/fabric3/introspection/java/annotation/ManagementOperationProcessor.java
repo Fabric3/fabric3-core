@@ -50,7 +50,6 @@ import java.util.Set;
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
@@ -64,15 +63,17 @@ import org.fabric3.spi.model.type.java.Signature;
  *
  * @version $Rev: 9043 $ $Date: 2010-05-24 10:51:12 +0200 (Mon, 24 May 2010) $
  */
-public class ManagementOperationProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<ManagementOperation, I> {
+public class ManagementOperationProcessor extends AbstractAnnotationProcessor<ManagementOperation> {
 
     public ManagementOperationProcessor() {
         super(ManagementOperation.class);
     }
 
-    @Override
-    public void visitMethod(ManagementOperation annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
-        InjectingComponentType componentType = implementation.getComponentType();
+    public void visitMethod(ManagementOperation annotation,
+                            Method method,
+                            Class<?> implClass,
+                            InjectingComponentType componentType,
+                            IntrospectionContext context) {
         ManagementInfo info = componentType.getManagementInfo();
         if (info == null) {
             // there was no management annotation on the type - record an error

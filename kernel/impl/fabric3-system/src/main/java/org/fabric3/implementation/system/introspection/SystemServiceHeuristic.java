@@ -41,7 +41,6 @@ import java.util.Set;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -55,7 +54,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  *
  * @version $Rev$ $Date$
  */
-public class SystemServiceHeuristic implements HeuristicProcessor<SystemImplementation> {
+public class SystemServiceHeuristic implements HeuristicProcessor {
     private final JavaContractProcessor contractProcessor;
     private final IntrospectionHelper helper;
 
@@ -64,9 +63,7 @@ public class SystemServiceHeuristic implements HeuristicProcessor<SystemImplemen
         this.helper = helper;
     }
 
-    public void applyHeuristics(SystemImplementation implementation, Class<?> implClass, IntrospectionContext context) {
-        InjectingComponentType componentType = implementation.getComponentType();
-
+    public void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         // if the service contracts have not already been defined then introspect them
         if (componentType.getServices().isEmpty()) {
             // get the most specific interfaces implemented by the class

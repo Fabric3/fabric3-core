@@ -51,7 +51,6 @@ import java.lang.reflect.Type;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.monitor.model.MonitorResourceReference;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -67,7 +66,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 /**
  * @version $Rev$ $Date$
  */
-public class MonitorProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Monitor, I> {
+public class MonitorProcessor extends AbstractAnnotationProcessor<Monitor> {
 
     private final IntrospectionHelper helper;
     private final JavaContractProcessor contractProcessor;
@@ -78,31 +77,35 @@ public class MonitorProcessor<I extends Implementation<? extends InjectingCompon
         this.contractProcessor = contractProcessor;
     }
 
-    public void visitField(Monitor annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitField(Monitor annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         String name = helper.getSiteName(field, null);
         Type genericType = field.getGenericType();
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         FieldInjectionSite site = new FieldInjectionSite(field);
         MonitorResourceReference resource = createDefinition(name, annotation, type, context);
-        implementation.getComponentType().add(resource, site);
+        componentType.add(resource, site);
     }
 
-    public void visitMethod(Monitor annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitMethod(Monitor annotation,
+                            Method method,
+                            Class<?> implClass,
+                            InjectingComponentType componentType,
+                            IntrospectionContext context) {
         String name = helper.getSiteName(method, null);
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Type genericType = helper.getGenericType(method);
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         MonitorResourceReference resource = createDefinition(name, annotation, type, context);
-        implementation.getComponentType().add(resource, site);
+        componentType.add(resource, site);
     }
 
     public void visitConstructorParameter(Monitor annotation,
                                           Constructor<?> constructor,
                                           int index,
                                           Class<?> implClass,
-                                          I implementation,
+                                          InjectingComponentType componentType,
                                           IntrospectionContext context) {
         String name = helper.getSiteName(constructor, index, null);
         Type genericType = helper.getGenericType(constructor, index);
@@ -110,11 +113,11 @@ public class MonitorProcessor<I extends Implementation<? extends InjectingCompon
         Class<?> type = helper.getBaseType(genericType, typeMapping);
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
         MonitorResourceReference resource = createDefinition(name, annotation, type, context);
-        implementation.getComponentType().add(resource, site);
+        componentType.add(resource, site);
     }
 
 
-    MonitorResourceReference createDefinition(String name, Monitor annotation, Class<?> type, IntrospectionContext context) {
+    private MonitorResourceReference createDefinition(String name, Monitor annotation, Class<?> type, IntrospectionContext context) {
         ServiceContract contract = contractProcessor.introspect(type, context);
         String channelName = annotation.value();
         if (channelName.length() == 0) {

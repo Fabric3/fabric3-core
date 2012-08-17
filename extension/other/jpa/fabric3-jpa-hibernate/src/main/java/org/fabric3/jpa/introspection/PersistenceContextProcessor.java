@@ -48,7 +48,6 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.jpa.model.HibernateSessionResourceReference;
 import org.fabric3.jpa.model.PersistenceContextResourceReference;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -66,7 +65,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class PersistenceContextProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<PersistenceContext, I> {
+public class PersistenceContextProcessor extends AbstractAnnotationProcessor<PersistenceContext> {
     private ServiceContract factoryServiceContract;
     private IntrospectionHelper helper;
 
@@ -78,9 +77,12 @@ public class PersistenceContextProcessor<I extends Implementation<? extends Inje
         assert !context.hasErrors(); // should not happen
     }
 
-    public void visitField(PersistenceContext annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitField(PersistenceContext annotation,
+                           Field field,
+                           Class<?> implClass,
+                           InjectingComponentType componentType,
+                           IntrospectionContext context) {
         FieldInjectionSite site = new FieldInjectionSite(field);
-        InjectingComponentType componentType = implementation.getComponentType();
         String name = helper.getSiteName(field, null);
         if (EntityManager.class.equals(field.getType())) {
             PersistenceContextResourceReference definition = createDefinition(name, annotation, componentType, context);
@@ -93,9 +95,12 @@ public class PersistenceContextProcessor<I extends Implementation<? extends Inje
         componentType.addRequiredCapability("jpa");
     }
 
-    public void visitMethod(PersistenceContext annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitMethod(PersistenceContext annotation,
+                            Method method,
+                            Class<?> implClass,
+                            InjectingComponentType componentType,
+                            IntrospectionContext context) {
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        InjectingComponentType componentType = implementation.getComponentType();
         String name = helper.getSiteName(method, null);
         if (EntityManager.class.equals(method.getParameterTypes()[0])) {
             PersistenceContextResourceReference definition = createDefinition(name, annotation, componentType, context);

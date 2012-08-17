@@ -41,7 +41,6 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
-import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionException;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
@@ -55,21 +54,18 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 public class JavaComponentTypeLoaderTestCase extends TestCase {
 
     private JavaImplementationProcessorImpl loader;
-    private ClassVisitor<JavaImplementation> classVisitor;
+    private ClassVisitor classVisitor;
     private IntrospectionContext context;
-    private JavaImplementation impl;
-    private HeuristicProcessor<JavaImplementation> heuristic;
+    private HeuristicProcessor heuristic;
     private IMocksControl control;
 
     public void testSimple() throws IntrospectionException {
-        impl.setImplementationClass(Simple.class.getName());
 
-        classVisitor.visit(EasyMock.same(impl), EasyMock.eq(Simple.class), EasyMock.isA(IntrospectionContext.class));
-        heuristic.applyHeuristics(EasyMock.same(impl), EasyMock.eq(Simple.class), EasyMock.isA(IntrospectionContext.class));
+        classVisitor.visit(EasyMock.isA(InjectingComponentType.class), EasyMock.eq(Simple.class), EasyMock.isA(IntrospectionContext.class));
+        heuristic.applyHeuristics(EasyMock.isA(InjectingComponentType.class), EasyMock.eq(Simple.class), EasyMock.isA(IntrospectionContext.class));
         control.replay();
-        loader.introspect(impl, context);
+        InjectingComponentType componentType = loader.introspect(Simple.class.getName(), context);
 
-        InjectingComponentType componentType = impl.getComponentType();
         assertNotNull(componentType);
         assertEquals(Simple.class.getName(), componentType.getImplClass());
         control.verify();
@@ -82,7 +78,6 @@ public class JavaComponentTypeLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         ClassLoader cl = getClass().getClassLoader();
-        impl = new JavaImplementation();
         IntrospectionHelper helper = EasyMock.createNiceMock(IntrospectionHelper.class);
         EasyMock.expect(helper.loadClass(Simple.class.getName(), cl)).andStubReturn(Simple.class);
         helper.resolveTypeParameters(Simple.class, null);
@@ -97,6 +92,6 @@ public class JavaComponentTypeLoaderTestCase extends TestCase {
         classVisitor = control.createMock(ClassVisitor.class);
         heuristic = control.createMock(HeuristicProcessor.class);
 
-        this.loader = new JavaImplementationProcessorImpl(classVisitor, heuristic, helper);
+        loader = new JavaImplementationProcessorImpl(classVisitor, heuristic, helper);
     }
 }

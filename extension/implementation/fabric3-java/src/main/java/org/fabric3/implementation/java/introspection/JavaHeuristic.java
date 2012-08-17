@@ -49,7 +49,6 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.Producer;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.Scope;
@@ -76,17 +75,16 @@ import org.fabric3.spi.model.type.java.Signature;
 /**
  * @version $Rev$ $Date$
  */
-public class JavaHeuristic implements HeuristicProcessor<JavaImplementation> {
+public class JavaHeuristic implements HeuristicProcessor {
+    private IntrospectionHelper helper;
+    private JavaContractProcessor contractProcessor;
 
-    private final IntrospectionHelper helper;
-    private final JavaContractProcessor contractProcessor;
-
-    private final HeuristicProcessor<JavaImplementation> serviceHeuristic;
+    private final HeuristicProcessor serviceHeuristic;
     private PolicyAnnotationProcessor policyProcessor;
 
     public JavaHeuristic(@Reference IntrospectionHelper helper,
                          @Reference JavaContractProcessor contractProcessor,
-                         @Reference(name = "service") HeuristicProcessor<JavaImplementation> serviceHeuristic) {
+                         @Reference(name = "service") HeuristicProcessor serviceHeuristic) {
         this.helper = helper;
         this.contractProcessor = contractProcessor;
         this.serviceHeuristic = serviceHeuristic;
@@ -97,12 +95,10 @@ public class JavaHeuristic implements HeuristicProcessor<JavaImplementation> {
         this.policyProcessor = processor;
     }
 
-    public void applyHeuristics(JavaImplementation implementation, Class<?> implClass, IntrospectionContext context) {
-
-        InjectingComponentType componentType = implementation.getComponentType();
+    public void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
 
         // apply service heuristic
-        serviceHeuristic.applyHeuristics(implementation, implClass, context);
+        serviceHeuristic.applyHeuristics(componentType, implClass, context);
 
         if (componentType.getConstructor() == null) {
             Signature ctor = findConstructor(implClass, context);
@@ -110,9 +106,9 @@ public class JavaHeuristic implements HeuristicProcessor<JavaImplementation> {
         }
 
         if (componentType.getProperties().isEmpty() && componentType.getReferences().isEmpty() && componentType.getResourceReferences().isEmpty()) {
-            evaluateConstructor(implementation, implClass, context);
-            evaluateSetters(implementation, implClass, context);
-            evaluateFields(implementation, implClass, context);
+            evaluateConstructor(componentType, implClass, context);
+            evaluateSetters(componentType, implClass, context);
+            evaluateFields(componentType, implClass, context);
         }
 
         String scope = componentType.getScope();
@@ -164,8 +160,7 @@ public class JavaHeuristic implements HeuristicProcessor<JavaImplementation> {
         return new Signature(selected);
     }
 
-    private void evaluateConstructor(JavaImplementation implementation, Class<?> implClass, IntrospectionContext context) {
-        InjectingComponentType componentType = implementation.getComponentType();
+    private void evaluateConstructor(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         Map<InjectionSite, Injectable> sites = componentType.getInjectionSites();
         Constructor<?> constructor;
         try {
@@ -199,8 +194,7 @@ public class JavaHeuristic implements HeuristicProcessor<JavaImplementation> {
         }
     }
 
-    private void evaluateSetters(JavaImplementation implementation, Class<?> implClass, IntrospectionContext context) {
-        InjectingComponentType componentType = implementation.getComponentType();
+    private void evaluateSetters(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         Map<InjectionSite, Injectable> sites = componentType.getInjectionSites();
         Set<Method> setters = helper.getInjectionMethods(implClass, componentType.getServices().values());
         for (Method setter : setters) {
@@ -220,8 +214,7 @@ public class JavaHeuristic implements HeuristicProcessor<JavaImplementation> {
         }
     }
 
-    private void evaluateFields(JavaImplementation implementation, Class<?> implClass, IntrospectionContext context) {
-        InjectingComponentType componentType = implementation.getComponentType();
+    private void evaluateFields(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         Map<InjectionSite, Injectable> sites = componentType.getInjectionSites();
         Set<Field> fields = helper.getInjectionFields(implClass);
         for (Field field : fields) {

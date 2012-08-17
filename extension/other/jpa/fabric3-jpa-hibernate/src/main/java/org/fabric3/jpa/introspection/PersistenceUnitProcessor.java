@@ -46,7 +46,6 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.jpa.model.PersistenceUnitResourceReference;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -60,7 +59,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class PersistenceUnitProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<PersistenceUnit, I> {
+public class PersistenceUnitProcessor extends AbstractAnnotationProcessor<PersistenceUnit> {
 
     private final ServiceContract factoryServiceContract;
 
@@ -71,19 +70,25 @@ public class PersistenceUnitProcessor<I extends Implementation<? extends Injecti
         assert !context.hasErrors(); // should not happen
     }
 
-    public void visitField(PersistenceUnit annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitField(PersistenceUnit annotation,
+                           Field field,
+                           Class<?> implClass,
+                           InjectingComponentType componentType,
+                           IntrospectionContext context) {
         FieldInjectionSite site = new FieldInjectionSite(field);
         PersistenceUnitResourceReference definition = createDefinition(annotation);
-        InjectingComponentType componentType = implementation.getComponentType();
         componentType.add(definition, site);
         // record that the implementation requires JPA
         componentType.addRequiredCapability("jpa");
     }
 
-    public void visitMethod(PersistenceUnit annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitMethod(PersistenceUnit annotation,
+                            Method method,
+                            Class<?> implClass,
+                            InjectingComponentType componentType,
+                            IntrospectionContext context) {
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         PersistenceUnitResourceReference definition = createDefinition(annotation);
-        InjectingComponentType componentType = implementation.getComponentType();
         componentType.add(definition, site);
         // record that the implementation requires JPA
         componentType.addRequiredCapability("jpa");

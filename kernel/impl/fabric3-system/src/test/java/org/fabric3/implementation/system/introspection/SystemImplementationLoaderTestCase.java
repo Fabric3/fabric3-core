@@ -48,10 +48,12 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * @version $Rev$ $Date$
@@ -59,11 +61,13 @@ import org.fabric3.spi.introspection.java.ImplementationProcessor;
 public class SystemImplementationLoaderTestCase extends TestCase {
     private IntrospectionContext context;
     private XMLStreamReader reader;
-    private ImplementationProcessor<SystemImplementation> implementationProcessor;
+    private ImplementationProcessor implementationProcessor;
     private SystemImplementationLoader loader;
 
     public void testLoad() throws Exception {
-        implementationProcessor.introspect(EasyMock.isA(SystemImplementation.class), EasyMock.eq(context));
+        InjectingComponentType componentType = new InjectingComponentType();
+        EasyMock.expect(implementationProcessor.introspect(EasyMock.isA(String.class), EasyMock.eq(context))).andReturn(componentType);
+
         EasyMock.replay(implementationProcessor);
 
         EasyMock.expect(reader.getAttributeCount()).andReturn(0);

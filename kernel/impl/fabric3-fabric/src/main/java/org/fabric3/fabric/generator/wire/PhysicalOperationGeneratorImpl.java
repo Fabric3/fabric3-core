@@ -293,6 +293,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         return operation.getIntents().contains(ALLOWS_BY_REFERENCE)
                 || logicalAttachPoint.getIntents().contains(ALLOWS_BY_REFERENCE)
                 || component.getIntents().contains(ALLOWS_BY_REFERENCE)
-                || component.getDefinition().getImplementation().getIntents().contains(ALLOWS_BY_REFERENCE);
+                || component.getDefinition().getImplementation().getIntents().contains(ALLOWS_BY_REFERENCE)
+                || component.getDefinition().getImplementation().getComponentType().getIntents().contains(ALLOWS_BY_REFERENCE);
     }
 }

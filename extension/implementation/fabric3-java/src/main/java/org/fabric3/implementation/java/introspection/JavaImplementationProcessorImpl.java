@@ -39,7 +39,7 @@ package org.fabric3.implementation.java.introspection;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.java.model.JavaImplementation;
+import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -53,44 +53,42 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  * @version $Rev$ $Date$
  */
 public class JavaImplementationProcessorImpl implements JavaImplementationProcessor {
-    private final ClassVisitor<JavaImplementation> classVisitor;
-    private final HeuristicProcessor<JavaImplementation> heuristic;
+    private final ClassVisitor classVisitor;
+    private final HeuristicProcessor heuristic;
     private final IntrospectionHelper helper;
 
-    public JavaImplementationProcessorImpl(@Reference(name = "classVisitor") ClassVisitor<JavaImplementation> classVisitor,
-                                           @Reference(name = "heuristic") HeuristicProcessor<JavaImplementation> heuristic,
+    public JavaImplementationProcessorImpl(@Reference(name = "classVisitor") ClassVisitor classVisitor,
+                                           @Reference(name = "heuristic") HeuristicProcessor heuristic,
                                            @Reference(name = "helper") IntrospectionHelper helper) {
         this.classVisitor = classVisitor;
         this.heuristic = heuristic;
         this.helper = helper;
     }
 
-    public void introspect(JavaImplementation implementation, IntrospectionContext context) {
-        String implClassName = implementation.getImplementationClass();
-        InjectingComponentType componentType = new InjectingComponentType(implClassName);
+    public InjectingComponentType introspect(String className, IntrospectionContext context) {
+        InjectingComponentType componentType = new InjectingComponentType(className);
         componentType.setScope("STATELESS");
-        implementation.setComponentType(componentType);
 
         ClassLoader cl = context.getClassLoader();
 
         Class<?> implClass;
         try {
-            implClass = helper.loadClass(implClassName, cl);
+            implClass = helper.loadClass(className, cl);
         } catch (ImplementationNotFoundException e) {
             Throwable cause = e.getCause();
             if (cause instanceof ClassNotFoundException || cause instanceof NoClassDefFoundError) {
                 // CNFE and NCDFE may be thrown as a result of a referenced class not being on the classpath
                 // If this is the case, ensure the correct class name is reported, not just the implementation 
-                context.addError(new ImplementationArtifactNotFound(implClassName, e.getCause().getMessage()));
+                context.addError(new ImplementationArtifactNotFound(className, e.getCause().getMessage()));
             } else {
-                context.addError(new ImplementationArtifactNotFound(implClassName));
+                context.addError(new ImplementationArtifactNotFound(className));
             }
-            return;
+            return componentType;
         }
         if (implClass.isInterface()) {
-            InvalidImplementation failure = new InvalidImplementation("Implementation class is an interface", implClassName);
+            InvalidImplementation failure = new InvalidImplementation("Implementation class is an interface", className);
             context.addError(failure);
-            return;
+            return componentType;
         }
 
         TypeMapping mapping = context.getTypeMapping(implClass);
@@ -101,13 +99,23 @@ public class JavaImplementationProcessorImpl implements JavaImplementationProces
         }
 
         try {
-            classVisitor.visit(implementation, implClass, context);
-            heuristic.applyHeuristics(implementation, implClass, context);
+            classVisitor.visit(componentType, implClass, context);
+            heuristic.applyHeuristics(componentType, implClass, context);
         } catch (NoClassDefFoundError e) {
             // May be thrown as a result of a referenced class not being on the classpath
-            context.addError(new ImplementationArtifactNotFound(implClassName, e.getMessage()));
+            context.addError(new ImplementationArtifactNotFound(className, e.getMessage()));
         }
+        validateScope(componentType, implClass, context);
+        return componentType;
 
+    }
+
+    private void validateScope(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
+        String scope = componentType.getScope();
+        if (componentType.isEagerInit() && !Scope.COMPOSITE.getScope().equals(scope) && !Scope.DOMAIN.getScope().equals(scope)) {
+            EagerInitNotSupported warning = new EagerInitNotSupported(implClass);
+            context.addWarning(warning);
+        }
     }
 
 }

@@ -63,12 +63,12 @@ import org.fabric3.spi.model.type.java.InjectionSite;
  * @version $Rev$ $Date$
  */
 public class WebImplementationIntrospectorImpl implements WebImplementationIntrospector {
-    private ClassVisitor<WebArtifactImplementation> classVisitor;
+    private ClassVisitor classVisitor;
     private ContractMatcher matcher;
     private IntrospectionHelper helper;
     private WebXmlIntrospector xmlIntrospector;
 
-    public WebImplementationIntrospectorImpl(@Reference ClassVisitor<WebArtifactImplementation> classVisitor,
+    public WebImplementationIntrospectorImpl(@Reference ClassVisitor classVisitor,
                                              @Reference WebXmlIntrospector xmlIntrospector,
                                              @Reference ContractMatcher matcher,
                                              @Reference IntrospectionHelper helper) {
@@ -95,7 +95,7 @@ public class WebImplementationIntrospectorImpl implements WebImplementationIntro
                 helper.resolveTypeParameters(artifact, mapping);
             }
             IntrospectionContext childContext = new DefaultIntrospectionContext(context);
-            classVisitor.visit(artifactImpl, artifact, childContext);
+            classVisitor.visit(type, artifact, childContext);
             if (childContext.hasErrors()) {
                 context.addErrors(childContext.getErrors());
             }

@@ -37,24 +37,23 @@
 */
 package org.fabric3.spi.introspection.java;
 
-import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Introspects a Java-based implementation.
  *
  * @version $Rev$ $Date$
- * @param <I>            the type of Implementation an implementation can handle
  */
-public interface ImplementationProcessor<I extends Implementation<? extends ComponentType>> {
+public interface ImplementationProcessor {
 
     /**
      * Introspects an implementation and derives the associated component type. If errors or warnings are encountered, they will be collated in the
      * IntrospectionContext.
      *
-     * @param implementation the implementation to inspect
-     * @param context        the introspection context
+     * @param className the fully qualified class name
+     * @param context   the introspection context
+     * @return the introspected component type
      */
-    void introspect(I implementation, IntrospectionContext context);
+    InjectingComponentType introspect(String className, IntrospectionContext context);
 }

@@ -70,6 +70,7 @@ public class OASISWebComponentContext implements ComponentContext {
         }
     }
 
+    @SuppressWarnings({"unchecked"})
     public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
         try {
             return (R) component.cast(target);

@@ -49,6 +49,7 @@ import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Loads a Java component implementation in a composite.
@@ -83,7 +84,8 @@ public class JavaImplementationLoader extends AbstractValidatingTypeLoader<JavaI
         LoaderUtil.skipToEndElement(reader);
 
         implementation.setImplementationClass(implClass);
-        implementationProcessor.introspect(implementation, introspectionContext);
+        InjectingComponentType componentType = implementationProcessor.introspect(implClass, introspectionContext);
+        implementation.setComponentType(componentType);
         return implementation;
     }
 

@@ -37,7 +37,6 @@
 */
 package org.fabric3.implementation.java.introspection;
 
-import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
 
 /**
@@ -45,5 +44,5 @@ import org.fabric3.spi.introspection.java.ImplementationProcessor;
  *
  * @version $Rev$ $Date$
  */
-public interface JavaImplementationProcessor extends ImplementationProcessor<JavaImplementation> {
+public interface JavaImplementationProcessor extends ImplementationProcessor {
 }

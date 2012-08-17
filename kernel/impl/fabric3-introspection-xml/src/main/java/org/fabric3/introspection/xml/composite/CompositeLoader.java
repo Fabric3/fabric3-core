@@ -83,6 +83,7 @@ import org.fabric3.spi.introspection.xml.IncompatibleContracts;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
@@ -143,7 +144,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                            @Reference ContractMatcher contractMatcher,
                            @Reference LoaderHelper loaderHelper) {
         super(registry);
-        addAttributes("name","autowire","targetNamespace","local","requires","policySets","constrainingType","channel","schemaLocation");
+        addAttributes("name", "autowire", "targetNamespace", "local", "requires", "policySets", "constrainingType", "channel", "schemaLocation");
         this.serviceLoader = serviceLoader;
         this.referenceLoader = referenceLoader;
         this.propertyLoader = propertyLoader;
@@ -433,6 +434,12 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         for (ServiceDefinition definition : type.getServices().values()) {
             CompositeService service = (CompositeService) definition;
             URI promotedUri = service.getPromote();
+            if (promotedUri == null) {
+                MissingAttribute error =
+                        new MissingAttribute("Service promotion not specified for " + service.getName() + " in composite " + type.getName(), reader);
+                context.addError(error);
+                continue;
+            }
             String componentName = UriHelper.getDefragmentedNameAsString(promotedUri);
             ComponentDefinition promotedComponent = type.getComponents().get(componentName);
             ServiceDefinition promotedService;

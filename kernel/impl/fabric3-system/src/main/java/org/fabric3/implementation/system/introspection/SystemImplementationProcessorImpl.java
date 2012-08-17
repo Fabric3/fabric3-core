@@ -62,45 +62,45 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  *
  * @version $Rev$ $Date$
  */
-public class SystemImplementationProcessorImpl implements ImplementationProcessor<SystemImplementation> {
-    private final ClassVisitor<SystemImplementation> classVisitor;
-    private final HeuristicProcessor<SystemImplementation> heuristic;
+public class SystemImplementationProcessorImpl implements ImplementationProcessor {
+    private final ClassVisitor classVisitor;
+    private final HeuristicProcessor heuristic;
     private final IntrospectionHelper helper;
 
-    public SystemImplementationProcessorImpl(@Reference(name = "classVisitor") ClassVisitor<SystemImplementation> classVisitor,
-                                             @Reference(name = "heuristic") HeuristicProcessor<SystemImplementation> heuristic,
+    public SystemImplementationProcessorImpl(@Reference(name = "classVisitor") ClassVisitor classVisitor,
+                                             @Reference(name = "heuristic") HeuristicProcessor heuristic,
                                              @Reference(name = "helper") IntrospectionHelper helper) {
         this.classVisitor = classVisitor;
         this.heuristic = heuristic;
         this.helper = helper;
     }
 
-    public void introspect(SystemImplementation implementation, IntrospectionContext context) {
-        String implClassName = implementation.getImplementationClass();
-        InjectingComponentType componentType = new InjectingComponentType(implClassName);
+    public InjectingComponentType introspect(String className, IntrospectionContext context) {
+        SystemImplementation implementation = new SystemImplementation();
+        InjectingComponentType componentType = new InjectingComponentType(className);
         componentType.setScope("COMPOSITE");
         implementation.setComponentType(componentType);
 
         ClassLoader cl = context.getClassLoader();
         Class<?> implClass;
         try {
-            implClass = helper.loadClass(implClassName, cl);
+            implClass = helper.loadClass(className, cl);
         } catch (ImplementationNotFoundException e) {
             Throwable cause = e.getCause();
             if (cause instanceof ClassNotFoundException || cause instanceof NoClassDefFoundError) {
                 // CNFE and NCDFE may be thrown as a result of a referenced class not being on the classpath
                 // If this is the case, ensure the correct class name is reported, not just the implementation
-                context.addError(new MissingResource("Class referenced from system implementation not found on classpath",
-                                                     e.getCause().getMessage()));
+                String message = e.getCause().getMessage();
+                context.addError(new MissingResource("Class referenced from system implementation not found on classpath", message));
             } else {
-                context.addError(new MissingResource("System implementation class not found on classpath", implClassName));
+                context.addError(new MissingResource("System implementation class not found on classpath", className));
             }
-            return;
+            return componentType;
         }
         if (implClass.isInterface()) {
-            InvalidImplementation failure = new InvalidImplementation("Implementation class is an interface", implClassName);
+            InvalidImplementation failure = new InvalidImplementation("Implementation class is an interface", className);
             context.addError(failure);
-            return;
+            return componentType;
         }
         TypeMapping mapping = context.getTypeMapping(implClass);
         if (mapping == null) {
@@ -109,8 +109,9 @@ public class SystemImplementationProcessorImpl implements ImplementationProcesso
             helper.resolveTypeParameters(implClass, mapping);
         }
 
-        classVisitor.visit(implementation, implClass, context);
+        classVisitor.visit(componentType, implClass, context);
 
-        heuristic.applyHeuristics(implementation, implClass, context);
+        heuristic.applyHeuristics(componentType, implClass, context);
+        return componentType;
     }
 }

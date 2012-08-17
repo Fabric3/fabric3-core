@@ -84,7 +84,7 @@ import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
  */
 public class SingletonComponentSynthesizer implements ComponentSynthesizer {
 
-    private ImplementationProcessor<SystemImplementation> implementationProcessor;
+    private ImplementationProcessor implementationProcessor;
     private AtomicComponentInstantiator instantiator;
     private LogicalComponentManager lcm;
     private ComponentManager componentManager;
@@ -92,7 +92,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
     private ScopeContainer scopeContainer;
 
     @Constructor
-    public SingletonComponentSynthesizer(@Reference ImplementationProcessor<SystemImplementation> implementationProcessor,
+    public SingletonComponentSynthesizer(@Reference ImplementationProcessor implementationProcessor,
                                          @Reference AtomicComponentInstantiator instantiator,
                                          @Reference LogicalComponentManager lcm,
                                          @Reference ComponentManager componentManager,
@@ -101,7 +101,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         this(implementationProcessor, instantiator, lcm, componentManager, contractProcessor, registry.getScopeContainer(Scope.COMPOSITE));
     }
 
-    public SingletonComponentSynthesizer(ImplementationProcessor<SystemImplementation> implementationProcessor,
+    public SingletonComponentSynthesizer(ImplementationProcessor implementationProcessor,
                                          AtomicComponentInstantiator instantiator,
                                          LogicalComponentManager lcm,
                                          ComponentManager componentManager,
@@ -167,7 +167,9 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             // introspect the instance so it may be injected by the runtime with additional services
             SystemImplementation implementation = new SystemImplementation();
             implementation.setImplementationClass(implClassName);
-            implementationProcessor.introspect(implementation, context);
+            InjectingComponentType componentType = implementationProcessor.introspect(implClassName, context);
+            implementation.setComponentType(componentType);
+
             ComponentDefinition<Implementation<?>> def = new ComponentDefinition<Implementation<?>>(name);
             SingletonImplementation singletonImplementation = new SingletonImplementation(implementation.getComponentType(), implClassName);
             def.setImplementation(singletonImplementation);

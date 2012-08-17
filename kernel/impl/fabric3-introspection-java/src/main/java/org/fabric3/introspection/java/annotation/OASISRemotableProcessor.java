@@ -43,8 +43,8 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import org.oasisopen.sca.annotation.Remotable;
 import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Remotable;
 
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ServiceDefinition;
@@ -57,18 +57,17 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 /**
  * @version $Rev$ $Date$
  */
-public class OASISRemotableProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Remotable, I> {
-
-    private final JavaContractProcessor contractProcessor;
+public class OASISRemotableProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Remotable> {
+    private JavaContractProcessor contractProcessor;
 
     public OASISRemotableProcessor(@Reference JavaContractProcessor contractProcessor) {
         super(Remotable.class);
         this.contractProcessor = contractProcessor;
     }
 
-    public void visitType(Remotable annotation, Class<?> type, I implementation, IntrospectionContext context) {
+    public void visitType(Remotable annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
         ServiceContract serviceContract = contractProcessor.introspect(type, context);
         ServiceDefinition definition = new ServiceDefinition(serviceContract.getInterfaceName(), serviceContract);
-        implementation.getComponentType().add(definition);
+        componentType.add(definition);
     }
 }

@@ -52,7 +52,6 @@ import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.component.CallbackDefinition;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -66,7 +65,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 /**
  * @version $Rev$ $Date$
  */
-public class OASISCallbackProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Callback, I> {
+public class OASISCallbackProcessor extends AbstractAnnotationProcessor<Callback> {
     private final IntrospectionHelper helper;
     private final JavaContractProcessor contractProcessor;
 
@@ -77,24 +76,28 @@ public class OASISCallbackProcessor<I extends Implementation<? extends Injecting
     }
 
 
-    public void visitField(Callback annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitField(Callback annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         validate(field, context);
 
         String name = helper.getSiteName(field, null);
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
         CallbackDefinition definition = createDefinition(name, type, implClass, context);
-        implementation.getComponentType().add(definition, site);
+        componentType.add(definition, site);
     }
 
-    public void visitMethod(Callback annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitMethod(Callback annotation,
+                            Method method,
+                            Class<?> implClass,
+                            InjectingComponentType componentType,
+                            IntrospectionContext context) {
         validate(method, context);
 
         String name = helper.getSiteName(method, null);
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         CallbackDefinition definition = createDefinition(name, type, implClass, context);
-        implementation.getComponentType().add(definition, site);
+        componentType.add(definition, site);
     }
 
     private void validate(Field field, IntrospectionContext context) {
@@ -102,7 +105,7 @@ public class OASISCallbackProcessor<I extends Implementation<? extends Injecting
             Class<?> clazz = field.getDeclaringClass();
             InvalidAccessor warning =
                     new InvalidAccessor("Illegal callback. The field " + field.getName() + " on " + clazz.getName()
-                            + " is annotated with @Callback and must be public or protected.", clazz);
+                                                + " is annotated with @Callback and must be public or protected.", clazz);
             context.addError(warning);
         }
     }
@@ -111,7 +114,7 @@ public class OASISCallbackProcessor<I extends Implementation<? extends Injecting
         if (!Modifier.isProtected(method.getModifiers()) && !Modifier.isPublic(method.getModifiers())) {
             Class<?> clazz = method.getDeclaringClass();
             InvalidAccessor warning = new InvalidAccessor("Illegal callback. The method " + method
-                    + " is annotated with @Callback and must be public or protected.", clazz);
+                                                                  + " is annotated with @Callback and must be public or protected.", clazz);
             context.addError(warning);
         }
     }

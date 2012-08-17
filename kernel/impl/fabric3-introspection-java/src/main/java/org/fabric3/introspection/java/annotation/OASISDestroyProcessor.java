@@ -47,7 +47,6 @@ import java.lang.reflect.Method;
 
 import org.oasisopen.sca.annotation.Destroy;
 
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
@@ -56,17 +55,21 @@ import org.fabric3.spi.model.type.java.Signature;
 /**
  * @version $Rev$ $Date$
  */
-public class OASISDestroyProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Destroy, I> {
+public class OASISDestroyProcessor extends AbstractAnnotationProcessor<Destroy> {
 
     public OASISDestroyProcessor() {
         super(Destroy.class);
     }
 
-    public void visitMethod(Destroy annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitMethod(Destroy annotation,
+                            Method method,
+                            Class<?> implClass,
+                            InjectingComponentType componentType,
+                            IntrospectionContext context) {
         if (!validate(method, context)) {
             return;
         }
-        implementation.getComponentType().setDestroyMethod(new Signature(method));
+        componentType.setDestroyMethod(new Signature(method));
     }
 
     private boolean validate(Method method, IntrospectionContext context) {

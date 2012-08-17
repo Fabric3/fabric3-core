@@ -45,7 +45,6 @@ package org.fabric3.introspection.java.annotation;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
@@ -61,7 +60,8 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 public class ProducerProcessorTestCase extends TestCase {
-    private ProducerProcessor<Implementation<? extends InjectingComponentType>> processor;
+    private ProducerProcessor processor;
+    private InjectingComponentType componentType;
 
     public void testMethod() throws Exception {
         Method method = TestClass.class.getDeclaredMethod("setProducer", TestClass.class);
@@ -70,10 +70,9 @@ public class ProducerProcessorTestCase extends TestCase {
         TypeMapping mapping = new TypeMapping();
         context.addTypeMapping(TestClass.class, mapping);
 
-        TestImplementation implementation = new TestImplementation();
-        processor.visitMethod(annotation, method, TestClass.class, implementation, context);
+        processor.visitMethod(annotation, method, TestClass.class, componentType, context);
         assertEquals(0, context.getErrors().size());
-        assertTrue(implementation.getComponentType().getProducers().containsKey("producer"));
+        assertTrue(componentType.getProducers().containsKey("producer"));
     }
 
     public void testField() throws Exception {
@@ -83,10 +82,9 @@ public class ProducerProcessorTestCase extends TestCase {
         TypeMapping mapping = new TypeMapping();
         context.addTypeMapping(TestClass.class, mapping);
 
-        TestImplementation implementation = new TestImplementation();
-        processor.visitField(annotation, field, TestClass.class, implementation, context);
+        processor.visitField(annotation, field, TestClass.class, componentType, context);
         assertEquals(0, context.getErrors().size());
-        assertTrue(implementation.getComponentType().getProducers().containsKey("producer"));
+        assertTrue(componentType.getProducers().containsKey("producer"));
     }
 
     public void testName() throws Exception {
@@ -96,10 +94,9 @@ public class ProducerProcessorTestCase extends TestCase {
         TypeMapping mapping = new TypeMapping();
         context.addTypeMapping(TestClass.class, mapping);
 
-        TestImplementation implementation = new TestImplementation();
-        processor.visitField(annotation, field, TestClass.class, implementation, context);
+        processor.visitField(annotation, field, TestClass.class, componentType, context);
         assertEquals(0, context.getErrors().size());
-        assertTrue(implementation.getComponentType().getProducers().containsKey("foo"));
+        assertTrue(componentType.getProducers().containsKey("foo"));
     }
 
     public static class TestClass {
@@ -115,19 +112,6 @@ public class ProducerProcessorTestCase extends TestCase {
         @Producer("foo")
         public TestClass producer2;
 
-    }
-
-    public static class TestImplementation extends Implementation<InjectingComponentType> {
-        private static final long serialVersionUID = 2759280710238779821L;
-        private InjectingComponentType componentType = new InjectingComponentType();
-
-        public QName getType() {
-            return null;
-        }
-
-        public InjectingComponentType getComponentType() {
-            return componentType;
-        }
     }
 
     protected void setUp() throws Exception {
@@ -146,7 +130,8 @@ public class ProducerProcessorTestCase extends TestCase {
                 return contract;
             }
         };
-        processor = new ProducerProcessor<Implementation<? extends InjectingComponentType>>(contractProcessor, helper);
+        processor = new ProducerProcessor(contractProcessor, helper);
+        componentType = new InjectingComponentType();
 
     }
 }

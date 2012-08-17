@@ -46,7 +46,6 @@ import java.util.Set;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -70,7 +69,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
  *
  * @version $Rev$ $Date$
  */
-public class SystemUnannotatedHeuristic implements HeuristicProcessor<SystemImplementation> {
+public class SystemUnannotatedHeuristic implements HeuristicProcessor {
 
     private final IntrospectionHelper helper;
     private final JavaContractProcessor contractProcessor;
@@ -80,21 +79,19 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor<SystemImpl
         this.contractProcessor = contractProcessor;
     }
 
-    public void applyHeuristics(SystemImplementation implementation, Class<?> implClass, IntrospectionContext context) {
-        InjectingComponentType componentType = implementation.getComponentType();
+    public void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
 
         // if any properties, references or resources have been defined already assume that was what the user intended and return
         if (!(componentType.getProperties().isEmpty() && componentType.getReferences().isEmpty() && componentType.getResourceReferences().isEmpty())) {
             return;
         }
 
-        evaluateConstructor(implementation, implClass, context);
-        evaluateSetters(implementation, implClass, context);
-        evaluateFields(implementation, implClass, context);
+        evaluateConstructor(componentType, implClass, context);
+        evaluateSetters(componentType, implClass, context);
+        evaluateFields(componentType, implClass, context);
     }
 
-    void evaluateConstructor(SystemImplementation implementation, Class<?> implClass, IntrospectionContext context) {
-        InjectingComponentType componentType = implementation.getComponentType();
+    void evaluateConstructor(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         Map<InjectionSite, Injectable> sites = componentType.getInjectionSites();
         Constructor<?> constructor;
         try {
@@ -121,8 +118,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor<SystemImpl
         }
     }
 
-    void evaluateSetters(SystemImplementation implementation, Class<?> implClass, IntrospectionContext context) {
-        InjectingComponentType componentType = implementation.getComponentType();
+    void evaluateSetters(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         Map<InjectionSite, Injectable> sites = componentType.getInjectionSites();
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Set<Method> setters = helper.getInjectionMethods(implClass, componentType.getServices().values());
@@ -140,8 +136,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor<SystemImpl
         }
     }
 
-    void evaluateFields(SystemImplementation implementation, Class<?> implClass, IntrospectionContext context) {
-        InjectingComponentType componentType = implementation.getComponentType();
+    void evaluateFields(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         Map<InjectionSite, Injectable> sites = componentType.getInjectionSites();
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Set<Field> fields = helper.getInjectionFields(implClass);

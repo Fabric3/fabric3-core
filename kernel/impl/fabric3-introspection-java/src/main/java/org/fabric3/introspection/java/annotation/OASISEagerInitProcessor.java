@@ -43,56 +43,24 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import javax.xml.namespace.QName;
-
 import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Scope;
 
-import org.fabric3.api.annotation.scope.Composite;
-import org.fabric3.api.annotation.scope.Domain;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
-import static org.fabric3.model.type.component.Scope.COMPOSITE;
-import static org.fabric3.model.type.component.Scope.DOMAIN;
-
 /**
  * @version $Rev$ $Date$
  */
-public class OASISEagerInitProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<EagerInit, I> {
-
-    public static final QName IMPLEMENTATION_SYSTEM = new QName("urn:fabric3.org", "implementation.system");
+public class OASISEagerInitProcessor extends AbstractAnnotationProcessor<EagerInit> {
 
     public OASISEagerInitProcessor() {
         super(EagerInit.class);
     }
 
-    public void visitType(EagerInit annotation, Class<?> type, I implementation, IntrospectionContext context) {
-        if (!validateScope(type, implementation, context)) {
-            return;
-        }
-        InjectingComponentType componentType = implementation.getComponentType();
+    public void visitType(EagerInit annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
         componentType.setInitLevel(50);
     }
 
-    private boolean validateScope(Class<?> type, I implementation, IntrospectionContext context) {
-        if (IMPLEMENTATION_SYSTEM.equals(implementation.getType())) {
-            // system implementations are composite scoped by default
-            return true;
-        }
-        Scope scope = type.getAnnotation(Scope.class);
-        if (scope != null && !COMPOSITE.getScope().equals(scope.value()) && !DOMAIN.getScope().equals(scope.value())) {
-            EagerInitNotSupported warning = new EagerInitNotSupported(type);
-            context.addWarning(warning);
-            return false;
-        } else if (scope == null && type.getAnnotation(Composite.class) == null && type.getAnnotation(Domain.class) == null) {
-            EagerInitNotSupported warning = new EagerInitNotSupported(type);
-            context.addWarning(warning);
-            return false;
-        }
-        return true;
-    }
 
 }

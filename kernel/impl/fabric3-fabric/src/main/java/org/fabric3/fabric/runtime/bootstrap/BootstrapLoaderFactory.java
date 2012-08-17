@@ -75,7 +75,7 @@ public class BootstrapLoaderFactory {
     private BootstrapLoaderFactory() {
     }
 
-    public static Loader createLoader(ImplementationProcessor<SystemImplementation> processor, XMLFactory xmlFactory) {
+    public static Loader createLoader(ImplementationProcessor processor, XMLFactory xmlFactory) {
         LoaderHelper loaderHelper = new DefaultLoaderHelper();
 
         LoaderRegistryImpl registry = new LoaderRegistryImpl(xmlFactory);

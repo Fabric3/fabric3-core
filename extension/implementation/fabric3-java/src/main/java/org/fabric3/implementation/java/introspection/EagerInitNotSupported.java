@@ -34,14 +34,8 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.introspection.java.annotation;
+*/
+package org.fabric3.implementation.java.introspection;
 
 import org.fabric3.host.contribution.ValidationFailure;
 
@@ -61,3 +55,4 @@ public class EagerInitNotSupported extends ValidationFailure {
                 + " . Eager initialization is only supported on domain and composite scope implementations.";
     }
 }
+

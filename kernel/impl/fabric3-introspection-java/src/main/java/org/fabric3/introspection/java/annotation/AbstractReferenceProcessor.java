@@ -48,7 +48,6 @@ import java.lang.reflect.Type;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -57,15 +56,13 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Contains functionality common to OASIS and OSOA <code>@Reference</code> annotation processors.
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractReferenceProcessor<A extends Annotation, I extends Implementation<? extends InjectingComponentType>>
-        extends AbstractAnnotationProcessor<A, I> {
+public abstract class AbstractReferenceProcessor<A extends Annotation> extends AbstractAnnotationProcessor<A> {
     protected JavaContractProcessor contractProcessor;
     protected IntrospectionHelper helper;
     protected PolicyAnnotationProcessor policyProcessor;

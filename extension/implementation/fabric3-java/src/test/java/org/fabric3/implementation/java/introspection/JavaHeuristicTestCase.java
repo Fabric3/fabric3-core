@@ -49,7 +49,6 @@ import org.easymock.EasyMock;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.java.model.JavaImplementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -65,7 +64,6 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
  */
 public class JavaHeuristicTestCase extends TestCase {
     private JavaHeuristic heuristic;
-    private JavaImplementation implementation;
     private IntrospectionHelper helper;
     private InjectingComponentType type;
     private JavaContractProcessor contractProcessor;
@@ -89,7 +87,7 @@ public class JavaHeuristicTestCase extends TestCase {
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
         context.addTypeMapping(MultipleCtorsWithAnnotation.class, new TypeMapping());
 
-        heuristic.applyHeuristics(implementation, MultipleCtorsWithAnnotation.class, context);
+        heuristic.applyHeuristics(type, MultipleCtorsWithAnnotation.class, context);
         assertEquals(List.class.getName(), type.getConstructor().getParameterTypes().get(0));
     }
 
@@ -112,7 +110,7 @@ public class JavaHeuristicTestCase extends TestCase {
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
         context.addTypeMapping(MultipleCtors.class, new TypeMapping());
 
-        heuristic.applyHeuristics(implementation, MultipleCtors.class, context);
+        heuristic.applyHeuristics(type, MultipleCtors.class, context);
         assertEquals(List.class.getName(), type.getConstructor().getParameterTypes().get(0));
     }
 
@@ -124,10 +122,7 @@ public class JavaHeuristicTestCase extends TestCase {
         contractProcessor = EasyMock.createMock(JavaContractProcessor.class);
         heuristic = new JavaHeuristic(helper, contractProcessor, processor);
 
-        implementation = new JavaImplementation();
         type = new InjectingComponentType();
-        implementation.setComponentType(type);
-
     }
 
 

@@ -35,7 +35,7 @@
     </component>
 
 
-    <component name="SystemImplementationProcessorImpl">
+    <component name="SystemImplementationProcessor" f3:key="f3:implementation.system">
         <f3:implementation.system class="org.fabric3.implementation.system.introspection.SystemImplementationProcessorImpl"/>
         <reference name="heuristic" target="SystemHeuristic"/>
     </component>

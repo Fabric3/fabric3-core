@@ -67,7 +67,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
  *
  * @version $Rev$ $Date$
  */
-public class OASISContextProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Context, I> {
+public class OASISContextProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Context> {
     private final IntrospectionHelper helper;
 
     public OASISContextProcessor(@Reference IntrospectionHelper helper) {
@@ -75,25 +75,29 @@ public class OASISContextProcessor<I extends Implementation<? extends InjectingC
         this.helper = helper;
     }
 
-    public void visitField(Context annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitField(Context annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
-        visit(type, implementation, site, field.getDeclaringClass(), context);
+        visit(type, componentType, site, field.getDeclaringClass(), context);
     }
 
-    public void visitMethod(Context annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitMethod(Context annotation,
+                            Method method,
+                            Class<?> implClass,
+                            InjectingComponentType componentType,
+                            IntrospectionContext context) {
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        visit(type, implementation, site, method.getDeclaringClass(), context);
+        visit(type, componentType, site, method.getDeclaringClass(), context);
     }
 
-    private void visit(Type type, I implementation, InjectionSite site, Class<?> clazz, IntrospectionContext context) {
+    private void visit(Type type, InjectingComponentType componentType, InjectionSite site, Class<?> clazz, IntrospectionContext context) {
         if (!(type instanceof Class)) {
             context.addError(new InvalidContextType("Context type " + type + " is not supported in " + clazz.getName()));
         } else if (RequestContext.class.isAssignableFrom((Class<?>) type)) {
-            implementation.getComponentType().addInjectionSite(site, Injectable.OASIS_REQUEST_CONTEXT);
+            componentType.addInjectionSite(site, Injectable.OASIS_REQUEST_CONTEXT);
         } else if (ComponentContext.class.isAssignableFrom((Class<?>) type)) {
-            implementation.getComponentType().addInjectionSite(site, Injectable.OASIS_COMPONENT_CONTEXT);
+            componentType.addInjectionSite(site, Injectable.OASIS_COMPONENT_CONTEXT);
         } else {
             context.addError(new InvalidContextType("Context type is not supported: " + type));
         }

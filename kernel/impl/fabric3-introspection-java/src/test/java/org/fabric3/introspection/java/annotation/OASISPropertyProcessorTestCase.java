@@ -45,14 +45,11 @@ package org.fabric3.introspection.java.annotation;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
-import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -61,15 +58,15 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 @SuppressWarnings("unchecked")
 public class OASISPropertyProcessorTestCase extends TestCase {
-    private OASISPropertyProcessor<Implementation<? extends InjectingComponentType>> processor;
-
+    private OASISPropertyProcessor processor;
+    private InjectingComponentType componentType;
 
     public void testInvalidMethodAccessor() throws Exception {
         Method method = TestPrivateClass.class.getDeclaredMethod("setRequiredProperty", String.class);
         Property annotation = method.getAnnotation(Property.class);
         IntrospectionContext context = new DefaultIntrospectionContext();
 
-        processor.visitMethod(annotation, method, TestPrivateClass.class, new TestImplementation(), context);
+        processor.visitMethod(annotation, method, TestPrivateClass.class, componentType, context);
         assertEquals(1, context.getErrors().size());
         assertTrue(context.getErrors().get(0) instanceof InvalidAccessor);
     }
@@ -81,7 +78,7 @@ public class OASISPropertyProcessorTestCase extends TestCase {
         TypeMapping mapping = new TypeMapping();
         context.addTypeMapping(TestPrivateClass.class, mapping);
 
-        processor.visitField(annotation, field, TestPrivateClass.class, new TestImplementation(), context);
+        processor.visitField(annotation, field, TestPrivateClass.class, componentType, context);
         assertEquals(1, context.getErrors().size());
         assertTrue(context.getErrors().get(0) instanceof InvalidAccessor);
     }
@@ -91,7 +88,7 @@ public class OASISPropertyProcessorTestCase extends TestCase {
         Property annotation = method.getAnnotation(Property.class);
         IntrospectionContext context = new DefaultIntrospectionContext();
 
-        processor.visitMethod(annotation, method, TestPrivateClass.class, new TestImplementation(), context);
+        processor.visitMethod(annotation, method, TestPrivateClass.class, componentType, context);
         assertEquals(1, context.getErrors().size());
         assertTrue(context.getErrors().get(0) instanceof InvalidMethod);
     }
@@ -120,23 +117,10 @@ public class OASISPropertyProcessorTestCase extends TestCase {
         private String requiredProperty;
     }
 
-    public static class TestImplementation extends Implementation {
-        private static final long serialVersionUID = 2759280710238779821L;
-
-        public QName getType() {
-            return null;
-        }
-
-        public ComponentType getComponentType() {
-            return new InjectingComponentType();
-        }
-    }
-
     protected void setUp() throws Exception {
         super.setUp();
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
-        processor = new OASISPropertyProcessor<Implementation<? extends InjectingComponentType>>(helper);
-
-
+        processor = new OASISPropertyProcessor(helper);
+        componentType = new InjectingComponentType();
     }
 }

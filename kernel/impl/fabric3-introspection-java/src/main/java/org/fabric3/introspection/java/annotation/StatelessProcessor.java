@@ -46,21 +46,20 @@ package org.fabric3.introspection.java.annotation;
 import org.oasisopen.sca.annotation.Scope;
 
 import org.fabric3.api.annotation.scope.Stateless;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 
-public class StatelessProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Stateless, I> {
+public class StatelessProcessor extends AbstractAnnotationProcessor<Stateless> {
 
     public StatelessProcessor() {
         super(Stateless.class);
     }
 
-    public void visitType(Stateless annotation, Class<?> type, I implementation, IntrospectionContext context) {
+    public void visitType(Stateless annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
         Scope scopeMetaAnnotation = annotation.annotationType().getAnnotation(Scope.class);
         String scopeName = scopeMetaAnnotation.value();
-        implementation.getComponentType().setScope(scopeName);
+        componentType.setScope(scopeName);
     }
 }

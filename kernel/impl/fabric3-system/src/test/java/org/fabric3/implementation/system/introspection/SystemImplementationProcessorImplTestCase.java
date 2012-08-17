@@ -49,7 +49,6 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
-import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionException;
@@ -64,21 +63,18 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  */
 public class SystemImplementationProcessorImplTestCase extends TestCase {
     private SystemImplementationProcessorImpl loader;
-    private ClassVisitor<SystemImplementation> classVisitor;
+    private ClassVisitor classVisitor;
     private IntrospectionContext context;
-    private SystemImplementation impl;
-    private HeuristicProcessor<SystemImplementation> heuristic;
+    private HeuristicProcessor heuristic;
     private IMocksControl control;
 
     public void testSimple() throws IntrospectionException {
-        impl.setImplementationClass(Simple.class.getName());
 
-        classVisitor.visit(EasyMock.same(impl), EasyMock.eq(Simple.class), EasyMock.isA(IntrospectionContext.class));
-        heuristic.applyHeuristics(EasyMock.same(impl), EasyMock.eq(Simple.class), EasyMock.isA(IntrospectionContext.class));
+        classVisitor.visit(EasyMock.isA(InjectingComponentType.class), EasyMock.eq(Simple.class), EasyMock.isA(IntrospectionContext.class));
+        heuristic.applyHeuristics(EasyMock.isA(InjectingComponentType.class), EasyMock.eq(Simple.class), EasyMock.isA(IntrospectionContext.class));
         control.replay();
-        loader.introspect(impl, context);
+        InjectingComponentType componentType = loader.introspect(Simple.class.getName(), context);
 
-        InjectingComponentType componentType = impl.getComponentType();
         assertNotNull(componentType);
         assertEquals(Simple.class.getName(), componentType.getImplClass());
         control.verify();
@@ -90,7 +86,6 @@ public class SystemImplementationProcessorImplTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        impl = new SystemImplementation();
 
         IntrospectionHelper helper = EasyMock.createMock(IntrospectionHelper.class);
         helper.loadClass(EasyMock.isA(String.class), EasyMock.isA(ClassLoader.class));

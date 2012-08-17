@@ -66,6 +66,7 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaClass;
 
 /**
@@ -370,7 +371,12 @@ public class PhysicalOperationGeneratorImplTestCase extends TestCase {
     private class MockImplementation extends Implementation<ComponentType> {
         private static final long serialVersionUID = 2052223324217668545L;
 
-        @Override
+        private InjectingComponentType componentType = new InjectingComponentType();
+
+        public ComponentType getComponentType() {
+            return componentType;
+        }
+
         public QName getType() {
             return null;
         }

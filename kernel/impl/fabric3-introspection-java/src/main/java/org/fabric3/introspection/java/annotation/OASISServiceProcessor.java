@@ -45,11 +45,10 @@ package org.fabric3.introspection.java.annotation;
 
 import java.lang.annotation.Annotation;
 
-import org.oasisopen.sca.annotation.Service;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -64,7 +63,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  *
  * @version $Rev$ $Date$
  */
-public class OASISServiceProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Service, I> {
+public class OASISServiceProcessor extends AbstractAnnotationProcessor<Service> {
     private final JavaContractProcessor contractProcessor;
     private PolicyAnnotationProcessor policyProcessor;
     private OperationPolicyIntrospector policyIntrospector;
@@ -86,9 +85,7 @@ public class OASISServiceProcessor<I extends Implementation<? extends InjectingC
         this.policyProcessor = processor;
     }
 
-    public void visitType(Service annotation, Class<?> type, I implementation, IntrospectionContext context) {
-        InjectingComponentType componentType = implementation.getComponentType();
-
+    public void visitType(Service annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
         for (Class<?> service : annotation.names()) {
             ServiceDefinition definition = createDefinition(service, type, context);
             componentType.add(definition);

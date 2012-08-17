@@ -44,26 +44,24 @@
 package org.fabric3.introspection.java.annotation;
 
 import java.lang.reflect.Method;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.oasisopen.sca.annotation.Init;
 
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 @SuppressWarnings("unchecked")
 public class OASISInitProcessorTestCase extends TestCase {
+    private OASISInitProcessor processor;
+    private InjectingComponentType componentType;
 
     public void testInvalidStringReturnInit() throws Exception {
         TestInvalidInitClass componentToProcess = new TestInvalidInitClass();
         Init annotation = componentToProcess.getClass().getAnnotation(Init.class);
-        OASISInitProcessor<Implementation<? extends InjectingComponentType>> processor =
-                new OASISInitProcessor<Implementation<? extends InjectingComponentType>>();
         IntrospectionContext context = new DefaultIntrospectionContext();
-        processor.visitMethod(annotation, TestInvalidInitClass.class.getDeclaredMethod("init"), TestClass.class, new TestImplementation(), context);
+        processor.visitMethod(annotation, TestInvalidInitClass.class.getDeclaredMethod("init"), TestClass.class, componentType, context);
         assertEquals(1, context.getErrors().size());
         assertTrue(context.getErrors().get(0) instanceof InvalidMethod);
     }
@@ -71,33 +69,28 @@ public class OASISInitProcessorTestCase extends TestCase {
     public void testInit() throws Exception {
         TestClass componentToProcess = new TestClass();
         Init annotation = componentToProcess.getClass().getAnnotation(Init.class);
-        OASISInitProcessor<Implementation<? extends InjectingComponentType>> processor =
-                new OASISInitProcessor<Implementation<? extends InjectingComponentType>>();
         IntrospectionContext context = new DefaultIntrospectionContext();
-        TestImplementation impl = new TestImplementation();
-        InjectingComponentType componentType = new InjectingComponentType();
-        impl.setComponentType(componentType);
         Method method = TestClass.class.getDeclaredMethod("init");
-        processor.visitMethod(annotation, method, TestClass.class, impl, context);
+        processor.visitMethod(annotation, method, TestClass.class, componentType, context);
         assertEquals(0, context.getWarnings().size());
-        assertEquals(method, impl.getComponentType().getInitMethod().getMethod(TestClass.class));
+        assertEquals(method, componentType.getInitMethod().getMethod(TestClass.class));
     }
 
     public void testPrivateInit() throws Exception {
         TestPrivateInitClass componentToProcess = new TestPrivateInitClass();
         Init annotation = componentToProcess.getClass().getAnnotation(Init.class);
-        OASISInitProcessor<Implementation<? extends InjectingComponentType>> processor =
-                new OASISInitProcessor<Implementation<? extends InjectingComponentType>>();
         IntrospectionContext context = new DefaultIntrospectionContext();
-        TestImplementation impl = new TestImplementation();
-        InjectingComponentType componentType = new InjectingComponentType();
-        impl.setComponentType(componentType);
         Method method = TestClass.class.getDeclaredMethod("init");
-        processor.visitMethod(annotation, method, TestClass.class, impl, context);
+        processor.visitMethod(annotation, method, TestClass.class, componentType, context);
         assertEquals(0, context.getWarnings().size());
-        assertEquals(method, impl.getComponentType().getInitMethod().getMethod(TestClass.class));
+        assertEquals(method, componentType.getInitMethod().getMethod(TestClass.class));
     }
 
+    protected void setUp() throws Exception {
+        super.setUp();
+        processor = new OASISInitProcessor();
+        componentType = new InjectingComponentType();
+    }
 
     public static class TestClass {
         @Init
@@ -118,15 +111,6 @@ public class OASISInitProcessorTestCase extends TestCase {
         public String init() {
             return "test";
         }
-    }
-
-    public static class TestImplementation extends Implementation<InjectingComponentType> {
-        private static final long serialVersionUID = 2759280710238779821L;
-
-        public QName getType() {
-            return null;
-        }
-
     }
 
 }

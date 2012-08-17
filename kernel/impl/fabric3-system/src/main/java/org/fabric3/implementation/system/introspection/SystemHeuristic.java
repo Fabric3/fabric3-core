@@ -39,31 +39,31 @@ package org.fabric3.implementation.system.introspection;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Controls the order in which system implementation heuristics are applied.
  *
  * @version $Rev$ $Date$
  */
-public class SystemHeuristic implements HeuristicProcessor<SystemImplementation> {
-    private final HeuristicProcessor<SystemImplementation> serviceHeuristic;
-    private final HeuristicProcessor<SystemImplementation> constructorHeuristic;
-    private final HeuristicProcessor<SystemImplementation> injectionHeuristic;
+public class SystemHeuristic implements HeuristicProcessor {
+    private final HeuristicProcessor serviceHeuristic;
+    private final HeuristicProcessor constructorHeuristic;
+    private final HeuristicProcessor injectionHeuristic;
 
-    public SystemHeuristic(@Reference(name = "service") HeuristicProcessor<SystemImplementation> serviceHeuristic,
-                           @Reference(name = "constructor") HeuristicProcessor<SystemImplementation> constructorHeuristic,
-                           @Reference(name = "injection") HeuristicProcessor<SystemImplementation> injectionHeuristic) {
+    public SystemHeuristic(@Reference(name = "service") HeuristicProcessor serviceHeuristic,
+                           @Reference(name = "constructor") HeuristicProcessor constructorHeuristic,
+                           @Reference(name = "injection") HeuristicProcessor injectionHeuristic) {
         this.serviceHeuristic = serviceHeuristic;
         this.constructorHeuristic = constructorHeuristic;
         this.injectionHeuristic = injectionHeuristic;
     }
 
-    public void applyHeuristics(SystemImplementation implementation, Class<?> implClass, IntrospectionContext context) {
-        serviceHeuristic.applyHeuristics(implementation, implClass, context);
-        constructorHeuristic.applyHeuristics(implementation, implClass, context);
-        injectionHeuristic.applyHeuristics(implementation, implClass, context);
+    public void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
+        serviceHeuristic.applyHeuristics(componentType, implClass, context);
+        constructorHeuristic.applyHeuristics(componentType, implClass, context);
+        injectionHeuristic.applyHeuristics(componentType, implClass, context);
     }
 }

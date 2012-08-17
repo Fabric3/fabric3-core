@@ -57,13 +57,12 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 public class OASISScopeProcessorTestCase extends TestCase {
 
     public void testInvalidScope() throws Exception {
-
         ScopeAnnotated componentToProcess = new ScopeAnnotated();
         Scope annotation = componentToProcess.getClass().getAnnotation(Scope.class);
-        OASISScopeProcessor<Implementation<? extends InjectingComponentType>> processor =
-                new OASISScopeProcessor<Implementation<? extends InjectingComponentType>>();
+        OASISScopeProcessor processor =    new OASISScopeProcessor();
         IntrospectionContext context = new DefaultIntrospectionContext();
-        processor.visitType(annotation, ScopeAnnotated.class, new TestImplementation(), context);
+        InjectingComponentType componentType = new InjectingComponentType();
+        processor.visitType(annotation, ScopeAnnotated.class, componentType, context);
         assertTrue(context.getErrors().get(0) instanceof InvalidScope);
     }
 
@@ -72,12 +71,5 @@ public class OASISScopeProcessorTestCase extends TestCase {
     }
 
 
-    public static class TestImplementation extends Implementation {
-        private static final long serialVersionUID = 2759280710238779821L;
-
-        public QName getType() {
-            return null;
-        }
-    }
 
 }

@@ -93,23 +93,20 @@ public class JUnitImplementationLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         JUnitImplementationProcessor processor = EasyMock.createNiceMock(JUnitImplementationProcessor.class);
-        JUnitImplementation implementation = new JUnitImplementation("org.fabric3.test.Foo");
-        implementation.setComponentType(new InjectingComponentType());
-        processor.introspect(EasyMock.isA(JUnitImplementation.class), EasyMock.isA(IntrospectionContext.class));
+        processor.introspect(EasyMock.isA(String.class), EasyMock.isA(IntrospectionContext.class));
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
-                JUnitImplementation definition = (JUnitImplementation) EasyMock.getCurrentArguments()[0];
                 InjectingComponentType componentType = new InjectingComponentType();
                 ServiceDefinition serviceDefinition = new ServiceDefinition("Foo");
                 serviceDefinition.setServiceContract(new JavaServiceContract() {
-                    @Override
+                    private static final long serialVersionUID = 6696779955276690454L;
+
                     public String getQualifiedInterfaceName() {
                         return "org.fabric3.test.Foo";
                     }
                 });
                 componentType.add(serviceDefinition);
-                definition.setComponentType(componentType);
-                return null;
+                return componentType;
             }
         });
         EasyMock.replay(processor);

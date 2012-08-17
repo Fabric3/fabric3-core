@@ -45,7 +45,6 @@ package org.fabric3.introspection.java.annotation;
 
 import org.oasisopen.sca.annotation.Scope;
 
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
@@ -57,13 +56,13 @@ import static org.fabric3.model.type.component.Scope.STATELESS;
 /**
  * @version $Rev$ $Date$
  */
-public class OASISScopeProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Scope, I> {
+public class OASISScopeProcessor extends AbstractAnnotationProcessor<Scope> {
 
     public OASISScopeProcessor() {
         super(Scope.class);
     }
 
-    public void visitType(Scope annotation, Class<?> type, I implementation, IntrospectionContext context) {
+    public void visitType(Scope annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
         String scopeName = annotation.value();
         if (!COMPOSITE.getScope().equals(scopeName)
                 && !STATELESS.getScope().equals(scopeName)
@@ -72,6 +71,6 @@ public class OASISScopeProcessor<I extends Implementation<? extends InjectingCom
             context.addError(failure);
             return;
         }
-        implementation.getComponentType().setScope(scopeName);
+        componentType.setScope(scopeName);
     }
 }

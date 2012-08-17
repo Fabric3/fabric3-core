@@ -43,13 +43,10 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import javax.xml.namespace.QName;
-
 import junit.framework.TestCase;
 
 import org.fabric3.api.annotation.scope.Scopes;
 import org.fabric3.api.annotation.scope.Stateless;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 @SuppressWarnings("unchecked")
@@ -59,28 +56,18 @@ public class StatelessProcessorTestCase extends TestCase {
 
         StatelessAnnotated componentToProcess = new StatelessAnnotated();
         Stateless annotation = componentToProcess.getClass().getAnnotation(Stateless.class);
-        StatelessProcessor<Implementation<? extends InjectingComponentType>> processor =
-                new StatelessProcessor<Implementation<? extends InjectingComponentType>>();
-        processor.visitType(annotation, componentToProcess.getClass(), componentToProcess, null);
+        StatelessProcessor processor = new StatelessProcessor();
+        InjectingComponentType type = new InjectingComponentType();
 
-        assertEquals(Scopes.STATELESS, componentToProcess.getComponentType().getScope());
+        processor.visitType(annotation, componentToProcess.getClass(), type, null);
+
+        assertEquals(Scopes.STATELESS, type.getScope());
     }
 
     @SuppressWarnings("serial")
     @Stateless
-    public static class StatelessAnnotated extends Implementation<InjectingComponentType> {
+    public static class StatelessAnnotated {
 
-        private InjectingComponentType type = new InjectingComponentType();
-
-        @Override
-        public InjectingComponentType getComponentType() {
-            return type;
-        }
-
-        @Override
-        public QName getType() {
-            return null;
-        }
     }
 
 }

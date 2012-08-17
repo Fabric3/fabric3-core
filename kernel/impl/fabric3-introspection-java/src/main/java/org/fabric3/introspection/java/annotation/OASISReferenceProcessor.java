@@ -51,7 +51,6 @@ import java.lang.reflect.Type;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -64,38 +63,46 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 /**
  * @version $Rev$ $Date$
  */
-public class OASISReferenceProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractReferenceProcessor<Reference, I> {
+public class OASISReferenceProcessor extends AbstractReferenceProcessor<Reference> {
 
     public OASISReferenceProcessor(@org.oasisopen.sca.annotation.Reference JavaContractProcessor contractProcessor,
                                    @org.oasisopen.sca.annotation.Reference IntrospectionHelper helper) {
         super(Reference.class, contractProcessor, helper);
     }
 
-    public void visitField(Reference annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitField(Reference annotation,
+                           Field field,
+                           Class<?> implClass,
+                           InjectingComponentType componentType,
+                           IntrospectionContext context) {
         String name = helper.getSiteName(field, annotation.name());
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
         Annotation[] annotations = field.getAnnotations();
         boolean required = annotation.required();
         ReferenceDefinition definition = createDefinition(name, required, type, implClass, annotations, context);
-        implementation.getComponentType().add(definition, site);
+        componentType.add(definition, site);
     }
 
-    public void visitMethod(Reference annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitMethod(Reference annotation,
+                            Method method,
+                            Class<?> implClass,
+                            InjectingComponentType componentType,
+                            IntrospectionContext context) {
 
         String name = helper.getSiteName(method, annotation.name());
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         Annotation[] annotations = method.getAnnotations();
         ReferenceDefinition definition = createDefinition(name, annotation.required(), type, implClass, annotations, context);
-        implementation.getComponentType().add(definition, site);
+        componentType.add(definition, site);
     }
 
     public void visitConstructorParameter(Reference annotation,
                                           Constructor<?> constructor,
                                           int index,
                                           Class<?> implClass,
-                                          I implementation,
+                                          InjectingComponentType componentType,
                                           IntrospectionContext context) {
 
         String name = helper.getSiteName(constructor, index, annotation.name());
@@ -104,7 +111,7 @@ public class OASISReferenceProcessor<I extends Implementation<? extends Injectin
         Annotation[] annotations = constructor.getParameterAnnotations()[index];
         boolean required = annotation.required();
         ReferenceDefinition definition = createDefinition(name, required, type, implClass, annotations, context);
-        implementation.getComponentType().add(definition, site);
+        componentType.add(definition, site);
     }
 
 

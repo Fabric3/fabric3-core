@@ -49,6 +49,7 @@ import org.fabric3.implementation.java.introspection.JavaImplementationProcessor
 import org.fabric3.implementation.timer.model.TimerImplementation;
 import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.implementation.timer.provision.TimerType;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -101,7 +102,8 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
 
         loaderHelper.loadPolicySetsAndIntents(implementation, reader, context);
 
-        implementationProcessor.introspect(implementation, context);
+        InjectingComponentType componentType = implementationProcessor.introspect(implementation.getImplementationClass(), context);
+        implementation.setComponentType(componentType);
 
         LoaderUtil.skipToEndElement(reader);
 

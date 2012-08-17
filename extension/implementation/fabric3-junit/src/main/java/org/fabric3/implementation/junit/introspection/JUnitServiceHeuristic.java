@@ -47,7 +47,6 @@ import java.util.Set;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
@@ -64,14 +63,14 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
 /**
  * @version $Rev$ $Date$
  */
-public class JUnitServiceHeuristic implements HeuristicProcessor<JUnitImplementation> {
+public class JUnitServiceHeuristic implements HeuristicProcessor {
     private static final String TEST_SERVICE_NAME = "testService";
     private static final List<DataType<?>> INPUT_TYPE = Collections.emptyList();
     private static final JavaClass<Void> OUTPUT_TYPE = new JavaClass<Void>(void.class);
     private static final List<DataType<?>> FAULT_TYPE = Collections.emptyList();
 
-    private final IntrospectionHelper helper;
-    private final JavaContractProcessor contractProcessor;
+    private IntrospectionHelper helper;
+    private JavaContractProcessor contractProcessor;
     private PolicyAnnotationProcessor policyProcessor;
 
     public JUnitServiceHeuristic(@Reference IntrospectionHelper helper, @Reference JavaContractProcessor contractProcessor) {
@@ -84,11 +83,10 @@ public class JUnitServiceHeuristic implements HeuristicProcessor<JUnitImplementa
         this.policyProcessor = processor;
     }
 
-    public void applyHeuristics(JUnitImplementation implementation, Class<?> implClass, IntrospectionContext context) {
+    public void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
 
         JavaServiceContract testContract = generateTestContract(implClass);
         ServiceDefinition testService = new ServiceDefinition(TEST_SERVICE_NAME, testContract);
-        InjectingComponentType componentType = implementation.getComponentType();
         componentType.add(testService);
         // if the class implements a single interface, use it, otherwise the contract is the class itself
         Set<Class<?>> interfaces = helper.getImplementedInterfaces(implClass);

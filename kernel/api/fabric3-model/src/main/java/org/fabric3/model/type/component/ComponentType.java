@@ -48,15 +48,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.fabric3.model.type.AbstractPolicyAware;
 import org.fabric3.model.type.CapabilityAware;
-import org.fabric3.model.type.ModelObject;
 
 /**
  * A base component type.
  *
  * @version $Rev$ $Date$
  */
-public class ComponentType extends ModelObject implements CapabilityAware {
+public class ComponentType extends AbstractPolicyAware implements CapabilityAware {
     private static final long serialVersionUID = 5302580019263119837L;
 
     private Map<String, ServiceDefinition> services = new HashMap<String, ServiceDefinition>();

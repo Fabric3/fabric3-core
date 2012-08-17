@@ -37,7 +37,6 @@
 */
 package org.fabric3.spi.introspection.java.annotation;
 
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
@@ -46,16 +45,14 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  * reported in the IntrospectionContext.
  *
  * @version $Rev$ $Date$
- * @param <I> the type of implementation that the class is for
  */
-public interface ClassVisitor<I extends Implementation<? extends InjectingComponentType>> {
+public interface ClassVisitor {
     /**
-     * Walk a class and update the implementation definition. If errors or warnings are encountered, they will be collated in the
-     * IntrospectionContext.
+     * Walk a class and update the component type. If errors or warnings are encountered, they will be collated in the IntrospectionContext.
      *
-     * @param implementation the implementation definition
-     * @param clazz          the Java class to walk
-     * @param context        the current introspection context
+     * @param componentType the component type to update
+     * @param clazz         the Java class to walk
+     * @param context       the current introspection context
      */
-    void visit(I implementation, Class<?> clazz, IntrospectionContext context);
+    void visit(InjectingComponentType componentType, Class<?> clazz, IntrospectionContext context);
 }

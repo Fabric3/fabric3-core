@@ -51,7 +51,6 @@ import java.lang.reflect.Type;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -66,8 +65,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 /**
  * @version $Rev$ $Date$
  */
-public class OASISPropertyProcessor<I extends Implementation<? extends InjectingComponentType>>
-        extends AbstractAnnotationProcessor<org.oasisopen.sca.annotation.Property, I> {
+public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasisopen.sca.annotation.Property> {
     private final IntrospectionHelper helper;
 
     public OASISPropertyProcessor(@Reference IntrospectionHelper helper) {
@@ -78,7 +76,7 @@ public class OASISPropertyProcessor<I extends Implementation<? extends Injecting
     public void visitField(org.oasisopen.sca.annotation.Property annotation,
                            Field field,
                            Class<?> implClass,
-                           I implementation,
+                           InjectingComponentType componentType,
                            IntrospectionContext context) {
         validate(annotation, field, context);
         String name = helper.getSiteName(field, annotation.name());
@@ -87,13 +85,13 @@ public class OASISPropertyProcessor<I extends Implementation<? extends Injecting
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         boolean required = annotation.required();
         Property property = createDefinition(name, required, type, typeMapping);
-        implementation.getComponentType().add(property, site);
+        componentType.add(property, site);
     }
 
     public void visitMethod(org.oasisopen.sca.annotation.Property annotation,
                             Method method,
                             Class<?> implClass,
-                            I implementation,
+                            InjectingComponentType componentType,
                             IntrospectionContext context) {
         boolean result = validate(annotation, method, context);
         if (!result) {
@@ -105,7 +103,7 @@ public class OASISPropertyProcessor<I extends Implementation<? extends Injecting
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         boolean required = annotation.required();
         Property property = createDefinition(name, required, type, typeMapping);
-        implementation.getComponentType().add(property, site);
+        componentType.add(property, site);
     }
 
     private void validate(org.oasisopen.sca.annotation.Property annotation, Field field, IntrospectionContext context) {
@@ -114,12 +112,12 @@ public class OASISPropertyProcessor<I extends Implementation<? extends Injecting
             if (annotation.required()) {
                 InvalidAccessor error =
                         new InvalidAccessor("Invalid required property. The field " + field.getName() + " on " + clazz.getName()
-                                + " is annotated with @Property but properties must be public or protected.", clazz);
+                                                    + " is annotated with @Property but properties must be public or protected.", clazz);
                 context.addError(error);
             } else {
                 InvalidAccessor warning =
                         new InvalidAccessor("Ignoring the field " + field.getName() + " annotated with @Property on " + clazz.getName()
-                                + ". Properties must be public or protected.", clazz);
+                                                    + ". Properties must be public or protected.", clazz);
                 context.addWarning(warning);
             }
         }
@@ -136,7 +134,7 @@ public class OASISPropertyProcessor<I extends Implementation<? extends Injecting
             if (annotation.required()) {
                 InvalidAccessor error =
                         new InvalidAccessor("Invalid required property. The method " + method
-                                + " is annotated with @Property and must be public or protected.", clazz);
+                                                    + " is annotated with @Property and must be public or protected.", clazz);
                 context.addError(error);
                 return false;
             } else {
@@ -153,7 +151,7 @@ public class OASISPropertyProcessor<I extends Implementation<? extends Injecting
                                           Constructor<?> constructor,
                                           int index,
                                           Class<?> implClass,
-                                          I implementation,
+                                          InjectingComponentType componentType,
                                           IntrospectionContext context) {
         String name = helper.getSiteName(constructor, index, annotation.name());
         Type type = helper.getGenericType(constructor, index);
@@ -161,7 +159,7 @@ public class OASISPropertyProcessor<I extends Implementation<? extends Injecting
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         boolean required = annotation.required();
         Property property = createDefinition(name, required, type, typeMapping);
-        implementation.getComponentType().add(property, site);
+        componentType.add(property, site);
     }
 
     private Property createDefinition(String name, boolean required, Type type, TypeMapping typeMapping) {

@@ -45,14 +45,12 @@ package org.fabric3.introspection.java.annotation;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
 import org.fabric3.api.annotation.Consumer;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.model.type.component.ConsumerDefinition;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -60,7 +58,8 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 public class ConsumerProcessorTestCase extends TestCase {
-    private ConsumerProcessor<Implementation<? extends InjectingComponentType>> processor;
+    private ConsumerProcessor processor;
+    private InjectingComponentType componentType;
 
     public void testMethod() throws Exception {
         Method method = TestClass.class.getDeclaredMethod("onEvent", String.class);
@@ -69,13 +68,19 @@ public class ConsumerProcessorTestCase extends TestCase {
         TypeMapping mapping = new TypeMapping();
         context.addTypeMapping(TestClass.class, mapping);
 
-        TestImplementation implementation = new TestImplementation();
-        processor.visitMethod(annotation, method, TestClass.class, implementation, context);
+        processor.visitMethod(annotation, method, TestClass.class, componentType, context);
         assertEquals(0, context.getErrors().size());
-        Map<String, ConsumerDefinition> consumers = implementation.getComponentType().getConsumers();
+        Map<String, ConsumerDefinition> consumers = componentType.getConsumers();
         ConsumerDefinition definition = consumers.get("onEvent");
         assertEquals(1, definition.getTypes().size());
         assertEquals(String.class, definition.getTypes().get(0).getPhysical());
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        IntrospectionHelper helper = new DefaultIntrospectionHelper();
+        processor = new ConsumerProcessor(helper);
+        componentType = new InjectingComponentType();
     }
 
     public static class TestClass {
@@ -87,23 +92,4 @@ public class ConsumerProcessorTestCase extends TestCase {
 
     }
 
-    public static class TestImplementation extends Implementation<InjectingComponentType> {
-        private static final long serialVersionUID = 2759280710238779821L;
-        private InjectingComponentType componentType = new InjectingComponentType();
-
-        public QName getType() {
-            return null;
-        }
-
-        public InjectingComponentType getComponentType() {
-            return componentType;
-        }
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-        IntrospectionHelper helper = new DefaultIntrospectionHelper();
-        processor = new ConsumerProcessor<Implementation<? extends InjectingComponentType>>(helper);
-
-    }
 }

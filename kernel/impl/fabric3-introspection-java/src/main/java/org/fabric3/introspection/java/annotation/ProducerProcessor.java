@@ -52,7 +52,6 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.Producer;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ProducerDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -71,7 +70,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ProducerProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Producer, I> {
+public class ProducerProcessor extends AbstractAnnotationProcessor<Producer> {
     private JavaContractProcessor contractProcessor;
     private IntrospectionHelper helper;
 
@@ -81,35 +80,39 @@ public class ProducerProcessor<I extends Implementation<? extends InjectingCompo
         this.helper = helper;
     }
 
-    public void visitField(Producer annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitField(Producer annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         String name = helper.getSiteName(field, annotation.value());
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
         ProducerDefinition definition = createDefinition(name, type, implClass, context);
-        implementation.getComponentType().add(definition, site);
+        componentType.add(definition, site);
     }
 
-    public void visitMethod(Producer annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitMethod(Producer annotation,
+                            Method method,
+                            Class<?> implClass,
+                            InjectingComponentType componentType,
+                            IntrospectionContext context) {
 
         String name = helper.getSiteName(method, annotation.value());
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         ProducerDefinition definition = createDefinition(name, type, implClass, context);
-        implementation.getComponentType().add(definition, site);
+        componentType.add(definition, site);
     }
 
     public void visitConstructorParameter(Producer annotation,
                                           Constructor<?> constructor,
                                           int index,
                                           Class<?> implClass,
-                                          I implementation,
+                                          InjectingComponentType componentType,
                                           IntrospectionContext context) {
 
         String name = helper.getSiteName(constructor, index, annotation.value());
         Type type = helper.getGenericType(constructor, index);
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
         ProducerDefinition definition = createDefinition(name, type, implClass, context);
-        implementation.getComponentType().add(definition, site);
+        componentType.add(definition, site);
     }
 
     protected ProducerDefinition createDefinition(String name, Type type, Class<?> implClass, IntrospectionContext context) {

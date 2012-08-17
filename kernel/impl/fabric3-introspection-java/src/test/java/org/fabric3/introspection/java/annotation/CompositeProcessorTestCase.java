@@ -43,13 +43,10 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import javax.xml.namespace.QName;
-
 import junit.framework.TestCase;
 
 import org.fabric3.api.annotation.scope.Composite;
 import org.fabric3.api.annotation.scope.Scopes;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 @SuppressWarnings("unchecked")
@@ -59,28 +56,16 @@ public class CompositeProcessorTestCase extends TestCase {
 
         CompositeAnnotated componentToProcess = new CompositeAnnotated();
         Composite annotation = componentToProcess.getClass().getAnnotation(Composite.class);
-        CompositeProcessor<Implementation<InjectingComponentType>> processor =
-                new CompositeProcessor<Implementation<InjectingComponentType>>();
-        processor.visitType(annotation, componentToProcess.getClass(), componentToProcess, null);
+        CompositeProcessor processor = new CompositeProcessor();
+        InjectingComponentType type = new InjectingComponentType();
+        processor.visitType(annotation, componentToProcess.getClass(), type, null);
 
-        assertEquals(Scopes.COMPOSITE, componentToProcess.getComponentType().getScope());
+        assertEquals(Scopes.COMPOSITE, type.getScope());
     }
 
-    @SuppressWarnings("serial")
     @Composite
-    public static class CompositeAnnotated extends Implementation<InjectingComponentType> {
+    public static class CompositeAnnotated {
 
-        private InjectingComponentType type = new InjectingComponentType();
-
-        @Override
-        public InjectingComponentType getComponentType() {
-            return type;
-        }
-
-        @Override
-        public QName getType() {
-            return null;
-        }
     }
 
 }

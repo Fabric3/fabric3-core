@@ -4,16 +4,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.api.annotation.Cache;
 import org.fabric3.cache.model.CacheReferenceDefinition;
-import org.fabric3.cache.spi.MissingCacheName;
-import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -26,8 +22,8 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
  */
 public class CacheProcessorTestCase extends TestCase {
     private CacheProcessor processor;
-    private Implementation implementation;
     private IntrospectionContext context;
+    private InjectingComponentType componentType;
     private JavaContractProcessor contractProcessor;
     private IntrospectionHelper helper;
 
@@ -43,10 +39,9 @@ public class CacheProcessorTestCase extends TestCase {
 
         Field field = Foo.class.getDeclaredField("cache");
         Cache annotation = field.getAnnotation(Cache.class);
-        processor.visitField(annotation, field, Foo.class, implementation, context);
+        processor.visitField(annotation, field, Foo.class, componentType, context);
 
         assertFalse(context.hasErrors());
-        ComponentType componentType = implementation.getComponentType();
         CacheReferenceDefinition definition = (CacheReferenceDefinition) componentType.getResourceReferences().get("cache");
         assertEquals("cache", definition.getCacheName());
 
@@ -65,10 +60,9 @@ public class CacheProcessorTestCase extends TestCase {
 
         Method method = Foo.class.getDeclaredMethod("setCache", Map.class);
         Cache annotation = method.getAnnotation(Cache.class);
-        processor.visitMethod(annotation, method, Foo.class, implementation, context);
+        processor.visitMethod(annotation, method, Foo.class, componentType, context);
 
         assertFalse(context.hasErrors());
-        ComponentType componentType = implementation.getComponentType();
         CacheReferenceDefinition definition = (CacheReferenceDefinition) componentType.getResourceReferences().get("cache");
         assertEquals("cache", definition.getCacheName());
 
@@ -86,10 +80,9 @@ public class CacheProcessorTestCase extends TestCase {
 
         Constructor<Foo> constructor = Foo.class.getConstructor(Map.class);
         Cache annotation = (Cache) constructor.getParameterAnnotations()[0][0];
-        processor.visitConstructorParameter(annotation, constructor, 0, Foo.class, implementation, context);
+        processor.visitConstructorParameter(annotation, constructor, 0, Foo.class, componentType, context);
 
         assertFalse(context.hasErrors());
-        ComponentType componentType = implementation.getComponentType();
         CacheReferenceDefinition definition = (CacheReferenceDefinition) componentType.getResourceReferences().get("cache");
         assertEquals("cache", definition.getCacheName());
 
@@ -104,9 +97,7 @@ public class CacheProcessorTestCase extends TestCase {
         helper = EasyMock.createMock(IntrospectionHelper.class);
         contractProcessor = EasyMock.createMock(JavaContractProcessor.class);
         processor = new CacheProcessor(contractProcessor, helper);
-        implementation = new MockImplementation();
-        InjectingComponentType componentType = new InjectingComponentType();
-        implementation.setComponentType(componentType);
+        componentType = new InjectingComponentType();
         context = new DefaultIntrospectionContext();
     }
 
@@ -126,14 +117,5 @@ public class CacheProcessorTestCase extends TestCase {
         }
     }
 
-    private class MockImplementation extends Implementation {
-        private static final long serialVersionUID = 6852574579066477624L;
 
-        @Override
-        public QName getType() {
-            return null;
-        }
-
-
-    }
 }

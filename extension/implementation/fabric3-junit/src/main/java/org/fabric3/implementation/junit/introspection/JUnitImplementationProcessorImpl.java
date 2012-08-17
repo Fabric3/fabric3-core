@@ -40,7 +40,6 @@ package org.fabric3.implementation.junit.introspection;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.java.introspection.ImplementationArtifactNotFound;
-import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -53,38 +52,36 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  * @version $Rev$ $Date$
  */
 public class JUnitImplementationProcessorImpl implements JUnitImplementationProcessor {
-    private final ClassVisitor<JUnitImplementation> classVisitor;
-    private final HeuristicProcessor<JUnitImplementation> heuristic;
+    private final ClassVisitor classVisitor;
+    private final HeuristicProcessor heuristic;
     private final IntrospectionHelper helper;
 
-    public JUnitImplementationProcessorImpl(@Reference(name = "classVisitor") ClassVisitor<JUnitImplementation> classVisitor,
-                                            @Reference(name = "heuristic") HeuristicProcessor<JUnitImplementation> heuristic,
+    public JUnitImplementationProcessorImpl(@Reference(name = "classVisitor") ClassVisitor classVisitor,
+                                            @Reference(name = "heuristic") HeuristicProcessor heuristic,
                                             @Reference(name = "helper") IntrospectionHelper helper) {
         this.classVisitor = classVisitor;
         this.heuristic = heuristic;
         this.helper = helper;
     }
 
-    public void introspect(JUnitImplementation implementation, IntrospectionContext context) {
-        String implClassName = implementation.getImplementationClass();
-        InjectingComponentType componentType = new InjectingComponentType(implClassName);
+    public InjectingComponentType introspect(String className, IntrospectionContext context) {
+        InjectingComponentType componentType = new InjectingComponentType(className);
         componentType.setScope("STATELESS");
-        implementation.setComponentType(componentType);
 
         ClassLoader cl = context.getClassLoader();
         Class<?> implClass;
         try {
-            implClass = helper.loadClass(implClassName, cl);
+            implClass = helper.loadClass(className, cl);
         } catch (ImplementationNotFoundException e) {
             Throwable cause = e.getCause();
             if (cause instanceof ClassNotFoundException || cause instanceof NoClassDefFoundError) {
                 // CNFE and NCDFE may be thrown as a result of a referenced class not being on the classpath
                 // If this is the case, ensure the correct class name is reported, not just the implementation 
-                context.addError(new ImplementationArtifactNotFound(implClassName, e.getCause().getMessage()));
+                context.addError(new ImplementationArtifactNotFound(className, e.getCause().getMessage()));
             } else {
-                context.addError(new ImplementationArtifactNotFound(implClassName));
+                context.addError(new ImplementationArtifactNotFound(className));
             }
-            return;
+            return componentType;
         }
         TypeMapping mapping = context.getTypeMapping(implClass);
         if (mapping == null) {
@@ -93,9 +90,9 @@ public class JUnitImplementationProcessorImpl implements JUnitImplementationProc
             helper.resolveTypeParameters(implClass, mapping);
         }
 
-        classVisitor.visit(implementation, implClass, context);
+        classVisitor.visit(componentType, implClass, context);
 
-        heuristic.applyHeuristics(implementation, implClass, context);
-
+        heuristic.applyHeuristics(componentType, implClass, context);
+        return componentType;
     }
 }

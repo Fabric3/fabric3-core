@@ -43,13 +43,10 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import javax.xml.namespace.QName;
-
 import junit.framework.TestCase;
 
 import org.fabric3.api.annotation.scope.Domain;
 import org.fabric3.api.annotation.scope.Scopes;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 @SuppressWarnings("unchecked")
@@ -59,27 +56,16 @@ public class DomainProcessorTestCase extends TestCase {
 
         DomainAnnotated componentToProcess = new DomainAnnotated();
         Domain annotation = componentToProcess.getClass().getAnnotation(Domain.class);
-        DomainProcessor<Implementation<InjectingComponentType>> processor = new DomainProcessor<Implementation<InjectingComponentType>>();
-        processor.visitType(annotation, componentToProcess.getClass(), componentToProcess, null);
+        InjectingComponentType type = new InjectingComponentType();
+        DomainProcessor processor = new DomainProcessor();
+        processor.visitType(annotation, componentToProcess.getClass(), type, null);
 
-        assertEquals(Scopes.DOMAIN, componentToProcess.getComponentType().getScope());
+        assertEquals(Scopes.DOMAIN, type.getScope());
     }
 
-    @SuppressWarnings("serial")
     @Domain
-    public static class DomainAnnotated extends Implementation<InjectingComponentType> {
+    public static class DomainAnnotated  {
 
-        private InjectingComponentType type = new InjectingComponentType();
-
-        @Override
-        public InjectingComponentType getComponentType() {
-            return type;
-        }
-
-        @Override
-        public QName getType() {
-            return null;
-        }
     }
 
 }

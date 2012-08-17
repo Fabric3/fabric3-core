@@ -53,7 +53,6 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.Consumer;
 import org.fabric3.model.type.component.ConsumerDefinition;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -71,7 +70,7 @@ import org.fabric3.spi.model.type.java.Signature;
  * @version $Rev$ $Date$
  */
 @EagerInit
-public class ConsumerProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Consumer, I> {
+public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
     private IntrospectionHelper helper;
 
     public ConsumerProcessor(@Reference IntrospectionHelper helper) {
@@ -79,7 +78,11 @@ public class ConsumerProcessor<I extends Implementation<? extends InjectingCompo
         this.helper = helper;
     }
 
-    public void visitMethod(Consumer annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitMethod(Consumer annotation,
+                            Method method,
+                            Class<?> implClass,
+                            InjectingComponentType componentType,
+                            IntrospectionContext context) {
         if (method.getParameterTypes().length > 1) {
             InvalidConsumerMethod failure = new InvalidConsumerMethod("Consumer method " + method + " has more than one parameter");
             context.addError(failure);
@@ -91,7 +94,7 @@ public class ConsumerProcessor<I extends Implementation<? extends InjectingCompo
         String name = helper.getSiteName(method, annotation.value());
         Signature signature = new Signature(method);
         ConsumerDefinition definition = new ConsumerDefinition(name, types);
-        implementation.getComponentType().add(definition, signature);
+        componentType.add(definition, signature);
     }
 
     private List<DataType<?>> introspectParameterTypes(Method method, TypeMapping typeMapping) {

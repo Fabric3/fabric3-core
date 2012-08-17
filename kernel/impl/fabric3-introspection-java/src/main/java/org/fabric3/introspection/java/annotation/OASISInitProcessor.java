@@ -47,7 +47,6 @@ import java.lang.reflect.Method;
 
 import org.oasisopen.sca.annotation.Init;
 
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
@@ -56,17 +55,17 @@ import org.fabric3.spi.model.type.java.Signature;
 /**
  * @version $Rev$ $Date$
  */
-public class OASISInitProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Init, I> {
+public class OASISInitProcessor extends AbstractAnnotationProcessor<Init> {
 
     public OASISInitProcessor() {
         super(Init.class);
     }
 
-    public void visitMethod(Init annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitMethod(Init annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         if (!validate(method, context)) {
             return;
         }
-        implementation.getComponentType().setInitMethod(new Signature(method));
+        componentType.setInitMethod(new Signature(method));
     }
 
     private boolean validate(Method method, IntrospectionContext context) {

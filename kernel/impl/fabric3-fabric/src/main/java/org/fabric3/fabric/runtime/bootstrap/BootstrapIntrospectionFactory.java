@@ -58,7 +58,6 @@ import org.fabric3.implementation.system.introspection.SystemHeuristic;
 import org.fabric3.implementation.system.introspection.SystemImplementationProcessorImpl;
 import org.fabric3.implementation.system.introspection.SystemServiceHeuristic;
 import org.fabric3.implementation.system.introspection.SystemUnannotatedHeuristic;
-import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.introspection.java.DefaultClassVisitor;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.annotation.ConsumerProcessor;
@@ -95,32 +94,32 @@ public class BootstrapIntrospectionFactory {
      *
      * @return a new ImplementationProcessor for system components
      */
-    public static ImplementationProcessor<SystemImplementation> createSystemImplementationProcessor() {
+    public static ImplementationProcessor createSystemImplementationProcessor() {
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
         JavaContractProcessor contractProcessor = new JavaContractProcessorImpl(helper);
 
-        Map<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation, SystemImplementation>> processors =
-                new HashMap<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation, SystemImplementation>>();
+        Map<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation>> processors =
+                new HashMap<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation>>();
 
         // OSOA annotations
         // no constructor processor is needed as that is handled by heuristics
 
         // OASIS annotations
-        processors.put(Property.class, new OASISPropertyProcessor<SystemImplementation>(helper));
-        processors.put(Reference.class, new OASISReferenceProcessor<SystemImplementation>(contractProcessor, helper));
-        processors.put(Service.class, new OASISServiceProcessor<SystemImplementation>(contractProcessor));
-        processors.put(EagerInit.class, new OASISEagerInitProcessor<SystemImplementation>());
-        processors.put(Init.class, new OASISInitProcessor<SystemImplementation>());
-        processors.put(Destroy.class, new OASISDestroyProcessor<SystemImplementation>());
+        processors.put(Property.class, new OASISPropertyProcessor(helper));
+        processors.put(Reference.class, new OASISReferenceProcessor(contractProcessor, helper));
+        processors.put(Service.class, new OASISServiceProcessor(contractProcessor));
+        processors.put(EagerInit.class, new OASISEagerInitProcessor());
+        processors.put(Init.class, new OASISInitProcessor());
+        processors.put(Destroy.class, new OASISDestroyProcessor());
 
         // F3 annotations
-        processors.put(Monitor.class, new MonitorProcessor<SystemImplementation>(helper, contractProcessor));
-        processors.put(Producer.class, new ProducerProcessor<SystemImplementation>(contractProcessor, helper));
-        processors.put(Consumer.class, new ConsumerProcessor<SystemImplementation>(helper));
-        processors.put(Management.class, new ManagementProcessor<SystemImplementation>());
-        processors.put(ManagementOperation.class, new ManagementOperationProcessor<SystemImplementation>());
+        processors.put(Monitor.class, new MonitorProcessor(helper, contractProcessor));
+        processors.put(Producer.class, new ProducerProcessor(contractProcessor, helper));
+        processors.put(Consumer.class, new ConsumerProcessor(helper));
+        processors.put(Management.class, new ManagementProcessor());
+        processors.put(ManagementOperation.class, new ManagementOperationProcessor());
 
-        ClassVisitor<SystemImplementation> classVisitor = new DefaultClassVisitor<SystemImplementation>(processors);
+        ClassVisitor classVisitor = new DefaultClassVisitor(processors);
 
         // heuristics for system components
         SystemServiceHeuristic serviceHeuristic = new SystemServiceHeuristic(contractProcessor, helper);

@@ -51,7 +51,6 @@ import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl
 import org.fabric3.fabric.lcm.LogicalComponentManagerImpl;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;
 import org.fabric3.host.Names;
-import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.spi.cm.ComponentManager;
@@ -67,7 +66,7 @@ import org.fabric3.spi.invocation.WorkContext;
  */
 public class SingletonComponentSynthesizerTestCase extends TestCase {
 
-    private ImplementationProcessor<SystemImplementation> implementationProcessor;
+    private ImplementationProcessor implementationProcessor;
     private AtomicComponentInstantiator instantiator;
     private LogicalComponentManagerImpl lcm;
     private ComponentManager componentManager;

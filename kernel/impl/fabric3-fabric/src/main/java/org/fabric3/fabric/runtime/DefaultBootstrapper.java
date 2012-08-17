@@ -54,7 +54,6 @@ import org.w3c.dom.Document;
 
 import org.fabric3.contribution.manifest.ContributionExport;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
-import org.fabric3.host.runtime.BootExports;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapAssemblyFactory;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapCompositeFactory;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;
@@ -67,11 +66,11 @@ import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.repository.Repository;
 import org.fabric3.host.runtime.BootConfiguration;
+import org.fabric3.host.runtime.BootExports;
 import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.model.type.component.ChannelDefinition;
@@ -115,7 +114,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     // bootstrap components - these are disposed of after the core runtime system components are booted
     private JavaContractProcessorImpl contractProcessor;
     private AtomicComponentInstantiatorImpl instantiator;
-    private ImplementationProcessor<SystemImplementation> implementationProcessor;
+    private ImplementationProcessor implementationProcessor;
     private ComponentSynthesizer synthesizer;
 
     // runtime components - these are persistent and supplied by the runtime implementation

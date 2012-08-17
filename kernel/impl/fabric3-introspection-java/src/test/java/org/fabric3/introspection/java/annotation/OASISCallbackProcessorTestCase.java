@@ -45,13 +45,11 @@ package org.fabric3.introspection.java.annotation;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.oasisopen.sca.annotation.Callback;
 
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
-import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -62,14 +60,15 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 @SuppressWarnings("unchecked")
 public class OASISCallbackProcessorTestCase extends TestCase {
-    private OASISCallbackProcessor<Implementation<? extends InjectingComponentType>> processor;
+    private OASISCallbackProcessor processor;
+    private InjectingComponentType componentType;
 
     public void testInvalidMethodAccessor() throws Exception {
         Method method = TestPrivateClass.class.getDeclaredMethod("setCallback", TestPrivateClass.class);
         Callback annotation = method.getAnnotation(Callback.class);
         IntrospectionContext context = new DefaultIntrospectionContext();
 
-        processor.visitMethod(annotation, method, TestPrivateClass.class, new TestImplementation(), context);
+        processor.visitMethod(annotation, method, TestPrivateClass.class, componentType, context);
         assertEquals(1, context.getErrors().size());
         assertTrue(context.getErrors().get(0) instanceof InvalidAccessor);
     }
@@ -79,7 +78,7 @@ public class OASISCallbackProcessorTestCase extends TestCase {
         Callback annotation = field.getAnnotation(Callback.class);
         IntrospectionContext context = new DefaultIntrospectionContext();
 
-        processor.visitField(annotation, field, TestPrivateClass.class, new TestImplementation(), context);
+        processor.visitField(annotation, field, TestPrivateClass.class, componentType, context);
         assertEquals(1, context.getErrors().size());
         assertTrue(context.getErrors().get(0) instanceof InvalidAccessor);
     }
@@ -96,17 +95,6 @@ public class OASISCallbackProcessorTestCase extends TestCase {
 
     }
 
-    public static class TestImplementation extends Implementation {
-        private static final long serialVersionUID = 2759280710238779821L;
-
-        public QName getType() {
-            return null;
-        }
-
-        public ComponentType getComponentType() {
-            return new InjectingComponentType();
-        }
-    }
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -123,7 +111,8 @@ public class OASISCallbackProcessorTestCase extends TestCase {
                 return contract;
             }
         };
-        processor = new OASISCallbackProcessor<Implementation<? extends InjectingComponentType>>(contractProcessor, helper);
+        processor = new OASISCallbackProcessor(contractProcessor, helper);
+        componentType = new InjectingComponentType();
 
     }
 }

@@ -43,13 +43,10 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import javax.xml.namespace.QName;
-
 import junit.framework.TestCase;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Scope;
 
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
@@ -57,29 +54,22 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 @SuppressWarnings("unchecked")
 public class OASISEagerInitProcessorTestCase extends TestCase {
 
-    public void testEagerInitWarning() throws Exception {
+    public void testEagerInit() throws Exception {
         TestClass componentToProcess = new TestClass();
         EagerInit annotation = componentToProcess.getClass().getAnnotation(EagerInit.class);
-        OASISEagerInitProcessor<Implementation<? extends InjectingComponentType>> processor =
-                new OASISEagerInitProcessor<Implementation<? extends InjectingComponentType>>();
+        OASISEagerInitProcessor processor = new OASISEagerInitProcessor();
         IntrospectionContext context = new DefaultIntrospectionContext();
-        processor.visitType(annotation, TestClass.class, new TestImplementation(), context);
-        assertEquals(1, context.getWarnings().size());
-        assertTrue(context.getWarnings().get(0) instanceof EagerInitNotSupported);
+        InjectingComponentType componentType = new InjectingComponentType();
+        processor.visitType(annotation, TestClass.class, componentType, context);
+        assertEquals(0, context.getWarnings().size());
+        assertTrue(componentType.isEagerInit());
     }
 
 
-    @Scope("STATELESS")
+    @Scope("COMPOSITE")
     @EagerInit
     public static class TestClass {
     }
 
-    public static class TestImplementation extends Implementation {
-        private static final long serialVersionUID = 2759280710238779821L;
-
-        public QName getType() {
-            return null;
-        }
-    }
 
 }

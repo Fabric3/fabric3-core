@@ -55,6 +55,7 @@ import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Loads information for a system implementation
@@ -63,15 +64,14 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
  */
 @EagerInit
 public class SystemImplementationLoader extends AbstractValidatingTypeLoader<SystemImplementation> {
-
-    private ImplementationProcessor<SystemImplementation> implementationProcessor;
+    private ImplementationProcessor implementationProcessor;
 
     /**
      * Constructor.
      *
      * @param implementationProcessor the component type loader to use
      */
-    public SystemImplementationLoader(@Reference ImplementationProcessor<SystemImplementation> implementationProcessor) {
+    public SystemImplementationLoader(@Reference ImplementationProcessor implementationProcessor) {
         this.implementationProcessor = implementationProcessor;
         addAttributes("class");
     }
@@ -88,7 +88,8 @@ public class SystemImplementationLoader extends AbstractValidatingTypeLoader<Sys
 
         SystemImplementation implementation = new SystemImplementation();
         implementation.setImplementationClass(implClass);
-        implementationProcessor.introspect(implementation, introspectionContext);
+        InjectingComponentType componentType = implementationProcessor.introspect(implClass, introspectionContext);
+        implementation.setComponentType(componentType);
         return implementation;
     }
 

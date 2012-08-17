@@ -37,24 +37,23 @@
 */
 package org.fabric3.spi.introspection.java;
 
-import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Interface for processors that provide heuristic introspection of component implementations.
  *
  * @version $Rev$ $Date$
  */
-public interface HeuristicProcessor<I extends Implementation<? extends ComponentType>> {
+public interface HeuristicProcessor {
 
     /**
-     * Apply heuristics to an implementation and update the component type accordingly. If errors or warnings are encountered, they will be collated
-     * in the IntrospectionContext.
+     * Applies heuristics to an implementation and updates the component type accordingly. If errors or warnings are encountered, they will be
+     * collated in the IntrospectionContext.
      *
-     * @param implementation the implementation to inspect
-     * @param implClass      the implementation class
-     * @param context        the current introspection context
+     * @param componentType the component type to inspect
+     * @param implClass     the implementation class
+     * @param context       the current introspection context
      */
-    void applyHeuristics(I implementation, Class<?> implClass, IntrospectionContext context);
+    void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context);
 }

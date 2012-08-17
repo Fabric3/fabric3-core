@@ -48,7 +48,6 @@ import java.util.Set;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
@@ -59,15 +58,13 @@ import org.fabric3.spi.model.type.java.ManagementInfo;
  *
  * @version $Rev$ $Date$
  */
-public class ManagementProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Management, I> {
+public class ManagementProcessor extends AbstractAnnotationProcessor<Management> {
 
     public ManagementProcessor() {
         super(Management.class);
     }
 
-    @Override
-    public void visitType(Management annotation, Class<?> type, I implementation, IntrospectionContext context) {
-        InjectingComponentType componentType = implementation.getComponentType();
+    public void visitType(Management annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
         componentType.setManaged(true);
         String name = annotation.name();
         if (name.trim().length() == 0) {

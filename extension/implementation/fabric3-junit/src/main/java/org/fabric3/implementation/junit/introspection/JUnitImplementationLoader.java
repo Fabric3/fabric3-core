@@ -49,6 +49,7 @@ import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -63,26 +64,28 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
 
     public JUnitImplementationLoader(@Reference JUnitImplementationProcessor implementationProcessor) {
         this.implementationProcessor = implementationProcessor;
-        addAttributes("class","requires","policySets");
+        addAttributes("class", "requires", "policySets");
     }
 
     public JUnitImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         validateAttributes(reader, context);
-        String className = reader.getAttributeValue(null, "class");
 
-        JUnitImplementation definition = new JUnitImplementation(className);
-        implementationProcessor.introspect(definition, context);
+        String className = reader.getAttributeValue(null, "class");
+        JUnitImplementation implementation = new JUnitImplementation(className);
+        InjectingComponentType componentType = implementationProcessor.introspect(className, context);
+        implementation.setComponentType(componentType);
+
         // Add a binding only on the JUnit service (which is the impl class) so wires are generated to the test operations.
         // These wires will be used by the testing runtime to dispatch to the JUnit components.
         ContextConfiguration configuration = loadConfiguration(reader, context);
-        for (ServiceDefinition serviceDefinition : definition.getComponentType().getServices().values()) {
-            if (serviceDefinition.getServiceContract().getQualifiedInterfaceName().equals(definition.getImplementationClass())) {
+        for (ServiceDefinition serviceDefinition : implementation.getComponentType().getServices().values()) {
+            if (serviceDefinition.getServiceContract().getQualifiedInterfaceName().equals(implementation.getImplementationClass())) {
                 JUnitBindingDefinition bindingDefinition = new JUnitBindingDefinition(configuration);
                 serviceDefinition.addBinding(bindingDefinition);
                 break;
             }
         }
-        return definition;
+        return implementation;
     }
 
     private ContextConfiguration loadConfiguration(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {

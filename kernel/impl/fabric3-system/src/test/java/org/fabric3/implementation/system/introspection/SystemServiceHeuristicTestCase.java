@@ -52,7 +52,6 @@ import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
-import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -72,7 +71,6 @@ public class SystemServiceHeuristicTestCase extends TestCase {
     private JavaContractProcessor contractProcessor;
     private IntrospectionHelper helper;
     private IntrospectionContext context;
-    private SystemImplementation impl;
     private InjectingComponentType componentType;
     private JavaServiceContract serviceInterfaceContract;
     private JavaServiceContract noInterfaceContract;
@@ -84,7 +82,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
         EasyMock.expect(contractProcessor.introspect(NoInterface.class, context)).andReturn(noInterfaceContract);
         control.replay();
 
-        heuristic.applyHeuristics(impl, NoInterface.class, context);
+        heuristic.applyHeuristics(componentType, NoInterface.class, context);
         Map<String, ServiceDefinition> services = componentType.getServices();
         assertEquals(1, services.size());
         assertEquals(noInterfaceContract, services.get("NoInterface").getServiceContract());
@@ -101,7 +99,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
                 serviceInterfaceContract);
         control.replay();
 
-        heuristic.applyHeuristics(impl, OneInterface.class, context);
+        heuristic.applyHeuristics(componentType, OneInterface.class, context);
         Map<String, ServiceDefinition> services = componentType.getServices();
         assertEquals(1, services.size());
         assertEquals(serviceInterfaceContract, services.get("ServiceInterface").getServiceContract());
@@ -110,11 +108,11 @@ public class SystemServiceHeuristicTestCase extends TestCase {
 
     public void testServiceWithExistingServices() throws IntrospectionException {
         ServiceDefinition definition = new ServiceDefinition("Contract");
-        impl.getComponentType().add(definition);
+        componentType.add(definition);
         control.replay();
 
-        heuristic.applyHeuristics(impl, NoInterface.class, context);
-        Map<String, ServiceDefinition> services = impl.getComponentType().getServices();
+        heuristic.applyHeuristics(componentType, NoInterface.class, context);
+        Map<String, ServiceDefinition> services = componentType.getServices();
         assertEquals(1, services.size());
         assertSame(definition, services.get("Contract"));
         control.verify();
@@ -132,9 +130,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        impl = new SystemImplementation();
         componentType = new InjectingComponentType(NoInterface.class.getName());
-        impl.setComponentType(componentType);
 
         noInterfaceContract = createServiceContract(NoInterface.class);
         serviceInterfaceContract = createServiceContract(ServiceInterface.class);

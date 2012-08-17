@@ -49,7 +49,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
-import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
@@ -82,7 +81,7 @@ public class BootstrapCompositeFactory {
     public static Composite createSystemComposite(URL compositeUrl,
                                                   Contribution contribution,
                                                   ClassLoader bootClassLoader,
-                                                  ImplementationProcessor<SystemImplementation> processor) throws InitializationException {
+                                                  ImplementationProcessor processor) throws InitializationException {
         try {
             // load and introspect the system composite XML
             Loader loader = BootstrapLoaderFactory.createLoader(processor, XML_FACTORY);

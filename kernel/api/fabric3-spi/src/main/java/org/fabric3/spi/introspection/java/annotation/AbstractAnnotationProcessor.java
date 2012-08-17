@@ -48,7 +48,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
@@ -57,7 +56,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractAnnotationProcessor<A extends Annotation, I extends Implementation<? extends InjectingComponentType>> implements AnnotationProcessor<A, I> {
+public abstract class AbstractAnnotationProcessor<A extends Annotation> implements AnnotationProcessor<A> {
     private final Class<A> type;
 
     /**
@@ -73,26 +72,35 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, I extend
         return type;
     }
 
-    public void visitType(A annotation, Class<?> type, I implementation, IntrospectionContext context) {
+    public void visitType(A annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
     }
 
-    public void visitField(A annotation, Field field, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitField(A annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
     }
 
-    public void visitMethod(A annotation, Method method, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitMethod(A annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
     }
 
-    public void visitMethodParameter(A annotation, Method method, int index, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitMethodParameter(A annotation,
+                                     Method method,
+                                     int index,
+                                     Class<?> implClass,
+                                     InjectingComponentType componentType,
+                                     IntrospectionContext context) {
     }
 
-    public void visitConstructor(A annotation, Constructor<?> constructor, Class<?> implClass, I implementation, IntrospectionContext context) {
+    public void visitConstructor(A annotation,
+                                 Constructor<?> constructor,
+                                 Class<?> implClass,
+                                 InjectingComponentType componentType,
+                                 IntrospectionContext context) {
     }
 
     public void visitConstructorParameter(A annotation,
                                           Constructor<?> constructor,
                                           int index,
                                           Class<?> implClass,
-                                          I implementation,
+                                          InjectingComponentType componentType,
                                           IntrospectionContext context) {
     }
 }

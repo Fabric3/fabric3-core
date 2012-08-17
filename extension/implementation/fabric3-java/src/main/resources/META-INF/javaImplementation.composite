@@ -23,10 +23,10 @@ Public License. See the accompanying license file for details.
     </component>
 
     <component name="JavaImplementationWriter">
-         <f3:implementation.system class="org.fabric3.implementation.java.introspection.JavaImplementationWriter"/>
-     </component>
+        <f3:implementation.system class="org.fabric3.implementation.java.introspection.JavaImplementationWriter"/>
+    </component>
 
-    <component name="JavaImplementationProcessorImpl">
+    <component name="JavaImplementationProcessorImpl" f3:key="sca:implementation.java">
         <f3:implementation.system class="org.fabric3.implementation.java.introspection.JavaImplementationProcessorImpl"/>
         <reference name="heuristic" target="JavaHeuristic"/>
     </component>

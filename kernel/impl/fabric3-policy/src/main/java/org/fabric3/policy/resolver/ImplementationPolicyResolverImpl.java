@@ -45,6 +45,8 @@ import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.annotation.Reference;
 
+import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.definitions.ImplementationType;
 import org.fabric3.model.type.definitions.Intent;
@@ -142,7 +144,11 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
         // Aggregate all the intents from the ancestors
         Set<QName> intentNames = new LinkedHashSet<QName>();
         intentNames.addAll(operation.getIntents());
-        intentNames.addAll(logicalComponent.getDefinition().getImplementation().getIntents());
+        ComponentDefinition<? extends Implementation<?>> definition = logicalComponent.getDefinition();
+        Implementation<?> implementation = definition.getImplementation();
+        ComponentType componentType = implementation.getComponentType();
+        intentNames.addAll(implementation.getIntents());
+        intentNames.addAll(componentType.getIntents());
         intentNames.addAll(aggregateIntents(logicalComponent));
 
         // Expand all the profile intents

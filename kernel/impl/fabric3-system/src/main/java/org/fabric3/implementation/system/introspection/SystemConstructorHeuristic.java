@@ -39,7 +39,6 @@ package org.fabric3.implementation.system.introspection;
 
 import java.lang.reflect.Constructor;
 
-import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
 import org.fabric3.spi.introspection.java.NoConstructorFound;
@@ -52,11 +51,9 @@ import org.fabric3.spi.model.type.java.Signature;
  *
  * @version $Rev$ $Date$
  */
-public class SystemConstructorHeuristic implements HeuristicProcessor<SystemImplementation> {
+public class SystemConstructorHeuristic implements HeuristicProcessor {
 
-    public void applyHeuristics(SystemImplementation implementation, Class<?> implClass, IntrospectionContext context) {
-        InjectingComponentType componentType = implementation.getComponentType();
-
+    public void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         // if there is already a defined constructor then do nothing
         if (componentType.getConstructor() != null) {
             return;
