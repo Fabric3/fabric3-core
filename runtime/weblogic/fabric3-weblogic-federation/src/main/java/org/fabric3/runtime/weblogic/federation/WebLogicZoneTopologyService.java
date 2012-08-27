@@ -146,10 +146,6 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         runtimeChannel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, monitor);
     }
 
-    public String getRuntimeName() {
-        return runtimeName;
-    }
-
     public boolean isZoneLeader() {
         return false;
     }
@@ -212,7 +208,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
                 Binding binding = enumeration.next();
                 if (RuntimeChannel.class.getName().equals(binding.getClassName())) {
                     RuntimeChannel channel = (RuntimeChannel) binding.getObject();
-                    if (destinationName.equals(channel.getRuntimeName())) {
+                    if (destinationName.equals(channel.getRuntimeName()) && channel.isActive()) {
                         byte[] responsePayload = runtimeChannel.sendSynchronous(payload);
                         return serializationService.deserialize(Response.class, responsePayload);
                     }
@@ -248,8 +244,8 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
                 Binding binding = enumeration.next();
                 if (RuntimeChannel.class.getName().equals(binding.getClassName())) {
                     RuntimeChannel channel = (RuntimeChannel) binding.getObject();
-                    if (runtimeName.equals(channel.getRuntimeName())) {
-                        // don't send to self
+                    if (runtimeName.equals(channel.getRuntimeName()) || !channel.isActive()) {
+                        // don't send to self or inactive channel
                         continue;
                     }
                     byte[] responsePayload = channel.sendSynchronous(payload);
@@ -396,6 +392,11 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
             controllerContext = JndiHelper.getContext(CONTROLLER_CONTEXT, rootContext);
             // lookup the controller channel RMI stub
             controllerChannel = (RuntimeChannel) controllerContext.lookup(Constants.CONTROLLER_CHANNEL);
+            if (!controllerChannel.isActive()) {
+                controllerChannel = null;
+                monitor.errorMessage("Error joining the domain, as the controller is not active. Scheduled for retry.");
+                return false;
+            }
             participantContext = JndiHelper.getContext(PARTICIPANT_CONTEXT, rootContext);
             try {
                 participantContext.bind(runtimeName, runtimeChannel);
@@ -449,7 +450,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         Response response;
         try {
             byte[] payload = serializationService.serialize(command);
-            if (controllerChannel == null) {
+            if (controllerChannel == null || !controllerChannel.isActive()) {
                 // controller not available
                 return false;
             }
@@ -494,8 +495,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     private class JoinDomainListener implements Fabric3EventListener<JoinDomain> {
 
         public void onEvent(JoinDomain event) {
-            boolean result = initJndiContexts();
-            if (!result) {
+            if (!initJndiContexts()) {
                 monitor.adminServerUnavailable();
                 // admin server is not available, schedule work to retry periodically
                 executorService.execute(new Work());
@@ -522,7 +522,6 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
-
             }
         }
     }

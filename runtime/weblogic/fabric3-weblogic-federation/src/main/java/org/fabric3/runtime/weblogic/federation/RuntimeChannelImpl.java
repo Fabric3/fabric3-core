@@ -39,6 +39,7 @@ package org.fabric3.runtime.weblogic.federation;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.fabric3.runtime.weblogic.cluster.ChannelException;
 import org.fabric3.runtime.weblogic.cluster.RuntimeChannel;
@@ -61,6 +62,7 @@ public class RuntimeChannelImpl implements RuntimeChannel {
     private SerializationService serializationService;
     private WebLogicTopologyMonitor monitor;
     private MessageReceiver messageReceiver;
+    private AtomicBoolean active;
 
     public RuntimeChannelImpl(String runtimeName,
                               CommandExecutorRegistry executorRegistry,
@@ -79,6 +81,7 @@ public class RuntimeChannelImpl implements RuntimeChannel {
         this.serializationService = serializationService;
         this.messageReceiver = messageReceiver;
         this.monitor = monitor;
+        this.active = new AtomicBoolean(true);
     }
 
     public String getRuntimeName() {
@@ -86,6 +89,9 @@ public class RuntimeChannelImpl implements RuntimeChannel {
     }
 
     public byte[] sendSynchronous(byte[] payload) throws RemoteException, ChannelException {
+        if (!active.get()) {
+            throw new ChannelException("Channel inactive");
+        }
         try {
             ResponseCommand command = serializationService.deserialize(ResponseCommand.class, payload);
             executorRegistry.execute(command);
@@ -103,6 +109,9 @@ public class RuntimeChannelImpl implements RuntimeChannel {
     }
 
     public void send(byte[] payload) throws RemoteException, ChannelException {
+        if (!active.get()) {
+            throw new ChannelException("Channel inactive");
+        }
         try {
             Command command = serializationService.deserialize(Command.class, payload);
             executorRegistry.execute(command);
@@ -118,6 +127,10 @@ public class RuntimeChannelImpl implements RuntimeChannel {
     }
 
     public void publish(byte[] payload) throws RemoteException, ChannelException {
+        if (!active.get()) {
+            // ignore as pub/sub does not need to deliver to every runtime
+            return;
+        }
         if (messageReceiver == null) {
             throw new ChannelException("Channel not configured with a message receiver");
         }
@@ -129,5 +142,13 @@ public class RuntimeChannelImpl implements RuntimeChannel {
         } catch (ClassNotFoundException e) {
             throw new ChannelException(e);
         }
+    }
+
+    public void shutdown() {
+        active.set(false);
+    }
+
+    public boolean isActive() {
+        return active.get();
     }
 }

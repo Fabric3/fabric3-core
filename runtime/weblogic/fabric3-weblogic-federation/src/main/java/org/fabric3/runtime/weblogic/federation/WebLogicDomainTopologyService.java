@@ -94,6 +94,7 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
     private WebLogicTopologyMonitor monitor;
     private InitialContext rootContext;
     private EventContext participantContext;
+    private RuntimeChannelImpl controllerChannel;
 
     public WebLogicDomainTopologyService(@Reference CommandExecutorRegistry executorRegistry,
                                          @Reference EventService eventService,
@@ -112,6 +113,10 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
 
     @Destroy
     public void destroy() throws NamingException {
+        if (controllerChannel != null) {
+            // shutdown the controller channel as it may take a while to remove it from the distributed JNDI tree
+            controllerChannel.shutdown();
+        }
         if (rootContext != null) {
             rootContext.unbind(CONTROLLER_CHANNEL);
             rootContext.close();
@@ -160,15 +165,21 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
             while (list.hasMore()) {
                 Binding binding = list.next();
                 RuntimeChannel channel = (RuntimeChannel) binding.getObject();
-                channel.send(payload);
+                if (channel.isActive()) {
+                    channel.send(payload);
+                }
             }
-        } catch (NamingException e) {
+        } catch (NamingException
+                e) {
             throw new MessageException(e);
-        } catch (RemoteException e) {
+        } catch (RemoteException
+                e) {
             throw new MessageException(e);
-        } catch (ChannelException e) {
+        } catch (ChannelException
+                e) {
             throw new MessageException(e);
-        } catch (IOException e) {
+        } catch (IOException
+                e) {
             throw new MessageException(e);
         }
     }
@@ -178,7 +189,9 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
         try {
             byte[] payload = serializationService.serialize(command);
             for (RuntimeChannel channel : channels) {
-                channel.send(payload);
+                if (channel.isActive()) {
+                    channel.send(payload);
+                }
             }
         } catch (IOException e) {
             throw new MessageException(e);
@@ -201,6 +214,9 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
         }
         for (RuntimeChannel channel : channels) {
             try {
+                if (!channel.isActive()) {
+                    continue;
+                }
                 byte[] responsePayload = channel.sendSynchronous(payload);
                 Response response = serializationService.deserialize(Response.class, responsePayload);
                 responses.add(response);
@@ -233,6 +249,9 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
             if (runtimeChannel == null) {
                 // TODO throw specific exception type
                 throw new MessageException("Runtime not found: " + runtimeName);
+            }
+            if (!runtimeChannel.isActive()) {
+                throw new MessageException("Runtime is not active: " + runtimeName);
             }
             byte[] payload = serializationService.serialize(command);
             byte[] responsePayload = runtimeChannel.sendSynchronous(payload);
@@ -271,7 +290,7 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
 
     private void bindController() {
         try {
-            RuntimeChannel controllerChannel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, monitor);
+            controllerChannel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, monitor);
             rootContext = new InitialContext();
             Context controllerContext = JndiHelper.getContext(Constants.CONTROLLER_CONTEXT, rootContext);
             try {

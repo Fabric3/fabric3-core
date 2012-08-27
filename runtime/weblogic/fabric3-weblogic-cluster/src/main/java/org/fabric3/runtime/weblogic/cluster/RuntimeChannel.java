@@ -50,6 +50,13 @@ import java.rmi.RemoteException;
 public interface RuntimeChannel extends Remote {
 
     /**
+     * Returns true if the runtime referred to by this channel is active.
+     *
+     * @return true if the runtime referred to by this channel is active
+     */
+    boolean isActive();
+
+    /**
      * Returns the runtime name. This corresponds to the WebLogic server name.
      *
      * @return the runtime name
