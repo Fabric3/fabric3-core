@@ -54,7 +54,6 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.event.EventContext;
 
-import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -70,6 +69,7 @@ import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
+import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.federation.DomainTopologyService;
 import org.fabric3.spi.federation.MessageException;
@@ -87,7 +87,8 @@ import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONT
 @Service(DomainTopologyService.class)
 @EagerInit
 public class WebLogicDomainTopologyService implements DomainTopologyService {
-    private String runtimeName = "controller";
+    private static final String RUNTIME_NAME = "controller";
+
     private CommandExecutorRegistry executorRegistry;
     private EventService eventService;
     private SerializationService serializationService;
@@ -109,29 +110,11 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
     @Init
     public void init() throws NamingException {
         eventService.subscribe(JoinDomain.class, new JoinDomainListener());
-    }
-
-    @Destroy
-    public void destroy() throws NamingException {
-        if (controllerChannel != null) {
-            // shutdown the controller channel as it may take a while to remove it from the distributed JNDI tree
-            controllerChannel.shutdown();
-        }
-        if (rootContext != null) {
-            rootContext.unbind(CONTROLLER_CHANNEL);
-            rootContext.close();
-        }
-        if (participantContext != null) {
-            participantContext.close();
-        }
-    }
-
-    public String getRuntimeName() {
-        return runtimeName;
+        eventService.subscribe(RuntimeStop.class, new RuntimeStopListener());
     }
 
     public Set<Zone> getZones() {
-        return null;
+        return Collections.emptySet();
     }
 
     public List<RuntimeInstance> getRuntimes() {
@@ -155,7 +138,7 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
     }
 
     public String getTransportMetaData(String zone, String transport) {
-        return null;
+        return "";
     }
 
     public void broadcast(Command command) throws MessageException {
@@ -290,7 +273,7 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
 
     private void bindController() {
         try {
-            controllerChannel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, monitor);
+            controllerChannel = new RuntimeChannelImpl(RUNTIME_NAME, executorRegistry, serializationService, monitor);
             rootContext = new InitialContext();
             Context controllerContext = JndiHelper.getContext(Constants.CONTROLLER_CONTEXT, rootContext);
             try {
@@ -316,6 +299,34 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
 
         public void onEvent(JoinDomain event) {
             bindController();
+        }
+    }
+
+    /**
+     * Unbinds controller federation channels from the JNDI tree.
+     */
+    private class RuntimeStopListener implements Fabric3EventListener<RuntimeStop> {
+
+        public void onEvent(RuntimeStop event) {
+            if (controllerChannel != null) {
+                // shutdown the controller channel as it may take a while to remove it from the distributed JNDI tree
+                controllerChannel.shutdown();
+            }
+            if (rootContext != null) {
+                try {
+                    rootContext.unbind(CONTROLLER_CHANNEL);
+                    rootContext.close();
+                } catch (NamingException e) {
+                    monitor.error(e);
+                }
+            }
+            if (participantContext != null) {
+                try {
+                    participantContext.close();
+                } catch (NamingException e) {
+                    monitor.error(e);
+                }
+            }
         }
     }
 
