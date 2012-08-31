@@ -69,4 +69,6 @@ public interface DeployerMonitor {
     @Info("Rollback aborted because runtime is in bootstrap phase")
     void rollbackAborted();
 
+    @Info("Participant not available for zone: {0}")
+    void participantNotAvailable(String zoneName);
 }

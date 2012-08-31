@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.management.JMException;
 import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -96,31 +97,41 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
     private InitialContext rootContext;
     private EventContext participantContext;
     private RuntimeChannelImpl controllerChannel;
+    private JmxHelper jmxHelper;
+    private String domainName;
 
     public WebLogicDomainTopologyService(@Reference CommandExecutorRegistry executorRegistry,
                                          @Reference EventService eventService,
                                          @Reference SerializationService serializationService,
+                                         @Reference JmxHelper jmxHelper,
                                          @Monitor WebLogicTopologyMonitor monitor) {
         this.executorRegistry = executorRegistry;
         this.eventService = eventService;
         this.serializationService = serializationService;
+        this.jmxHelper = jmxHelper;
         this.monitor = monitor;
     }
 
     @Init
-    public void init() throws NamingException {
+    public void init() throws NamingException, JMException {
+        domainName = jmxHelper.getRuntimeJmxAttribute(String.class, "DomainConfiguration/Name");
         eventService.subscribe(JoinDomain.class, new JoinDomainListener());
         eventService.subscribe(RuntimeStop.class, new RuntimeStopListener());
     }
 
     public Set<Zone> getZones() {
-        return Collections.emptySet();
+        List<RuntimeInstance> runtimes = getRuntimes();
+        if (runtimes.isEmpty()) {
+            return Collections.emptySet();
+        }
+        Zone zone = new Zone(domainName, runtimes);
+        return Collections.singleton(zone);
     }
 
     public List<RuntimeInstance> getRuntimes() {
         List<RuntimeInstance> instances = new ArrayList<RuntimeInstance>();
         try {
-            NamingEnumeration<Binding> list = participantContext.listBindings(PARTICIPANT_CONTEXT);
+            NamingEnumeration<Binding> list = rootContext.listBindings(PARTICIPANT_CONTEXT);
             while (list.hasMore()) {
                 Binding binding = list.next();
                 RuntimeChannel channel = (RuntimeChannel) binding.getObject();
@@ -220,7 +231,7 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
     public Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException {
         try {
             RuntimeChannel runtimeChannel = null;
-            NamingEnumeration<Binding> list = participantContext.listBindings(PARTICIPANT_CONTEXT);
+            NamingEnumeration<Binding> list = rootContext.listBindings(PARTICIPANT_CONTEXT);
             while (list.hasMore()) {
                 Binding binding = list.next();
                 RuntimeChannel channel = (RuntimeChannel) binding.getObject();

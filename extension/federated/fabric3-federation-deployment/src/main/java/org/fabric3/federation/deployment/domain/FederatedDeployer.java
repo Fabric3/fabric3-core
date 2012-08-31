@@ -46,6 +46,7 @@ package org.fabric3.federation.deployment.domain;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.oasisopen.sca.annotation.EagerInit;
@@ -66,6 +67,8 @@ import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.federation.DomainTopologyService;
 import org.fabric3.spi.federation.ErrorResponse;
 import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.RuntimeInstance;
+import org.fabric3.spi.federation.Zone;
 import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.DeploymentUnit;
 
@@ -108,37 +111,44 @@ public class FederatedDeployer implements Deployer {
 
         // tracks deployment responses by zone
         List<DeploymentCommand> completed = new ArrayList<DeploymentCommand>();
-        for (String zone : currentDeployment.getZones()) {
-            monitor.deploy(zone);
+        for (String zoneName : currentDeployment.getZones()) {
+            monitor.deploy(zoneName);
             DeploymentCommand command;
             try {
-                command = createCommand(zone, currentDeployment, fullDeployment);
+                command = createCommand(zoneName, currentDeployment, fullDeployment);
             } catch (IOException e) {
                 throw new DeploymentException(e);
             }
             notifyDeploy(command);
-            List<Response> responses;
-            try {
-                // send deployments in a fail-fast manner
-                responses = topologyService.sendSynchronousToZone(zone, command, true, timeout);
-            } catch (MessageException e) {
-                // rollback(zone, currentDeployment, completed, zoneResponses);
-                throw new DeploymentException(e);
-            }
 
-            if (responses.isEmpty()) {
-                throw new DeploymentException("Deployment responses not received");
+            Zone zone = new Zone(zoneName, Collections.<RuntimeInstance>emptyList());
+            if (!topologyService.getZones().contains(zone)) {
+                // no participants available, proceed with deployment but do not attempt to send to the zone
+                monitor.participantNotAvailable(zoneName);
+            } else {
+                List<Response> responses;
+                try {
+                    // send deployments in a fail-fast manner
+                    responses = topologyService.sendSynchronousToZone(zoneName, command, true, timeout);
+                } catch (MessageException e) {
+                    // rollback(zone, currentDeployment, completed, zoneResponses);
+                    throw new DeploymentException(e);
+                }
+
+                if (responses.isEmpty()) {
+                    throw new DeploymentException("Deployment responses not received");
+                }
+                Response last = responses.get(responses.size() - 1);
+
+                String runtimeName = last.getRuntimeName();
+                if (last instanceof ErrorResponse) {
+                    ErrorResponse response = (ErrorResponse) last;
+                    monitor.deploymentError(runtimeName, response.getException());
+                    // rollback(zone, currentDeployment, completed, zoneResponses);
+                    throw new DeploymentException("Deployment errors encountered and logged");
+                }
             }
             completed.add(command);
-            Response last = responses.get(responses.size() - 1);
-
-            String runtimeName = last.getRuntimeName();
-            if (last instanceof ErrorResponse) {
-                ErrorResponse response = (ErrorResponse) last;
-                monitor.deploymentError(runtimeName, response.getException());
-                // rollback(zone, currentDeployment, completed, zoneResponses);
-                throw new DeploymentException("Deployment errors encountered and logged");
-            }
         }
         for (DeploymentCommand command : completed) {
             // TODO a commit needs to be refactored to a separate coordinator
