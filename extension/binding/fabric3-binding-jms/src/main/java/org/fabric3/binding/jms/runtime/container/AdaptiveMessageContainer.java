@@ -781,12 +781,12 @@ public class AdaptiveMessageContainer {
             while (active) {
                 // reset the execution context so the thread does not appear stalled to the runtime
                 ExecutionContext context = ExecutionContextTunnel.getThreadExecutionContext();
-                if (context == null) {
-                    throw new AssertionError("Execution context was not set: " + listenerUri);
-                }
+
                 synchronized (syncMonitor) {
                     try {
-                        context.start();
+                        if (context != null) {
+                            context.start();
+                        }
                         boolean interrupted = false;
                         boolean waiting = false;
                         while ((active = isInitialized()) && !isRunning()) {
@@ -810,9 +810,13 @@ public class AdaptiveMessageContainer {
                         if (waiting) {
                             activeReceiverCount++;
                         }
-                        context.stop();
+                        if (context != null) {
+                            context.stop();
+                        }
                     } finally {
-                        context.clear();
+                        if (context != null) {
+                            context.clear();
+                        }
                     }
                 }
                 if (active) {

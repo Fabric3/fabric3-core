@@ -46,7 +46,7 @@ public class ExecutionContextTunnel {
     private static final ThreadLocal<ExecutionContext> CONTEXT = new ThreadLocal<ExecutionContext>();
 
     /**
-     * Associates the active execution context with the current thread
+     * Associates the active execution context with the current thread.
      *
      * @param context the active execution context
      * @return the previously associated execution context or null
@@ -58,7 +58,7 @@ public class ExecutionContextTunnel {
     }
 
     /**
-     * Returns the ExecutionContext for the current thread.
+     * Returns the ExecutionContext for the current thread or null if the host environment implements is own thread pooling scheme.
      *
      * @return the ExecutionContext for the current thread or null
      */
