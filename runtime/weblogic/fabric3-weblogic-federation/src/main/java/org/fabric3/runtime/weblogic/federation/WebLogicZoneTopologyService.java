@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import javax.management.JMException;
 import javax.naming.Binding;
+import javax.naming.CommunicationException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameAlreadyBoundException;
@@ -151,7 +152,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     }
 
     public boolean supportsDynamicChannels() {
-        return false;
+        return true;
     }
 
     public void register(TopologyListener listener) {
@@ -307,6 +308,8 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
             rootContext = getRootContext();
             dynamicChannelContext = JndiHelper.getContext(DYNAMIC_CHANNEL_CONTEXT, rootContext);
             dynamicChannelContext.unbind(name + ":" + runtimeName);
+        } catch (CommunicationException e) {
+            // Controller was not available. Ignore since the controller could have been shutdown before the participant
         } catch (NamingException e) {
             throw new ZoneChannelException(e);
         } finally {
