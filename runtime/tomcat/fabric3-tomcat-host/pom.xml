@@ -10,14 +10,13 @@
  licensed under the Apache 2.0 license.
 
 -->
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-runtime-tomcat-parent-pom</artifactId>
-        <version>1.9.5-SNAPSHOT</version>
+        <version>1.9.5</version>
   </parent>
   
   <groupId>org.codehaus.fabric3.tomcat</groupId>
