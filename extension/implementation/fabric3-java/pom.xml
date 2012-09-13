@@ -12,7 +12,7 @@ Public License. See the accompanying license file for details.
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-extension-implementation-parent-pom</artifactId>
-        <version>1.9.5</version>
+        <version>1.9.6-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-java</artifactId>
