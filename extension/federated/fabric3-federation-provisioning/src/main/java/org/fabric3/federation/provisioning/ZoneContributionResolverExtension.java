@@ -127,10 +127,10 @@ public class ZoneContributionResolverExtension implements ContributionResolverEx
             monitor.resolving(resolveURL);
             return resolveURL.openStream();
         } catch (MessageException e) {
-        	monitor.error("Error while sending Provisioning Command", e);
+            monitor.error("Error while sending provisioning command", e);
             throw new ResolutionException(e);
         } catch (IOException e) {
-        	monitor.error("Cant resolve Contribution from URL :"+resolveURL, e);
+            monitor.error("Cannot resolve contribution from URL: " + resolveURL, e);
             throw new ResolutionException(e);
         }
     }
