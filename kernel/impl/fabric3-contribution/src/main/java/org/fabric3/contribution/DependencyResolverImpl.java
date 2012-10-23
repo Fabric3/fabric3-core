@@ -300,7 +300,7 @@ public class DependencyResolverImpl implements DependencyResolver {
         if (!imprt.getResolved().isEmpty()) {
             // already resolved
             for (Map.Entry<URI, Export> entry : imprt.getResolved().entrySet()) {
-                for (Vertex<Contribution> vertex : vertices) {
+                for (Vertex<Contribution> vertex : dag.getVertices()) {
                     if (vertex.getEntity().getUri().equals(entry.getKey())) {
                         vertices.add(vertex);
                         break;
