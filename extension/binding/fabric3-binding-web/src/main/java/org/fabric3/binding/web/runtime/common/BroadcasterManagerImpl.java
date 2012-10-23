@@ -71,11 +71,17 @@ public class BroadcasterManagerImpl implements BroadcasterManager {
         this.registry = registry;
     }
 
-    public Broadcaster getChannelBroadcaster(String path , AtmosphereConfig config) {
+    public Broadcaster getChannelBroadcaster(String path, AtmosphereConfig config) {
         Broadcaster broadcaster = broadcasters.get(path);
         if (broadcaster == null) {
             initializeTransformer();
-            broadcaster = new ChannelBroadcaster(path, jsonTransformer, config);
+            ClassLoader old = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+                broadcaster = new ChannelBroadcaster(path, jsonTransformer, config);
+            } finally {
+                Thread.currentThread().setContextClassLoader(old);
+            }
             broadcasters.put(path, broadcaster);
         }
         return broadcaster;
