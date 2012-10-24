@@ -65,6 +65,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Generates physical metadata for a Timer component deployment.
@@ -84,7 +85,9 @@ public class TimerComponentGenerator implements ComponentGenerator<LogicalCompon
         TimerComponentDefinition definition = new TimerComponentDefinition();
         generationHelper.generate(definition, component);
         TimerImplementation implementation = component.getDefinition().getImplementation();
-        definition.setTransactional(implementation.getIntents().contains(MANAGED_TRANSACTION));
+        InjectingComponentType componentType = implementation.getComponentType();
+        definition.setTransactional(implementation.getIntents().contains(MANAGED_TRANSACTION)
+                                            || componentType.getIntents().contains(MANAGED_TRANSACTION));
         TimerData data = implementation.getTimerData();
         definition.setTriggerData(data);
         return definition;
