@@ -424,7 +424,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
         for (int i = 0; i < reader.getNamespaceCount(); i++) {
             String prefix = reader.getNamespacePrefix(i);
             String uri = reader.getNamespaceURI(i);
-            prefix = prefix == null ? "xmlns" : "xmlns:" + prefix;
+            prefix = prefix == null || prefix.length() == 0 ? "xmlns" : "xmlns:" + prefix;
             element.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, prefix, uri);
         }
     }
