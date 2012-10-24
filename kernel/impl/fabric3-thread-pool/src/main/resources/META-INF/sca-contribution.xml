@@ -12,6 +12,6 @@ Public License. See the accompanying license file for details.
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
               f3:extension="true">
-    <import.java package="org.fabric3.spi.*" version="1.9.5"/>
+    <import.java package="org.fabric3.spi.*" version="1.9.6"/>
     <deployable composite="f3:ThreadPoolComposite"/>
 </contribution>
