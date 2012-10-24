@@ -36,7 +36,6 @@ Public License. See the accompanying license file for details.
         <property name="multicastRecovery" source="$systemConfig//f3:zeromq.binding/@multicast.recovery"/>
         <property name="sendBuffer" source="$systemConfig//f3:zeromq.binding/@send.buffer"/>
         <property name="receiveBuffer" source="$systemConfig//f3:zeromq.binding/@receive.buffer"/>
-        <property name="host" source="$systemConfig//f3:zeromq.binding/@host"/>
     </component>
 
 </composite>

@@ -96,6 +96,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     private ExecutorService executorService;
     private MessagingMonitor monitor;
     private long pollTimeout = 10000000;
+    private String host;
 
     private Map<String, SenderHolder> senders = new HashMap<String, SenderHolder>();
     private Map<String, Receiver> receivers = new HashMap<String, Receiver>();
@@ -107,7 +108,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
                                 @Reference ZeroMQManagementService managementService,
                                 @Reference EventService eventService,
                                 @Reference HostInfo info,
-                                @Monitor MessagingMonitor monitor) {
+                                @Monitor MessagingMonitor monitor) throws UnknownHostException {
         this.manager = manager;
         this.addressCache = addressCache;
         this.allocator = allocator;
@@ -116,6 +117,8 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         this.eventService = eventService;
         this.info = info;
         this.monitor = monitor;
+        this.host = InetAddress.getLocalHost().getHostAddress();
+
     }
 
     /**
@@ -126,6 +129,16 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     @Property(required = false)
     public void setPollTimeout(long timeout) {
         this.pollTimeout = timeout * 1000; // convert milliseconds to microseconds
+    }
+
+    /**
+     * Sets this host to bind the publisher to.
+     *
+     * @param host the host
+     */
+    @Property(required = false)
+    public void setHost(String host) {
+        this.host = host;
     }
 
     @Init
@@ -185,13 +198,6 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
 
             Port port = allocator.allocate(endpointId, ZMQ);
 
-            String host;
-            if (metadata.getHost() == null) {
-                host = InetAddress.getLocalHost().getHostAddress();
-            } else {
-                host = InetAddress.getByName(metadata.getHost()).getHostAddress();
-            }
-
             String runtimeName = info.getRuntimeName();
             SocketAddress address = new SocketAddress(runtimeName, "tcp", host, port);
 
@@ -216,8 +222,6 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             managementService.registerReceiver(id, receiver);
             monitor.onProvisionEndpoint(id);
         } catch (PortAllocationException e) {
-            throw new BrokerException("Error allocating port for " + uri, e);
-        } catch (UnknownHostException e) {
             throw new BrokerException("Error allocating port for " + uri, e);
         }
     }

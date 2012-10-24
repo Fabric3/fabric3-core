@@ -29,10 +29,13 @@
 
     <component name="ZeroMQPubSubBroker">
         <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.broker.ZeroMQPubSubBrokerImpl"/>
+        <property name="host" source="$systemConfig/f3:runtime/@host.address"/>
+        <property name="pollTimeout" source="$systemConfig//f3:zeromq.binding/@poll.timeout"/>
     </component>
 
     <component name="ZeroMQWireBroker">
         <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.broker.ZeroMQWireBrokerImpl"/>
+        <property name="host" source="$systemConfig/f3:runtime/@host.address"/>
         <property name="pollTimeout" source="$systemConfig//f3:zeromq.binding/@poll.timeout"/>
     </component>
 

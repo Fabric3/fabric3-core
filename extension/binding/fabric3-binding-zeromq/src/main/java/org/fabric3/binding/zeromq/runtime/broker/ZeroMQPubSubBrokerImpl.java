@@ -87,6 +87,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     private EventService eventService;
     private HostInfo info;
     private MessagingMonitor monitor;
+    private String host;
 
     private long pollTimeout = 10000;  // default to 10 seconds
 
@@ -100,7 +101,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                                   @Reference ZeroMQManagementService managementService,
                                   @Reference EventService eventService,
                                   @Reference HostInfo info,
-                                  @Monitor MessagingMonitor monitor) {
+                                  @Monitor MessagingMonitor monitor) throws UnknownHostException {
         this.manager = manager;
         this.addressCache = addressCache;
         this.executorService = executorService;
@@ -109,6 +110,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         this.eventService = eventService;
         this.info = info;
         this.monitor = monitor;
+        this.host = InetAddress.getLocalHost().getHostAddress();
     }
 
     /**
@@ -119,6 +121,16 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     @Property(required = false)
     public void setPollTimeout(long timeout) {
         this.pollTimeout = timeout;
+    }
+
+    /**
+     * Sets this host to bind the publisher to.
+     *
+     * @param host the host
+     */
+    @Property(required = false)
+    public void setHost(String host) {
+        this.host = host;
     }
 
     @Init
@@ -173,13 +185,6 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 Port port = allocator.allocate(channelName, ZMQ);
                 String runtimeName = info.getRuntimeName();
 
-                String host;
-                if (metadata.getHost() == null) {
-                    host = InetAddress.getLocalHost().getHostAddress();
-                } else {
-                    host = InetAddress.getByName(metadata.getHost()).getHostAddress();
-                }
-
                 SocketAddress address = new SocketAddress(runtimeName, "tcp", host, port);
 
                 Publisher publisher = new NonReliablePublisher(manager, address, metadata, pollTimeout, monitor);
@@ -194,8 +199,6 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 publishers.put(channelName, holder);
                 managementService.register(channelName, publisher);
             } catch (PortAllocationException e) {
-                throw new BrokerException("Error creating connection to " + channelName, e);
-            } catch (UnknownHostException e) {
                 throw new BrokerException("Error creating connection to " + channelName, e);
             }
         } else {

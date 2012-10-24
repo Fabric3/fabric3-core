@@ -70,7 +70,6 @@ public class ZeroMQBindingProvider implements BindingProvider {
     private long multicastRecovery = -1;
     private long sendBuffer = -1;
     private long receiveBuffer = -1;
-    private String host;
 
     @Property(required = false)
     public void setEnabled(boolean enabled) {
@@ -100,11 +99,6 @@ public class ZeroMQBindingProvider implements BindingProvider {
     @Property(required = false)
     public void setReceiveBuffer(long receiveBuffer) {
         this.receiveBuffer = receiveBuffer;
-    }
-
-    @Property(required = false)
-    public void setHost(String host) {
-        this.host = host;
     }
 
     public QName getType() {
@@ -175,7 +169,6 @@ public class ZeroMQBindingProvider implements BindingProvider {
         metadata.setMulticastRecovery(multicastRecovery);
         metadata.setReceiveBuffer(receiveBuffer);
         metadata.setSendBuffer(sendBuffer);
-        metadata.setHost(host);
         return metadata;
     }
 
