@@ -43,17 +43,6 @@
  */
 package org.fabric3.transport.jetty.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.NCSARequestLog;
@@ -69,14 +58,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlet.ServletMapping;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.federation.FederationConstants;
@@ -95,6 +76,18 @@ import org.fabric3.transport.jetty.management.ManagedHashSessionManager;
 import org.fabric3.transport.jetty.management.ManagedServletHandler;
 import org.fabric3.transport.jetty.management.ManagedServletHolder;
 import org.fabric3.transport.jetty.management.ManagedStatisticsHandler;
+import org.oasisopen.sca.annotation.*;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Implements an HTTP transport service using Jetty.
@@ -586,14 +579,14 @@ public class JettyServiceImpl implements JettyService, Transport {
 
     private void selectHttpPort() throws IOException, JettyInitializationException {
         try {
-            if (!portAllocator.isPoolEnabled()) {
-                if (configuredHttpPort == -1) {
+            if (configuredHttpPort == -1) {
+                if (portAllocator.isPoolEnabled())
+                    selectedHttp = portAllocator.allocate("HTTP", "HTTP");
+                else
                     selectedHttp = portAllocator.reserve("HTTP", "HTTP", DEFAULT_HTTP_PORT);
-                } else {
-                    selectedHttp = portAllocator.reserve("HTTP", "HTTP", configuredHttpPort);
-                }
             } else {
-                selectedHttp = portAllocator.allocate("HTTP", "HTTP");
+                // port is explicitly assigned
+                selectedHttp = portAllocator.reserve("HTTP", "HTTP", configuredHttpPort);
             }
         } catch (PortAllocationException e) {
             throw new JettyInitializationException("Error allocating HTTP port", e);
@@ -605,15 +598,14 @@ public class JettyServiceImpl implements JettyService, Transport {
             return;
         }
         try {
-            if (!portAllocator.isPoolEnabled()) {
-                if (configuredHttpsPort == -1) {
+            if (configuredHttpsPort == -1) {
+                if (portAllocator.isPoolEnabled())
+                    selectedHttps = portAllocator.allocate("HTTPS", "HTTPS");
+                else
                     selectedHttps = portAllocator.reserve("HTTPS", "HTTPS", DEFAULT_HTTPS_PORT);
-                } else {
-                    selectedHttps = portAllocator.reserve("HTTPS", "HTTPS", configuredHttpsPort);
-                }
-
             } else {
-                selectedHttps = portAllocator.allocate("HTTPS", "HTTPS");
+                // port is explicitly assigned
+                selectedHttps = portAllocator.reserve("HTTPS", "HTTPS", configuredHttpsPort);
             }
         } catch (PortAllocationException e) {
             throw new JettyInitializationException("Error allocating HTTPS port", e);
