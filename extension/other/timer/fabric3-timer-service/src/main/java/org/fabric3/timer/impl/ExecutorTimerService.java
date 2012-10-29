@@ -96,7 +96,7 @@ public class ExecutorTimerService implements TimerService, ScheduledExecutorServ
     @Destroy
     public void destroy() {
         for (ScheduledExecutorService executor : executors.values()) {
-            executor.shutdown();
+            executor.shutdownNow();
         }
     }
 
