@@ -15,7 +15,7 @@
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-kernel-impl-parent-pom</artifactId>
-        <version>1.9.6</version>
+        <version>1.9.7-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-system</artifactId>
