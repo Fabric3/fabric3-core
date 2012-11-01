@@ -24,10 +24,10 @@
         <version>7</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
-    <artifactId>fabric3-modules-parent-pom</artifactId>
+    <artifactId>fabric3-core</artifactId>
     <version>1.9.7-SNAPSHOT</version>
-    <name>Fabric3 Modules Parent POM</name>
-    <description>Fabric3 Modules Parent POM.</description>
+    <name>Fabric3 Core POM</name>
+    <description>Fabric3 Core POM.</description>
     <packaging>pom</packaging>
 
     <modules>
