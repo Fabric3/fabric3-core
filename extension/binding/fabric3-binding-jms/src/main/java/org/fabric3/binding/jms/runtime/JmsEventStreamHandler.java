@@ -60,8 +60,6 @@ import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
  * A {@link EventStreamHandler} that dispatches an event to a JMS destination.
- *
- * @version $Revision$ $Date$
  */
 public class JmsEventStreamHandler implements EventStreamHandler {
     private Destination destination;

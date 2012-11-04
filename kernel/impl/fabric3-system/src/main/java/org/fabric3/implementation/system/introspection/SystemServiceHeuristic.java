@@ -51,8 +51,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Heuristic that identifies the services provided by an implementation class.
- *
- * @version $Rev$ $Date$
  */
 public class SystemServiceHeuristic implements HeuristicProcessor {
     private final JavaContractProcessor contractProcessor;

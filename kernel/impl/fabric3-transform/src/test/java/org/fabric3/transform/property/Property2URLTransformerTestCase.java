@@ -45,8 +45,6 @@ import org.fabric3.spi.transform.TransformationException;
 
 /**
  * Tests String to URL transformation.
- *
- * @version $Rev$ $Date$
  */
 public class Property2URLTransformerTestCase extends BaseTransformTest {
 

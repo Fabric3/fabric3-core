@@ -43,8 +43,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * Thrown when a package name on <code>import.java</code> or <code>export.java</code> is not specified
- *
- * @version $Rev$ $Date$
  */
 public class MissingPackage extends XmlValidationFailure {
 

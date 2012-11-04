@@ -57,8 +57,6 @@ import org.fabric3.spi.util.UriHelper;
 
 /**
  * A binding.sca provider that uses ZeroMQ as the underlying transport.
- *
- * @version $Rev$ $Date$
  */
 public class ZeroMQBindingProvider implements BindingProvider {
     private static final BindingMatchResult MATCH = new BindingMatchResult(true, ZeroMQBindingDefinition.BINDING_0MQ);

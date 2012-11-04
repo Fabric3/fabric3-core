@@ -47,8 +47,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Generates a {@link Deployment} from the current logical state of the domain.
- *
- * @version $Rev$ $Date$
  */
 public interface Generator {
 

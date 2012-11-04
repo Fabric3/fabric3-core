@@ -70,8 +70,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loads a channel definition from an XML-based assembly file
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinition> {

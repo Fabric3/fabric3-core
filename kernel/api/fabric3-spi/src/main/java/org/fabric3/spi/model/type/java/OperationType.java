@@ -44,7 +44,7 @@
 package org.fabric3.spi.model.type.java;
 
 /**
- * @version $Rev: 9131 $ $Date: 2010-06-13 00:37:12 +0200 (Sun, 13 Jun 2010) $
+ *
  */
 public enum OperationType {
     GET,

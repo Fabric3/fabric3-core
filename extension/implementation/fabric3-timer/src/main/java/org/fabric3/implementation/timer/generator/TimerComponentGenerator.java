@@ -69,8 +69,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Generates physical metadata for a Timer component deployment.
- *
- * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
  */
 @EagerInit
 public class TimerComponentGenerator implements ComponentGenerator<LogicalComponent<TimerImplementation>> {

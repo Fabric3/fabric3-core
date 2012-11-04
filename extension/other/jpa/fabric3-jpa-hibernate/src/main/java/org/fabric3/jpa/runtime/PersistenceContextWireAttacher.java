@@ -58,8 +58,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Attaches the target side of entity manager factories.
- *
- * @version $Rev$ $Date$
  */
 public class PersistenceContextWireAttacher implements TargetWireAttacher<PersistenceContextTargetDefinition> {
     private EntityManagerFactoryResolver emfResolver;

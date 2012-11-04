@@ -43,8 +43,6 @@ import java.io.OutputStream;
 
 /**
  * Represents a data connection interface.
- *
- * @version $Rev$ $Date$
  */
 public interface DataConnection {
 

@@ -46,7 +46,7 @@ package org.fabric3.implementation.pojo.builder;
 import org.fabric3.spi.builder.WiringException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class KeyInstantiationException extends WiringException {
     private static final long serialVersionUID = -8972606779645126030L;

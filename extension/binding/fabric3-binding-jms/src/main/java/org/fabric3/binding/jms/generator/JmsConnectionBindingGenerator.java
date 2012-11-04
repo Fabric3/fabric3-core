@@ -72,8 +72,6 @@ import static org.fabric3.spi.channel.ChannelIntents.NON_PERSISTENT_INTENT;
 
 /**
  * Connection binding generator that creates source and target definitions for bound channels, producers, and consumers.
- *
- * @version $Revision$ $Date$
  */
 @EagerInit
 public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator<JmsBindingDefinition> {

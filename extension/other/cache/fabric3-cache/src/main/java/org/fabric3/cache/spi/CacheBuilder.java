@@ -4,8 +4,6 @@ import org.fabric3.spi.builder.BuilderException;
 
 /**
  * Specialized builder for a runtime cache. Implementations create and remove cache resources on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public interface CacheBuilder<R extends PhysicalCacheResourceDefinition> {
 

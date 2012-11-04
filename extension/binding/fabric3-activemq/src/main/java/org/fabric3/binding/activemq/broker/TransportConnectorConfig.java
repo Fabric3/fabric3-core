@@ -41,8 +41,6 @@ import java.net.URI;
 
 /**
  * Encapsulates transport connector adapter configuration for a broker.
- *
- * @version $Rev$ $Date$
  */
 public class TransportConnectorConfig {
     private URI uri;

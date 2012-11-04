@@ -47,8 +47,6 @@ import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 
 /**
  * Generates metadata for creating a TxInterceptor on a wire invocation chain.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class TxInterceptorGenerator implements InterceptorGenerator {

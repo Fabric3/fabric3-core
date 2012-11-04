@@ -50,7 +50,7 @@ import org.fabric3.security.spring.config.JdbcProviderConfiguration;
 import org.fabric3.security.spring.factory.AuthenticationProviderFactoryImpl;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AuthenticationProviderFactoryImplTestCase extends TestCase {
     private AuthenticationProviderFactoryImpl factory;

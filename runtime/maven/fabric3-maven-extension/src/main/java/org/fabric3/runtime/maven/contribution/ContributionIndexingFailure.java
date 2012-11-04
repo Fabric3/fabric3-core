@@ -43,8 +43,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Validation warning indicating that the possible contribution file with the given File could not be loaded.
- *
- * @version $Rev$ $Date$
  */
 public class ContributionIndexingFailure extends ValidationFailure {
     private File file;

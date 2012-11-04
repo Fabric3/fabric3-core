@@ -40,7 +40,7 @@ package org.fabric3.wsdl.contribution.impl;
 import org.fabric3.host.contribution.ValidationFailure;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PortTypeNotFound extends ValidationFailure {
     private String message;

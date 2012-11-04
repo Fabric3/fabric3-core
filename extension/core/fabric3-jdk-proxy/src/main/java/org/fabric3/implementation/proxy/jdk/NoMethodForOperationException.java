@@ -48,8 +48,6 @@ import org.fabric3.model.type.contract.Operation;
 
 /**
  * Thrown when an {@link Operation} cannot be mapped to a method on an interface
- *
- * @version $Rev$ $Date$
  */
 public class NoMethodForOperationException extends ProxyCreationException {
     private static final long serialVersionUID = -2770346906058273180L;

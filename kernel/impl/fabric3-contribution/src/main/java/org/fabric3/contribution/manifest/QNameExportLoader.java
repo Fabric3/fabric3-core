@@ -48,8 +48,6 @@ import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 
 /**
  * Processes a QName-based <code>export</code> element in a contribution manifest
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class QNameExportLoader extends AbstractValidatingTypeLoader<QNameExport> {

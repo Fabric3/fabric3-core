@@ -83,8 +83,6 @@ import org.fabric3.spi.model.type.xsd.XSDType;
 
 /**
  * Binding generator that creates the source and target definitions for JMS endpoint and reference wires.
- *
- * @version $Revision$ $Date$
  */
 @EagerInit
 public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinition> {

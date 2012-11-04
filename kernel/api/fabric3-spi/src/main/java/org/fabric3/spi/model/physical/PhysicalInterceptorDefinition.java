@@ -49,8 +49,6 @@ import java.net.URI;
 /**
  * Model class representing the portable definition of an interceptor. This class is used to describe the interceptors around inbound and outbound
  * wires on a physical component definition.
- *
- * @version $Rev$ $Date$
  */
 public class PhysicalInterceptorDefinition implements Serializable {
     private static final long serialVersionUID = -1850310857357736392L;

@@ -44,8 +44,6 @@ import org.fabric3.spi.contribution.manifest.QNameImport;
 
 /**
  * Creates a QNameContributionWire corresponding to a resolved contribution import.
- *
- * @version $Rev$ $Date$
  */
 public class QNameWireInstantiator implements ContributionWireInstantiator<QNameImport, QNameExport, QNameContributionWire> {
 

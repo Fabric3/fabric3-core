@@ -44,8 +44,6 @@ import org.fabric3.transport.ftp.server.protocol.RequestHandler;
 
 /**
  * Handles the <code>SYST</code> command.
- *
- * @version $Rev$ $Date$
  */
 public class SystRequestHandler implements RequestHandler {
 

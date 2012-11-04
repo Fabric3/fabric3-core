@@ -49,7 +49,7 @@ import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class SystemSourcedResourceReferenceGenerator implements ResourceReferenceGenerator<SystemSourcedResourceReference> {

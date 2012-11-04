@@ -71,8 +71,6 @@ import org.fabric3.spi.federation.RemoteSystemException;
 
 /**
  * Provides base functionality for JGroups-based topology services.
- *
- * @version $Rev$ $Date$
  */
 @Management
 public abstract class AbstractTopologyService {

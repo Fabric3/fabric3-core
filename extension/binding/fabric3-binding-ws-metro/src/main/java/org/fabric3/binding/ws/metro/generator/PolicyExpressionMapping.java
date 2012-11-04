@@ -49,8 +49,6 @@ import org.w3c.dom.Element;
  * the WSDL operation name will correspond to the attribute value and not the method name.
  * <p/>
  * Operation overloading is not supported.
- *
- * @version $Rev$ $Date$
  */
 public class PolicyExpressionMapping implements Serializable {
     private static final long serialVersionUID = 5554492976250872672L;

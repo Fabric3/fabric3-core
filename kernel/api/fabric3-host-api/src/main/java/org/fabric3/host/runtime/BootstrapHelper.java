@@ -63,8 +63,6 @@ import org.fabric3.host.util.OSHelper;
 
 /**
  * Utility class for bootstrap operations.
- *
- * @version $Revision$ $Date$
  */
 public final class BootstrapHelper {
 

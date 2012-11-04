@@ -20,8 +20,6 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
 /**
  * Proxies an executor service to create {@link PropagatingCallable} and {@link PropagatingRunnable} wrappers that propagate the current work context
  * to the thread the submitted callable or runnable is executed on.
- *
- * @version $Rev$ $Date$
  */
 public class ExecutorServiceProxy implements ExecutorService {
     private ExecutorService delegate;

@@ -53,8 +53,6 @@ import org.fabric3.jndi.spi.JndiContextManager;
 
 /**
  * Resolves administered objects against JNDI contexts managed by the runtime {@link JndiContextManager}.
- *
- * @version $Rev$ $Date$
  */
 public class JndiAdministeredObjectResolver implements ProviderConnectionFactoryResolver, ProviderDestinationResolver {
     private JndiContextManager contextManager;

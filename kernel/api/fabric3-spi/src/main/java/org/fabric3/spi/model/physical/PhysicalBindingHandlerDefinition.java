@@ -5,8 +5,6 @@ import java.net.URI;
 
 /**
  * Model class for a binding handler configuration.
- *
- * @version $Rev$ $Date$
  */
 public class PhysicalBindingHandlerDefinition implements Serializable {
     private static final long serialVersionUID = 5402230919047579812L;

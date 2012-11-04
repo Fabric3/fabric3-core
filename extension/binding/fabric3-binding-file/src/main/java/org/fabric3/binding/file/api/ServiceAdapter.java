@@ -35,8 +35,6 @@ import java.io.IOException;
 
 /**
  * Implementations adapt the service-side binding infrastructure to a particular file system-based transport protocol.
- *
- * @version $Revision$ $Date$
  */
 public interface ServiceAdapter {
 

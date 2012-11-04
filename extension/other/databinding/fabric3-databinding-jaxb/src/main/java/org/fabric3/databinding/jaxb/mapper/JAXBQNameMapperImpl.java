@@ -41,7 +41,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JAXBQNameMapperImpl implements JAXBQNameMapper {
 

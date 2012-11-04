@@ -61,8 +61,6 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
  * Processes metadata for the {@link Resource} annotation.
- *
- * @version $Rev$ $Date$
  */
 public class JSR250ResourceProcessor extends AbstractAnnotationProcessor<Resource> {
     private IntrospectionHelper helper;

@@ -54,7 +54,7 @@ import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class ProvisionExtensionsCommandExecutorTestCase extends TestCase {

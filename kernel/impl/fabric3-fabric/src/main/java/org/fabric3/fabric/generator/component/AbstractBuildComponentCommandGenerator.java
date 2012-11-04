@@ -57,8 +57,6 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  * Base functionality for build/dispose component generators.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractBuildComponentCommandGenerator implements CommandGenerator {
     private GeneratorRegistry generatorRegistry;

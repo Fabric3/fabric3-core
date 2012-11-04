@@ -38,7 +38,7 @@
 package org.fabric3.binding.rs.provision;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public enum AuthenticationType {
     NONE,

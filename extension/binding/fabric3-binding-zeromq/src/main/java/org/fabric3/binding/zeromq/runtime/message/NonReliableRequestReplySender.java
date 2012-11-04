@@ -65,8 +65,6 @@ import org.fabric3.spi.invocation.WorkContext;
  * <p/>
  * Since ZeroMQ requires the creating socket thread to dispatch messages, a looping thread is used for sending messages. Messages are provided to the
  * thread via a queue.
- *
- * @version $Revision$ $Date$
  */
 public class NonReliableRequestReplySender extends AbstractStatistics implements RequestReplySender, Thread.UncaughtExceptionHandler {
     private static final Callable<byte[]> CALLABLE = new Callable<byte[]>() {

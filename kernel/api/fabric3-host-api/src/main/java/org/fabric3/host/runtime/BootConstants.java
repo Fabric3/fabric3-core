@@ -39,8 +39,6 @@ package org.fabric3.host.runtime;
 
 /**
  * Bootstrap constants.
- *
- * @version $Rev$ $Date$
  */
 public interface BootConstants {
 

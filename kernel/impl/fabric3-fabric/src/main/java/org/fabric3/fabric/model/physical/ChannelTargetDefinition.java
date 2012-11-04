@@ -43,8 +43,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
  * Metadata for attaching the target side of a channel connection to a channel.
- *
- * @version $Rev$ $Date$
  */
 public class ChannelTargetDefinition extends PhysicalConnectionTargetDefinition {
     private static final long serialVersionUID = -345332613558717623L;

@@ -45,8 +45,6 @@ package org.fabric3.host.runtime;
 
 /**
  * Manages the lifecycle of a Fabric3 runtime instance.
- *
- * @version $Rev$ $Date$
  */
 public interface RuntimeCoordinator {
 

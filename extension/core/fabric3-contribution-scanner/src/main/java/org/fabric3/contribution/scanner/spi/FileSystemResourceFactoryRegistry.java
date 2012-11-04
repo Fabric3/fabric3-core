@@ -41,8 +41,6 @@ import java.io.File;
 
 /**
  * A registry for FileSystemResourceFactory instances.
- *
- * @version $Rev$ $Date$
  */
 public interface FileSystemResourceFactoryRegistry {
 

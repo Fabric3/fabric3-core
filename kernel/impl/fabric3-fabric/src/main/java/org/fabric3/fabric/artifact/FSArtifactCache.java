@@ -55,7 +55,7 @@ import org.fabric3.spi.artifact.ArtifactCache;
 import org.fabric3.spi.artifact.CacheException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class FSArtifactCache implements ArtifactCache {

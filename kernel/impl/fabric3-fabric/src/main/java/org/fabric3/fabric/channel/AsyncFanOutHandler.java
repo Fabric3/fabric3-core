@@ -44,8 +44,6 @@ import org.fabric3.spi.channel.EventStream;
 
 /**
  * Asynchronously broadcasts a received event to a collection of handlers.
- *
- * @version $Rev$ $Date$
  */
 public class AsyncFanOutHandler extends AbstractFanOutHandler {
     private ExecutorService executorService;

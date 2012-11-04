@@ -70,8 +70,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Source wire attacher that provisions Java-based web service endpoints.
- *
- * @version $Rev$ $Date$
  */
 public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher<MetroJavaSourceDefinition> {
     private ClassLoaderRegistry classLoaderRegistry;

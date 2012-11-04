@@ -48,8 +48,6 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 
 /**
  * Configuration for registering a MessageListener with a {@link MessageContainerManager}.
- *
- * @version $Rev$ $Date$
  */
 public class ContainerConfiguration {
     private URI uri;

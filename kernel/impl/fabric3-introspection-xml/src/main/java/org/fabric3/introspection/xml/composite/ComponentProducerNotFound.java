@@ -44,8 +44,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * A validation failure indicating an attempt to configure a non-existent component producer.
- *
- * @version $Rev$ $Date$
  */
 public class ComponentProducerNotFound extends XmlValidationFailure {
     private String name;

@@ -46,8 +46,6 @@ import org.fabric3.host.stream.Source;
 
 /**
  * A contribution artifact that is sourced from an InputStream.
- *
- * @version $Rev$ $Date$
  */
 public class InputStreamContributionSource implements ContributionSource {
     private URI uri;

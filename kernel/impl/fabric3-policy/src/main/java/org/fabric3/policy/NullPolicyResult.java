@@ -51,8 +51,6 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 
 /**
  * Used as a policy result stub.
- *
- * @version $Rev$ $Date$
  */
 public class NullPolicyResult implements PolicyResult, EffectivePolicy {
     private PolicyMetadata metadata = new PolicyMetadata();

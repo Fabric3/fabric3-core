@@ -64,7 +64,7 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class SystemComponentBuilder extends PojoComponentBuilder<SystemComponentDefinition, SystemComponent> {

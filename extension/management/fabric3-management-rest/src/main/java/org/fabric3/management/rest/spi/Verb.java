@@ -39,8 +39,6 @@ package org.fabric3.management.rest.spi;
 
 /**
  * The HTTP verbs management operations may be mapped to.
- *
- * @version $Rev$ $Date$
  */
 public enum Verb {
     GET,

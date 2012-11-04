@@ -39,8 +39,6 @@ package org.fabric3.security.spring.config;
 
 /**
  * Configuration for a JDBC-based Spring <code>AuthenticationProvider</code>.
- *
- * @version $Rev$ $Date$
  */
 public class JdbcProviderConfiguration extends AuthenticationProviderConfiguration {
     private String dataSourceName;

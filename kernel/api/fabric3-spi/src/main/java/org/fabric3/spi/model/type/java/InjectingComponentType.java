@@ -56,8 +56,6 @@ import org.fabric3.model.type.component.ResourceReferenceDefinition;
 
 /**
  * A component type associated with an implementation that supports injection.
- *
- * @version $Rev$ $Date$
  */
 public class InjectingComponentType extends ComponentType {
     private static final long serialVersionUID = -2602867276842414240L;

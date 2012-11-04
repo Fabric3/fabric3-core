@@ -48,8 +48,6 @@ import org.fabric3.spi.security.AuthorizationService;
 import org.fabric3.spi.security.UsernamePasswordToken;
 
 /**
- *
- * @version $Rev: 7888 $ $Date: 2009-11-22 11:27:32 +0100 (Sun, 22 Nov 2009) $
  */
 public abstract class AbstractResolverServlet extends HttpServlet {
     private static final long serialVersionUID = 6804699201507293087L;

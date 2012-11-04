@@ -18,8 +18,6 @@ import org.fabric3.spi.threadpool.LongRunnable;
  * <p/>
  * Atmosphere performs blocking poll operations on queues and this class is used to avoid issuing stuck thread notifications in the runtime, cf
  * FABRICTHREE-651.
- *
- * @version $Rev$ $Date$
  */
 public class LongRunningExecutorService implements ExecutorService {
     private ExecutorService delegate;

@@ -92,8 +92,6 @@ import org.fabric3.spi.federation.Zone;
 
 /**
  * JGroups implementation of the {@link DomainTopologyService}.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 @Management(name = "DomainTopologyService", path = "/runtime/federation/controller/view")

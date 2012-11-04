@@ -83,8 +83,6 @@ import static org.fabric3.implementation.web.provision.WebContextInjectionSite.C
 
 /**
  * Generates commands to provision a web component.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WebComponentGenerator implements ComponentGenerator<LogicalComponent<WebImplementation>> {

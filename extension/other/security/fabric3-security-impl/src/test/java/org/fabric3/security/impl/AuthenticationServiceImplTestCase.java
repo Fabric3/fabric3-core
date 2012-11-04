@@ -49,7 +49,7 @@ import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.security.UsernamePasswordToken;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AuthenticationServiceImplTestCase extends TestCase {
 

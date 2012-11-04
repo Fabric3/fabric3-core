@@ -90,8 +90,6 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
 
 /**
  * Generates source and target definitions for an endpoint defined by a WSDL-based service contract.
- *
- * @version $Rev$ $Date$
  */
 public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlServiceContract> {
     private static final String REPLACEABLE_ADDRESS = "REPLACE_WITH_ACTUAL_URL";

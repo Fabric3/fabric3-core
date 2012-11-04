@@ -47,8 +47,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Creates interceptors that transform input and output parameters from one format to another, e.g. DOM to Java or vice versa.
- *
- * @version $Rev: 7606 $ $Date: 2009-09-09 16:00:11 +0200 (Wed, 09 Sep 2009) $
  */
 public interface TransformerInterceptorFactory {
 

@@ -58,8 +58,6 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
  * WSDL contract (as opposed to a Java interface).
  * <p/>
  * This interceptor requires message payloads to be a DOM type.
- *
- * @version $Rev: 7476 $ $Date: 2009-08-15 01:25:27 -0400 (Sat, 15 Aug 2009) $
  */
 public class MetroDispatchTargetInterceptor extends AbstractMetroTargetInterceptor {
     private MetroDispatchObjectFactory proxyFactory;

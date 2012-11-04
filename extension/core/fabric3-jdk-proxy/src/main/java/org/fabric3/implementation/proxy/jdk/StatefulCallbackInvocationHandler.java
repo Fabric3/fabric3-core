@@ -48,8 +48,6 @@ import org.fabric3.spi.wire.InvocationChain;
  * Responsible for dispatching to a callback service from a component implementation instance that is not composite scope. Since only one client can
  * invoke the instance this proxy is injected on at a time, there can only be one callback target, even if the proxy is injected on an instance
  * variable. Consequently, the proxy does not need to map the callback target based on the forward request.
- *
- * @version $Rev$ $Date$
  */
 public class StatefulCallbackInvocationHandler<T> extends AbstractCallbackInvocationHandler<T> {
     private Map<Method, InvocationChain> chains;

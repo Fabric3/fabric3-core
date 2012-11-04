@@ -40,7 +40,7 @@ package org.fabric3.implementation.timer.introspection;
 import org.fabric3.host.contribution.ValidationFailure;
 
 /**
- * @version $Rev: 7148 $ $Date: 2009-06-15 02:18:27 +0200 (Mon, 15 Jun 2009) $
+ *
  */
 public class InvalidIntervalMethod extends ValidationFailure {
     private String message;

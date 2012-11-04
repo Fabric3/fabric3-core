@@ -42,8 +42,6 @@ import org.fabric3.spi.command.ResponseCommand;
 /**
  * Sent by participant to receive deployment updates. The participant may send the update request to a controller or another zone member (typically
  * the zone leader).
- *
- * @version $Rev$ $Date$
  */
 public class RuntimeUpdateCommand implements ResponseCommand {
     private static final long serialVersionUID = 1705187909349921487L;

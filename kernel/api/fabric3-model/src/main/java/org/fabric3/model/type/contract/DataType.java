@@ -52,8 +52,6 @@ import org.fabric3.model.type.ModelObject;
  * abstract type in some arbitrary type system such as XML Schema type or Java Classes. It describes the type of data the user is expecting to use.
  * The physical form describes the representation of that logical data actually used by the runtime. This may describe a Java Object (i.e. the
  * physical form would be the Java Type of that Object typically a Class) or it may describe a surrogate for that Object such as a stream.
- *
- * @version $Rev$ $Date$
  * @param <L> the type of identifier for the logical type system used by this DataType (such as an XML QName or Java Class)
  */
 public abstract class DataType<L> extends ModelObject {

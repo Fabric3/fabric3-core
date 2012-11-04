@@ -47,8 +47,6 @@ import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 
 /**
  * Reference-side wire target information defined by a Java interface.
- *
- * @version $Rev$ $Date$
  */
 public class MetroJavaTargetDefinition extends MetroTargetDefinition {
     private static final long serialVersionUID = 5332578680612891881L;

@@ -48,7 +48,7 @@ import org.atmosphere.cpr.AtmosphereResource;
 import static org.atmosphere.cpr.FrameworkConfig.ATMOSPHERE_RESOURCE;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ServiceRouter extends HttpServlet {
     private static final long serialVersionUID = -5280160176214956503L;

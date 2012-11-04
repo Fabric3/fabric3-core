@@ -42,8 +42,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * An SCA service definition in a Spring application context.
- *
- * @version $Rev$ $Date$
  */
 public class SpringService extends ServiceDefinition {
     private static final long serialVersionUID = 204519855340684340L;

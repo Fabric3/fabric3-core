@@ -41,8 +41,6 @@ import org.fabric3.datasource.spi.DataSourceFactoryException;
 
 /**
  * Denotes an error parsing a datasource configuration.
- *
- * @version $Rev$ $Date$
  */
 public class DataSourceParseException extends DataSourceFactoryException {
     private static final long serialVersionUID = 880082576976360535L;

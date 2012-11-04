@@ -50,7 +50,7 @@ import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.security.NotAuthorizedException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AuthorizationServiceImplTestCase extends TestCase {
 

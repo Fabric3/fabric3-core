@@ -58,7 +58,7 @@ import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class MonitorComponentBuilder implements ComponentBuilder<MonitorComponentDefinition, MonitorComponent> {

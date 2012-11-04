@@ -60,8 +60,6 @@ import org.fabric3.api.annotation.monitor.Monitor;
 
 /**
  * F3 implementation of the in-process FTP host.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class F3FtpHost implements FtpHost {

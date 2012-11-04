@@ -57,8 +57,6 @@ import org.fabric3.host.runtime.HostInfo;
  * API for the Maven runtime. The Maven runtime requires system component of type Map<String, Wire> named "TestWireHolder" that contains wires to
  * integration test operations to be invoked. Extensions such as JUnit are required to introspect test implementation and generate the appropriate
  * metadata to instantiate wires to test operations. These wires must then be attached to the TestWireHolder component.
- *
- * @version $Rev$ $Date$
  */
 public interface MavenRuntime extends Fabric3Runtime {
 

@@ -52,8 +52,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Attaches to a runtime DataSource.
- *
- * @version $Rev$ $Date$
  */
 public class DataSourceWireAttacher implements TargetWireAttacher<DataSourceTargetDefinition> {
     private DataSourceRegistry registry;

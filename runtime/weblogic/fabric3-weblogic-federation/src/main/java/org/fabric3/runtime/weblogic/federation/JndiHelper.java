@@ -43,8 +43,6 @@ import javax.naming.NamingException;
 
 /**
  * Helper class for JNDI operations.
- *
- * @version $Rev$ $Date$
  */
 public final class JndiHelper {
 

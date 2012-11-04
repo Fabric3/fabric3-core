@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * @version $Rev: 9019 $ $Date: 2010-05-20 17:00:08 +0200 (Thu, 20 May 2010) $
+ *
  */
 public class MonitorComponentDefinition extends PhysicalComponentDefinition {
     private static final long serialVersionUID = -7935226940527783798L;

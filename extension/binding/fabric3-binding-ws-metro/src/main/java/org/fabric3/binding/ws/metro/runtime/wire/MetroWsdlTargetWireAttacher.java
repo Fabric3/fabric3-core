@@ -68,8 +68,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Attaches an interceptor for invoking a web service endpoint based on a WSDL contract to a wire.
- *
- * @version $Rev$ $Date$
  */
 public class MetroWsdlTargetWireAttacher extends AbstractMetroTargetWireAttacher<MetroWsdlTargetDefinition> {
     private FeatureResolver resolver;

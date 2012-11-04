@@ -55,7 +55,7 @@ import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- * @version $Revision: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
+ *
  */
 public class DomainChannelCommandGeneratorImplTestCase extends TestCase {
 

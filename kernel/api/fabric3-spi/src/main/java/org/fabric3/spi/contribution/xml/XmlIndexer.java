@@ -46,8 +46,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Implementations index an XML resource corresponding to a given document element QName.
- *
- * @version $Rev$ $Date$
  */
 public interface XmlIndexer {
 

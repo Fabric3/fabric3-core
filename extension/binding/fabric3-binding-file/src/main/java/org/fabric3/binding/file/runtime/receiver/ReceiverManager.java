@@ -39,8 +39,6 @@ package org.fabric3.binding.file.runtime.receiver;
 
 /**
  * Manages file binding receivers that monitor a location for data files and invoke bound services.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public interface ReceiverManager {
 

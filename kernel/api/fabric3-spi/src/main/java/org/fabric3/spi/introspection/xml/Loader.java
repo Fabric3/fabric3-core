@@ -51,8 +51,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * System service for loading configuration artifacts from an XML source.
- *
- * @version $Rev$ $Date$
  */
 public interface Loader {
     /**

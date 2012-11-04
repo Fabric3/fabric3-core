@@ -51,8 +51,6 @@ import org.fabric3.spi.wire.InvocationChain;
  * based on the current CallFrame. For example, if clients A and A' implementing the same callback interface C invoke B, the callback proxy
  * representing C must correctly dispatch back to A and A'. This is done by recording the callback URI in the current CallFrame as the forward invoke
  * is made.
- *
- * @version $Rev$ $Date$
  */
 public class MultiThreadedCallbackInvocationHandler<T> extends AbstractCallbackInvocationHandler<T> {
     private Map<String, Map<Method, InvocationChain>> mappings;

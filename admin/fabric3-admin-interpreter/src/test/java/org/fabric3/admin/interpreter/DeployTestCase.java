@@ -49,7 +49,7 @@ import org.fabric3.admin.interpreter.communication.DomainConnection;
 import org.fabric3.admin.interpreter.impl.InterpreterImpl;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DeployTestCase extends TestCase {
 

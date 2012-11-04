@@ -48,8 +48,6 @@ import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  * Creates an event filter that filters based on Java types.
- *
- * @version $Rev$ $Date$
  */
 public class TypeEventFilterBuilder implements EventFilterBuilder<TypeEventFilterDefinition> {
 

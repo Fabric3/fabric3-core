@@ -55,8 +55,6 @@ import org.fabric3.spi.model.instance.LogicalService;
 
 /**
  * Handles generation for Java components and specialized subtypes.
- *
- * @version $Rev$ $Date$
  */
 public interface JavaGenerationHelper {
 

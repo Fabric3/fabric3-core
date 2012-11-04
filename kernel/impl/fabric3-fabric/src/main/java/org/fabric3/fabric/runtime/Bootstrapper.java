@@ -47,8 +47,6 @@ import org.fabric3.host.runtime.InitializationException;
 
 /**
  * Bootstraps a runtime in two phases. The first phase initializes the runtime domain. The second phase initializes the core runtime services.
- *
- * @version $Rev$ $Date$
  */
 public interface Bootstrapper {
     

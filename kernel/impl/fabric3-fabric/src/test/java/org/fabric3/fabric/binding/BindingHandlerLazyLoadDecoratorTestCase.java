@@ -13,7 +13,7 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class BindingHandlerLazyLoadDecoratorTestCase extends TestCase {
     private static final URI HANDLER_URI = URI.create("handler");

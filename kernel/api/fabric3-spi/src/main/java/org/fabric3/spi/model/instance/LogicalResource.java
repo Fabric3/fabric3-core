@@ -49,8 +49,6 @@ import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
  * An instantiated resource defined in a composite.
- *
- * @version $Rev$ $Date$
  */
 public class LogicalResource<R extends ResourceDefinition> extends LogicalScaArtifact<LogicalCompositeComponent> {
     private static final long serialVersionUID = -8094856609591381761L;

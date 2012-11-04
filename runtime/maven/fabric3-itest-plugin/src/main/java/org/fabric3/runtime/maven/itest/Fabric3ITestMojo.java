@@ -84,8 +84,6 @@ import org.fabric3.runtime.maven.MavenRuntime;
 
 /**
  * Runs an embedded Fabric3 runtime for integration testing.
- *
- * @version $Rev$ $Date$
  * @goal test
  * @phase integration-test
  * @execute phase="integration-test"

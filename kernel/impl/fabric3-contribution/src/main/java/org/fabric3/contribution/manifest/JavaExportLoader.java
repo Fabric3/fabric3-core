@@ -51,8 +51,6 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 
 /**
  * Loads an <code>export.java</code> entry in a contribution manifest.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class JavaExportLoader extends AbstractValidatingTypeLoader<JavaExport> {

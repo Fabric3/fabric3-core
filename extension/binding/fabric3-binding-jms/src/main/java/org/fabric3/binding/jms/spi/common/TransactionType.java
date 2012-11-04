@@ -45,8 +45,6 @@ package org.fabric3.binding.jms.spi.common;
 
 /**
  * Defines transaction types.
- *
- * @version $Rev$ $Date$
  */
 public enum TransactionType {
 

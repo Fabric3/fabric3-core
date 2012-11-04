@@ -45,8 +45,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Annotation that can be applied to an implementation to indicate it should be exposed to a management framework.
- *
- * @version $Rev$ $Date$
  */
 @Target({TYPE})
 @Retention(RUNTIME)

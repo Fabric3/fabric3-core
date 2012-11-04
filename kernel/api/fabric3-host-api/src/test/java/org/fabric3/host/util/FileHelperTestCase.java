@@ -11,7 +11,7 @@ import java.util.Scanner;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class FileHelperTestCase extends TestCase {
 

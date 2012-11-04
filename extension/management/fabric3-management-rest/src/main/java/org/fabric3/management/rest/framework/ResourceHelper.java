@@ -45,8 +45,6 @@ import org.fabric3.management.rest.model.SelfLink;
 
 /**
  * Framework helper methods.
- *
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 public final class ResourceHelper {
 

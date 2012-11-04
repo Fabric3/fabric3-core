@@ -49,8 +49,6 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  * Builds a component for an implementation type on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public interface ComponentBuilder<D extends PhysicalComponentDefinition, C extends Component> {
 

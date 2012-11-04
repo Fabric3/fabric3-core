@@ -50,7 +50,7 @@ import junit.framework.TestCase;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ClassLoaderRegistryImplTestCase extends TestCase {
     private static final URI CLassLOADER_URI = URI.create("classloader");

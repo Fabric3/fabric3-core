@@ -59,7 +59,7 @@ import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
- * @version $Rev: 9419 $ $Date: 2010-09-01 23:56:59 +0200 (Wed, 01 Sep 2010) $
+ *
  */
 @EagerInit
 public class CachingAuthenticationServiceTestCase extends TestCase {

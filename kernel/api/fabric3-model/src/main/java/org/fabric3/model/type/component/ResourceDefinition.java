@@ -41,8 +41,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * A resource declared in composite.
- *
- * @version $Rev$ $Date$
  */
 public class ResourceDefinition extends ModelObject {
     private static final long serialVersionUID = -3860710064340747379L;

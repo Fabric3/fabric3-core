@@ -68,8 +68,6 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 
 /**
  * Loads property values configured on a component.
- *
- * @version $Rev$ $Date$
  */
 public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyValue> {
     private static final QName PROPERTY = new QName(Constants.SCA_NS, "property");

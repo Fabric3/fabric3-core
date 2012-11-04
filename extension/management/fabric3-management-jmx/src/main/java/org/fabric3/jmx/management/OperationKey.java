@@ -41,7 +41,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class OperationKey {
     private String name;

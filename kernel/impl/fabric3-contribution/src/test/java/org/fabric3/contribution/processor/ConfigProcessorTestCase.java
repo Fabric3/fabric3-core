@@ -19,7 +19,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ConfigProcessorTestCase extends TestCase {
     private static final String XML =

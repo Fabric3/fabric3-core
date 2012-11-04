@@ -47,8 +47,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * Base exception for the domain package.
- *
- * @version $Rev$ $Date$
  */
 public class DomainException extends Fabric3Exception {
     private static final long serialVersionUID = -2529045209367837417L;

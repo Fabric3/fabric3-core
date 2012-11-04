@@ -45,8 +45,6 @@ package org.fabric3.binding.jms.spi.common;
 
 /**
  * Options for resolving destinations and connection factories.
- *
- * @version $Revision$ $Date$
  */
 public enum CreateOption {
 

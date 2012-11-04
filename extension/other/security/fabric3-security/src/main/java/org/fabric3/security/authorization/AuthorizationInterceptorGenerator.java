@@ -51,8 +51,6 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 
 /**
  * Generates interceptors that perform role-based authorization checks for a service invocation.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class AuthorizationInterceptorGenerator implements InterceptorGenerator {

@@ -39,8 +39,6 @@ package org.fabric3.timer.spi;
 
 /**
  * Implementations are executed on a recurring basis by the {@link TimerService}.
- *
- * @version $Rev$ $Date$
  */
 public interface Task extends Runnable {
 

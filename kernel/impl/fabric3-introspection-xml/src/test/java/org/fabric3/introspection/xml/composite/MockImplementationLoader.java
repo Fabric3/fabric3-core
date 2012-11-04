@@ -48,7 +48,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MockImplementationLoader implements TypeLoader<MockImplementation> {
     private Property[] properties;

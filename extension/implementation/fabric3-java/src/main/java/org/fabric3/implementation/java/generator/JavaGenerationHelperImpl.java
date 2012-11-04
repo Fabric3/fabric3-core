@@ -70,7 +70,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.Signature;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JavaGenerationHelperImpl implements JavaGenerationHelper {
     private final GenerationHelper helper;

@@ -37,8 +37,6 @@ import org.fabric3.binding.zeromq.runtime.SocketAddress;
 /**
  * Provides a view on the state of all ZeroMQ endpoints in the domain. An endpoint is the socket which binds to an address and can either be the
  * ZeroMQ client or server side of a connection.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public interface AddressCache {
 

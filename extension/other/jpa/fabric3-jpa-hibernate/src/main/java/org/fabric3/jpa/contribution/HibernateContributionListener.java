@@ -51,8 +51,6 @@ import org.fabric3.spi.contribution.manifest.PackageInfo;
  * necessary as Hibernate's use of CGLIB for generating proxies requires that Hibernate classes (specifically, HibernateDelegate) be visible from the
  * classloader that loaded a particular entity (i.e. the application classloader). If a Hibernate is explicitly imported in a contribution manifest
  * (sca-contribution.xml), it is used instead.
- *
- * @version $Rev$ $Date$
  */
 public class HibernateContributionListener implements ContributionServiceListener {
     private JavaImport hibernateImport;

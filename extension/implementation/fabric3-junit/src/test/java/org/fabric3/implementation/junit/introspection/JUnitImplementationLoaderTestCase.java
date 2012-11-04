@@ -54,7 +54,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JUnitImplementationLoaderTestCase extends TestCase {
     private static final String XML = "<junit class='org.fabric3.test.Foo'/>";

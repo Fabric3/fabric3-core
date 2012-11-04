@@ -59,8 +59,6 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * Injects a servlet or filter with reference proxies, properties, and the component context.
- *
- * @version $Rev$ $Date$
  */
 public class InjectingDecorator implements ServletContextHandler.Decorator {
     private Map<String, List<Injector<?>>> injectorMappings;

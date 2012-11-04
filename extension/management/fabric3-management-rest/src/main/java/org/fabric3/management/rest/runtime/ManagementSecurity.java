@@ -39,8 +39,6 @@ package org.fabric3.management.rest.runtime;
 
 /**
  * Security settings for management access.
- *
- * @version $Rev: 8923 $ $Date: 2010-04-26 10:43:08 +0200 (Mon, 26 Apr 2010) $
  */
 public enum ManagementSecurity {
     DISABLED,

@@ -45,8 +45,6 @@ import org.fabric3.transport.ftp.server.protocol.RequestHandler;
 /**
  * Handles the <code>CWD</code> command.
  * <p/>
- *
- * @version $Rev$ $Date$
  */
 public class TypeRequestHandler implements RequestHandler {
 

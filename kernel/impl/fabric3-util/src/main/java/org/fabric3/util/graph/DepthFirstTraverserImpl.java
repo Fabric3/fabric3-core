@@ -46,8 +46,6 @@ import java.util.Set;
 
 /**
  * Default implementation of a depth first search.
- *
- * @version $Rev$ $Date$
  */
 public class DepthFirstTraverserImpl<T> implements DepthFirstTraverser<T> {
 

@@ -47,8 +47,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Denotes an invalid consumer method.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidConsumerMethod extends ValidationFailure {
     private String message;

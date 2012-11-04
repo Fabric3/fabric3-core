@@ -50,8 +50,6 @@ import com.sun.xml.wss.jaxws.impl.SecurityServerTube;
  * <li> Introduces a for workaround as described in {@link F3SecurityTubeFactory}.
  * <li> Overrides the default SecurityEnvironment with a Fabric3 implementation
  * </ul>
- *
- * @version $Rev$ $Date$
  */
 public class F3SecurityServerTube extends SecurityServerTube {
 

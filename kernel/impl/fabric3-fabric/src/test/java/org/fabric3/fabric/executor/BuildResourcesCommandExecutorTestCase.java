@@ -55,7 +55,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class BuildResourcesCommandExecutorTestCase extends TestCase {
 

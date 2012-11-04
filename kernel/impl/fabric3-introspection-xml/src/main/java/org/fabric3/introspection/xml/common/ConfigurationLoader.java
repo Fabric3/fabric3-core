@@ -66,8 +66,6 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  *     &lt;/configuration&gt;
  * </pre>
  * as a Map of String keys and values.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ConfigurationLoader implements TypeLoader<Map<String, String>> {

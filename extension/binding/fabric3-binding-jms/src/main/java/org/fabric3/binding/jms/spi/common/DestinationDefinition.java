@@ -45,8 +45,6 @@ package org.fabric3.binding.jms.spi.common;
 
 /**
  * A destination configuration.
- *
- * @version $Revision$ $Date$
  */
 public class DestinationDefinition extends AdministeredObjectDefinition {
     private static final long serialVersionUID = 2175092846182913179L;

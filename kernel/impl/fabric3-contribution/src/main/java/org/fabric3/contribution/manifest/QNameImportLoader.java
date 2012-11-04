@@ -51,8 +51,6 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 
 /**
  * Processes a QName-based <code>import</code> element in a contribution manifest
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class QNameImportLoader extends AbstractValidatingTypeLoader<QNameImport> {

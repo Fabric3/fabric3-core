@@ -42,7 +42,7 @@ import java.net.URI;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MonitorConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
     private static final long serialVersionUID = 16881673877261866L;

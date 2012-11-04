@@ -53,8 +53,6 @@ import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
 
 /**
  * Creates a FileResource for contribution jars
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class JarResourceFactory implements FileSystemResourceFactory {

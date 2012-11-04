@@ -42,7 +42,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * @version $Rev: 8982 $ $Date: 2010-05-10 18:44:13 +0200 (Mon, 10 May 2010) $
+ *
  */
 public class DuplicateProducer extends XmlValidationFailure {
 

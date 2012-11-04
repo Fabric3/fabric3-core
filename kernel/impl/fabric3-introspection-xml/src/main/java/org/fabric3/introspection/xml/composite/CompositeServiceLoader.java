@@ -72,8 +72,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loads a service definition from a composite.
- *
- * @version $Rev$ $Date$
  */
 public class CompositeServiceLoader extends AbstractValidatingTypeLoader<CompositeService> {
     private static final QName CALLBACK = new QName(SCA_NS, "callback");

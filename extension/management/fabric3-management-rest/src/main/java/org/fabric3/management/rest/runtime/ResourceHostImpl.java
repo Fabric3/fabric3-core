@@ -79,7 +79,7 @@ import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     private static final long serialVersionUID = 5554150494161533656L;

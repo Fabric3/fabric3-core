@@ -45,8 +45,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Base class for reference-side wire definitions.
- *
- * @version $Rev$ $Date$
  */
 public abstract class MetroTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = 5758003268658918242L;

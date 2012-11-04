@@ -59,8 +59,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Loads a system component type
- *
- * @version $Rev$ $Date$
  */
 public class SystemImplementationProcessorImpl implements ImplementationProcessor {
     private final ClassVisitor classVisitor;

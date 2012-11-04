@@ -61,8 +61,6 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 /**
  * Listens for WAR contributions and adds a synthesized web component to allow contributions not to specify a web component in a contribution. A
  * synthesized component is added if the contribution is a WAR and no composites are contained in it.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WarContributionListener implements ContributionServiceListener {

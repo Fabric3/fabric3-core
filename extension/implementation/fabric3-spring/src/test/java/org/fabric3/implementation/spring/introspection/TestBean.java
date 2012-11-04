@@ -38,7 +38,7 @@
 package org.fabric3.implementation.spring.introspection;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TestBean {
 }

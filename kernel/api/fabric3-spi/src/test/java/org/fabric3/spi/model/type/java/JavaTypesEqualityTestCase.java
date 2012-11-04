@@ -43,7 +43,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JavaTypesEqualityTestCase extends TestCase {
 

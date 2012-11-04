@@ -39,8 +39,6 @@ package org.fabric3.binding.ftp.model;
 
 /**
  * The FTP transfer mode.
- *
- * @version $Rev$ $Date$
  */
 public enum TransferMode {
 

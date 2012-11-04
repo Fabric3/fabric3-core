@@ -45,8 +45,6 @@ import org.fabric3.model.type.AbstractPolicyAware;
 
 /**
  * A channel configuration ina composite.
- *
- * @version $Rev$ $Date$
  */
 public class ChannelDefinition extends AbstractPolicyAware {
     private static final long serialVersionUID = 8735705202863105855L;

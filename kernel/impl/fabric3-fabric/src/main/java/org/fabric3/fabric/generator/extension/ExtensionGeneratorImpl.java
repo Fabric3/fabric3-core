@@ -75,8 +75,6 @@ import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 
 /**
  * Default ExtensionGenerator implementation.
- *
- * @version $Rev$ $Date$
  */
 public class ExtensionGeneratorImpl implements ExtensionGenerator {
     private MetaDataStore store;

@@ -86,8 +86,6 @@ import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONT
 
 /**
  * Provides domain communication for a participant runtime using the WebLogic clustered JNDI tree.
- *
- * @version $Rev$ $Date$
  */
 @Service(ZoneTopologyService.class)
 @EagerInit

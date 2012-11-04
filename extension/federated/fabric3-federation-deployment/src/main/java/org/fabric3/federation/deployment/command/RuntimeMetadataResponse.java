@@ -45,8 +45,6 @@ import org.fabric3.spi.command.Response;
 
 /**
  * Returns runtime metadata to the controller as a response to a {@link RuntimeMetadataUpdateCommand}.
- *
- * @version $Rev: 8589 $ $Date: 2010-01-20 09:52:59 -0800 (Wed, 20 Jan 2010) $
  */
 public class RuntimeMetadataResponse implements Response, Command {
     private static final long serialVersionUID = -4673533195524202455L;

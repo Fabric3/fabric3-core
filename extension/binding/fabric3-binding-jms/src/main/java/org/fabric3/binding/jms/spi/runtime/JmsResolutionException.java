@@ -41,8 +41,6 @@ import org.fabric3.spi.builder.WiringException;
 
 /**
  * Denotes an error looking up a connection factory or destination.
- *
- * @version $Rev$ $Date$
  */
 public class JmsResolutionException extends WiringException {
     private static final long serialVersionUID = -2022498980450562546L;

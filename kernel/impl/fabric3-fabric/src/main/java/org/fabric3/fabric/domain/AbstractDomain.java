@@ -93,8 +93,6 @@ import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
  * Base class for a domain.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractDomain implements Domain {
     private static final String SYNTHETIC_PLAN_NAME = "fabric3.synthetic";

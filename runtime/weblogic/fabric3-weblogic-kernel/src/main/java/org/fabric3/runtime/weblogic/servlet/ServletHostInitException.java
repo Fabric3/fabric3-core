@@ -41,8 +41,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * Thrown when an error initializing the WebLogic servlet host is encountered.
- *
- * @version $Rev$ $Date$
  */
 public class ServletHostInitException extends Fabric3Exception {
     private static final long serialVersionUID = 425234270497033328L;

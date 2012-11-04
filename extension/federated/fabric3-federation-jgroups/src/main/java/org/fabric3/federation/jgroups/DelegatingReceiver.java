@@ -50,7 +50,7 @@ import org.fabric3.spi.federation.MessageException;
 import org.fabric3.spi.federation.MessageReceiver;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DelegatingReceiver implements Receiver {
     private Channel channel;

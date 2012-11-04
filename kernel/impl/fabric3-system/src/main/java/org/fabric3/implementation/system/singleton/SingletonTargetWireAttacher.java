@@ -52,8 +52,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Exists as a no-op attacher for system singleton components
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SingletonTargetWireAttacher implements TargetWireAttacher<SingletonTargetDefinition> {

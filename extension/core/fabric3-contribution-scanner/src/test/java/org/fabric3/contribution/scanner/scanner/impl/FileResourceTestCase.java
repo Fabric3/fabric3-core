@@ -46,7 +46,7 @@ import junit.framework.TestCase;
 import org.fabric3.contribution.scanner.spi.FileResource;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class FileResourceTestCase extends TestCase {
     private File file;

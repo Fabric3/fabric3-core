@@ -36,8 +36,6 @@ import java.io.OutputStream;
 
 /**
  * Implementations adapt the reference-side binding infrastructure to a particular file system-based transport protocol.
- *
- * @version $Revision$ $Date$
  */
 public interface ReferenceAdapter {
 

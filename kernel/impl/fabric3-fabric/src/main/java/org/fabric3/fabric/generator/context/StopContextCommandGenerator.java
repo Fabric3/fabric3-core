@@ -46,8 +46,6 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * Generates stop component context commands for undeployment.
- *
- * @version $Rev$ $Date$
  */
 public interface StopContextCommandGenerator {
 

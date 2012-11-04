@@ -52,7 +52,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class BindingHelperTestCase extends TestCase {
     public static final QName QNAME = new QName("foo", "bar");

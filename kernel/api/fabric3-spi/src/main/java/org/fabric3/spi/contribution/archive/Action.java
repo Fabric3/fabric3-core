@@ -44,8 +44,6 @@ import org.fabric3.spi.contribution.Contribution;
 
 /**
  * Used to perform a callback operation when iterating contained artifacts in a contribution.
- *
- * @version $Rev$ $Date$
  */
 public interface Action {
     /**

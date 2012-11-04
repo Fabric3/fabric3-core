@@ -60,8 +60,6 @@ import org.fabric3.spi.management.ManagementService;
 
 /**
  * Creates and caches entity manager factories.
- *
- * @version $Rev: 8837 $ $Date: 2010-04-08 14:05:46 +0200 (Thu, 08 Apr 2010) $
  */
 @Service(names = {EntityManagerFactoryCache.class, ClassLoaderListener.class})
 public class DefaultEntityManagerFactoryCache implements EntityManagerFactoryCache, ClassLoaderListener {

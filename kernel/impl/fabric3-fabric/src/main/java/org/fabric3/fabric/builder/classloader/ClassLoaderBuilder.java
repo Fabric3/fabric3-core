@@ -49,8 +49,6 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 
 /**
  * Instantiates a classloader on a runtime node.
- *
- * @version $Rev$ $Date$
  */
 public interface ClassLoaderBuilder {
 

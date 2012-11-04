@@ -43,8 +43,6 @@ import org.fabric3.implementation.pojo.provision.PojoConnectionSourceDefinition;
 
 /**
  * Used to attach the source side of a channel connection to a Spring component producer.
- *
- * @version $Revision$ $Date$
  */
 public class SpringConnectionSourceDefinition extends PojoConnectionSourceDefinition {
     private static final long serialVersionUID = 3672289617445414801L;

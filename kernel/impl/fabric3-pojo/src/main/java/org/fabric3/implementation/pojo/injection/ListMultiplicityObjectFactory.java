@@ -45,8 +45,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Creates a list of objects from a collection of ObjectFactory instances.
- *
- * @version $Rev$ $Date$
  */
 public class ListMultiplicityObjectFactory implements MultiplicityObjectFactory<List<?>> {
     private List<ObjectFactory<?>> factories = new CopyOnWriteArrayList<ObjectFactory<?>>();

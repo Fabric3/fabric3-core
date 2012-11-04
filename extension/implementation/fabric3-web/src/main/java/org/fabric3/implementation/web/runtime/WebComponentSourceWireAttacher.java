@@ -54,8 +54,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Source WireAttacher for web components.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WebComponentSourceWireAttacher implements SourceWireAttacher<WebComponentSourceDefinition> {

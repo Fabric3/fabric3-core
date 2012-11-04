@@ -39,8 +39,6 @@ package org.fabric3.util.graph;
 
 /**
  * Represents a directed edge in a graph.
- *
- * @version $Rev$ $Date$
  */
 public class EdgeImpl<T> implements Edge<T> {
     private Vertex<T> source;

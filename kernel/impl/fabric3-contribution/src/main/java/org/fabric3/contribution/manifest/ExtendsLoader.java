@@ -47,8 +47,6 @@ import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 
 /**
  * Processes a <code>extends</code> element in a contribution manifest
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ExtendsLoader extends AbstractValidatingTypeLoader<ExtendsDeclaration> {

@@ -65,7 +65,7 @@ import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.util.UriHelper;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class GenerationHelper {
     private static final String WS_SECURITY_UTILITY_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";

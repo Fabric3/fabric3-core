@@ -50,8 +50,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Deserializes an element from a StAX input stream.
- *
- * @version $Rev$ $Date$
  */
 public interface TypeLoader<OUTPUT> {
     /**

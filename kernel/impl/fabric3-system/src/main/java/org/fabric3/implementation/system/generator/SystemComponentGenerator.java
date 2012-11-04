@@ -70,7 +70,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.Signature;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class SystemComponentGenerator implements ComponentGenerator<LogicalComponent<SystemImplementation>> {

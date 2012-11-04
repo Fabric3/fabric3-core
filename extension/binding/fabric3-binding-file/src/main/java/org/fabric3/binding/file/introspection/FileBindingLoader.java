@@ -54,8 +54,6 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 
 /**
  * Loads a <code>binding.file</code> element in a composite.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingDefinition> {

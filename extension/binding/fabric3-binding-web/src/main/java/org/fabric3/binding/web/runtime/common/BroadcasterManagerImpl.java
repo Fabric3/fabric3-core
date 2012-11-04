@@ -56,8 +56,6 @@ import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
  * Default implementation of the BroadcasterManager.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class BroadcasterManagerImpl implements BroadcasterManager {

@@ -50,8 +50,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
  * TargetWireAttacher that handles monitor resources.
- *
- * @version $Rev$ $Date$
  */
 public class MonitorTargetConnectionAttacher implements TargetConnectionAttacher<MonitorConnectionTargetDefinition> {
     private ComponentManager manager;

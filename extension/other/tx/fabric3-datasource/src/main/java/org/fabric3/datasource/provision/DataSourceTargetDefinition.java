@@ -41,8 +41,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Defines the DataSource to inject on a resource.
- *
- * @version $Rev: 7869 $ $Date: 2009-11-21 00:10:02 +0100 (Sat, 21 Nov 2009) $
  */
 public class DataSourceTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = 7832372892587547800L;

@@ -48,8 +48,6 @@ import org.fabric3.spi.builder.BuilderException;
 
 /**
  * Creates an Infinispan cache node on a runtime.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class InfinispanCacheBuilder implements CacheBuilder<InfinispanPhysicalResourceDefinition> {

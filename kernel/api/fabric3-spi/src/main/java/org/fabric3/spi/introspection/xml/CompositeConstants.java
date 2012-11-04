@@ -43,8 +43,6 @@ import javax.xml.namespace.QName;
 import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
- *
- * @version $Rev: 10508 $ $Date: 2011-07-04 15:50:38 +0200 (Mon, 04 Jul 2011) $
  */
 public interface CompositeConstants  {
 

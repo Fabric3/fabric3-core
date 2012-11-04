@@ -39,8 +39,6 @@ package org.fabric3.spi.transform;
 
 /**
  * Base interface for data format conversions.
- *
- * @version $Rev$ $Date$
  */
 public interface Transformer<SOURCE, TARGET> {
 

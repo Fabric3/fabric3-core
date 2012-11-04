@@ -44,8 +44,6 @@ import org.fabric3.spi.generator.Deployment;
  * Deployment contains the complete DeploymentUnits necessary to update a participant runtime to the current state of its zone. The full
  * DeploymentUnits are cached by zone peers for fault-tolerance: a participant runtime may contact a peer when it boots to update to the current zone
  * state without the need to contact the controller.
- *
- * @version $Rev$ $Date$
  */
 public class DeploymentPackage {
     private Deployment currentDeployment;

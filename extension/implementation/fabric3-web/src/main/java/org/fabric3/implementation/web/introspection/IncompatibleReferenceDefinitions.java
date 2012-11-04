@@ -41,8 +41,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Raised when a web component contains incompatible reference definitions in different artifacts.
- *
- * @version $Rev$ $Date$
  */
 public class IncompatibleReferenceDefinitions extends ValidationFailure {
     private String name;

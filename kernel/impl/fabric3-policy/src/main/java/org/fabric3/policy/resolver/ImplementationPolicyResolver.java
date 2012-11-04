@@ -52,8 +52,6 @@ import org.fabric3.spi.model.instance.LogicalOperation;
  * Note this is different than interaction resolution as endpoint- and operation-level policy is not distinguished. Since implementation policies are
  * not visible to clients, they are not handled at the transport level. Hence, the requirement by some transport protocols to distinguish policy
  * assertions is not applicable. Normalizing policy at the operation-level simplifies the resolver service contract and allows one-step resolution.
- *
- * @version $Rev$ $Date$
  */
 public interface ImplementationPolicyResolver {
 

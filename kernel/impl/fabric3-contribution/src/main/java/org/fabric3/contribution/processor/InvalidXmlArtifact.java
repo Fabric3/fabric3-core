@@ -43,8 +43,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * Thrown when a syntactic error is encountered parsing an XML file.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidXmlArtifact extends XmlValidationFailure {
 

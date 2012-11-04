@@ -40,7 +40,7 @@ package org.fabric3.implementation.web.runtime;
 import org.fabric3.spi.component.ComponentException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WebComponentStartException extends ComponentException {
     private static final long serialVersionUID = 4561241524721587772L;

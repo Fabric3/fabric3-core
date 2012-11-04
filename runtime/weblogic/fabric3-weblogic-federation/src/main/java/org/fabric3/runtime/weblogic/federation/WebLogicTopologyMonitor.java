@@ -43,8 +43,6 @@ import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Receives federation callback events.
- *
- * @version $Rev$ $Date$
  */
 public interface WebLogicTopologyMonitor {
 

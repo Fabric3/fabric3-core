@@ -43,7 +43,7 @@ import java.util.Collection;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TypeMappingTestCase extends TestCase {
     private TypeMapping typeMapping;

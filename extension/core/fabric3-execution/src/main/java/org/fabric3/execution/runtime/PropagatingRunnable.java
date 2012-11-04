@@ -5,8 +5,6 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
  * Propagates a work context to the current thread executing the delegate runnable.
- *
- * @version $Rev$ $Date$
  */
 public class PropagatingRunnable implements Runnable {
     private Runnable delegate;

@@ -41,8 +41,6 @@ import java.util.List;
 
 /**
  * Conducts a depth first graph traversal, returning an ordered list of visited vertices.
- *
- * @version $Rev$ $Date$
  */
 public interface DepthFirstTraverser<T> {
 

@@ -42,8 +42,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Processes a contribution resource.
- *
- * @version $Rev$ $Date$
  */
 public interface ResourceProcessor {
 

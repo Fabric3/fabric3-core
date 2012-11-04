@@ -41,8 +41,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Thrown when a web.xml file is invalid.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidWebManifest extends ValidationFailure {
     private String message;

@@ -7,8 +7,6 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
  * Propagates a work context to the current thread executing the delegate callable.
- *
- * @version $Rev$ $Date$
  */
 public class PropagatingCallable<T> implements Callable<T> {
     private Callable<T> delegate;

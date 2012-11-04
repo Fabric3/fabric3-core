@@ -47,7 +47,7 @@ import org.fabric3.api.annotation.scope.Scopes;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SystemComponentDefinition extends PojoComponentDefinition {
     private static final long serialVersionUID = -2856401849421585868L;

@@ -47,8 +47,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * A registry of XmlResourceElementLoaders
- *
- * @version $Rev$ $Date$
  */
 public interface XmlResourceElementLoaderRegistry {
     /**

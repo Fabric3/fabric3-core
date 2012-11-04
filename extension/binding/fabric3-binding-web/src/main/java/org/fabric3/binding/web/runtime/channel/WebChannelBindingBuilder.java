@@ -70,8 +70,6 @@ import org.fabric3.spi.util.UriHelper;
 /**
  * Attaches a channel to the gateway servlet that accepts incoming comet and websocket connections using Atmosphere. The gateway servlet is
  * responsible for receiving events and routing them to the appropriate channel based on the request path.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WebChannelBindingBuilder implements ChannelBindingBuilder<WebChannelBindingDefinition> {

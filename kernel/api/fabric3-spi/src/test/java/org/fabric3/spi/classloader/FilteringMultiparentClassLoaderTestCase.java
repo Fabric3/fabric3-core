@@ -45,7 +45,7 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class FilteringMultiparentClassLoaderTestCase extends TestCase {
     private static final URI NAME = URI.create("test");

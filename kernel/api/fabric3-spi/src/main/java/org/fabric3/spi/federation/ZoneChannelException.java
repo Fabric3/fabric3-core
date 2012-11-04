@@ -38,7 +38,7 @@
 package org.fabric3.spi.federation;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ZoneChannelException extends MessageException {
     private static final long serialVersionUID = -6557528031274360829L;

@@ -49,8 +49,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * Failure that indicates an invalid service contract.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidServiceContract extends XmlValidationFailure {
 

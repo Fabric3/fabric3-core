@@ -41,8 +41,6 @@ import java.net.URI;
 
 /**
  * A command to attach a contribution classloader as an extension to a contribution classloader that provides an extension point.
- *
- * @version $Rev$ $Date$
  */
 public class AttachExtensionCommand extends AbstractExtensionCommand {
     private static final long serialVersionUID = -5002990071569611217L;

@@ -38,8 +38,6 @@ import org.fabric3.spi.invocation.WorkContext;
 
 /**
  * Delegates to another one-way sender.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class DelegatingOneWaySender implements OneWaySender {
     private String id;

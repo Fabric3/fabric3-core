@@ -50,8 +50,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Default implementation of an XmlIndexerRegistry.
- *
- * @version $Rev$ $Date$
  */
 public class XmlIndexerRegistryImpl implements XmlIndexerRegistry {
     private Map<QName, XmlIndexer> cache = new HashMap<QName, XmlIndexer>();

@@ -77,8 +77,6 @@ import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
 
 /**
  * Attaches a consumer to a JMS destination.
- *
- * @version $Revision$ $Date$
  */
 public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<JmsConnectionSourceDefinition> {
 

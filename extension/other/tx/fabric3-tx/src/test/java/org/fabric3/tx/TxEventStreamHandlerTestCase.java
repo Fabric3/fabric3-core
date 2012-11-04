@@ -47,7 +47,7 @@ import org.easymock.EasyMock;
 import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TxEventStreamHandlerTestCase extends TestCase {
     private TransactionManager tm;

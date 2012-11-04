@@ -49,8 +49,6 @@ import org.oasisopen.sca.Constants;
 
 /**
  * A composite component implementation.
- *
- * @version $Rev$ $Date$
  */
 public class CompositeImplementation extends Implementation<Composite> {
     private static final long serialVersionUID = 2140686609936627287L;

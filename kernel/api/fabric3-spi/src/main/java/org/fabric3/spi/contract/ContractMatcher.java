@@ -45,8 +45,6 @@ import org.fabric3.model.type.contract.ServiceContract;
  * widening conversion is possible from the target contract to source contract.
  * <p/>
  * This service delegates to {@link ContractMatcherExtension}s for particular mappings such as WSDL-to-Java.
- *
- * @version $Rev$ $Date$
  */
 public interface ContractMatcher {
 

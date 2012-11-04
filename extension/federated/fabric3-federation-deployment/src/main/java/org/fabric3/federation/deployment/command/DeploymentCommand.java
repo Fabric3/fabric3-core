@@ -44,8 +44,6 @@ import org.fabric3.spi.command.ResponseCommand;
  * Broadcast by the controller to to perform a deployment to all participants in a zone. The current deployment is incremental from the previous
  * deployment. The full deployment contains the complete list of commands required to update a participant runtime to the current zone state. The
  * latter is cached by participants which can be used to bootstrap zone peers without the need to contact the controller.
- *
- * @version $Rev$ $Date$
  */
 public class DeploymentCommand implements ResponseCommand, Response {
     private static final long serialVersionUID = 8673100303949676875L;

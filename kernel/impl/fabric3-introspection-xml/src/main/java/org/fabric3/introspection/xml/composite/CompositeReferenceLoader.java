@@ -75,8 +75,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loads a reference from a composite.
- *
- * @version $Rev$ $Date$
  */
 public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<CompositeReference> {
     private static final QName CALLBACK = new QName(SCA_NS, "callback");

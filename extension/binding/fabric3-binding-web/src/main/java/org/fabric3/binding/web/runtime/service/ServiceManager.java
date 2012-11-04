@@ -41,8 +41,6 @@ import org.fabric3.spi.wire.InvocationChain;
 
 /**
  * Manages invocation chains for a service exposed over the websocket binding.
- *
- * @version $Rev: 9435 $ $Date: 2010-09-09 17:31:45 +0200 (Thu, 09 Sep 2010) $
  */
 public interface ServiceManager {
 

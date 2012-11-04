@@ -34,8 +34,6 @@ import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Exposes ZeroMQ binding infrastructure to the runtime management framework.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public interface ManagementMonitor {
 

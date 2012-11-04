@@ -41,8 +41,6 @@ import java.io.Serializable;
 
 /**
  * A response to a synchronous message.
- *
- * @version $Rev$ $Date$
  */
 public interface Response extends Serializable {
 

@@ -41,8 +41,6 @@ import java.util.List;
 
 /**
  * Detects cycles in a directed graph.
- *
- * @version $Rev$ $Date$
  */
 public interface CycleDetector<T> {
 

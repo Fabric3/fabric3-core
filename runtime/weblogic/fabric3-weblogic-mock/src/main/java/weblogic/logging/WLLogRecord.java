@@ -4,7 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WLLogRecord extends LogRecord {
     private static final long serialVersionUID = -1674273644835603201L;

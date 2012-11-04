@@ -48,8 +48,6 @@ import org.fabric3.spi.contribution.Import;
  * <p/>
  * This is is required since the kernel does not support reinjection of multiplicity references on Singleton components (it does, however, support
  * reinjection of non-multiplicity references, which is done with this service).
- *
- * @version $Rev$ $Date$
  */
 public interface ContributionWireInstantiatorRegistry {
 

@@ -41,8 +41,6 @@ import java.util.List;
 
 /**
  * A domain zone.
- *
- * @version $Rev$ $Date$
  */
 public class Zone {
     private String name;

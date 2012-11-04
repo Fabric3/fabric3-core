@@ -51,8 +51,6 @@ import org.fabric3.spi.introspection.IntrospectionException;
 /**
  * Base class for Exceptions raised during the loading process. Loader implementations should throw a subclass of this to indicate the actual
  * problem.
- *
- * @version $Rev$ $Date$
  */
 public class LoaderException extends IntrospectionException {
     public static final int UNDEFINED = -1;

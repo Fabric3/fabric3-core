@@ -59,8 +59,6 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 /**
  * Overrides the Jetty <code>StatisticsHandler</code> to provide the ability to start and stop statistics collection at runtime. Also provides a
  * custom management view.
- *
- * @version $Rev: 9172 $ $Date: 2010-06-30 16:49:34 +0200 (Wed, 30 Jun 2010) $
  */
 @Management
 public class ManagedStatisticsHandler extends StatisticsHandler {

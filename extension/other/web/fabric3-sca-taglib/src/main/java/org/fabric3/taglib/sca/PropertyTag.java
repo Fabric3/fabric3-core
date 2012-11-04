@@ -44,8 +44,6 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 /**
  * Tag for declaring properties.
- *
- * @version $Rev$ $Date$
  */
 public class PropertyTag extends SimpleTagSupport {
     private String name;

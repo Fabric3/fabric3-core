@@ -55,7 +55,7 @@ import org.fabric3.xquery.provision.XQueryComponentSourceDefinition;
 import org.fabric3.xquery.provision.XQueryComponentTargetDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class XQueryComponentTargetWireAttacher implements TargetWireAttacher<XQueryComponentTargetDefinition> {

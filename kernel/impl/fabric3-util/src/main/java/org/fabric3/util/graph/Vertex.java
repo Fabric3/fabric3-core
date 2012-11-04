@@ -39,8 +39,6 @@ package org.fabric3.util.graph;
 
 /**
  * A graph vertex.
- *
- * @version $Rev$ $Date$
  */
 public interface Vertex<T> {
 

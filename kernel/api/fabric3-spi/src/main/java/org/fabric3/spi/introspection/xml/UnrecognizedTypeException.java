@@ -41,7 +41,7 @@ package org.fabric3.spi.introspection.xml;
 import org.fabric3.spi.introspection.IntrospectionException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class UnrecognizedTypeException extends IntrospectionException {
     private static final long serialVersionUID = -8172358837143992711L;

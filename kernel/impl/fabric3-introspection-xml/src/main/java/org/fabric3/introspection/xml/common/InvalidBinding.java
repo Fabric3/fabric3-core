@@ -43,8 +43,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * A validation failure indicating an attempt to configure an invalid binding.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidBinding extends XmlValidationFailure {
 

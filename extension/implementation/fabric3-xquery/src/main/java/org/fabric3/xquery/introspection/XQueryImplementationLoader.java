@@ -51,7 +51,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.xquery.scdl.XQueryImplementation;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class XQueryImplementationLoader implements TypeLoader<XQueryImplementation> {

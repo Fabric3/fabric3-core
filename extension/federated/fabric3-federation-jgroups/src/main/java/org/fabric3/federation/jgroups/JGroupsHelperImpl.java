@@ -58,7 +58,7 @@ import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.fabric3.spi.federation.MessageException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JGroupsHelperImpl implements JGroupsHelper {
     private ClassLoaderRegistry classLoaderRegistry;

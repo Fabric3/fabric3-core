@@ -104,8 +104,6 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
  * Generates source and target definitions for an endpoint defined by a Java-based service contract.
- *
- * @version $Rev$ $Date$
  */
 public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaServiceContract> {
     private static final String REPLACEABLE_ADDRESS = "REPLACE_WITH_ACTUAL_URL";

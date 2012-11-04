@@ -42,7 +42,7 @@ import java.io.Serializable;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev: 7743 $ $Date: 2009-10-02 18:12:36 +0200 (Fri, 02 Oct 2009) $
+ *
  */
 public class SerializableTransformerTestCase extends TestCase {
     private Java2JavaTransformer transformer = new Java2JavaTransformer();

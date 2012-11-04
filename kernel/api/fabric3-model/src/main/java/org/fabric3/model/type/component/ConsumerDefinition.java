@@ -50,8 +50,6 @@ import org.fabric3.model.type.contract.DataType;
 
 /**
  * A component type consumer.
- *
- * @version $Rev$ $Date$
  */
 public class ConsumerDefinition extends AbstractPolicyAware {
     private static final long serialVersionUID = -4222312633353056234L;

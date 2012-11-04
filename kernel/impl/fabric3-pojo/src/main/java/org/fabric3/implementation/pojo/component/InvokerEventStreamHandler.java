@@ -56,8 +56,6 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
 
 /**
  * Responsible for dispatching an event to a Java-based component implementation instance.
- *
- * @version $Rev$ $Date$
  */
 public class InvokerEventStreamHandler implements EventStreamHandler {
     private Method operation;

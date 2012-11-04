@@ -39,8 +39,6 @@ package org.fabric3.admin.interpreter;
 
 /**
  * Configuration used to connect to the domain via JMX.
- *
- * @version $Rev$ $Date$
  */
 public class DomainConfiguration {
     private String name;

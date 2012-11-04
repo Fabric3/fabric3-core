@@ -53,8 +53,6 @@ import org.fabric3.spi.federation.MessageReceiver;
 
 /**
  * Standard implementation of a RuntimeChannel.
- *
- * @version $Rev$ $Date$
  */
 public class RuntimeChannelImpl implements RuntimeChannel {
     private String runtimeName;

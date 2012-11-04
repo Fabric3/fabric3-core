@@ -44,8 +44,6 @@ import org.fabric3.spi.model.instance.LogicalResource;
 /**
  * Creates commands to build and un-build domain-level resources. Domain-level resources are special-cased as they are not part of a deployed
  * composite. That is, they are contained by the domain composite, which is virtual.
- *
- * @version $Rev$ $Date$
  */
 public interface DomainResourceCommandGenerator {
 

@@ -60,8 +60,6 @@ import org.fabric3.spi.executor.ExecutionException;
 
 /**
  * Eagerly initializes a component on a runtime.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class StartComponentCommandExecutor implements CommandExecutor<StartComponentCommand> {

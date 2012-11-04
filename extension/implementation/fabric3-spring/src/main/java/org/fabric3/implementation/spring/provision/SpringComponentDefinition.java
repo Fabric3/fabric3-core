@@ -43,8 +43,6 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  * A physical definition for a Spring-based component.
- *
- * @version $Rev$ $Date$
  */
 public class SpringComponentDefinition extends PhysicalComponentDefinition {
     private static final long serialVersionUID = 2215754845063915425L;

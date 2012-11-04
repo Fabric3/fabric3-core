@@ -66,8 +66,6 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
  * Heuristic processor that locates unannotated Property and Reference dependencies.
- *
- * @version $Rev$ $Date$
  */
 public class SystemUnannotatedHeuristic implements HeuristicProcessor {
 

@@ -47,7 +47,7 @@ import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DefaultIntrospectionHelperTypeInfoTestCase extends TestCase {
 

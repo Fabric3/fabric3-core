@@ -49,7 +49,7 @@ import org.fabric3.admin.interpreter.Interpreter;
 import org.fabric3.admin.interpreter.InterpreterException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class RunCommand implements Command {
     private Interpreter interpreter;

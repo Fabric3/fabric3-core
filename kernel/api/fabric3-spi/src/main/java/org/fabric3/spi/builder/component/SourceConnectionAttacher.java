@@ -49,8 +49,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
  * Attaches and detaches a {@link ChannelConnection} from a component producer, channel or channel binding.
- *
- * @version $Rev$ $Date$
  */
 public interface SourceConnectionAttacher<PCSD extends PhysicalConnectionSourceDefinition> {
 

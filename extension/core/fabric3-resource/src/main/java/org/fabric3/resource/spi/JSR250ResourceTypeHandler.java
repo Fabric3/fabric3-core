@@ -45,8 +45,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Implementations extend resource processing by handling JSR-250 <code>@Resource</code> annotations for specific types such as DataSources.
- *
- * @version $Rev$ $Date$
  */
 public interface JSR250ResourceTypeHandler {
 

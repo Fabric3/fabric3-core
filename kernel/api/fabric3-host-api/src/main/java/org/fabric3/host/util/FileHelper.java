@@ -60,8 +60,6 @@ import java.util.regex.Pattern;
 
 /**
  * Helper methods for working with files.
- *
- * @version $Rev$ $Date$
  */
 public class FileHelper {
     /**

@@ -59,8 +59,6 @@ import org.fabric3.host.util.FileHelper;
 
 /**
  * Loads the system configuration property for a runtime domain.
- *
- * @version $Revision$ $Date$
  */
 public class SystemConfigLoaderTestCase extends TestCase {
 

@@ -43,8 +43,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * A reference to a cache resource.
- *
- * @version $Rev$ $Date$
  */
 public class CacheReferenceDefinition extends ResourceReferenceDefinition {
     private static final long serialVersionUID = 7840284656807493613L;

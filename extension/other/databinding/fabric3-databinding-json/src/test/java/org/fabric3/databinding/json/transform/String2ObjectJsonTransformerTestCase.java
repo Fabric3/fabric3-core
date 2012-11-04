@@ -61,7 +61,7 @@ import junit.framework.TestCase;
 import org.fabric3.spi.model.type.java.JavaClass;
 
 /**
- * @version $Rev: 7714 $ $Date: 2009-09-29 10:24:45 +0200 (Tue, 29 Sep 2009) $
+ *
  */
 public class String2ObjectJsonTransformerTestCase extends TestCase {
 

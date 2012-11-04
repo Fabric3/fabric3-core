@@ -58,7 +58,7 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalScaArtifact;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implements InteractionPolicyResolver {
 

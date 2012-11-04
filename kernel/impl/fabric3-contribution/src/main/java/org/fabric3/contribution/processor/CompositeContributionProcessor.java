@@ -29,8 +29,6 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
  * <p/>
  * During processing, a synthetic deployable composite is created and added to the contribution. In addition, a synthetic QName export equal to the
  * composite target namespace is created and added to the contribution, which can be used for contribution ordering durng deployment.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class CompositeContributionProcessor implements ContributionProcessor {

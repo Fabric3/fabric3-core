@@ -46,8 +46,6 @@ import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryType;
 
 /**
  * A connection factory configuration.
- *
- * @version $Rev$ $Date$
  */
 public class ConnectionFactoryConfiguration {
     private ConnectionFactoryType type = ConnectionFactoryType.LOCAL;

@@ -42,8 +42,6 @@ import javax.xml.namespace.QName;
 
 /**
  * An SCA event channel. Responsible for transmitting events from event sources to event sinks.
- *
- * @version $Rev$ $Date$
  */
 public interface Channel {
     /**

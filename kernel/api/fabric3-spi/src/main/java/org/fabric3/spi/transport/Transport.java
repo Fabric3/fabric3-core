@@ -39,8 +39,6 @@ package org.fabric3.spi.transport;
 
 /**
  * Manages a runtime transport such as HTTP.
- *
- * @version $Rev$ $Date$
  */
 public interface Transport {
 

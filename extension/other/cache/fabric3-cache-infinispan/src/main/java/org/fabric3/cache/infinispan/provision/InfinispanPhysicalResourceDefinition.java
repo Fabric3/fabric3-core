@@ -42,8 +42,6 @@ import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
 
 /**
  * Configuration for creating an Infinispan cache and associated resources on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public class InfinispanPhysicalResourceDefinition extends PhysicalCacheResourceDefinition {
     private static final long serialVersionUID = -6400612928297999316L;

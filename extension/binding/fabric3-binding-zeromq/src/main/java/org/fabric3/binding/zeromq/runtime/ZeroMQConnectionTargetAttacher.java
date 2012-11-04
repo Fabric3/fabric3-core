@@ -40,7 +40,7 @@ import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<ZeroMQConnectionTargetDefinition> {
     private ZeroMQPubSubBroker broker;

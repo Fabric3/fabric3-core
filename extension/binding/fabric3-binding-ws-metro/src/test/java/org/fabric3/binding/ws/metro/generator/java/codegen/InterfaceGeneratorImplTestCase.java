@@ -45,7 +45,7 @@ import org.oasisopen.sca.annotation.OneWay;
 import org.fabric3.binding.ws.metro.util.ClassDefinerImpl;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class InterfaceGeneratorImplTestCase extends TestCase {
     private InterfaceGenerator generator;

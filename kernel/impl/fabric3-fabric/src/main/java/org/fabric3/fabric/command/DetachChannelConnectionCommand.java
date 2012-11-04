@@ -42,8 +42,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
  * Used to remove an event channel connection.
- *
- * @version $Rev$ $Date$
  */
 public class DetachChannelConnectionCommand implements CompensatableCommand {
     private static final long serialVersionUID = 2653032608929449643L;

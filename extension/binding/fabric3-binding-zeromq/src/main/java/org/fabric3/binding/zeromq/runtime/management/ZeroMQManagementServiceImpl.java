@@ -48,7 +48,7 @@ import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 
 /**
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
+ *
  */
 @EagerInit
 @Management(path = "/runtime/transports/zeromq", description = "Manages ZeroMQ infrastructure")

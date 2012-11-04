@@ -42,8 +42,6 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 
 /**
  * A command to create or update a classloader on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public class ProvisionClassloaderCommand implements CompensatableCommand {
     private static final long serialVersionUID = -5993951083285578380L;

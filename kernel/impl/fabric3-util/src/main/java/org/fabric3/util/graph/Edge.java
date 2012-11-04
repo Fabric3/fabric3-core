@@ -39,8 +39,6 @@ package org.fabric3.util.graph;
 
 /**
  * Represents and graph edge.
- *
- * @version $Rev$ $Date$
  */
 public interface Edge<T> {
     /**

@@ -55,8 +55,6 @@ import org.fabric3.host.contribution.ValidationFailure;
  * <p/>
  * The context allows both errors and warnings to be gathered. Errors indicate problems that will prevent an assembly from being activated such as a
  * missing component implementation. Warnings indicate issues that are not in themselves fatal but which may result in an activation failure.
- *
- * @version $Rev$ $Date$
  */
 public interface IntrospectionContext {
 

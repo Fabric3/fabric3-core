@@ -64,8 +64,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
  * Attaches a producer to a JMS destination.
- *
- * @version $Revision$ $Date$
  */
 public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<JmsConnectionTargetDefinition> {
     private AdministeredObjectResolver resolver;

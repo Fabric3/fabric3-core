@@ -47,7 +47,7 @@ import org.fabric3.admin.interpreter.ParseException;
 import org.fabric3.admin.interpreter.command.RunCommand;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class RunCommandParser implements CommandParser {
     private Interpreter interpreter;

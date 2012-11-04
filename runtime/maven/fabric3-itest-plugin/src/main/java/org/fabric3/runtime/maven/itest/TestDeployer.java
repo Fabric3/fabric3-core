@@ -51,8 +51,6 @@ import org.fabric3.runtime.maven.MavenRuntime;
 
 /**
  * Deploys a test composite.
- *
- * @version $Rev$ $Date$
  */
 public class TestDeployer {
     private Log log;

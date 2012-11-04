@@ -39,8 +39,6 @@ package org.fabric3.admin.interpreter;
 
 /**
  * Base interpreter exception.
- *
- * @version $Rev$ $Date$
  */
 public class InterpreterException extends Exception {
     private static final long serialVersionUID = 7982205511004831318L;

@@ -72,8 +72,6 @@ import org.fabric3.spi.wire.InvocationChain;
 /**
  * Receives a web service invocation from the Metro transport layer and dispatches it through an interceptor chain to a target service that accepts
  * Document parameter types, avoiding JAXB deserialization.
- *
- * @version $Rev$ $Date$
  */
 public class DocumentInvoker extends Invoker {
     private Map<String, InvocationChain> chains = new HashMap<String, InvocationChain>();

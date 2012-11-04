@@ -54,8 +54,6 @@ import org.fabric3.spi.channel.EventWrapper;
  * Coordinates the RESTful pub/sub protocol for active channels. Incoming requests are routed through the Atmosphere gateway servlet to this
  * implementation. Requests are resolved to their target channel based on the servlet path. GET operations are subsequently routed to a {@link
  * ChannelSubscriber} for the channel and POST operations to a {@link ChannelPublisher}.
- *
- * @version $Rev$ $Date$
  */
 public class ChannelRouter extends HttpServlet {
     private static final long serialVersionUID = -1830803509605261532L;

@@ -40,7 +40,7 @@ package weblogic.logging;
 import com.bea.logging.LogLevel;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WLLevel extends LogLevel {
     private static final long serialVersionUID = 3016995389747701017L;

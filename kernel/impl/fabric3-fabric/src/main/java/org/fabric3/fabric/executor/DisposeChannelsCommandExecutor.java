@@ -69,8 +69,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
  * Removes a set of channels defined in a composite on a runtime.
- *
- * @version $Rev: 8634 $ $Date: 2010-02-03 08:17:32 -0800 (Wed, 03 Feb 2010) $
  */
 @EagerInit
 public class DisposeChannelsCommandExecutor implements CommandExecutor<DisposeChannelsCommand> {

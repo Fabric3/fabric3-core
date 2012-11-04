@@ -39,8 +39,6 @@ package org.fabric3.host.domain;
 
 /**
  * Thrown when an attempt is made to perform an operation on a contribution that is not found.
- *
- * @version $Rev$ $Date$
  */
 public class ContributionNotFoundException extends DeploymentException {
     private static final long serialVersionUID = 4732039580541746144L;

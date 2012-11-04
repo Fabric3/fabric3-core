@@ -51,8 +51,6 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
  * Metadata for attaching a service to a websocket or comet connection.
- *
- * @version $Revision$ $Date$
  */
 public class WebSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = 5221631145909112099L;

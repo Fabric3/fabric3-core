@@ -45,7 +45,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ContributionImportLoaderTestCase extends TestCase {
     private static final String XML = "<import.contribution uri=\"foo\"/>";

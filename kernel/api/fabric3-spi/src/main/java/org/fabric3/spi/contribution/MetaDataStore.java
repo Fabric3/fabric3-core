@@ -49,8 +49,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Implementations store contribution metadata.
- *
- * @version $Rev$ $Date$
  */
 public interface MetaDataStore {
 

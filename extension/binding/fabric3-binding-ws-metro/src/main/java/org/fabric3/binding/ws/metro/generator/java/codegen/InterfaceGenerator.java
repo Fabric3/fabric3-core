@@ -41,8 +41,6 @@ package org.fabric3.binding.ws.metro.generator.java.codegen;
  * Generates an interface with JAX-WS annotations from another interface. This allows classes with non-annotated interfaces to be used with Metro,
  * which requires interfaces that define service endpoints to be annotated. Specifically, adds @WebService to the generated interface, @WebMethod to
  * all methods, and @Oneway to methods marked with the SCA @OneWay annotation.
- *
- * @version $Rev$ $Date$
  */
 public interface InterfaceGenerator {
 

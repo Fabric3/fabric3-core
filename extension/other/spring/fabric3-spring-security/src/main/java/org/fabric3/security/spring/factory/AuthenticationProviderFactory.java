@@ -45,8 +45,6 @@ import org.fabric3.security.spring.config.AuthenticationManagerConfiguration;
 
 /**
  * Instantiates a collection of Spring <code>AuthenticationProvider</code> instances for a Spring Security configuration.
- *
- * @version $Rev$ $Date$
  */
 public interface AuthenticationProviderFactory {
 

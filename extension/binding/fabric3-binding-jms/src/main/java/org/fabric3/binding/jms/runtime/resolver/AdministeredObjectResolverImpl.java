@@ -50,7 +50,7 @@ import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AdministeredObjectResolverImpl implements AdministeredObjectResolver {
     private Map<CreateOption, ConnectionFactoryStrategy> factoryStrategies = new HashMap<CreateOption, ConnectionFactoryStrategy>();

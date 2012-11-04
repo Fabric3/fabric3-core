@@ -10,8 +10,6 @@ import org.fabric3.spi.contribution.manifest.PackageInfo;
 
 /**
  * Adds WS API exports to application contributions.
- *
- * @version $Rev$ $Date$
  */
 public class MetroContributionServiceListener implements ContributionServiceListener {
     private JavaImport saajImport;

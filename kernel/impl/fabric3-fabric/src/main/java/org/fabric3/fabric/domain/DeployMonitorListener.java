@@ -49,8 +49,6 @@ import org.fabric3.spi.domain.DeployListener;
 
 /**
  * Listener that sends deployment and undeployment events to a monitor on the controller.
- *
- * @version $Rev$ $Date$
  */
 public class DeployMonitorListener implements DeployListener {
     private boolean enabled;

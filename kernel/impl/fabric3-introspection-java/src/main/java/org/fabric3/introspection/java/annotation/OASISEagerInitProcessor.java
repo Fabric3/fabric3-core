@@ -50,7 +50,7 @@ import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class OASISEagerInitProcessor extends AbstractAnnotationProcessor<EagerInit> {
 

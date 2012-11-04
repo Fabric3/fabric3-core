@@ -57,8 +57,6 @@ import org.fabric3.model.type.PolicyAware;
 
 /**
  * A composite component type.
- *
- * @version $Rev$ $Date$
  */
 public class Composite extends ComponentType implements PolicyAware {
     private static final long serialVersionUID = -3126069884608566611L;

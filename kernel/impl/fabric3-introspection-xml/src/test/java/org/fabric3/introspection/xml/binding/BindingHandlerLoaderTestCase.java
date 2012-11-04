@@ -15,7 +15,7 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class BindingHandlerLoaderTestCase extends TestCase {
     private static final String XML_VALID = "<handler xmlns='" + Namespaces.F3 + "' target='TestComponent'/>";

@@ -51,8 +51,6 @@ import org.fabric3.host.util.IOHelper;
 
 /**
  * The default {@link ServiceAdapter} implementation.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored"})
 public class DefaultServiceAdapter implements ServiceAdapter {

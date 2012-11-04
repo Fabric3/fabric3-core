@@ -55,7 +55,7 @@ import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.transport.ftp.api.FtpConstants;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class FtpTargetInterceptor implements Interceptor {
 

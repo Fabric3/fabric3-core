@@ -8,8 +8,6 @@ import org.fabric3.test.spi.TestWireHolder;
 
 /**
  * TestWireHolder implementation for the Ant runtime.
- *
- * @version $Rev$ $Date$
  */
 public class WireHolderImpl implements TestWireHolder {
     Map<String, Wire> wires = new LinkedHashMap<String, Wire>();

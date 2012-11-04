@@ -50,8 +50,6 @@ import org.fabric3.model.type.AbstractPolicyAware;
 
 /**
  * Base class representing service contract information.
- *
- * @version $Rev$ $Date$
  */
 public abstract class ServiceContract extends AbstractPolicyAware {
     private static final long serialVersionUID = 7930416351019873131L;

@@ -62,7 +62,7 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SingletonComponentSynthesizerTestCase extends TestCase {
 

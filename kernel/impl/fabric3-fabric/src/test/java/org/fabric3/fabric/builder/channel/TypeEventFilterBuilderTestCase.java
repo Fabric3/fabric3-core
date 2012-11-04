@@ -47,7 +47,7 @@ import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaClass;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TypeEventFilterBuilderTestCase extends TestCase {
 

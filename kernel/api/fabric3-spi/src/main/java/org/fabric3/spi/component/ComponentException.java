@@ -47,8 +47,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * An checked exception encountered by an {@link org.fabric3.spi.component.Component}
- *
- * @version $Rev$ $Date$
  */
 public abstract class ComponentException extends Fabric3Exception {
     private static final long serialVersionUID = 8347960569937255812L;

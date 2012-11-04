@@ -50,8 +50,6 @@ import org.fabric3.spi.contribution.Import;
 
 /**
  * Imports a contribution by URI. All contents of the resolved exporting contribution are visible.
- *
- * @version $Rev$ $Date$
  */
 public class ContributionImport implements Import {
     private static final long serialVersionUID = 5947082714758125178L;

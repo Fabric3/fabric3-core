@@ -68,7 +68,7 @@ import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ChannelConnectorImplTestCase extends TestCase {
     private ChannelConnectorImpl connector;

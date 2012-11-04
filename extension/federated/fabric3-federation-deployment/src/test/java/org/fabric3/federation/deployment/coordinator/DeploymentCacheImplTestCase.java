@@ -42,7 +42,7 @@ import junit.framework.TestCase;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DeploymentCacheImplTestCase extends TestCase {
 

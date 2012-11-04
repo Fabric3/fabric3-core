@@ -51,7 +51,7 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ComponentObjectFactory implements ObjectFactory<Object> {
     private final AtomicComponent component;

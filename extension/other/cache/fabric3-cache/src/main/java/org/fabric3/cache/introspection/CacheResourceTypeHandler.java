@@ -57,8 +57,6 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 
 /**
  * Introspects {@link Resource} annotations when used with <code>ConcurrentMap</code> types.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class CacheResourceTypeHandler implements ResourceTypeHandler {

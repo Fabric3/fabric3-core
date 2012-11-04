@@ -45,8 +45,6 @@ import org.fabric3.model.type.ModelObject;
 /**
  * Dynamically updates a resource element contained in contribution and all references to it, including the transitive set of importing contributions,
  * if any.
- *
- * @version $Rev$ $Date$
  */
 public interface ResourceElementUpdater<V extends Serializable> {
 

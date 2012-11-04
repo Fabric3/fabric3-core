@@ -39,8 +39,6 @@ package org.fabric3.host;
 
 /**
  * Defines common runtime environment types.
- *
- * @version $Rev$ $Date$
  */
 public interface Environment {
 

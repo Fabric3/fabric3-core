@@ -57,8 +57,6 @@ import org.fabric3.transport.ftp.spi.FtpLetContainer;
  * Handles the <code>STOR</code> command.
  * <p/>
  * TODO Add mechanism to register the FTPlet.
- *
- * @version $Rev$ $Date$
  */
 public class StorRequestHandler implements RequestHandler {
 

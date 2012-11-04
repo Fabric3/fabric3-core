@@ -13,7 +13,7 @@ import org.fabric3.binding.ws.metro.runtime.MetroConstants;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public abstract class AbstractMetroBindingProviderFactory<T> implements ObjectFactory<T> {
     private SecurityConfiguration securityConfig;

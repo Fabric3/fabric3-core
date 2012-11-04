@@ -43,8 +43,6 @@ import org.fabric3.host.domain.DeploymentException;
 
 /**
  * Implementations receive callbacks for {@link FederatedDeployer} events.
- *
- * @version $Rev$ $Date$
  */
 public interface FederatedDeployerListener {
 

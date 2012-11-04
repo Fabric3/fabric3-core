@@ -51,8 +51,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Reflectively instantiates a Java-based component instance.
- *
- * @version $Rev$ $Date$
  */
 public class ReflectiveObjectFactory<T> implements ObjectFactory<T> {
     private final Constructor<T> constructor;

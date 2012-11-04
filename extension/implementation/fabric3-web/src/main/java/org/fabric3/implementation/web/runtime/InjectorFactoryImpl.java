@@ -54,8 +54,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Default implementation of the InjectorFactory.
- *
- * @version $Rev$ $Date$
  */
 public class InjectorFactoryImpl implements InjectorFactory {
 

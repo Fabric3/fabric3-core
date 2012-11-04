@@ -34,8 +34,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * Holds ZeroMQ binding metadata.
- *
- * @version $Revision$ $Date$
  */
 public class ZeroMQMetadata extends ModelObject {
     private static final long serialVersionUID = 6236084212498002778L;

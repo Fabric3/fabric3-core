@@ -45,8 +45,6 @@ import org.fabric3.spi.model.instance.LogicalReference;
 
 /**
  * Thrown when an attempt is made to wire a reference to a service with incompatible contracts.
- *
- * @version $Rev$ $Date$
  */
 public class IncompatibleContracts extends AssemblyFailure {
     private URI referenceUri;

@@ -42,8 +42,6 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 /**
- *
- * @version $Rev$ $Date$
  */
 public class JavaTypeEventFilterTestCase  extends TestCase {
 

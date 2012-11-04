@@ -50,8 +50,6 @@ import org.fabric3.spi.channel.EventStream;
 
 /**
  * Dispatches from a proxy to an {@link EventStream}.
- *
- * @version $Rev$ $Date$
  */
 public final class JDKEventHandler extends AbstractJDKEventHandler {
     private Map<Method, EventStream> streams;

@@ -52,8 +52,6 @@ import org.fabric3.spi.introspection.xml.Writer;
 
 /**
  * Serializes a Java component implementation to a StAX stream.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class JavaImplementationWriter implements TypeWriter<JavaImplementation> {

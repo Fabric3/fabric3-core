@@ -53,8 +53,6 @@ import org.fabric3.model.type.component.Implementation;
 
 /**
  * A component implementation type that listens on a channel as a consumer and dispatches to a host-provided logging or management framework.
- *
- * @version $Rev$ $Date$
  */
 public class MonitorImplementation extends Implementation<ComponentType> {
     private static final long serialVersionUID = 3139588435544226827L;

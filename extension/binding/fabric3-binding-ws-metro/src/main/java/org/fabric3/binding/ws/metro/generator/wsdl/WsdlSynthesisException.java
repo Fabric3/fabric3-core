@@ -41,8 +41,6 @@ import org.fabric3.spi.generator.GenerationException;
 
 /**
  * Denotes an error synthesizing concrete WSDL information.
- *
- * @version $Rev$ $Date$
  */
 public class WsdlSynthesisException extends GenerationException {
     private static final long serialVersionUID = 8316335349870169903L;

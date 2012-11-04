@@ -43,8 +43,6 @@ import org.fabric3.spi.command.CompensatableCommand;
 
 /**
  * Reverts the runtime to a previous state.
- *
- * @version $Rev: 8657 $ $Date: 2010-02-18 10:59:58 -0800 (Thu, 18 Feb 2010) $
  */
 public interface RollbackService {
 

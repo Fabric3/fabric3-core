@@ -77,8 +77,6 @@ import org.fabric3.spi.model.instance.LogicalWire;
  * <p/>
  * Also, the provider uses default connection factory configurations; to use specific connection factories, set the <code>connectionFactory</code> and
  * <code>xaConnectionFactory</code> properties.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ActiveMQBindingProvider implements BindingProvider {

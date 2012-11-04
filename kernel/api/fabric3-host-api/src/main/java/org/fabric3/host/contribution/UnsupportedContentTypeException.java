@@ -40,8 +40,6 @@ package org.fabric3.host.contribution;
 /**
  * Exception thrown to indicate that a Content-Type is not supported by this SCA Domain. The Content-Type value supplied will be returned as the
  * message text for this exception.
- *
- * @version $Rev$ $Date$
  */
 public class UnsupportedContentTypeException extends InstallException {
     private static final long serialVersionUID = -1831797280021355672L;

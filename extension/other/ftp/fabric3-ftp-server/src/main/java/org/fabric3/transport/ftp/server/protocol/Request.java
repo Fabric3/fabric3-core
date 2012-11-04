@@ -39,8 +39,6 @@ package org.fabric3.transport.ftp.server.protocol;
 
 /**
  * Encapsulates an incoming FTP request.
- *
- * @version $Rev$ $Date$
  */
 public interface Request {
 

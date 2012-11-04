@@ -59,7 +59,7 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ReflectiveImplementationManager implements ImplementationManager {
     private URI componentUri;

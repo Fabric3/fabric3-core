@@ -54,8 +54,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Generates PhysicalWireSourceDefinitions and PhysicalWireTargetDefinitions for the Metro web services binding.
- *
- * @version $Rev$ $Date$
  */
 public class MetroBindingGenerator implements BindingGenerator<WsBindingDefinition> {
     private Map<Class<?>, MetroGeneratorDelegate> delegates;

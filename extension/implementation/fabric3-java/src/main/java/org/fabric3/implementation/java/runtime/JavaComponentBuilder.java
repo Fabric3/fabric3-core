@@ -58,8 +58,6 @@ import org.fabric3.spi.management.ManagementService;
 
 /**
  * Builds a Java component from a physical definition.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefinition, JavaComponent> {

@@ -65,8 +65,6 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
  * Default implementation of WebXmlIntrospector.
- *
- * @version $Rev$ $Date$
  */
 public class WebXmlIntrospectorImpl implements WebXmlIntrospector {
     private static final QNameSymbol WEB_APP_NO_NAMESPACE = new QNameSymbol(new QName(null, "web-app"));

@@ -44,8 +44,6 @@ import org.fabric3.api.Role;
 
 /**
  * Holder for an MBean method and its associated security metadata.
- *
- * @version $Rev$ $Date$
  */
 public class MethodHolder {
     private Method method;

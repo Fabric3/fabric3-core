@@ -52,8 +52,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Implementation of the test binding generator.
- *
- * @version $Revision$ $Date$
  */
 @EagerInit
 public class TestBindingGenerator implements BindingGenerator<TestBindingDefinition> {

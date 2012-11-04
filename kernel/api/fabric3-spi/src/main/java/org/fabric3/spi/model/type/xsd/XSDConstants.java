@@ -45,8 +45,6 @@ import org.fabric3.host.Namespaces;
 
 /**
  * Defines Schema-related constants
- *
- * @version $Rev$ $Date$
  */
 public interface XSDConstants {
 

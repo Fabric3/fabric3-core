@@ -41,8 +41,6 @@ import javax.management.JMException;
 
 /**
  * Helper service for JMX operations.
- *
- * @version $Rev$ $Date$
  */
 public interface JmxHelper {
 

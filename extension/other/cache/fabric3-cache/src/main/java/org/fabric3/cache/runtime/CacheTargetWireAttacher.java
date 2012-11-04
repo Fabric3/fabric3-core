@@ -49,7 +49,7 @@ import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class CacheTargetWireAttacher implements TargetWireAttacher<CacheTargetDefinition> {
     private CacheRegistry registry;

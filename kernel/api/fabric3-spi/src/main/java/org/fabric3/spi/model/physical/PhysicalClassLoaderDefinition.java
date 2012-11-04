@@ -48,8 +48,6 @@ import org.fabric3.spi.model.os.Library;
 
 /**
  * Used to provision classloaders on a runtime. Defined classloaders correspond to a contribution.
- *
- * @version $Rev$ $Date$
  */
 public class PhysicalClassLoaderDefinition implements Serializable {
     private static final long serialVersionUID = 1869864181383360066L;

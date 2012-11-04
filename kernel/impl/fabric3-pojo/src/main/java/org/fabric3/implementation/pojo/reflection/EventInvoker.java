@@ -45,8 +45,6 @@ package org.fabric3.implementation.pojo.reflection;
 
 /**
  * Performs an invocation on an instance.
- *
- * @version $Rev$ $Date$
  */
 public interface EventInvoker {
 

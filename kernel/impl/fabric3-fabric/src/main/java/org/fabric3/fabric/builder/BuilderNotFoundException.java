@@ -47,8 +47,6 @@ import org.fabric3.spi.builder.BuilderException;
 
 /**
  * Represents an error processing an assembly model
- *
- * @version $Rev$ $Date$
  */
 public class BuilderNotFoundException extends BuilderException {
     private static final long serialVersionUID = 2604579115547966762L;

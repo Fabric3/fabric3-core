@@ -47,8 +47,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Denotes the use of <code>@Resource</code> for a <code>DataSource</code> type without a mapped name.
- *
- * @version $Rev$ $Date$
  */
 public class MissingDataSourceName extends ValidationFailure {
     private String location;

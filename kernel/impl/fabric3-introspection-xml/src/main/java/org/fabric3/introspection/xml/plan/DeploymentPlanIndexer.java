@@ -58,8 +58,6 @@ import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN_NA
 
 /**
  * Indexes a deployment plan.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DeploymentPlanIndexer implements XmlIndexer {

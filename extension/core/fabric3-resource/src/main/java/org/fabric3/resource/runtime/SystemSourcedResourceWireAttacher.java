@@ -53,8 +53,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Attaches to a service in the runtime domain.
- *
- * @version $Rev$ $Date$
  */
 public class SystemSourcedResourceWireAttacher implements TargetWireAttacher<SystemSourcedTargetDefinition> {
     private final ComponentManager manager;

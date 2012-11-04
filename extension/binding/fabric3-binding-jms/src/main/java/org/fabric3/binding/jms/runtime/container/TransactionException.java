@@ -40,7 +40,7 @@ package org.fabric3.binding.jms.runtime.container;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TransactionException extends Fabric3Exception {
     private static final long serialVersionUID = -5376791778196200639L;

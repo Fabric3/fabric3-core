@@ -43,8 +43,6 @@ import java.io.Serializable;
 /**
  * Serializes and deserializes objects. This service provides the additional capability of deserializing the object (or object graph) in the context
  * of the runtime classloader network.
- *
- * @version $Rev$ $Date$
  */
 public interface SerializationService {
 

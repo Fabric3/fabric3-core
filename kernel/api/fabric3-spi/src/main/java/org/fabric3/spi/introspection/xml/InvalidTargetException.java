@@ -41,8 +41,6 @@ import javax.xml.stream.XMLStreamReader;
 
 /**
  * Denotes an invalid Target string.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidTargetException extends LoaderException {
     private static final long serialVersionUID = 3152039537445905353L;

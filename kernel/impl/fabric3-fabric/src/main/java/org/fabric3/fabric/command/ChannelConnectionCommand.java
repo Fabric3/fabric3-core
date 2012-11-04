@@ -45,8 +45,6 @@ import org.fabric3.spi.command.CompensatableCommand;
 
 /**
  * Used to establish a event channel connection.
- *
- * @version $Rev$ $Date$
  */
 public class ChannelConnectionCommand implements CompensatableCommand {
     private static final long serialVersionUID = 8746788639966402901L;

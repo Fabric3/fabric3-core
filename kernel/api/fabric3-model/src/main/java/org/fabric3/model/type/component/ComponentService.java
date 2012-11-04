@@ -45,8 +45,6 @@ package org.fabric3.model.type.component;
 
 /**
  * A service configured on a component.
- *
- * @version $Rev$ $Date$
  */
 public class ComponentService extends ServiceDefinition {
     private static final long serialVersionUID = 1076710434904709542L;

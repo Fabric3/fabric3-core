@@ -39,8 +39,6 @@ package org.fabric3.contribution.manifest;
 
 /**
  * Represents an extends declaration in a contribution manifest.
- *
- * @version $Rev$ $Date$
  */
 public class ExtendsDeclaration {
     private String name;

@@ -43,8 +43,6 @@ import org.fabric3.spi.builder.channel.EventFilter;
 
 /**
  * Filters events based on a set of Java types.
- *
- * @version $Rev$ $Date$
  */
 public class JavaTypeEventFilter implements EventFilter {
     private Class<?>[] types;

@@ -55,8 +55,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Base source wire attacher that provisions web service endpoints.
- *
- * @version $Rev: 7467 $ $Date: 2009-08-06 18:57:21 +0200 (Thu, 06 Aug 2009) $
  */
 public abstract class AbstractMetroSourceWireAttacher<T extends MetroSourceDefinition> implements SourceWireAttacher<T> {
     protected EndpointService endpointService;

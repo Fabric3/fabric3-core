@@ -47,8 +47,6 @@ import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
 
 /**
  * Default implementation of the FileSystemResourceFactoryRegistry.
- *
- * @version $Rev$ $Date$
  */
 public class FileSystemResourceFactoryRegistryImpl implements FileSystemResourceFactoryRegistry {
     private List<FileSystemResourceFactory> factories = new ArrayList<FileSystemResourceFactory>();

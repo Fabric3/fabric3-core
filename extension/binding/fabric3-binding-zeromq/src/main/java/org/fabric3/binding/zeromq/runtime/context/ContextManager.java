@@ -37,8 +37,6 @@ import org.zeromq.ZMQ.Context;
  * <p/>
  * Note when sockets are created from the managed <code>Context</code>, clients must reserve a lease using {@link #reserve(String)}. When a socket is
  * closed, clients must call {@link #release(String)}.
- *
- * @version $Revision: 10396 $ $Date: 2011-05-30 16:10:42 +0200 (Mon, 30 May 2011) $
  */
 public interface ContextManager {
 

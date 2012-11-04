@@ -41,7 +41,7 @@ import org.fabric3.spi.contribution.DependencyException;
 import org.fabric3.spi.contribution.Import;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class UnresolvableImportException extends DependencyException {
     private static final long serialVersionUID = 6415010890788555421L;

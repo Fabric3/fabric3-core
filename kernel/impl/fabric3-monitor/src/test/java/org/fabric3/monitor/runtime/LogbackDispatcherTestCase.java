@@ -49,7 +49,7 @@ import org.w3c.dom.Element;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class LogbackDispatcherTestCase extends TestCase {
     private static final String CONFIG =

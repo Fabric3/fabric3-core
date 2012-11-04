@@ -45,7 +45,7 @@ import org.fabric3.api.annotation.monitor.MonitorEventType;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MonitorUtil {
 

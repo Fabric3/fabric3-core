@@ -42,8 +42,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Tracks statistics for an {@link AdaptiveMessageContainer}.
- *
- * @version $Rev$ $Date$
  */
 public class ContainerStatistics {
     private long start;

@@ -51,8 +51,6 @@ import org.apache.mina.filter.codec.textline.TextLineDecoder;
 
 /**
  * Protocol encoder and decoder factory for inbound and outbound messages.
- *
- * @version $Rev$ $Date$
  */
 public class CodecFactory implements ProtocolCodecFactory {
 

@@ -71,8 +71,6 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * Activates a web component in the host Tomcat runtime.
- *
- * @version $Rev: 10721 $ $Date: 2011-10-03 01:01:56 +0300 (Mon, 03 Oct 2011) $
  */
 public class TomcatWebApplicationActivator implements WebApplicationActivator {
     private ConnectorService connectorService;

@@ -45,8 +45,6 @@ package org.fabric3.spi.objectfactory;
 
 /**
  * Creates new instances of a type.
- *
- * @version $Rev$ $Date$
  */
 public interface ObjectFactory<T> {
     /**

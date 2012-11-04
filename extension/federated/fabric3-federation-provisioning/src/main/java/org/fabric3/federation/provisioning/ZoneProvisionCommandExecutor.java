@@ -51,8 +51,6 @@ import org.fabric3.spi.security.AuthorizationService;
 
 /**
  * Used on a participant to processes a request for the provisioning URL of a contribution artifact
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ZoneProvisionCommandExecutor extends AbstractProvisionCommandExecutor {

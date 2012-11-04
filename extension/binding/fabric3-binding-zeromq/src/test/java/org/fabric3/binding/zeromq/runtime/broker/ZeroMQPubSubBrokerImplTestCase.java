@@ -56,7 +56,7 @@ import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 
 /**
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
+ *
  */
 public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
     private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", new Port() {

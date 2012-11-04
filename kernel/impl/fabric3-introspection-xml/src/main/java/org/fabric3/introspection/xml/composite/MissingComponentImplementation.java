@@ -43,8 +43,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * A validation failure indicating a missing component implementation.
- *
- * @version $Rev$ $Date$
  */
 public class MissingComponentImplementation extends XmlValidationFailure {
 

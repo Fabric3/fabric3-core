@@ -52,8 +52,6 @@ import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * An artifact which can be bound to a remote transport.
- *
- * @version $Rev$ $Date$
  */
 public abstract class Bindable extends LogicalInvocable {
     private static final long serialVersionUID = 570403036597601956L;

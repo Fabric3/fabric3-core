@@ -76,8 +76,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loader for policy definitions.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DefinitionsLoader implements XmlResourceElementLoader {

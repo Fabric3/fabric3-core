@@ -50,7 +50,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class MonitorResourceReferenceGenerator implements ResourceReferenceGenerator<MonitorResourceReference> {

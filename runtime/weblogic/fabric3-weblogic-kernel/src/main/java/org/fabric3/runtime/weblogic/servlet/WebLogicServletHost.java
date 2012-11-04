@@ -65,8 +65,6 @@ import org.fabric3.spi.host.ServletHost;
 
 /**
  * A <code>ServletHost</code> implementation that forwards requests to registered servlets
- *
- * @version $Rev$ $Date$
  */
 @Service(names = {ServletHost.class, ServletRequestDispatcher.class})
 @EagerInit

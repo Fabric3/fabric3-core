@@ -54,8 +54,6 @@ import org.fabric3.host.os.OperatingSystem;
  * Interface that provides information on the host environment. This allows the runtime to access information about the environment in which it is
  * running. The implementation of this interface is provided to the runtime by the host during initialization. Hosts will generally extend this
  * interface to provide additional information.
- *
- * @version $Rev$ $Date$
  */
 public interface HostInfo {
 

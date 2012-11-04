@@ -62,8 +62,6 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * Creates JAX-WS <code>Dispatch</code> instances that can be shared among wire invocation chains.
- *
- * @version $Rev$ $Date$
  */
 public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFactory<Dispatch<Source>> {
     private QName serviceName;

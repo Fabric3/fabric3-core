@@ -17,8 +17,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Attaches a reference to the RS binding.
- *
- * @version $Rev$ $Date$
  */
 public class RsTargetWireAttacher implements TargetWireAttacher<RsTargetDefinition> {
 

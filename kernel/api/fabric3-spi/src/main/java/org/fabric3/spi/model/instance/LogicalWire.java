@@ -53,8 +53,6 @@ import javax.xml.namespace.QName;
  * <p/>
  * During deployment, wires are created and resolved incrementally. A wire is created for When a wire is instantiated, its source reference and target
  * service URI are resolved against the domain.
- *
- * @version $Rev$ $Date$
  */
 public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
     private static final long serialVersionUID = -643283191171197255L;

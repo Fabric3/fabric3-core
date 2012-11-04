@@ -53,8 +53,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Injects a value created by an {@link ObjectFactory} using a given method.
- *
- * @version $Rev$ $Date$
  */
 public class MethodInjector implements Injector<Object> {
     private final Method method;

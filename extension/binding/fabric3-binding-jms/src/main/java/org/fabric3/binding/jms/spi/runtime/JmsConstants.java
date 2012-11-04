@@ -39,8 +39,6 @@ package org.fabric3.binding.jms.spi.runtime;
 
 /**
  * Defines JMS constants.
- *
- * @version $Rev$ $Date$
  */
 public interface JmsConstants {
 

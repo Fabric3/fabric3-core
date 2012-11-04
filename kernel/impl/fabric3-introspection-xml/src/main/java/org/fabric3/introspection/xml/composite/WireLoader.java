@@ -60,7 +60,7 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class WireLoader extends AbstractValidatingTypeLoader<WireDefinition> {

@@ -39,8 +39,6 @@ package org.fabric3.util.graph;
 
 /**
  * Default vertex implementation
- *
- * @version $Rev$ $Date$
  */
 public class VertexImpl<T> implements Vertex<T> {
     private T entity;

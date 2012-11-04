@@ -49,7 +49,7 @@ import org.fabric3.datasource.spi.DataSourceType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DataSourceResourceLoaderTestCase extends TestCase {
     private static final String SINGLE_DATASOURCE =

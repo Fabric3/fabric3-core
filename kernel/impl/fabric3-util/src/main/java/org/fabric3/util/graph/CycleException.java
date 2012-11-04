@@ -39,8 +39,6 @@ package org.fabric3.util.graph;
 
 /**
  * Thrown when a cycle in a DAG is encountered.
- *
- * @version $Rev$ $Date$
  */
 
 public class CycleException extends GraphException {

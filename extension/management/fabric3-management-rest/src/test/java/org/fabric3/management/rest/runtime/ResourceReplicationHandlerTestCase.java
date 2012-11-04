@@ -44,7 +44,7 @@ import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.Verb;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ResourceReplicationHandlerTestCase extends TestCase {
 

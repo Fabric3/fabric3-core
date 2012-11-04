@@ -59,7 +59,7 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ClassLoaderBuilderImplTestCase extends TestCase {
 

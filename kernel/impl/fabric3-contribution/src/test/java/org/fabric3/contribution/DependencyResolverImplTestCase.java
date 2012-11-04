@@ -56,7 +56,7 @@ import org.fabric3.spi.contribution.manifest.QNameExport;
 import org.fabric3.spi.contribution.manifest.QNameImport;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DependencyResolverImplTestCase extends TestCase {
     private static final URI CONTRIBUTION1_URI = URI.create("contribution1");

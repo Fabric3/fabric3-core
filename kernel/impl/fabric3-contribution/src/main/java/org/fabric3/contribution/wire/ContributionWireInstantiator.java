@@ -45,8 +45,6 @@ import org.fabric3.spi.contribution.Import;
 
 /**
  * Implementations instantiate a ContributionWire between a contribution import and a resolved export from another contribution.
- *
- * @version $Rev$ $Date$
  */
 public interface ContributionWireInstantiator<I extends Import, E extends Export, CW extends ContributionWire<I, E>> {
 

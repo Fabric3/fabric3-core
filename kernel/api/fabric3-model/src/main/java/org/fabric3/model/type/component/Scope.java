@@ -47,8 +47,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * Defines the component implementation instance lifecycle.
- *
- * @version $Rev$ $Date$
  */
 public class Scope extends ModelObject {
     private static final long serialVersionUID = -5300929173662672089L;

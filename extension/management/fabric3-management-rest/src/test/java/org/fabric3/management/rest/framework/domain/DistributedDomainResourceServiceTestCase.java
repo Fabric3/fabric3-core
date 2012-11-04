@@ -48,7 +48,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.rest.model.Resource;
 
 /**
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
+ *
  */
 public class DistributedDomainResourceServiceTestCase extends TestCase {
     private DistributedDomainResourceService service;

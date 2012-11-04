@@ -81,8 +81,6 @@ import static org.fabric3.runtime.weblogic.api.Constants.WLS_RUNTIME_SERVICE_MBE
  * runtime.
  * <p/>
  * Note that only system datasources will be resolved, not application-level datasources (i.e. those defined in Java EE modules).
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DataSourceResolver {

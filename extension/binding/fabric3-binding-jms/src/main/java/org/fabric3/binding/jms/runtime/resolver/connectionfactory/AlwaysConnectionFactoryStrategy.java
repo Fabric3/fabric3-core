@@ -63,8 +63,6 @@ import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryCreator;
 
 /**
  * Implementation that always attempts to create a connection factory.
- *
- * @version $Revision$ $Date$
  */
 public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private ConnectionFactoryManager manager;

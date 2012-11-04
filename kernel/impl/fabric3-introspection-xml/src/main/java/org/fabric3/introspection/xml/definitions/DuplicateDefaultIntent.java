@@ -49,8 +49,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * Denotes a multiple default attributes on qualfied intents.
- *
- * @version $Rev$ $Date$
  */
 public class DuplicateDefaultIntent extends XmlValidationFailure {
 

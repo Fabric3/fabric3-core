@@ -54,7 +54,7 @@ import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.timer.spi.TimerService;
 
 /**
- * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
+ *
  */
 public class TimerComponentDomainScopeTestCase extends TestCase {
     private TimerComponent component;

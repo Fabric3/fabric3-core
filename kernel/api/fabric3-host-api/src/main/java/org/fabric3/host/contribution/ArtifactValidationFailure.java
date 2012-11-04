@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ArtifactValidationFailure extends ValidationFailure {
     private List<ValidationFailure> failures;

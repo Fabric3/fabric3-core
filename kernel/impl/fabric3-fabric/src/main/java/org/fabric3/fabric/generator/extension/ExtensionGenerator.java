@@ -48,8 +48,6 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * Generates commands to un/provision extensions for a deployment or undeployment.
- *
- * @version $Rev$ $Date$
  */
 public interface ExtensionGenerator {
 

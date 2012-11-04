@@ -47,8 +47,6 @@ import java.io.Serializable;
 
 /**
  * Defines message payload types for an operation.
- *
- * @version $Rev$ $Date$
  */
 public class OperationPayloadTypes implements Serializable{
     private static final long serialVersionUID = 6091935206595784071L;

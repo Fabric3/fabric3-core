@@ -51,8 +51,6 @@ import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 
 /**
  * Strategy for looking up destinations.
- *
- * @version $Revision$ $Date$
  */
 public interface DestinationStrategy {
 

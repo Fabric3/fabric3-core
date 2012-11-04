@@ -46,8 +46,6 @@ import org.fabric3.spi.component.ScopeContainer;
 
 /**
  * The runtime instantiation of a Java component implementation.
- *
- * @version $Revision$ $Date$
  */
 public class JavaComponent extends PojoComponent {
 

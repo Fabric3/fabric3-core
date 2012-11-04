@@ -50,7 +50,7 @@ import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalOperation;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class EffectivePolicyImpl implements EffectivePolicy {
     private Set<Intent> endpointIntents = new HashSet<Intent>();

@@ -47,8 +47,6 @@ import java.io.Serializable;
 
 /**
  * Represents an action to be executed on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public interface Command extends Serializable {
 

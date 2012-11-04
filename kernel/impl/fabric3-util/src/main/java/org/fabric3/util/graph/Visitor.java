@@ -39,8 +39,6 @@ package org.fabric3.util.graph;
 
 /**
  * A interface for a visitor in the Visitor Pattern.
- *
- * @version $Rev$ $Date$
  */
 public interface Visitor<T> {
 

@@ -47,7 +47,7 @@ import org.fabric3.binding.ws.metro.util.ClassLoaderUpdater;
 import org.fabric3.spi.builder.WiringException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WireAttacherHelperImpl implements WireAttacherHelper {
     private ClassDefiner classDefiner;

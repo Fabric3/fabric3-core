@@ -40,7 +40,7 @@ package org.fabric3.fabric.builder.channel;
 import org.fabric3.spi.builder.BuilderException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class UnsupportedTypeException extends BuilderException{
     private static final long serialVersionUID = 3357845158275691387L;

@@ -51,8 +51,6 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
  * <p/>
  * The implementation works by parsing the contents of the config file into a property which is added to a synthetic deployable composite. When the
  * composite is deployed, the property will be added to the domain where it can be referenced.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ConfigProcessor implements XmlProcessor {

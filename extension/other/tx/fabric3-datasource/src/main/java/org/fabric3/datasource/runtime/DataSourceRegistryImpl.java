@@ -48,8 +48,6 @@ import org.fabric3.datasource.spi.DataSourceRegistry;
 
 /**
  * Default DataSourceRegistry implementation.
- *
- * @version $Rev$ $Date$
  */
 @Management(name = "DataSourceRegistry", path = "/runtime/datasources")
 public class DataSourceRegistryImpl implements DataSourceRegistry {

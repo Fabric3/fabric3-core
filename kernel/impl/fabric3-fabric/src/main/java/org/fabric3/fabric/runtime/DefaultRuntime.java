@@ -47,8 +47,6 @@ import org.fabric3.host.runtime.RuntimeConfiguration;
 
 /**
  * The default Fabric3Runtime implementation.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultRuntime extends AbstractRuntime {
 

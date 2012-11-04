@@ -44,7 +44,7 @@ import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class XQueryServiceContract extends ServiceContract {
     private static final long serialVersionUID = 630477464259103851L;

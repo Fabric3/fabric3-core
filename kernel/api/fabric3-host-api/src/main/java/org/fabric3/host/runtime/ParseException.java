@@ -44,8 +44,6 @@
 package org.fabric3.host.runtime;
 
 /**
- *
- * @version $Rev$ $Date$
  */
 public class ParseException extends InitializationException {
     private static final long serialVersionUID = 5070537845475682060L;

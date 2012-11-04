@@ -41,8 +41,6 @@ import java.net.URI;
 
 /**
  * Manages active {@link RsContainer}s.
- *
- * @version $Rev$ $Date$
  */
 public interface RsContainerManager {
 

@@ -50,7 +50,7 @@ import org.fabric3.spi.command.Command;
 import org.fabric3.spi.executor.CommandExecutor;
 
 /**
- * @version $Rev: 10102 $ $Date: 2011-03-15 23:59:22 -0700 (Tue, 15 Mar 2011) $
+ *
  */
 public class CommandExecutorRegistryImplTestCase extends TestCase {
 

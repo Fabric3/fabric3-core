@@ -39,8 +39,6 @@ package org.fabric3.spi.security;
 
 /**
  * Base authentication token.
- *
- * @version $Rev$ $Date$
  */
 public interface AuthenticationToken<P, C> {
 

@@ -50,7 +50,7 @@ import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class FileSecurityStoreTestCase extends TestCase {
 

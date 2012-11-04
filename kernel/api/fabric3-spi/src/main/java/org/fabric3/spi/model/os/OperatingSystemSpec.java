@@ -43,8 +43,6 @@ import org.fabric3.spi.model.version.Versionable;
 
 /**
  * An operating system specification for a native library entry in a contribution manifest.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public class OperatingSystemSpec extends Versionable {
     private static final long serialVersionUID = 464100854160609807L;

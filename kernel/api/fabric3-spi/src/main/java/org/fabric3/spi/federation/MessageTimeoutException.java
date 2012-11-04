@@ -38,7 +38,7 @@
 package org.fabric3.spi.federation;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MessageTimeoutException extends MessageException {
     private static final long serialVersionUID = -1705962954917886183L;

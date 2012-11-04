@@ -49,8 +49,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 
 /**
  * Builds and disposes channel binding infrastructure.
- *
- * @version $Rev$ $Date$
  */
 public interface ChannelBindingBuilder<B extends PhysicalChannelBindingDefinition> {
 

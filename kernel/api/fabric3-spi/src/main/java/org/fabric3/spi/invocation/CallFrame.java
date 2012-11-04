@@ -42,8 +42,6 @@ import java.io.Serializable;
 /**
  * Encapsulates information for a specific invocation that is made as part of a request entering the domain. Requests may have multiple associated
  * invocations as component implementations may invoke services on other components as a request is processed.
- *
- * @version $Rev$ $Date$
  */
 public class CallFrame implements Serializable {
     private static final long serialVersionUID = -6108279393891496098L;

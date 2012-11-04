@@ -48,8 +48,6 @@ import javax.xml.namespace.QName;
 /**
  * Registry for XML loaders that can parse a StAX input stream and return model objects. Loaders will typically be contributed to the runtime by any
  * extension that needs to handle extension specific information contained in an XML file.
- *
- * @version $Rev$ $Date$
  */
 public interface LoaderRegistry extends Loader {
     /**

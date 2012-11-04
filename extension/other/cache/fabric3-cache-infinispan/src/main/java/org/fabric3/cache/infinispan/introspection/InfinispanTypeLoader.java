@@ -51,8 +51,6 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
  * Loads Infinispan cache configurations specified as part of a <code>&lt;cache&gt;</code> element in a composite.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class InfinispanTypeLoader implements TypeLoader<InfinispanCacheResourceDefinition> {

@@ -48,8 +48,6 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 
 /**
  * A wrapper used to expose an Atomikos DataSource as a managed instance.
- *
- * @version $Rev$ $Date$
  */
 @Management
 public class DataSourceWrapper {

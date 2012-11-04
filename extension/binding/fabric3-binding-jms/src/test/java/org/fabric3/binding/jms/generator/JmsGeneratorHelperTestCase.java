@@ -48,7 +48,7 @@ import java.net.URI;
 import junit.framework.TestCase;
 
 /**
- * @version $Revision: 9672 $ $Date: 2010-12-01 22:10:58 +0100 (Wed, 01 Dec 2010) $
+ *
  */
 public class JmsGeneratorHelperTestCase extends TestCase {
 

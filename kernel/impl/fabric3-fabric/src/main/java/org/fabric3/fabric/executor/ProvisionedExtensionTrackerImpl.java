@@ -42,7 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ProvisionedExtensionTrackerImpl implements ProvisionedExtensionTracker {
     private Map<URI, Integer> cache = new HashMap<URI, Integer>();

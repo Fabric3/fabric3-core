@@ -47,8 +47,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Default implementation of a topological sorter.
- *
- * @version $Rev$ $Date$
  */
 public class TopologicalSorterImpl<T> implements TopologicalSorter<T> {
 

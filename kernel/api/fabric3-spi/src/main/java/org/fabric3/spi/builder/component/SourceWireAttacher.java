@@ -51,8 +51,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Attaches (and detaches) a wire from a source component or transport binding.
- *
- * @version $Rev$ $Date$
  */
 public interface SourceWireAttacher<PSD extends PhysicalSourceDefinition> {
     /**

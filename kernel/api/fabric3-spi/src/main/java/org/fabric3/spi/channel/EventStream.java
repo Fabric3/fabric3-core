@@ -41,8 +41,6 @@ import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 
 /**
  * Transmits events to a channel. As events are transmitted through the stream, they are processed by a series of handlers.
- *
- * @version $Rev$ $Date$
  */
 public interface EventStream {
 

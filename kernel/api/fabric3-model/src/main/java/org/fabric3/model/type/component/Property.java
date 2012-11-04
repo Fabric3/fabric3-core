@@ -51,8 +51,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * A component type property.
- *
- * @version $Rev$ $Date$
  */
 public class Property extends ModelObject {
     private static final long serialVersionUID = -1930360315004829917L;

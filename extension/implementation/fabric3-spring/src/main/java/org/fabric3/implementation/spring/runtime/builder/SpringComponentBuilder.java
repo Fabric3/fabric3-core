@@ -63,8 +63,6 @@ import org.fabric3.spring.spi.ApplicationContextListener;
  * also contains system components configured to be aliased as Spring beans.
  * <p/>
  * The child context contains beans defined in the configuration file specified by the location attribute of the Spring component.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SpringComponentBuilder implements ComponentBuilder<SpringComponentDefinition, SpringComponent> {

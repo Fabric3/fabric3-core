@@ -37,7 +37,7 @@ import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 public interface MessagingMonitor {
 

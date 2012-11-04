@@ -38,7 +38,7 @@
 package org.fabric3.admin.interpreter;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface CommandParser {
 

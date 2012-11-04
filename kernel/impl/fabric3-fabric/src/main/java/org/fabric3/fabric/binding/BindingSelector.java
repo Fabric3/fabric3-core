@@ -42,8 +42,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Responsible for selecting and configuring binding configuration for wires and channels in a domain.
- *
- * @version $Rev$ $Date$
  */
 public interface BindingSelector {
 

@@ -58,7 +58,7 @@ import org.fabric3.spi.introspection.xml.Loader;
 import static org.fabric3.spi.contribution.Constants.EXPLODED_CONTENT_TYPE;
 
 /**
- * @version $Rev: 7146 $ $Date: 2009-06-15 01:28:54 +0200 (Mon, 15 Jun 2009) $
+ *
  */
 public class ExplodedArchiveContributionHandlerTestCase extends TestCase {
     private ExplodedArchiveContributionHandler handler;

@@ -44,8 +44,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Instantiates logical components in a domain that can be used to generate deployment commands.
- *
- * @version $Rev$ $Date$
  */
 public interface LogicalModelInstantiator {
 

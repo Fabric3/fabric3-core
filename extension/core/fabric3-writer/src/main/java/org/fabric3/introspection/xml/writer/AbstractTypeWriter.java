@@ -47,8 +47,6 @@ import org.fabric3.spi.introspection.xml.Writer;
 
 /**
  * Implements common {@link TypeWriter} functionality.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractTypeWriter<TYPE extends ModelObject> implements TypeWriter<TYPE> {
     private Class<TYPE> type;

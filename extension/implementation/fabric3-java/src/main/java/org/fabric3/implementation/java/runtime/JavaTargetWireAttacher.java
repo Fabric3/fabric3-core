@@ -61,8 +61,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Attaches and detaches wires from Java components.
- *
- * @version $Rev$ $Date$
  */
 public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefinition> {
 

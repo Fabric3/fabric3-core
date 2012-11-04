@@ -41,8 +41,6 @@ import java.util.List;
 
 /**
  * Base class for exceptions indicating a contribution has failed validation.
- *
- * @version $Rev$ $Date$
  */
 public abstract class ValidationException extends InstallException {
     private static final long serialVersionUID = -9097590343387033730L;

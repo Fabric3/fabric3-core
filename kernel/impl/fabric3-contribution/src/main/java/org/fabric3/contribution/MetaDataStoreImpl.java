@@ -73,8 +73,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Default MetaDataStore implementation.
- *
- * @version $Rev$ $Date$
  */
 public class MetaDataStoreImpl implements MetaDataStore {
     private ProcessorRegistry processorRegistry;

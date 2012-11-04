@@ -66,7 +66,7 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.monitor.MonitorService;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 @Management(name = "MonitorService", path = "/runtime/monitor", description = "Sets monitoring levels for the runtime")

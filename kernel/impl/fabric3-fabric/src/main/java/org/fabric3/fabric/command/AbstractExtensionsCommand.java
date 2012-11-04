@@ -44,7 +44,7 @@ import java.util.List;
 import org.fabric3.spi.command.CompensatableCommand;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public abstract class AbstractExtensionsCommand implements CompensatableCommand {
     private static final long serialVersionUID = -4757212674286772185L;

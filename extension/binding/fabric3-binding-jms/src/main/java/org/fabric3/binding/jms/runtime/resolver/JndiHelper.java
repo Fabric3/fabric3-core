@@ -50,8 +50,6 @@ import javax.naming.NamingException;
 
 /**
  * Performs JNDI resolution.
- *
- * @version $Revision$ $Date$
  */
 public class JndiHelper {
 

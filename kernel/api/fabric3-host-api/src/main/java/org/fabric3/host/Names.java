@@ -47,8 +47,6 @@ import java.net.URI;
 
 /**
  * Defines URIs of well-known runtime components and contributions available through the host API.
- *
- * @version $Rev$ $Date$
  */
 public interface Names {
 

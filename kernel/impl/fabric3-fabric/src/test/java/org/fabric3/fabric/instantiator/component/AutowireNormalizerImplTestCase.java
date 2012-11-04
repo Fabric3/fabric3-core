@@ -48,7 +48,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AutowireNormalizerImplTestCase extends TestCase {
     AutowireNormalizer normalizer = new AutowireNormalizerImpl();

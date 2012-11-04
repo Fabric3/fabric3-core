@@ -46,7 +46,7 @@ package org.fabric3.spi.introspection.xml;
 import javax.xml.stream.XMLStreamReader;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ResourceNotFound extends XmlValidationFailure {
     public ResourceNotFound(String message, XMLStreamReader reader) {

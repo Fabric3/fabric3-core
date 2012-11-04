@@ -45,8 +45,6 @@ import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
  * A set of cache configurations defined in a composite.
- *
- * @version $Rev$ $Date$
  */
 public class CacheSetResourceDefinition extends ResourceDefinition {
     private static final long serialVersionUID = 319475664996240639L;

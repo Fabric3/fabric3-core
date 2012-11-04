@@ -46,8 +46,6 @@ import org.fabric3.model.type.component.BindingDefinition;
 
 /**
  * Binding definition loaded from the SCDL.
- *
- * @version $Rev$ $Date$
  */
 public class FtpBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -889044951554792780L;

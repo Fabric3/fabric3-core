@@ -45,8 +45,6 @@ import org.oasisopen.sca.annotation.Property;
 
 /**
  * User manager implementation that reads the credential from the file system.
- *
- * @version $Rev$ $Date$
  */
 public class FileSystemUserManager implements UserManager {
 

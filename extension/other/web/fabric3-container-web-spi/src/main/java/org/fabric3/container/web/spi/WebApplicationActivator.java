@@ -48,8 +48,6 @@ import org.fabric3.spi.objectfactory.Injector;
 
 /**
  * Responsible for activating a web application in an embedded servlet container.
- *
- * @version $Rev$ $Date$
  */
 public interface WebApplicationActivator {
     public static final String SERVLET_CONTEXT_SITE = "fabric3.servletContext";

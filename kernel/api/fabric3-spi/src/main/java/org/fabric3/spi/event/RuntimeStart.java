@@ -39,8 +39,6 @@ package org.fabric3.spi.event;
 
 /**
  * Fired when the runtime has been initialized and is ready to receive requests
- *
- * @version $Rev$ $Date$
  */
 public class RuntimeStart implements Fabric3Event {
 }

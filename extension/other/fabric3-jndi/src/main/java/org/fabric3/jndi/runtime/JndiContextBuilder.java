@@ -51,8 +51,6 @@ import org.fabric3.spi.builder.resource.ResourceBuilder;
 
 /**
  * Creates and registers JNDI contexts with the runtime {@link JndiContextManager}.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class JndiContextBuilder implements ResourceBuilder<PhysicalJndiContextDefinition> {

@@ -47,8 +47,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Loads the value of a ResourceElement from an XML artifact.
- *
- * @version $Rev$ $Date$
  */
 public interface XmlResourceElementLoader {
 

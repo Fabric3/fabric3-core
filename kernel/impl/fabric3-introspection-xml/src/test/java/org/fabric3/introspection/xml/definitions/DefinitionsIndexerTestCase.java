@@ -54,7 +54,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * @version $Rev: 7275 $ $Date: 2009-07-05 21:54:59 +0200 (Sun, 05 Jul 2009) $
+ *
  */
 public class DefinitionsIndexerTestCase extends TestCase {
     private static final QName INTERCEPTED_INTENT = new QName(Namespaces.F3, "intercepted");

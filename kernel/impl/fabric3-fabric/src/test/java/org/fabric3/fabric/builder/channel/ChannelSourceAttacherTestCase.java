@@ -50,7 +50,7 @@ import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class ChannelSourceAttacherTestCase extends TestCase {

@@ -46,8 +46,6 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
 
 /**
  * Invokes a timer component instance when a trigger has fired.
- *
- * @version $Rev: 7148 $ $Date: 2009-06-15 02:18:27 +0200 (Mon, 15 Jun 2009) $
  */
 public class NonTransactionalTimerInvoker implements Runnable {
     private TimerComponent component;

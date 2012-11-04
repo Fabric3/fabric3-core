@@ -47,8 +47,6 @@ import org.fabric3.spi.command.Command;
 
 /**
  * A registry of {@link CommandExecutor}s.
- *
- * @version $Rev$ $Date$
  */
 public interface CommandExecutorRegistry {
 

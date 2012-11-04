@@ -45,7 +45,7 @@ import com.sun.jersey.api.core.DefaultResourceConfig;
 import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class Fabric3ResourceConfig extends DefaultResourceConfig {
     private Set<Class<?>> resources = new HashSet<Class<?>>();

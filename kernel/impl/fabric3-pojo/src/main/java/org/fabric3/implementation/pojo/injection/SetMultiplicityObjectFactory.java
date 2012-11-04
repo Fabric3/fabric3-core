@@ -45,8 +45,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * A set based object factory.
- *
- * @version $Rev$ $Date$
  */
 public class SetMultiplicityObjectFactory implements MultiplicityObjectFactory<Set<?>> {
     private Set<ObjectFactory<?>> factories = new CopyOnWriteArraySet<ObjectFactory<?>>();

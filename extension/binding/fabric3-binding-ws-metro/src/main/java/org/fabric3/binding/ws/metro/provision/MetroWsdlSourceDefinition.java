@@ -45,8 +45,6 @@ import org.fabric3.spi.model.physical.PhysicalDataTypes;
 
 /**
  * Wire source definition for services that use WSDL-based contracts.
- *
- * @version $Rev$ $Date$
  */
 public class MetroWsdlSourceDefinition extends MetroSourceDefinition {
     private static final long serialVersionUID = -1905843346636208650L;

@@ -44,8 +44,6 @@ import org.fabric3.model.type.contract.DataType;
  * logical type is a {@link JavaTypeInfo} which represents resolved generic type information. The logical type can be used to perform strong type
  * checking that includes the actual types of generic parameters, e.g. a check that can verify <code>List&lt;String&gt;</code> as opposed to just
  * <code>List</code>.
- *
- * @version $Rev$ $Date$
  */
 public class JavaGenericType extends JavaType<JavaTypeInfo> {
     private static final long serialVersionUID = -8832071773275935399L;

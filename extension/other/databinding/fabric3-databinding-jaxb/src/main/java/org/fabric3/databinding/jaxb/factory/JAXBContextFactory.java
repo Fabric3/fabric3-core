@@ -42,8 +42,6 @@ import javax.xml.bind.JAXBException;
 
 /**
  * Creates a JAXBContext capable of marshalling and demarshalling the given set of classes.
- *
- * @version $Rev$ $Date$
  */
 public interface JAXBContextFactory {
 

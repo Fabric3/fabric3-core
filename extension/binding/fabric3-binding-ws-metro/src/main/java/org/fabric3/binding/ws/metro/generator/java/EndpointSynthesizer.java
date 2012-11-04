@@ -46,8 +46,6 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
  * Synthesizes endpoint information from a Java service contract.
- *
- * @version $Rev$ $Date$
  */
 public interface EndpointSynthesizer {
 

@@ -70,8 +70,6 @@ import org.fabric3.monitor.runtime.LogbackDispatcher;
 
 /**
  * Default BootstrapFactory implementation.
- *
- * @version $Revision$ $Date$
  */
 public class DefaultBootstrapService implements BootstrapService {
     private RepositoryScanner scanner;

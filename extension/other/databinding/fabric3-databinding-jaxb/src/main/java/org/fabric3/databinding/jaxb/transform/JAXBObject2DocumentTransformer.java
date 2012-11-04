@@ -51,8 +51,6 @@ import org.fabric3.spi.transform.Transformer;
 
 /**
  * Transforms from a JAXB top-level element instance to a DOM Document.
- *
- * @version $Rev$ $Date$
  */
 public class JAXBObject2DocumentTransformer implements Transformer<Object, Document> {
     private JAXBContext jaxbContext;

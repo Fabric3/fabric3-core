@@ -46,8 +46,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * Annotation used to mark intent annotation methods that contain metadata data for an intent. For example, an authorizaton intent annotation may
  * allow roles or permissions to be specified.
- *
- * @version $Rev$ $Date$
  */
 @Target(METHOD)
 @Retention(RUNTIME)

@@ -3,7 +3,7 @@ package weblogic.logging;
 import java.util.logging.Logger;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class LoggingHelper {
 

@@ -39,8 +39,6 @@ package org.fabric3.binding.jms.spi.runtime;
 
 /**
  * Denotes an error registering a connection factory.
- *
- * @version $Rev$ $Date$
  */
 public class FactoryRegistrationException extends JmsResolutionException{
     private static final long serialVersionUID = -9001751422278517341L;

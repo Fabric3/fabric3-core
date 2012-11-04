@@ -48,8 +48,6 @@ import java.util.Map;
 
 /**
  * Registry for classloaders available to the local runtime.
- *
- * @version $Rev$ $Date$
  */
 public interface ClassLoaderRegistry {
     /**

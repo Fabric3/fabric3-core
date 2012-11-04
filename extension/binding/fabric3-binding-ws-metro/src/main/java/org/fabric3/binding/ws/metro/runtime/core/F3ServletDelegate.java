@@ -57,8 +57,6 @@ import com.sun.xml.ws.transport.http.servlet.WSServletDelegate;
 
 /**
  * Custom servlet delegate that supports lazy initiation of adapters.
- *
- * @version $Rev$ $Date$
  */
 public class F3ServletDelegate extends WSServletDelegate {
     private static final String WS_TRANSFER_GET_ACTION = "\"http://schemas.xmlsoap.org/ws/2004/09/transfer/Get\"";

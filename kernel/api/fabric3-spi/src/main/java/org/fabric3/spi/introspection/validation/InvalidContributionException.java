@@ -46,7 +46,7 @@ import org.fabric3.host.contribution.ValidationException;
 import org.fabric3.host.contribution.ValidationFailure;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class InvalidContributionException extends ValidationException {
     private static final long serialVersionUID = -5729273092766880963L;

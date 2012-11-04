@@ -70,7 +70,7 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class InstantiationTestCase extends TestCase {
     public static final URI PARENT_URI = URI.create("fabric3://domain/parent");

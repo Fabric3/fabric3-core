@@ -46,8 +46,6 @@ import org.oasisopen.sca.annotation.Property;
 
 /**
  * Reports the status of the Metro binding extension and sets the log level for the underlying Metro stack.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class MetroBinding {

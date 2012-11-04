@@ -39,8 +39,6 @@ package org.fabric3.admin.interpreter.communication;
 
 /**
  * A non-recoverable exception connecting to the domain.
- *
- * @version $Rev$ $Date$
  */
 public class CommunicationException extends Exception {
     private static final long serialVersionUID = -351731887104971407L;

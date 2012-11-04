@@ -48,8 +48,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * A component type callback.
- *
- * @version $Rev$ $Date$
  */
 public class CallbackDefinition extends ModelObject {
     private static final long serialVersionUID = -1845071329121684755L;

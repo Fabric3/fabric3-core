@@ -39,8 +39,6 @@ package org.fabric3.runtime.standalone.server;
 
 /**
  * Management interface for the Fabric3 server.
- *
- * @version $Revision$ $Date$
  */
 public interface Fabric3ServerMBean {
 

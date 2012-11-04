@@ -46,8 +46,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Processes an XML-based contribution.
- *
- * @version $Rev$ $Date$
  */
 public interface XmlProcessor {
 

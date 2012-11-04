@@ -53,7 +53,7 @@ import org.easymock.EasyMock;
 import org.fabric3.spi.component.Component;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ComponentManagerImplTestCase extends TestCase {
     private static final URI DOMAIN = URI.create("sca://localhost/");

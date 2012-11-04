@@ -49,8 +49,6 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
  * TypeLoader implementation that can delegate back to the LoaderRegistry to process sub-elements in a composite.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public abstract class AbstractExtensibleTypeLoader<T> extends AbstractValidatingTypeLoader<T> {

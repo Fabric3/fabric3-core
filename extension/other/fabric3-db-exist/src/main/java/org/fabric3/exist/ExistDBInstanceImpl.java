@@ -36,9 +36,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 /** 
  * Exist DB instance. Started and stopped by the Fabric3 runtime
- * 
- * @version $Rev$ $Date$
- */
+ * */
 @EagerInit
 public class ExistDBInstanceImpl implements ExistDBInstance {
 

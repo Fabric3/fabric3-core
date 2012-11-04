@@ -41,8 +41,6 @@ import java.net.URI;
 
 /**
  * Manages channels on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public interface ChannelManager {
 

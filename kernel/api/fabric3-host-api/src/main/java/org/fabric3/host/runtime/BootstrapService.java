@@ -57,8 +57,6 @@ import org.fabric3.host.stream.Source;
 
 /**
  * Provides operations to bootstrap a runtime.
- *
- * @version $Revision$ $Date$
  */
 public interface BootstrapService {
 

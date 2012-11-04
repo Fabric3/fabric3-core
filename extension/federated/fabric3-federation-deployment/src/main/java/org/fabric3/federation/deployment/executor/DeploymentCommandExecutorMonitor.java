@@ -41,7 +41,7 @@ import org.fabric3.api.annotation.monitor.Debug;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface DeploymentCommandExecutorMonitor {
 

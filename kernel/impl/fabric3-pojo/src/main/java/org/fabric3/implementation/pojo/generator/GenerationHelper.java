@@ -44,8 +44,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Provides common functions for Java component generation.
- *
- * @version $Rev$ $Date$
  */
 public interface GenerationHelper {
 

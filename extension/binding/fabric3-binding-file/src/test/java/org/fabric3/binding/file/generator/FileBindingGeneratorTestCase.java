@@ -55,7 +55,7 @@ import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 public class FileBindingGeneratorTestCase extends TestCase {
     private FileBindingGenerator generator;

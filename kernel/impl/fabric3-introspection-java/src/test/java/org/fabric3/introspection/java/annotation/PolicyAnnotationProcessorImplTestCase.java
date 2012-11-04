@@ -53,7 +53,7 @@ import static org.oasisopen.sca.annotation.Confidentiality.CONFIDENTIALITY;
 import static org.oasisopen.sca.annotation.Confidentiality.CONFIDENTIALITY_MESSAGE;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PolicyAnnotationProcessorImplTestCase extends TestCase {
     private PolicyAnnotationProcessorImpl processor = new PolicyAnnotationProcessorImpl();

@@ -46,8 +46,6 @@ import org.fabric3.spi.command.CompensatableCommand;
 
 /**
  * Contains commands for attaching and detaching wires for a component.
- *
- * @version $Rev$ $Date$
  */
 public class ConnectionCommand implements CompensatableCommand {
     private static final long serialVersionUID = -2313380946362271104L;

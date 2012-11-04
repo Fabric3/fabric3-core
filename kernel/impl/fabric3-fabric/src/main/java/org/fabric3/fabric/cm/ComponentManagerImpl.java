@@ -56,8 +56,6 @@ import org.fabric3.spi.component.Component;
 
 /**
  * Default implementation of the component manager.
- *
- * @version $Rev$ $Date$
  */
 public class ComponentManagerImpl implements ComponentManager {
     private Map<URI, Component> components;

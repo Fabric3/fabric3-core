@@ -45,7 +45,7 @@ import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.host.Port;
 
 /**
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
+ *
  */
 public class FederatedAddressCacheTestCase extends TestCase {
     private static final String ZEROMQ_CHANNEL = "ZeroMQChannel.domain";

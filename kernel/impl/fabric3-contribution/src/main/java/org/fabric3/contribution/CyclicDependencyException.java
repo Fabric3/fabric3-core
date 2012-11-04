@@ -45,8 +45,6 @@ import org.fabric3.util.graph.Cycle;
 
 /**
  * Denotes a cyclic dependency between two or more contributions.
- *
- * @version $Rev$ $Date$
  */
 public class CyclicDependencyException extends DependencyException {
     private static final long serialVersionUID = 3763877232188058275L;

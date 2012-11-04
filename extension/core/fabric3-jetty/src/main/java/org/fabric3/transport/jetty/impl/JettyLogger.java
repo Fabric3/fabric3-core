@@ -49,8 +49,6 @@ import org.eclipse.jetty.util.log.Logger;
 
 /**
  * Serves as a wrapper for a {@link TransportMonitor} to replace Jetty's logging mechanism
- *
- * @version $Rev$ $Date$
  */
 public class JettyLogger implements Logger {
 

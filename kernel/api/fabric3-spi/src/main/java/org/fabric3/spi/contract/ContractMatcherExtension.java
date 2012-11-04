@@ -41,8 +41,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * Determines if <code>ServiceContract</code>s are compatible using a particular mapping, for example, WSDL-to-Java.
- *
- * @version $Rev$ $Date$
  */
 public interface ContractMatcherExtension<S extends ServiceContract, T extends ServiceContract> {
 

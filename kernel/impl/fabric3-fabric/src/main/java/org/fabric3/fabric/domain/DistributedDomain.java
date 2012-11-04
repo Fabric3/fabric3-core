@@ -62,8 +62,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Implements a distributed domain containing user-defined services.
- *
- * @version $Rev$ $Date$
  */
 public class DistributedDomain extends AbstractDomain implements Domain {
     private boolean transactional;

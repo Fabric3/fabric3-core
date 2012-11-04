@@ -42,8 +42,6 @@ package org.fabric3.binding.ws.metro.util;
  * loaded the SEI class. To enable this, dynamically add the Metro extension classloader as a parent to the classloader that loaded the SEI class if
  * the host supports classloader isolation. Note that the latter may be different than the application classloader (e.g. in the Maven iTest runtime,
  * the SEI class will be loaded by the host classloader, not the classloader representing the application.
- *
- * @version $Rev$ $Date$
  */
 public interface ClassLoaderUpdater {
 

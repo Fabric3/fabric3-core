@@ -40,7 +40,7 @@ package org.fabric3.federation.jgroups;
 import org.fabric3.host.Fabric3RuntimeException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MessageRuntimeException extends Fabric3RuntimeException{
     private static final long serialVersionUID = 7223560861610277314L;

@@ -41,8 +41,6 @@ import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
  * Defines a cache. Providers subclass to provide specific cache configuration.
- *
- * @version $Rev$ $Date$
  */
 public abstract class CacheResourceDefinition extends ResourceDefinition {
     private static final long serialVersionUID = -6743311265670833364L;

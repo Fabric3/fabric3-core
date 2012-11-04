@@ -47,7 +47,7 @@ import org.fabric3.spi.wire.Wire;
 import org.fabric3.test.spi.TestWireHolder;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TestSuiteFactoryImpl implements TestSuiteFactory {
     private TestWireHolder holder;

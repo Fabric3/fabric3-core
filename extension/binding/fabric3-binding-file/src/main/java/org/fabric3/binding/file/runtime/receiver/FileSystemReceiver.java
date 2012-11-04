@@ -68,8 +68,6 @@ import org.fabric3.spi.wire.Interceptor;
  * Strategy} value. If an error is encountered, the file will be moved to the configured error location.
  * <p/>
  * This receiver is non-transactional but supports clustered locking through the use of file locks placed in the &lt;location&gt;/locks directory.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored"})
 public class FileSystemReceiver implements Runnable {

@@ -46,7 +46,7 @@ package org.fabric3.fabric.channel;
 import org.fabric3.spi.channel.RegistrationException;
 
 /**
- * @version $Rev: 7441 $ $Date: 2009-07-26 14:38:08 +0200 (Sun, 26 Jul 2009) $
+ *
  */
 public class DuplicateChannelException extends RegistrationException {
     private static final long serialVersionUID = -2331741137749158129L;

@@ -43,7 +43,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DataSourceRegistryImplTestCase extends TestCase {
 

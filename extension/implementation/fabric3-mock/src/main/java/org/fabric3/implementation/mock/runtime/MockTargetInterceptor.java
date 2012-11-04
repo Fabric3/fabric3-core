@@ -47,7 +47,7 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MockTargetInterceptor implements Interceptor {
     private Interceptor next;

@@ -66,8 +66,6 @@ import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * Resolves unspecified reference targets using the SCA autowire algorithm. If a target is found, a corresponding LogicalWire will be created.
- *
- * @version $Revision$ $Date$
  */
 public class AutowireInstantiatorImpl implements AutowireInstantiator {
     private ContractMatcher matcher;

@@ -60,8 +60,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Implementation of the REST binding generator.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition> {

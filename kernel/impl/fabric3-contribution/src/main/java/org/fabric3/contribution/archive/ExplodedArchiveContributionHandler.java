@@ -66,8 +66,6 @@ import static org.fabric3.spi.contribution.Constants.EXPLODED_CONTENT_TYPE;
 
 /**
  * Handles exploded archives on a filesystem.
- *
- * @version $Rev$ $Date$
  */
 public class ExplodedArchiveContributionHandler implements ArchiveContributionHandler {
     private Loader loader;

@@ -47,8 +47,6 @@ import java.io.PrintWriter;
 
 /**
  * The root checked exception for the Fabric3 runtime.
- *
- * @version $Rev$ $Date$
  */
 public abstract class Fabric3Exception extends Exception {
     private static final long serialVersionUID = -7847121698339635268L;

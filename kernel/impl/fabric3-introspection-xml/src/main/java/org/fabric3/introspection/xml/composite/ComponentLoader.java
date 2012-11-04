@@ -93,8 +93,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loads a component definition from an XML-based assembly file
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefinition<?>> {

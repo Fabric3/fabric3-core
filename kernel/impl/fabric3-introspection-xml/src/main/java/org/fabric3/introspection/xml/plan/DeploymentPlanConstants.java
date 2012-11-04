@@ -42,7 +42,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.host.Namespaces;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface DeploymentPlanConstants {
     String PLAN_NAMESPACE = "urn:fabric3.org:extension:plan";

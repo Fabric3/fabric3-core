@@ -40,7 +40,7 @@ package org.fabric3.binding.ws.metro.generator.java;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class EndpointSynthesizerImplTestCase extends TestCase {
 

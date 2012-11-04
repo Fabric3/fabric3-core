@@ -40,7 +40,7 @@ package org.fabric3.policy.infoset;
 import org.fabric3.spi.generator.policy.PolicyResolutionException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PolicyEvaluationException extends PolicyResolutionException {
     private static final long serialVersionUID = 3242526777801666598L;

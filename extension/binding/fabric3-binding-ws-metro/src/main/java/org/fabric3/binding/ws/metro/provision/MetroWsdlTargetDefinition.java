@@ -47,8 +47,6 @@ import org.fabric3.spi.model.physical.PhysicalDataTypes;
 
 /**
  * Reference-side wire target information defined by a WSDL document.
- *
- * @version $Rev$ $Date$
  */
 public class MetroWsdlTargetDefinition extends MetroTargetDefinition {
     private static final long serialVersionUID = 5531927726014190158L;

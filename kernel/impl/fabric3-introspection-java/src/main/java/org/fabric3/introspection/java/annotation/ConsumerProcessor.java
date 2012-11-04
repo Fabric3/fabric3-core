@@ -66,8 +66,6 @@ import org.fabric3.spi.model.type.java.Signature;
 
 /**
  * Introspects {@link Consumer} annotations.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {

@@ -51,8 +51,6 @@ import org.fabric3.spi.model.type.xsd.XSDType;
 
 /**
  * An abstract ContractMatcher that uses XML Schema to match contracts specified with different type systems.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContract, T extends ServiceContract>
         implements ContractMatcherExtension<S, T> {

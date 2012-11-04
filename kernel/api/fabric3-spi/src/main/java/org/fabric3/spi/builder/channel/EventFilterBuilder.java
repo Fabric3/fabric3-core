@@ -42,8 +42,6 @@ import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 
 /**
  * Creates an {@link EventFilter} from a {@link PhysicalEventFilterDefinition}.
- *
- * @version $Rev$ $Date$
  */
 public interface EventFilterBuilder<PFD extends PhysicalEventFilterDefinition> {
 

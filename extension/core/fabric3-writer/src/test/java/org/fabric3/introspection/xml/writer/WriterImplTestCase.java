@@ -49,7 +49,7 @@ import org.fabric3.spi.introspection.xml.UnrecognizedTypeException;
 import org.fabric3.spi.introspection.xml.Writer;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WriterImplTestCase extends TestCase {
     private Writer writer = new WriterImpl();

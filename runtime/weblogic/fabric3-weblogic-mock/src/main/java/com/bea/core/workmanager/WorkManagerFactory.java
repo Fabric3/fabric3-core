@@ -38,7 +38,7 @@
 package com.bea.core.workmanager;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WorkManagerFactory {
 

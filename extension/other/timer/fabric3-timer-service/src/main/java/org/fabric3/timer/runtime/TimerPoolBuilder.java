@@ -47,7 +47,7 @@ import org.fabric3.timer.spi.PoolAllocationException;
 import org.fabric3.timer.spi.TimerService;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class TimerPoolBuilder implements ResourceBuilder<PhysicalTimerPoolResource> {

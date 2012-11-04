@@ -49,8 +49,6 @@ import javax.servlet.Servlet;
  * Interface implemented by host environments that allow Servlets to be registered.
  * <p/>
  * This interface allows an SCA system service to register a servlet to handle inbound requests.
- *
- * @version $Rev$ $Date$
  */
 public interface ServletHost {
 

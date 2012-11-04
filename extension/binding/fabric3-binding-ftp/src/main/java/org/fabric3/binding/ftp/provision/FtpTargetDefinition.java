@@ -44,7 +44,7 @@ import org.fabric3.binding.ftp.common.Constants;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class FtpTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = -494501322715192283L;

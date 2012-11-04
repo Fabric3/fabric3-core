@@ -59,8 +59,6 @@ import org.fabric3.host.util.CompositeEnumeration;
  * <p/>
  * Note that this classloader must have a parent as it does not resolve resources against the boot classpath. Doing so requires accessing
  * vendor-specific APIs and this implementation is intended to work across VMs.
- *
- * @version $Rev$ $Date$
  */
 public class DelegatingResourceClassLoader extends URLClassLoader {
 

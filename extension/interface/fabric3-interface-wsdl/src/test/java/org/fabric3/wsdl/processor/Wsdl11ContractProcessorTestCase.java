@@ -56,7 +56,7 @@ import org.fabric3.spi.model.type.xsd.XSDSimpleType;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class Wsdl11ContractProcessorTestCase extends TestCase {
     private static final QName STOCK_QUOTE_PORT_TYPE = new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");

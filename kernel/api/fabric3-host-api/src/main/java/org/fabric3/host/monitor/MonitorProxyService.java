@@ -49,8 +49,6 @@ import org.fabric3.api.MonitorEvent;
 
 /**
  * Creates monitor proxies that send {@link MonitorEvent}s to a channel.
- *
- * @version $Rev$ $Date$
  */
 public interface MonitorProxyService {
 

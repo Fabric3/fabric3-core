@@ -44,8 +44,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Base class for validation failures occurring in XML artifacts.
- *
- * @version $Rev$ $Date$
  */
 public abstract class XmlValidationFailure extends ValidationFailure {
     private final int line;

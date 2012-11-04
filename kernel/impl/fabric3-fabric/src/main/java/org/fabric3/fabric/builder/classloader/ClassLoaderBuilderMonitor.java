@@ -3,7 +3,7 @@ package org.fabric3.fabric.builder.classloader;
 import org.fabric3.api.annotation.monitor.Info;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface ClassLoaderBuilderMonitor {
 

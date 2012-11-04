@@ -48,8 +48,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * The runtime instantiation of an SCA atomic, or leaf-type, component.
- *
- * @version $Rev$ $Date$
  */
 public interface AtomicComponent extends Component {
 

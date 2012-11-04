@@ -56,8 +56,6 @@ import org.fabric3.spi.transform.TransformerFactory;
 
 /**
  * Creates Transformers capable of marshalling serialized XML Strings to JAXB types.
- *
- * @version $Rev: 7720 $ $Date: 2009-09-30 10:28:56 +0200 (Wed, 30 Sep 2009) $
  */
 public class String2JAXBTransformerFactory implements TransformerFactory {
     private JAXBContextFactory contextFactory;

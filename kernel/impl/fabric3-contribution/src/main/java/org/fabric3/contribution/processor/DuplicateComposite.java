@@ -43,8 +43,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * Thrown when a duplicate composite file is found in a contribution.
- *
- * @version $Rev$ $Date$
  */
 public class DuplicateComposite extends XmlValidationFailure {
 

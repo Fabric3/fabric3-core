@@ -45,7 +45,7 @@ import org.fabric3.spi.event.Fabric3Event;
 import org.fabric3.spi.event.Fabric3EventListener;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class EventServiceImplTestCase extends TestCase {
     private EventService service;

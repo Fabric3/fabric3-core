@@ -74,8 +74,6 @@ import org.fabric3.spi.generator.DeploymentUnit;
 
 /**
  * A Deployer that deploys the contents of a {@link DeploymentPackage} to a set of zones in a distributed domain using commit/rollback semantics.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class FederatedDeployer implements Deployer {

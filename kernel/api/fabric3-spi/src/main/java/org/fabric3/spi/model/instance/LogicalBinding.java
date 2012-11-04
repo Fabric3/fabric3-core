@@ -49,8 +49,6 @@ import org.fabric3.model.type.component.BindingDefinition;
 
 /**
  * An instantiated binding.
- *
- * @version $Rev$ $Date$
  */
 public class LogicalBinding<BD extends BindingDefinition> extends LogicalScaArtifact<Bindable> {
     private static final long serialVersionUID = 8153501808553226042L;

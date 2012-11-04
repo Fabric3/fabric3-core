@@ -46,8 +46,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Note this class will be removed when serialization with Kryo and Avro are in place.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public abstract class AbstractMarshallingInterceptor implements Interceptor {
     protected ClassLoader loader;

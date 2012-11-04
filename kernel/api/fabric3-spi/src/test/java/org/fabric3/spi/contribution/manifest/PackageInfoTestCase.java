@@ -42,7 +42,7 @@ import junit.framework.TestCase;
 import org.fabric3.host.Version;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PackageInfoTestCase extends TestCase {
 

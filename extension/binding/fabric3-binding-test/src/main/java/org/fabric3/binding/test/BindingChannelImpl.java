@@ -53,7 +53,7 @@ import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class BindingChannelImpl implements BindingChannel {

@@ -46,8 +46,6 @@ import org.fabric3.spi.model.os.Library;
 /**
  * Constructs a classpath based on the contents of an archive. Implementations introspect archives and place any required artifacts on the classpath.
  * For example, a jar processor may place libraries found in /META-INF/lib on the classpath.
- *
- * @version $Rev$ $Date$
  */
 public interface ClasspathProcessor {
 

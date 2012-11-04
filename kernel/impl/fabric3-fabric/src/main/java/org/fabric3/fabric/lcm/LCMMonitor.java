@@ -40,7 +40,7 @@ package org.fabric3.fabric.lcm;
 import org.fabric3.api.annotation.monitor.Warning;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface LCMMonitor {
 

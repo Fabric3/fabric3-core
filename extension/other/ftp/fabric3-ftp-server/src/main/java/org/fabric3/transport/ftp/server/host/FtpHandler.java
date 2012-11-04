@@ -56,8 +56,6 @@ import org.fabric3.transport.ftp.server.security.User;
 
 /**
  * TODO Use monitor instead of System.err.
- *
- * @version $Rev$ $Date$
  */
 public class FtpHandler implements IoHandler {
 

@@ -52,8 +52,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Creates proxies fronting event channel connections.
- *
- * @version $Rev$ $Date$
  */
 
 public interface ChannelProxyService {

@@ -61,8 +61,6 @@ import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
  * Contains functionality common to Java-based SourceWireAttachers.
- *
- * @version $Rev$ $Date$
  */
 public abstract class PojoSourceWireAttacher {
     private static final XSDSimpleType STRING_TYPE = new XSDSimpleType(String.class, new QName(XSDType.XSD_NS, "string"));

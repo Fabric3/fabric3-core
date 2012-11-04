@@ -52,8 +52,6 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 
 /**
  * Default implementation of TargetUrlResolver.
- *
- * @version $Rev$ $Date$
  */
 public class TargetUrlResolverImpl implements TargetUrlResolver {
     private DomainTopologyService topologyService;

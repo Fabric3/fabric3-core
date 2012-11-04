@@ -55,8 +55,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
  * Generates a command to establish or remove an event channel connection from a consumer.
- *
- * @version $Revision$ $Date$
  */
 public class ConsumerCommandGenerator implements CommandGenerator {
     private ConnectionGenerator connectionGenerator;

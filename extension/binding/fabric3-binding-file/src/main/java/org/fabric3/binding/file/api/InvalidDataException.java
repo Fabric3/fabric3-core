@@ -34,8 +34,6 @@ import java.io.IOException;
 
 /**
  * Denotes a bad or invalid data file.
- *
- * @version $Revision$ $Date$
  */
 public class InvalidDataException extends IOException {
     private static final long serialVersionUID = -199562389440429130L;

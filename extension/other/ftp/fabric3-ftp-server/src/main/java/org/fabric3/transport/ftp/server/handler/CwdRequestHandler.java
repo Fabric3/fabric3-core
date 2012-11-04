@@ -48,8 +48,6 @@ import org.fabric3.transport.ftp.spi.FtpLetContainer;
 /**
  * Handles the <code>CWD</code> command.
  * <p/>
- *
- * @version $Rev$ $Date$
  */
 public class CwdRequestHandler implements RequestHandler {
     private FtpLetContainer container;

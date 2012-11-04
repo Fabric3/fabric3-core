@@ -39,8 +39,6 @@ package org.fabric3.spi.federation;
 
 /**
  * A response to a synchronous message returned when an exception is raised processing the original request.
- *
- * @version $Rev$ $Date$
  */
 public class RemoteSystemException implements ErrorResponse {
     private static final long serialVersionUID = 3104883810536039817L;

@@ -48,8 +48,6 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
  * Introspects a JavaServiceContract from a Java type.
- *
- * @version $Rev$ $Date$
  */
 public interface JavaContractProcessor {
     /**

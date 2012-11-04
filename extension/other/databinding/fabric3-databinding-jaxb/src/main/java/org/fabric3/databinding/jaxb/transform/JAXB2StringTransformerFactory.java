@@ -58,8 +58,6 @@ import org.fabric3.spi.transform.TransformerFactory;
 
 /**
  * Creates Transformers capable of marshalling JAXB types to serialized Strings.
- *
- * @version $Rev$ $Date$
  */
 public class JAXB2StringTransformerFactory implements TransformerFactory {
     private JAXBContextFactory contextFactory;

@@ -43,8 +43,6 @@ import org.fabric3.host.Version;
 
 /**
  * A contribution manifest attribute that is used to specify a version range.
- *
- * @version $Rev$ $Date$
  */
 public abstract class Versionable implements Serializable {
     private static final long serialVersionUID = -1603295817528974598L;

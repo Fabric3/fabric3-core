@@ -41,8 +41,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Derives a qualified name to use for the XML element when a class is not annotated with JAXB metadata.
- *
- * @version $Rev$ $Date$
  */
 public interface JAXBQNameMapper {
 

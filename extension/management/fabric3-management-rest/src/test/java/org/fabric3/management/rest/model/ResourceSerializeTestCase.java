@@ -45,7 +45,7 @@ import org.codehaus.jackson.jaxrs.MapperConfigurator;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * @version $Rev: 9927 $ $Date: 2011-02-05 08:55:34 +0100 (Sat, 05 Feb 2011) $
+ *
  */
 public final class ResourceSerializeTestCase extends TestCase {
     private final static Annotations[] DEFAULT_ANNOTATIONS = {Annotations.JACKSON, Annotations.JAXB};

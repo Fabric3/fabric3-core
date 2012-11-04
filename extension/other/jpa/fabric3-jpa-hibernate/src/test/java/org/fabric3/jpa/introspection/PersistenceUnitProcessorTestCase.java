@@ -49,7 +49,7 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PersistenceUnitProcessorTestCase extends TestCase {
 

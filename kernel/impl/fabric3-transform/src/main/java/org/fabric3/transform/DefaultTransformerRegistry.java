@@ -53,8 +53,6 @@ import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
  * Default TransformerRegistry implementation.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultTransformerRegistry implements TransformerRegistry {
     // cache of single type transformers

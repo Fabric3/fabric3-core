@@ -50,8 +50,6 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
  * Builds resources defined in a composite on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public class BuildResourcesCommand implements CompensatableCommand {
     private static final long serialVersionUID = -2232794954042041583L;

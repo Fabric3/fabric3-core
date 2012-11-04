@@ -45,7 +45,7 @@ import org.easymock.EasyMock;
 import org.fabric3.host.runtime.HostInfo;
 
 /**
- * @version $Rev: 9419 $ $Date: 2010-09-01 23:56:59 +0200 (Wed, 01 Sep 2010) $
+ *
  */
 public class KeyStoreManagerImplTestCase extends TestCase {
     private static final String KEYSTORE = "org/fabric3/fabric/security/config/fabric3-keystore.jks";

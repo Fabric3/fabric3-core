@@ -50,7 +50,7 @@ import org.fabric3.spi.generator.policy.PolicyResult;
 import org.fabric3.spi.model.instance.LogicalOperation;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MockPolicyResult implements PolicyResult {
     private PolicyMetadata metadata = new PolicyMetadata();

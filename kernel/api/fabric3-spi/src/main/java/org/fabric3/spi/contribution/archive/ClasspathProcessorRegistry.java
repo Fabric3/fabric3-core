@@ -45,8 +45,6 @@ import org.fabric3.spi.model.os.Library;
 
 /**
  * A registry of classpath processors.
- *
- * @version $Rev$ $Date$
  */
 public interface ClasspathProcessorRegistry {
 

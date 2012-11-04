@@ -51,7 +51,7 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
- * @version $Rev: 10439 $ $Date: 2011-06-07 16:17:48 +0200 (Tue, 07 Jun 2011) $
+ *
  */
 public class ZeroMQBindingProviderWireTestCase extends TestCase {
     private LogicalWire wire;

@@ -44,8 +44,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Exposes a component to a management protocol such as JMX or REST.
- *
- * @version $Rev: 8369 $ $Date: 2009-12-04 17:26:32 +0100 (Fri, 04 Dec 2009) $
  */
 public interface ManagementExtension {
 

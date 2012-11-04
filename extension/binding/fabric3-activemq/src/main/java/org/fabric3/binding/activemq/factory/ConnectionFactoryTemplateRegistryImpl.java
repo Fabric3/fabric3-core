@@ -57,7 +57,7 @@ import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_CONNECTIO
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_XA_CONNECTION_FACTORY;
 
 /**
- * @version $Rev: 9497 $ $Date: 2010-09-27 00:13:13 +0200 (Mon, 27 Sep 2010) $
+ *
  */
 @EagerInit
 public class ConnectionFactoryTemplateRegistryImpl implements ConnectionFactoryTemplateRegistry {

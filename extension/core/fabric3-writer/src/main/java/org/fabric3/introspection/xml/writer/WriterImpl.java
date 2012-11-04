@@ -52,8 +52,6 @@ import org.fabric3.spi.introspection.xml.Writer;
 
 /**
  * Default {@link Writer} implementation.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WriterImpl implements Writer {

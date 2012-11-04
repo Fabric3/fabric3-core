@@ -45,8 +45,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Implementations extend resource processing by handling <code>@Resource</code> annotations for specific types such as DataSources.
- *
- * @version $Rev$ $Date$
  */
 public interface ResourceTypeHandler {
 

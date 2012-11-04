@@ -44,7 +44,7 @@ import org.fabric3.admin.interpreter.command.AuthCommand;
 import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AuthCommandParser implements CommandParser {
     private DomainConnection domainConnection;

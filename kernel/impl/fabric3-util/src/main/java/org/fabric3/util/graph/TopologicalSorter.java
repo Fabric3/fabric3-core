@@ -41,8 +41,6 @@ import java.util.List;
 
 /**
  * Performs topological sorts of a directed acyclic graph (DAG).
- *
- * @version $Rev$ $Date$
  */
 public interface TopologicalSorter<T> {
     /**

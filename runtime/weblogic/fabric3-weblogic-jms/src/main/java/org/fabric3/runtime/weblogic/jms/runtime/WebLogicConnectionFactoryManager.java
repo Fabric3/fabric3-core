@@ -46,8 +46,6 @@ import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
 /**
  * Responsible for managing WebLogic connection factories. Since WLS manages enlistment with the transaction mananger transparently, this
  * implementation does nothing.
- *
- * @version $Rev$ $Date$
  */
 public class WebLogicConnectionFactoryManager implements ConnectionFactoryManager {
 

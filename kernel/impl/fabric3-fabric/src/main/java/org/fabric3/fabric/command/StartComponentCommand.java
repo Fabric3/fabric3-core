@@ -49,8 +49,6 @@ import org.fabric3.spi.command.CompensatableCommand;
 
 /**
  * A command to start a component on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public class StartComponentCommand implements CompensatableCommand {
     private static final long serialVersionUID = -6106317903755129824L;

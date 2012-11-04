@@ -62,8 +62,6 @@ import org.fabric3.spi.introspection.xml.LoaderUtil;
 
 /**
  * Loader for definitions.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class BindingTypeLoader extends AbstractValidatingTypeLoader<BindingType> {

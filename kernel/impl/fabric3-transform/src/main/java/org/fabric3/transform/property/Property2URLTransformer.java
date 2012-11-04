@@ -50,8 +50,6 @@ import org.fabric3.spi.transform.TransformationException;
 
 /**
  * Transforms from a Node to a URL.
- *
- * @version $Rev$ $Date$
  */
 public class Property2URLTransformer implements SingleTypeTransformer<Node, URL> {
     private static final JavaClass<URL> TARGET = new JavaClass<URL>(URL.class);

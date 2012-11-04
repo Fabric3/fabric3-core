@@ -53,8 +53,6 @@ import javax.management.remote.rmi.RMIConnector;
 /**
  * Shuts down a server instance via JMX. Valid parameters are <code>-address (-a)</code> and <code>-port (-p)</code> if connecting to a server not
  * using the default IP address (localhost) and/or JMX port (1199).
- *
- * @version $Rev$ $Date$
  */
 public class Shutdown {
     private static final String RUNTIME_MBEAN = "fabric3:SubDomain=runtime, type=component, name=RuntimeMBean";

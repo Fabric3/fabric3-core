@@ -50,8 +50,6 @@ import org.fabric3.host.Namespaces;
 
 /**
  * Failure that indicates an element was encountered that could not be handled.
- *
- * @version $Rev$ $Date$
  */
 public class UnrecognizedElement extends XmlValidationFailure {
     private QName name;

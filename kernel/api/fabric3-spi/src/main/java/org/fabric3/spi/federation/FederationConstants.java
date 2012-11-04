@@ -39,8 +39,6 @@ package org.fabric3.spi.federation;
 
 /**
  * Constants used by federation and other extensions.
- *
- * @version $Rev$ $Date$
  */
 public interface FederationConstants {
 

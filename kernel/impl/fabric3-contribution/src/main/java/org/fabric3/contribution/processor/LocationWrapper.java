@@ -41,8 +41,6 @@ import javax.xml.stream.Location;
 
 /**
  * Used to override a Location system id.
- *
- * @version $Rev$ $Date$
  */
 public class LocationWrapper implements Location {
     private String systemId;

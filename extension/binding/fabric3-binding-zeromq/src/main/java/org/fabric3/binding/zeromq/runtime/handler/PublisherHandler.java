@@ -37,8 +37,6 @@ import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
  * Forwards events to a ZeroMQ publisher.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class PublisherHandler implements EventStreamHandler {
     private Publisher publisher;

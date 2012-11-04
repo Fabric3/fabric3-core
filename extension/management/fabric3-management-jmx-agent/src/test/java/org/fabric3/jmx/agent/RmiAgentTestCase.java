@@ -28,7 +28,7 @@ import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 
 /**
- * @version $Revision: 9250 $ $Date: 2010-07-30 12:52:01 +0200 (Fri, 30 Jul 2010) $
+ *
  */
 public class RmiAgentTestCase extends TestCase {
     private static final int PORT = 1050;

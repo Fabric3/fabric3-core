@@ -64,8 +64,6 @@ import org.fabric3.spi.monitor.MonitorService;
 
 /**
  * Creates an embedded ActiveMQ broker.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class BrokerEngine {

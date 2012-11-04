@@ -40,7 +40,7 @@ package org.fabric3.fabric.xml;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev $Date
+ *
  */
 public final class XMLFactoryImplTestCase extends TestCase {
     private XMLFactoryImpl factory;

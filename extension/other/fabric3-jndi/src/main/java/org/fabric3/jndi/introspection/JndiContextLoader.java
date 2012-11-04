@@ -64,8 +64,6 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
  *          &lt;/context&gt;
  *      &lt;/jndi&gt;
  * </pre>
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class JndiContextLoader implements TypeLoader<JndiContextDefinition> {

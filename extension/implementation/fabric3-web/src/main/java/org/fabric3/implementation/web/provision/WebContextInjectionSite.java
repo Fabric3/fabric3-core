@@ -41,8 +41,6 @@ import org.fabric3.spi.model.type.java.InjectionSite;
 
 /**
  * An injection site specialized for web applications.
- *
- * @version $Rev$ $Date$
  */
 public class WebContextInjectionSite extends InjectionSite {
     private static final long serialVersionUID = 8530588154179239645L;

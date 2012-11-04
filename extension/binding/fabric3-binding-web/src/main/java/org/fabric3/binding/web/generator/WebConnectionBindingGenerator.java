@@ -63,8 +63,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
  * Generates a {@link PhysicalConnectionSourceDefinition} for attaching a channel to a websocket or comet connection.
- *
- * @version $Revision$ $Date$
  */
 @EagerInit
 public class WebConnectionBindingGenerator implements ConnectionBindingGenerator<WebBindingDefinition> {

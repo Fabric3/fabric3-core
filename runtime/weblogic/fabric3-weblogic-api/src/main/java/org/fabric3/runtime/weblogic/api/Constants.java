@@ -48,8 +48,6 @@ import javax.management.ObjectName;
 
 /**
  * Defines constants for the Fabric3 WebLogic Runtime.
- *
- * @version $Rev$ $Date$
  */
 public class Constants {
 

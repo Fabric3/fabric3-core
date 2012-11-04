@@ -48,8 +48,6 @@ import org.fabric3.timer.provision.PhysicalTimerPoolResource;
 
 /**
  * Generates PhysicalTimerPoolResource definitions.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class TimerPoolResourceGenerator implements ResourceGenerator<TimerPoolResource> {

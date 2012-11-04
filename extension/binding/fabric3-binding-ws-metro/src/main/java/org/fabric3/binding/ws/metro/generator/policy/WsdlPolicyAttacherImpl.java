@@ -48,8 +48,6 @@ import org.fabric3.binding.ws.metro.generator.PolicyExpressionMapping;
 /**
  * Default implementation of WsdlPolicyAttacher. Policy expression attachment is performed by cloning the policy expression element and appending it
  * to the list of operations.
- *
- * @version $Rev$ $Date$
  */
 public class WsdlPolicyAttacherImpl implements WsdlPolicyAttacher {
     private static final String WS_POLICY_NS = "http://www.w3.org/ns/ws-policy";

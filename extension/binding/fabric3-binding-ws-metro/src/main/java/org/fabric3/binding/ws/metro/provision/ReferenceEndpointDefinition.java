@@ -43,8 +43,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Encapsulates endpoint information for the reference side of an invocation chain.
- *
- * @version $Rev$ $Date$
  */
 public class ReferenceEndpointDefinition implements Serializable {
     private static final long serialVersionUID = -7422624061436929193L;

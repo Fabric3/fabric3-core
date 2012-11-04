@@ -43,7 +43,7 @@ import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.component.Implementation;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class XQueryImplementation extends Implementation<XQueryComponentType> {
 

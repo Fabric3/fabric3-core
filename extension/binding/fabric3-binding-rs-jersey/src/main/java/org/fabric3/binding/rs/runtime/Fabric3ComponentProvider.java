@@ -41,7 +41,7 @@ import com.sun.jersey.core.spi.component.ComponentScope;
 import com.sun.jersey.core.spi.component.ioc.IoCManagedComponentProvider;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class Fabric3ComponentProvider implements IoCManagedComponentProvider {
     private Object instance;

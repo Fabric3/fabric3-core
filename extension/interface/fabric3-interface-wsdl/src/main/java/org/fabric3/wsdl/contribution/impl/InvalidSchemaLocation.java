@@ -40,7 +40,7 @@ package org.fabric3.wsdl.contribution.impl;
 import org.fabric3.host.contribution.ValidationFailure;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class InvalidSchemaLocation extends ValidationFailure {
     private String message;

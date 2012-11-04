@@ -40,8 +40,6 @@ package org.fabric3.binding.web.common;
 
 /**
  * Defines the operations allowed for an endpoint.
- *
- * @version $Rev$ $Date$
  */
 public enum OperationsAllowed {
 

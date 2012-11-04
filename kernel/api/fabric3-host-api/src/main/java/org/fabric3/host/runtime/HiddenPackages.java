@@ -40,8 +40,6 @@ package org.fabric3.host.runtime;
 /**
  * Tracks default packages visible in the system classloader that must be masked from the runtime boot classloader. This is required when the runtime
  * uses a version of a Java API that is different from the one provided by the JVM.
- *
- * @version $Rev$ $Date$
  */
 public final class HiddenPackages {
     private static final String[] PACKAGES = new String[]{

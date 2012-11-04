@@ -46,8 +46,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Denotes warning monitoring event.
- *
- * @version $Rev$ $Date$
  */
 @MonitorEventType(MonitorLevel.WARNING)
 @Target({METHOD})

@@ -39,8 +39,6 @@ package org.fabric3.contribution.scanner.spi;
 
 /**
  * Enumerates the states a {@link FileSystemResource} may be in.
- *
- * @version $Rev$ $Date$
  */
 public enum FileSystemResourceState {
 

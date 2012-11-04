@@ -65,8 +65,6 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
  * Loader for the externalAttachment element.
- *
- * @version $Rev$ $Date$
  */
 public class ExternalAttachmentLoader implements TypeLoader<Object> {
 

@@ -55,8 +55,6 @@ import org.fabric3.admin.interpreter.Settings;
 
 /**
  * An implementation that stores settings to a properties file.
- *
- * @version $Rev$ $Date$
  */
 public class FileSettings implements Settings {
     private File file;

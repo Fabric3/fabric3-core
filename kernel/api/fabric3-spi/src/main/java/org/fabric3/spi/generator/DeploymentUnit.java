@@ -46,8 +46,6 @@ import org.fabric3.spi.command.CompensatableCommand;
 /**
  * Used to deploy composites to a zone. Provision commands are executed first, followed by extension commands as deployment commands may require
  * artifacts or extension capabilities.
- *
- * @version $Rev$ $Date$
  */
 public class DeploymentUnit implements Serializable {
     private static final long serialVersionUID = -5868891769973094096L;

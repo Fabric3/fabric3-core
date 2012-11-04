@@ -35,8 +35,6 @@ import org.fabric3.spi.invocation.WorkContext;
 /**
  * Implementations dispatch messages over a ZeroMQ socket using a non-blocking one-way pattern. Qualities of service such as reliability may be
  * provided by an implementation.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public interface OneWaySender extends Sender {
 

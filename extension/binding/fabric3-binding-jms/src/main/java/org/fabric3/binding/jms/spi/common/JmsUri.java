@@ -50,7 +50,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 public class JmsUri {
     private String destination;

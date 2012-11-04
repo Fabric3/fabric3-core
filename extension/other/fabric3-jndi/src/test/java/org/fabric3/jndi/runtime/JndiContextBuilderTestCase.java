@@ -48,7 +48,7 @@ import org.fabric3.jndi.provision.PhysicalJndiContextDefinition;
 import org.fabric3.jndi.spi.JndiContextManager;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JndiContextBuilderTestCase extends TestCase {
     private JndiContextBuilder builder;

@@ -49,8 +49,6 @@ import org.apache.activemq.broker.jmx.SubscriptionViewMBean;
 
 /**
  * Overrides the ActiveMQ management context to use the Fabric3 runtime MBean server and map default ActiveMQ JMX MBean names to Fabric3 conventions.
- *
- * @version $Rev$ $Date$
  */
 public class Fabric3ManagementContext extends ManagementContext {
     private MBeanServer mBeanServer;

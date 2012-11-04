@@ -41,8 +41,6 @@ import org.fabric3.spi.security.BasicSecuritySubject;
 
 /**
  * Implementations store security information.
- *
- * @version $Rev$ $Date$
  */
 public interface SecurityStore {
 

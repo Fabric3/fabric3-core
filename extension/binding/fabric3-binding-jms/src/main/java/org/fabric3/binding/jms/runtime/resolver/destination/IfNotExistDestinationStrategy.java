@@ -56,8 +56,6 @@ import org.fabric3.binding.jms.spi.runtime.ProviderDestinationResolver;
 
 /**
  * Implementation that attempts to resolve a a destination via provider resolvers and, if it is not found, will create it.
- *
- * @version $Revision$ $Date$
  */
 public class IfNotExistDestinationStrategy implements DestinationStrategy {
     private DestinationStrategy always = new AlwaysDestinationStrategy();

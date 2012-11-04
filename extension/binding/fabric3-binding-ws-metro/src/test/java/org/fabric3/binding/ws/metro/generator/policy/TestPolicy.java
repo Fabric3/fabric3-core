@@ -38,7 +38,7 @@
 package org.fabric3.binding.ws.metro.generator.policy;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface TestPolicy {
 

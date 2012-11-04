@@ -41,8 +41,6 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
  * Dispatch information for a monitor interface operation.
- *
- * @version $Rev$ $Date$
  */
 public class DispatchInfo {
     private MonitorLevel level;

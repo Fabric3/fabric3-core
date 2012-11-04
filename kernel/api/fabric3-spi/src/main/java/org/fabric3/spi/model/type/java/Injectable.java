@@ -47,8 +47,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * Identifies an attribute of the component that can be injected into an instance.
- *
- * @version $Revision$ $Date$
  */
 public class Injectable extends ModelObject {
     private static final long serialVersionUID = -3313258224983902890L;

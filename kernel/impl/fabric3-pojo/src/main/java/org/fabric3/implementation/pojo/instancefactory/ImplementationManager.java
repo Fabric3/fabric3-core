@@ -52,8 +52,6 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 /**
  * Returns an injected component instance. This is used by a Component implementation to create new instances of application implementation objects as
  * determined by the component scope's lifecycle.
- *
- * @version $Rev$ $Date$
  */
 public interface ImplementationManager {
     /**

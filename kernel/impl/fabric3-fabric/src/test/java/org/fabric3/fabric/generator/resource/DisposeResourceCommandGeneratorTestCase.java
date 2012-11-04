@@ -58,7 +58,7 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
+ *
  */
 public class DisposeResourceCommandGeneratorTestCase extends TestCase {
 

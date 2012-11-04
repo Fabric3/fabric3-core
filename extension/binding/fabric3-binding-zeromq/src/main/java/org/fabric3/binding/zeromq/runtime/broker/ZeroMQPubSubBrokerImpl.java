@@ -73,7 +73,7 @@ import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 
 /**
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
+ *
  */
 @Service(ZeroMQPubSubBroker.class)
 public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventListener<RuntimeStop> {

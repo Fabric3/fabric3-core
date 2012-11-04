@@ -48,7 +48,7 @@ import org.fabric3.admin.interpreter.communication.CommunicationException;
 import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class UninstallCommand implements Command {
     private DomainConnection domainConnection;

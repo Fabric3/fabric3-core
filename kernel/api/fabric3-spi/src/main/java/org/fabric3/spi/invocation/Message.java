@@ -47,8 +47,6 @@ import java.io.Serializable;
 
 /**
  * Represents a request, response, or exception flowing through a wire.
- *
- * @version $Rev$ $Date$
  */
 public interface Message extends Serializable {
 

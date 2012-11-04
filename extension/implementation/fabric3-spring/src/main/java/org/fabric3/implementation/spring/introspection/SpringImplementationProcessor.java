@@ -45,8 +45,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Introspects a component type from a Spring application context.
- *
- * @version $Rev$ $Date$
  */
 public interface SpringImplementationProcessor {
 

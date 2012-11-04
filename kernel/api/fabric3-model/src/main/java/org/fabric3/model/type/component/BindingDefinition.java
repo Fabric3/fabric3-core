@@ -53,8 +53,6 @@ import org.fabric3.model.type.CapabilityAware;
 
 /**
  * Base binding representation.
- *
- * @version $Rev$ $Date$
  */
 public abstract class BindingDefinition extends AbstractPolicyAware implements CapabilityAware {
     private static final long serialVersionUID = 8780407747984243865L;

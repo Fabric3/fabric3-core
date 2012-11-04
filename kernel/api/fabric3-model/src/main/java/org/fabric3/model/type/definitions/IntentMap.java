@@ -51,8 +51,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * A policy set intent map.
- *
- * @version $Rev: 9861 $ $Date: 2011-01-17 22:30:33 +0100 (Mon, 17 Jan 2011) $
  */
 public final class IntentMap extends ModelObject {
     private static final long serialVersionUID = -1786000484366117318L;

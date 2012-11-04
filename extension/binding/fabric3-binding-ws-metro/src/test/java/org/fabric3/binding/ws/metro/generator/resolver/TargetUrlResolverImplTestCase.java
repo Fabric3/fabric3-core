@@ -58,7 +58,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalService;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TargetUrlResolverImplTestCase extends TestCase {
     private LogicalBinding<WsBindingDefinition> binding;

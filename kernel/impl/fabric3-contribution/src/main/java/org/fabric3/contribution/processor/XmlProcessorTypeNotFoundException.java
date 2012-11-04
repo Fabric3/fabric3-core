@@ -40,7 +40,7 @@ package org.fabric3.contribution.processor;
 import org.fabric3.host.contribution.InstallException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class XmlProcessorTypeNotFoundException extends InstallException {
     private static final long serialVersionUID = -4930429145821670207L;

@@ -68,8 +68,6 @@ import org.fabric3.spi.introspection.xml.LoaderException;
 
 /**
  * Processes a Maven module directory.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ModuleContributionProcessor implements ContributionProcessor {

@@ -47,7 +47,7 @@ import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class JndiContextGenerator implements ResourceGenerator<JndiContextDefinition> {

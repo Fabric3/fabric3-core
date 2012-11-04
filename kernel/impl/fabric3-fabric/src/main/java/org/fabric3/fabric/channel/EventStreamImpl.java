@@ -43,7 +43,7 @@ import org.fabric3.spi.channel.PassThroughHandler;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class EventStreamImpl implements EventStream {
     private PhysicalEventStreamDefinition definition;

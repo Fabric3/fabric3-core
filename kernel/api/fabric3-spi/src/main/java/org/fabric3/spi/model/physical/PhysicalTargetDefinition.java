@@ -53,8 +53,6 @@ import org.fabric3.model.type.contract.DataType;
 
 /**
  * Represents the target side of a physical wire.
- *
- * @version $Revision$ $Date$
  */
 public abstract class PhysicalTargetDefinition implements Serializable {
     private static final long serialVersionUID = -8430498259706831133L;

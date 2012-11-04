@@ -47,8 +47,6 @@ import org.xml.sax.SAXException;
 
 /**
  * Loads XML documents as DOM objects.
- *
- * @version $Rev$ $Date$
  */
 public interface DocumentLoader {
 

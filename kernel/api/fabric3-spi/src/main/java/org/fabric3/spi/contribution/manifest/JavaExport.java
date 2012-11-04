@@ -46,8 +46,6 @@ import org.fabric3.spi.contribution.Import;
 
 /**
  * Represents an <code>export.java</code> entry in a contribution manifest.
- *
- * @version $Rev$ $Date$
  */
 public class JavaExport implements Export {
     private static final long serialVersionUID = -1362112844218693711L;

@@ -46,8 +46,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Builds authorization interceptors.
- *
- * @version $Rev$ $Date$
  */
 public class AuthorizationInterceptorBuilder implements InterceptorBuilder<AuthorizationInterceptorDefinition> {
     private AuthorizationService authorizationService;

@@ -41,8 +41,6 @@ import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 
 /**
  * Used to build a transactional event stream handler.
- *
- * @version $Rev$ $Date$
  */
 public class TxHandlerDefinition extends PhysicalHandlerDefinition {
     private static final long serialVersionUID = 6023092372611218345L;

@@ -43,8 +43,6 @@ import org.fabric3.host.monitor.Monitorable;
 
 /**
  * A Fabric3 runtime.
- *
- * @version $Rev$ $Date$
  */
 public interface Fabric3Runtime extends Monitorable {
 

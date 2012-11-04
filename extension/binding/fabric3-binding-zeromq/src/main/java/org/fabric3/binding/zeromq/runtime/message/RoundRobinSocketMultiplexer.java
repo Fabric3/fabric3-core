@@ -51,8 +51,6 @@ import org.fabric3.spi.host.Port;
  * Implements a round-robin strategy for selecting an available socket from a collection of sockets.
  * <p/>
  * Note: Due to restrictions imposed by ZeroMQ, an instance of this class must be called on the same thread at all times.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
     private ContextManager manager;

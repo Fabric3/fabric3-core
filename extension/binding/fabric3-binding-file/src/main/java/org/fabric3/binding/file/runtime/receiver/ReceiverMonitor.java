@@ -33,7 +33,7 @@ package org.fabric3.binding.file.runtime.receiver;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * @version $Revision: 10798 $ $Date: 2011-10-12 18:37:16 +0200 (Wed, 12 Oct 2011) $
+ *
  */
 public interface ReceiverMonitor {
 

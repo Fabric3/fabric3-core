@@ -47,8 +47,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * The root exception for the builder package. Builder exceptions denote a non-recoverable failure.
- *
- * @version $Rev$ $Date$
  */
 public class BuilderException extends Fabric3Exception {
     private static final long serialVersionUID = 3208972591954615326L;

@@ -53,8 +53,6 @@ import org.fabric3.spi.monitor.MonitorService;
 
 /**
  * No-op implementation of MonitorLevelService.
- *
- * @version $Rev$ $Date$
  */
 @Management(name = "MonitorService", path = "/runtime/monitor", description = "Sets monitoring levels for the runtime")
 public class WebLogicMonitorService implements MonitorService {

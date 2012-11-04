@@ -51,7 +51,7 @@ import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.RuntimeRecover;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AtomikosTransactionManagerTestCase extends TestCase {
     private EventService eventService;

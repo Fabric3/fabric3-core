@@ -46,7 +46,7 @@ package org.fabric3.spi.builder.component;
 import org.fabric3.spi.builder.BuilderException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ConnectionAttachException extends BuilderException {
     private static final long serialVersionUID = -2269016155932491868L;

@@ -80,8 +80,6 @@ import org.fabric3.spi.transform.TransformerRegistry;
  * <p/>
  * <pre>
  * Logout is performed by performing an HTTP DELETE.
- *
- * @version $Rev: 9419 $ $Date: 2010-09-01 23:56:59 +0200 (Wed, 01 Sep 2010) $
  */
 @EagerInit
 public class CachingAuthenticationService extends HttpServlet {

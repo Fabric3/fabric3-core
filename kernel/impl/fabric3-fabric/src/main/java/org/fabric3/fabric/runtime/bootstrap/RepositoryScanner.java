@@ -54,8 +54,6 @@ import org.fabric3.host.runtime.ScanResult;
 
 /**
  * Scans a repository for extension and user contributions.
- *
- * @version $Rev$ $Date$
  */
 public class RepositoryScanner {
 

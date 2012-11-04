@@ -69,8 +69,6 @@ import org.fabric3.spi.xml.XMLFactory;
 
 /**
  * Creates the initial system composite that is deployed to the runtime domain.
- *
- * @version $Rev$ $Date$
  */
 public class BootstrapCompositeFactory {
     private static final XMLFactory XML_FACTORY = new XMLFactoryImpl();

@@ -42,8 +42,6 @@ import java.util.List;
 
 /**
  * Encapsulates configuration information for an ActiveMQ broker.
- *
- * @version $Rev$ $Date$
  */
 public class BrokerConfiguration {
     private String name;

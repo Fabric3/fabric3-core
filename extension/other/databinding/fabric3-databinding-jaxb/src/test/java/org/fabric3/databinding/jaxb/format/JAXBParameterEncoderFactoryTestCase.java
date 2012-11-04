@@ -41,8 +41,6 @@ import junit.framework.TestCase;
 
 /**
  * Note this test is commented out because some early versions of JDK 6 have an older version of the JAXB API.
- *
- * @version $Rev$ $Date$
  */
 public class JAXBParameterEncoderFactoryTestCase extends TestCase {
 

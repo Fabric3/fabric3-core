@@ -48,8 +48,6 @@ import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 
 /**
  * Creates {@link NonBlockingInterceptorDefinition}s for one-way operations.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class NonBlockingGenerator implements InterceptorGenerator {

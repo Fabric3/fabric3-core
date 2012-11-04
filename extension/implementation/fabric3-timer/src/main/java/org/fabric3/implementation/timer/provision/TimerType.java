@@ -39,8 +39,6 @@ package org.fabric3.implementation.timer.provision;
 
 /**
  * Defines timer types.
- *
- * @version $Rev: 7148 $ $Date: 2009-06-15 02:18:27 +0200 (Mon, 15 Jun 2009) $
  */
 public enum TimerType {
     ONCE,

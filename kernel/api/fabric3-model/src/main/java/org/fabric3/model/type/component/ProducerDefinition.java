@@ -48,8 +48,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * A component type producer.
- *
- * @version $Rev$ $Date$
  */
 public class ProducerDefinition extends AbstractPolicyAware {
     private static final long serialVersionUID = -4222312633353056234L;

@@ -65,7 +65,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * @version $Rev: 10127 $ $Date: 2011-03-27 10:41:17 -0700 (Sun, 27 Mar 2011) $
+ *
  */
 public class DomainTestCaseHelper {
     private static final URI COMPONENT_URI = URI.create("fabric3://domain/component");

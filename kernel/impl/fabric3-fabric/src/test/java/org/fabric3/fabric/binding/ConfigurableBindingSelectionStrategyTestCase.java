@@ -47,7 +47,7 @@ import org.easymock.EasyMock;
 import org.fabric3.spi.binding.provider.BindingProvider;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ConfigurableBindingSelectionStrategyTestCase extends TestCase {
 

@@ -43,8 +43,6 @@ import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 
 /**
  * Implemented by the JMS provider to resolve destinations.
- *
- * @version $Rev$ $Date$
  */
 public interface ProviderDestinationResolver {
 

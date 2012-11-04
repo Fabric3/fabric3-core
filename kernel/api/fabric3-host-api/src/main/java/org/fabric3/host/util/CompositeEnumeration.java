@@ -42,8 +42,6 @@ import java.util.NoSuchElementException;
 
 /**
  * Enumerates over an array of Enumerations.
- *
- * @version $Rev$ $Date$
  */
 public class CompositeEnumeration<E> implements Enumeration<E> {
     private Enumeration[] enumerations;

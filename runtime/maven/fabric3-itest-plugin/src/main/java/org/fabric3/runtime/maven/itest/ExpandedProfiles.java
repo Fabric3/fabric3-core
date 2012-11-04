@@ -45,8 +45,6 @@ import org.apache.maven.model.Dependency;
 
 /**
  * A set of dependencies and the repositories where they are resolved to.
- *
- * @version $Rev$ $Date$
  */
 public class ExpandedProfiles {
 

@@ -38,7 +38,7 @@
 package org.fabric3.management.rest.runtime;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public final class PathHelper {
 

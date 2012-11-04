@@ -47,8 +47,6 @@ import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
 
 /**
  * Creates {@link MonitorEventDispatcher} instances which dispatch to Logback.
- *
- * @version $Rev$ $Date$
  */
 public class LogbackMonitorEventDispatcherFactory implements MonitorEventDispatcherFactory {
 

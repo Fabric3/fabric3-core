@@ -49,8 +49,6 @@ import org.fabric3.spi.introspection.xml.Writer;
 
 /**
  * Serializes a comment to a StAX stream.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class CommentWriter extends AbstractTypeWriter<Comment> {

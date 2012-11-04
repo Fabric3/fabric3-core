@@ -41,8 +41,6 @@ import java.util.List;
 
 /**
  * Resolves contribution dependencies.
- *
- * @version $Rev$ $Date$
  */
 public interface DependencyResolver {
 

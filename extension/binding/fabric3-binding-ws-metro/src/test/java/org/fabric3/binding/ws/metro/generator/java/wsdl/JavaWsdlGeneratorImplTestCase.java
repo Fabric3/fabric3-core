@@ -50,7 +50,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JavaWsdlGeneratorImplTestCase extends TestCase {
     private JavaWsdlGenerator generator = new JavaWsdlGeneratorImpl();

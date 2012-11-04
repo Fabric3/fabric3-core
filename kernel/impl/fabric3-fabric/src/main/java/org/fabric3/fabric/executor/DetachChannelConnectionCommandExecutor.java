@@ -50,7 +50,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class DetachChannelConnectionCommandExecutor implements CommandExecutor<DetachChannelConnectionCommand> {

@@ -49,8 +49,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
  * Attaches and detaches a pub/sub connection to a channel, component consumer, or channel binding.
- *
- * @version $Rev: 8702 $ $Date: 2010-03-15 09:43:42 +0100 (Mon, 15 Mar 2010) $
  */
 public interface TargetConnectionAttacher<PCTD extends PhysicalConnectionTargetDefinition> {
 

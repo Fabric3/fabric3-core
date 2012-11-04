@@ -58,7 +58,7 @@ import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MarshallerImpl implements Marshaller {
     private ManagementMonitor monitor;

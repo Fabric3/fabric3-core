@@ -58,8 +58,6 @@ import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryResolver;
 
 /**
  * Implementation that attempts to resolve a connection by searching the ConnectionFactoryManager, provider resolvers, and then JNDI.
- *
- * @version $Revision$ $Date$
  */
 public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private ConnectionFactoryManager manager;

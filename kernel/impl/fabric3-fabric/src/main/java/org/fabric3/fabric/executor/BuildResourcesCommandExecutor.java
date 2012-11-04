@@ -59,8 +59,6 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
  * Builds resources defined in a composite on a runtime.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class BuildResourcesCommandExecutor implements CommandExecutor<BuildResourcesCommand> {

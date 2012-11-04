@@ -50,8 +50,6 @@ import org.fabric3.host.Namespaces;
 
 /**
  * Exception that indicates an element was encountered that could not be handled.
- *
- * @version $Rev$ $Date$
  */
 public class UnrecognizedElementException extends LoaderException {
     private static final long serialVersionUID = 2549543622209829032L;

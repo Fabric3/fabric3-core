@@ -44,7 +44,7 @@ import org.fabric3.admin.interpreter.CommandException;
 import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
- * @version $Rev: 10047 $ $Date: 2011-03-01 18:51:15 -0500 (Tue, 01 Mar 2011) $
+ *
  */
 public class BackCommand implements Command {
     private DomainConnection domainConnection;

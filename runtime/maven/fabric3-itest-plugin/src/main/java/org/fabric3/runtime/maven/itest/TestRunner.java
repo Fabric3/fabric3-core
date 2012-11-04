@@ -63,8 +63,6 @@ import org.fabric3.runtime.maven.MavenRuntime;
 
 /**
  * Executes integration tests.
- *
- * @version $Rev$ $Date$
  */
 public class TestRunner {
     private File reportsDirectory;

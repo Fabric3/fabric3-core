@@ -44,8 +44,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Resolves parsed WSDLs against an external location or those visible to a contribution installed in the domain.
- *
- * @version $Rev$ $Date$
  */
 public interface WsdlResolver {
 

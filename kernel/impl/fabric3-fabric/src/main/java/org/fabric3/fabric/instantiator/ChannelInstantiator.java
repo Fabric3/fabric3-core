@@ -42,8 +42,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Instantiates logical channels declared in a composite.
- *
- * @version $Rev$ $Date$
  */
 public interface ChannelInstantiator {
 

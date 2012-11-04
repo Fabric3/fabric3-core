@@ -63,7 +63,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class OASISCallbackProcessor extends AbstractAnnotationProcessor<Callback> {
     private final IntrospectionHelper helper;

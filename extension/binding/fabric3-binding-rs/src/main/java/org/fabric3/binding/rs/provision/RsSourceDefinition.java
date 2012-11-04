@@ -42,7 +42,7 @@ import java.net.URI;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class RsSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = 2180952036516977449L;

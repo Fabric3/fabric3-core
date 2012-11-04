@@ -46,7 +46,7 @@ import junit.framework.TestCase;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ClassLoaderTrackerImplTestCase extends TestCase {
     private static final URL[] EMPTY_URLS = new URL[0];

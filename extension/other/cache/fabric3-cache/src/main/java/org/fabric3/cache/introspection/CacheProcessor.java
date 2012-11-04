@@ -62,8 +62,6 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
  * Introspects fields, methods and constructor parameters annotated with {@link Cache}.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class CacheProcessor extends AbstractAnnotationProcessor<Cache> {

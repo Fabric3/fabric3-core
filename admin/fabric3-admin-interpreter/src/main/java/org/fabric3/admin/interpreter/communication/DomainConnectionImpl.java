@@ -64,7 +64,7 @@ import org.codehaus.jackson.jaxrs.MapperConfigurator;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DomainConnectionImpl implements DomainConnection {
     private static final String ADDRESS = "http://localhost:8180/management";

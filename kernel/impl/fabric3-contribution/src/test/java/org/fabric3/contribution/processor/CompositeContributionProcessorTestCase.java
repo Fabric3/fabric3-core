@@ -18,7 +18,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class CompositeContributionProcessorTestCase extends TestCase {
     private static final String XML =

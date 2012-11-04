@@ -49,7 +49,7 @@ import org.easymock.classextension.EasyMock;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SerializationServiceTestCase extends TestCase {
 

@@ -56,7 +56,7 @@ import org.fabric3.spi.wire.Wire;
 import org.fabric3.test.spi.TestWireHolder;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<JUnitSourceDefinition> {

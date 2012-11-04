@@ -44,8 +44,6 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 /**
  * Resolves a source operation against a collection of target operations when the interface contracts are different but compatible, i.e. Java and
  * WSDL.
- *
- * @version $Rev$ $Date$
  */
 public interface OperationResolver {
 

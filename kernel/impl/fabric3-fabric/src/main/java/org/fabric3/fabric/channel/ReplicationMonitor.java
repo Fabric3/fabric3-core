@@ -40,7 +40,7 @@ package org.fabric3.fabric.channel;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface ReplicationMonitor {
 

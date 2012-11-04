@@ -56,8 +56,6 @@ import org.fabric3.host.monitor.MonitorEventDispatcher;
 
 /**
  * Forwards monitor events to the Ant logger.
- *
- * @version $Rev$ $Date$
  */
 public class AntMonitorEventDispatcher implements MonitorEventDispatcher {
     private Task task;

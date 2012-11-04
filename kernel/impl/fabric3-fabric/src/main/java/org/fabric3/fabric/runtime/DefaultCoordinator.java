@@ -72,8 +72,6 @@ import static org.fabric3.host.Names.RUNTIME_DOMAIN_SERVICE_URI;
 
 /**
  * Default implementation of the RuntimeCoordinator.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultCoordinator implements RuntimeCoordinator {
     private RuntimeState state = RuntimeState.UNINITIALIZED;

@@ -43,7 +43,7 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.management.OperationType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ServletManager {
     private ServletHolder holder;

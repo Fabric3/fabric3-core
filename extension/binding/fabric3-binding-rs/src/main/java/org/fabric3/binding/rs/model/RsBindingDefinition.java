@@ -44,7 +44,7 @@ import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.component.BindingDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class RsBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 7344870455465600359L;

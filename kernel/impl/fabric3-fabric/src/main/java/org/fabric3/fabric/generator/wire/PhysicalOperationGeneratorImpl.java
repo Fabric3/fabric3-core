@@ -68,7 +68,7 @@ import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerator {
     private static final QName OASIS_ONEWAY = new QName(Constants.SCA_NS, "oneWay");

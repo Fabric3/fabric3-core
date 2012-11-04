@@ -71,8 +71,6 @@ import org.fabric3.spi.invocation.WorkContext;
  * <p/>
  * During deployment, the container checks if the runtime is a zone leader. If it is, contexts will be started. Otherwise, they will be deferred until
  * the existing leader fails and the current host is elected zone leader.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 @Service(names = {ScopeContainer.class, TopologyListener.class})

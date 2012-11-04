@@ -52,7 +52,7 @@ import org.fabric3.spi.wire.Wire;
 import org.fabric3.test.spi.TestWireHolder;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TestRunnerImpl implements TestRunner {
     private TestWireHolder holder;

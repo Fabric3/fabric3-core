@@ -48,7 +48,7 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.timer.model.TimerPoolResource;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TimerPoolResourceLoaderTestCase extends TestCase {
 

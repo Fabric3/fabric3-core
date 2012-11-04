@@ -55,7 +55,7 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
 

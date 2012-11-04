@@ -47,7 +47,7 @@ import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.PersistenceOverrides;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class CachingEmfResolverTest extends TestCase {
 

@@ -44,8 +44,6 @@ package org.fabric3.contribution.manifest;
  *    clause ::= path ( �;� path ) *
  *                 ( �;� parameter ) *
  * </pre>
- *
- * @version $Rev$ $Date$
  */
 public class OSGiManifestEntryParser {
     public enum EventType {

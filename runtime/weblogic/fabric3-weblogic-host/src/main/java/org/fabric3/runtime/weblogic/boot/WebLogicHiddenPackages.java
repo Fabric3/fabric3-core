@@ -40,7 +40,7 @@ package org.fabric3.runtime.weblogic.boot;
 import org.fabric3.host.runtime.HiddenPackages;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public final class WebLogicHiddenPackages {
     private static final String[] PACKAGES;

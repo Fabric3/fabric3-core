@@ -57,8 +57,6 @@ import org.fabric3.spi.transform.TransformerRegistry;
  * <p/>
  * If the event is not wrapped, no transformation is done. This implementation also lazily creates transformers and caches them for reuse as binding
  * contexts such as JAXB can be expensive to create.
- *
- * @version $Rev$ $Date$
  */
 public class TransformerHandler implements EventStreamHandler {
     private EventStreamHandler next;

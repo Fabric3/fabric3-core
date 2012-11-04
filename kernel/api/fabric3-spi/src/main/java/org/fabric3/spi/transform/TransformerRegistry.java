@@ -43,8 +43,6 @@ import org.fabric3.model.type.contract.DataType;
 
 /**
  * Registry of Transformers.
- *
- * @version $Rev$ $Date$
  */
 public interface TransformerRegistry {
 

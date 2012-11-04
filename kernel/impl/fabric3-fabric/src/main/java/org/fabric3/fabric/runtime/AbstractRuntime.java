@@ -100,7 +100,7 @@ import org.fabric3.spi.monitor.DispatcherWrapper;
 import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices {
     private static final String JAVA_LIBRARY_PATH = "java.library.path";

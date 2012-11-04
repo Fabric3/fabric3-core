@@ -69,8 +69,6 @@ import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  * Generator for Spring components.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SpringComponentGenerator implements ComponentGenerator<LogicalComponent<SpringImplementation>> {

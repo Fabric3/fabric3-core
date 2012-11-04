@@ -64,7 +64,7 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AutowireInstantiatorImplTestCase extends TestCase {
     private static final URI REFERENCE_URI = URI.create("source#ref");

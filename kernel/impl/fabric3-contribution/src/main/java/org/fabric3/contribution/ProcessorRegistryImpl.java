@@ -56,7 +56,7 @@ import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class ProcessorRegistryImpl implements ProcessorRegistry {

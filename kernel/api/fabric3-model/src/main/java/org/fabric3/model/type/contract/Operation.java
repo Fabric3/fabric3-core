@@ -50,8 +50,6 @@ import org.fabric3.model.type.AbstractPolicyAware;
 
 /**
  * An operation on a service contract.
- *
- * @version $Rev$ $Date$
  */
 public class Operation extends AbstractPolicyAware {
     private static final long serialVersionUID = 5279880534105654066L;

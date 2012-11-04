@@ -52,8 +52,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Base {@link TargetWireAttacher} functionality for web services.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractMetroTargetWireAttacher<T extends PhysicalTargetDefinition> implements TargetWireAttacher<T> {
     private BindingHandlerRegistry handlerRegistry;

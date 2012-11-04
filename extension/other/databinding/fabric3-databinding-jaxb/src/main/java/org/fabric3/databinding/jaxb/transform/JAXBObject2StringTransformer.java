@@ -47,8 +47,6 @@ import org.fabric3.spi.transform.Transformer;
 
 /**
  * Transforms from a JAXB top-level element instance to a serialized String.
- *
- * @version $Rev$ $Date$
  */
 public class JAXBObject2StringTransformer implements Transformer<Object, String> {
     private JAXBContext jaxbContext;

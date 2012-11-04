@@ -59,8 +59,6 @@ import org.fabric3.spi.channel.EventWrapper;
 /**
  * Manages incoming requests destined for a channel. This includes setting the broadcaster associated with the request, forwarding HTTP requests to
  * additional handlers or suspending the request it is websocket-based.
- *
- * @version $Rev$ $Date$
  */
 public class ChannelWebSocketHandler extends AbstractReflectorAtmosphereHandler implements WebSocketEventListener {
 	

@@ -70,8 +70,6 @@ import java.util.StringTokenizer;
  * </pre>
  * <p/>
  * This implementation is based on org.osgi.framework.Version from the OSGi Alliance issued under the Apache 2.0 License.
- *
- * @version $Rev$ $Date$
  */
 public class Version implements Comparable, Serializable {
     private static final long serialVersionUID = -2755678770473603563L;

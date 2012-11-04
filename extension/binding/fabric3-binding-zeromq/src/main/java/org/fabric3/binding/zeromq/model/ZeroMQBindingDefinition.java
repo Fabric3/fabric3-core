@@ -46,8 +46,6 @@ import org.fabric3.model.type.component.BindingDefinition;
 
 /**
  * A ZeroMQ binding configuration set on a channel, reference, or composite.
- *
- * @version $Rev$ $Date$
  */
 public class ZeroMQBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 4154636613386389578L;

@@ -61,7 +61,7 @@ import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- * @version $Rev: 10102 $ $Date: 2011-03-15 23:59:22 -0700 (Tue, 15 Mar 2011) $
+ *
  */
 public class DisposeChannelsCommandExecutorTestCase extends TestCase {
 

@@ -46,8 +46,6 @@ import org.fabric3.binding.jms.runtime.common.JmsHelper;
 
 /**
  * Maintains shared JMS connection state for an {@link AdaptiveMessageContainer}.
- *
- * @version $Rev$ $Date$
  */
 public class ConnectionManager {
     private URI listenerUri;

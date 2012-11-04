@@ -49,8 +49,6 @@ import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
 
 /**
  * Creates a FileResource for XML-based contributions
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class XmlResourceFactory implements FileSystemResourceFactory {

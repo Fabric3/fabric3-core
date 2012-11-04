@@ -55,8 +55,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 /**
  * An implementation that delegates exporting managed resources to a collection of {@link ManagementExtension}s. This implementation caches export
  * requests so that management extensions which come online after an export request has been made will receive that request.
- *
- * @version $Rev$ $Date$
  */
 public class DelegatingManagementService implements ManagementService {
     private Map<String, ManagementExtension> extensions = new HashMap<String, ManagementExtension>();

@@ -45,7 +45,7 @@ import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.spi.model.instance.LogicalChannel;
 
 /**
- * @version $Rev: 10439 $ $Date: 2011-06-07 16:17:48 +0200 (Tue, 07 Jun 2011) $
+ *
  */
 public class ZeroMQBindingProviderChannelTestCase extends TestCase {
     private LogicalChannel channel;

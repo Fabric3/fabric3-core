@@ -47,8 +47,6 @@ import org.fabric3.implementation.pojo.provision.PojoSourceDefinition;
 
 /**
  * Models a System physical wire source definition.
- *
- * @version $Revision$ $Date$
  */
 public class SystemSourceDefinition extends PojoSourceDefinition {
     private static final long serialVersionUID = -5206255431608819554L;

@@ -38,7 +38,7 @@
 package org.fabric3.implementation.mock.introspection;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface Baz {
 

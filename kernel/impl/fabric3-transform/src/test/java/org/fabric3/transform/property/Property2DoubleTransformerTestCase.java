@@ -41,8 +41,6 @@ import org.fabric3.spi.transform.TransformationException;
 
 /**
  * Tests String to Double transform.
- *
- * @version $Rev$ $Date$
  */
 public class Property2DoubleTransformerTestCase extends BaseTransformTest {
 

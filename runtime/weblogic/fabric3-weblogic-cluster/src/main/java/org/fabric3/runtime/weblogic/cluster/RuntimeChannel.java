@@ -44,8 +44,6 @@ import java.rmi.RemoteException;
  * An RMI object that facilities communication between runtimes using the WebLogic clustered JNDI tree.
  * <p/>
  * This class and any referenced classes must be on the WebLogic server classpath as required by RMI dynamic stub generation.
- *
- * @version $Rev$ $Date$
  */
 public interface RuntimeChannel extends Remote {
 

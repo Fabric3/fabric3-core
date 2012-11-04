@@ -40,7 +40,7 @@ package org.fabric3.binding.web.runtime.channel;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PublishException extends Fabric3Exception {
     private static final long serialVersionUID = 8846071494329846526L;

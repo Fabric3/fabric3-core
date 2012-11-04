@@ -42,8 +42,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Implementations receive callbacks for events emitted by the application domain.
- *
- * @version $Rev$ $Date$
  */
 public interface DeployListener {
 

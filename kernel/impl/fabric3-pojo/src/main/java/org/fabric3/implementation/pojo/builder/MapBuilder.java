@@ -47,8 +47,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Builds an object factory that creates a property value map from a DOM.
- *
- * @version $Rev: 10102 $ $Date: 2011-03-15 23:59:22 -0700 (Tue, 15 Mar 2011) $
  */
 public interface MapBuilder {
 

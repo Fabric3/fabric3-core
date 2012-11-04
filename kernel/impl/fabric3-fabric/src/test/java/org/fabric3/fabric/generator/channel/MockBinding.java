@@ -40,7 +40,7 @@ package org.fabric3.fabric.generator.channel;
 import org.fabric3.model.type.component.BindingDefinition;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
+ *
  */
 public class MockBinding extends BindingDefinition {
     private static final long serialVersionUID = -2225564023619496625L;

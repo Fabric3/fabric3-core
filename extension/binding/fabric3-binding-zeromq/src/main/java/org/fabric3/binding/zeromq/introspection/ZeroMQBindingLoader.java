@@ -55,8 +55,6 @@ import org.fabric3.spi.introspection.xml.LoaderUtil;
 
 /**
  * Loads a <code>binding.zeromq</code> element in a composite.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBindingDefinition> {

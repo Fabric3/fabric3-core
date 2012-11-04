@@ -41,8 +41,6 @@ import org.fabric3.spi.wire.InvocationChain;
 
 /**
  * A pair associating an invocation chain with a callback URI. For unidirectional services, the callback uri may be null.
- *
- * @version $Rev: 9435 $ $Date: 2010-09-09 17:31:45 +0200 (Thu, 09 Sep 2010) $
  */
 public class ChainPair {
     private InvocationChain chain;

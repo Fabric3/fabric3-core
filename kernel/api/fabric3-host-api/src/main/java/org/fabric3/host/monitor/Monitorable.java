@@ -41,8 +41,6 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
  * Implementations emit monitor events.
- *
- * @version $Rev$ $Date$
  */
 public interface Monitorable {
 

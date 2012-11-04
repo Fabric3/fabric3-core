@@ -108,8 +108,6 @@ import org.fabric3.runtime.ant.monitor.AntMonitorEventDispatcherFactory;
  *     &lt;/contributionSet&gt;
  *  &lt;/fabric3&gt;
  * </pre>
- *
- * @version $Rev$ $Date$
  */
 public class Fabric3Task extends Task {
     private List<FileList> contributions = new ArrayList<FileList>();

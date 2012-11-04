@@ -52,8 +52,6 @@ import org.fabric3.spi.transform.TransformationException;
 
 /**
  * Transformer that converts from a DOM Node to a Java Date, expecting the format of the date to be yyy-MM-d'T'HH:mm:ss'Z'.
- *
- * @version $Rev$ $Date$
  */
 public class Property2DateTransformer implements SingleTypeTransformer<Node, Date> {
     private static final JavaClass<Date> TARGET = new JavaClass<Date>(Date.class);

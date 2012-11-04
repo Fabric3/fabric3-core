@@ -60,8 +60,6 @@ import org.fabric3.spi.model.instance.LogicalState;
 
 /**
  * Generates commands to start deployable contexts in a zone.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class StartContextCommandGeneratorImpl implements StartContextCommandGenerator {

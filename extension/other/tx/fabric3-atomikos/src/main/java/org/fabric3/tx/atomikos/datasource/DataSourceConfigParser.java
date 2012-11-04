@@ -50,7 +50,7 @@ import org.fabric3.datasource.spi.DataSourceConfiguration;
 import org.fabric3.datasource.spi.DataSourceType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DataSourceConfigParser {
 

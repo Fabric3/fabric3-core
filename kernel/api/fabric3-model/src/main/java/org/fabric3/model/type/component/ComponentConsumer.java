@@ -49,8 +49,6 @@ import java.util.List;
 
 /**
  * A consumer configured on a component.
- *
- * @version $Rev$ $Date$
  */
 public class ComponentConsumer extends ConsumerDefinition {
     private static final long serialVersionUID = -4230400252060306972L;

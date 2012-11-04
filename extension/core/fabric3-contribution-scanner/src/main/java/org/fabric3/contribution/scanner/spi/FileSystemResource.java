@@ -41,8 +41,6 @@ import java.net.URL;
 
 /**
  * A resource on the file system such as a file or directory.
- *
- * @version $Rev$ $Date$
  */
 public interface FileSystemResource {
 

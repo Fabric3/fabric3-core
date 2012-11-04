@@ -46,8 +46,6 @@ import org.fabric3.management.rest.runtime.TransformerPair;
 
 /**
  * Maps an operation on a managed resource to a path relative to the management servlet and REST verb.
- *
- * @version $Rev$ $Date$
  */
 public class ResourceMapping {
     private String identifier;

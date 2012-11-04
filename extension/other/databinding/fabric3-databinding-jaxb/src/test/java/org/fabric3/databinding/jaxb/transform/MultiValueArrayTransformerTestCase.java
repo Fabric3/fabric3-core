@@ -43,7 +43,7 @@ import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MultiValueArrayTransformerTestCase extends TestCase {
     private static final Transformer<?, ?>[] TRANSFORMERS = new Transformer<?, ?>[]{new MockTransformer()};

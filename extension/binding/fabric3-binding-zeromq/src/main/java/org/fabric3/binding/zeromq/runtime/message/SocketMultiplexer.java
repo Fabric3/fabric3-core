@@ -39,8 +39,6 @@ import org.fabric3.binding.zeromq.runtime.SocketAddress;
 
 /**
  * Implementations return an available socket from a collection based on a selection algorithm such as round-robin.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public interface SocketMultiplexer {
 

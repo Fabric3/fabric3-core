@@ -53,8 +53,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * Utility functions to support loader implementations.
- *
- * @version $Rev$ $Date$
  */
 public final class LoaderUtil {
     private LoaderUtil() {

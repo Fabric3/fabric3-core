@@ -43,8 +43,6 @@ import org.fabric3.model.type.component.ResourceReferenceDefinition;
 
 /**
  * A reference to a resource on an instantiated component in the domain.
- *
- * @version $Rev$ $Date$
  */
 public class LogicalResourceReference<RD extends ResourceReferenceDefinition> extends LogicalInvocable {
     private static final long serialVersionUID = -6298167441706672513L;

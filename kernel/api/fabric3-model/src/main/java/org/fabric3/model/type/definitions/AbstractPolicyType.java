@@ -48,8 +48,6 @@ import javax.xml.namespace.QName;
 
 /**
  * A policy type.
- *
- * @version $Rev$ $Date$
  */
 public class AbstractPolicyType extends AbstractPolicyDefinition {
     private static final long serialVersionUID = -2910491671004468756L;

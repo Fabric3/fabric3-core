@@ -66,7 +66,7 @@ import org.fabric3.spi.contribution.manifest.QNameImport;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MetaDataStoreImplFindReferencesTestCase extends TestCase {
     private MetaDataStoreImpl store;

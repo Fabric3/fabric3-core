@@ -34,8 +34,6 @@ import java.io.Serializable;
 
 /**
  * An address event.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public abstract class AddressEvent implements Serializable {
     private static final long serialVersionUID = -5896437177638643500L;

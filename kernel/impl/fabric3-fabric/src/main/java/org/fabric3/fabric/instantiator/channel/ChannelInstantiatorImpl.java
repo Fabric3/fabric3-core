@@ -50,8 +50,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Default implementation of ChannelInstantiator.
- *
- * @version $Rev$ $Date$
  */
 public class ChannelInstantiatorImpl implements ChannelInstantiator {
 

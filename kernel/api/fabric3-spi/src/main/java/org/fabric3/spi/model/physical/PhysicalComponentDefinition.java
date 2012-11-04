@@ -51,8 +51,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Used to provision a component on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public abstract class PhysicalComponentDefinition implements Serializable {
     private static final long serialVersionUID = -4354673356182365263L;

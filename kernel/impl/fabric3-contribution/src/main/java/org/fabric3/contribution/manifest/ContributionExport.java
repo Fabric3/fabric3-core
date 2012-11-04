@@ -49,8 +49,6 @@ import org.fabric3.spi.contribution.Import;
 /**
  * Exports the entire package contents of a contribution. This export type is used for API and SPI contributions where all contents are visible to
  * importing contributions.
- *
- * @version $Rev$ $Date$
  */
 public class ContributionExport implements Export {
     private static final long serialVersionUID = -2400233923134603994L;

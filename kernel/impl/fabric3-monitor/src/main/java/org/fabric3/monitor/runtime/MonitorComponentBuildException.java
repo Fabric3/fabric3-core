@@ -40,8 +40,6 @@ package org.fabric3.monitor.runtime;
 import org.fabric3.spi.builder.BuilderException;
 
 /**
- *
- * @version $Rev$ $Date$
  */
 public class MonitorComponentBuildException extends BuilderException {
         private static final long serialVersionUID = 4652292863688922614L;

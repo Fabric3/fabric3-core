@@ -41,8 +41,6 @@ import org.fabric3.spi.generator.GenerationException;
 
 /**
  * Denotes an error resolving endpoint information from a WSDL document.
- *
- * @version $Rev$ $Date$
  */
 public class EndpointResolutionException extends GenerationException {
     private static final long serialVersionUID = 6481333003446910943L;

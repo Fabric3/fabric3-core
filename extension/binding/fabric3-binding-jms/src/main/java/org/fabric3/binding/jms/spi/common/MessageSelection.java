@@ -45,8 +45,6 @@ package org.fabric3.binding.jms.spi.common;
 
 /**
  * Contains JMS message selection configuration.
- *
- * @version $Revision$ $Date$
  */
 public class MessageSelection extends PropertyAwareObject {
     private static final long serialVersionUID = 1966462577850832869L;

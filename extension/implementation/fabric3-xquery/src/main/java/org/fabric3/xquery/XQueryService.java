@@ -41,7 +41,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface XQueryService<T> {
 

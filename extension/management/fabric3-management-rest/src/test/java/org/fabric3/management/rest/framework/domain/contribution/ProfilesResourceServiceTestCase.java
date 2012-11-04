@@ -61,7 +61,7 @@ import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 
 /**
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
+ *
  */
 public class ProfilesResourceServiceTestCase extends TestCase {
     private static final URI PROFILE_URI = URI.create("profile");

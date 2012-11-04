@@ -50,8 +50,6 @@ import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryType;
 
 /**
  * Parses {@link ConnectionFactoryConfiguration} entries from a StAX source; entries may be connection factories or connection factory templates.
- *
- * @version $Rev: 9497 $ $Date: 2010-09-27 00:13:13 +0200 (Mon, 27 Sep 2010) $
  */
 public class ConnectionFactoryConfigurationParser {
 

@@ -55,8 +55,6 @@ import org.fabric3.model.type.component.Implementation;
 
 /**
  * An instantiated component in the domain.
- *
- * @version $Rev$ $Date$
  */
 public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArtifact<LogicalCompositeComponent> {
     private static final long serialVersionUID = -3520150701040845117L;

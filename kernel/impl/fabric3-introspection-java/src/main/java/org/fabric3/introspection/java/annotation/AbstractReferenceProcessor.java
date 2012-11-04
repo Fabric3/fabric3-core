@@ -59,8 +59,6 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 
 /**
  * Contains functionality common to OASIS and OSOA <code>@Reference</code> annotation processors.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractReferenceProcessor<A extends Annotation> extends AbstractAnnotationProcessor<A> {
     protected JavaContractProcessor contractProcessor;

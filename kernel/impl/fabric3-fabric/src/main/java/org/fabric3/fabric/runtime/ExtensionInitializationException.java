@@ -40,7 +40,7 @@ package org.fabric3.fabric.runtime;
 import org.fabric3.host.runtime.InitializationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ExtensionInitializationException extends InitializationException {
     private static final long serialVersionUID = 7390375093657355129L;

@@ -44,7 +44,7 @@ import org.oasisopen.sca.annotation.Property;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DeploymentCacheImpl implements DeploymentCache {
     private LinkedList<DeploymentCommand> history = new LinkedList<DeploymentCommand>();

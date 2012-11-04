@@ -45,8 +45,6 @@ import org.fabric3.spi.model.instance.Bindable;
 
 /**
  * Denotes a referenced binding that does not exist.
- *
- * @version $Rev$ $Date$
  */
 public class BindingNotFound extends AssemblyFailure {
     private String message;

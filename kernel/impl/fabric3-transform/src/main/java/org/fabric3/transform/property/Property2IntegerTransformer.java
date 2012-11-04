@@ -46,7 +46,7 @@ import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class Property2IntegerTransformer implements SingleTypeTransformer<Node, Integer> {
     private static final JavaClass<Integer> TARGET = new JavaClass<Integer>(Integer.class);

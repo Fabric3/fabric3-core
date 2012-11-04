@@ -57,7 +57,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ContributionCollatorImplTestCase extends TestCase {
     private static final URI CONTRIBUTION1 = URI.create("contribution1");

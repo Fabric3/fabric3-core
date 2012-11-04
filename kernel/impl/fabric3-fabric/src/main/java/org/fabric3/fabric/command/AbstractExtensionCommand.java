@@ -43,8 +43,6 @@ import org.fabric3.spi.command.CompensatableCommand;
 
 /**
  * Base class for extension commands.
- *
- * @version $Rev: 7148 $ $Date: 2009-06-14 17:18:27 -0700 (Sun, 14 Jun 2009) $
  */
 public abstract class AbstractExtensionCommand implements CompensatableCommand {
     private static final long serialVersionUID = 8299761365600303716L;

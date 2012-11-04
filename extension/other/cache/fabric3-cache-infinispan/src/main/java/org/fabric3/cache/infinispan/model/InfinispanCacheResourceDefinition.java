@@ -44,8 +44,6 @@ import org.fabric3.cache.spi.CacheResourceDefinition;
 
 /**
  * A parsed Infinispan cache configuration specified in a composite.
- *
- * @version $Rev$ $Date$
  */
 public class InfinispanCacheResourceDefinition extends CacheResourceDefinition {
     private static final long serialVersionUID = -4317772018610416411L;

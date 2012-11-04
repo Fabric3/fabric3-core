@@ -46,7 +46,7 @@ import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class Property2DoubleTransformer implements SingleTypeTransformer<Node, Double> {
     private static final JavaClass<Double> TARGET = new JavaClass<Double>(Double.class);

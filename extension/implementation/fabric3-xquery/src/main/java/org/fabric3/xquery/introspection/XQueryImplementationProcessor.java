@@ -41,7 +41,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.xquery.scdl.XQueryImplementation;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface XQueryImplementationProcessor {
 

@@ -42,8 +42,6 @@ import javax.transaction.Transaction;
 
 /**
  * Responsible for returning an EntityManager with a persitence context tied to an execution context.
- *
- * @version $Rev$ $Date$
  */
 public interface EntityManagerService {
 

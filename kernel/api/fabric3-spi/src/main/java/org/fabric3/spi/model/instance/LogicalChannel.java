@@ -50,8 +50,6 @@ import org.fabric3.model.type.component.ChannelDefinition;
 
 /**
  * An instantiated channel in the domain.
- *
- * @version $Rev$ $Date$
  */
 public class LogicalChannel extends Bindable {
     private static final long serialVersionUID = -1098943196013754799L;

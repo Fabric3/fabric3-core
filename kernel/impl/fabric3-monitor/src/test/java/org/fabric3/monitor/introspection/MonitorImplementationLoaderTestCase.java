@@ -59,7 +59,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 /**
- * @version $Rev: 8696 $ $Date: 2010-03-12 15:47:05 +0100 (Fri, 12 Mar 2010) $
+ *
  */
 @EagerInit
 public class MonitorImplementationLoaderTestCase extends TestCase {

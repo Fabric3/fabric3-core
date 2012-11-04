@@ -47,8 +47,6 @@ import com.sun.xml.wss.SecurityEnvironment;
 /**
  * Implements the Metro Container SPI to return a custom SecurityEnvironment and resolve dynamically generated WSDL containing policy configuration
  * for a client (reference).
- *
- * @version $Rev$ $Date$
  */
 public class WsitClientConfigurationContainer extends Container {
     private static final String CLIENT_CONFIG = "wsit-client.xml";

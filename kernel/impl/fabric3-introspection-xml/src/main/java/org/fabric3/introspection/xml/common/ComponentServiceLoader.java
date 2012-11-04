@@ -68,8 +68,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loads a component service configuration.
- *
- * @version $Rev$ $Date$
  */
 public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<ComponentService> {
     private static final QName SERVICE = new QName(SCA_NS, "service");

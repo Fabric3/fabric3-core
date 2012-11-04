@@ -57,8 +57,6 @@ import org.fabric3.spi.executor.ExecutionException;
 
 /**
  *
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class AttachChannelConnectionCommandExecutor implements CommandExecutor<AttachChannelConnectionCommand> {

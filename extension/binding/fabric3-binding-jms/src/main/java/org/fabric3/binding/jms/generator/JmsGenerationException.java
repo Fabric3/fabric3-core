@@ -47,8 +47,6 @@ import org.fabric3.spi.generator.GenerationException;
 
 /**
  * Denotes a general generation error.
- *
- * @version $Rev$ $Date$
  */
 public class JmsGenerationException extends GenerationException {
     private static final long serialVersionUID = -6463292884312424762L;

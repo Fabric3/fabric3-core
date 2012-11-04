@@ -61,8 +61,6 @@ import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 /**
  * Parses persistence entries specified in the system configuration.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 @Management

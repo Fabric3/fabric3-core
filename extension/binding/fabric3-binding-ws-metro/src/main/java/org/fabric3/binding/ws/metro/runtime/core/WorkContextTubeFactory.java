@@ -45,7 +45,7 @@ import com.sun.xml.ws.assembler.ServerTubelineAssemblyContext;
 import com.sun.xml.ws.assembler.TubeFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WorkContextTubeFactory implements TubeFactory {
     public Tube createTube(ClientTubelineAssemblyContext context) throws WebServiceException {

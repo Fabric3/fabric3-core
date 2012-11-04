@@ -46,7 +46,7 @@ package org.fabric3.fabric.builder.channel;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ChannelNotFoundException extends ConnectionAttachException {
     private static final long serialVersionUID = -9023791613666728007L;

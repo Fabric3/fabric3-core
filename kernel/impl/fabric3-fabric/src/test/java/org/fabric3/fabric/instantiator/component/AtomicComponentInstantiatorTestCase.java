@@ -85,7 +85,7 @@ import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AtomicComponentInstantiatorTestCase extends TestCase {
     private static final URI PRODUCER_TARGET = URI.create("producerTarget");

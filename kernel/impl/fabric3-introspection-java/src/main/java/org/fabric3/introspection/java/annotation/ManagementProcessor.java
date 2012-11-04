@@ -55,8 +55,6 @@ import org.fabric3.spi.model.type.java.ManagementInfo;
 
 /**
  * Processes the {@link Management} annotation on a component implementation class.
- *
- * @version $Rev$ $Date$
  */
 public class ManagementProcessor extends AbstractAnnotationProcessor<Management> {
 

@@ -42,8 +42,6 @@ import java.util.Map;
 
 /**
  * Contains override information for persistence units.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public class PersistenceOverrides implements Serializable {
     private static final long serialVersionUID = -8553765085228025466L;

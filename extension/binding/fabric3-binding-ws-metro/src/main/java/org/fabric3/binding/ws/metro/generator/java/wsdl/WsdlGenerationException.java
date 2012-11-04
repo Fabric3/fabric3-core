@@ -41,8 +41,6 @@ import org.fabric3.spi.generator.GenerationException;
 
 /**
  * Thrown when an error is encountered generating a WSDL.
- *
- * @version $Rev$ $Date$
  */
 public class WsdlGenerationException extends GenerationException {
     private static final long serialVersionUID = 8535292703636164039L;

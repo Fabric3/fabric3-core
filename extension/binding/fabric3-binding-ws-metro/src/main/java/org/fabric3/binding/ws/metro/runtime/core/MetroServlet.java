@@ -72,8 +72,6 @@ import com.sun.xml.wss.SecurityEnvironment;
 /**
  * Handles incoming HTTP requests and dispatches them to the Metro stack. Extends the Metro servlet and overrides the <code>getDelegate</code>
  * method.
- *
- * @version $Rev$ $Date$
  */
 public class MetroServlet extends WSServlet {
     private static final long serialVersionUID = -2581439830158433922L;

@@ -44,8 +44,6 @@ import org.fabric3.host.stream.Source;
 
 /**
  * Represents a source artifact that will be contributed to a domain or an updated version of an existing contribution.
- *
- * @version $Rev$ $Date$
  */
 public interface ContributionSource {
 

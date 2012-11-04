@@ -61,8 +61,6 @@ import org.fabric3.spi.monitor.MonitorService;
 
 /**
  * An {@link EntityManagerFactoryResolver} implementation that caches EntityManagerFactory instances.
- *
- * @version $Rev$ $Date$
  */
 public class CachingEntityManagerFactoryResolver implements EntityManagerFactoryResolver {
     private static final String HIBERNATE_LOOKUP = "hibernate.transaction.manager_lookup_class";

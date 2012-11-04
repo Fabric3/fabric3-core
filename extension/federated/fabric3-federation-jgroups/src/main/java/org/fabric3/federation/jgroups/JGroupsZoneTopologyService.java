@@ -94,7 +94,7 @@ import org.fabric3.spi.federation.ZoneChannelException;
 import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 @Management(name = "ZoneTopologyService", path = "/runtime/federation/zone/view")

@@ -57,8 +57,6 @@ import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 /**
  * Creates the classpath for a a symbolic link contribution (*.contribution file). The contents of the file point to an exploded directory, which is
  * placed on the classpath.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SymLinkClasspathProcessor implements ClasspathProcessor {

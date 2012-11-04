@@ -41,8 +41,6 @@ import javax.jms.ConnectionFactory;
 
 /**
  * Implemented by the JMS provider to create connection factories on demand.
- *
- * @version $Rev$ $Date$
  */
 public interface ProviderConnectionFactoryCreator {
 

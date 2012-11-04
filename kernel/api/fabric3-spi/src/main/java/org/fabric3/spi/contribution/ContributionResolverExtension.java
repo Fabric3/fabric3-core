@@ -43,8 +43,6 @@ import java.net.URI;
 
 /**
  * Implementations resolve contribution artifacts in a domain.
- *
- * @version $Rev: 7146 $ $Date: 2009-06-14 16:28:54 -0700 (Sun, 14 Jun 2009) $
  */
 public interface ContributionResolverExtension {
 

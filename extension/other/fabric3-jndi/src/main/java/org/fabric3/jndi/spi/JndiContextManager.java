@@ -44,8 +44,6 @@ import javax.naming.NamingException;
 
 /**
  * Manages JNDI context resources and provides aggregated resolution operations across those managed contexts.
- *
- * @version $Rev$ $Date$
  */
 public interface JndiContextManager {
 

@@ -52,8 +52,6 @@ import org.fabric3.host.monitor.MonitorEventDispatcher;
 
 /**
  * Forwards monitor events to the Maven logger.
- *
- * @version $Rev$ $Date$
  */
 public class MavenMonitorEventDispatcher implements MonitorEventDispatcher {
     private Log log;

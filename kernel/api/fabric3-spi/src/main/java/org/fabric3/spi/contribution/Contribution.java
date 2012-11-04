@@ -50,8 +50,6 @@ import org.fabric3.host.stream.Source;
 
 /**
  * The base representation of a deployed contribution
- *
- * @version $Rev$ $Date$
  */
 public class Contribution implements Serializable {
     private static final long serialVersionUID = 2511879480122631196L;

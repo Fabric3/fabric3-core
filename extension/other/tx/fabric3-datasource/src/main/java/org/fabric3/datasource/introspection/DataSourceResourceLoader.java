@@ -64,8 +64,6 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
  *           &lt;/datasource&gt;
  *      &lt;/datasources&gt;
  * </pre>
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DataSourceResourceLoader implements TypeLoader<DataSourceResource> {

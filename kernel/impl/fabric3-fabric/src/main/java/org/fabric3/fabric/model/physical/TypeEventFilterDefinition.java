@@ -44,8 +44,6 @@ import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 
 /**
  * Definition for filtering on Java event types.
- *
- * @version $Rev$ $Date$
  */
 public class TypeEventFilterDefinition extends PhysicalEventFilterDefinition {
     private static final long serialVersionUID = -7775958976426657691L;

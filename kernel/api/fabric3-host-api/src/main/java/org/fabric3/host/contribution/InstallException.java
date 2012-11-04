@@ -39,8 +39,6 @@ package org.fabric3.host.contribution;
 
 /**
  * Denotes an error installing a contribution.
- *
- * @version $Rev$ $Date$
  */
 public class InstallException extends ContributionException {
     private static final long serialVersionUID = 3609176062577063255L;

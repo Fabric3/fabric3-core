@@ -222,8 +222,6 @@ import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 
 /**
  * Bootstraps services required for instantiation, generation, and deployment.
- *
- * @version $Rev$ $Date$
  */
 public class BootstrapAssemblyFactory {
     private static final XMLFactory XML_FACTORY = new XMLFactoryImpl();

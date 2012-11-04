@@ -48,7 +48,7 @@ import static org.fabric3.binding.web.runtime.common.ContentTypes.APPLICATION_JS
 import static org.fabric3.binding.web.runtime.common.ContentTypes.TEXT_PLAIN;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public final class ChannelUtils {
     private static final JsonType<Object> JSON = new JsonType<Object>(String.class, Object.class);

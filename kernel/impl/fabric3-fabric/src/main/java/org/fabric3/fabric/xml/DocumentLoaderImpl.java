@@ -61,8 +61,6 @@ import org.fabric3.host.util.IOHelper;
  * Default implementation that creates a new DocumentBuilder for every invocation.
  * <p/>
  * URI resolution is handled by the underlying JAXP implementation.
- *
- * @version $Rev$ $Date$
  */
 public class DocumentLoaderImpl implements DocumentLoader {
     private static final DocumentBuilderFactory DOCUMENT_FACTORY;

@@ -43,8 +43,6 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 
 /**
  * A key to a WSDL document.
- *
- * @version $Rev$ $Date$
  */
 public class WsdlSymbol extends QNameSymbol {
 

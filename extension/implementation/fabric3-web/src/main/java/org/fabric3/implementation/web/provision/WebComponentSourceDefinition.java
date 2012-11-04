@@ -40,7 +40,7 @@ package org.fabric3.implementation.web.provision;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WebComponentSourceDefinition extends PhysicalSourceDefinition {
 }

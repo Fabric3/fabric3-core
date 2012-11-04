@@ -60,7 +60,7 @@ import org.fabric3.spi.generator.Deployment;
 import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class LocalDeployerTestCase extends TestCase {
 

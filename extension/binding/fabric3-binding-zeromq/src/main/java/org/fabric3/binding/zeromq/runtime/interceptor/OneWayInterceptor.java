@@ -38,8 +38,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Dispatches a message from an invocation chain to a ZeroMQ one-way sender.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class OneWayInterceptor implements Interceptor {
     private static final Message ONE_WAY_RESPONSE = new MessageImpl();

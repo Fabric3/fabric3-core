@@ -51,8 +51,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Default implementation of a Wire
- *
- * @version $Rev$ $Date$
  */
 public class WireImpl implements Wire {
     private final List<InvocationChain> chains = new ArrayList<InvocationChain>();

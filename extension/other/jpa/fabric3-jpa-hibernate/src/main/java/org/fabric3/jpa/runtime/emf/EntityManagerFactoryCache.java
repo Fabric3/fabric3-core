@@ -44,8 +44,6 @@ import org.fabric3.jpa.api.JpaResolutionException;
 
 /**
  * A cache of EntityManagerFactory instances.
- *
- * @version $Rev$ $Date$
  */
 public interface EntityManagerFactoryCache {
 

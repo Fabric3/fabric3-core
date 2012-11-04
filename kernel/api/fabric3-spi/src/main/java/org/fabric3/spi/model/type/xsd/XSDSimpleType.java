@@ -41,8 +41,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Specialization of DataType for simple types from the XML Schema type system.
- *
- * @version $Rev$ $Date$
  */
 public class XSDSimpleType extends XSDType {
     private static final long serialVersionUID = 1482637673051984949L;

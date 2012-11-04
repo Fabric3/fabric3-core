@@ -57,8 +57,6 @@ import org.fabric3.spi.util.UriHelper;
 
 /**
  * Attaches and detaches a {@link ChannelConnection} from a System component consumer.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SystemTargetConnectionAttacher implements TargetConnectionAttacher<SystemConnectionTargetDefinition> {

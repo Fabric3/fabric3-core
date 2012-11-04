@@ -43,8 +43,6 @@ import java.net.URL;
 
 /**
  * A Source that wraps an InputStream.
- *
- * @version $Rev$ $Date$
  */
 public class InputStreamSource implements Source {
     private String systemId;

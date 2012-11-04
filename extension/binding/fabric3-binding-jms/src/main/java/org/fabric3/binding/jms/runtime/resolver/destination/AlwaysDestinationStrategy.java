@@ -58,8 +58,6 @@ import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 
 /**
  * Implementation that attempts to always create the destination.
- *
- * @version $Revision$ $Date$
  */
 public class AlwaysDestinationStrategy implements DestinationStrategy {
 

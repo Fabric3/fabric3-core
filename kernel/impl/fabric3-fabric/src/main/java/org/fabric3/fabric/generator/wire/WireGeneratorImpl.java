@@ -75,8 +75,6 @@ import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * Default implementation of WireGenerator.
- *
- * @version $Rev$ $Date$
  */
 public class WireGeneratorImpl implements WireGenerator {
     private GeneratorRegistry generatorRegistry;

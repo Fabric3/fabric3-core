@@ -63,7 +63,7 @@ import org.fabric3.spi.management.ManagementService;
 import org.fabric3.timer.spi.TimerService;
 
 /**
- * @version $Rev: 7712 $ $Date: 2009-09-29 00:57:34 +0200 (Tue, 29 Sep 2009) $
+ *
  */
 @EagerInit
 public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDefinition, TimerComponent> {

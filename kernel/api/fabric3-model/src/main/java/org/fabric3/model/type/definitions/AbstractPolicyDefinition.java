@@ -49,8 +49,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * Base policy definition type.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractPolicyDefinition extends ModelObject {
     private static final long serialVersionUID = -4450566760116409021L;

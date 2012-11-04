@@ -45,8 +45,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Provides WSDLReader and WSDLWriter instances.
- *
- * @version $Rev$ $Date$
  */
 public interface Wsdl4JFactory {
 

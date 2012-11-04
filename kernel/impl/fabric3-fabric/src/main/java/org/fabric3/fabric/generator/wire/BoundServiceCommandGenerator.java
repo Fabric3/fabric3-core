@@ -65,8 +65,6 @@ import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * Generates commands to attach/detach the source end of physical wires to their transports for components being deployed or undeployed.
- *
- * @version $Revision$ $Date$
  */
 public class BoundServiceCommandGenerator implements CommandGenerator {
     private final WireGenerator wireGenerator;

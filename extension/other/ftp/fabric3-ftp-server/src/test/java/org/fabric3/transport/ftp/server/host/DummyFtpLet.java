@@ -42,7 +42,7 @@ import java.io.InputStream;
 import org.fabric3.transport.ftp.api.FtpLet;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DummyFtpLet implements FtpLet {
 

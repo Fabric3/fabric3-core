@@ -44,8 +44,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * A validation failure indicating an attempt to configure a non-existent component reference.
- *
- * @version $Rev$ $Date$
  */
 public class ComponentReferenceNotFound extends XmlValidationFailure {
     private String referenceName;

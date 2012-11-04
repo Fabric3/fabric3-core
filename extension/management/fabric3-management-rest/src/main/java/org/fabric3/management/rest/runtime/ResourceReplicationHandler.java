@@ -43,8 +43,6 @@ import org.fabric3.spi.federation.MessageReceiver;
 /**
  * Listens to {@link ReplicationEnvelope}s sent when a resource request is broadcast in a zone and dispatches the associated request to the managed
  * resource hosted on the runtime.
- *
- * @version $Rev$ $Date$
  */
 public class ResourceReplicationHandler implements MessageReceiver {
     private ResourceHost resourceHost;

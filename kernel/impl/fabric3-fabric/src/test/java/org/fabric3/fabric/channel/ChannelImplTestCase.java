@@ -51,8 +51,6 @@ import org.fabric3.spi.channel.PassThroughHandler;
 
 /**
  * The default Channel implementation.
- *
- * @version $Rev$ $Date$
  */
 public class ChannelImplTestCase extends TestCase {
     private ChannelImpl channel;

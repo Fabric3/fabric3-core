@@ -56,8 +56,6 @@ import org.fabric3.spi.federation.ZoneTopologyService;
 /**
  * Resolves contributions in a domain. Resolution is done by first querying a the controller for the contribution URL. If the controller is
  * unavailable, the zone leader is queried.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ZoneContributionResolverExtension implements ContributionResolverExtension {

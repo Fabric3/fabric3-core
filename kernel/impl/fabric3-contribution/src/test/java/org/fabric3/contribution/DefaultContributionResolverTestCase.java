@@ -51,7 +51,7 @@ import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.MetaDataStore;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DefaultContributionResolverTestCase extends TestCase {
     private MetaDataStore store;

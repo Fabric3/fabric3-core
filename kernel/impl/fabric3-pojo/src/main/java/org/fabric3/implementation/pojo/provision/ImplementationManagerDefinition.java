@@ -54,8 +54,6 @@ import org.fabric3.spi.model.type.java.Signature;
 
 /**
  * Base class for implementation manager factory definitions.
- *
- * @version $Revision$ $Date$
  */
 public class ImplementationManagerDefinition implements Serializable {
     private static final long serialVersionUID = 3516497485593609161L;

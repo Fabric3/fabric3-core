@@ -53,8 +53,6 @@ import org.fabric3.management.rest.model.Resource;
 
 /**
  * Listens for managed artifacts exported under the /runtime path and registers them as sub-resources of the runtime resource.
- *
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 @EagerInit
 @Management(path = "/runtime")

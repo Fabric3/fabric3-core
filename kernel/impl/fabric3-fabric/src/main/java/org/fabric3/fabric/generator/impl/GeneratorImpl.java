@@ -75,8 +75,6 @@ import org.fabric3.spi.model.instance.LogicalResource;
 
 /**
  * Default Generator implementation.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class GeneratorImpl implements Generator {

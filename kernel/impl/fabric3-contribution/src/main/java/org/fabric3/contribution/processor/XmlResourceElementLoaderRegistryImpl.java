@@ -51,8 +51,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Default implementation of an XmlIndexerRegistry.
- *
- * @version $Rev$ $Date$
  */
 public class XmlResourceElementLoaderRegistryImpl implements XmlResourceElementLoaderRegistry {
     private Map<QName, XmlResourceElementLoader> cache = new HashMap<QName, XmlResourceElementLoader>();

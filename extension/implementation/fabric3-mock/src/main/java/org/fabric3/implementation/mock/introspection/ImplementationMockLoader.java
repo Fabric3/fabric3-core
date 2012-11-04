@@ -57,8 +57,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  *  <implementation.mock> org.fabric3.mock.Foo org.fabric3.mock.Bar org.fabric3.mock.Baz </implementation.mock>
  * <pre/>
  * The implementation.mock element is expected to have a delimited list of fully qualified named of the interfaces that need to be mocked.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ImplementationMockLoader implements TypeLoader<ImplementationMock> {

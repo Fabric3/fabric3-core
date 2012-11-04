@@ -44,8 +44,6 @@ import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
  * Allocates components and channels to a zone. If the component is a composite, allocation will be performed recursively.
- *
- * @version $Rev$ $Date$
  */
 public interface Allocator {
 

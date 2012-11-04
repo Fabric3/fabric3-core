@@ -41,8 +41,6 @@ import org.fabric3.spi.command.Response;
 
 /**
  * An response to a synchronous message indicating an error processing the message.
- *
- * @version $Rev$ $Date$
  */
 public interface ErrorResponse extends Response {
 

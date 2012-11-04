@@ -51,7 +51,7 @@ import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class InvocationChainImplTestCase extends TestCase {
 

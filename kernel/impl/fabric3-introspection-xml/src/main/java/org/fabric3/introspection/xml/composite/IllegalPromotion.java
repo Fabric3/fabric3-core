@@ -42,8 +42,6 @@ import javax.xml.stream.XMLStreamReader;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- *
- * @version $Rev$ $Date$
  */
 public class IllegalPromotion extends XmlValidationFailure {
 

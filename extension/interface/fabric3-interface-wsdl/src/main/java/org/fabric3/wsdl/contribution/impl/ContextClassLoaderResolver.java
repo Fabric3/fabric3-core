@@ -57,8 +57,6 @@ import org.xml.sax.InputSource;
  * <li>META-INF/wsdl directory
  * <p/>
  * </ul>
- *
- * @version $Rev$ $Date$
  */
 public class ContextClassLoaderResolver implements URIResolver {
     private URIResolver next;

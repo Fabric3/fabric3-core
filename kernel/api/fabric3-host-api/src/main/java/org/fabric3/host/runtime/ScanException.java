@@ -44,8 +44,6 @@
 package org.fabric3.host.runtime;
 
 /**
- *
- * @version $Rev: 7452 $ $Date: 2009-07-28 23:35:31 +0200 (Tue, 28 Jul 2009) $
  */
 public class ScanException extends InitializationException {
     private static final long serialVersionUID = -8809402788313731400L;

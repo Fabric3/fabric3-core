@@ -32,8 +32,6 @@ package org.fabric3.binding.file.common;
 
 /**
  * Identifies whether the file binding should archive or delete data files.
- *
- * @version $Revision$ $Date$
  */
 public enum Strategy {
 

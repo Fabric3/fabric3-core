@@ -61,8 +61,6 @@ import org.fabric3.spi.security.UsernamePasswordToken;
 
 /**
  * Implementation that delegates authentication to the Fabric3 {@link AuthenticationService}.
- *
- * @version $Rev$ $Date$
  */
 public class Fabric3LoginService implements LoginService {
     private AuthenticationService authenticationService;

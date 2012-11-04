@@ -64,7 +64,7 @@ import org.fabric3.spi.generator.policy.PolicyActivationException;
 import static org.fabric3.model.type.definitions.IntentType.INTERACTION;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DefaultPolicyRegistryTestCase extends TestCase {
     private DefaultPolicyRegistry registry;

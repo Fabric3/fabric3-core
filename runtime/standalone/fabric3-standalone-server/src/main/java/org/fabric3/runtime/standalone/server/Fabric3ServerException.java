@@ -47,8 +47,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * Exception thrown by the Fabric3 server during startup and shutdown.
- *
- * @version $Revisiion$ $Date$
  */
 
 @SuppressWarnings("serial")

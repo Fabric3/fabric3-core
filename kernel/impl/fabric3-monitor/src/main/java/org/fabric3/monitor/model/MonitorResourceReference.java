@@ -47,7 +47,7 @@ import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MonitorResourceReference extends ResourceReferenceDefinition {
     private static final long serialVersionUID = -6723752212878850748L;

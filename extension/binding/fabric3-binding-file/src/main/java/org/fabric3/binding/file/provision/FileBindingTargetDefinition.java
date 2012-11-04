@@ -36,8 +36,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Generated metadata used for attaching a reference to a ZeroMQ Socket.
- *
- * @version $Revision$ $Date$
  */
 public class FileBindingTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = 1182695578174617840L;

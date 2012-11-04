@@ -55,8 +55,6 @@ import org.fabric3.host.monitor.Monitorable;
  * Default MonitorEvent implementation.
  * <p/>
  * The {@link ILoggingEvent} is also implemented to avoid creating an additional object when the event is dispatched to LogBack.
- *
- * @version $Rev$ $Date$
  */
 @XmlRootElement
 public class MonitorEventImpl implements MonitorEvent, ILoggingEvent {

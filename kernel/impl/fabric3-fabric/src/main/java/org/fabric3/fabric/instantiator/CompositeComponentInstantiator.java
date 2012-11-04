@@ -44,8 +44,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Instantiates a logical component from a component definition.
- *
- * @version $Rev$ $Date$
  */
 public interface CompositeComponentInstantiator {
 

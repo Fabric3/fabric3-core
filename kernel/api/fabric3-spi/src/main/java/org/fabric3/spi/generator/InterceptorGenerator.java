@@ -50,8 +50,6 @@ import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 
 /**
  * Generates {@link PhysicalInterceptorDefinition}s used to attach policy interceptors to a wire.
- *
- * @version $Rev$ $Date$
  */
 public interface InterceptorGenerator {
 

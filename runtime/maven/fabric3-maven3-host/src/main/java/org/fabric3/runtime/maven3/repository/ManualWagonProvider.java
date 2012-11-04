@@ -43,7 +43,7 @@ import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
 import org.sonatype.aether.connector.wagon.WagonProvider;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ManualWagonProvider implements WagonProvider {
 

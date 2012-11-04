@@ -55,8 +55,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * TargetWireAttacher that handles monitor resources.
- *
- * @version $Rev$ $Date$
  */
 public class MonitorWireAttacher implements TargetWireAttacher<MonitorTargetDefinition> {
     private final MonitorProxyService monitorService;

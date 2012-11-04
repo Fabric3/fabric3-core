@@ -47,8 +47,6 @@ import org.fabric3.spi.invocation.Message;
 
 /**
  * Mediates a service invocation.
- *
- * @version $Rev$ $Date$
  */
 public interface Interceptor {
 

@@ -69,8 +69,6 @@ import org.fabric3.spi.introspection.xml.LoaderUtil;
 
 /**
  * Loads <code><implementation.web></code> from a composite.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplementation> {

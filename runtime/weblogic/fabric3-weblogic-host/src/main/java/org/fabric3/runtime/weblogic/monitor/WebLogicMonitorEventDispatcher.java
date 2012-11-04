@@ -57,8 +57,6 @@ import org.fabric3.host.monitor.MonitorEventDispatcher;
 
 /**
  * A dispatcher that forwards events to the WebLogic logging service.
- *
- * @version $Rev: 8394 $ $Date: 2009-12-12 11:20:05 +0100 (Sat, 12 Dec 2009) $
  */
 public class WebLogicMonitorEventDispatcher implements MonitorEventDispatcher {
     private Logger logger;

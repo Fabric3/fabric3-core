@@ -44,7 +44,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JavaTypeInfoTestCase extends TestCase {
 

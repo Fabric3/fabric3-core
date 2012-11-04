@@ -52,8 +52,6 @@ import com.sun.xml.wss.SecurityEnvironment;
 
 /**
  * Implementation of the Metro host container SPI. Metro uses this SPI to obtain resources from the host container, in this case the Fabric3 runtime.
- *
- * @version $Rev$ $Date$
  */
 public class F3Container extends Container {
     private static final String METRO_CONFIG = "metro-default.xml";

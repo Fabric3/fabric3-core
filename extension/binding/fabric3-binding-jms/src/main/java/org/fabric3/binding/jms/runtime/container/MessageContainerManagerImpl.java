@@ -67,7 +67,7 @@ import org.fabric3.spi.util.UriHelper;
 import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 @Service(names = {MessageContainerManager.class, Transport.class})

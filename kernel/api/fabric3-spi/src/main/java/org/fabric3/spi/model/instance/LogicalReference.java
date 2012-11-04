@@ -53,8 +53,6 @@ import org.fabric3.model.type.component.ReferenceDefinition;
 
 /**
  * A reference on an instantiated component in the domain.
- *
- * @version $Rev$ $Date$
  */
 public class LogicalReference extends Bindable {
     private static final long serialVersionUID = 2308698868251298609L;

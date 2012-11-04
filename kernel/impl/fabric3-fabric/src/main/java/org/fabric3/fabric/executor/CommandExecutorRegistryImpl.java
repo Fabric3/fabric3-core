@@ -55,8 +55,6 @@ import org.fabric3.spi.executor.ExecutionException;
 
 /**
  * Default implementation of the CommandExecutorRegistry
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class CommandExecutorRegistryImpl implements CommandExecutorRegistry {

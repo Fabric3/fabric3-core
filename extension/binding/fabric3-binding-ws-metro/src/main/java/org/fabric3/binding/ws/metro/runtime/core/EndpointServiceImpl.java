@@ -48,7 +48,7 @@ import org.fabric3.binding.ws.metro.MetroBindingMonitor;
 import org.fabric3.spi.host.ServletHost;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class EndpointServiceImpl implements EndpointService {
     private SecurityEnvironment securityEnvironment;

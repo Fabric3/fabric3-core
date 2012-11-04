@@ -44,8 +44,6 @@ import java.util.Set;
 
 /**
  * Detects cycles in a directed graph.
- *
- * @version $Rev$ $Date$
  */
 public class CycleDetectorImpl<T> implements CycleDetector<T> {
     private DepthFirstTraverser<T> traverser;

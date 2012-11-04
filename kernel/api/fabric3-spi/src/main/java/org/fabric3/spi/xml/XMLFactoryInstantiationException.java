@@ -41,8 +41,6 @@ import org.fabric3.host.Fabric3RuntimeException;
 
 /**
  * Denotes an unrecoverable error creating an XMLInputFactory or XMLOutputFactory.
- *
- * @version $Rev$ $Date$
  */
 public class XMLFactoryInstantiationException extends Fabric3RuntimeException {
     private static final long serialVersionUID = -846195639643885514L;

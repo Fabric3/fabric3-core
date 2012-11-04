@@ -44,8 +44,6 @@ import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
  * Implements transactional policy for an event stream.
- *
- * @version $Rev$ $Date$
  */
 public class TxEventStreamHandler extends AbstractTxSupport implements EventStreamHandler {
     private EventStreamHandler next;

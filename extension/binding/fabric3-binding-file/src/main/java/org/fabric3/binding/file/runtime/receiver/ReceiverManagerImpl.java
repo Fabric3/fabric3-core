@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
+ *
  */
 public class ReceiverManagerImpl implements ReceiverManager {
     private Map<String, FileSystemReceiver> receivers = new ConcurrentHashMap<String, FileSystemReceiver>();

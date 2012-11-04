@@ -83,8 +83,6 @@ import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
 
 /**
  * This class provides the command line interface for starting the Fabric3 standalone server.
- *
- * @version $Rev$ $Date$
  */
 public class Fabric3Server implements Fabric3ServerMBean {
     private static final String DOMAIN = "fabric3";

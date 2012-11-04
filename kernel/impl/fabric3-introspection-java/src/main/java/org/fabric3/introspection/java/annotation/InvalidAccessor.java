@@ -47,8 +47,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Denotes an invalid accessor value for a field or method annotated with @Resource, @Reference, or @Property.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidAccessor extends ValidationFailure {
     private String message;

@@ -44,8 +44,6 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 
 /**
  * A wrapper used to expose an Atomikos {@link AtomikosConnectionFactoryBean} as a managed instance.
- *
- * @version $Rev$ $Date$
  */
 @Management
 public class ConnectionFactoryWrapper {

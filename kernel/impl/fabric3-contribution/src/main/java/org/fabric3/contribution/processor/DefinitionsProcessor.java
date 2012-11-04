@@ -56,8 +56,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Processes a definitions file.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DefinitionsProcessor implements XmlProcessor {

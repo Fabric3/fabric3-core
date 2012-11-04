@@ -39,8 +39,6 @@ package org.fabric3.management.rest.spi;
 
 /**
  * Receives callbacks when resources are exported.
- *
- * @version $Rev$ $Date$
  */
 public interface ResourceListener {
 

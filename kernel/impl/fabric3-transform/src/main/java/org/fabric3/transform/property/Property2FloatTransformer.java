@@ -46,7 +46,7 @@ import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class Property2FloatTransformer implements SingleTypeTransformer<Node, Float> {
     private static final JavaClass<Float> TARGET = new JavaClass<Float>(Float.class);

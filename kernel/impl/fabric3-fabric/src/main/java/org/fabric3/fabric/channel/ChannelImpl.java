@@ -48,8 +48,6 @@ import org.fabric3.spi.channel.PassThroughHandler;
 
 /**
  * The default Channel implementation.
- *
- * @version $Rev$ $Date$
  */
 public class ChannelImpl implements Channel {
     private URI uri;

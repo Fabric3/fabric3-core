@@ -44,8 +44,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Processes specific headers in a MANIFEST.MF file.
- *
- * @version $Rev$ $Date$
  */
 public interface JarManifestHandler {
 

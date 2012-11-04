@@ -68,8 +68,6 @@ import org.fabric3.spi.wire.Wire;
 /**
  * Attaches a service to the gateway servlet that accepts incoming websocket connections using Atmosphere. The gateway servlet is responsible for
  * receiving invocations and routing them to the appropriate service based on the request path.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WebSourceWireAttacher implements SourceWireAttacher<WebSourceDefinition> {

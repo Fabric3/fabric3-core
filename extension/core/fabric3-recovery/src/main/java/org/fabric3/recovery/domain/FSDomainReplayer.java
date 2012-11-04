@@ -74,8 +74,6 @@ import org.fabric3.spi.xml.XMLFactory;
  * <p/>
  * The domain journal records the state of the domain as composites are included and undeployed. Replaying the journal has the affect of reinstating
  * the logical assembly to its prior state before the controller went offline (either as a result of a normal shutdown or system failure).
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {

@@ -46,8 +46,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
  * Generates physical metadata for an event channel connection.
- *
- * @version $Rev$ $Date$
  */
 public interface ConnectionGenerator {
 

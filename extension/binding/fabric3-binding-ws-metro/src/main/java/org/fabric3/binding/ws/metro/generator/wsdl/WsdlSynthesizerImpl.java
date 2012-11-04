@@ -68,8 +68,6 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
  * Default WsdlSynthesizer implementation.
  * <p/>
  * TODO This implementation only supports doc/lit/wrapped web services. It needs to be enhanced to support other invocation styles.
- *
- * @version $Rev: 7740 $ $Date: 2009-10-01 23:52:12 +0200 (Thu, 01 Oct 2009) $
  */
 public class WsdlSynthesizerImpl implements WsdlSynthesizer {
     private static final QName SOAP_BINDING = new QName("http://schemas.xmlsoap.org/wsdl/soap/", "binding");

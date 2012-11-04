@@ -49,8 +49,6 @@ import java.util.List;
  * <li>A channel and a component consumer
  * </ul>
  * </pre>
- *
- * @version $Rev$ $Date$
  */
 public interface ChannelConnection {
 

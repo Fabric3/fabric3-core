@@ -67,8 +67,6 @@ import org.fabric3.spi.xml.XMLFactory;
 
 /**
  * The default implementation of a loader registry
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class LoaderRegistryImpl implements LoaderRegistry {

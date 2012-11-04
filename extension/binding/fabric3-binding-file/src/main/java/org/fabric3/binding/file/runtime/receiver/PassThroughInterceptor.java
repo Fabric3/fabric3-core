@@ -42,8 +42,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * An implementation that passes an invocation to the next interceptor.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public class PassThroughInterceptor implements Interceptor {
     private Interceptor next;

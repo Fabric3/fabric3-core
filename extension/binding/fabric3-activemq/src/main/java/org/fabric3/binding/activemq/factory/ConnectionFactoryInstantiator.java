@@ -58,8 +58,6 @@ import org.fabric3.host.runtime.HostInfo;
 
 /**
  * Instantiates connection factories from settings in the runtime system configuration.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ConnectionFactoryInstantiator {

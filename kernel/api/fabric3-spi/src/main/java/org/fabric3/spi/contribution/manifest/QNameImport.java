@@ -50,8 +50,6 @@ import org.fabric3.spi.contribution.Import;
 
 /**
  * A QName-based contribution import
- *
- * @version $Rev$ $Date$
  */
 public class QNameImport implements Import {
     private static final long serialVersionUID = 7714960525252585065L;

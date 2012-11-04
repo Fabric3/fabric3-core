@@ -39,8 +39,6 @@ package org.fabric3.spi.channel;
 
 /**
  * Forwards an event through an event stream.
- *
- * @version $Rev$ $Date$
  */
 public class PassThroughHandler implements EventStreamHandler {
     private EventStreamHandler next;

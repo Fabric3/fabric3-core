@@ -58,8 +58,6 @@ import org.fabric3.host.runtime.ParseException;
 
 /**
  * Delegates to a runtime extension to perform JMX authentication.
- *
- * @version $Rev$ $Date$
  */
 @Service(DelegatingJmxAuthenticator.class)
 public class DelegatingJmxAuthenticator implements JMXAuthenticator {

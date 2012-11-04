@@ -44,8 +44,6 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 
 /**
  * Collects statistics for a timer pool.
- *
- * @version $Rev$ $Date$
  */
 public class TimerPoolStatistics {
     private String poolName;

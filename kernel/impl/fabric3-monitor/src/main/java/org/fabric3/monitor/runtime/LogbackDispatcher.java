@@ -76,8 +76,6 @@ import org.fabric3.host.monitor.MonitorEventDispatcher;
 
 /**
  * Dispatches to one or more Logback appenders. If a configuration is not set, a default one will be created that logs to the console.
- *
- * @version $Rev$ $Date$
  */
 public class LogbackDispatcher implements MonitorEventDispatcher {
     private static final String DEFAULT_PATTERN = "[%level %thread %d{YY:MM:DD HH:mm:ss.SSS}] %msg%n%ex";

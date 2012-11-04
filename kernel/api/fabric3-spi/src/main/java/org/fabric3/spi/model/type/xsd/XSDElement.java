@@ -41,8 +41,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Specialization of DataType for Elements from the XML Schema type system.
- *
- * @version $Rev$ $Date$
  */
 public class XSDElement extends XSDType {
     private static final long serialVersionUID = -2602951884349165087L;

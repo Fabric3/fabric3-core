@@ -42,8 +42,6 @@ import org.fabric3.spi.command.ResponseCommand;
 
 /**
  * Sent by a controller to a runtime to obtain its metadata.
- *
- * @version $Rev$ $Date$
  */
 public class RuntimeMetadataUpdateCommand implements ResponseCommand {
     private static final long serialVersionUID = 3056160587367640591L;

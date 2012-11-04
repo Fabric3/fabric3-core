@@ -41,8 +41,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Defines the ExecutorService to inject on a resource reference.
- *
- * @version $Rev$ $Date$
  */
 public class ExecutorServiceTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = 7832372892587547800L;

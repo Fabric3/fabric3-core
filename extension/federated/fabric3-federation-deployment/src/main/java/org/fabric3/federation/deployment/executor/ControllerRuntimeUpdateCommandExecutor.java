@@ -66,8 +66,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Processes a {@link RuntimeUpdateCommand} on the controller by regenerating deployment commands for the current state of the zone.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ControllerRuntimeUpdateCommandExecutor implements CommandExecutor<RuntimeUpdateCommand> {

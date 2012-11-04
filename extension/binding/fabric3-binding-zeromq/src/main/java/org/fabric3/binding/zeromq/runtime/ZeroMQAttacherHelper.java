@@ -39,7 +39,7 @@ import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * @version $Revision: 10454 $ $Date: 2011-06-10 23:06:51 +0200 (Fri, 10 Jun 2011) $
+ *
  */
 public final class ZeroMQAttacherHelper {
 

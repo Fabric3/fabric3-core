@@ -53,8 +53,6 @@ import org.fabric3.spi.wire.InvocationChain;
 /**
  * Abstract callback handler implementation. Concrete classes must implement a strategy for mapping the callback target chain for the invoked callback
  * operation.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractCallbackInvocationHandler<T> implements InvocationHandler {
     private final Class<T> interfaze;

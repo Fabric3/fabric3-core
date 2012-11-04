@@ -48,8 +48,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Creates a TxInterceptor for a wire invocation chain.
- *
- * @version $Rev$ $Date$
  */
 public class TxInterceptorBuilder implements InterceptorBuilder<TxInterceptorDefinition> {
     private TransactionManager transactionManager;

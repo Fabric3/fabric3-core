@@ -65,8 +65,6 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
  * Loader for definitions.
- *
- * @version $Rev$ $Date$
  */
 public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
     private static final QName QUALIFIER = new QName(Constants.SCA_NS, "qualifier");

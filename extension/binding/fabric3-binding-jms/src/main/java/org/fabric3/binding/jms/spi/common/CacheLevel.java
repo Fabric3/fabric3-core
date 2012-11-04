@@ -39,8 +39,6 @@ package org.fabric3.binding.jms.spi.common;
 
 /**
  * Defines consumer caching levels.
- *
- * @version $Rev$ $Date$
  */
 public enum CacheLevel {
     /**

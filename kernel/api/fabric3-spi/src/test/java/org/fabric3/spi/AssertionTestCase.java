@@ -46,7 +46,7 @@ package org.fabric3.spi;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AssertionTestCase extends TestCase {
     /**

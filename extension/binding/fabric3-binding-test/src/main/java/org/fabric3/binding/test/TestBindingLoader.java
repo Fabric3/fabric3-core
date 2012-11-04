@@ -53,8 +53,6 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
  * Parses <code>binding.test</code> for services and references. A uri to bind the service to or target a reference must be provided as an attribute.
- *
- * @version $Revision$ $Date$
  */
 @EagerInit
 public class TestBindingLoader implements TypeLoader<TestBindingDefinition> {

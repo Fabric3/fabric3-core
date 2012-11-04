@@ -40,7 +40,7 @@ package org.fabric3.spi.management;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * @version $Rev: 8369 $ $Date: 2009-12-04 17:26:32 +0100 (Fri, 04 Dec 2009) $
+ *
  */
 public class ManagementException extends Fabric3Exception {
     private static final long serialVersionUID = 1545054739250774920L;

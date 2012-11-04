@@ -56,8 +56,6 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 
 /**
  * Loads a Spring component implementation in a composite.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SpringImplementationLoader extends AbstractValidatingTypeLoader<SpringImplementation> {

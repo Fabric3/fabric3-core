@@ -48,8 +48,6 @@ import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 /**
  * Generates a {@link CacheTargetDefinition} for a component cache resource.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class CacheReferenceGenerator implements ResourceReferenceGenerator<CacheReferenceDefinition> {

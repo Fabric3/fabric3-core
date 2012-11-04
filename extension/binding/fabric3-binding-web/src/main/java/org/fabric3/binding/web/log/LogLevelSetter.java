@@ -45,7 +45,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class LogLevelSetter {

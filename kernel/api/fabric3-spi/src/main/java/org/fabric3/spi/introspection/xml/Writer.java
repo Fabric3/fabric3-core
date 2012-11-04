@@ -45,8 +45,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * Serializes model objects to a StAX output stream by delegating to {@link TypeWriter}s.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public interface Writer {
 

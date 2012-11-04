@@ -46,8 +46,6 @@ import org.fabric3.model.type.component.Target;
 
 /**
  * Represents a service or reference explicitly bound using <code>binding.sca</code>.
- *
- * @version $Rev$ $Date$
  */
 public class SCABinding extends BindingDefinition {
     private static final long serialVersionUID = 5329743408485507984L;

@@ -43,7 +43,7 @@ import org.fabric3.datasource.spi.DataSourceConfiguration;
 import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DataSourceResource extends ResourceDefinition {
     private static final long serialVersionUID = -2844435223504878965L;

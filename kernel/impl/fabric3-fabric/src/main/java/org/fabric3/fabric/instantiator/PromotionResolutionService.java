@@ -42,8 +42,6 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 /**
  * Resolves promoted services and references by setting the resolved promotion URI of the logical component service or reference that is being
  * promoted.
- *
- * @version $Rev$ $Date$
  */
 public interface PromotionResolutionService {
 

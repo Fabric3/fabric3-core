@@ -48,8 +48,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * A reference to a system resource contained by a component.
- *
- * @version $Rev$ $Date$
  */
 public class ResourceReferenceDefinition extends ModelObject {
     private static final long serialVersionUID = 4241666632750146304L;

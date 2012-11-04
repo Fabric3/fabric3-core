@@ -48,8 +48,6 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  * Receives callbacks when a component is built.
- *
- * @version $Rev$ $Date$
  */
 public interface ComponentBuilderListener {
 

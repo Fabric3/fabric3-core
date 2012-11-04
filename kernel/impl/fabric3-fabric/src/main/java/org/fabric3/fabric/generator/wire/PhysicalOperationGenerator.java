@@ -48,8 +48,6 @@ import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 /**
  * Generates PhysicalOperationDefinitions which are used to instantiate interceptor chains for a wire, bound service, or bound reference on a
  * runtime.
- *
- * @version $Rev$ $Date$
  */
 public interface PhysicalOperationGenerator {
 

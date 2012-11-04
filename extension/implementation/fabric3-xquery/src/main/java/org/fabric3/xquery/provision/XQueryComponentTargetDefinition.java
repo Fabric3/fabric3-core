@@ -40,7 +40,7 @@ package org.fabric3.xquery.provision;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class XQueryComponentTargetDefinition extends PhysicalTargetDefinition {
 }

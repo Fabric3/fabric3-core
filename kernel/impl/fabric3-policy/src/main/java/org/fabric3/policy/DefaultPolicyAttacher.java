@@ -59,7 +59,7 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DefaultPolicyAttacher implements PolicyAttacher {
     private PolicyEvaluator policyEvaluator;

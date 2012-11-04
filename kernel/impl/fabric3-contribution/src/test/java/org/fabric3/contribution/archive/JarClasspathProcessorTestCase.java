@@ -50,7 +50,7 @@ import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JarClasspathProcessorTestCase extends TestCase {
     private JarClasspathProcessor processor;

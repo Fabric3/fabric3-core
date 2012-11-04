@@ -71,8 +71,6 @@ import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
  * on different managed threads. Workload management is performed by sizing up or down the number of managed threads reserved for message processing.
  * <p/>
  * Note this implementation supports dispatching transactional and non-transactional messages.
- *
- * @version $Rev$ $Date$
  */
 @Management
 public class AdaptiveMessageContainer {

@@ -58,7 +58,7 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class BuildResourceCommandGeneratorTestCase extends TestCase {
 

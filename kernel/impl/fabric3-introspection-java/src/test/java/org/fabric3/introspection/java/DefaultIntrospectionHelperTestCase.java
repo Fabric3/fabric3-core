@@ -62,7 +62,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DefaultIntrospectionHelperTestCase extends TestCase {
     private DefaultIntrospectionHelper helper;

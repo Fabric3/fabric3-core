@@ -60,8 +60,6 @@ import org.fabric3.spi.executor.ExecutionException;
 
 /**
  * Connects and disconnects wires from references of a component to target services.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ConnectionCommandExecutor implements CommandExecutor<ConnectionCommand> {

@@ -47,8 +47,6 @@ import org.fabric3.host.Version;
 
 /**
  * The current runtime operating system in normalized form.
- *
- * @version $Rev$ $Date$
  */
 public class OperatingSystem {
     private String name;

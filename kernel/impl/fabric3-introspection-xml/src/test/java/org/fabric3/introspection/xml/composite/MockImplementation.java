@@ -44,7 +44,7 @@ import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MockImplementation extends Implementation<InjectingComponentType> {
     private static final long serialVersionUID = 4898222089241004315L;

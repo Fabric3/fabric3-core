@@ -63,8 +63,6 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
  * Creates a command to build resources defined in a composite on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public class BuildResourceCommandGenerator implements CommandGenerator {
     private GeneratorRegistry generatorRegistry;

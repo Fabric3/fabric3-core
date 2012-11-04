@@ -67,8 +67,6 @@ import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
  *           &lt;/cache&gt;
  *      &lt;/caches&gt;
  * </pre>
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class CacheResourceLoader extends AbstractValidatingTypeLoader<CacheSetResourceDefinition> {

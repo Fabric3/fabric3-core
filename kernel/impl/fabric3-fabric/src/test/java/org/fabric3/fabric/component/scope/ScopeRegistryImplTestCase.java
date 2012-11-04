@@ -50,7 +50,7 @@ import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ScopeContainer;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ScopeRegistryImplTestCase extends TestCase {
     private ScopeContainer container;

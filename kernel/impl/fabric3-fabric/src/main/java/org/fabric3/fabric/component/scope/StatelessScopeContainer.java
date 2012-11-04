@@ -65,8 +65,6 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * A scope context which manages stateless atomic component instances in a non-pooled fashion.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 @Service(ScopeContainer.class)

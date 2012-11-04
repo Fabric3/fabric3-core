@@ -56,8 +56,6 @@ import org.fabric3.spi.security.KeyStoreManager;
 
 /**
  * Configures the JVM to use the specified key and trust stores.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class KeyStoreManagerImpl implements KeyStoreManager {

@@ -49,8 +49,6 @@ import org.fabric3.spi.contribution.Import;
 
 /**
  * Represents an <code>import.java</code> entry in a contribution manifest.
- *
- * @version $Rev$ $Date$
  */
 public class JavaImport implements Import {
     private static final long serialVersionUID = -7863768515125756048L;

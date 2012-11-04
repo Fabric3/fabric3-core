@@ -42,8 +42,6 @@ import java.util.List;
 
 /**
  * Configuration for instantiating a Spring <code>AuthenticationManager</code>
- *
- * @version $Rev$ $Date$
  */
 public class AuthenticationManagerConfiguration {
     private String alias;

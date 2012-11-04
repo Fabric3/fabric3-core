@@ -43,8 +43,6 @@ import org.fabric3.spi.command.Response;
 
 /**
  * The response to a {@link ProvisionCommand}.
- *
- * @version $Rev: 7888 $ $Date: 2009-11-22 11:27:32 +0100 (Sun, 22 Nov 2009) $
  */
 public class ProvisionResponse implements Response {
     private static final long serialVersionUID = 8758275756367101501L;

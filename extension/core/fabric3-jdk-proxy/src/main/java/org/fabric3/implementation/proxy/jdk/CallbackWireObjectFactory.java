@@ -50,8 +50,6 @@ import org.fabric3.spi.wire.InvocationChain;
 
 /**
  * Returns a proxy instance for a callback wire.
- *
- * @version $Rev$ $Date$
  */
 public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;

@@ -39,8 +39,6 @@ package org.fabric3.implementation.spring.model;
 
 /**
  * A Spring bean configuration.
- *
- * @version $Rev$ $Date$
  */
 public class BeanDefinition {
     private String name;

@@ -41,8 +41,6 @@ import org.fabric3.spi.generator.GenerationException;
 
 /**
  * Thrown when a injection site cannot be found for a callback.
- *
- * @version $Rev$ $Date$
  */
 public class CallbackSiteNotFoundException extends GenerationException {
     private static final long serialVersionUID = 6734181652978179903L;

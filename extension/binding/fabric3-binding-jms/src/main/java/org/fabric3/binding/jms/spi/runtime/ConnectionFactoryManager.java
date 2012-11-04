@@ -44,8 +44,6 @@ import javax.jms.ConnectionFactory;
  * Manages JMS connection factories. Implementations are responsible for registering connection factories provided by a JMS provider with the
  * runtime's JTA transaction manager in a way specific to the latter. For example, a ConnectionFactoryManager may implement JMS connection and session
  * pooling specific to the transaction manager.
- *
- * @version $Rev$ $Date$
  */
 public interface ConnectionFactoryManager {
 

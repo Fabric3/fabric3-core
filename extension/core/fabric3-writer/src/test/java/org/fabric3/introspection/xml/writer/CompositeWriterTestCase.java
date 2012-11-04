@@ -52,7 +52,7 @@ import org.fabric3.model.type.component.Composite;
 import org.fabric3.spi.introspection.xml.Writer;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class CompositeWriterTestCase extends TestCase {
 

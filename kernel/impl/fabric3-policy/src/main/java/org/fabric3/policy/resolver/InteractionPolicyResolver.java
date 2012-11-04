@@ -55,8 +55,6 @@ import org.fabric3.spi.model.instance.LogicalScaArtifact;
  * Resolution is performed in two steps to distinguish the effective policy that applies to an entire endpoint and that which applies to an operation.
  * This is necessary to account for protocols that require policy statements to be attached at specific points. For example, web services security,
  * which mandates some policy assertions only be placed on a WSDL binding (endpoint).
- *
- * @version $Rev$ $Date$
  */
 public interface InteractionPolicyResolver {
 

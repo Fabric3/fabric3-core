@@ -45,8 +45,6 @@ package org.fabric3.binding.jms.spi.common;
 
 /**
  * Defines message correlation schemes.
- *
- * @version $Revision$ $Date$
  */
 public enum CorrelationScheme {
 

@@ -75,7 +75,7 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ContributionServiceImplTestCase extends TestCase {
     private ProcessorRegistry processorRegistry;

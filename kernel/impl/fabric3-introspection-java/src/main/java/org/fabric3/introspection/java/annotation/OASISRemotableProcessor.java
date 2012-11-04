@@ -55,7 +55,7 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class OASISRemotableProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Remotable> {
     private JavaContractProcessor contractProcessor;

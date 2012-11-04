@@ -17,8 +17,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * No-op indexer for config contributions (which do not require indexing).
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ConfigIndexer implements XmlIndexer {

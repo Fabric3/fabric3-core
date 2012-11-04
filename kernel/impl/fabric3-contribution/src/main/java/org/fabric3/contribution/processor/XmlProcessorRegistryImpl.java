@@ -50,8 +50,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Default implementation of an XmlProcessorRegistry.
- *
- * @version $Rev$ $Date$
  */
 public class XmlProcessorRegistryImpl implements XmlProcessorRegistry {
     private Map<QName, XmlProcessor> cache = new HashMap<QName, XmlProcessor>();

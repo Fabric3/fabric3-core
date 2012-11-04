@@ -54,8 +54,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 /**
  * A BeanFactory implementation that tracks wire and event stream proxies configured for a Spring component. This factory is used by a parent of the
  * Spring application context for a given component and will resolve wire or channel proxies that are configured for contained Spring beans.
- *
- * @version $Rev$ $Date$
  */
 public class ProxyBeanFactory extends DefaultListableBeanFactory {
     private static final long serialVersionUID = -7196391297579217924L;

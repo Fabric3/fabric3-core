@@ -42,8 +42,6 @@ import java.util.Set;
 
 /**
  * A directed graph.
- *
- * @version $Rev$ $Date$
  */
 public interface DirectedGraph<T> {
 

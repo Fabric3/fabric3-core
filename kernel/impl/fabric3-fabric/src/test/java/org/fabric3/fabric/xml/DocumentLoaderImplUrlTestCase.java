@@ -46,7 +46,7 @@ import org.w3c.dom.Document;
 import org.fabric3.host.util.FileHelper;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DocumentLoaderImplUrlTestCase extends TestCase {
     private static final File XML_FILE = new File("DocumentLoaderImplTestCase.xml");

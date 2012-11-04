@@ -44,8 +44,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Contains general attach point metadata for Hibernate and JPA resources.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = 2196282576920362492L;

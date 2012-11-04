@@ -57,8 +57,6 @@ import org.fabric3.binding.ws.metro.util.ClassDefiner;
 
 /**
  * Default implementation of InterfaceGenerator that uses ASM to generate a subclass of the original type with JAX-WS annotations.
- *
- * @version $Rev$ $Date$
  */
 @Service(InterfaceGenerator.class)
 public class InterfaceGeneratorImpl implements InterfaceGenerator, Opcodes {

@@ -53,8 +53,6 @@ import org.apache.catalina.comet.CometProcessor;
 /**
  * A servlet registered in the Tomcat host runtime that forwards requests to other servlets. For example, servlets that handle requests destined to
  * services sent using HTTP-based bindings.
- *
- * @version $Rev: 10247 $ $Date: 2011-04-27 14:57:56 +0300 (Wed, 27 Apr 2011) $
  */
 public class Fabric3DispatchingServlet extends HttpServlet implements CometProcessor {
     private static final long serialVersionUID = -8765328474350267313L;

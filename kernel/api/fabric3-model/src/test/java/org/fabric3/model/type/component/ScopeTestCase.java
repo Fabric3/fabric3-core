@@ -46,7 +46,7 @@ package org.fabric3.model.type.component;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ScopeTestCase extends TestCase {
     public void testEquality() {

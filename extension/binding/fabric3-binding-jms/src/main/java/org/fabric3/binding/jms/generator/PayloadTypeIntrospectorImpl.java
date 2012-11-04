@@ -63,8 +63,6 @@ import org.fabric3.model.type.contract.Operation;
  * <li>If the parameter is annotated with @XmlRootElement or @XmlType, an XML type is returned
  * <ul>
  * </pre>
- *
- * @version $Rev$ $Date$
  */
 public class PayloadTypeIntrospectorImpl implements PayloadTypeIntrospector {
 

@@ -41,8 +41,6 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * Instantiates logical wires using the SCA autowire algorithm for unconfigured references.
- *
- * @version $Rev$ $Date$
  */
 public interface AutowireInstantiator {
 

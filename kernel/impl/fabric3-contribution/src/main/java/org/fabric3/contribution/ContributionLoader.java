@@ -43,8 +43,6 @@ import org.fabric3.spi.contribution.Contribution;
 
 /**
  * Loads an installed contribution.
- *
- * @version $Rev$ $Date$
  */
 public interface ContributionLoader {
 

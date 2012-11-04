@@ -77,7 +77,7 @@ import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ConnectionGeneratorImpl implements ConnectionGenerator {
     private GeneratorRegistry generatorRegistry;

@@ -38,7 +38,7 @@
 package org.fabric3.fabric.command;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ProvisionExtensionsCommand extends AbstractExtensionsCommand {
     private static final long serialVersionUID = 2153692848849354496L;

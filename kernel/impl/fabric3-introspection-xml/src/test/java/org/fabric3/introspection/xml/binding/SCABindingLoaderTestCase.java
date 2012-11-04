@@ -49,7 +49,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SCABindingLoaderTestCase extends TestCase {
     private static final String XML = "<binding.sca name='name' uri='Component/Service/Binding'/>";

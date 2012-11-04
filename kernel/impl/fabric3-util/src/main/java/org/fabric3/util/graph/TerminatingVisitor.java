@@ -39,8 +39,6 @@ package org.fabric3.util.graph;
 
 /**
  * Walks the graph until the specified vertex is reached.
- *
- * @version $Rev$ $Date$
  */
 
 public class TerminatingVisitor<T> implements Visitor<T> {

@@ -45,7 +45,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class BrokerParserTestCase extends TestCase {
     private static final String XML = "<foo><value><broker name='brokerName'>" +

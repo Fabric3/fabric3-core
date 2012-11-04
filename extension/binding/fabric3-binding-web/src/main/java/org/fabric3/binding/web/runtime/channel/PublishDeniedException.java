@@ -38,7 +38,7 @@
 package org.fabric3.binding.web.runtime.channel;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PublishDeniedException extends PublishException {
     private static final long serialVersionUID = -1089377329217256099L;

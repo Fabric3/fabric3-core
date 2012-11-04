@@ -47,7 +47,7 @@ import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ClassLoaderWireBuilderImpl implements ClassLoaderWireBuilder {
     private ClassLoaderRegistry registry;

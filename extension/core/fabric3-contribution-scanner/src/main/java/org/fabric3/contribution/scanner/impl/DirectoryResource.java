@@ -48,8 +48,6 @@ import org.fabric3.contribution.scanner.spi.FileSystemResource;
 
 /**
  * A directory resource.
- *
- * @version $Rev$ $Date$
  */
 public class DirectoryResource extends AbstractResource {
     private final File root;

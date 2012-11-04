@@ -54,8 +54,6 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
  * Generated metadata used for attaching a service endpoint to a JMS destination.
- *
- * @version $Revision$ $Date$
  */
 public class JmsSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = -4274093421849649471L;

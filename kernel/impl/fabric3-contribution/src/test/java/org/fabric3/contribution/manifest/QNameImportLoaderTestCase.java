@@ -46,7 +46,7 @@ import org.easymock.EasyMock;
 import org.fabric3.spi.contribution.manifest.QNameImport;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class QNameImportLoaderTestCase extends TestCase {
     private static final String QNAME = "namespace";

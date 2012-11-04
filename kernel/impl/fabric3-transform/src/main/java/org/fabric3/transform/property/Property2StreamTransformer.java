@@ -53,7 +53,7 @@ import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class Property2StreamTransformer implements SingleTypeTransformer<Node, XMLStreamReader> {
     private static final JavaClass<XMLStreamReader> TARGET = new JavaClass<XMLStreamReader>(XMLStreamReader.class);

@@ -58,7 +58,7 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class CollectorImplTestCase extends TestCase {
     private static final QName DEPLOYABLE1 = new QName("test", "deployable");

@@ -45,8 +45,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * Serializes instances of a model object type to a StAX output stream.
- *
- * @version $Rev$ $Date$
  */
 public interface TypeWriter<TYPE extends ModelObject> {
 

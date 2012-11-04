@@ -49,7 +49,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DisposeChannelCommandGeneratorTestCase extends TestCase {
 

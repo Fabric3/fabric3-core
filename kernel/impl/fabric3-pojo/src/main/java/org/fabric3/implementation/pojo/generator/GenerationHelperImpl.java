@@ -55,7 +55,7 @@ import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.Signature;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class GenerationHelperImpl implements GenerationHelper {
 

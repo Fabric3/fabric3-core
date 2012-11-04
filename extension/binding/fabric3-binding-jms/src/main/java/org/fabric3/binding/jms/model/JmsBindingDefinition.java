@@ -56,8 +56,6 @@ import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
 /**
  * Encapsulates JMS binding configuration specified in a composite.
- *
- * @version $Revision$ $Date$
  */
 public class JmsBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -1888120511695824132L;

@@ -44,8 +44,6 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 /**
  * Implements the SCA <reference> tag.
- *
- * @version $Rev$ $Date$
  */
 public class ReferenceTag extends SimpleTagSupport {
     private String name;

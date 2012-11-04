@@ -44,8 +44,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Encapsulates endpoint information for the service side of an invocation chain.
- *
- * @version $Rev$ $Date$
  */
 public class ServiceEndpointDefinition implements Serializable {
     private static final long serialVersionUID = 3242092002688340187L;

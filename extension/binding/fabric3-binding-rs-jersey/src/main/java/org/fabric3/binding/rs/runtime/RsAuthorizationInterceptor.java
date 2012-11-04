@@ -48,8 +48,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Translates authorization exceptions to HTTP 403 Forbidden responses.
- *
- * @version $Rev$ $Date$
  */
 public class RsAuthorizationInterceptor implements Interceptor {
     private Interceptor next;

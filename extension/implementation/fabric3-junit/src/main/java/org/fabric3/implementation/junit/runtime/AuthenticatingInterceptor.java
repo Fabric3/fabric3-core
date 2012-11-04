@@ -48,8 +48,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Sets a security subject for the current testcase invocation using configuration specified in the JUnit component definition.
- *
- * @version $Rev$ $Date$
  */
 public class AuthenticatingInterceptor implements Interceptor {
     private Interceptor next;

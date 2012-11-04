@@ -43,8 +43,6 @@ import java.net.URL;
 
 /**
  * Provides an input stream for reading the contents of an artifact.
- *
- * @version $Rev$ $Date$
  */
 public interface Source {
 

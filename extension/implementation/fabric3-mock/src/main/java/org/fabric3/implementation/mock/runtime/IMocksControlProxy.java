@@ -48,7 +48,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class IMocksControlProxy implements IMocksControl {

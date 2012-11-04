@@ -52,8 +52,6 @@ import org.fabric3.spi.component.ScopeContainer;
 
 /**
  * Managed composite-scoped components. Composite-scoped components have one instance per runtime where the component's parent composite is deployed.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 @Service(ScopeContainer.class)

@@ -42,7 +42,7 @@ import java.io.ByteArrayOutputStream;
 import ch.qos.logback.core.OutputStreamAppender;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TestAppender extends OutputStreamAppender {
     private static ByteArrayOutputStream STREAM;

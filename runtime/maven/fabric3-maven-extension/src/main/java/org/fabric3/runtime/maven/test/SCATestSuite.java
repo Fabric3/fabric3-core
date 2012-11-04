@@ -54,7 +54,7 @@ import org.apache.maven.surefire.suite.SurefireTestSuite;
 import org.apache.maven.surefire.testset.TestSetFailedException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SCATestSuite implements SurefireTestSuite {
     private final Map<String, SCATestSet> testSets = new HashMap<String, SCATestSet>();

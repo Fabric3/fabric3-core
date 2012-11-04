@@ -49,7 +49,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class XmlIndexerRegistryImplTestCase extends TestCase {
     private static final QName TYPE = new QName("test", "element");

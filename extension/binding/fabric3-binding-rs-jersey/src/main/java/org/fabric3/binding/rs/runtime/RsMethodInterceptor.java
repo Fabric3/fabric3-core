@@ -64,8 +64,6 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 /**
  * Dispatches an invocation from Jersey to the Fabric3 invocation chain fronting a component instance.
- *
- * @version $Rev$ $Date$
  */
 public class RsMethodInterceptor implements MethodInterceptor {
     private static final String FABRIC3_SUBJECT = "fabric3.subject";

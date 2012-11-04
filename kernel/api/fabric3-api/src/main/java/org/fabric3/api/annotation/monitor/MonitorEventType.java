@@ -46,8 +46,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Applied to methods in a monitoring interface to indicate the type of monitoring event.
- *
- * @version $Rev$ $Date$
  */
 @Target({METHOD, ANNOTATION_TYPE})
 @Retention(RUNTIME)

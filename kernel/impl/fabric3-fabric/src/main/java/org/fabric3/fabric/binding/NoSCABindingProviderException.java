@@ -43,7 +43,7 @@ import org.fabric3.spi.binding.provider.BindingMatchResult;
 import org.fabric3.spi.binding.provider.BindingSelectionException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class NoSCABindingProviderException extends BindingSelectionException {
     private static final long serialVersionUID = -7797860974206005955L;

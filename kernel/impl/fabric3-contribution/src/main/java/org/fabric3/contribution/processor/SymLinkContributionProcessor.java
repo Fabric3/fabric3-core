@@ -62,8 +62,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 /**
  * Processes a symbolic link contribution (*.contribution file). This is done by de-referencing the target directory specified in the .contribution
  * file and introspecting it. The introspection results are then copied to the <code>Contribution</code> representing the symbolic link.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SymLinkContributionProcessor implements ContributionProcessor {

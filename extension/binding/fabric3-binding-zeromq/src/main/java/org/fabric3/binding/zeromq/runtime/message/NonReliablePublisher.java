@@ -54,8 +54,6 @@ import org.fabric3.spi.host.Port;
  * <p/>
  * Since ZeroMQ requires the creating socket thread to dispatch messages, a looping thread is used for publishing messages. Messages are provided to
  * the thread via a queue.
- *
- * @version $Revision$ $Date$
  */
 @Management
 public class NonReliablePublisher extends AbstractStatistics implements Publisher, Thread.UncaughtExceptionHandler {

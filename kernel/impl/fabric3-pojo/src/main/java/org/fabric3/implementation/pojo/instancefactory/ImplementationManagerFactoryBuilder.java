@@ -47,8 +47,6 @@ import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition
 
 /**
  * Creates instance factory providers.
- *
- * @version $Revision$ $Date$
  */
 public interface ImplementationManagerFactoryBuilder {
 

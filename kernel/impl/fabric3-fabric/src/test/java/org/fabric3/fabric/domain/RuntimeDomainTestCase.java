@@ -73,7 +73,7 @@ import org.fabric3.spi.generator.policy.PolicyAttacher;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class RuntimeDomainTestCase extends TestCase {
     private static final URI COMPONENT_URI = URI.create("fabric3://domain/component");

@@ -39,8 +39,6 @@ package org.fabric3.admin.interpreter;
 
 /**
  * Thrown when there is an exception parsing an AST and transforming it into a Command.
- *
- * @version $Rev$ $Date$
  */
 public class ParseException extends InterpreterException {
     private static final long serialVersionUID = -7449995506490423229L;

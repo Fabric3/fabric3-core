@@ -55,8 +55,6 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 
 /**
  * Handles resource injection for <code>DataSource</code> types.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DataSourceTypeHandler implements ResourceTypeHandler {

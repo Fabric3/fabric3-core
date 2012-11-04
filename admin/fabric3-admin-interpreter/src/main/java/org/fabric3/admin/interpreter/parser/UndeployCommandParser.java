@@ -47,7 +47,7 @@ import org.fabric3.admin.interpreter.command.UndeployCommand;
 import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class UndeployCommandParser implements CommandParser {
     private static final String FORCE = "-force";

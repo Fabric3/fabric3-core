@@ -52,8 +52,6 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 
 /**
  * Implementation of a registry for classloaders.
- *
- * @version $Rev$ $Date$
  */
 public class ClassLoaderRegistryImpl implements ClassLoaderRegistry {
     private final Map<URI, ClassLoader> registry = new ConcurrentHashMap<URI, ClassLoader>();

@@ -46,8 +46,6 @@ import java.util.Set;
 
 /**
  * Default directed graph implementation.
- *
- * @version $Rev$ $Date$
  */
 public class DirectedGraphImpl<T> implements DirectedGraph<T> {
     private Map<Vertex<T>, VertexHolder> graphVertices;

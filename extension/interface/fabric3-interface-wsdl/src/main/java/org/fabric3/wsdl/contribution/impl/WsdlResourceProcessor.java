@@ -93,8 +93,6 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 /**
  * Indexes and processes a WSDL document, referenced schemas, and introspected service contracts deriving from port types in a contribution. This
  * implementation uses the WSDL4J to represent the document.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WsdlResourceProcessor implements ResourceProcessor {

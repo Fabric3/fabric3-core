@@ -43,7 +43,7 @@ import java.util.Properties;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PhysicalJndiContextDefinition extends PhysicalResourceDefinition {
     private static final long serialVersionUID = -2562498654986341584L;

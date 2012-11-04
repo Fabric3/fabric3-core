@@ -46,8 +46,6 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * Generates commands to start component contexts in a zone.
- *
- * @version $Rev$ $Date$
  */
 public interface StartContextCommandGenerator {
 

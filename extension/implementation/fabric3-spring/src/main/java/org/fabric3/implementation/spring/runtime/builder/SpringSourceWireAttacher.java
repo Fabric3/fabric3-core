@@ -59,8 +59,6 @@ import org.fabric3.spring.spi.WireListener;
 
 /**
  * Attaches the source side of a wire to a Spring component.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SpringSourceWireAttacher implements SourceWireAttacher<SpringSourceDefinition> {

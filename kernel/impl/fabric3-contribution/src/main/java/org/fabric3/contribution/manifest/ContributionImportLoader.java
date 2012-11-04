@@ -50,8 +50,6 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 
 /**
  * Processes an <code>import.contribution</code> element in a contribution manifest
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ContributionImportLoader extends AbstractValidatingTypeLoader<ContributionImport> {

@@ -39,8 +39,6 @@ package org.fabric3.spi.contract;
 
 /**
  * The result of a contract matching operation.
- *
- * @version $Rev$ $Date$
  */
 public class MatchResult {
     private boolean assignable;

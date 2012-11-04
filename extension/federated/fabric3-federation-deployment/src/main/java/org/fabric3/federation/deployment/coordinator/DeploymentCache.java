@@ -41,8 +41,6 @@ import org.fabric3.federation.deployment.command.DeploymentCommand;
 
 /**
  * Caches the deployment command history. The history can be used to synchronize a runtime to a zone's current deployment state.
- *
- * @version $Rev$ $Date$
  */
 public interface DeploymentCache {
 

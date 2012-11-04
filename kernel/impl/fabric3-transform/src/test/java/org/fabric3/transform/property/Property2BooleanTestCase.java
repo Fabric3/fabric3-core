@@ -40,8 +40,6 @@ package org.fabric3.transform.property;
 
 /**
  * Tests String to boolean transform.
- *
- * @version $Rev$ $Date$
  */
 public class Property2BooleanTestCase extends BaseTransformTest {
 

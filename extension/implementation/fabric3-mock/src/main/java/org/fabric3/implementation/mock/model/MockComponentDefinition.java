@@ -42,7 +42,7 @@ import java.util.List;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MockComponentDefinition extends PhysicalComponentDefinition {
     private static final long serialVersionUID = 9028368024803049278L;

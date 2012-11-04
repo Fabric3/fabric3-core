@@ -96,8 +96,6 @@ import static org.fabric3.model.type.component.Multiplicity.ZERO_ONE;
 
 /**
  * Default implementation of the loader helper.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultLoaderHelper implements LoaderHelper {
     private DocumentBuilderFactory documentBuilderFactory;

@@ -77,8 +77,6 @@ import org.fabric3.spi.xml.XMLFactory;
 
 /**
  * Attaches an interceptor for invoking a web service endpoint based on a Java interface contract to a wire.
- *
- * @version $Rev$ $Date$
  */
 public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher<MetroJavaTargetDefinition> {
 

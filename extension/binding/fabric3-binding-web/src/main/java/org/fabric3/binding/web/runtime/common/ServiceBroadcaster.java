@@ -48,7 +48,7 @@ import org.atmosphere.cpr.BroadcasterFuture;
 import org.atmosphere.cpr.DefaultBroadcaster;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ServiceBroadcaster extends DefaultBroadcaster {
 

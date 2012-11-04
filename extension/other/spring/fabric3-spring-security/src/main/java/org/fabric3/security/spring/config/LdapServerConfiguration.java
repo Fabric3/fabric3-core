@@ -39,8 +39,6 @@ package org.fabric3.security.spring.config;
 
 /**
  * Configuration for connecting to an LDAP server.
- *
- * @version $Rev$ $Date$
  */
 public class LdapServerConfiguration extends AuthenticationProviderConfiguration {
     private String serverLocation;

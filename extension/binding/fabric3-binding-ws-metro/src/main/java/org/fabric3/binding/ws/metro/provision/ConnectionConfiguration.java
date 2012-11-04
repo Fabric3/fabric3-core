@@ -41,8 +41,6 @@ import java.io.Serializable;
 
 /**
  * Configuration settings for the underlying web services HTTP connection.
- *
- * @version $Rev$ $Date$
  */
 public class ConnectionConfiguration implements Serializable {
     private static final long serialVersionUID = 6049593411715109203L;

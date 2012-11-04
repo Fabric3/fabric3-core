@@ -42,7 +42,7 @@ package org.fabric3.runtime.maven.itest;
 import java.net.URI;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface TestConstants {
 

@@ -50,8 +50,6 @@ import org.fabric3.spi.contribution.ContentTypeResolver;
 
 /**
  * Content type resolver that is implemented using a configured map.
- *
- * @version $Revision$ $Date$
  */
 public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
 

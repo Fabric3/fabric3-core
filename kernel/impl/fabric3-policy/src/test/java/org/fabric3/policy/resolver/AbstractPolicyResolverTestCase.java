@@ -53,8 +53,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalScaArtifact;
 
 /**
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public class AbstractPolicyResolverTestCase extends TestCase {
     private MockResolver resolver = new MockResolver(null, null, null);

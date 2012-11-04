@@ -43,8 +43,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * Raised when an attempt is made to register a set of persistent overrides with the name of one that is already registered.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public class DuplicateOverrides extends XmlValidationFailure {
 

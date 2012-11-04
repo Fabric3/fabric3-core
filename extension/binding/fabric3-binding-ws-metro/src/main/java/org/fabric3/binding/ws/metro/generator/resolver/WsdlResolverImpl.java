@@ -58,8 +58,6 @@ import org.fabric3.wsdl.factory.Wsdl4JFactory;
 
 /**
  * Resolves parsed WSDLs against an external location or those visible to the current contribution installed in the domain.
- *
- * @version $Rev$ $Date$
  */
 public class WsdlResolverImpl implements WsdlResolver {
     private MetaDataStore store;

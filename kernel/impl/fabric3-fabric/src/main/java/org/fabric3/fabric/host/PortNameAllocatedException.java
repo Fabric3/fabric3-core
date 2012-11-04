@@ -46,7 +46,7 @@ package org.fabric3.fabric.host;
 import org.fabric3.spi.host.PortAllocationException;
 
 /**
- * @version $Rev: 10029 $ $Date: 2011-02-21 16:56:40 -0500 (Mon, 21 Feb 2011) $
+ *
  */
 public class PortNameAllocatedException extends PortAllocationException {
     private static final long serialVersionUID = -7957326229957513400L;

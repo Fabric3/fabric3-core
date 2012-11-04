@@ -39,8 +39,6 @@ package org.fabric3.spi.threadpool;
 
 /**
  * Marker to indicate a Runnable may execute for a long duration and stall detection should be disabled.
- *
- * @version $Rev$ $Date$
  */
 public interface LongRunnable extends Runnable {
 

@@ -38,7 +38,7 @@
 package org.fabric3.host.domain;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class CompositeAlreadyDeployedException extends DeploymentException {
     private static final long serialVersionUID = 7676009104144520572L;

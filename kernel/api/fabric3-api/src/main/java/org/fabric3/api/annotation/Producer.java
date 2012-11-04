@@ -44,8 +44,6 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation used to indicate a producer should be provided to an implementation by the runtime.
- *
- * @version $Rev$ $Date$
  */
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)

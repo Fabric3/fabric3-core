@@ -48,7 +48,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public final class MethodUtils {
 

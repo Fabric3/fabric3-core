@@ -52,8 +52,6 @@ import org.fabric3.spi.binding.provider.BindingSelectionStrategy;
 /**
  * A BindingSelectionStrategy that makes a selection based on an ordered list of bindings. This list is provided via a property which can be sourced
  * from a runtime domain level property specified in systemConfig.xml.
- *
- * @version $Rev$ $Date$
  */
 public class ConfigurableBindingSelectionStrategy implements BindingSelectionStrategy {
     private Map<QName, Integer> bindingOrder;

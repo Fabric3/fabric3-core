@@ -40,7 +40,7 @@ package org.fabric3.container.web.spi;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WebApplicationActivationException extends Fabric3Exception {
     private static final long serialVersionUID = -7136459839546989571L;

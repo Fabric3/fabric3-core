@@ -50,8 +50,6 @@ import java.io.OutputStream;
 
 /**
  * Helper methods for processing with streams.
- *
- * @version $Rev$ $Date$
  */
 public final class IOHelper {
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;

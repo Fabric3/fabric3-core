@@ -63,8 +63,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Indexer for definitions.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DefinitionsIndexer implements XmlIndexer {

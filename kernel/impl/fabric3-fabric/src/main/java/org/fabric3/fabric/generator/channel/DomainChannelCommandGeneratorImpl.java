@@ -61,7 +61,7 @@ import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGenerator {

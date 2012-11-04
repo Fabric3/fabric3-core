@@ -41,8 +41,6 @@ import org.fabric3.api.SecuritySubject;
 
 /**
  * Implemented by security providers that perform authentication.
- *
- * @version $Rev$ $Date$
  */
 public interface AuthenticationService {
 

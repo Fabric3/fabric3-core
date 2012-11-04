@@ -39,8 +39,6 @@ package org.fabric3.spi.introspection.java;
 
 /**
  * Denotes the multiplicty type for a Java class, i.e. whether it is a single value, a collection or dictionary.
- *
- * @version $Rev$ $Date$
  */
 public enum MultiplicityType {
 

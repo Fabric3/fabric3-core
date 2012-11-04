@@ -45,7 +45,7 @@ import org.easymock.EasyMock;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SetMultiplicityObjectFactoryTestCase extends TestCase {
 

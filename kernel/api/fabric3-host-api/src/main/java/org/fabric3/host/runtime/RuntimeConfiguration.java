@@ -44,8 +44,6 @@ import org.fabric3.host.repository.Repository;
 
 /**
  * Contains host dependencies required to boot a runtime instance.
- *
- * @version $Rev$ $Date$
  */
 public class RuntimeConfiguration {
     private HostInfo hostInfo;

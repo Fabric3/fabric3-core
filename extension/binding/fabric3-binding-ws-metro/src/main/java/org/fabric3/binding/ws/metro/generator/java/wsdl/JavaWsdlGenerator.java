@@ -44,8 +44,6 @@ import com.sun.xml.ws.api.BindingID;
 /**
  * Generates WSDL documents from an SEI or implementation class. The returned generated WSDL is used to attach policy expressions with the resulting
  * document passed to the Metro infrastructure when an endpoint is provisioned.
- *
- * @version $Rev$ $Date$
  */
 public interface JavaWsdlGenerator {
 

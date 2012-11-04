@@ -41,8 +41,6 @@ import org.fabric3.spi.builder.BuilderException;
 
 /**
  * Denotes an error deploying or undeploying cache resources.
- *
- * @version $Rev$ $Date$
  */
 public class CacheBuildException extends BuilderException {
     private static final long serialVersionUID = 3793169162642657545L;

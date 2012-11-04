@@ -53,8 +53,6 @@ import org.fabric3.spi.invocation.WorkContext;
 
 /**
  * Unit tests for the composite scope container
- *
- * @version $Rev$ $Date$
  */
 public class StatelessScopeContainerTestCase extends TestCase {
     private StatelessScopeContainer scopeContainer;

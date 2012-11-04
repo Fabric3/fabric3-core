@@ -50,7 +50,7 @@ import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class String2ClassTransformer implements SingleTypeTransformer<String, Class<?>> {
     private static final XSDSimpleType SOURCE = new XSDSimpleType(String.class, new QName(XSDType.XSD_NS, "string"));

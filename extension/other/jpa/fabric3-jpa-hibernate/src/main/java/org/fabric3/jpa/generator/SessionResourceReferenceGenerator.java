@@ -48,7 +48,7 @@ import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 /**
- * @version $Rev: 7665 $ $Date: 2009-09-21 11:11:12 +0200 (Mon, 21 Sep 2009) $
+ *
  */
 @EagerInit
 public class SessionResourceReferenceGenerator implements ResourceReferenceGenerator<HibernateSessionResourceReference> {

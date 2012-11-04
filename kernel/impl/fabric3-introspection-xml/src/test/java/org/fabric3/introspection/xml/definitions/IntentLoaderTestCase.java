@@ -52,8 +52,6 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 /**
  * Loader for definitions.
- *
- * @version $Rev$ $Date$
  */
 public class IntentLoaderTestCase extends TestCase {
     private String VALID_INTENT =

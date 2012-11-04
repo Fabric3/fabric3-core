@@ -86,8 +86,6 @@ import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
  * Verifies the distributed domain when run in Single-VM, transactional mode.
- *
- * @version $Rev$ $Date$
  */
 public class DistributedDomainVMTestCase extends TestCase {
     private static final URI COMPONENT_URI = URI.create("fabric3://domain/component");

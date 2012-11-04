@@ -38,8 +38,6 @@ import org.fabric3.api.annotation.management.OperationType;
 
 /**
  * Implements basic management statistics for producer and consumer artifacts.
- *
- * @version $Revision$ $Date$
  */
 @Management
 public class AbstractStatistics {

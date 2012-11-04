@@ -44,8 +44,6 @@ import org.fabric3.host.stream.Source;
 
 /**
  * Represents a resource in a contribution such as a WSDL document or composite.
- *
- * @version $Rev$ $Date$
  */
 public class Resource {
     private List<ResourceElement<?, ?>> elements = new ArrayList<ResourceElement<?, ?>>();

@@ -60,7 +60,7 @@ import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalResource;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     /**

@@ -58,8 +58,6 @@ import org.fabric3.api.SecuritySubject;
  * completes, its CallFrame is removed from the stack.
  * <p/>
  * This implementation is <em>not</em> thread safe.
- *
- * @version $Rev$ $Date$
  */
 public class WorkContext implements Serializable {
     private static final long serialVersionUID = 9108092492339191639L;

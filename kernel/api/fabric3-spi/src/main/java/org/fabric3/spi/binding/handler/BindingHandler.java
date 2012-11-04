@@ -44,8 +44,6 @@ import org.fabric3.spi.invocation.Message;
 /**
  * Invoked when a message is sent or received over a specific binding that supports handlers. Handlers may populate the message with transport or
  * contextual data and vice-versa.
- *
- * @version $Rev$ $Date$
  */
 public interface BindingHandler<T> {
 

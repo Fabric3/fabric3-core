@@ -61,8 +61,6 @@ import org.fabric3.spi.introspection.xml.ResourceNotFound;
 
 /**
  * Loads a Java interface definition from an XML-based assembly file
- *
- * @version $Rev$ $Date$
  */
 public class JavaInterfaceLoader extends AbstractValidatingTypeLoader<ServiceContract> {
 

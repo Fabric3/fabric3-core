@@ -39,8 +39,6 @@ package org.fabric3.host.contribution;
 
 /**
  * Denotes an error storing a contribution.
- *
- * @version $Rev$ $Date$
  */
 public class StoreException extends ContributionException {
     private static final long serialVersionUID = 5509464593295262830L;

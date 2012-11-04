@@ -45,8 +45,6 @@ package org.fabric3.spi.contribution;
 
 /**
  * Definitions of constants.
- *
- * @version $Rev$ $Date$
  */
 public interface Constants {
 

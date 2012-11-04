@@ -42,8 +42,6 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
  * PhysicalWireSourceDefinition for the JUnit implementation type.
- *
- * @version $Rev$ $Date$
  */
 public class JUnitSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = 750231487385651182L;

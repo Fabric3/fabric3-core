@@ -41,8 +41,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * Denotes a message the JMS binding cannot process and therefore should not be redelivered.
- *
- * @version $Rev$ $Date$
  */
 public class JmsBadMessageException extends Fabric3Exception {
     private static final long serialVersionUID = 2460924186536830633L;

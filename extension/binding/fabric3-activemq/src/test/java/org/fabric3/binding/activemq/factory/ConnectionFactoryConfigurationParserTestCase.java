@@ -46,7 +46,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ConnectionFactoryConfigurationParserTestCase extends TestCase {
     private static final String XML = "<foo><value>" +

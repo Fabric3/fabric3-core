@@ -42,8 +42,6 @@ import java.util.Map;
 
 /**
  * An active runtime in the domain.
- *
- * @version $Rev$ $Date$
  */
 public class RuntimeInstance {
     private String name;

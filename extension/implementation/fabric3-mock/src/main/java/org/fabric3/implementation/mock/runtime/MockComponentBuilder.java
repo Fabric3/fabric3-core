@@ -51,7 +51,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class MockComponentBuilder implements ComponentBuilder<MockComponentDefinition, MockComponent> {

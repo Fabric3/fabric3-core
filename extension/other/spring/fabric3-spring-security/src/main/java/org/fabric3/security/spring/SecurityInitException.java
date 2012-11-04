@@ -40,7 +40,7 @@ package org.fabric3.security.spring;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SecurityInitException extends Fabric3Exception {
     private static final long serialVersionUID = 7161730143801588247L;

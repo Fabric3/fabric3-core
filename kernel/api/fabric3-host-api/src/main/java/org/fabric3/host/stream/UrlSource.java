@@ -46,8 +46,6 @@ import org.fabric3.host.util.FileHelper;
 
 /**
  * Provides a content stream for for an artifact referenced by a URL.
- *
- * @version $Rev$ $Date$
  */
 public class UrlSource implements Source {
 

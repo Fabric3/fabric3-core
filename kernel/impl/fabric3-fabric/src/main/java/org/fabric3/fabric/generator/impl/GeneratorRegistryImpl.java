@@ -65,7 +65,7 @@ import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class GeneratorRegistryImpl implements GeneratorRegistry {
 

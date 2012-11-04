@@ -45,7 +45,7 @@ import junit.framework.TestCase;
 import org.fabric3.host.contribution.ValidationFailure;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ValidationUtilsTestCase extends TestCase {
     private List<ValidationFailure> failures;

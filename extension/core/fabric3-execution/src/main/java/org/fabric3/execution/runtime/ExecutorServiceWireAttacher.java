@@ -50,8 +50,6 @@ import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.wire.Wire;
 
 /**
- *
- * @version $Rev$ $Date$
  */
 public class ExecutorServiceWireAttacher implements TargetWireAttacher<ExecutorServiceTargetDefinition> {
     private SingletonObjectFactory<ExecutorService> factory;

@@ -44,8 +44,6 @@ import java.io.ObjectStreamClass;
 
 /**
  * An ObjectInputStream that loads classes in the specified classloader.
- *
- * @version $Rev$ $Date$
  */
 public class ClassLoaderObjectInputStream extends ObjectInputStream {
     private ClassLoader loader;

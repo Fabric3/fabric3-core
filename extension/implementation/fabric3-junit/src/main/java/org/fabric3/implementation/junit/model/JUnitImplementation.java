@@ -44,7 +44,7 @@ import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JUnitImplementation extends Implementation<InjectingComponentType> {
     public static final QName IMPLEMENTATION_JUNIT = new QName(Namespaces.F3, "junit");

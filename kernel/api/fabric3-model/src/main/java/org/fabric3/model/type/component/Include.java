@@ -50,8 +50,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * A composite include.
- *
- * @version $Rev$ $Date$
  */
 public class Include extends ModelObject {
     private static final long serialVersionUID = 3982129607792011105L;

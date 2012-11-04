@@ -49,7 +49,7 @@ import java.util.Set;
 import org.fabric3.host.runtime.HostInfo;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface MavenHostInfo extends HostInfo {
 

@@ -46,8 +46,6 @@ import org.fabric3.host.stream.UrlSource;
 
 /**
  * A representation of a Maven module contribution.
- *
- * @version $Rev$ $Date$
  */
 public class ModuleContributionSource implements ContributionSource {
 

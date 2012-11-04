@@ -41,8 +41,6 @@ import org.fabric3.spi.security.AuthenticationException;
 
 /**
  * Denotes a bad authentication attempt.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidAuthenticationException extends AuthenticationException {
     private static final long serialVersionUID = -3180114630391618226L;

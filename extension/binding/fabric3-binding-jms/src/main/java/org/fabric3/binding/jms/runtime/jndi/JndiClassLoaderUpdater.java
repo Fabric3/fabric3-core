@@ -53,8 +53,6 @@ import org.fabric3.spi.classloader.MultiParentClassLoader;
  * <p/>
  * Note the "correct" way to do this would be for the JNDI extension to import the packages directly. However, this would introduce the complexity of
  * requiring users to add a manifest to the /jndi directory. Adding the extension classloader as a parent expediently avoids this.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 @EagerInit
 public class JndiClassLoaderUpdater {

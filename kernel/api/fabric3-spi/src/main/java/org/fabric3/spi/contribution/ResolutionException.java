@@ -40,7 +40,7 @@ package org.fabric3.spi.contribution;
 import org.fabric3.host.contribution.ContributionException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ResolutionException extends ContributionException {
     private static final long serialVersionUID = -1175837242576928094L;

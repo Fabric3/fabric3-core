@@ -39,8 +39,6 @@ package org.fabric3.binding.activemq.broker;
 
 /**
  * Encapsulates persistence adapter configuration for a broker.
- *
- * @version $Rev$ $Date$
  */
 public class PersistenceAdapterConfig {
     private Long checkpointInterval;

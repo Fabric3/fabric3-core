@@ -45,8 +45,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * Raised by framework services when an exception is encountered processing a resource request that must be returned to the client.
- *
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 public class ResourceException extends Fabric3Exception {
     private static final long serialVersionUID = 228120523405433691L;

@@ -46,7 +46,7 @@ import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
- * @version $Rev: 10102 $ $Date: 2011-03-15 23:59:22 -0700 (Tue, 15 Mar 2011) $
+ *
  */
 public abstract class AbstractPropertyBuilder {
     private TransformerRegistry transformerRegistry;

@@ -39,8 +39,6 @@ package org.fabric3.spi.contribution;
 
 /**
  * Encapsulates an addressable key for a symbol space.
- *
- * @version $Rev$ $Date$
  */
 public abstract class Symbol<KEY> {
     protected KEY key;

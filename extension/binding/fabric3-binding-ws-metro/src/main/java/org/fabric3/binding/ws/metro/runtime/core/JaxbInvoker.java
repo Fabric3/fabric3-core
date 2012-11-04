@@ -64,8 +64,6 @@ import org.fabric3.spi.wire.InvocationChain;
 /**
  * Invoker that receives a web service invocation from the Metro transport layer and dispatches it through the interceptor chain to a target service
  * that accepts JAXB parameter types.
- *
- * @version $Rev$ $Date$
  */
 public class JaxbInvoker extends Invoker {
     private Map<String, InvocationChain> chains = new HashMap<String, InvocationChain>();

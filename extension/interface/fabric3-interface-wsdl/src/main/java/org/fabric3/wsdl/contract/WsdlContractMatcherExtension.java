@@ -42,8 +42,6 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
 
 /**
  * Determines if a WsdlServiceContract is compatible with another.
- *
- * @version $Rev$ $Date$
  */
 public class WsdlContractMatcherExtension extends AbstractXsdContractMatcherExtension<WsdlServiceContract, WsdlServiceContract> {
 

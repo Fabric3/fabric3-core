@@ -45,8 +45,6 @@ package org.fabric3.binding.jms.spi.common;
 
 /**
  * JMS header values.
- *
- * @version $Revision$ $Date$
  */
 public class HeadersDefinition extends PropertyAwareObject {
     private static final long serialVersionUID = 831415808031924363L;

@@ -50,7 +50,7 @@ import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ClassLoaderWireBuilderImplTestCase extends TestCase {
     private static final String PACKAGE = "org.fabric3.test";

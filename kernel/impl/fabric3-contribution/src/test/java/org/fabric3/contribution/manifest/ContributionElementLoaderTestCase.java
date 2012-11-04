@@ -57,7 +57,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ContributionElementLoaderTestCase extends TestCase {
     private static final QName DEPLOYABLE = new QName("urn:fabric3.org", "ControllerExtension");

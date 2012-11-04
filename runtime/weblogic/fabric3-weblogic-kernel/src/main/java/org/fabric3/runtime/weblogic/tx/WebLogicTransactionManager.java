@@ -53,8 +53,6 @@ import org.oasisopen.sca.annotation.Init;
 
 /**
  * Implementation that delegates to the WebLogic TransactionManager.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WebLogicTransactionManager implements TransactionManager {

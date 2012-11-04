@@ -40,7 +40,7 @@ package org.fabric3.runtime.tomcat.servlet;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 02:48:06 +0200 (Mon, 03 Jan 2011) $
+ *
  */
 public class ServletHostException extends Fabric3Exception {
     private static final long serialVersionUID = 1890774001376972406L;

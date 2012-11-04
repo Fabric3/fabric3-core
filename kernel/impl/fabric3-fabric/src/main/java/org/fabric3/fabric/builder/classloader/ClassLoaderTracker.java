@@ -51,8 +51,6 @@ import java.net.URI;
  * SCA's import/export mechanism allows contribution classloaders to be referenced by multiple deployments (e.g. a contribution with deployed
  * components may import another contribution that exports an API package). This service tracks usage, signaling when a contribution classloader is no
  * longer referenced and may be removed.
- *
- * @version $Rev: 8734 $ $Date: 2010-03-22 15:04:53 +0100 (Mon, 22 Mar 2010) $
  */
 public interface ClassLoaderTracker {
 

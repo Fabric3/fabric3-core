@@ -40,7 +40,7 @@ package org.fabric3.spi.federation;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MessageException extends Fabric3Exception {
     private static final long serialVersionUID = 9222872325419816221L;

@@ -54,8 +54,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Generates {@link PhysicalSourceDefinition}s and {@link PhysicalTargetDefinition}s for resolved wire bindings.
- *
- * @version $Rev$ $Date$
  */
 public interface BindingGenerator<BD extends BindingDefinition> {
 

@@ -52,8 +52,6 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
 /**
  * Invokes a target Spring bean. When the bean is invoked, the thread context classloader will be set to the classloader for the contribution that
  * contains the application context.
- *
- * @version $Rev$ $Date$
  */
 public class SpringInvoker implements Interceptor {
     private String beanName;

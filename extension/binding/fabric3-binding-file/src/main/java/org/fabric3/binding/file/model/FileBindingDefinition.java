@@ -45,8 +45,6 @@ import org.fabric3.model.type.component.BindingDefinition;
 
 /**
  * A file binding configuration set on a reference.
- *
- * @version $Rev$ $Date$
  */
 public class FileBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -8904535030035183877L;

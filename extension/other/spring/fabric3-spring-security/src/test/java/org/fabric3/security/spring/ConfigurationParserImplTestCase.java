@@ -52,7 +52,7 @@ import org.fabric3.security.spring.config.LdapProviderConfiguration;
 import org.fabric3.security.spring.config.LdapServerConfiguration;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ConfigurationParserImplTestCase extends TestCase {
     private static final String JDBC_XML = "<authentication-manager>"

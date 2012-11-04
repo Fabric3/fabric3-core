@@ -44,7 +44,7 @@ import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AutowireNormalizerImpl implements AutowireNormalizer {
 

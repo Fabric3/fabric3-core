@@ -42,8 +42,6 @@ import org.fabric3.model.type.contract.DataType;
 
 /**
  * Transforms a single source type to a target type, returning a new target instance.
- *
- * @version $Rev$ $Date$
  */
 public interface SingleTypeTransformer<SOURCE, TARGET> extends Transformer<SOURCE, TARGET> {
 

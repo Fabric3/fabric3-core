@@ -61,7 +61,7 @@ import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JUnitServiceHeuristic implements HeuristicProcessor {
     private static final String TEST_SERVICE_NAME = "testService";

@@ -49,7 +49,7 @@ import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
 import org.fabric3.jndi.spi.JndiContextManager;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
+ *
  */
 public class JndiAdministeredObjectResolverTestCase extends TestCase {
     private JndiAdministeredObjectResolver resolver;

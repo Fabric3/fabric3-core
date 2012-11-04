@@ -46,8 +46,6 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 
 /**
  * Interceptor definition generator for simple policy set extensions.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SimpleInterceptorGenerator implements InterceptorGenerator {

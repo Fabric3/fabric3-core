@@ -46,7 +46,7 @@ package org.fabric3.implementation.pojo.reflection;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class NullPrimitiveException extends ObjectCreationException {
     private static final long serialVersionUID = 4043316381690250609L;

@@ -51,8 +51,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * A component type service.
- *
- * @version $Rev$ $Date$
  */
 public class ServiceDefinition extends AbstractPolicyAware {
     private static final long serialVersionUID = -3331868180749278028L;

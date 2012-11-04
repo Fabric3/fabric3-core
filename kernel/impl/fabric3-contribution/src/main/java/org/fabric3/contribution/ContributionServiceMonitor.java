@@ -48,8 +48,6 @@ import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Receives callback events from the ContributionService
- *
- * @version $Rev$ $Date$
  */
 public interface ContributionServiceMonitor {
 

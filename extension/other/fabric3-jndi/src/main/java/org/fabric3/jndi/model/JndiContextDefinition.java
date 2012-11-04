@@ -43,7 +43,7 @@ import java.util.Properties;
 import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JndiContextDefinition extends ResourceDefinition {
     private static final long serialVersionUID = 897102744778070486L;

@@ -53,7 +53,7 @@ import org.easymock.EasyMock;
 import org.fabric3.datasource.spi.DataSourceRegistry;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ClasspathPersistenceContextParserTestCase extends TestCase {
     private PersistenceContextParser parser;

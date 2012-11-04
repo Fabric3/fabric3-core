@@ -45,8 +45,6 @@ package org.fabric3.spi.command;
 
 /**
  * Specialized command that has a compensating action.
- *
- * @version $Rev$ $Date$
  */
 public interface CompensatableCommand extends Command {
 

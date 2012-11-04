@@ -46,7 +46,7 @@ package org.fabric3.introspection.java.annotation;
 import org.fabric3.host.contribution.ValidationFailure;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class InvalidScope extends ValidationFailure {
     private Class<?> clazz;

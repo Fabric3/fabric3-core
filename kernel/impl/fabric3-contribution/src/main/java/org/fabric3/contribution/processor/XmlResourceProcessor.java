@@ -63,8 +63,6 @@ import org.fabric3.spi.xml.XMLFactory;
 /**
  * Processes an XML-based resource in a contribution, delegating to a an XMLIndexer to index the resource and a Loader to load it based on the root
  * element QName.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class XmlResourceProcessor implements ResourceProcessor {

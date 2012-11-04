@@ -55,8 +55,6 @@ import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
 /**
  * Creates the classpath for a contribution synthesized from a directory. All contained jars will be added to the classpath.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SyntheticDirectoryClasspathProcessor implements ClasspathProcessor {

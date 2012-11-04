@@ -42,7 +42,7 @@ import java.net.URI;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev: 8947 $ $Date: 2010-05-02 15:09:45 +0200 (Sun, 02 May 2010) $
+ *
  */
 public class ChannelManagerImplTestCase extends TestCase {
 

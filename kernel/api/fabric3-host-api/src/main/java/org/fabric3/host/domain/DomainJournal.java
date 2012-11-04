@@ -45,8 +45,6 @@ import javax.xml.namespace.QName;
 /**
  * The state of the domain encompassing the contributions that have been deployed and the deployable composites within those contributions that have
  * been deployed. Used during recovery to reconstitute the current domain state.
- *
- * @version $Rev$ $Date$
  */
 public class DomainJournal {
     private List<URI> contributions;

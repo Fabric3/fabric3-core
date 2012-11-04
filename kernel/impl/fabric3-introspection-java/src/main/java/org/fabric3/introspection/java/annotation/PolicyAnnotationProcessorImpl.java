@@ -62,7 +62,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor {
     private Map<String, QName> intentsToQualifiers = new HashMap<String, QName>();

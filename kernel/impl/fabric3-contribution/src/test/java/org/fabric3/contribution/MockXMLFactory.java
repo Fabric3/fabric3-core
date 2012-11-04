@@ -7,7 +7,7 @@ import org.fabric3.spi.xml.XMLFactory;
 import org.fabric3.spi.xml.XMLFactoryInstantiationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MockXMLFactory implements XMLFactory {
     public XMLInputFactory newInputFactoryInstance() throws XMLFactoryInstantiationException {

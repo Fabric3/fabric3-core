@@ -61,8 +61,6 @@ import org.fabric3.spi.transform.Transformer;
  * A performance optimization is made: string events that are contained in an EventWrapper are written directly to clients. This avoids
  * deserialization and re-serialization when one client publishes an event, the event is flowed through a channel, and other clients are notified via
  * the broadcaster. In this case, the serialized string representation is simply passed through without an intervening de-serialization.
- *
- * @version $Rev$ $Date$
  */
 public class ChannelBroadcaster extends DefaultBroadcaster {
     private Transformer<Object, String> jsonTransformer;

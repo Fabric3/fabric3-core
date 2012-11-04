@@ -51,7 +51,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DefinitionsProcessorTestCase extends TestCase {
 

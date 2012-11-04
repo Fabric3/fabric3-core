@@ -67,8 +67,6 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  * De-registers the component from the component manager.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DisposeComponentCommandExecutor implements CommandExecutor<DisposeComponentCommand> {

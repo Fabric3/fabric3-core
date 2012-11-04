@@ -43,8 +43,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 /**
  * Interface to a service that walks a Java class and updates the implementation definition based on annotations found.  Errors and warnings are
  * reported in the IntrospectionContext.
- *
- * @version $Rev$ $Date$
  */
 public interface ClassVisitor {
     /**

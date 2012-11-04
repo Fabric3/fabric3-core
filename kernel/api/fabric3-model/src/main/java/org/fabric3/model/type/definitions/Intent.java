@@ -50,8 +50,6 @@ import org.oasisopen.sca.Constants;
 
 /**
  * An intent.
- *
- * @version $Rev$ $Date$
  */
 public final class Intent extends AbstractPolicyDefinition {
     private static final long serialVersionUID = -3075153359030949561L;

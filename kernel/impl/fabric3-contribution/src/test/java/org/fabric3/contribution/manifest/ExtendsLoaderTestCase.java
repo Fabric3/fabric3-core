@@ -46,7 +46,7 @@ import junit.framework.TestCase;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ExtendsLoaderTestCase extends TestCase {
 

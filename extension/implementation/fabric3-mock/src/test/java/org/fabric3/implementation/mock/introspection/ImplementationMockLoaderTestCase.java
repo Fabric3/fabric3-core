@@ -56,7 +56,7 @@ import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ImplementationMockLoaderTestCase extends TestCase {
     private static final String XML = "<composite xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912'" +

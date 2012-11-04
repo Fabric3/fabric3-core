@@ -62,8 +62,6 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
  * Processes the <code>binding.sca</code> element.
- *
- * @version $Rev$ $Date$
  */
 public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding> {
     private static final QName BINDING = new QName(Constants.SCA_NS, "binding.sca");

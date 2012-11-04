@@ -40,7 +40,7 @@ package org.fabric3.fabric.generator.channel;
 import org.fabric3.spi.generator.GenerationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ChannelNotFoundException extends GenerationException {
     private static final long serialVersionUID = 6672404725027043076L;

@@ -43,8 +43,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Marks and collects components, wires, and bindings during deployment and undeployment.
- *
- * @version $Rev$ $Date$
  */
 public interface Collector {
 

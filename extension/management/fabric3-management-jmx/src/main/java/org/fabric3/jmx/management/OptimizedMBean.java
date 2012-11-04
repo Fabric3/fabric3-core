@@ -60,8 +60,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Wraps a Java-based component as an MBean and allows it to be invoked by an MBean server.
- *
- * @version $Rev$ $Date$
  */
 public class OptimizedMBean<T> extends AbstractMBean {
     private final ObjectFactory<T> objectFactory;

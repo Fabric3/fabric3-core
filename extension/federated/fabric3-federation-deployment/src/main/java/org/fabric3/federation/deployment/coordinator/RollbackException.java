@@ -41,8 +41,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * Thrown when an exception occurs reverting a runtime back to its previous deployment state.
- *
- * @version $Rev$ $Date$
  */
 public class RollbackException extends Fabric3Exception {
     private static final long serialVersionUID = 3843801407964395025L;

@@ -40,7 +40,7 @@ package org.fabric3.management.rest.runtime;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public final class PathHelperTestCase extends TestCase {
 

@@ -42,7 +42,7 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class CycleTestCase extends TestCase {
 

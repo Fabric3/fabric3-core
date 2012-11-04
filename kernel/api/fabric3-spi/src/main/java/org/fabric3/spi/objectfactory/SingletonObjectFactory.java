@@ -45,8 +45,6 @@ package org.fabric3.spi.objectfactory;
 
 /**
  * Implementation of ObjectFactory that returns a single instance, typically an immutable type.
- *
- * @version $Rev$ $Date$
  */
 public class SingletonObjectFactory<T> implements ObjectFactory<T> {
     private final T instance;

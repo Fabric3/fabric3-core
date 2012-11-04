@@ -42,8 +42,6 @@ import java.io.Serializable;
 /**
  * Encapsulates context configuration that is established by the test runtime prior to a test invocation. For example, user authentication
  * information.
- *
- * @version $Rev$ $Date$
  */
 public class ContextConfiguration implements Serializable {
     private static final long serialVersionUID = -6959156524179030733L;

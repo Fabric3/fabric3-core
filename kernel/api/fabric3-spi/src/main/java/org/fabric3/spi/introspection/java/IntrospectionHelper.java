@@ -60,8 +60,6 @@ import org.fabric3.spi.model.type.java.JavaTypeInfo;
 
 /**
  * Helper service that provides support methods to simplify introspection.
- *
- * @version $Rev$ $Date$
  */
 public interface IntrospectionHelper {
 

@@ -62,8 +62,6 @@ import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER
  * </pre>
  * The persistence unit name must be specified. Note that the datasource will be introspected from the <code>persistence.xml</code> file and should
  * not be set as a bean property.
- *
- * @version $Rev$ $Date$
  */
 public class Fabric3EntityManagerFactoryBean extends LocalContainerEntityManagerFactoryBean {
     private static final long serialVersionUID = 3488984443450640577L;

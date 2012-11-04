@@ -46,7 +46,7 @@ import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class Property2LongTransformer implements SingleTypeTransformer<Node, Long> {
     private static final JavaClass<Long> TARGET = new JavaClass<Long>(Long.class);

@@ -15,7 +15,7 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class CacheResourceLoaderTestCase extends TestCase {
     private static final String XML = "<caches><cache name='cache'><provider/></cache></caches>";

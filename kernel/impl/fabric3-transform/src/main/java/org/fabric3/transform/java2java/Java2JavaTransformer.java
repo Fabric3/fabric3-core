@@ -50,8 +50,6 @@ import org.fabric3.spi.transform.Transformer;
 
 /**
  * Transforms data using serialization from one classloader to another.
- *
- * @version $Rev$ $Date$
  */
 public class Java2JavaTransformer implements Transformer<Serializable, Serializable> {
 

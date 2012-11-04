@@ -43,8 +43,6 @@ import java.net.URL;
 
 /**
  * A file-based resource.
- *
- * @version $Rev$ $Date$
  */
 public class FileResource extends AbstractResource {
     private File file;

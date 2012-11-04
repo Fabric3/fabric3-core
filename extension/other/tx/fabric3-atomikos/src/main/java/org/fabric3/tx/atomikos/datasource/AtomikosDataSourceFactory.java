@@ -65,8 +65,6 @@ import org.fabric3.spi.management.ManagementService;
 
 /**
  * Initializes configured data sources and provides facilities for creating datasources dynamically.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class AtomikosDataSourceFactory implements DataSourceFactory {

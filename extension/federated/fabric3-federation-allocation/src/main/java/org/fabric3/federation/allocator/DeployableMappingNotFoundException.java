@@ -40,7 +40,7 @@ package org.fabric3.federation.allocator;
 import org.fabric3.spi.allocator.AllocationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DeployableMappingNotFoundException extends AllocationException {
     private static final long serialVersionUID = 2216545289345689836L;

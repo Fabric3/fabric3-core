@@ -52,8 +52,6 @@ import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 
 /**
  * Starts and clears the current execution context for incoming HTTP/S requests.
- *
- * @version $Rev$ $Date$
  */
 public class ExecutionContextHandler extends HandlerWrapper {
 

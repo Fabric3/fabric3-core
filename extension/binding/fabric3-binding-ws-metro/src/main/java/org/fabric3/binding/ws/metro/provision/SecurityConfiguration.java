@@ -41,8 +41,6 @@ import java.io.Serializable;
 
 /**
  * Encapsulates security configuration for the Metro-based web services binding.
- *
- * @version $Rev$ $Date$
  */
 public class SecurityConfiguration implements Serializable {
     private static final long serialVersionUID = 6145747708025591245L;

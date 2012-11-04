@@ -42,8 +42,6 @@ import org.fabric3.spi.model.version.Versionable;
 
 /**
  * Represents Java package information specified in a Java import or export contribution manifest declaration.
- *
- * @version $Rev$ $Date$
  */
 public final class PackageInfo extends Versionable {
     private static final long serialVersionUID = 1011714148953772009L;

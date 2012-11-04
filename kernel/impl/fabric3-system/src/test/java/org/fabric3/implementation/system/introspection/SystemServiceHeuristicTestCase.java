@@ -62,7 +62,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SystemServiceHeuristicTestCase extends TestCase {
     private static final Set<Class<?>> NOCLASSES = Collections.emptySet();

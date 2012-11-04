@@ -33,7 +33,7 @@ package org.fabric3.binding.file.generator;
 import org.fabric3.spi.generator.GenerationException;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 public class InvalidContractException extends GenerationException {
 

@@ -51,8 +51,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Base class for types that intents and policySets may be associated with.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractPolicyAware extends ModelObject implements PolicyAware {
     private static final long serialVersionUID = -3494285576822641528L;

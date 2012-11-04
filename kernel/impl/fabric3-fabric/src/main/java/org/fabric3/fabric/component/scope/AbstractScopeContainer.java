@@ -53,8 +53,6 @@ import org.fabric3.spi.component.ScopedComponent;
 
 /**
  * Implements functionality common to scope containers.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractScopeContainer implements ScopeContainer {
     private Scope scope;

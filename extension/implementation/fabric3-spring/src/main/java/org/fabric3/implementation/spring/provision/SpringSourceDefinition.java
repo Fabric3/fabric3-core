@@ -43,8 +43,6 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
  * Metadata for attaching a wire to a reference in a Spring application context.
- *
- * @version $Rev$ $Date$
  */
 public class SpringSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = 5648037666523575314L;

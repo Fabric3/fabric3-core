@@ -47,8 +47,6 @@ import org.fabric3.spi.component.ComponentException;
 
 /**
  * Thrown when an error is encountered registering a component with the ComponentManager.
- *
- * @version $Rev$ $Date$
  */
 public abstract class RegistrationException extends ComponentException {
     public RegistrationException() {

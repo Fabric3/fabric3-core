@@ -67,7 +67,7 @@ import org.fabric3.timer.spi.Task;
 import org.fabric3.timer.spi.TimerService;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 @Service(names = {TimerService.class, ScheduledExecutorService.class})

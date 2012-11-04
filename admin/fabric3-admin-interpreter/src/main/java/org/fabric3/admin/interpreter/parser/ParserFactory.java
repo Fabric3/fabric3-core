@@ -46,7 +46,7 @@ import org.fabric3.admin.interpreter.Settings;
 import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ParserFactory {
 

@@ -56,7 +56,7 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class FtpBindingLoader extends AbstractValidatingTypeLoader<FtpBindingDefinition> {
     private final LoaderHelper loaderHelper;

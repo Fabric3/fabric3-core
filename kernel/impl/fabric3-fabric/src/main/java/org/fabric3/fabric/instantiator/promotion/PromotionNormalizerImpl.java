@@ -87,8 +87,6 @@ import org.fabric3.spi.util.UriHelper;
  * <p/>
  * <li>The list is iterated a second time and wires for references are examined with their targets pushed down to the next (child) level in the
  * hierarchy.
- *
- * @version $Rev$ $Date$
  */
 public class PromotionNormalizerImpl implements PromotionNormalizer {
     private PolicyRegistry registry;

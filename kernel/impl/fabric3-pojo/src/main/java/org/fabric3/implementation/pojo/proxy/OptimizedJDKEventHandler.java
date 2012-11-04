@@ -49,8 +49,6 @@ import org.fabric3.spi.channel.EventStream;
 
 /**
  * Dispatches from a proxy to a single {@link EventStream}.
- *
- * @version $Rev: 8947 $ $Date: 2010-05-02 15:09:45 +0200 (Sun, 02 May 2010) $
  */
 public final class OptimizedJDKEventHandler extends AbstractJDKEventHandler {
     private EventStream stream;

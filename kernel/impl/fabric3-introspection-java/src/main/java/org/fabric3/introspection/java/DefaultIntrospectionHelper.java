@@ -86,7 +86,7 @@ import org.fabric3.spi.model.type.java.JavaTypeInfo;
 import org.fabric3.spi.model.type.java.Signature;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DefaultIntrospectionHelper implements IntrospectionHelper {
     // the wrapper classes we understand and which all have a single type parameter

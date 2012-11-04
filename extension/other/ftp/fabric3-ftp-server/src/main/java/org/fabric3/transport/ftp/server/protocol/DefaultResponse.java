@@ -39,8 +39,6 @@ package org.fabric3.transport.ftp.server.protocol;
 
 /**
  * Default implementation of the FTP response.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultResponse implements Response {
 

@@ -43,8 +43,6 @@ import org.fabric3.spi.command.Response;
  * A response to a {@link RuntimeUpdateCommand}. The response may contain a {@link DeploymentCommand} to be executed by the originating runtime or may
  * indicate the target runtime is not updated with a current deployment (in which case the deployment command will be null). A controller will always
  * return a deployment command, while a peer runtime may return a not updated status.
- *
- * @version $Rev$ $Date$
  */
 public class RuntimeUpdateResponse implements Response {
     private static final long serialVersionUID = -4131501898263082374L;

@@ -42,8 +42,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * Denotes Cache exception.
- *
- * @version $Rev$ $Date$
  */
 public class InfinispanCacheException extends Fabric3Exception {
     private static final long serialVersionUID = -5951166469975384736L;

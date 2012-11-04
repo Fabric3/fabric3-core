@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MonitorEventImplTestCase extends TestCase {
 

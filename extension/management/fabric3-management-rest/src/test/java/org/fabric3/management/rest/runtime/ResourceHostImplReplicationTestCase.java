@@ -54,7 +54,7 @@ import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.BasicAuthenticator;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public final class ResourceHostImplReplicationTestCase extends TestCase {
     private ResourceHostImpl host;

@@ -38,7 +38,7 @@
 package org.fabric3.host.domain;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DeployableNotFoundException extends DeploymentException {
     private static final long serialVersionUID = -8572491242992185157L;

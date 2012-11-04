@@ -41,8 +41,6 @@ import java.net.URI;
 
 /**
  * Tracks the in-use count of provisioned extensions (i.e. ones installed as part of a deployment and not previously installed in a runtime).
- *
- * @version $Rev$ $Date$
  */
 public interface ProvisionedExtensionTracker {
 

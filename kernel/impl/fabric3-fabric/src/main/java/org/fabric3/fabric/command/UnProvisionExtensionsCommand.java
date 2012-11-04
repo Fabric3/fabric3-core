@@ -39,8 +39,6 @@ package org.fabric3.fabric.command;
 
 /**
  * Command to unprovision a set of extensions.
- *
- * @version $Rev$ $Date$
  */
 public class UnProvisionExtensionsCommand extends AbstractExtensionsCommand {
     private static final long serialVersionUID = -1996037945082492244L;

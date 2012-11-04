@@ -43,8 +43,6 @@ package org.fabric3.spi.builder.classloader;
  * <p/>
  * In a single-VM environment, callbacks will be received when a deployment is made but the classloader will have been provisioned when the
  * contribution was installed.
- *
- * @version $Rev$ $Date$
  */
 public interface ClassLoaderListener {
 

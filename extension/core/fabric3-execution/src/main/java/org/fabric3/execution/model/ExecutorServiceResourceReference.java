@@ -42,8 +42,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * A resource that takes an ExecutorService type.
- *
- * @version $Rev$ $Date$
  */
 public class ExecutorServiceResourceReference extends ResourceReferenceDefinition {
     private static final long serialVersionUID = -7941116454357577579L;

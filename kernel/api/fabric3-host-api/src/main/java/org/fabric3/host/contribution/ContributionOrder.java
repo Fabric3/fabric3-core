@@ -45,8 +45,6 @@ import java.util.List;
  * Maintains ordering for contributions based on manifest information.  Contributions are divided into two categories, base and isolated. Base
  * contributions only rely on boot runtime capabilities; isolated contributions may rely on capabilities provided by other extensions and must be
  * deployed after the base extensions.
- *
- * @version $Rev$ $Date$
  */
 public class ContributionOrder {
     private List<URI> base = new ArrayList<URI>();

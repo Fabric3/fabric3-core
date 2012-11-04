@@ -50,8 +50,6 @@ import javax.xml.namespace.QName;
 /**
  * Used to provision a wire on a runtime. Contains metadata for attaching the wire to a source transport or component and target transport or
  * component.
- *
- * @version $Rev$ $Date$
  */
 public class PhysicalWireDefinition implements Serializable {
     private static final long serialVersionUID = 995196092611674935L;

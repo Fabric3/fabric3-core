@@ -52,8 +52,6 @@ import org.fabric3.spi.component.ScopeRegistry;
 
 /**
  * The default implementation of a scope registry.
- *
- * @version $Rev$ $Date$
  */
 public class ScopeRegistryImpl implements ScopeRegistry {
     private final Map<String, ScopeContainer> scopes = new ConcurrentHashMap<String, ScopeContainer>();

@@ -46,7 +46,7 @@ import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DeployMonitorListenerTestCase extends TestCase {
     private static final QName DEPLOYABLE = new QName("test", "composite");

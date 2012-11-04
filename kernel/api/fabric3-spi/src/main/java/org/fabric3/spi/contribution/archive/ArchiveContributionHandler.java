@@ -43,8 +43,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Iterates contained artifacts in an archive contribution type during introspection.
- *
- * @version $Rev$ $Date$
  */
 public interface ArchiveContributionHandler {
 

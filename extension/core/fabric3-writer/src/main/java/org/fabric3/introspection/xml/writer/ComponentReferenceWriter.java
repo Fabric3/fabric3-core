@@ -52,8 +52,6 @@ import org.fabric3.spi.introspection.xml.Writer;
 
 /**
  * Serializes a composite reference to a StAX stream.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ComponentReferenceWriter extends AbstractTypeWriter<ComponentReference> {

@@ -37,8 +37,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
  * Generated metadata used for attaching channels and consumers to a ZeroMQ socket.
- *
- * @version $Revision$ $Date$
  */
 public class ZeroMQConnectionSourceDefinition extends PhysicalConnectionSourceDefinition {
     private static final long serialVersionUID = -5592193497329776643L;

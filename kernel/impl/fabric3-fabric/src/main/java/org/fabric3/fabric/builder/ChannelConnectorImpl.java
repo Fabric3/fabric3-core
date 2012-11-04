@@ -68,8 +68,6 @@ import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
  * Default ChannelConnector implementation.
- *
- * @version $Rev$ $Date$
  */
 public class ChannelConnectorImpl implements ChannelConnector {
     private Map<Class<? extends PhysicalConnectionSourceDefinition>, SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>>

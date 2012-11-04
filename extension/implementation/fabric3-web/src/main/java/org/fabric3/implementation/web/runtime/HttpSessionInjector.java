@@ -46,8 +46,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Injects an instance (e.g. a reference proxy) into an HTTP session object.
- *
- * @version $Rev$ $Date$
  */
 public class HttpSessionInjector implements Injector<HttpSession> {
     private ObjectFactory<?> objectFactory;

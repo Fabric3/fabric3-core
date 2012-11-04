@@ -46,7 +46,7 @@ import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
- * @version $Rev: 9201 $ $Date: 2010-07-16 17:02:56 +0200 (Fri, 16 Jul 2010) $
+ *
  */
 @EagerInit
 public class SecurityContextInterceptor implements Interceptor {

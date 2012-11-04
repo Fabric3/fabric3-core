@@ -64,8 +64,6 @@ import org.fabric3.spi.invocation.WorkContext;
 
 /**
  * Starts a component context on a runtime.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class StartContextCommandExecutor implements CommandExecutor<StartContextCommand> {

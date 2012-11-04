@@ -40,7 +40,7 @@ package org.fabric3.contribution.war;
 import org.fabric3.api.annotation.monitor.Info;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface WarResourceMonitor {
 

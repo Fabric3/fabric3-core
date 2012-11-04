@@ -51,8 +51,6 @@ import org.fabric3.spi.host.PortAllocator;
 
 /**
  * Temporarily commented out as it is failing on the Codehaus Bamboo machine.
- *
- * @version $Rev: 10029 $ $Date: 2011-02-21 16:56:40 -0500 (Mon, 21 Feb 2011) $
  */
 public class PortAllocatorImplTestCase extends TestCase {
     private PortAllocatorImpl allocator;

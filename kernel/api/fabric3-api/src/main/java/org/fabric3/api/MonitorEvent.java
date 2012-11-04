@@ -43,8 +43,6 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
  * Encapsulates monitor data that will be broadcast as an event.
- *
- * @version $Rev$ $Date$
  */
 public interface MonitorEvent extends Serializable {
 

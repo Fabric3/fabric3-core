@@ -53,8 +53,6 @@ import org.fabric3.spi.introspection.xml.LoaderUtil;
 
 /**
  * Loads <code>binding.web</code> elements in a composite.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WebBindingLoader extends AbstractValidatingTypeLoader<WebBindingDefinition> {

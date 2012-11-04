@@ -53,8 +53,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 /**
  * Attaches a producer to a channel configured with the web binding. Since the web binding does not support native multicast, events are sent to a
  * channel locally which replicates the event across a zone.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WebTargetConnectionAttacher implements TargetConnectionAttacher<WebConnectionTargetDefinition> {

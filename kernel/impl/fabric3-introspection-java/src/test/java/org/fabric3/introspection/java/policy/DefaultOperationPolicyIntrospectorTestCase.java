@@ -54,7 +54,7 @@ import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DefaultOperationPolicyIntrospectorTestCase extends TestCase {
 

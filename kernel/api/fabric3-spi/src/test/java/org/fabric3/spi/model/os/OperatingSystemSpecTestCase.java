@@ -43,7 +43,7 @@ import org.fabric3.host.Version;
 import org.fabric3.host.os.OperatingSystem;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class OperatingSystemSpecTestCase extends TestCase {
 

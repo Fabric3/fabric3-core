@@ -39,8 +39,6 @@ package org.fabric3.api;
 
 /**
  * Typed interface to a monitor channel.
- *
- * @version $Rev$ $Date$
  */
 public interface MonitorChannel {
 

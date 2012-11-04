@@ -50,8 +50,6 @@ import org.fabric3.spi.security.NotAuthorizedException;
 
 /**
  * Implementation which uses Tomcat security to determine access rights.
- *
- * @version $Rev: 9216 $ $Date: 2010-07-19 10:15:48 +0200 (Mon, 19 Jul 2010) $
  */
 @EagerInit
 public class TomcatAuthorizationService implements AuthorizationService {

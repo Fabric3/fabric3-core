@@ -50,8 +50,6 @@ import org.fabric3.spi.contract.MatchResult;
 
 /**
  * The default ContractMatcher implementation.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultContractMatcher implements ContractMatcher {
     private Map<Key, ContractMatcherExtension<?, ?>> cache = new HashMap<Key, ContractMatcherExtension<?, ?>>();

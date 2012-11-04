@@ -49,8 +49,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * Denotes duplicate qualified intent names
- *
- * @version $Rev$ $Date$
  */
 public class DuplicateQualifiedName extends XmlValidationFailure {
 

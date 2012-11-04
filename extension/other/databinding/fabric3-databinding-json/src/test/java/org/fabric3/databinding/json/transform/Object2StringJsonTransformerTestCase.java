@@ -59,7 +59,7 @@ package org.fabric3.databinding.json.transform;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev: 7714 $ $Date: 2009-09-29 10:24:45 +0200 (Tue, 29 Sep 2009) $
+ *
  */
 public class Object2StringJsonTransformerTestCase extends TestCase {
 

@@ -38,7 +38,7 @@
 package org.fabric3.host.contribution;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class UnresolvedImportException extends InstallException {
     private static final long serialVersionUID = -1442853849509129572L;

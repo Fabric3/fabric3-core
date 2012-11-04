@@ -47,7 +47,7 @@ import org.w3c.dom.Document;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class XQueryComponentDefinition extends PhysicalComponentDefinition {
     private static final long serialVersionUID = -2176668190738465467L;

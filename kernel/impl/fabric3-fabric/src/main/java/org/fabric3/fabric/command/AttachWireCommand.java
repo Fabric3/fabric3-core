@@ -46,8 +46,6 @@ package org.fabric3.fabric.command;
 /**
  * A command to attach a set of wires from a source component to a set of targets on a runtime. Valid targets can be a service offered by another
  * component, a binding transport, or a resource.
- *
- * @version $Rev$ $Date$
  */
 public class AttachWireCommand extends WireCommand {
     private static final long serialVersionUID = -5157427289507028318L;

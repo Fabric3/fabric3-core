@@ -44,8 +44,6 @@ import org.fabric3.spi.util.ParamTypes;
 
 /**
  * Utility class for loading operation parameter and fault types.
- *
- * @version $Rev$ $Date$
  */
 public class ParameterTypeHelper {
     private ParameterTypeHelper() {

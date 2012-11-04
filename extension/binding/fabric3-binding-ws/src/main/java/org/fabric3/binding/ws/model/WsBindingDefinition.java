@@ -57,8 +57,6 @@ import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
 /**
  * Logical binding definition for web services.
- *
- * @version $Revision$ $Date$
  */
 public class WsBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -2097314069798596206L;

@@ -43,8 +43,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Generates metadata to attach a component resource reference to a resource.
- *
- * @version $Rev$ $Date$
  */
 public interface ResourceReferenceGenerator<R extends ResourceReferenceDefinition> {
 

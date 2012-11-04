@@ -44,8 +44,6 @@ import org.fabric3.model.type.component.BindingDefinition;
 
 /**
  * Represents binding information for a wire between collocated components.
- *
- * @version $Rev$ $Date$
  */
 public final class LocalBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 8531584350454081265L;

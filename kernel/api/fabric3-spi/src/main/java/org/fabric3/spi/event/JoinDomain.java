@@ -39,8 +39,6 @@ package org.fabric3.spi.event;
 
 /**
  * Signals when a runtime enters the join domain phase of its bootstrap process.
- *
- * @version $Rev$ $Date$
  */
 public class JoinDomain implements Fabric3Event {
 }

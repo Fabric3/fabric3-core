@@ -51,7 +51,7 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class InfinispanTypeLoaderTest extends TestCase {
 

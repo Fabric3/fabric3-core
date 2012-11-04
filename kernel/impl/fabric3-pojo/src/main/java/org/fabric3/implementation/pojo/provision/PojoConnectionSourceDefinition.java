@@ -47,7 +47,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PojoConnectionSourceDefinition extends PhysicalConnectionSourceDefinition {
     private static final long serialVersionUID = -4308379086425414609L;

@@ -58,8 +58,6 @@ import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_XA_CONNEC
 
 /**
  * Contains helper functions used during generation.
- *
- * @version $Revision$ $Date$
  */
 public class JmsGeneratorHelper {
 

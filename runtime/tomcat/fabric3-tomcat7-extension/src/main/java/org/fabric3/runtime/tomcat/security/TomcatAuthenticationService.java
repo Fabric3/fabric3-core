@@ -59,8 +59,6 @@ import org.fabric3.spi.security.UsernamePasswordToken;
 
 /**
  * Implementation which authenticates using a Tomcat security realm.
- *
- * @version $Rev: 10719 $ $Date: 2011-10-01 03:27:41 +0300 (Sat, 01 Oct 2011) $
  */
 @EagerInit
 public class TomcatAuthenticationService implements AuthenticationService {

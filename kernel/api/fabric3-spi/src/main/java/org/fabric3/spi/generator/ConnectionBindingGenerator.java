@@ -53,8 +53,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
  * Generates {@link PhysicalConnectionSourceDefinition}s and {@link PhysicalConnectionTargetDefinition}s for resolved connection bindings.
- *
- * @version $Rev$ $Date$
  */
 public interface ConnectionBindingGenerator<BD extends BindingDefinition> {
 

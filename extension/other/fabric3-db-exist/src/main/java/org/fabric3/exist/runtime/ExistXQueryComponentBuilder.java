@@ -39,9 +39,7 @@ import org.fabric3.xquery.provision.XQueryComponentDefinition;
 
 /**
  * Instantiates a xquery component on a runtime node.
- * 
- * @version $Rev$ $Date$
- */
+ * */
 @EagerInit
 public class ExistXQueryComponentBuilder implements ComponentBuilder<XQueryComponentDefinition, XQueryComponent> {
 

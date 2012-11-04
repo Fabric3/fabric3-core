@@ -60,7 +60,7 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ReferenceCommandGeneratorWireTestCase extends TestCase {
     private static final QName DEPLOYABLE = new QName("foo", "bar");

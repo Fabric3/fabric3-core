@@ -48,8 +48,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Default implementation of an IntrospectionContext.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultIntrospectionContext implements IntrospectionContext {
     private List<ValidationFailure> errors = new ArrayList<ValidationFailure>();

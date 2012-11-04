@@ -40,7 +40,7 @@ package org.fabric3.wsdl.processor;
 import org.fabric3.host.contribution.ValidationFailure;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SchemaTypeNotFound extends ValidationFailure {
     private String message;

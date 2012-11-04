@@ -56,7 +56,7 @@ import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SystemImplementationLoaderTestCase extends TestCase {
     private IntrospectionContext context;

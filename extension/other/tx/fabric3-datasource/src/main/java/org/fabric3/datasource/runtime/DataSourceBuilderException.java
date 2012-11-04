@@ -40,7 +40,7 @@ package org.fabric3.datasource.runtime;
 import org.fabric3.spi.builder.BuilderException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DataSourceBuilderException extends BuilderException {
     private static final long serialVersionUID = -1759805806096578062L;

@@ -40,7 +40,7 @@ package org.fabric3.binding.ftp.runtime;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface BindingMonitor {
 

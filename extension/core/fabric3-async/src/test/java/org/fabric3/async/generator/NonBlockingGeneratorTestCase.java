@@ -47,7 +47,7 @@ import org.fabric3.spi.generator.PolicyMetadata;
 import org.fabric3.spi.model.instance.LogicalOperation;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class NonBlockingGeneratorTestCase extends TestCase {

@@ -41,8 +41,6 @@ import org.fabric3.spi.builder.WiringException;
 
 /**
  * Thrown when a transformer cannot be found for converting from an operation parameter type to another.
- *
- * @version $Rev$ $Date$
  */
 public class NoTransformerException extends WiringException {
     private static final long serialVersionUID = -3119130836236306468L;

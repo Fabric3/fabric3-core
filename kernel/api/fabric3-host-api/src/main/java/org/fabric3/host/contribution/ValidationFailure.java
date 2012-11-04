@@ -39,8 +39,6 @@ package org.fabric3.host.contribution;
 
 /**
  * Base class for validation failures.
- *
- * @version $Rev$ $Date$
  */
 public abstract class ValidationFailure {
 

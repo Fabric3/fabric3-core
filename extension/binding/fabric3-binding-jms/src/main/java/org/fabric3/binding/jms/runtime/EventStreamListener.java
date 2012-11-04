@@ -53,8 +53,6 @@ import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
  * Listens for requests sent to a destination and dispatches to a channel.
- *
- * @version $Revision$ $Date$
  */
 public class EventStreamListener implements MessageListener {
     private ClassLoader cl;

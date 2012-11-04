@@ -40,7 +40,7 @@ package org.fabric3.monitor.runtime;
 import org.fabric3.host.monitor.MonitorCreationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ChannelNotFoundException extends MonitorCreationException {
     private static final long serialVersionUID = -77053403092177246L;

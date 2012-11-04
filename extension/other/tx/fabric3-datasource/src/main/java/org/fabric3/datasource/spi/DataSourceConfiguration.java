@@ -44,8 +44,6 @@ import java.util.Properties;
 
 /**
  * Configuration used to create a datasource on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public class DataSourceConfiguration implements Serializable {
     private static final long serialVersionUID = -2790525523535863636L;

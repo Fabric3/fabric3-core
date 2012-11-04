@@ -48,8 +48,6 @@ import org.fabric3.spi.generator.GenerationException;
  * update generated definitions.
  * <p/>
  * Note this extension is optional.
- *
- * @version $Rev$ $Date$
  */
 public interface JmsResourceProvisioner {
 

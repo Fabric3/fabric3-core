@@ -49,8 +49,6 @@ import org.fabric3.contribution.scanner.spi.FileSystemResourceFactoryRegistry;
 
 /**
  * Factory for symbolic link contributions (.contribution files).
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SymLinkResourceFactory implements FileSystemResourceFactory {

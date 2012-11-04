@@ -54,8 +54,6 @@ import java.util.jar.JarFile;
 
 /**
  * Launcher for the domain administration command line tool.
- *
- * @version $Rev$ $Date$
  */
 public class Main {
     private static final String DOMAIN_URL = "http://localhost:8181/management";

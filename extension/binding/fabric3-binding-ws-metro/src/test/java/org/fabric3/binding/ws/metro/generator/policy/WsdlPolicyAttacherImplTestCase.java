@@ -51,7 +51,7 @@ import org.w3c.dom.Element;
 import org.fabric3.binding.ws.metro.generator.PolicyExpressionMapping;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WsdlPolicyAttacherImplTestCase extends TestCase {
 

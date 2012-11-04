@@ -46,7 +46,7 @@ import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.spi.contribution.Contribution;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
+ *
  */
 public class OverrideRegistryImplTestCase extends TestCase {
     private static final URI CONTRIBUTION_URI = URI.create("test");

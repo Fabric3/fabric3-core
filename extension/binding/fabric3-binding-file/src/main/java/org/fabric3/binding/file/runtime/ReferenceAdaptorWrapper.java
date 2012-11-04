@@ -14,8 +14,6 @@ import org.fabric3.spi.invocation.WorkContext;
 /**
  * Delegates to a backing adaptor component. Instance creation is done lazily so that the instance is not accessed during the deployment build phase
  * before all wires have been attached. For example, a file binding may be attached before the adaptor wires are attached.
- *
- * @version $Rev$ $Date$
  */
 public class ReferenceAdaptorWrapper implements ReferenceAdapter {
     private AtomicComponent component;

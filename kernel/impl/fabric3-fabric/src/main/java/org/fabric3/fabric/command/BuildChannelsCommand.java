@@ -50,8 +50,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
  * Instantiates channels on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public class BuildChannelsCommand implements CompensatableCommand {
     private static final long serialVersionUID = -7476738011193689990L;

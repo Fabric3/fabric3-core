@@ -52,8 +52,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * The runtime representation of a Spring component. A Spring component has an associated application context that manages Spring beans.
- *
- * @version $Rev$ $Date$
  */
 public class SpringComponent implements Component {
     private URI uri;

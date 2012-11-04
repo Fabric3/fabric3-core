@@ -49,8 +49,6 @@ import java.util.List;
 
 /**
  * A promoted composite reference.
- *
- * @version $Rev$ $Date$
  */
 public class CompositeReference extends ReferenceDefinition {
     private static final long serialVersionUID = 5387987439912912994L;

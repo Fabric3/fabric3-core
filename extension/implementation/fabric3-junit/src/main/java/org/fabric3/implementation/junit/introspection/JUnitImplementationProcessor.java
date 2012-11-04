@@ -40,7 +40,7 @@ package org.fabric3.implementation.junit.introspection;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface JUnitImplementationProcessor extends ImplementationProcessor {
 }

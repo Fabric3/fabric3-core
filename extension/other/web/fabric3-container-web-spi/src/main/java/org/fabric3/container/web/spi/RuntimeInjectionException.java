@@ -40,7 +40,7 @@ package org.fabric3.container.web.spi;
 import org.fabric3.host.Fabric3RuntimeException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class RuntimeInjectionException extends Fabric3RuntimeException {
     private static final long serialVersionUID = -5431897763536513955L;

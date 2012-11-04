@@ -49,8 +49,6 @@ import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
  * <code><WSDL-namespace-URI>#expression<code>. The WSDL namespace URI is used to determine the set of documents the expression is applied against. If
  * a WSDL location is not provided, the set of documents will be constrained by the import/exports of the contribution containing the deployable
  * composite. In other words, WSDL documents not visible in the deployable composite's contribution space will not be evaluated.
- *
- * @version $Rev$ $Date$
  */
 public interface EndpointResolver {
 

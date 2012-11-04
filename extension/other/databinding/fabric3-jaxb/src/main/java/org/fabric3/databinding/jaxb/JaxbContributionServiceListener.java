@@ -46,8 +46,6 @@ import org.fabric3.spi.contribution.manifest.PackageInfo;
 /**
  * Adds implicit imports for JAXB implementation classes to user contributions since <code>JAXBContext</code> searches the TCCL, which is set to the
  * contribution classloader during runtime execution of user code.
- *
- * @version $Rev$ $Date$
  */
 public class JaxbContributionServiceListener implements ContributionServiceListener {
     private JavaImport jaxbImport;

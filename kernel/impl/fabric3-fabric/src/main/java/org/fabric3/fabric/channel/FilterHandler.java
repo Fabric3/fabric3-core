@@ -42,8 +42,6 @@ import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
  * An {@link EventStreamHandler} that applies a filter to events.
- *
- * @version $Rev$ $Date$
  */
 public class FilterHandler implements EventStreamHandler {
     private EventStreamHandler next;

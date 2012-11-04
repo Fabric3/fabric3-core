@@ -45,8 +45,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * A component type for a Spring application context.
- *
- * @version $Rev$ $Date$
  */
 public class SpringComponentType extends InjectingComponentType {
     private static final long serialVersionUID = -8894733979791676532L;

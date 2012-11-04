@@ -55,8 +55,6 @@ import org.fabric3.jpa.runtime.emf.EntityManagerFactoryCache;
  * <p/>
  * EntityManager instances (and their underlying Hibernate Sessions) are cached for the duration of the associated JTA transaction and closed when the
  * transaction commits or rolls back.
- *
- * @version $Rev$ $Date$
  */
 public class EntityManagerServiceImpl implements EntityManagerService {
     // a cache of entity managers keyed by Transaction and persistence unit name

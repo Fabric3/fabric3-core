@@ -46,8 +46,6 @@ import java.lang.annotation.Target;
  * F3 specific persistence unit annotation that suppports CDI for JPA entity manager factories.
  * <p/>
  * Standard JPA annotation can be applied on constructor arguments.
- *
- * @version $Rev$ $Date$
  */
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)

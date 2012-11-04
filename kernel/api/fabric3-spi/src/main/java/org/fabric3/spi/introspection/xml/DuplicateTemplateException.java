@@ -42,8 +42,6 @@ import org.fabric3.spi.introspection.IntrospectionException;
 
 /**
  * Thrown when an attempt to register a duplicate template value is made.
- *
- * @version $Rev$ $Date$
  */
 public class DuplicateTemplateException extends IntrospectionException {
     private static final long serialVersionUID = 276289667320121604L;

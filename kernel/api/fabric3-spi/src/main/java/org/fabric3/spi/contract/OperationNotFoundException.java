@@ -41,8 +41,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * Thrown when an operation cannot be resolved against a set of target operations.
- *
- * @version $Rev$ $Date$
  */
 public class OperationNotFoundException extends Fabric3Exception {
     private static final long serialVersionUID = 1636517908715626972L;

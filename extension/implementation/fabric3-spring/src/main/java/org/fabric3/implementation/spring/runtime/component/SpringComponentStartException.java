@@ -40,7 +40,7 @@ package org.fabric3.implementation.spring.runtime.component;
 import org.fabric3.spi.component.ComponentException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SpringComponentStartException extends ComponentException {
     private static final long serialVersionUID = 5586944720349348343L;

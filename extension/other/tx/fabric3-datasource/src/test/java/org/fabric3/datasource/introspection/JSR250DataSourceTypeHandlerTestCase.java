@@ -51,7 +51,7 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
+ *
  */
 public class JSR250DataSourceTypeHandlerTestCase extends TestCase {
     private DefaultIntrospectionContext context;

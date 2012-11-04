@@ -40,7 +40,7 @@ package org.fabric3.spi.model.physical;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PhysicalOperationDefinitionTestCase extends TestCase {
 

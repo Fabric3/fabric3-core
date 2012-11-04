@@ -54,7 +54,7 @@ import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SingletonScopeContainerTestCase extends TestCase {
     private ScopedComponent component;

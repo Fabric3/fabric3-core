@@ -48,7 +48,7 @@ import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JavaImportLoaderTestCase extends TestCase {
     private static final String XML_VERSION = "<import.java package=\"org.bar\" version=\"1.0.0\" required=\"true\"/>";

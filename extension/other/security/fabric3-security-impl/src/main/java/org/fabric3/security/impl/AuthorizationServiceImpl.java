@@ -47,8 +47,6 @@ import org.fabric3.spi.security.NotAuthorizedException;
 
 /**
  * Basic implementation of the AuthorizationService.
- *
- * @version $Rev$ $Date$
  */
 public class AuthorizationServiceImpl implements AuthorizationService {
     public void checkRole(SecuritySubject subject, String role) throws AuthorizationException {

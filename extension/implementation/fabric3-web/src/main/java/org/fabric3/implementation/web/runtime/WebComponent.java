@@ -64,8 +64,6 @@ import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEX
 
 /**
  * A component whose implementation is a web application.
- *
- * @version $Rev$ $Date$
  */
 public class WebComponent implements Component {
 

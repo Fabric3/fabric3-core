@@ -39,8 +39,6 @@ package org.fabric3.binding.jms.spi.common;
 
 /**
  * Defines message delivery modes.
- *
- * @version $Rev$ $Date$
  */
 public enum DeliveryMode {
     PERSISTENT, NON_PERSISTENT

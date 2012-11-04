@@ -75,8 +75,6 @@ import org.fabric3.spi.util.UriHelper;
 
 /**
  * Exports components as MBeans using the runtime JMX MBean server.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class JMXManagementExtension implements ManagementExtension {

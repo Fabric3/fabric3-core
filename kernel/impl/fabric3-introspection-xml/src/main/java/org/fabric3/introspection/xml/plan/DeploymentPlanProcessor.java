@@ -65,8 +65,6 @@ import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN_NA
 
 /**
  * Processes a deployment plan.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DeploymentPlanProcessor implements XmlResourceElementLoader {

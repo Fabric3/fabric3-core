@@ -46,8 +46,6 @@ import org.fabric3.spi.channel.ChannelConnection;
  * protocol, where clients are subscribed to receive events from the channel. A successful GET will either result in the creation of a websocket
  * connection for clients that support it, or a suspended comet connection. Subsequent events published to the channel will be pushed to all
  * subscribed clients.
- *
- * @version $Rev$ $Date$
  */
 public interface ChannelSubscriber extends ChannelConnection {
 

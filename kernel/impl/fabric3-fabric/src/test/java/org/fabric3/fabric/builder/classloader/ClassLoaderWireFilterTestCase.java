@@ -40,7 +40,7 @@ package org.fabric3.fabric.builder.classloader;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ClassLoaderWireFilterTestCase extends TestCase {
 

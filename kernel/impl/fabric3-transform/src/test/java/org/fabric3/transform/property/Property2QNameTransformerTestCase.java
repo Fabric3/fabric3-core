@@ -43,8 +43,6 @@ import org.fabric3.spi.transform.TransformationException;
 
 /**
  * Tests String to QName transform.
- *
- * @version $Rev$ $Date$
  */
 public class Property2QNameTransformerTestCase extends BaseTransformTest {
 

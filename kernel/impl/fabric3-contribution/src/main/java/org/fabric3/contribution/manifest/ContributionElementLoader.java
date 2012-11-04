@@ -76,8 +76,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loads a contribution manifest from a contribution element
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ContributionElementLoader implements TypeLoader<ContributionManifest> {

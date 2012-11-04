@@ -48,8 +48,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Builder for simple interceptors.
- *
- * @version $Rev$ $Date$
  */
 public class SimpleInterceptorBuilder implements InterceptorBuilder<SimpleInterceptorDefinition> {
     private ClassLoaderRegistry registry;

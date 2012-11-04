@@ -48,8 +48,6 @@ import org.fabric3.spi.federation.ZoneTopologyService;
 /**
  * Responsible for handling event replication in a zone. Specifically, replicates events to other channel instances and passes replicated events
  * through to downstream handlers.
- *
- * @version $Rev$ $Date$
  */
 public class ReplicationHandler implements EventStreamHandler, MessageReceiver {
     private String channelName;

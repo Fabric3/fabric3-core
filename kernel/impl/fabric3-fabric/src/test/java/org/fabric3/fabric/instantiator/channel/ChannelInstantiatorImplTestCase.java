@@ -52,7 +52,7 @@ import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ChannelInstantiatorImplTestCase extends TestCase {
     private static final QName COMPOSITE_NAME = new QName("test", "test");

@@ -40,8 +40,6 @@ package org.fabric3.management.rest.framework;
 /**
  * A resource service that is created at runtime, without an explicit configuration being provided. Dynamic resources are created for parents of a
  * sub-resource so that they are navigable via hyperlinks from the /domain, /runtime, or /zone hierarchies.
- *
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 public class DynamicResourceService extends AbstractResourceService {
     private String path;

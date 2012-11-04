@@ -66,8 +66,6 @@ import org.fabric3.spi.xml.XMLFactory;
  * <p/>
  * Deployed contributions and composites are written to a file system based journal as the state of the domain changes (i.e. deployments and
  * undeployments are made). On recovery, the journal can be read to reconstitute the current state of the domain.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class FSDeployTracker implements DeployListener {

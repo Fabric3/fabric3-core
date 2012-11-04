@@ -49,8 +49,6 @@ import org.fabric3.spi.invocation.WorkContext;
 /**
  * Populates invocation properties of an incoming request with a WorkContext. This is done so that the work context can be updated by other tubes, for
  * example, with an authenticated SecuritySubject.
- *
- * @version $Rev$ $Date$
  */
 public class WorkContextTube extends AbstractFilterTubeImpl {
 

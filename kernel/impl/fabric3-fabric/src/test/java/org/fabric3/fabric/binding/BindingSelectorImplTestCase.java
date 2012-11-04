@@ -59,7 +59,7 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class BindingSelectorImplTestCase extends TestCase {

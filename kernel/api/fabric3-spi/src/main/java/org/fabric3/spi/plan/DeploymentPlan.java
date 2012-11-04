@@ -45,8 +45,6 @@ import javax.xml.namespace.QName;
 /**
  * Represents a Fabric3 deployment plan. Deployment plans are used to map a logical assembly to a physical topology during deployment. For example, a
  * deployment plan may map deployable composites to domain zones.
- *
- * @version $Rev$ $Date$
  */
 public class DeploymentPlan implements Serializable {
     private static final long serialVersionUID = 4925927937202340746L;

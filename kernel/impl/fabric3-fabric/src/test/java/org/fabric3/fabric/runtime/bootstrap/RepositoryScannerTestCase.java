@@ -52,7 +52,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.ScanResult;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 public class RepositoryScannerTestCase extends TestCase {
     private static final String BASE = "org/fabric3/fabric/runtime/bootstrap/repository/";

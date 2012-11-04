@@ -47,8 +47,6 @@ import org.fabric3.host.RuntimeMode;
 
 /**
  * Represents a deployable artifact in a contribution
- *
- * @version $Rev$ $Date$
  */
 @SuppressWarnings({"SerializableHasSerializationMethods"})
 public class Deployable implements Serializable {

@@ -70,8 +70,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loads a component consumer configuration.
- *
- * @version $Rev$ $Date$
  */
 public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<ComponentConsumer> {
     private static final QName CONSUMER = new QName(SCA_NS, "consumer");

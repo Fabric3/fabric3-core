@@ -45,8 +45,6 @@ package org.fabric3.binding.jms.spi.common;
 
 /**
  * Contains JMS activation spec configuration.
- *
- * @version $Revision$ $Date$
  */
 public class ActivationSpec extends PropertyAwareObject {
     private static final long serialVersionUID = -913399490782035982L;

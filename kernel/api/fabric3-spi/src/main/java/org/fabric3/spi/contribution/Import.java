@@ -44,8 +44,6 @@ import javax.xml.namespace.QName;
 
 /**
  * A contribution import.
- *
- * @version $Rev$ $Date$
  */
 public interface Import extends Serializable {
 

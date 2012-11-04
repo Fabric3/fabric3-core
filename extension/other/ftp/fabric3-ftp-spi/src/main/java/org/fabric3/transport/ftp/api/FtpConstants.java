@@ -38,7 +38,7 @@
 package org.fabric3.transport.ftp.api;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 public interface FtpConstants {
     /**

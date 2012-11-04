@@ -43,8 +43,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Thrown when a deployable composite specified in the sca-contribution is invalid.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidDeployable extends ValidationFailure {
     private String message;

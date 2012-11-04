@@ -47,7 +47,7 @@ import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * @version $Rev: 10100 $ $Date: 2011-03-15 14:51:01 -0700 (Tue, 15 Mar 2011) $
+ *
  */
 public class DataSourceWireAttacherTestCase extends TestCase {
 

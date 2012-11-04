@@ -53,8 +53,6 @@ import org.fabric3.host.runtime.HostInfo;
 
 /**
  * Creates JMS connection factories on demand.
- *
- * @version $Rev: 8717 $ $Date: 2010-03-15 15:02:02 +0100 (Mon, 15 Mar 2010) $
  */
 @EagerInit
 public class ActiveMQConnectionFactoryCreator implements ProviderConnectionFactoryCreator {

@@ -21,7 +21,7 @@ package org.fabric3.jmx.agent;
 import org.fabric3.api.annotation.monitor.Info;
 
 /**
- * @version $Revision: 9250 $ $Date: 2010-07-30 12:52:01 +0200 (Fri, 30 Jul 2010) $
+ *
  */
 public interface RmiAgentMonitor {
 

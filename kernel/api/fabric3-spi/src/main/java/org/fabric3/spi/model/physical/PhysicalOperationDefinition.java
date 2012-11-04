@@ -53,8 +53,6 @@ import java.util.Set;
  * Represents a service operation and its invocation chain on a runtime. Since the source side of a wire (reference or forward service making a
  * callback) may have a service contract that is different from the target side (forward service or client being called back), in-, out- and fault
  * parameter types are stored for both sides. When attaching a wire to its source or target, the appropriate parameter types must be used.
- *
- * @version $Revision$ $Date$
  */
 public class PhysicalOperationDefinition implements Serializable, Comparable {
     private static final long serialVersionUID = -4270990709748460450L;

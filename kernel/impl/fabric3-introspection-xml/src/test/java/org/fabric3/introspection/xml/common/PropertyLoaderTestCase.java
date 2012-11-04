@@ -60,7 +60,7 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 
 /**
- * @version $Rev: 7275 $ $Date: 2009-07-05 21:54:59 +0200 (Sun, 05 Jul 2009) $
+ *
  */
 public class PropertyLoaderTestCase extends TestCase {
     public static final QName COMPOSITE = new QName(SCA_NS, "composite");

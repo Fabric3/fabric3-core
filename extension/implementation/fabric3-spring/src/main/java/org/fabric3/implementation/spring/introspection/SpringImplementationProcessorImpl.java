@@ -68,8 +68,6 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
  * Default SpringImplementationProcessor implementation.
- *
- * @version $Rev$ $Date$
  */
 public class SpringImplementationProcessorImpl implements SpringImplementationProcessor {
     private static final String BEAN = "bean";

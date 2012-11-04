@@ -45,8 +45,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  * methods on the implementation class and then processed. This service must be called after the service contract(s) for the implementation class are
  * determined (either explicitly using @Service or heuristically) as opposed to when the implementation class is first introspected so that the
  * service operations can be updated with policy metadata.
- *
- * @version $Rev$ $Date$
  */
 public interface OperationPolicyIntrospector {
 

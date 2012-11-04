@@ -41,8 +41,6 @@ import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
  * A configured timer pool.
- *
- * @version $Rev$ $Date$
  */
 public class TimerPoolResource extends ResourceDefinition {
     private static final long serialVersionUID = -4977101036434115885L;

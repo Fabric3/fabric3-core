@@ -42,8 +42,6 @@ import java.security.KeyStore;
 
 /**
  * Manages configuring and loads key and trust stores.
- *
- * @version $Rev$ $Date$
  */
 public interface KeyStoreManager {
 

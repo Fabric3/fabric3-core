@@ -61,7 +61,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class MonitorComponentGenerator implements ComponentGenerator<LogicalComponent<MonitorImplementation>> {

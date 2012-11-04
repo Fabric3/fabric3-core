@@ -62,8 +62,6 @@ import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
  * Utilities used by the Domain for introspecting information from a contribution.
- *
- * @version $Rev$ $Date$
  */
 public class ContributionHelperImpl implements ContributionHelper {
     private static final String PLAN_NAMESPACE = "urn:fabric3.org:extension:plan";

@@ -44,8 +44,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Executes scheduled tasks.
- *
- * @version $Rev$ $Date$
  */
 public interface TimerService {
     String DEFAULT_POOL = "default";

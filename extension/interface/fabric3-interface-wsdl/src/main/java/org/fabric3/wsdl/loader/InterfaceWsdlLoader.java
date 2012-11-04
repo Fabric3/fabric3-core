@@ -67,8 +67,6 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
 
 /**
  * Loads interface.wsdl elements in a composite.
- *
- * @version $Revision$ $Date$
  */
 @EagerInit
 public class InterfaceWsdlLoader extends AbstractValidatingTypeLoader<WsdlServiceContract> {

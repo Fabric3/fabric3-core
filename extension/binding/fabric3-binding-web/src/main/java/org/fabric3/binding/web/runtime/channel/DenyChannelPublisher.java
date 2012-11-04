@@ -42,8 +42,6 @@ import org.fabric3.spi.channel.EventWrapper;
 
 /**
  * Blocks publishing events to a channel.
- *
- * @version $Rev$ $Date$
  */
 public class DenyChannelPublisher implements ChannelPublisher {
     private EventStreamHandler next;

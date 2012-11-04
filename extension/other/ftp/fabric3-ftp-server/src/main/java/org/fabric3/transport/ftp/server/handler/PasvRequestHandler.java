@@ -53,8 +53,6 @@ import org.fabric3.transport.ftp.server.protocol.RequestHandler;
 
 /**
  * Handles the <code>PASV</code> command.
- *
- * @version $Rev$ $Date$
  */
 public class PasvRequestHandler implements RequestHandler {
 

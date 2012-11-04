@@ -50,7 +50,7 @@ import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JavaImplementationProcessorImpl implements JavaImplementationProcessor {
     private final ClassVisitor classVisitor;

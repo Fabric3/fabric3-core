@@ -40,7 +40,7 @@ package org.fabric3.contribution.scanner.impl;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * @version $Rev: 9626 $ $Date: 2010-11-01 00:37:41 +0100 (Mon, 01 Nov 2010) $
+ *
  */
 public interface ContributionTrackerMonitor {
 

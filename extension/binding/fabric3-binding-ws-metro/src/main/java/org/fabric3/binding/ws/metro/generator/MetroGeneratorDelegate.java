@@ -47,8 +47,6 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 
 /**
  * Generates source and target definitions for a service contract subtype.
- *
- * @version $Rev$ $Date$
  */
 public interface MetroGeneratorDelegate<T extends ServiceContract> {
 

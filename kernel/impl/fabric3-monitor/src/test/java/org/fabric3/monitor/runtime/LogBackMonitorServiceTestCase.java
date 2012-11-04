@@ -58,7 +58,7 @@ import org.fabric3.spi.component.Component;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class LogBackMonitorServiceTestCase extends TestCase {
     private static final String XML = "<config xmlns:foo='foo'>" +

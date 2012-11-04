@@ -46,7 +46,7 @@ import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class Property2ShortTransformer implements SingleTypeTransformer<Node, Short> {
     private static final JavaClass<Short> TARGET = new JavaClass<Short>(Short.class);

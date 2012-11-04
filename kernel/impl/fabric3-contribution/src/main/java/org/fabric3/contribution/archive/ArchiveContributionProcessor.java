@@ -54,8 +54,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Handles common processing for contribution archives
- *
- * @version $Rev$ $Date$
  */
 public class ArchiveContributionProcessor extends AbstractContributionProcessor {
     private List<ArchiveContributionHandler> handlers;

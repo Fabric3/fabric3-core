@@ -40,7 +40,7 @@ package org.fabric3.admin.interpreter.parser;
 import org.fabric3.admin.interpreter.ParseException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class UnknownDomainException extends ParseException {
     private static final long serialVersionUID = 4983355584718653467L;

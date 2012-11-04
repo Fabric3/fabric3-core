@@ -38,7 +38,7 @@
 package org.fabric3.jpa.runtime.proxy;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface HibernateProxy {
 

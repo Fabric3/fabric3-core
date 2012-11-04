@@ -72,8 +72,6 @@ import org.fabric3.util.graph.VertexImpl;
 
 /**
  * Orders contribution dependencies by resolving imports and capabilities and then performing a topological sort of the dependency graph.
- *
- * @version $Rev$ $Date$
  */
 public class DependencyResolverImpl implements DependencyResolver {
     private CycleDetector<Contribution> detector;

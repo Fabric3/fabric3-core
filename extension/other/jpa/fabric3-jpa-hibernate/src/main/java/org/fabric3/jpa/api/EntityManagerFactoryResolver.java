@@ -41,8 +41,6 @@ import javax.persistence.EntityManagerFactory;
 
 /**
  * Resolves EntityManagerFactor instances.
- *
- * @version $Rev$ $Date$
  */
 public interface EntityManagerFactoryResolver {
 

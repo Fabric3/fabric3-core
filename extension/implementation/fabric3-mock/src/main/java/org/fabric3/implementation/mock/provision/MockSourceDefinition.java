@@ -40,7 +40,7 @@ package org.fabric3.implementation.mock.provision;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MockSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = -5813352307909815506L;

@@ -64,8 +64,6 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
  * Processes {@link Context} annotations.
- *
- * @version $Rev$ $Date$
  */
 public class OASISContextProcessor<I extends Implementation<? extends InjectingComponentType>> extends AbstractAnnotationProcessor<Context> {
     private final IntrospectionHelper helper;

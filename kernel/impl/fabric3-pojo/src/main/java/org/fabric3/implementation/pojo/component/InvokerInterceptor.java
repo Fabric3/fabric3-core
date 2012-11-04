@@ -57,8 +57,6 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
 
 /**
  * Responsible for dispatching an invocation to a Java-based component implementation instance.
- *
- * @version $Rev$ $Date$
  */
 public class InvokerInterceptor implements Interceptor {
     private Method operation;

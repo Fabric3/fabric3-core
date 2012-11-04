@@ -42,7 +42,7 @@ import java.net.URL;
 import junit.framework.TestCase;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 public class ExtensionMapContentTypeResolverTestCase extends TestCase {
     private ExtensionMapContentTypeResolver resolver;

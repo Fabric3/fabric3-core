@@ -54,8 +54,6 @@ import org.fabric3.binding.ws.metro.util.MayProvideIntents;
 
 /**
  * Default implementation of FeatureResolver.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultFeatureResolver implements FeatureResolver {
     private Field field;

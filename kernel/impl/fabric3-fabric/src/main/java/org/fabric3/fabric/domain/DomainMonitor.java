@@ -42,7 +42,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.api.annotation.monitor.Info;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface DomainMonitor {
 

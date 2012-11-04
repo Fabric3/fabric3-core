@@ -49,8 +49,6 @@ import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 
 /**
  * Generates {@link PhysicalHandlerDefinition}s used to attach policy handlers to an event stream.
- *
- * @version $Rev$ $Date$
  */
 public interface EventStreamHandlerGenerator {
 

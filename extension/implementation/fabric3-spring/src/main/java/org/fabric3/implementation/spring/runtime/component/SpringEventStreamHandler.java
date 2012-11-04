@@ -57,8 +57,6 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
 
 /**
  * Responsible for dispatching an event to a Spring bean.
- *
- * @version $Rev$ $Date$
  */
 public class SpringEventStreamHandler implements EventStreamHandler {
     private String beanName;

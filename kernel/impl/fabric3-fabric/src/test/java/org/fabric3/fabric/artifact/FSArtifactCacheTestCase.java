@@ -50,7 +50,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.util.FileHelper;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class FSArtifactCacheTestCase extends TestCase {
     private FSArtifactCache cache;

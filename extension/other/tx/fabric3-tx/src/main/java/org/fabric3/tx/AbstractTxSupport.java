@@ -51,8 +51,6 @@ import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Transaction functionality common to interceptors and event stream handlers.
- *
- * @version $Rev: 9405 $ $Date: 2010-08-29 00:39:03 +0200 (Sun, 29 Aug 2010) $
  */
 public abstract class AbstractTxSupport {
     protected TransactionManager transactionManager;

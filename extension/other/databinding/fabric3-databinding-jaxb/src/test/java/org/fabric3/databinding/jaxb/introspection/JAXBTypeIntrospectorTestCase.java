@@ -53,7 +53,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.model.type.java.JavaClass;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JAXBTypeIntrospectorTestCase extends TestCase {
     private static final QName XSD_INT = new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "int");

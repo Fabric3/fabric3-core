@@ -43,8 +43,6 @@ import java.net.URL;
 
 /**
  * Implementations resolve contribution artifacts in a domain.
- *
- * @version $Rev$ $Date$
  */
 public interface ContributionResolver {
 

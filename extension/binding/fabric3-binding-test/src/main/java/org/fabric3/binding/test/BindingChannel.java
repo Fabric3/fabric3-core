@@ -44,8 +44,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Implementations route messages to a service destination.
- *
- * @version $Rev$ $Date$
  */
 public interface BindingChannel {
 

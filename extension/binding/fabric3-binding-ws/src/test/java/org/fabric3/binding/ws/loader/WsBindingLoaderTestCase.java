@@ -17,7 +17,7 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WsBindingLoaderTestCase extends TestCase {
     private static final String XML_VALID = "<binding.ws uri='http://fabric3.org/TestService'/>";

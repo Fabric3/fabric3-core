@@ -41,8 +41,6 @@ import org.fabric3.spi.command.Response;
 
 /**
  * A response returned to the controller when a runtime has successfully processed a {@link DeploymentCommand}.
- *
- * @version $Rev$ $Date$
  */
 public class DeploymentResponse implements Response {
     private static final long serialVersionUID = 411382659017602521L;

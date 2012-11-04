@@ -54,8 +54,6 @@ import org.fabric3.binding.jms.spi.provision.PayloadType;
 
 /**
  * Utility class for message processing.
- *
- * @version $Rev$ $Date$
  */
 public class MessageHelper {
 

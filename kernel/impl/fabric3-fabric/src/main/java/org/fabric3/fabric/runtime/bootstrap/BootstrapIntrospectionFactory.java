@@ -81,8 +81,6 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 /**
  * Instantiates an ImplementationProcessor for introspecting system components. System components are composite-scoped and support the standard SCA
  * lifecycle, including @Init, @Destroy, and @EagerInit.
- *
- * @version $Rev$ $Date$
  */
 public class BootstrapIntrospectionFactory {
 

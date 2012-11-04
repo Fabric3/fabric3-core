@@ -41,8 +41,6 @@ import org.fabric3.spi.generator.GenerationException;
 
 /**
  * Denotes an error generating an annotated interface.
- *
- * @version $Rev$ $Date$
  */
 public class InterfaceGenerationException extends GenerationException {
     private static final long serialVersionUID = -921047598001767778L;

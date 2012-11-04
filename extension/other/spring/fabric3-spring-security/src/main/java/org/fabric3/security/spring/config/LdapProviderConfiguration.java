@@ -39,8 +39,6 @@ package org.fabric3.security.spring.config;
 
 /**
  * Configuration for an LDAP-based Spring <code>AuthenticationProvider</code>.
- *
- * @version $Rev$ $Date$
  */
 public class LdapProviderConfiguration extends AuthenticationProviderConfiguration {
     private String password;

@@ -42,8 +42,6 @@ import java.util.Map;
 /**
  * Contains generated WSDL and Schema documents. The WSDL document contains both abstract and concrete elements. Schemas are generated separately and
  * imported by the WSDL document.
- *
- * @version $Rev$ $Date$
  */
 public class GeneratedArtifacts {
     private String wsdl;

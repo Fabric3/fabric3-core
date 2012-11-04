@@ -53,7 +53,7 @@ import org.fabric3.spi.wire.Wire;
 import org.fabric3.xquery.provision.XQueryComponentSourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class XQueryComponentSourceWireAttacher implements SourceWireAttacher<XQueryComponentSourceDefinition> {

@@ -68,8 +68,6 @@ import org.fabric3.spi.model.type.java.JavaClass;
 
 /**
  * Loads information for a monitor implementation
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class MonitorImplementationLoader implements TypeLoader<MonitorImplementation> {

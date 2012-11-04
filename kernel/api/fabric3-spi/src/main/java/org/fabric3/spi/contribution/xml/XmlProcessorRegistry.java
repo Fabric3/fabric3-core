@@ -46,8 +46,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * A registry of XmlProcessors
- *
- * @version $Rev$ $Date$
  */
 public interface XmlProcessorRegistry {
     /**

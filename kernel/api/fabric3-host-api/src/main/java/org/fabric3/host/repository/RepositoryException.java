@@ -40,7 +40,7 @@ package org.fabric3.host.repository;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class RepositoryException extends Fabric3Exception {
     private static final long serialVersionUID = 5086187312198742010L;

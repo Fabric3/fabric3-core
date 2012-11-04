@@ -54,7 +54,7 @@ import org.fabric3.spi.security.NoCredentialsException;
 import org.fabric3.spi.security.UsernamePasswordToken;
 
 /**
- * @version $Rev: 9419 $ $Date: 2010-09-01 23:56:59 +0200 (Wed, 01 Sep 2010) $
+ *
  */
 public class BasicAuthenticatorTestCase extends TestCase {
 

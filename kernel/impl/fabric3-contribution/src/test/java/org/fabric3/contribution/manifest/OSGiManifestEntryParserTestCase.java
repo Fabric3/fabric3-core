@@ -40,7 +40,7 @@ package org.fabric3.contribution.manifest;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class OSGiManifestEntryParserTestCase extends TestCase {
     private static final String HEADER_1 = "org.fabric3.foo;resolution:=required,org.fabric3.bar;resolution:=optional,org.fabric3.baz;version\n" +

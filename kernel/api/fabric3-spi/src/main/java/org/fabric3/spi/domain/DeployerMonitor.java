@@ -49,8 +49,6 @@ import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Event monitor for the Deployer.
- *
- * @version $Rev$ $Date$
  */
 public interface DeployerMonitor {
 

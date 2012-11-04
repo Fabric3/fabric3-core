@@ -40,7 +40,7 @@ package org.fabric3.implementation.timer.provision;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 
 /**
- * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
+ *
  */
 public class TimerComponentDefinition extends JavaComponentDefinition {
     private static final long serialVersionUID = -4795264376334780345L;

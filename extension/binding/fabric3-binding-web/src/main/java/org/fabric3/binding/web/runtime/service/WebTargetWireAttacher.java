@@ -51,8 +51,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Attaches a callback proxy to a websocket.
- *
- * @version $Rev: 9436 $ $Date: 2010-09-10 17:13:50 +0200 (Fri, 10 Sep 2010) $
  */
 @EagerInit
 public class WebTargetWireAttacher implements TargetWireAttacher<WebTargetDefinition> {

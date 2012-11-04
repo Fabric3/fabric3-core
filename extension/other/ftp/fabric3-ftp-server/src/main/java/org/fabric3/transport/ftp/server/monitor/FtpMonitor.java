@@ -42,8 +42,6 @@ import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Monitor interface for logging significant events.
- *
- * @version $Rev$ $Date$
  */
 public interface FtpMonitor {
 

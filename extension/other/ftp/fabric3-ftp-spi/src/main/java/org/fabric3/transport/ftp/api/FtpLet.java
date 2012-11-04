@@ -43,8 +43,6 @@ import java.io.InputStream;
  * Interface for receiving FTP callbacks.
  * <p/>
  * Note: The concept is borrowed from Apache MINA FTP Server.
- *
- * @version $Revision$ $Date$
  */
 public interface FtpLet {
 

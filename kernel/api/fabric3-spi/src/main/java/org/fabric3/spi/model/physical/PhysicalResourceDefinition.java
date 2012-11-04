@@ -47,8 +47,6 @@ import java.io.Serializable;
 
 /**
  * Used to build a resource on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public abstract class PhysicalResourceDefinition implements Serializable {
     private static final long serialVersionUID = 4880254628089766099L;

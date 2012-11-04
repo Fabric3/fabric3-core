@@ -49,7 +49,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 @EagerInit
 public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenerator<ZeroMQBindingDefinition> {

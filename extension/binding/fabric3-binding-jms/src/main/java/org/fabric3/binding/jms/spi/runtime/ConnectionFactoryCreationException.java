@@ -38,7 +38,7 @@
 package org.fabric3.binding.jms.spi.runtime;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ConnectionFactoryCreationException extends JmsResolutionException {
     private static final long serialVersionUID = -3693698848141597803L;

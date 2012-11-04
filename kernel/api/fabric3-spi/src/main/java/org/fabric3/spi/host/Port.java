@@ -41,8 +41,6 @@ package org.fabric3.spi.host;
 /**
  * A reserved port on a runtime. After reserving a port, clients must release the port lock prior to binding a socket to the port using {@link
  * #bind(Port.TYPE)}.
- *
- * @version $Rev$ $Date$
  */
 public interface Port {
 

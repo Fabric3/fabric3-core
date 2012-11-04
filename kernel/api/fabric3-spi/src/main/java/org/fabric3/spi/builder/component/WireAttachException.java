@@ -49,8 +49,6 @@ import org.fabric3.spi.builder.WiringException;
 
 /**
  * Thrown when an error is encountered attaching a wire to a component or transport.
- *
- * @version $Rev$ $Date$
  */
 public class WireAttachException extends WiringException {
     private static final long serialVersionUID = 4976504310808006829L;

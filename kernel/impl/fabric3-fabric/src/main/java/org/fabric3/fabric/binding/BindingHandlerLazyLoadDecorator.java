@@ -17,8 +17,6 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
 /**
  * A {@link BindingHandler} decorator that resolves the target {@link BindingHandler} in a lazy fashion. Lazy loading is used to ensure the full
  * initialization of the target instance.
- *
- * @version $Rev$ $Date$
  */
 public class BindingHandlerLazyLoadDecorator<T> implements BindingHandler<T> {
     private URI handlerUri;

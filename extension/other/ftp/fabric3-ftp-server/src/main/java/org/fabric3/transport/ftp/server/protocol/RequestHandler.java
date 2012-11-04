@@ -39,8 +39,6 @@ package org.fabric3.transport.ftp.server.protocol;
 
 /**
  * Handler for incoming FTP requests.
- *
- * @version $Rev$ $Date$
  */
 public interface RequestHandler {
 

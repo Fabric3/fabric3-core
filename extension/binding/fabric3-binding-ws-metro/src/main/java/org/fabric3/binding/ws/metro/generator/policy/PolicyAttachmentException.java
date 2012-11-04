@@ -41,8 +41,6 @@ import org.fabric3.spi.generator.GenerationException;
 
 /**
  * Thrown when an error is encountered attaching a WS-Policy expression in a WSDL document.
- *
- * @version $Rev$ $Date$
  */
 public class PolicyAttachmentException extends GenerationException {
     private static final long serialVersionUID = 8261880730766747485L;

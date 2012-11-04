@@ -41,8 +41,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Implementations receive callbacks when an application context is created and disposed.
- *
- * @version $Rev$ $Date$
  */
 public interface WireListener {
 

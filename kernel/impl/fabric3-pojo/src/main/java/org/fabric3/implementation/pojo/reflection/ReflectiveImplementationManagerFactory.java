@@ -72,7 +72,7 @@ import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ReflectiveImplementationManagerFactory implements ImplementationManagerFactory {
     private static final ObjectFactory<?> NULL_FACTORY = new ObjectFactory<Object>() {

@@ -43,8 +43,6 @@ import org.fabric3.spi.transform.Transformer;
 
 /**
  * Transformers used to (de)serialize a request/response types.
- *
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 public class TransformerPair {
     private Transformer<InputStream, Object> deserializer;

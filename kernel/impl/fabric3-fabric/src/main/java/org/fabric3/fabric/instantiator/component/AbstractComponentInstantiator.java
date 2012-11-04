@@ -69,8 +69,6 @@ import org.fabric3.spi.model.instance.LogicalProperty;
 
 /**
  * Contains functionality common to different component instantiators.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractComponentInstantiator {
     private static final DocumentBuilderFactory DOCUMENT_FACTORY;

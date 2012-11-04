@@ -42,8 +42,6 @@ import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Monitoring interface for the DirectoryScanner
- *
- * @version $Rev$ $Date$
  */
 public interface ScannerMonitor {
 

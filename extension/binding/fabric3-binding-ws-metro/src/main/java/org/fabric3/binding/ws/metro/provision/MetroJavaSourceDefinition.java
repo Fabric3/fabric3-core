@@ -47,8 +47,6 @@ import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 
 /**
  * Wire source definition for services that use Java interface-based contracts.
- *
- * @version $Rev$ $Date$
  */
 public class MetroJavaSourceDefinition extends MetroSourceDefinition {
     private static final long serialVersionUID = 2898989563911925959L;

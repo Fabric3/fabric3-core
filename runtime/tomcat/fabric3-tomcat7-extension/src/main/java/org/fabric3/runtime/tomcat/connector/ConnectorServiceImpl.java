@@ -45,7 +45,7 @@ import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * @version $Rev: 10719 $ $Date: 2011-10-01 03:27:41 +0300 (Sat, 01 Oct 2011) $
+ *
  */
 @EagerInit
 public class ConnectorServiceImpl implements ConnectorService {

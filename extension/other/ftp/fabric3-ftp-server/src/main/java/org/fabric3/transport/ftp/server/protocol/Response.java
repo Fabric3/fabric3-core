@@ -39,8 +39,6 @@ package org.fabric3.transport.ftp.server.protocol;
 
 /**
  * Represents an FTP response.
- *
- * @version $Rev$ $Date$
  */
 public interface Response {
 }

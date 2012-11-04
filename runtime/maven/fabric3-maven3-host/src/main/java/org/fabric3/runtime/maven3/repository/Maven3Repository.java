@@ -71,8 +71,6 @@ import org.fabric3.host.repository.RepositoryException;
 
 /**
  * A Repository implementation that delegates to a set of local and remote Maven 3 repositories.
- *
- * @version $Rev$ $Date$
  */
 public class Maven3Repository implements Repository {
     private static final String USER_HOME = System.getProperty("user.home");

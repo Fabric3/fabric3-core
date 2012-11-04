@@ -63,8 +63,6 @@ import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 /**
  * Creates a classpath based on the contents of a WAR. Specifically, adds jars contained in WEB-INF/lib and classes in WEB-INF/classes to the
  * classpath.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WarClasspathProcessor implements ClasspathProcessor {

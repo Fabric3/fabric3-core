@@ -41,8 +41,6 @@ import java.util.List;
 
 /**
  * Represents a cycle in a directed graph
- *
- * @version $Rev$ $Date$
  */
 public class Cycle<T> {
     private List<Vertex<T>> originPath;

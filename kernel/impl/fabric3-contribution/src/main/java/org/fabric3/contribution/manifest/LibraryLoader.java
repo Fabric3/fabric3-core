@@ -57,8 +57,6 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
  * Processes a <code>library</code> element in a contribution manifest
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {

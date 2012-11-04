@@ -39,8 +39,6 @@ package org.fabric3.spi.event;
 
 /**
  * Signals when request processing has stopped and the runtime is being taken offline
- *
- * @version $Rev$ $Date$
  */
 public class RuntimeStop implements Fabric3Event {
 }

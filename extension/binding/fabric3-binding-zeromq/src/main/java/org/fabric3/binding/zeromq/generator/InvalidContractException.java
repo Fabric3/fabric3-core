@@ -33,7 +33,7 @@ package org.fabric3.binding.zeromq.generator;
 import org.fabric3.spi.generator.GenerationException;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 public class InvalidContractException extends GenerationException {
     private static final long serialVersionUID = -222604356274529323L;

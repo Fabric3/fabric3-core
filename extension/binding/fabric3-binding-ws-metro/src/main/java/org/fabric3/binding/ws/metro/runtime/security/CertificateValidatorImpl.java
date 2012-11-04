@@ -99,8 +99,6 @@ import com.sun.xml.wss.impl.XWSSecurityRuntimeException;
 
 /**
  * Default CertificateValidator extension.
- *
- * @version $Rev$ $Date$
  */
 public class CertificateValidatorImpl implements CertificateValidator {
 

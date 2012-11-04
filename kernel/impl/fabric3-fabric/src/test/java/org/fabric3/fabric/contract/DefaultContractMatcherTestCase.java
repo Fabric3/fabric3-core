@@ -46,7 +46,7 @@ import org.fabric3.spi.contract.ContractMatcherExtension;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DefaultContractMatcherTestCase extends TestCase {
 

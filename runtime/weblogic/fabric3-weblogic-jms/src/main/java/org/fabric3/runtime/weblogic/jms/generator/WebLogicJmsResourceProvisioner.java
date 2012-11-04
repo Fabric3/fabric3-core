@@ -45,7 +45,7 @@ import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.spi.generator.GenerationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WebLogicJmsResourceProvisioner implements JmsResourceProvisioner {
 

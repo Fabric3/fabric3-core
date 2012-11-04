@@ -54,8 +54,6 @@ import org.fabric3.spi.model.instance.LogicalState;
 
 /**
  * Creates a command to start an atomic component on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public class StartComponentCommandGenerator implements CommandGenerator {
     private int order;

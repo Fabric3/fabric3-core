@@ -46,7 +46,7 @@ import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TransformerInterceptorTestCase extends TestCase {
 

@@ -48,8 +48,6 @@ import org.fabric3.spring.spi.ApplicationContextListener;
 
 /**
  * Registers Spring Security authentication and access services so they can be referenced from component application contexts.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SecurityApplicationContextListener implements ApplicationContextListener {

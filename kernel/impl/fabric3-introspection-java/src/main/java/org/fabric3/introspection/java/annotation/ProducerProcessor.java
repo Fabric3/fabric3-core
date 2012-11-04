@@ -66,8 +66,6 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
  * Introspects {@link Producer} annotations.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ProducerProcessor extends AbstractAnnotationProcessor<Producer> {

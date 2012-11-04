@@ -56,8 +56,6 @@ import org.fabric3.host.contribution.ContributionSource;
 
 /**
  * Encapsulates configuration needed to bootstrap a runtime.
- *
- * @version $Rev$ $Date$
  */
 public class BootConfiguration {
     private Fabric3Runtime runtime;

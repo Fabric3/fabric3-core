@@ -43,8 +43,6 @@ import org.fabric3.api.MonitorEvent;
 
 /**
  * Dispatches a {@link MonitorEvent} to a subsystem such as logging or management infrastructure.
- *
- * @version $Rev$ $Date$
  */
 public interface MonitorEventDispatcher {
 

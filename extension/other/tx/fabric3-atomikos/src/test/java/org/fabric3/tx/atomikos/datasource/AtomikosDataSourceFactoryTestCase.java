@@ -49,7 +49,7 @@ import org.fabric3.datasource.spi.DataSourceType;
 import org.fabric3.spi.management.ManagementService;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AtomikosDataSourceFactoryTestCase extends TestCase {
 

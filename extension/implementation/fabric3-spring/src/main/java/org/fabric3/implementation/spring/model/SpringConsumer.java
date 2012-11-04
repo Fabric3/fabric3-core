@@ -45,8 +45,6 @@ import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  * An SCA consumer definition in a Spring application context.
- *
- * @version $Rev$ $Date$
  */
 public class SpringConsumer extends ConsumerDefinition {
     private static final long serialVersionUID = 204519855340684340L;

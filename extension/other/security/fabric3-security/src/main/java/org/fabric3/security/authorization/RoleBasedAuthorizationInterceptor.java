@@ -50,8 +50,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Interceptor for performing role-based authorization.
- *
- * @version $Rev$ $Date$
  */
 public class RoleBasedAuthorizationInterceptor implements Interceptor {
     private Interceptor next;

@@ -39,8 +39,6 @@ package org.fabric3.host;
 
 /**
  * Namespaces used by Fabric3.
- *
- * @version $Rev$ $Date$
  */
 public interface Namespaces {
 

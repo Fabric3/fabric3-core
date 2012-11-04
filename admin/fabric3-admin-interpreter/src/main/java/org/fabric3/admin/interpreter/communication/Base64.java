@@ -54,8 +54,6 @@ package org.fabric3.admin.interpreter.communication;
 
 /**
  * Provides Base64 encoding and decoding as defined by RFC 2045.
- *
- * @version $Rev$ $Date$
  */
 
 

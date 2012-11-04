@@ -51,8 +51,6 @@ import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
  * Allocator that selects zones for a collection of components using deployment plan mappings.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DefaultAllocator implements Allocator {

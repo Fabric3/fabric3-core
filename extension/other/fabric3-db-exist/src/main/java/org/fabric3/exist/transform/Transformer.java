@@ -1,12 +1,12 @@
 /*
  * Fabric3
- * Copyright © 2008 Metaform Systems Limited
+ * Copyright ï¿½ 2008 Metaform Systems Limited
  *
  * This proprietary software may be used only connection with the Fabric3 license
- * (the ÒLicenseÓ), a copy of which is included in the software or may be
+ * (the ï¿½Licenseï¿½), a copy of which is included in the software or may be
  * obtained at: http://www.metaformsystems.com/licenses/license.html.
 
- * Software distributed under the License is distributed on an Òas isÓ basis,
+ * Software distributed under the License is distributed on an ï¿½as isï¿½ basis,
  * without warranties or conditions of any kind.  See the License for the
  * specific language governing permissions and limitations of use of the software.
  * This software is distributed in conjunction with other software licensed under
@@ -20,9 +20,7 @@ import org.exist.xquery.XPathException;
 import org.exist.xquery.XQueryContext;
 import org.exist.xquery.value.Sequence;
 
-/** 
- * @version $Rev$ $Date$
- */
+/** */
 public interface Transformer <A,B extends Sequence>{
 
     public A transformFrom(B value,Class<?> type,XQueryContext ctx) throws XPathException;

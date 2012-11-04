@@ -43,8 +43,6 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 
 /**
  * Key for a WSDL-based service contract based on the port type qualified name.
- *
- * @version $Rev$ $Date$
  */
 public class WsdlServiceContractSymbol extends QNameSymbol {
     public WsdlServiceContractSymbol(QName qName) {

@@ -47,8 +47,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Dispatches a callback to a websocket connection.
- *
- * @version $Rev: 9436 $ $Date: 2010-09-10 17:13:50 +0200 (Fri, 10 Sep 2010) $
  */
 @EagerInit
 public class WebCallbackInterceptor implements Interceptor {

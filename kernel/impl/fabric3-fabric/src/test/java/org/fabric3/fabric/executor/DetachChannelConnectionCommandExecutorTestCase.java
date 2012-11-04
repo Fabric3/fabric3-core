@@ -52,7 +52,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
- * @version $Rev: 10112 $ $Date: 2011-03-22 12:38:51 -0700 (Tue, 22 Mar 2011) $
+ *
  */
 public class DetachChannelConnectionCommandExecutorTestCase extends TestCase {
 

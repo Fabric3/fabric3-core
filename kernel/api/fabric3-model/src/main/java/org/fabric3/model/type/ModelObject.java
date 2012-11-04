@@ -52,8 +52,6 @@ import java.util.Set;
 
 /**
  * The base class for assembly model types.
- *
- * @version $Rev$ $Date$
  */
 public abstract class ModelObject implements Serializable {
     private static final long serialVersionUID = -4731760911483352681L;

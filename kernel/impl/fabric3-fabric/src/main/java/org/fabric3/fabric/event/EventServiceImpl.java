@@ -50,8 +50,6 @@ import org.fabric3.spi.event.Fabric3EventListener;
 
 /**
  * Default implementation of the EventService.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class EventServiceImpl implements EventService {

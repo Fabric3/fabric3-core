@@ -42,7 +42,7 @@ import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 02:48:06 +0200 (Mon, 03 Jan 2011) $
+ *
  */
 public interface ActivatorMonitor {
 

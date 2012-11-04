@@ -41,7 +41,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 
 @Entity

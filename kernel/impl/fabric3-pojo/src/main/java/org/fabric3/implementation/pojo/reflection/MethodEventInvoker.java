@@ -48,8 +48,6 @@ import java.lang.reflect.Method;
 
 /**
  * Performs an invocation on a method of a given instance
- *
- * @version $Rev$ $Date$
  */
 public class MethodEventInvoker implements EventInvoker {
     private final Method method;

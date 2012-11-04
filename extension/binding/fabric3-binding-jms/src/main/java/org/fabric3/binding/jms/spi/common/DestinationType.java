@@ -45,8 +45,6 @@ package org.fabric3.binding.jms.spi.common;
 
 /**
  * The destination type.
- *
- * @version $Revision$ $Date$
  */
 public enum DestinationType {
 

@@ -48,8 +48,6 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
  * Base class for wire commands.
- *
- * @version $Rev$ $Date$
  */
 public abstract class WireCommand implements CompensatableCommand {
     private static final long serialVersionUID = -1691568679691192110L;

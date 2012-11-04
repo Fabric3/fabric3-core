@@ -72,8 +72,6 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 
 /**
  * Loader that handles an &lt;implementation.composite&gt; element.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<CompositeImplementation> {

@@ -44,8 +44,6 @@ import org.apache.catalina.Loader;
 
 /**
  * Used to override the Tomcat WebappClassLoader with the Fabric3 web contribution classloader.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 02:48:06 +0200 (Mon, 03 Jan 2011) $
  */
 public class Fabric3Loader implements Loader {
     private Container container;

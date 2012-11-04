@@ -45,8 +45,6 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
 /**
  * Generates a {@link PhysicalClassLoaderWireDefinition} that wires two classloaders for a Java package.
- *
- * @version $Rev$ $Date$
  */
 public class JavaContributionWireGenerator implements ClassLoaderWireGenerator<JavaContributionWire> {
 

@@ -56,8 +56,6 @@ import org.fabric3.spi.executor.ExecutionException;
 
 /**
  * Establishes and removes event channel connections.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ChannelConnectionCommandExecutor implements CommandExecutor<ChannelConnectionCommand> {

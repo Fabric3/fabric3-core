@@ -43,8 +43,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
  * Instantiates a logical component from a component definition.
- *
- * @version $Rev: 8430 $ $Date: 2009-12-17 17:11:10 +0100 (Thu, 17 Dec 2009) $
  */
 public interface AtomicComponentInstantiator {
 

@@ -52,8 +52,6 @@ import org.fabric3.model.type.contract.DataType;
  * When an event is passed from a binding to a channel, the binding may opt to materialize it using a default type such as a string. When the wrapper
  * is passed to a consumer handler, the invoker may convert the default form to a specific type. As an optimization, a consumer handler may cache the
  * converted type in the wrapper to avoid conversions to the same type by subsequent handlers.
- *
- * @version $Rev$ $Date$
  */
 public class EventWrapper implements Serializable {
     private static final long serialVersionUID = 7377714429939143568L;

@@ -44,8 +44,6 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 
 /**
  * Holder for Wires and required metadata for performing an invocation.
- *
- * @version $Rev$ $Date$
  */
 public class WireHolder {
     private List<InvocationChainHolder> chains;

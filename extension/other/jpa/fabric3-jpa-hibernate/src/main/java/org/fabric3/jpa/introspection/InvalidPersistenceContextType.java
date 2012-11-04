@@ -47,8 +47,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Denotes an invalid persistence context type.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidPersistenceContextType extends ValidationFailure {
     private String message;

@@ -71,7 +71,7 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WireGeneratorImplTestCase extends TestCase {
     private static final URI CONTRIBUTION_URI = URI.create("contribution");

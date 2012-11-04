@@ -43,8 +43,6 @@ import java.io.OutputStream;
 
 /**
  * Active data connection.
- *
- * @version $Rev$ $Date$
  */
 public class ActiveDataConnection implements DataConnection {
 

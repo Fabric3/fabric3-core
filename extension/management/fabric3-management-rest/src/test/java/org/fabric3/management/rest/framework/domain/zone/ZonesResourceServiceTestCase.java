@@ -58,7 +58,7 @@ import static org.fabric3.spi.federation.FederationConstants.HTTP_HOST_METADATA;
 import static org.fabric3.spi.federation.FederationConstants.HTTP_PORT_METADATA;
 
 /**
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
+ *
  */
 public class ZonesResourceServiceTestCase extends TestCase {
     private ZonesResourceService service;

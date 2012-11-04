@@ -50,8 +50,6 @@ import org.fabric3.spi.model.os.Library;
 
 /**
  * A contribution manifest.
- *
- * @version $Rev$ $Date$
  */
 public class ContributionManifest implements Serializable {
     private static final long serialVersionUID = -4968254313720890686L;

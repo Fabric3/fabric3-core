@@ -48,7 +48,7 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SignatureTestCase extends TestCase {
 

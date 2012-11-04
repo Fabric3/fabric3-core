@@ -44,8 +44,6 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
  * Metadata to provision datasources configured in a composite.
- *
- * @version $Rev$ $Date$
  */
 public class PhysicalDataSourceResource extends PhysicalResourceDefinition {
     private static final long serialVersionUID = 5876707707248937085L;

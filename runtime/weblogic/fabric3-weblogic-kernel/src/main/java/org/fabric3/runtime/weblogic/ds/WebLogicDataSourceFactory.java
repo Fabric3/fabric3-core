@@ -44,7 +44,7 @@ import org.fabric3.datasource.spi.DataSourceFactory;
 import org.fabric3.datasource.spi.DataSourceFactoryException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class WebLogicDataSourceFactory implements DataSourceFactory {

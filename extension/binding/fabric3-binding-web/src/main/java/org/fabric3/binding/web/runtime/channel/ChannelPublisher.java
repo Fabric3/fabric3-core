@@ -42,8 +42,6 @@ import org.fabric3.spi.channel.EventWrapper;
 
 /**
  * Receives incoming requests for a channel published as a web endpoint.
- *
- * @version $Rev$ $Date$
  */
 public interface ChannelPublisher extends EventStreamHandler {
 

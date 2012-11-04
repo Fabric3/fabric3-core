@@ -75,8 +75,6 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
  * <p/>
  * Components deployed via a deployable composite are associated with the same context. When a context starts and stops, components will receive
  * initialization and destruction callbacks. Eager initialization is also supported.
- *
- * @version $Rev: 9039 $ $Date: 2010-05-24 10:22:02 +0200 (Mon, 24 May 2010) $
  */
 public abstract class SingletonScopeContainer extends AbstractScopeContainer {
     private static final Object EMPTY = new Object();

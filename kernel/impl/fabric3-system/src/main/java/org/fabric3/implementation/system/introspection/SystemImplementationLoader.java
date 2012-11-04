@@ -59,8 +59,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Loads information for a system implementation
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SystemImplementationLoader extends AbstractValidatingTypeLoader<SystemImplementation> {

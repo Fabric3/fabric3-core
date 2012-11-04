@@ -41,8 +41,6 @@ import org.apache.catalina.connector.Connector;
 
 /**
  * Returns the Tomcat HTTP connector.
- *
- * @version $Rev: 9216 $ $Date: 2010-07-19 10:15:48 +0200 (Mon, 19 Jul 2010) $
  */
 public interface ConnectorService {
 

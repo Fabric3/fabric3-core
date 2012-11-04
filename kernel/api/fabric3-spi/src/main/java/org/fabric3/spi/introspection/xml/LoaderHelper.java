@@ -60,8 +60,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Helper service for handling XML.
- *
- * @version $Rev$ $Date$
  */
 public interface LoaderHelper {
     /**

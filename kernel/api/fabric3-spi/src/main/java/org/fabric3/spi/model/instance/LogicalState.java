@@ -46,8 +46,6 @@ package org.fabric3.spi.model.instance;
  * <li> MARKED - The component has been marked for removal from the domain
  * </ul>
  * </pre>
- *
- * @version $Rev$ $Date$
  */
 public enum LogicalState {
 

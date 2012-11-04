@@ -43,8 +43,6 @@ import org.fabric3.spi.builder.WiringException;
 
 /**
  * Utility methods for wire attachers.
- *
- * @version $Rev$ $Date$
  */
 public interface WireAttacherHelper {
 

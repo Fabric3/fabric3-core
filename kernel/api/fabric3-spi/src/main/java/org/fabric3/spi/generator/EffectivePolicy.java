@@ -47,8 +47,6 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 
 /**
  * Represents the policy sets and intents that are to be applied to an endpoint and its operations.
- *
- * @version $Rev$ $Date$
  */
 public interface EffectivePolicy {
 

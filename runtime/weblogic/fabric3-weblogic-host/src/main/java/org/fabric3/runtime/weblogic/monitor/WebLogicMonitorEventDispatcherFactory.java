@@ -47,8 +47,6 @@ import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
 
 /**
  * Creates {@link MonitorEventDispatcher} instances which dispatch to the WebLogic logging infrastructure.
- *
- * @version $Rev: 9016 $ $Date: 2010-05-20 14:28:14 +0200 (Thu, 20 May 2010) $
  */
 public class WebLogicMonitorEventDispatcherFactory implements MonitorEventDispatcherFactory {
     private WebLogicMonitorEventDispatcher dispatcher;

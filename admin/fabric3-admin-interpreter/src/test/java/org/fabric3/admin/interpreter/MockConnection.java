@@ -42,11 +42,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MockConnection extends HttpURLConnection {
     private int responseCode = 200;
-    
+
     public MockConnection() {
         super(null);
     }

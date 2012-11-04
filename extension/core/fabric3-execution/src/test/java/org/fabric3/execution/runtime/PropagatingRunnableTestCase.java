@@ -6,7 +6,7 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PropagatingRunnableTestCase extends TestCase {
 

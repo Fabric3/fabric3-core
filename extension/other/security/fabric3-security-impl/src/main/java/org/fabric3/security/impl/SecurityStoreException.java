@@ -40,7 +40,7 @@ package org.fabric3.security.impl;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SecurityStoreException extends Fabric3Exception {
     private static final long serialVersionUID = 6843316137193451331L;

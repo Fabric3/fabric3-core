@@ -58,8 +58,6 @@ import org.fabric3.spi.contribution.ResolutionException;
 /**
  * Default implementation of the <code>ContributionResolver</code> which attempts to resolves a contribution URI against the metadata store, artifact
  * cache, or by delegating to <code>ContributionResolverExtension</code>s respectively.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DefaultContributionResolver implements ContributionResolver {

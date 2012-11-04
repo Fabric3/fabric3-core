@@ -81,7 +81,7 @@ import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ExtensionGeneratorImplTestCase extends TestCase {
 

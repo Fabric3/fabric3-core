@@ -71,7 +71,7 @@ import org.fabric3.util.closure.Closure;
 import org.fabric3.util.closure.CollectionUtils;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DefaultPolicyResolver implements PolicyResolver {
     private static final QName IMPLEMENTATION_SYSTEM = new QName(Namespaces.F3, "implementation.system");

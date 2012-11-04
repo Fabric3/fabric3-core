@@ -46,8 +46,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * A contract-based artifact that flows data such as a service, reference, consumer, producer, resource or binding.
- *
- * @version $Rev$ $Date$
  */
 public class LogicalInvocable extends LogicalAttachPoint {
     private static final long serialVersionUID = 4182922230894994435L;

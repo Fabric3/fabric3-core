@@ -47,8 +47,6 @@ import org.fabric3.spi.command.Command;
 
 /**
  * Responsible for executing {@link org.fabric3.spi.command.Command}s sent to a runtime.
- *
- * @version $Rev$ $Date$
  */
 public interface CommandExecutor<T extends Command> {
 

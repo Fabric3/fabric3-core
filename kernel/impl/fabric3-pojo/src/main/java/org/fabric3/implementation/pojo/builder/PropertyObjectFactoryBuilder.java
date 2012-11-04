@@ -46,8 +46,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Creates ObjectFactory instances for property values.
- *
- * @version $Rev$ $Date$
  */
 public interface PropertyObjectFactoryBuilder {
 

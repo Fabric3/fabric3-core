@@ -43,8 +43,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  * Manages and dispatches to {@link ContributionProcessor}s and {@link ResourceProcessor}s when introspecting a contribution.
- *
- * @version $Rev$ $Date$
  */
 public interface ProcessorRegistry {
     /**

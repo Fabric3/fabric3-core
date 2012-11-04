@@ -60,7 +60,7 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class BuildComponentCommandGeneratorTestCase extends TestCase {
 

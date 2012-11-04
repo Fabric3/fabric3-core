@@ -59,8 +59,6 @@ import org.fabric3.spi.model.type.java.InjectionSite;
 
 /**
  * Default implementation of WebImplementationIntrospector.
- *
- * @version $Rev$ $Date$
  */
 public class WebImplementationIntrospectorImpl implements WebImplementationIntrospector {
     private ClassVisitor classVisitor;

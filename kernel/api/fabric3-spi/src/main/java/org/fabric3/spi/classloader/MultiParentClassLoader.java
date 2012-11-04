@@ -74,8 +74,6 @@ import org.fabric3.host.classloader.DelegatingResourceClassLoader;
  * the latter.
  * <p/>
  * Each classloader has a name that can be used to reference it in the runtime.
- *
- * @version $Rev$ $Date$
  */
 public class MultiParentClassLoader extends DelegatingResourceClassLoader {
     private static final URL[] NOURLS = {};

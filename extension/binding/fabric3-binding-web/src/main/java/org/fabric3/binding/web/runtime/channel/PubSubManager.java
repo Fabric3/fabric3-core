@@ -39,8 +39,6 @@ package org.fabric3.binding.web.runtime.channel;
 
 /**
  * Manages {@link ChannelSubscriber} and {@link ChannelPublisher} instances.
- *
- * @version $Rev: 9435 $ $Date: 2010-09-09 17:31:45 +0200 (Thu, 09 Sep 2010) $
  */
 public interface PubSubManager {
 

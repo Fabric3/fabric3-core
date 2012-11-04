@@ -45,8 +45,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Controls the order in which system implementation heuristics are applied.
- *
- * @version $Rev$ $Date$
  */
 public class SystemHeuristic implements HeuristicProcessor {
     private final HeuristicProcessor serviceHeuristic;

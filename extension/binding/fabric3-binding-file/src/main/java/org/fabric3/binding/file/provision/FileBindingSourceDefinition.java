@@ -37,8 +37,6 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
  * Generated metadata used for attaching a service to a file listener.
- *
- * @version $Revision$ $Date$
  */
 public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = -4154935681094596517L;

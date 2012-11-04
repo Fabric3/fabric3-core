@@ -44,7 +44,7 @@ import org.fabric3.spi.wire.Wire;
 import org.fabric3.spring.spi.WireListener;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class SecurityWireListener implements WireListener {

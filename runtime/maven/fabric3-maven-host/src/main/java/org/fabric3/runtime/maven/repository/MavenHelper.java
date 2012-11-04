@@ -82,8 +82,6 @@ import static org.apache.maven.artifact.repository.ArtifactRepositoryPolicy.UPDA
 
 /**
  * Utility class for embedding Maven.
- *
- * @version $Rev$ $Date$
  */
 public class MavenHelper {
     private static final String DEFAULT_REPO = "http://repo1.maven.org/maven2/";

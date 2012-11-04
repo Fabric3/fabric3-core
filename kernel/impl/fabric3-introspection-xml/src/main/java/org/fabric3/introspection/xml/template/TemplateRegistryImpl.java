@@ -53,8 +53,6 @@ import org.fabric3.spi.introspection.xml.TemplateRegistry;
 /**
  * Default implementation of the {@link TemplateRegistry}. Also implements {@link ContributionServiceListener} to unregister templates when their
  * containing contribution is undeployed.
- *
- * @version $Rev$ $Date$
  */
 @Service(TemplateRegistry.class)
 public class TemplateRegistryImpl implements TemplateRegistry, ContributionServiceListener {

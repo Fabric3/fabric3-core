@@ -44,8 +44,6 @@ import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 
 /**
  * Template for configuring a {@link JmsInterceptor}.
- *
- * @version $Rev$ $Date$
  */
 public class InterceptorConfiguration {
     private String operationName;

@@ -42,7 +42,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.model.type.component.Property;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class XQueryProperty extends Property {
 

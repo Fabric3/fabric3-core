@@ -43,8 +43,6 @@ import org.fabric3.spi.generator.DeploymentUnit;
 
 /**
  * Encapsulates serialized {@link DeploymentUnit} commands.
- *
- * @version $Rev$ $Date$
  */
 public class SerializedDeploymentUnit implements Serializable {
     private static final long serialVersionUID = 3319998193963424295L;

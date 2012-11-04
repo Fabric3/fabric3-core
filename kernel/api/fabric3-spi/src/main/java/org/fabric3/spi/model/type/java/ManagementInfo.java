@@ -52,8 +52,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * Encapsulates management metadata about a component implementation.
- *
- * @version $Rev$ $Date$
  */
 public class ManagementInfo extends ModelObject {
     private static final long serialVersionUID = 8421549578785177167L;

@@ -63,8 +63,6 @@ import org.fabric3.spi.xml.XMLFactory;
 
 /**
  * Reads security information from a system property or the <code>security.xml</code> file in the runtime config directory.
- *
- * @version $Rev$ $Date$
  */
 public class FileSecurityStore implements SecurityStore {
     private XMLInputFactory xmlFactory;

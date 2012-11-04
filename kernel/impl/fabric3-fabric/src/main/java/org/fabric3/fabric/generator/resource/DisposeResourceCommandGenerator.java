@@ -63,8 +63,6 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
  * Creates a command to un-build a resource on a runtime.
- *
- * @version $Rev: 8693 $ $Date: 2010-03-10 01:34:24 +0100 (Wed, 10 Mar 2010) $
  */
 public class DisposeResourceCommandGenerator implements CommandGenerator {
     private GeneratorRegistry generatorRegistry;

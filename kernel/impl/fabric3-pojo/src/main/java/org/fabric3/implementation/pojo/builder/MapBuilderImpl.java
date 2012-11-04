@@ -64,7 +64,7 @@ import org.fabric3.spi.transform.TransformerRegistry;
 import static org.fabric3.spi.model.type.xsd.XSDConstants.PROPERTY_TYPE;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MapBuilderImpl extends AbstractPropertyBuilder implements MapBuilder {
     private DocumentBuilder documentBuilder;

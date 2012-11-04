@@ -58,8 +58,6 @@ import org.fabric3.spi.util.UriHelper;
 
 /**
  * Default implementation of the promotion service.
- *
- * @version $Rev$ $Date$
  */
 public class PromotionResolutionServiceImpl implements PromotionResolutionService {
 

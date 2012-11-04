@@ -44,7 +44,7 @@
 package org.fabric3.spi.introspection.xml;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DeprecatedNamespaceHelper {
 

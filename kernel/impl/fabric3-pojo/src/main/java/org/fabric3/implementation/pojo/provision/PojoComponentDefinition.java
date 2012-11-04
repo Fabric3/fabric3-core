@@ -48,8 +48,6 @@ import org.fabric3.spi.model.type.java.ManagementInfo;
 
 /**
  * Definition of a physical component whose actual implementation is based on a POJO.
- *
- * @version $Rev$ $Date$
  */
 public abstract class PojoComponentDefinition extends PhysicalComponentDefinition {
     private static final long serialVersionUID = 297672484973345029L;

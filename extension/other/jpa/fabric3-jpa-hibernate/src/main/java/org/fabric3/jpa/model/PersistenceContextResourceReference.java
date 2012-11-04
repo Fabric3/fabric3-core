@@ -42,8 +42,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * Represents an entity manager factory treated as a resource.
- *
- * @version $Rev$ $Date$
  */
 public final class PersistenceContextResourceReference extends ResourceReferenceDefinition {
     private static final long serialVersionUID = -8717050996527626286L;

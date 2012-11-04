@@ -53,8 +53,6 @@ import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
  * Encapsulates a persistence unit configured in a persistence.xml file.
- *
- * @version $Rev: 8929 $ $Date: 2010-04-26 23:53:37 +0200 (Mon, 26 Apr 2010) $
  */
 public class Fabric3PersistenceUnitInfo implements PersistenceUnitInfo {
     private String unitName;

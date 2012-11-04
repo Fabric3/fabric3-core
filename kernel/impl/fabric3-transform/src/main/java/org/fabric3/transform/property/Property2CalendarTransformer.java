@@ -52,8 +52,6 @@ import org.fabric3.spi.transform.TransformationException;
 
 /**
  * Transforms from a DOM representation to a Calendar, expecting the format of the date to correspond to XML Schema (2007-10-31T01:02:03Z)
- *
- * @version $Rev$ $Date$
  */
 public class Property2CalendarTransformer implements SingleTypeTransformer<Node, Calendar> {
     private static final JavaClass<Calendar> TARGET = new JavaClass<Calendar>(Calendar.class);

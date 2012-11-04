@@ -61,8 +61,6 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
  * Processes @PersistenceContext annotations.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class PersistenceContextProcessor extends AbstractAnnotationProcessor<PersistenceContext> {

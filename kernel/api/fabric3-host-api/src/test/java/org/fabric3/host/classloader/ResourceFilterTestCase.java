@@ -44,7 +44,7 @@ import java.util.Enumeration;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ResourceFilterTestCase extends TestCase {
 

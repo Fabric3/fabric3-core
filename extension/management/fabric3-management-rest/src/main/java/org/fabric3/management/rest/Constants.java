@@ -38,7 +38,7 @@
 package org.fabric3.management.rest;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface Constants  {
 

@@ -56,8 +56,6 @@ import org.fabric3.host.util.FileHelper;
 /**
  * The default implementation of a Repository that persists artifacts to the file system. Extensions will be persisted to the runtime repository
  * directory (where they will not be shared by runtime instances). User contributions will be persisted to the user repository directory.
- *
- * @version $Rev$ $Date$
  */
 public class RepositoryImpl implements Repository {
     private Map<URI, URL> archiveUriToUrl;

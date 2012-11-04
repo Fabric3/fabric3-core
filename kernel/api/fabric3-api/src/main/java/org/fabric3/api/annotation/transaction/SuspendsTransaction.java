@@ -50,8 +50,6 @@ import static org.oasisopen.sca.Constants.SCA_PREFIX;
 
 /**
  * Used to specify the suspends transaction intent on a component implementation.
- *
- * @version $Rev$ $Date$
  */
 @Target({FIELD, METHOD})
 @Retention(RUNTIME)

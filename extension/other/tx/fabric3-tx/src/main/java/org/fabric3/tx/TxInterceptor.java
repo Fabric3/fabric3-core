@@ -45,8 +45,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Implements transaction policy for a wire operation.
- *
- * @version $Rev$ $Date$
  */
 public class TxInterceptor extends AbstractTxSupport implements Interceptor {
     private Interceptor next;

@@ -38,7 +38,7 @@
 package org.fabric3.spi.transform;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TransformationException extends Exception {
     private static final long serialVersionUID = 3186339779984022349L;

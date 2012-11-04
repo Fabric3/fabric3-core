@@ -45,8 +45,6 @@ import org.fabric3.spi.model.instance.LogicalChannel;
 /**
  * Creates commands to build and dispose domain-level channels. Domain-level channels are special-cased as they are not part of a deployed composite.
  * That is, they are contained by the domain composite, which is virtual.
- *
- * @version $Rev$ $Date$
  */
 public interface DomainChannelCommandGenerator {
 

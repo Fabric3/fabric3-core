@@ -50,7 +50,7 @@ import org.fabric3.datasource.spi.DataSourceFactory;
 import org.fabric3.datasource.spi.DataSourceType;
 
 /**
- * @version $Rev: 10100 $ $Date: 2011-03-15 14:51:01 -0700 (Tue, 15 Mar 2011) $
+ *
  */
 public class DataSourceBuilderTestCase extends TestCase {
 

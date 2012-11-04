@@ -75,8 +75,6 @@ import org.fabric3.spi.executor.ExecutionException;
  * <p/>
  * This implementation queues deployment commands in the order they are received. A single, asynchronously executing message pump dequeues and
  * processes the deployment commands. This guarantees deployment commands are executed in the order they were received by the runtime.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DeploymentCommandExecutor implements CommandExecutor<DeploymentCommand> {

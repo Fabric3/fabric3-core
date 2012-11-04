@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PubSubManagerImpl implements PubSubManager {
     private Map<String, ChannelPublisher> publishers = new ConcurrentHashMap<String, ChannelPublisher>();

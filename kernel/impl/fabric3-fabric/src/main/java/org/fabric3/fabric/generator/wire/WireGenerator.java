@@ -72,8 +72,6 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
  * <li>One from the transport on the source runtime to the callback service.
  * </ul>
  * </pre>
- *
- * @version $Rev$ $Date$
  */
 public interface WireGenerator {
 

@@ -40,7 +40,7 @@ package org.fabric3.implementation.spring.introspection;
 import org.fabric3.host.contribution.ValidationFailure;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ServiceTargetNotFound extends ValidationFailure {
     private String serviceName;

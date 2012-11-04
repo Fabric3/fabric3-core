@@ -44,8 +44,6 @@ import org.w3c.dom.Element;
 
 /**
  * Creates {@link MonitorEventDispatcher}s for a host.
- *
- * @version $Rev$ $Date$
  */
 public interface MonitorEventDispatcherFactory {
 

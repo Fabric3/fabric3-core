@@ -42,7 +42,7 @@ import org.easymock.EasyMock;
 import org.w3c.dom.Element;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TxInterceptorGeneratorTestCase extends TestCase {
 

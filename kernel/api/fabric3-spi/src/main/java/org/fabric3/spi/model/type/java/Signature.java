@@ -55,8 +55,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * Description of a method signature.
- *
- * @version $Rev$ $Date$
  */
 public class Signature extends ModelObject {
     private static final long serialVersionUID = 4851321624672183132L;

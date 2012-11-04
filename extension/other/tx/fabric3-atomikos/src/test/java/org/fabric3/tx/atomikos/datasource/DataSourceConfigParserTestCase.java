@@ -49,7 +49,7 @@ import org.fabric3.datasource.spi.DataSourceConfiguration;
 import org.fabric3.datasource.spi.DataSourceType;
 
 /**
- * @version $Rev: 7148 $ $Date: 2009-06-14 17:18:27 -0700 (Sun, 14 Jun 2009) $
+ *
  */
 public class DataSourceConfigParserTestCase extends TestCase {
     private static final String XML = "<foo><value>" +

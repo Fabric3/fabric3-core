@@ -51,8 +51,6 @@ import org.fabric3.spi.model.type.xsd.XSDType;
 /**
  * Default implementation of the OperationResolver that resolves using the XML Schema type of the input parameters. Output parameters and faults are
  * not matched.
- *
- * @version $Rev: 7721 $ $Date: 2009-09-30 18:03:01 +0200 (Wed, 30 Sep 2009) $
  */
 public class OperationResolverImpl implements OperationResolver {
 

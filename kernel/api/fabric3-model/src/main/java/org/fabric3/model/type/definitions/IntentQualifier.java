@@ -49,8 +49,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * A qualifier in an IntentMap.
- *
- * @version $Rev$ $Date$
  */
 public final class IntentQualifier extends ModelObject {
     private static final long serialVersionUID = -2487001541970876844L;

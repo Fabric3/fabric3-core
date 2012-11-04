@@ -62,8 +62,6 @@ import org.fabric3.host.util.IOHelper;
  * <p/>
  * This resolver changes that behavior by resolving schemas relative to their importing document. This is done by traversing the stack of importing
  * documents and building the schema URL relative to the location of those documents.
- *
- * @version $Rev$ $Date$
  */
 public class RelativeUrlResolver implements URIResolver {
     private static Field schemaKeyIdField;

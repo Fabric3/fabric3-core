@@ -71,7 +71,7 @@ import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class JUnitComponentGenerator implements ComponentGenerator<LogicalComponent<JUnitImplementation>> {

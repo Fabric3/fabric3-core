@@ -70,7 +70,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaClass;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PhysicalOperationGeneratorImplTestCase extends TestCase {
     private static final QName OASIS_ONEWAY = new QName(Constants.SCA_NS, "oneWay");

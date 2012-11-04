@@ -48,8 +48,6 @@ import java.net.SocketAddress;
 
 /**
  * Represents a passive data connection.
- *
- * @version $Rev$ $Date$
  */
 public class PassiveDataConnection implements DataConnection {
 

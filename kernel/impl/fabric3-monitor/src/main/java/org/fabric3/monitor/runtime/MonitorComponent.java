@@ -49,7 +49,7 @@ import org.fabric3.spi.component.Component;
 import org.fabric3.spi.monitor.DispatcherWrapper;
 
 /**
- * @version $Rev: 9019 $ $Date: 2010-05-20 17:00:08 +0200 (Thu, 20 May 2010) $
+ *
  */
 public class MonitorComponent implements Component {
     private URI uri;

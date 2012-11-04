@@ -44,8 +44,6 @@ import java.util.Set;
 
 /**
  * Utility for applying closures on collections.
- *
- * @version $Rev$ $Date$
  */
 public class CollectionUtils {
 

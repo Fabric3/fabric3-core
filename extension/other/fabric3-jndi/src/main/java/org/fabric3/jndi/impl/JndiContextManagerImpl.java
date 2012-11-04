@@ -52,7 +52,7 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.jndi.spi.JndiContextManager;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JndiContextManagerImpl implements JndiContextManager {
     private Map<String, Context> contexts = new ConcurrentHashMap<String, Context>();

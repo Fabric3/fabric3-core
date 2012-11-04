@@ -51,8 +51,6 @@ import org.fabric3.timer.spi.Task;
 /**
  * A {@link Task} implementation that returns the next firing interval by calling a <code>nextInterval</code> method on the timer component
  * implementation.
- *
- * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
  */
 public class NonTransactionalIntervalTask implements Task {
     private static final CallFrame FRAME = new CallFrame();

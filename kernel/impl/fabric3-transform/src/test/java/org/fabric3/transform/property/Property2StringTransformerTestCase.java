@@ -44,7 +44,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class Property2StringTransformerTestCase extends TestCase {
 

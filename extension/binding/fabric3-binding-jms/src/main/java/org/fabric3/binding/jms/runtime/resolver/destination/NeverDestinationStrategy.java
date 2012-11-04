@@ -56,8 +56,6 @@ import org.fabric3.binding.jms.spi.runtime.ProviderDestinationResolver;
 
 /**
  * Implementation that always resolves a destination against JNDI and never attempts to create it.
- *
- * @version $Revision$ $Date$
  */
 public class NeverDestinationStrategy implements DestinationStrategy {
     private List<ProviderDestinationResolver> resolvers;

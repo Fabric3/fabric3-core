@@ -49,7 +49,7 @@ import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface ContextMonitor {
 

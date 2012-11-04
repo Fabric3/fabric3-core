@@ -43,8 +43,6 @@ import org.fabric3.spi.invocation.WorkContext;
 
 /**
  * Handles HTTP basic auth.
- *
- * @version $Rev$ $Date$
  */
 public interface BasicAuthenticator {
 

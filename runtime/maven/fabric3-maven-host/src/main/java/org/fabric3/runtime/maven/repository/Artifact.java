@@ -49,8 +49,6 @@ import java.util.Set;
 
 /**
  * Description of some packaged artifact such as a JAR file or a Composite.
- *
- * @version $Rev$ $Date$
  */
 public class Artifact {
 

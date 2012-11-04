@@ -54,8 +54,6 @@ import org.fabric3.spi.monitor.MonitorService;
 
 /**
  * Overrides the static JGroups log factory and redirects output to a Fabric3 monitor channel.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class LogFactoryOverride implements CustomLogFactory, Log {

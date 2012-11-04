@@ -77,8 +77,6 @@ import org.fabric3.spi.util.ParamTypes;
 
 /**
  * Base class for component builders that create Java-based components.
- *
- * @version $Rev$ $Date$
  */
 public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, C extends Component> implements ComponentBuilder<PCD, C> {
     protected ClassLoaderRegistry classLoaderRegistry;

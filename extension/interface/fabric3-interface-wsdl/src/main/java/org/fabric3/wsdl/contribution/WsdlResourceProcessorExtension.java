@@ -43,8 +43,6 @@ import org.fabric3.spi.contribution.Resource;
 
 /**
  * Implementations extend resource processing during contribution installation to handle WSDL extensibility elements.
- *
- * @version $Rev$ $Date$
  */
 public interface WsdlResourceProcessorExtension {
 

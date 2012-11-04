@@ -43,7 +43,7 @@ import org.fabric3.host.Fabric3Exception;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
+ *
  */
 public class JmsUriException extends Fabric3Exception {
     private static final long serialVersionUID = 4396159900970177273L;

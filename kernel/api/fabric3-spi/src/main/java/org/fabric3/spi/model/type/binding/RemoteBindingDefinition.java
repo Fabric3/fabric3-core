@@ -46,8 +46,6 @@ import org.fabric3.model.type.component.BindingDefinition;
  * Represents binding information for the source or target side of a bound wire. For bound services, the remote binding definition is used to
  * represent the side of the wire that is attached to to the component providing the service. For bound references, the remote binding definition is
  * used to represent the side of the wire that is attached to the component containing the reference.
- *
- * @version $Rev$ $Date$
  */
 public class RemoteBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 975283470994901368L;

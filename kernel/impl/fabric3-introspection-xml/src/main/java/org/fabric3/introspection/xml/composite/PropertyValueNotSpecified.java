@@ -43,7 +43,7 @@ import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PropertyValueNotSpecified extends XmlValidationFailure {
     private String propertyName;

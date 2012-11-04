@@ -39,8 +39,6 @@ package org.fabric3.spi.federation;
 
 /**
  * Raised when an attempt is made to contact the controller but one cannot be found in the domain.
- *
- * @version $Rev$ $Date$
  */
 public class ControllerNotFoundException extends MessageException {
     private static final long serialVersionUID = 6661874470150036437L;

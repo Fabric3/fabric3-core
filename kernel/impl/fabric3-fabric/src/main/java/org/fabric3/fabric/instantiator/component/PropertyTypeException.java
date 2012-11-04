@@ -40,7 +40,7 @@ package org.fabric3.fabric.instantiator.component;
 import org.fabric3.host.Fabric3RuntimeException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PropertyTypeException extends Fabric3RuntimeException {
     private static final long serialVersionUID = 6489030033559335936L;

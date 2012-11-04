@@ -49,8 +49,6 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * Generates a Command that must be applied to a zone based on changes to a logical component.
- *
- * @version $Rev$ $Date$
  */
 public interface CommandGenerator {
 

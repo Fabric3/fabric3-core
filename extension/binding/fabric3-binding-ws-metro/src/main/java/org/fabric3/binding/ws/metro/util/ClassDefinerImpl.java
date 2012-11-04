@@ -45,7 +45,7 @@ import java.security.SecureClassLoader;
 import org.oasisopen.sca.annotation.Init;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ClassDefinerImpl implements ClassDefiner {
     private Method method;

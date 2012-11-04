@@ -42,7 +42,7 @@ import junit.framework.TestCase;
 import org.fabric3.async.provision.NonBlockingInterceptorDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class NonBlockingInterceptorBuilderTestCase extends TestCase {
 

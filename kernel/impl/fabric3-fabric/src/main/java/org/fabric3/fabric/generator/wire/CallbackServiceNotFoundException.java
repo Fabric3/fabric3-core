@@ -40,7 +40,7 @@ package org.fabric3.fabric.generator.wire;
 import org.fabric3.spi.generator.GenerationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class CallbackServiceNotFoundException extends GenerationException {
     private static final long serialVersionUID = 5437567367368328467L;

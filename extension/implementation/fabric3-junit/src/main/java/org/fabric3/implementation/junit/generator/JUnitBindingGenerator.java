@@ -55,8 +55,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Attaches wires to Junit components to the WireHolder.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class JUnitBindingGenerator implements BindingGenerator<JUnitBindingDefinition> {

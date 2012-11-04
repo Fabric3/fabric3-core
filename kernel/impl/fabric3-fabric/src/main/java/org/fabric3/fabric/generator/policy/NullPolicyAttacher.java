@@ -48,8 +48,6 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * No-op attacher used during bootstrap.
- *
- * @version $Rev$ $Date$
  */
 public class NullPolicyAttacher implements PolicyAttacher {
 

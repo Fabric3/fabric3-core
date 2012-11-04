@@ -48,8 +48,6 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
  * Generates DataSource definitions.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DataSourceResourceGenerator implements ResourceGenerator<DataSourceResource> {

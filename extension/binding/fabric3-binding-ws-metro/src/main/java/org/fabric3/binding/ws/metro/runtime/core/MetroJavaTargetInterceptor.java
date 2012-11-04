@@ -56,8 +56,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  * by a Java interface (as opposed to a WSDL contract).
  * <p/>
  * This interceptor requires message payloads to be a JAXB types.
- *
- * @version $Rev$ $Date$
  */
 public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
     private ObjectFactory<?> proxyFactory;

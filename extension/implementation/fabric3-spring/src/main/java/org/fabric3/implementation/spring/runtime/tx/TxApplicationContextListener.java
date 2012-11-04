@@ -56,8 +56,6 @@ import static org.fabric3.implementation.spring.api.SpringConstants.TRX_ALIAS;
 /**
  * If a JTA transaction manager and datasources are configured on the runtime, they will be aliased as <code>transactionManager</code> and their
  * datasource name respectively.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class TxApplicationContextListener implements ApplicationContextListener {

@@ -52,8 +52,6 @@ import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
  * Allocator that sets the zone to the current domain name.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WebLogicAllocator implements Allocator {

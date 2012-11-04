@@ -63,7 +63,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ContributionTrackerImpl implements ContributionTracker {
     private static final String CONTRIBUTION = "contribution";

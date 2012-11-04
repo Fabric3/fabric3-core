@@ -54,7 +54,7 @@ import org.fabric3.host.os.OperatingSystem;
 import org.fabric3.runtime.maven.MavenHostInfo;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MavenHostInfoImpl implements MavenHostInfo {
     private URI domain;

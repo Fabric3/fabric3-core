@@ -41,8 +41,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Implementations receive callbacks when an application context is created and disposed.
- *
- * @version $Rev$ $Date$
  */
 public interface ApplicationContextListener {
 

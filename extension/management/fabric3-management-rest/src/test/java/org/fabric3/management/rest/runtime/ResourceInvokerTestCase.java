@@ -61,7 +61,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.security.BasicSecuritySubject;
 
 /**
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
+ *
  */
 public class ResourceInvokerTestCase extends TestCase {
     private Method method;

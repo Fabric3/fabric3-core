@@ -44,8 +44,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Creates StatefulEntityManagerProxy instances.
- *
- * @version $Rev$ $Date$
  */
 public class StatefulEntityManagerProxyFactory implements ObjectFactory<StatefulEntityManagerProxy> {
     private String unitName;

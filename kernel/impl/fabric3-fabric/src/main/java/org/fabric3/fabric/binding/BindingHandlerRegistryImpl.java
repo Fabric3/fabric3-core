@@ -53,7 +53,7 @@ import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class BindingHandlerRegistryImpl implements BindingHandlerRegistry {
     private ComponentManager componentManager;

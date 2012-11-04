@@ -43,8 +43,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Contains base functionality for Metro interceptors.
- *
- * @version $Rev: 7476 $ $Date: 2009-08-15 01:25:27 -0400 (Sat, 15 Aug 2009) $
  */
 public abstract class AbstractMetroTargetInterceptor implements Interceptor {
     // blank response for one-way operations

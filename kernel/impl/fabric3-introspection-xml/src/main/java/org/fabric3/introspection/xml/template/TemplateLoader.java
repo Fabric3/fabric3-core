@@ -55,8 +55,6 @@ import org.fabric3.spi.introspection.xml.TemplateRegistry;
 /**
  * General class for loading template definitions such as <code>&lt;binding.template&gt;</code>. This class is general and is designed to be
  * configured to support specific element types. It works by resolving the requested template using the {@link TemplateRegistry}.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class TemplateLoader extends AbstractValidatingTypeLoader<ModelObject> {

@@ -38,7 +38,7 @@
 package org.fabric3.spi.introspection;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ImplementationNotFoundException extends IntrospectionException {
     private static final long serialVersionUID = -5872848682083357587L;

@@ -45,7 +45,7 @@ import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PhysicalCacheSetDefinition extends PhysicalResourceDefinition {
     private static final long serialVersionUID = 5686304373595234795L;

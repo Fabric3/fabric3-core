@@ -63,8 +63,6 @@ import org.fabric3.spring.spi.WireListener;
 
 /**
  * Attaches the target side of a wire to a Spring component.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SpringTargetWireAttacher implements TargetWireAttacher<SpringTargetDefinition> {

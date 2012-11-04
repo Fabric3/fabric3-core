@@ -52,8 +52,6 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
  * Generates commands to attach a component to its resources.
- *
- * @version $Revision$ $Date$
  */
 public class ResourceReferenceCommandGenerator implements CommandGenerator {
 

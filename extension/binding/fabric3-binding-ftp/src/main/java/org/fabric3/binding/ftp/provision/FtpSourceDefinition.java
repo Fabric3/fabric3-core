@@ -40,7 +40,7 @@ package org.fabric3.binding.ftp.provision;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class FtpSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = 2972669619725781486L;

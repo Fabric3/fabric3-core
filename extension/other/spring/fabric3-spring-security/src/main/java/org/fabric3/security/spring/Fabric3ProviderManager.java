@@ -68,8 +68,6 @@ import org.fabric3.spi.security.UsernamePasswordToken;
  * SPI and Spring code to authenticate against the Spring Security API.
  * <p/>
  * Authentication is done using a set of Spring <code>AuthenticationProvider</code>s.
- *
- * @version $Rev$ $Date$
  */
 @Service(names = {AuthenticationManager.class, AuthenticationService.class})
 public class Fabric3ProviderManager extends ProviderManager implements AuthenticationService {

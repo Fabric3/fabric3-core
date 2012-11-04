@@ -57,7 +57,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 
 /**
- * @version $Rev: 8657 $ $Date: 2010-02-18 10:59:58 -0800 (Thu, 18 Feb 2010) $
+ *
  */
 @Management(name = "RollbackService",
             path = "/runtime/deployment/rollback",

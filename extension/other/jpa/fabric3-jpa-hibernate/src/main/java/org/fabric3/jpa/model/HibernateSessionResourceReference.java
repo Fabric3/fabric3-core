@@ -42,8 +42,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * Represents a Hibernate Session treated as a resource.
- *
- * @version $Rev: 7652 $ $Date: 2009-09-20 16:02:49 +0200 (Sun, 20 Sep 2009) $
  */
 public final class HibernateSessionResourceReference extends ResourceReferenceDefinition {
     private static final long serialVersionUID = 4343784880360787751L;

@@ -42,8 +42,6 @@ import org.fabric3.model.type.ModelObject;
 /**
  * Encapsulates information needed to identify a component/service, component/service/binding, component/reference or component/reference/binding.
  * Targets are relative to a composite and not absolute.
- *
- * @version $Rev$ $Date$
  */
 public class Target extends ModelObject {
     private static final long serialVersionUID = 8616545726099554138L;

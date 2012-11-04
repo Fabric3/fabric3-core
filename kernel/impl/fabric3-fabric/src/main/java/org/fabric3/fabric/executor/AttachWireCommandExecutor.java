@@ -57,8 +57,6 @@ import org.fabric3.spi.executor.ExecutionException;
 
 /**
  * Attaches a wire to its source component reference or binding and target service or binding.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class AttachWireCommandExecutor implements CommandExecutor<AttachWireCommand> {

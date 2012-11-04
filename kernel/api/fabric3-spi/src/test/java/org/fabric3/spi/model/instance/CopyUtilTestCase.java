@@ -54,7 +54,7 @@ import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class CopyUtilTestCase extends TestCase {
 

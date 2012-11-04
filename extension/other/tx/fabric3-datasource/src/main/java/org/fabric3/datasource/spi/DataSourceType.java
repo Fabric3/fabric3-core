@@ -39,8 +39,6 @@ package org.fabric3.datasource.spi;
 
 /**
  * Denotes a datasource type.
- *
- * @version $Rev$ $Date$
  */
 public enum DataSourceType {
     XA, NON_XA

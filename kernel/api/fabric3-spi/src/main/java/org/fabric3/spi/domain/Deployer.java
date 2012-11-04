@@ -48,8 +48,6 @@ import org.fabric3.spi.generator.DeploymentUnit;
 
 /**
  * Processes a {@link DeploymentPackage} and applies its {@link DeploymentUnit}s to zones in a domain.
- *
- * @version $Rev$ $Date$
  */
 public interface Deployer {
 

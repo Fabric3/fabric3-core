@@ -43,7 +43,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 public class ZeroMQConnectionSourceAttacher implements SourceConnectionAttacher<ZeroMQConnectionSourceDefinition> {
     private ZeroMQPubSubBroker broker;

@@ -39,8 +39,6 @@ package org.fabric3.tx;
 
 /**
  * Defines the possible transaction operations when a client invokes a service.
- *
- * @version $Rev$ $Date$
  */
 public enum TxAction {
 

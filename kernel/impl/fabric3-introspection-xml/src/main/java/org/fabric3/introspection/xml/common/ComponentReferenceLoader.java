@@ -74,8 +74,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loads a component reference configuration.
- *
- * @version $Rev$ $Date$
  */
 public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<ComponentReference> {
     private static final QName REFERENCE = new QName(SCA_NS, "reference");

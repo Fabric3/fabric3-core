@@ -42,8 +42,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
  * Used to establish an event channel connection.
- *
- * @version $Rev$ $Date$
  */
 public class AttachChannelConnectionCommand implements CompensatableCommand {
     private static final long serialVersionUID = 8746788639966402901L;

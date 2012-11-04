@@ -42,7 +42,7 @@ import java.net.URL;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DelegatingResourceClassLoaderTestCase extends TestCase {
 

@@ -3,8 +3,6 @@ package org.fabric3.spi.contribution;
 /**
  * Introspects a {@link ResourceElement} to determine if it references another resource element. Implementations are responsible for a specific
  * resource type, such as a composite, XSD, or WSDL.
- *
- * @version $Rev$ $Date$
  */
 public interface ReferenceIntrospector<S extends Symbol, V> {
 

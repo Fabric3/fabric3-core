@@ -44,7 +44,7 @@ import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class BindingHelper {
 

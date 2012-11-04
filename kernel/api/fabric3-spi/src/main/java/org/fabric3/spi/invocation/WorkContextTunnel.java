@@ -45,8 +45,6 @@ package org.fabric3.spi.invocation;
 
 /**
  * Class for tunneling a WorkContext through the invocation of user code.
- *
- * @version $Rev$ $Date$
  */
 public final class WorkContextTunnel {
     private static final ThreadLocal<WorkContext> CONTEXT = new ThreadLocal<WorkContext>();

@@ -39,8 +39,6 @@ package org.fabric3.spi.event;
 
 /**
  * Represents a runtime event
- *
- * @version $Rev$ $Date$
  */
 public interface Fabric3Event {
 }

@@ -42,7 +42,7 @@ import java.net.URI;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ProvisionedExtensionTrackerImplTestCase extends TestCase {
     private ProvisionedExtensionTracker tracker = new ProvisionedExtensionTrackerImpl();

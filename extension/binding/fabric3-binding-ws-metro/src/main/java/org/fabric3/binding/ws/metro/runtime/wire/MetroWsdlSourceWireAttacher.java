@@ -67,8 +67,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Source wire attacher that provisions WSDL-based web service endpoints.
- *
- * @version $Rev$ $Date$
  */
 public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher<MetroWsdlSourceDefinition> {
     private FeatureResolver featureResolver;

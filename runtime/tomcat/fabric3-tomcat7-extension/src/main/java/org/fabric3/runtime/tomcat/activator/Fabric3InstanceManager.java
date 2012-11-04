@@ -49,8 +49,6 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * Manages reference injection on servlet instances.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 02:48:06 +0200 (Mon, 03 Jan 2011) $
  */
 public class Fabric3InstanceManager implements InstanceManager {
     private Map<String, List<Injector<?>>> injectorMappings;

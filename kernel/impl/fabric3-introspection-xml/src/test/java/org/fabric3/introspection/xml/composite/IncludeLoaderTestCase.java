@@ -72,7 +72,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 /**
- * @version $Rev: 7275 $ $Date: 2009-07-05 21:54:59 +0200 (Sun, 05 Jul 2009) $
+ *
  */
 public class IncludeLoaderTestCase extends TestCase {
 

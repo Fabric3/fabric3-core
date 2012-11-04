@@ -40,7 +40,7 @@ package com.bea.logging;
 import java.util.logging.Level;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class LogLevel extends Level {
     private static final long serialVersionUID = -1528815140017548638L;

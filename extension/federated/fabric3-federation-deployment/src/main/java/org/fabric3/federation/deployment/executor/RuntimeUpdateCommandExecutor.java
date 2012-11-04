@@ -52,8 +52,6 @@ import org.fabric3.spi.executor.ExecutionException;
 
 /**
  * Processes a {@link RuntimeUpdateCommand} on a zone leader by returning the cached deployment command for the current state of the zone.
- *
- * @version $Rev: 7826 $ $Date: 2009-11-14 13:32:05 +0100 (Sat, 14 Nov 2009) $
  */
 @EagerInit
 public class RuntimeUpdateCommandExecutor implements CommandExecutor<RuntimeUpdateCommand> {

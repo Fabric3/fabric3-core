@@ -45,8 +45,6 @@ package org.fabric3.host.domain;
 
 /**
  * Denotes an deploying a composite.
- *
- * @version $Rev$ $Date$
  */
 public class DeploymentException extends DomainException {
     private static final long serialVersionUID = -8846536703004740119L;

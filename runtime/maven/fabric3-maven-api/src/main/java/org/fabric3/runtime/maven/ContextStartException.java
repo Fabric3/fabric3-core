@@ -46,7 +46,7 @@ package org.fabric3.runtime.maven;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ContextStartException extends Fabric3Exception {
     private static final long serialVersionUID = 5507052175927252111L;

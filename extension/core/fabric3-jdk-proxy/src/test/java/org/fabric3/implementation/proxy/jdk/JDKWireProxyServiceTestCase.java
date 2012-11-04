@@ -29,7 +29,7 @@ import org.oasisopen.sca.ServiceReference;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JDKWireProxyServiceTestCase extends TestCase {
     private JDKWireProxyService proxyService;

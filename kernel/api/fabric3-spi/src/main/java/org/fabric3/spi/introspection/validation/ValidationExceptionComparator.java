@@ -44,8 +44,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Orders ValidationFailures. ArtifactValidationFailures are ordered after other types.
- *
- * @version $Rev$ $Date$
  */
 public class ValidationExceptionComparator implements Comparator<ValidationFailure> {
     public int compare(ValidationFailure first, ValidationFailure second) {

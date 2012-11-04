@@ -43,7 +43,7 @@ import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TestBindingInterceptor implements Interceptor {
     private BindingChannel channel;

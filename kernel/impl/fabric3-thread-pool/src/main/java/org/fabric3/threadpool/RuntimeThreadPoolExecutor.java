@@ -64,8 +64,6 @@ import org.fabric3.spi.threadpool.LongRunnable;
  * <p/>
  * The default configuration uses a bounded queue to accept work. If the queue size is exceeded, work will be rejected. This allows the runtime to
  * degrade gracefully under load by pushing requests back to the client and avoid out-of-memory conditions.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 @Management(name = "RuntimeThreadPoolExecutor",

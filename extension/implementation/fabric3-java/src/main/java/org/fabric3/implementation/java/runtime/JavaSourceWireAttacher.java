@@ -64,8 +64,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Attaches and detaches wires to and from Java components.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<JavaSourceDefinition> {

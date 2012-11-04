@@ -63,7 +63,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasisopen.sca.annotation.Property> {
     private final IntrospectionHelper helper;

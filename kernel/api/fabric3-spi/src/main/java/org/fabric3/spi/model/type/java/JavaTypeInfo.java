@@ -51,8 +51,6 @@ import org.fabric3.model.type.ModelObject;
  *      <li><code>List&lt;List&lt;String&gt;&gt</code> is represented as TypeInfo(raw: List, [TypeInfo(raw: List, [TypeInfo(raw: String)])])
  *  </ul>
  * Note that unbound TypeVariables and WildCardTypes will be evaluated using their raw type.
- *
- * @version $Rev$ $Date$
  */
 public class JavaTypeInfo extends ModelObject {
     private static final long serialVersionUID = -9157948376540103018L;

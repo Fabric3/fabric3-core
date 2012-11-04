@@ -49,8 +49,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Used to provision a channel on a runtime.
- *
- * @version $Revision: 7729 $ $Date: 2009-10-01 18:21:22 +0200 (Thu, 01 Oct 2009) $
  */
 public class PhysicalChannelDefinition implements Serializable {
     private static final long serialVersionUID = 8681183877136491160L;

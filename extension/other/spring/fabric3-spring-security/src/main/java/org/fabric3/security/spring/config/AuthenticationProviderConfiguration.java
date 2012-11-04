@@ -39,8 +39,6 @@ package org.fabric3.security.spring.config;
 
 /**
  * Base configuration type for a Spring <code>AuthenticationProvider</code>.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AuthenticationProviderConfiguration {
 }

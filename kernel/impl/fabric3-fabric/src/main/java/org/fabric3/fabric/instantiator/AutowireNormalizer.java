@@ -41,8 +41,6 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * Calculates autowire settings for a component using SCA autowire inheritence rules.
- *
- * @version $Rev$ $Date$
  */
 public interface AutowireNormalizer {
 

@@ -42,8 +42,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Specialization of DataType for complex types from the XML Schema type system.
- *
- * @version $Rev$ $Date$
  */
 public class XSDComplexType extends XSDType {
     private static final long serialVersionUID = 6325312345723762898L;

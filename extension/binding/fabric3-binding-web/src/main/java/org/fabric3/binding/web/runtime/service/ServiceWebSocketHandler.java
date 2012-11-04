@@ -51,7 +51,7 @@ import org.atmosphere.handler.AbstractReflectorAtmosphereHandler;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 
 /**
- * @version $Rev: 9435 $ $Date: 2010-09-09 17:31:45 +0200 (Thu, 09 Sep 2010) $
+ *
  */
 public class ServiceWebSocketHandler extends AbstractReflectorAtmosphereHandler {
 

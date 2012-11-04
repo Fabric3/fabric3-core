@@ -57,7 +57,7 @@ import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.fabric3.spi.classloader.SerializationService;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SerializationServiceImpl implements SerializationService {
     private ClassLoaderRegistry classLoaderRegistry;

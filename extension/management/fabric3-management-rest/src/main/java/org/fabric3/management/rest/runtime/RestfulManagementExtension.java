@@ -79,8 +79,6 @@ import org.fabric3.spi.transform.TransformationException;
  * As part of this process, a fully-navigable management resource hierarchy will be dynamically created. For example, if a component is exported to
  * /runtime/foo/bar and a /runtime/foo resource is not configured, one will be created dynamically with a link to runtime/foo/bar. If a configured
  * resource is later exported, any previously generated dynamic resource will be overriden.
- *
- * @version $Rev$ $Date$
  */
 public class RestfulManagementExtension implements ManagementExtension {
     private static final JsonType<?> JSON_INPUT_TYPE = new JsonType<Object>(InputStream.class, Object.class);

@@ -47,8 +47,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * Denotes an error starting the runtime
- *
- * @version $Rev$ $Date$
  */
 public class InitializationException extends Fabric3Exception {
     private static final long serialVersionUID = 6534511626734824318L;

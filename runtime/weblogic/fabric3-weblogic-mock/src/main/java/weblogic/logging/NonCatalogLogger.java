@@ -38,7 +38,7 @@
 package weblogic.logging;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class NonCatalogLogger {
 

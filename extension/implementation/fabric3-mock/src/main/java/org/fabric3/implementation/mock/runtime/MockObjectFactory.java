@@ -50,8 +50,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Creates mock instances by delegating to the IMocksControl.
- *
- * @version $Rev$ $Date$
  */
 public class MockObjectFactory<T> implements ObjectFactory<T> {
 

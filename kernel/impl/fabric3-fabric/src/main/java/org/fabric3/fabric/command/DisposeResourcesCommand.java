@@ -50,8 +50,6 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
  * Removes resources on a runtime.
- *
- * @version $Rev: 8656 $ $Date: 2010-02-13 09:15:37 -0800 (Sat, 13 Feb 2010) $
  */
 public class DisposeResourcesCommand implements CompensatableCommand {
     private static final long serialVersionUID = -3382996929643885337L;

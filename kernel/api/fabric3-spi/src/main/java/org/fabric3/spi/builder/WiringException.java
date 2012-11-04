@@ -48,8 +48,6 @@ import java.net.URI;
 
 /**
  * Denotes a general error raised during wiring
- *
- * @version $Rev$ $Date$
  */
 public class WiringException extends BuilderException {
     private static final long serialVersionUID = 3668451213570682938L;

@@ -54,8 +54,6 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
  * Manages resources defined in a deployable contribution.
- *
- * @version $Rev$ $Date$
  */
 public final class RsContainer extends HttpServlet {
     private static final long serialVersionUID = 1954697059021782141L;

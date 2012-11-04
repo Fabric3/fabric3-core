@@ -44,8 +44,6 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
  * Converts levels from the standard Fabric3 representation to Logback.
- *
- * @version $Rev$ $Date$
  */
 public class LevelConverter {
 

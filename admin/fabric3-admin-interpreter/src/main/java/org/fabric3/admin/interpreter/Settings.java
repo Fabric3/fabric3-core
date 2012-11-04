@@ -42,8 +42,6 @@ import java.util.List;
 
 /**
  * Encapsulates persistent settings for the admin interpreter.
- *
- * @version $Rev$ $Date$
  */
 public interface Settings {
 

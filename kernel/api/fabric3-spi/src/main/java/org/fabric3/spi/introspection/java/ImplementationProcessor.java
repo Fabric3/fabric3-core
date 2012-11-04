@@ -42,8 +42,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Introspects a Java-based implementation.
- *
- * @version $Rev$ $Date$
  */
 public interface ImplementationProcessor {
 

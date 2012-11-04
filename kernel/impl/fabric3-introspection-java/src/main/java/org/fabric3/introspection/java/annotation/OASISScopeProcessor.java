@@ -54,7 +54,7 @@ import static org.fabric3.model.type.component.Scope.DOMAIN;
 import static org.fabric3.model.type.component.Scope.STATELESS;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class OASISScopeProcessor extends AbstractAnnotationProcessor<Scope> {
 

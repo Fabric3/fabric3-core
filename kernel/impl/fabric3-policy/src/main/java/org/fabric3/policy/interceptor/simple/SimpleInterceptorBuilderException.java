@@ -41,8 +41,6 @@ import org.fabric3.spi.builder.BuilderException;
 
 /**
  * Exception thrown in case of instantiating interceptors.
- *
- * @version $Rev$ $Date$
  */
 public class SimpleInterceptorBuilderException extends BuilderException {
     private static final long serialVersionUID = -3619466088352819526L;

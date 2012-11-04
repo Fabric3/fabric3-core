@@ -49,7 +49,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public abstract class XQueryComponent implements AtomicComponent {
 

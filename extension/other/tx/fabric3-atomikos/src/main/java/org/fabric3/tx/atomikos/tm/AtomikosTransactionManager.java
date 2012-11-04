@@ -69,8 +69,6 @@ import org.fabric3.spi.event.RuntimeRecover;
 
 /**
  * Wraps an Atomikos transaction manager. Configured JDBC and JMS resource registration is handled implicitly by Atomikos.
- *
- * @version $Rev$ $Date$
  */
 @Service(TransactionManager.class)
 public class AtomikosTransactionManager implements TransactionManager, Fabric3EventListener<RuntimeRecover> {

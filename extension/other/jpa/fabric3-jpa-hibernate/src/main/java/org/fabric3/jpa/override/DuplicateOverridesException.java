@@ -40,7 +40,7 @@ package org.fabric3.jpa.override;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
+ *
  */
 public class DuplicateOverridesException extends Fabric3Exception {
 

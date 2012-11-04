@@ -58,8 +58,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
  * Creates a command to remove channels defined in a composite from a runtime.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DisposeChannelCommandGenerator implements CommandGenerator {

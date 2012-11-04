@@ -47,7 +47,7 @@ import org.easymock.EasyMock;
 import org.fabric3.spi.transport.Transport;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TransportServiceTestCase extends TestCase {
 

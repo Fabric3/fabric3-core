@@ -49,8 +49,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Indicates intents or policySet definitions may be associated with a type.
- *
- * @version $Rev$ $Date$
  */
 public interface PolicyAware {
 

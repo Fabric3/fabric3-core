@@ -123,8 +123,6 @@ import org.fabric3.spi.security.UsernamePasswordToken;
 
 /**
  * Partially implements the Metro security SPI for hosting runtimes. SAML and Kerberos operations are not supported.
- *
- * @version $Rev$ $Date$
  */
 public class F3SecurityEnvironment implements SecurityEnvironment {
     private static final String WSU_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";

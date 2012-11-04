@@ -55,8 +55,6 @@ import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
  * Default Collector implementation.
- *
- * @version $Rev$ $Date$
  */
 public class CollectorImpl implements Collector {
 

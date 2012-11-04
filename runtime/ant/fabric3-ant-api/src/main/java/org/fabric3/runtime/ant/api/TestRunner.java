@@ -43,8 +43,6 @@ import org.fabric3.host.Names;
 
 /**
  * Executes component-based tests in contribution deployed to a domain hosted in an Ant runtime.
- *
- * @version $Rev$ $Date$
  */
 public interface TestRunner {
     URI TEST_RUNNER_URI = URI.create(Names.RUNTIME_NAME + "/TestRunner");

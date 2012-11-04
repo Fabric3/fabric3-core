@@ -50,8 +50,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * Encapsulates management information about a component operation.
- *
- * @version $Rev: 9131 $ $Date: 2010-06-13 00:37:12 +0200 (Sun, 13 Jun 2010) $
  */
 public class ManagementOperationInfo extends ModelObject {
     private static final long serialVersionUID = 138617917546848298L;

@@ -45,8 +45,6 @@ import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
  * Wraps a {@link MonitorEventDispatcher} to receive events from a channel.
- *
- * @version $Rev$ $Date$
  */
 public class DispatcherWrapper implements EventStreamHandler {
     private MonitorEventDispatcher dispatcher;

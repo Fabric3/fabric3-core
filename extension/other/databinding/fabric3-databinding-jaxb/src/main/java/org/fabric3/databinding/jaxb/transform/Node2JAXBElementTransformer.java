@@ -66,8 +66,6 @@ import org.fabric3.spi.transform.Transformer;
 
 /**
  * Converts from a DOM Node to a JAXB type serialized as a JAXBElement.
- *
- * @version $Rev$ $Date$
  */
 public class Node2JAXBElementTransformer implements Transformer<Node, Object> {
     private JAXBContext jaxbContext;

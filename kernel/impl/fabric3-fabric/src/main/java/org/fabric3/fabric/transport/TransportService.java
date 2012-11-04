@@ -53,7 +53,7 @@ import static org.fabric3.api.annotation.management.OperationType.DELETE;
 import static org.fabric3.api.annotation.management.OperationType.POST;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 @Management(path = "/runtime/transports", description = "Manages runtime binding transports")

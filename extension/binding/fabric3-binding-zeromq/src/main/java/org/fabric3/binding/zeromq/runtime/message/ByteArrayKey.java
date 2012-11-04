@@ -34,8 +34,6 @@ import java.util.Arrays;
 
 /**
  * Used for storing a byte array in a collection.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class ByteArrayKey {
     private byte[] data;

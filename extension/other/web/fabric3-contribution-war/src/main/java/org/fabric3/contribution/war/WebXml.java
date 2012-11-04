@@ -41,8 +41,6 @@ import java.io.Serializable;
 
 /**
  * Represents a web.xml file.
- *
- * @version $Rev$ $Date$
  */
 public class WebXml implements Serializable {
     private static final long serialVersionUID = 6286391400536608712L;

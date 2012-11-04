@@ -40,7 +40,7 @@ package org.fabric3.resource.resolver;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SystemSourcedResourceResolverTestCase extends TestCase {
 

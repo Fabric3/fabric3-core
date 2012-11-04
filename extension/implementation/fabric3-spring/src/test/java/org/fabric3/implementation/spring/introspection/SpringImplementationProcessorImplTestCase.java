@@ -49,7 +49,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SpringImplementationProcessorImplTestCase extends TestCase {
     private SpringImplementationProcessor processor;

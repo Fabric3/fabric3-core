@@ -45,8 +45,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Denotes a debug monitoring event.
- *
- * @version $Rev$ $Date$
  */
 @MonitorEventType(MonitorLevel.DEBUG)
 @Target({METHOD})

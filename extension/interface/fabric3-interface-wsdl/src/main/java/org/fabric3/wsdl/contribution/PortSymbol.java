@@ -43,8 +43,6 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 
 /**
  * A key to a WSDL port.
- *
- * @version $Rev$ $Date$
  */
 public class PortSymbol extends QNameSymbol {
     public PortSymbol(QName qName) {

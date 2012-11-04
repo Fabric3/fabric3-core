@@ -73,7 +73,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.fabric3.spi.model.type.java.Signature;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JavaHeuristic implements HeuristicProcessor {
     private IntrospectionHelper helper;

@@ -47,8 +47,6 @@ import java.net.URI;
 
 /**
  * Utility methods for handling URIs
- *
- * @version $Rev$ $Date$
  */
 public final class UriHelper {
 

@@ -52,8 +52,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
  * Attaches the target side of a channel connection to a channel.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTargetDefinition> {

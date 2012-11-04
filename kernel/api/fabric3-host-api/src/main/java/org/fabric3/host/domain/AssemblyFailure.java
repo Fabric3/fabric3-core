@@ -42,8 +42,6 @@ import java.util.List;
 
 /**
  * Base class for recoverable errors updating the domain assembly encountered during a deployment.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AssemblyFailure {
     private URI componentUri;

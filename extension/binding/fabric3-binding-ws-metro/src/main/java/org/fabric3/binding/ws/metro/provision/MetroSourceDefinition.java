@@ -45,8 +45,6 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
  * Base class for service-side wire definitions.
- *
- * @version $Rev$ $Date$
  */
 public abstract class MetroSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = -7874049193479847748L;

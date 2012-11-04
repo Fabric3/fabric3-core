@@ -43,8 +43,6 @@ import javax.jms.JMSException;
 
 /**
  * Manages {@link AdaptiveMessageContainer}s used to receive messages from a JMS provider.
- *
- * @version $Rev$ $Date$
  */
 public interface MessageContainerManager {
 

@@ -66,7 +66,7 @@ import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<SystemSourceDefinition> {

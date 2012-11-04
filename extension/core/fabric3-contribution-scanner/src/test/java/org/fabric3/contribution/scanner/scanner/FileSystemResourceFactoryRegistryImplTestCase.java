@@ -47,7 +47,7 @@ import org.fabric3.contribution.scanner.spi.FileSystemResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResourceFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class FileSystemResourceFactoryRegistryImplTestCase extends TestCase {
 

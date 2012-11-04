@@ -68,8 +68,6 @@ import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
  * Selects a binding provider by delegating to a BindingSelectionStrategy configured for the domain. For each wire, if a remote service has an
  * explicit binding, its configuration will be used to construct the reference binding. If a service does not have an explicit binding, the wire uses
  * binding.sca. The BindingSelector will select an appropriate remote transport and create binding configuration for both sides of the wire.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class BindingSelectorImpl implements BindingSelector {

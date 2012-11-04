@@ -77,8 +77,6 @@ import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
 
 /**
  * Loads the system configuration property for a runtime domain.
- *
- * @version $Revision$ $Date$
  */
 public class SystemConfigLoader {
     private static final URI DEFAULT_DOMAIN = URI.create("fabric3://domain");

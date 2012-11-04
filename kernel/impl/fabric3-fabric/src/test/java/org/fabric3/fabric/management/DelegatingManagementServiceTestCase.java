@@ -48,7 +48,7 @@ import org.fabric3.spi.model.type.java.ManagementInfo;
 import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
+ *
  */
 public class DelegatingManagementServiceTestCase extends TestCase {
     private DelegatingManagementService managementService = new DelegatingManagementService();

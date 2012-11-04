@@ -52,8 +52,6 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  * Implementation of ComponentContext for Web components.
- *
- * @version $Rev$ $Date$
  */
 public class OASISWebComponentContext implements ComponentContext {
     private final WebComponent component;

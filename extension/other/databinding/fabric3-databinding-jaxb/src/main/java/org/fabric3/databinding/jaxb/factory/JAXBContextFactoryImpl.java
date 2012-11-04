@@ -42,8 +42,6 @@ import javax.xml.bind.JAXBException;
 
 /**
  * Default implementation of JAXBContextFactory.
- *
- * @version $Rev$ $Date$
  */
 public class JAXBContextFactoryImpl implements JAXBContextFactory {
 

@@ -53,8 +53,6 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 
 /**
  * Overrides the Jetty <code>ServletHandler</code> to provide a custom management view.
- *
- * @version $Rev: 9172 $ $Date: 2010-06-30 16:49:34 +0200 (Wed, 30 Jun 2010) $
  */
 @Management
 public class ManagedServletHandler extends ServletHandler {

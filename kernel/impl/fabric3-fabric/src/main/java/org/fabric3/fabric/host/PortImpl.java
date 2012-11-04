@@ -46,7 +46,7 @@ import java.net.ServerSocket;
 import org.fabric3.spi.host.Port;
 
 /**
- * @version $Rev: 10029 $ $Date: 2011-02-21 16:56:40 -0500 (Mon, 21 Feb 2011) $
+ *
  */
 public class PortImpl implements Port, Serializable {
     private static final long serialVersionUID = -708646870372177434L;

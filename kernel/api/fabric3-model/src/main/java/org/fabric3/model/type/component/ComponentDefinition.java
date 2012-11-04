@@ -51,8 +51,6 @@ import org.fabric3.model.type.AbstractPolicyAware;
 
 /**
  * A component configuration in a composite file.
- *
- * @version $Rev$ $Date$
  */
 public class ComponentDefinition<I extends Implementation<?>> extends AbstractPolicyAware {
     private static final long serialVersionUID = 4909969579651563484L;

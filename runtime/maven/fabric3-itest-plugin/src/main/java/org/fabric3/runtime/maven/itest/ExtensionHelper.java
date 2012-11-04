@@ -55,7 +55,7 @@ import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ExtensionHelper {
     public ArtifactHelper artifactHelper;

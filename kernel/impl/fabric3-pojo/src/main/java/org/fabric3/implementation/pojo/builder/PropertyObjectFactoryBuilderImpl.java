@@ -54,7 +54,7 @@ import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PropertyObjectFactoryBuilderImpl implements PropertyObjectFactoryBuilder {
     private ArrayBuilder arrayBuilder;

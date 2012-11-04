@@ -49,7 +49,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JndiContextLoaderTestCase extends TestCase {
     private static final String XML = "<jndi>" +

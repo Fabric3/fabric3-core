@@ -39,8 +39,6 @@ package org.fabric3.spi.federation;
 
 /**
  * Implementations receive messages over a channel.
- *
- * @version $Rev$ $Date$
  */
 public interface MessageReceiver {
 

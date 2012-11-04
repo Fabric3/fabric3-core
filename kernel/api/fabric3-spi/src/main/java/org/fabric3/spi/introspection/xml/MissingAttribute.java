@@ -47,8 +47,6 @@ import javax.xml.stream.XMLStreamReader;
 
 /**
  * Denotes a missing attribute
- *
- * @version $Rev$ $Date$
  */
 public class MissingAttribute extends XmlValidationFailure {
 

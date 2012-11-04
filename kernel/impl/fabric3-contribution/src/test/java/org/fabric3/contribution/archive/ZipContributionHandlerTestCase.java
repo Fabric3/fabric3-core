@@ -56,7 +56,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ZipContributionHandlerTestCase extends TestCase {
     private ZipContributionHandler handler;

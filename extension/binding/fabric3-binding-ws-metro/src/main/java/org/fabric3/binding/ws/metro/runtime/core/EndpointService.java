@@ -39,8 +39,6 @@ package org.fabric3.binding.ws.metro.runtime.core;
 
 /**
  * Activates and de-activates web service endpoints.
- *
- * @version $Rev$ $Date$
  */
 public interface EndpointService {
 

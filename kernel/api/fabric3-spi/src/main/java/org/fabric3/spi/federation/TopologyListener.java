@@ -39,8 +39,6 @@ package org.fabric3.spi.federation;
 
 /**
  * Receives callbacks when a domain topology changes.
- *
- * @version $Rev$ $Date$
  */
 public interface TopologyListener {
 

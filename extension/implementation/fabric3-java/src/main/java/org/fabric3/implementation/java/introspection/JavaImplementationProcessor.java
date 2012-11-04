@@ -41,8 +41,6 @@ import org.fabric3.spi.introspection.java.ImplementationProcessor;
 
 /**
  * Strongly typed ImplementationProcessor for Java implementations.
- *
- * @version $Rev$ $Date$
  */
 public interface JavaImplementationProcessor extends ImplementationProcessor {
 }

@@ -42,8 +42,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Interface for processors that provide heuristic introspection of component implementations.
- *
- * @version $Rev$ $Date$
  */
 public interface HeuristicProcessor {
 

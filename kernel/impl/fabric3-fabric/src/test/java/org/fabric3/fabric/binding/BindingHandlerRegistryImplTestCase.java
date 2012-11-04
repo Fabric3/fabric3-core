@@ -47,7 +47,7 @@ import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistryCallback;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class BindingHandlerRegistryImplTestCase extends TestCase {
     private static final QName BINDING = new QName("foo", "bar");

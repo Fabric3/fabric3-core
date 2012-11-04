@@ -47,8 +47,6 @@ import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 
 /**
  * Generates metadata for a transactional event stream handler.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class TxHandlerGenerator implements EventStreamHandlerGenerator {

@@ -66,7 +66,7 @@ import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiator implements AtomicComponentInstantiator {
     private boolean componentTypeOverride;

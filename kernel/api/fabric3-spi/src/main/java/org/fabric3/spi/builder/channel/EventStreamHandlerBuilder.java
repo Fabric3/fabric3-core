@@ -43,8 +43,6 @@ import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 
 /**
  * Creates an {@link EventStreamHandler} from a {@link PhysicalHandlerDefinition}.
- *
- * @version $Rev$ $Date$
  */
 public interface EventStreamHandlerBuilder<PHD extends PhysicalHandlerDefinition> {
 

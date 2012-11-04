@@ -43,8 +43,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * Thrown when attempting to load an invalid context configuration for a JUnit implementation.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidContextConfiguraton extends XmlValidationFailure {
 

@@ -39,8 +39,6 @@ package org.fabric3.spi.builder.channel;
 
 /**
  * Filters an event.
- *
- * @version $Rev$ $Date$
  */
 public interface EventFilter {
 

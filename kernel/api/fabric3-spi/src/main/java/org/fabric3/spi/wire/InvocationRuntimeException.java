@@ -47,8 +47,6 @@ import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Denotes a runtime exception thrown during an invocation over a wire
- *
- * @version $Rev$ $Date$
  */
 public class InvocationRuntimeException extends ServiceRuntimeException {
     private static final long serialVersionUID = -5262124031513496306L;

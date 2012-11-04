@@ -46,8 +46,6 @@ import org.fabric3.management.rest.spi.Verb;
 
 /**
  * Serializes and deserializes request and response values.
- *
- * @version $Rev: 9973 $ $Date: 2011-02-11 08:52:40 +0100 (Fri, 11 Feb 2011) $
  */
 public interface Marshaller {
 

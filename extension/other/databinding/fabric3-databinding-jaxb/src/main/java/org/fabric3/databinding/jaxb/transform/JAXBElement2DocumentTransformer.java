@@ -53,8 +53,6 @@ import org.fabric3.spi.transform.Transformer;
 
 /**
  * Transforms from a JAXB instance not annotated with XmlRootElement to a DOM Document.
- *
- * @version $Rev: 7714 $ $Date: 2009-09-29 10:24:45 +0200 (Tue, 29 Sep 2009) $
  */
 public class JAXBElement2DocumentTransformer implements Transformer<Object, Document> {
     private JAXBContext jaxbContext;

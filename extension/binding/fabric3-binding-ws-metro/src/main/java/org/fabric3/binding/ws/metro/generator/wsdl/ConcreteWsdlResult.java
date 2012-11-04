@@ -42,8 +42,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Contains the generated result returned when synthesizing concreate WSDL information.
- *
- * @version $Rev$ $Date$
  */
 public class ConcreteWsdlResult {
     private Definition definiton;

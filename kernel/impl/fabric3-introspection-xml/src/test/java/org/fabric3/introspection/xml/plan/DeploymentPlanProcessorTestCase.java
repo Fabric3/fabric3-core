@@ -55,7 +55,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
- * @version $Rev: 7275 $ $Date: 2009-07-05 21:54:59 +0200 (Sun, 05 Jul 2009) $
+ *
  */
 public class DeploymentPlanProcessorTestCase extends TestCase {
 

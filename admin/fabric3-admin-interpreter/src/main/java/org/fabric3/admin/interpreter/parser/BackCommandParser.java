@@ -44,7 +44,7 @@ import org.fabric3.admin.interpreter.command.BackCommand;
 import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
- * @version $Rev: 10038 $ $Date: 2011-02-24 16:55:38 -0500 (Thu, 24 Feb 2011) $
+ *
  */
 public class BackCommandParser implements CommandParser {
     private DomainConnection domainConnection;

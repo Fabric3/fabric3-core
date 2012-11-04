@@ -53,8 +53,6 @@ import org.fabric3.model.type.contract.DataType;
 
 /**
  * Represents the source side of a wire.
- *
- * @version $Revision$ $Date$
  */
 public abstract class PhysicalSourceDefinition implements Serializable {
     private static final long serialVersionUID = 2560576437284123839L;

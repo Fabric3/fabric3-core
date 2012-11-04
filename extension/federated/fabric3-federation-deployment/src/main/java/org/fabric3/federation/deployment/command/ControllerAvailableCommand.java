@@ -42,8 +42,6 @@ import org.fabric3.spi.command.Command;
 /**
  * Announces the availability of a controller in the domain. Controllers announce availability after they have joined the domain and performed
  * recovery. After a controller has become available, participants may query it for deployment updates.
- *
- * @version $Rev$ $Date$
  */
 public class ControllerAvailableCommand implements Command {
     private static final long serialVersionUID = -4288029718584274415L;

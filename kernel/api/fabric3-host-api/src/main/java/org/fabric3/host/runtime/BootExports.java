@@ -44,8 +44,6 @@ import org.fabric3.host.Names;
 
 /**
  * Returns the packages that should be exported by the boot contribution.
- *
- * @version $Rev$ $Date$
  */
 public final class BootExports {
     private static final Map<String, String> BOOT_EXPORTS;

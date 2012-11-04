@@ -43,8 +43,6 @@ import org.fabric3.api.SecuritySubject;
 
 /**
  * Implemented by security providers that perform authorization.
- *
- * @version $Rev$ $Date$
  */
 public interface AuthorizationService {
 

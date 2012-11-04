@@ -55,8 +55,6 @@ import org.fabric3.spi.management.ManagementService;
  * Interface for accessing services provided by a runtime.
  * <p/>
  * These are the primordial services that should be provided by all runtime implementations for use by other runtime components.
- *
- * @version $Rev$ $Date$
  */
 public interface RuntimeServices {
 

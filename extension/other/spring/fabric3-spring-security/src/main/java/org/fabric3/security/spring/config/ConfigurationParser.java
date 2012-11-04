@@ -42,8 +42,6 @@ import javax.xml.stream.XMLStreamReader;
 
 /**
  * Parses a Spring security configuration.
- *
- * @version $Rev$ $Date$
  */
 public interface ConfigurationParser {
 

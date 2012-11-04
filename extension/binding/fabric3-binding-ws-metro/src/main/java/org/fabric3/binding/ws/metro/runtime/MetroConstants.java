@@ -39,8 +39,6 @@ package org.fabric3.binding.ws.metro.runtime;
 
 /**
  * Constants.
- *
- * @version $Rev$ $Date$
  */
 public interface MetroConstants {
 

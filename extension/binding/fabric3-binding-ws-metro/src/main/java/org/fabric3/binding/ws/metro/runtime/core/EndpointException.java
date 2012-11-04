@@ -40,7 +40,7 @@ package org.fabric3.binding.ws.metro.runtime.core;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class EndpointException extends Fabric3Exception {
     private static final long serialVersionUID = 8571000382431313326L;

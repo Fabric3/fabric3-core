@@ -47,8 +47,6 @@ import org.fabric3.api.MonitorChannel;
 import org.fabric3.tx.atomikos.tm.ConsoleChannelRedirector;
 
 /**
- *
- * @version $Rev$ $Date$
  */
 public class ConsoleChannelRedirectorTestCase extends TestCase {
 

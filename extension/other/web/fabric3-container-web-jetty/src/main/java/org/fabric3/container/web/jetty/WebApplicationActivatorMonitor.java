@@ -42,8 +42,6 @@ import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Receives events related to web application activation and deactivation.
- *
- * @version $Rev$ $Date$
  */
 public interface WebApplicationActivatorMonitor {
 

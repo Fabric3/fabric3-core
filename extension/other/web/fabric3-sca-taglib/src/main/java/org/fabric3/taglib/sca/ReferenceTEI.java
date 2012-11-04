@@ -42,7 +42,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ReferenceTEI extends TagExtraInfo {
 

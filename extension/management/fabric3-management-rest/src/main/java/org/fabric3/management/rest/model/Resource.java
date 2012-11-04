@@ -47,8 +47,6 @@ import org.codehaus.jackson.annotate.JsonAnySetter;
 
 /**
  * A resource that is to be serialized to a specific representation such as JSON.
- *
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 public class Resource implements Serializable {
     private static final long serialVersionUID = -7831162074975555876L;

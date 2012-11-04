@@ -45,8 +45,6 @@ import com.sun.xml.ws.developer.JAXWSProperties;
 
 /**
  * Default implementation of the binding Id resolver.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultBindingIdResolver implements BindingIdResolver {
 

@@ -51,7 +51,7 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MockComponentTypeLoaderImpl implements MockComponentTypeLoader {
     private final JavaContractProcessor contractProcessor;

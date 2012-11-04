@@ -57,8 +57,6 @@ import org.fabric3.spi.transform.TransformerFactory;
 
 /**
  * Creates transformers to convert from a DOM Node to a JAXB object.
- *
- * @version $Rev$ $Date$
  */
 public class Node2JAXBTransformerFactory implements TransformerFactory {
     private JAXBContextFactory contextFactory;

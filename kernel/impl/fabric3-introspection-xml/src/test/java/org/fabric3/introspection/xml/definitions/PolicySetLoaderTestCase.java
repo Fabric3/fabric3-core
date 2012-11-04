@@ -54,7 +54,7 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PolicySetLoaderTestCase extends TestCase {
     private static String VALID_WS_POLICY_SET =

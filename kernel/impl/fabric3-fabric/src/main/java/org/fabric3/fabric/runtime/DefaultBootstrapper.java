@@ -105,8 +105,6 @@ import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 
 /**
  * The default Bootstrapper implementation.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultBootstrapper implements Bootstrapper {
     private static final URI RUNTIME_SERVICES = URI.create("fabric3://RuntimeServices");

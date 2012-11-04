@@ -44,8 +44,6 @@ import org.fabric3.model.type.ModelObject;
 /**
  * Manages assembly templates. Templates are used in composites as a placeholder for configuration that is specified elsewhere, in another composite
  * or in system config. For example, a binding template may be used to defer configuration of environment-specific endpoint information.
- *
- * @version $Rev$ $Date$
  */
 public interface TemplateRegistry {
 

@@ -73,8 +73,6 @@ import static org.fabric3.host.Names.HOST_CONTRIBUTION;
 
 /**
  * Default implementation of ClassLoaderBuilder.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ClassLoaderBuilderImpl implements ClassLoaderBuilder {

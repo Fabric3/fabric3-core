@@ -44,8 +44,6 @@ import org.fabric3.timer.spi.TimerService;
 
 /**
  * Schedule metadata for a timer component.
- *
- * @version $Rev: 7148 $ $Date: 2009-06-15 02:18:27 +0200 (Mon, 15 Jun 2009) $
  */
 public class TimerData implements Serializable {
     private static final long serialVersionUID = 5814910790533612455L;

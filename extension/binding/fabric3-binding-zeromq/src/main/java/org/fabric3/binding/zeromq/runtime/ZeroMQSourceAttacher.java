@@ -46,7 +46,7 @@ import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 public class ZeroMQSourceAttacher implements SourceWireAttacher<ZeroMQSourceDefinition> {
     private ZeroMQWireBroker broker;

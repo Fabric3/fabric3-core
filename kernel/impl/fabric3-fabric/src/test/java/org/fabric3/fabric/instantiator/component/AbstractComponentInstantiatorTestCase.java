@@ -59,7 +59,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AbstractComponentInstantiatorTestCase extends TestCase {
     private static final DocumentBuilderFactory FACTORY = DocumentBuilderFactory.newInstance();

@@ -74,8 +74,6 @@ import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
  * The extract option is designed to work around a bug on Windows where the Sun JVM acquires an OS read lock on jar files when accessing resources
  * from a jar: URL and does not release it. This results in holding open temporary file handles and not being able to delete those files until the JVM
  * terminates. This issue does not occur on Unix systems.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class JarClasspathProcessor implements ClasspathProcessor {

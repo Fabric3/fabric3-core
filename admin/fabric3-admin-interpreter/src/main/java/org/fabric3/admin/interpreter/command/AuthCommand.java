@@ -44,7 +44,7 @@ import org.fabric3.admin.interpreter.CommandException;
 import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class AuthCommand implements Command {
     private DomainConnection domainConnection;

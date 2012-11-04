@@ -65,8 +65,6 @@ import org.fabric3.spi.generator.policy.PolicyRegistry;
 
 /**
  * Default implementation of the policy registry.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultPolicyRegistry implements PolicyRegistry {
 

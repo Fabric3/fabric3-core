@@ -47,8 +47,6 @@ import org.fabric3.spi.wire.Interceptor;
 /**
  * Converts the input parameters of an invocation to a target format and the output parameters from the target format by delegating to underlying
  * transformers.
- *
- * @version $Rev$ $Date$
  */
 public class TransformerInterceptor implements Interceptor {
     private Transformer<Object, Object> inTransformer;

@@ -42,7 +42,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TopologicalSortTestCase extends TestCase {
 

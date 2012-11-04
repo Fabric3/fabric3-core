@@ -54,8 +54,6 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 
 /**
  * Handles resource injection for the runtime <code>ExecutorService</code>.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ExecutorServiceTypeHandler implements ResourceTypeHandler {

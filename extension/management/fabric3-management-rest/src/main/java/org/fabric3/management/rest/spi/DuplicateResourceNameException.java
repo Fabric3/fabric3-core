@@ -40,7 +40,7 @@ package org.fabric3.management.rest.spi;
 import org.fabric3.spi.management.ManagementException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DuplicateResourceNameException extends ManagementException {
     private static final long serialVersionUID = 1930062911837643976L;

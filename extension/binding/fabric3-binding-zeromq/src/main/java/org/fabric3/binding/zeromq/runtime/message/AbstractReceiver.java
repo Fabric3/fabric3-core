@@ -53,7 +53,7 @@ import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
- * @version $Revision: 10396 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
+ *
  */
 public abstract class AbstractReceiver extends AbstractStatistics implements Receiver, Thread.UncaughtExceptionHandler {
 

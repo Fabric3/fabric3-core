@@ -44,8 +44,6 @@ import com.sun.xml.wss.impl.XWSSecurityRuntimeException;
 
 /**
  * Validates certificates.
- *
- * @version $Rev$ $Date$
  */
 public interface CertificateValidator {
 

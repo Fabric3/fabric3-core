@@ -84,8 +84,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Dispatches an invocation to a destination.
- *
- * @version $Revision$ $Date$
  */
 public class JmsInterceptor implements Interceptor {
     private static final String SCA_CALLBACK_DESTINATION = "scaCallbackDestination";

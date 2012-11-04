@@ -57,8 +57,6 @@ import org.fabric3.spi.executor.ExecutionException;
 
 /**
  * Creates a classloader on a runtime corresponding to a PhysicalClassLoaderDefinition.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ProvisionClassloaderCommandExecutor implements CommandExecutor<ProvisionClassloaderCommand> {

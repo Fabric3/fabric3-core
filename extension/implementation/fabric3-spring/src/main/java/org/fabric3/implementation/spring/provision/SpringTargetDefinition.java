@@ -43,8 +43,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Metadata for attaching a wire to a target Spring bean in a Spring application context.
- *
- * @version $Rev$ $Date$
  */
 public class SpringTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = 825961411627210578L;

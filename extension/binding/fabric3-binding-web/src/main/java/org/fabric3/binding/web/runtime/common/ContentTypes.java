@@ -39,8 +39,6 @@ package org.fabric3.binding.web.runtime.common;
 
 /**
  * Common content types.
- *
- * @version $Rev $ $Date
  */
 public interface ContentTypes {
 

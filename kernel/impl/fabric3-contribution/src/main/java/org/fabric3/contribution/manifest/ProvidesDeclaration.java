@@ -39,8 +39,6 @@ package org.fabric3.contribution.manifest;
 
 /**
  * Represents a provides declaration in a contribution manifest.
- *
- * @version $Rev$ $Date$
  */
 public class ProvidesDeclaration {
     private String name;

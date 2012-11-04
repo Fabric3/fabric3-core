@@ -58,7 +58,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class MockComponentGenerator implements ComponentGenerator<LogicalComponent<ImplementationMock>> {

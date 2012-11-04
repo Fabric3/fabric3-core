@@ -46,8 +46,6 @@ import javax.xml.stream.XMLStreamReader;
 
 /**
  * Parses a Spring Security configuration.
- *
- * @version $Rev$ $Date$
  */
 public class ConfigurationParserImpl implements ConfigurationParser {
     private static final Set<String> PASSWORD_ENCODERS = new HashSet<String>();

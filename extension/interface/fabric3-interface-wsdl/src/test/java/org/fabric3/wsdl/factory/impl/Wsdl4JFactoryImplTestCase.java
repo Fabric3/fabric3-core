@@ -62,7 +62,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.wsdl.contribution.impl.SourceWsdlLocator;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class Wsdl4JFactoryImplTestCase extends TestCase {
     private static QName ELEMENT_TYPE = new QName("urn:mock", "mockExtensibilityElement");

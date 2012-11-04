@@ -52,7 +52,7 @@ import org.fabric3.spi.builder.resource.ResourceBuilder;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class CacheResourceBuilder implements ResourceBuilder<PhysicalCacheSetDefinition> {

@@ -45,7 +45,7 @@ import org.fabric3.host.domain.AssemblyFailure;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class InvalidProperty extends AssemblyFailure {
     private String name;

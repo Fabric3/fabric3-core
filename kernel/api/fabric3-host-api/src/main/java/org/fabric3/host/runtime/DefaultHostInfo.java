@@ -52,8 +52,6 @@ import org.fabric3.host.os.OperatingSystem;
 
 /**
  * Default HostInfo implementation.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultHostInfo implements HostInfo {
     private String runtimeName;

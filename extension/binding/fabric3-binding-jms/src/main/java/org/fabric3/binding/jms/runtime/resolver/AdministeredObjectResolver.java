@@ -47,8 +47,6 @@ import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
 /**
  * Resolves administered objects, specifically connection factories and destinations. Different strategies may be used for resolution as defined by
  * {@link ConnectionFactoryDefinition} or {@link DestinationDefinition}.
- *
- * @version $Rev$ $Date$
  */
 public interface AdministeredObjectResolver {
 

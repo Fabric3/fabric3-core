@@ -46,7 +46,7 @@ package org.fabric3.host.runtime;
 import junit.framework.TestCase;
 
 /**
- * @version $Revision: 10172 $ $Date: 2011-04-05 09:59:18 -0400 (Tue, 05 Apr 2011) $
+ *
  */
 public class BootExportsTestCase extends TestCase {
 

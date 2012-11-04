@@ -47,8 +47,6 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
 
 /**
  * Introspects a WSDL port type and returns a corresponding WsdlServiceContract.
- *
- * @version $Revison$ $Date$
  */
 public interface WsdlContractProcessor {
 

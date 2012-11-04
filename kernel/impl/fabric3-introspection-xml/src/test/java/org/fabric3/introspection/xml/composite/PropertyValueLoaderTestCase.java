@@ -51,7 +51,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PropertyValueLoaderTestCase  extends TestCase {
     private static final String SINGLE_VALUE_ATTRIBUTE = "<property name='prop' value='value'/>";

@@ -57,8 +57,6 @@ import org.fabric3.spi.util.UriHelper;
 
 /**
  * Attaches and detaches a {@link ChannelConnection} from a Spring component producer.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SpringSourceConnectionAttacher implements SourceConnectionAttacher<SpringConnectionSourceDefinition> {

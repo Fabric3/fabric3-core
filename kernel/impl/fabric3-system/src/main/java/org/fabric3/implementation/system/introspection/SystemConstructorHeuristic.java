@@ -48,8 +48,6 @@ import org.fabric3.spi.model.type.java.Signature;
 
 /**
  * Heuristic that selects the constructor to use.
- *
- * @version $Rev$ $Date$
  */
 public class SystemConstructorHeuristic implements HeuristicProcessor {
 

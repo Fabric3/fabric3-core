@@ -71,8 +71,6 @@ import org.fabric3.spi.model.type.java.JavaTypeInfo;
 
 /**
  * Default implementation of a ContractProcessor for Java interfaces.
- *
- * @version $Rev$ $Date$
  */
 public class JavaContractProcessorImpl implements JavaContractProcessor {
     public static final QName ONEWAY_INTENT = new QName(Constants.SCA_NS, "oneWay");

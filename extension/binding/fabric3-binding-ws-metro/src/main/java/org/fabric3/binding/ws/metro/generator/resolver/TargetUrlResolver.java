@@ -47,8 +47,6 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 /**
  * Determines the endpoint of a URL based on the service binding metadata. This is used when determining a URL for a reference targeted using the SCA
  * service URL.
- *
- * @version $Rev$ $Date$
  */
 public interface TargetUrlResolver {
 

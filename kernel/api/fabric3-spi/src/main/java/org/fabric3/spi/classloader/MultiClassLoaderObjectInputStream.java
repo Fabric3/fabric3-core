@@ -46,8 +46,6 @@ import java.net.URI;
 /**
  * A specialized ObjectInputStream that can deserialize objects loaded in different runtime classloaders. When ObjectInputStream.resolveClass() is
  * called, a classloader id is read if present in the byte stream. The id is used to resolve the classloader to load the class in.
- *
- * @version $Rev$ $Date$
  */
 public class MultiClassLoaderObjectInputStream extends ObjectInputStream {
     private ClassLoaderRegistry registry;

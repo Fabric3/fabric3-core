@@ -70,8 +70,6 @@ import org.fabric3.spi.xml.XMLFactory;
 /**
  * Introspects a composite file in a contribution and produces a Composite type. This implementation assumes the CCL has all necessary artifacts to
  * perform introspection on its classpath.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class CompositeResourceProcessor implements ResourceProcessor {

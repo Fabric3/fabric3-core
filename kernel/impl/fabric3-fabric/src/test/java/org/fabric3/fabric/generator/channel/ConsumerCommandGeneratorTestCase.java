@@ -53,7 +53,7 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 public class ConsumerCommandGeneratorTestCase extends TestCase {
 

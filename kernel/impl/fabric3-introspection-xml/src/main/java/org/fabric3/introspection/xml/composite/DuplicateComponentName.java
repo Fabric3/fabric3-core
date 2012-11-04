@@ -43,8 +43,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * Denotes a duplicate component name in a composite.
- *
- * @version $Rev$ $Date$
  */
 public class DuplicateComponentName extends XmlValidationFailure {
 

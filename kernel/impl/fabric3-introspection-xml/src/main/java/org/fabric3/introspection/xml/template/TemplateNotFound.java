@@ -43,8 +43,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * Raised when a reference to a non-existant template is encountered.
- *
- * @version $Rev$ $Date$
  */
 public class TemplateNotFound extends XmlValidationFailure {
 

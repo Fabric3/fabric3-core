@@ -67,8 +67,6 @@ import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
 
 /**
  * A Deployer that sends DeploymentUnits to the local runtime instance.
- *
- * @version $Rev$ $Date$
  */
 public class LocalDeployer implements Deployer {
     private CommandExecutorRegistry executorRegistry;

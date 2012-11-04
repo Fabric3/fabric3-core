@@ -57,8 +57,6 @@ import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
 /**
  * Type loader for the <f3:handler> element.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class BindingHandlerLoader extends AbstractValidatingTypeLoader<BindingHandlerDefinition> {

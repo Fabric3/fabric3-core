@@ -47,8 +47,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * Denotes an error when invoking on an object
- *
- * @version $Rev$ $Date$
  */
 public class ObjectCallbackException extends Fabric3Exception {
     private static final long serialVersionUID = -2828664920912394309L;

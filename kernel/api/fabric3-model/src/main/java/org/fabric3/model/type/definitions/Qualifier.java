@@ -39,8 +39,6 @@ package org.fabric3.model.type.definitions;
 
 /**
  * A qualifier element in an intent definition.
- *
- * @version $Rev$ $Date$
  */
 public class Qualifier {
     private String name;

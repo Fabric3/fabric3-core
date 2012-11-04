@@ -57,8 +57,6 @@ import org.fabric3.spi.management.ManagementService;
 /**
  * Initializes JMS connection factories with the Atomikos pooling infrastructure. Note, only XAConnections are supported but both XA and nonXA
  * transactions may be used.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class AtomikosConnectionFactoryManager implements ConnectionFactoryManager {

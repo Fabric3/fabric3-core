@@ -60,7 +60,7 @@ import org.fabric3.spi.util.ParamTypes;
 import static org.fabric3.spi.model.type.xsd.XSDConstants.PROPERTY_TYPE;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ArrayBuilderImpl extends AbstractPropertyBuilder implements ArrayBuilder {
 

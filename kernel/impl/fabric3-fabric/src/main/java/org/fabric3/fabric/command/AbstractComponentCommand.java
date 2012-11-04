@@ -48,8 +48,6 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  *
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractComponentCommand implements CompensatableCommand {
     protected PhysicalComponentDefinition definition;

@@ -44,7 +44,7 @@ import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.model.type.component.BindingDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JUnitBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -1306543849900003084L;

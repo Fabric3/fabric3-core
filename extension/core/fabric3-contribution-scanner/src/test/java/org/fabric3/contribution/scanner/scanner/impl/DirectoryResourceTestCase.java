@@ -46,7 +46,7 @@ import org.fabric3.contribution.scanner.impl.DirectoryResource;
 import org.fabric3.contribution.scanner.spi.FileSystemResource;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DirectoryResourceTestCase extends TestCase {
 

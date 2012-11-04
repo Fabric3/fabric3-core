@@ -48,7 +48,7 @@ import java.net.URI;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class URIHelperTestCase extends TestCase {
 

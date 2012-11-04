@@ -40,7 +40,7 @@ package org.fabric3.jpa.runtime.emf;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * @version $Rev: 8837 $ $Date: 2010-04-08 14:05:46 +0200 (Thu, 08 Apr 2010) $
+ *
  */
 public interface CacheMonitor {
 

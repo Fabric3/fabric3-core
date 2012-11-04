@@ -51,8 +51,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Attaches and detaches a wire to/from a target component or transport binding.
- *
- * @version $Rev$ $Date$
  */
 public interface TargetWireAttacher<PTD extends PhysicalTargetDefinition> {
     /**

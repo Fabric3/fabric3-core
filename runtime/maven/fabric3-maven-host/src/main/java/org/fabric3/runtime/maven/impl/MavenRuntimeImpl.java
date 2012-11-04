@@ -72,8 +72,6 @@ import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
 
 /**
  * Default Maven runtime implementation.
- *
- * @version $Rev$ $Date$
  */
 public class MavenRuntimeImpl extends AbstractRuntime implements MavenRuntime {
     private static final URI CONTRIBUTION_URI = URI.create("iTestContribution");

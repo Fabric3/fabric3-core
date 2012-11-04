@@ -42,8 +42,6 @@ import java.security.SecureClassLoader;
 
 /**
  * Defines a class using a classloader.
- *
- * @version $Rev$ $Date$
  */
 public interface ClassDefiner {
 

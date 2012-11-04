@@ -51,8 +51,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 /**
  * Synthesizes a special contribution from a directory that is configured to extend an extension point derived from the name of the directory. For
  * example, a contribution can be synthesized that extends an extension point provided by a datasource extension by making JDBC drivers available.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SyntheticDirectoryContributionProcessor extends AbstractContributionProcessor {

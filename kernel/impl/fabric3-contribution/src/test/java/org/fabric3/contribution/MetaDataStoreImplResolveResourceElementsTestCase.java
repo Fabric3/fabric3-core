@@ -62,7 +62,7 @@ import org.fabric3.spi.contribution.manifest.QNameImport;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MetaDataStoreImplResolveResourceElementsTestCase extends TestCase {
     private static final URI EXPORTING_URI = URI.create("test-resource");

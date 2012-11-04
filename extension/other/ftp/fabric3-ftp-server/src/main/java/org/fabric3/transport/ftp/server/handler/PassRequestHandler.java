@@ -48,8 +48,6 @@ import org.fabric3.transport.ftp.server.security.UserManager;
 
 /**
  * Handles the <code>PASS</code> command.
- *
- * @version $Rev$ $Date$
  */
 public class PassRequestHandler implements RequestHandler {
 

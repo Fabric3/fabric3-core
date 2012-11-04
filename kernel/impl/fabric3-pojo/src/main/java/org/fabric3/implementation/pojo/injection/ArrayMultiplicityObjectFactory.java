@@ -52,8 +52,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Resolves targets configured in a multiplicity by delegating to object factories and returning an <code>Array</code> containing object instances
- *
- * @version $Rev$ $Date$
  */
 public class ArrayMultiplicityObjectFactory implements MultiplicityObjectFactory<Object> {
     private List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();

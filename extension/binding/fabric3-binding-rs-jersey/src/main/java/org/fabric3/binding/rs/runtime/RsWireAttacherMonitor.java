@@ -42,7 +42,7 @@ import java.net.URI;
 import org.fabric3.api.annotation.monitor.Info;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface RsWireAttacherMonitor {
 

@@ -39,8 +39,6 @@ package org.fabric3.spi.contribution;
 
 /**
  * Represents the state a {@link Resource} can be in during contribution processing.
- *
- * @version $Rev$ $Date$
  */
 public enum ResourceState {
     

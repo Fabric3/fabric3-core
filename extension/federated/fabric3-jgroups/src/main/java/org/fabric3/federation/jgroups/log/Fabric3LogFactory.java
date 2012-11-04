@@ -42,8 +42,6 @@ import org.jgroups.logging.Log;
 
 /**
  * Used to override JGroups logging.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public class Fabric3LogFactory implements CustomLogFactory {
     public static Log log;

@@ -54,8 +54,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Creates a proxy for a channel connection that implements a specified interface.
- *
- * @version $Rev$ $Date$
  */
 public class ChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;

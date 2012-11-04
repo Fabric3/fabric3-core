@@ -41,8 +41,6 @@ import java.io.Serializable;
 
 /**
  * A runtime capability required or provided by the contribution.
- *
- * @version $Rev$ $Date$
  */
 public class Capability implements Serializable {
     private static final long serialVersionUID = 2123506244287635868L;

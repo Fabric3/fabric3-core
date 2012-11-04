@@ -47,8 +47,6 @@ import org.fabric3.transport.ftp.server.security.User;
 
 /**
  * Represents an FTP session between a client and a server.
- *
- * @version $Rev$ $Date$
  */
 public class FtpSession {
 

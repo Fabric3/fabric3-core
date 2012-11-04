@@ -45,8 +45,6 @@ import com.sun.xml.ws.api.BindingID;
 /**
  * Interface for resolving binding id.
  *
- * @version $Rev$ $Date$
- *
  */
 public interface BindingIdResolver {
 

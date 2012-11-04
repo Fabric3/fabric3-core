@@ -52,8 +52,6 @@ import org.fabric3.wsdl.factory.Wsdl4JFactory;
 
 /**
  * An implementation of WsdlFactory that accepts registration and deregistration of WSDLReader and WSDLWriter extensions.
- *
- * @version $Rev$ $Date$
  */
 public class Wsdl4JFactoryImpl implements Wsdl4JFactory {
     private static final String VERBOSE = "javax.wsdl.verbose";

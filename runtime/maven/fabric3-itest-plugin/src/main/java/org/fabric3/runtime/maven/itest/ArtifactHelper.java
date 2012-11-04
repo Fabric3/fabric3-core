@@ -70,7 +70,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ArtifactHelper {
     public ArtifactFactory artifactFactory;

@@ -39,8 +39,6 @@ package org.fabric3.api.annotation.management;
 
 /**
  * Defines semantics for a management operation.
- *
- * @version $Rev$ $Date$
  */
 public enum OperationType {
     GET,

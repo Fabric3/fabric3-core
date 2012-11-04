@@ -41,8 +41,6 @@ import org.fabric3.spi.generator.GenerationException;
 
 /**
  * Exception thrown if unable to activate definition.
- *
- * @version $Rev$ $Date$
  */
 public class PolicyActivationException extends GenerationException {
     private static final long serialVersionUID = -7879956099570998326L;

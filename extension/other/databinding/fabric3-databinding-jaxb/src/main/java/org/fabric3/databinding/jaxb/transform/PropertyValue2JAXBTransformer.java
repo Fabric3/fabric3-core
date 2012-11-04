@@ -68,8 +68,6 @@ import org.fabric3.spi.transform.Transformer;
 
 /**
  * Converts from a component property represented as a DOM Node to a JAXB type. The DOM node representation contains a root &lt;value&gt; element.
- *
- * @version $Rev$ $Date$
  */
 public class PropertyValue2JAXBTransformer implements Transformer<Node, Object> {
     private JAXBContext jaxbContext;

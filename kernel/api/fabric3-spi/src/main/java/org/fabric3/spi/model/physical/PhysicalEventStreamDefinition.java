@@ -49,8 +49,6 @@ import java.util.List;
 
 /**
  * Metadata for an event stream that transmits events.
- *
- * @version $Revision: 7729 $ $Date: 2009-10-01 18:21:22 +0200 (Thu, 01 Oct 2009) $
  */
 public class PhysicalEventStreamDefinition implements Serializable {
     private static final long serialVersionUID = 8684345140369447283L;

@@ -40,8 +40,6 @@ package org.fabric3.spi.threadpool;
 /**
  * A reference to the current runtime execution context. An execution context can be used to mark the beginning and end of a unit-of-work. This is
  * useful for threads that handle long-running processes and will avoid the runtime marking such threads as stalled.
- *
- * @version $Rev$ $Date$
  */
 public interface ExecutionContext {
 

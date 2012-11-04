@@ -61,7 +61,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class RestfulManagementExtensionTestCase extends TestCase {
     private TransformerPairService pairService;

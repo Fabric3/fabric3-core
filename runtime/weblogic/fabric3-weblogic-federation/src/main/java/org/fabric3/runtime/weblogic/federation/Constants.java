@@ -39,8 +39,6 @@ package org.fabric3.runtime.weblogic.federation;
 
 /**
  * Constants for the WebLogic federation extension.
- *
- * @version $Rev$ $Date$
  */
 public interface Constants {
 

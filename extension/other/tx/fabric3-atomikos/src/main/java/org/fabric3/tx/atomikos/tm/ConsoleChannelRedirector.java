@@ -45,8 +45,6 @@ import org.fabric3.api.MonitorChannel;
 
 /**
  * Redirects Atomikos log output to the runtime monitor channel.
- *
- * @version $Rev$ $Date$
  */
 public class ConsoleChannelRedirector implements Console {
     private MonitorChannel channel;

@@ -48,8 +48,6 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
  * Default EndpointSynthesizer implementation.
- *
- * @version $Rev$ $Date$
  */
 public class EndpointSynthesizerImpl implements EndpointSynthesizer {
 

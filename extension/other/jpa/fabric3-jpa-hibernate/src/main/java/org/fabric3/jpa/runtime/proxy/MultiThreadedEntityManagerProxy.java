@@ -60,8 +60,6 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * <p/>
  * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the EntityManager instance associated with
  * the current transaction context from the EntityManagerService.
- *
- * @version $Rev$ $Date$
  */
 public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityManager {
     private String unitName;

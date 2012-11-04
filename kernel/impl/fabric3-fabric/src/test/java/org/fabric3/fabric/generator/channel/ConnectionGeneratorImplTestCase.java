@@ -80,7 +80,7 @@ import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 import org.fabric3.spi.model.type.java.JavaClass;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ConnectionGeneratorImplTestCase extends TestCase {
 

@@ -42,7 +42,7 @@ import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.annotation.monitor.Warning;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface DataSourceResolverMonitor {
 

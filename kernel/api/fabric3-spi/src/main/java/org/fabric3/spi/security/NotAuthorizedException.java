@@ -39,8 +39,6 @@ package org.fabric3.spi.security;
 
 /**
  * Thrown when a role or permission check is performed on a subject and the subject does not have the role or permission assigned.
- *
- * @version $Rev$ $Date$
  */
 public class NotAuthorizedException extends AuthorizationException {
     private static final long serialVersionUID = 303239479593200560L;

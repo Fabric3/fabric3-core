@@ -47,7 +47,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.type.java.Signature;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PojoConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
     private static final long serialVersionUID = 6177213006707271474L;

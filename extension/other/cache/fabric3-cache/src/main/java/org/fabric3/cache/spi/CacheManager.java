@@ -39,8 +39,6 @@ package org.fabric3.cache.spi;
 
 /**
  * Implementations manage cache resources for a provider on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public interface CacheManager<T extends PhysicalCacheResourceDefinition> {
 

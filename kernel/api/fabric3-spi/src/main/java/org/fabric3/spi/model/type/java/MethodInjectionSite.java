@@ -47,8 +47,6 @@ import java.lang.reflect.Method;
 
 /**
  * Represents a setter method that is injected into when a component implementation instance is instantiated.
- *
- * @version $Rev$ $Date$
  */
 public class MethodInjectionSite extends InjectionSite {
     private static final long serialVersionUID = -2222837362065034249L;

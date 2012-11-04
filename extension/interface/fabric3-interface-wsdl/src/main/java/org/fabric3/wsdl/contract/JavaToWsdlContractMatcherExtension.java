@@ -44,8 +44,6 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
 
 /**
  * Determines if a JavaServiceContract is compatible with a WsdlServiceContract .
- *
- * @version $Rev$ $Date$
  */
 public class JavaToWsdlContractMatcherExtension extends AbstractXsdContractMatcherExtension<JavaServiceContract, WsdlServiceContract> {
 

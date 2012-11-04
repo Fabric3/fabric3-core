@@ -78,8 +78,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
  * Builds a set of channels defined in a composite on a runtime.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChannelsCommand> {

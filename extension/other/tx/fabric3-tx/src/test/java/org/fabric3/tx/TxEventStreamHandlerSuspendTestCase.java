@@ -46,7 +46,7 @@ import org.easymock.EasyMock;
 import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
+ *
  */
 public class TxEventStreamHandlerSuspendTestCase extends TestCase {
     private TransactionManager tm;

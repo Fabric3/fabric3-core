@@ -54,8 +54,6 @@ import org.fabric3.spi.model.instance.LogicalScaArtifact;
 
 /**
  * Base class for resolving policies.
- *
- * @version $Rev$ $Date$
  */
 public class AbstractPolicyResolver {
     protected LogicalComponentManager lcm;

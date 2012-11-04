@@ -43,8 +43,6 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
  * Generates {@link PhysicalResourceDefinition}s from a resource definition declared in a composite.
- *
- * @version $Rev$ $Date$
  */
 public interface ResourceGenerator<RD extends ResourceDefinition> {
 

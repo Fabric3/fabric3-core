@@ -45,8 +45,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Represents the implementation of a web artifact such as a servlet or filter.
- *
- * @version $Rev$ $Date$
  */
 public class WebArtifactImplementation extends Implementation<InjectingComponentType> {
     private static final long serialVersionUID = -5415465119697665067L;

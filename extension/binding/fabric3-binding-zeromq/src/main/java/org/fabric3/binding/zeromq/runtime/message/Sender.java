@@ -35,8 +35,6 @@ import org.fabric3.spi.invocation.WorkContext;
 
 /**
  * Implementations dispatch messages over a ZeroMQ socket.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public interface Sender extends AddressListener {
 

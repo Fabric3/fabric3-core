@@ -47,8 +47,6 @@ import org.fabric3.model.type.definitions.PolicySet;
 
 /**
  * Registry of binding types, implementation types, intents and policy sets within an SCA domain.
- *
- * @version $Rev$ $Date$
  */
 public interface PolicyRegistry {
 

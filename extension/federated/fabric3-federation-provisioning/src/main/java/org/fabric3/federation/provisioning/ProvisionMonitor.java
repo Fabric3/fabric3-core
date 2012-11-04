@@ -47,7 +47,7 @@ import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthorizationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public interface ProvisionMonitor {
 

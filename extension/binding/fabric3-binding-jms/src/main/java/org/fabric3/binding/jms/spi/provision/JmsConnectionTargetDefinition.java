@@ -50,8 +50,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
  * Generated metadata used for attaching producers to a JMS destination.
- *
- * @version $Revision$ $Date$
  */
 public class JmsConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
     private static final long serialVersionUID = -2617453498606879652L;

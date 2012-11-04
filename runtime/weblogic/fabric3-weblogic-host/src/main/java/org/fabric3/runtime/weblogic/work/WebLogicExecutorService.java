@@ -65,8 +65,6 @@ import weblogic.logging.LoggingHelper;
  * If no WorkManager is configured for the runtime, the default WebLogic WorkManager will be used.
  * <p/>
  * TODO Implement lookup of configured work managers
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WebLogicExecutorService implements ExecutorService {

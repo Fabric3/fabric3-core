@@ -48,8 +48,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Encapsulates an invocation to be processed asynchronously.
- *
- * @version $Rev$ $Date$
  */
 public class AsyncRequest implements Runnable {
     private final Interceptor next;

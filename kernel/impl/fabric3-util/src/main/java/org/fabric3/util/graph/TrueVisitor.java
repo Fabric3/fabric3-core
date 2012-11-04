@@ -39,8 +39,6 @@ package org.fabric3.util.graph;
 
 /**
  * Walks the subgraph starting from the given vertex.
- *
- * @version $Rev$ $Date$
  */
 public class TrueVisitor<T> implements Visitor<T> {
 

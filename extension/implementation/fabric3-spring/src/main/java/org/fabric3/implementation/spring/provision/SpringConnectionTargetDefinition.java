@@ -44,8 +44,6 @@ import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  * Used to attach the target side of a channel connection to a Spring bean consumer.
- *
- * @version $Revision$ $Date$
  */
 public class SpringConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
     private static final long serialVersionUID = 967914855829805771L;

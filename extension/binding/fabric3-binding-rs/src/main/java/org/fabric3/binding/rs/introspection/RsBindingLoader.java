@@ -54,7 +54,7 @@ import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class RsBindingLoader extends AbstractValidatingTypeLoader<RsBindingDefinition> {

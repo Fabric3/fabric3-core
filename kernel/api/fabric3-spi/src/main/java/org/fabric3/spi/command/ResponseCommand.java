@@ -45,8 +45,6 @@ package org.fabric3.spi.command;
 
 /**
  * A Command that produces a response.
- *
- * @version $Rev$ $Date$
  */
 public interface ResponseCommand extends Command {
 

@@ -2,8 +2,6 @@ package org.fabric3.cache.runtime;
 
 /**
  * Returns live references to caches configured on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public interface CacheRegistry {
 

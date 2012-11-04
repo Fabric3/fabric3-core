@@ -42,8 +42,6 @@ import javax.security.auth.Subject;
 
 /**
  * Represents user security state. Implementations wrap a subject supplied by the underlying security provider.
- *
- * @version $Rev$ $Date$
  */
 public interface SecuritySubject {
 

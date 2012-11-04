@@ -49,8 +49,6 @@ import org.fabric3.spi.command.CompensatableCommand;
 
 /**
  * Starts a composite context on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public class StartContextCommand implements CompensatableCommand {
     private static final long serialVersionUID = -2132991925467598257L;

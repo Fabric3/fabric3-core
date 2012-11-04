@@ -46,7 +46,7 @@ import com.sun.jersey.core.spi.component.ioc.IoCComponentProvider;
 import com.sun.jersey.core.spi.component.ioc.IoCComponentProviderFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class Fabric3ProviderFactory implements IoCComponentProviderFactory {
     private Map<Class<?>, Fabric3ComponentProvider> providers = new ConcurrentHashMap<Class<?>, Fabric3ComponentProvider>();

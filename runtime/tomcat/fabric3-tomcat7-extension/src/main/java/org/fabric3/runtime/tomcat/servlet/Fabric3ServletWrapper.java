@@ -44,8 +44,6 @@ import org.apache.catalina.core.StandardWrapper;
 
 /**
  * Specialization of the Tomcat <code>StandardWrapper</code> that returns an existing servlet instance as opposed to creating a new one.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 02:48:06 +0200 (Mon, 03 Jan 2011) $
  */
 public class Fabric3ServletWrapper extends StandardWrapper {
     private Servlet servlet;

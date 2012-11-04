@@ -58,7 +58,7 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.Writer;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WriterRoundTripTestCase extends TestCase {
 

@@ -67,8 +67,6 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loader for definitions.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {

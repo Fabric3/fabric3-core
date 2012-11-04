@@ -45,7 +45,7 @@ import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
 
 /**
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
+ *
  */
 public class RoundRobinSocketMultiplexerTestCase extends TestCase {
     private ZeroMQMetadata metadata = new ZeroMQMetadata();

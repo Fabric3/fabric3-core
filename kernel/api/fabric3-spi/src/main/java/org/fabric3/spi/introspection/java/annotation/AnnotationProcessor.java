@@ -54,9 +54,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 /**
  * Interface for processors that handle annotations attached to Java declarations.
  *
- * @param <A> the type of annotation this processor handles
- * @version $Rev$ $Date$
- */
+ * @param <A> the type of annotation this processor handles*/
 public interface AnnotationProcessor<A extends Annotation> {
     /**
      * Returns the type of annotation this processor handles.

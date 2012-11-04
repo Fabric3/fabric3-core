@@ -47,8 +47,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 /**
  * Used to attach a producer to a channel configured with the web binding.
- *
- * @version $Revision$ $Date$
  */
 public class WebConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
     private static final long serialVersionUID = 4362255087198821030L;

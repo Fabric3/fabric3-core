@@ -16,8 +16,6 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 /**
  * Determines if a composite references another artifact. Currently only composite references from child component implementations
  * (implementation.composite) and includes are supported.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class CompositeReferenceIntrospector implements ReferenceIntrospector<QNameSymbol, Composite> {

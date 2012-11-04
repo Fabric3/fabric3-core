@@ -44,7 +44,7 @@ import javax.management.JMException;
 import javax.management.MBeanInfo;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public abstract class AbstractMBean implements DynamicMBean {
     protected final MBeanInfo mbeanInfo;

@@ -47,8 +47,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * Represents an injection site on a Java-based component implementation.
- *
- * @version $Revision$ $Date$
  */
 public class InjectionSite extends ModelObject {
     private static final long serialVersionUID = 7792895640425046691L;

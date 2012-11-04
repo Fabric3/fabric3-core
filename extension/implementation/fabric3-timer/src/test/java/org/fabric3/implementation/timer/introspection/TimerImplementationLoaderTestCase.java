@@ -55,7 +55,7 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
- * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
+ *
  */
 public class TimerImplementationLoaderTestCase extends TestCase {
     TimerImplementationLoader loader;

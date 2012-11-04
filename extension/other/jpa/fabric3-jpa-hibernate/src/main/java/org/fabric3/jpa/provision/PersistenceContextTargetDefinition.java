@@ -39,8 +39,6 @@ package org.fabric3.jpa.provision;
 
 /**
  * Contains attach point metadata for an EntityManager resource.
- *
- * @version $Rev$ $Date$
  */
 public class PersistenceContextTargetDefinition extends AbstractContextTargetDefinition {
     private static final long serialVersionUID = -6823873953780670817L;

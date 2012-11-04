@@ -41,8 +41,6 @@ import java.security.cert.X509Certificate;
 
 /**
  * Interface that abstracts logging in users.
- *
- * @version $Rev$ $Date$
  */
 public interface UserManager {
 

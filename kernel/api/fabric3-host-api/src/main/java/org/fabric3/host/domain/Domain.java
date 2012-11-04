@@ -45,8 +45,6 @@ import org.fabric3.model.type.component.Composite;
 
 /**
  * Represents a domain.
- *
- * @version $Rev$ $Date$
  */
 public interface Domain {
 

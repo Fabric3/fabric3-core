@@ -48,8 +48,6 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
  * Builds a resource on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public interface ResourceBuilder<R extends PhysicalResourceDefinition> {
 

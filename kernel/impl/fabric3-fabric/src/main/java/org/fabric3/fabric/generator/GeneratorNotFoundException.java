@@ -49,7 +49,7 @@ import org.fabric3.spi.generator.GenerationException;
 
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class GeneratorNotFoundException extends GenerationException {
     private static final long serialVersionUID = -4738988978020234242L;

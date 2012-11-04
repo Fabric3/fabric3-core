@@ -39,8 +39,6 @@ package org.fabric3.spi.channel;
 
 /**
  * Processes events flowing through an event stream.
- *
- * @version $Rev$ $Date$
  */
 public interface EventStreamHandler {
 

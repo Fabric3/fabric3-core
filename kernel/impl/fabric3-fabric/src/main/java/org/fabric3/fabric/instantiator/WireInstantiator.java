@@ -49,8 +49,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
  * #instantiateReferenceWires(LogicalComponent, InstantiationContext)} as composite <code>&lt;wire&gt;</code> elements may use the @replace attribute
  * to overwrite wires created using the @target attribute on a <code>&lt;reference&gt;</code> element. If composite wires with replace set to true
  * exist, wires base on the reference target attribute will not be created. 
- *
- * @version $Rev$ $Date$
  */
 public interface WireInstantiator {
 

@@ -47,8 +47,6 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
 
 /**
  * Synthesizes a concrete WSDL (i.e. service, port and binding information) from a binding configuration and an abstract WSDL definition.
- *
- * @version $Rev$ $Date$
  */
 public interface WsdlSynthesizer {
 

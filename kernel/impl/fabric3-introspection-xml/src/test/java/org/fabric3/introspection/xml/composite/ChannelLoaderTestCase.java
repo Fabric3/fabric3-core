@@ -61,7 +61,7 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**
- * @version $Rev: 7275 $ $Date: 2009-07-05 21:54:59 +0200 (Sun, 05 Jul 2009) $
+ *
  */
 public class ChannelLoaderTestCase extends TestCase {
     private static final String XML = "<channel xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='channel'/>";

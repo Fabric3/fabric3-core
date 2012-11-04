@@ -47,8 +47,6 @@ import javax.xml.stream.XMLStreamReader;
 
 /**
  * Failure that indicates an attribute was encountered that could not be handled.
- *
- * @version $Rev$ $Date$
  */
 public class UnrecognizedAttribute extends XmlValidationFailure {
     String name;

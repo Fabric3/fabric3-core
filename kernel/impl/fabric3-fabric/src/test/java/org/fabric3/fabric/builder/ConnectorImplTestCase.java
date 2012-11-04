@@ -75,7 +75,7 @@ import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ConnectorImplTestCase extends TestCase {
     private static final DataType<?> DATA_TYPE = new XSDSimpleType(Document.class, new QName(XSDType.XSD_NS, "string"));

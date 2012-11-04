@@ -39,8 +39,6 @@ package org.fabric3.jmx.agent;
 
 /**
  * Security settings for the JMX server.
- *
- * @version $Rev: 8923 $ $Date: 2010-04-26 10:43:08 +0200 (Mon, 26 Apr 2010) $
  */
 public enum JmxSecurity {
     DISABLED,

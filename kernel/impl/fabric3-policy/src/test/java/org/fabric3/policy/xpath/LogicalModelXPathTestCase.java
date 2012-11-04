@@ -59,7 +59,7 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @SuppressWarnings({"unchecked"})
 public class LogicalModelXPathTestCase extends TestCase {

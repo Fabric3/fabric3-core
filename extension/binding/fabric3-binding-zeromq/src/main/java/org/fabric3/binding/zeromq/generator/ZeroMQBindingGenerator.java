@@ -55,7 +55,7 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.util.UriHelper;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 @EagerInit
 public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDefinition> {

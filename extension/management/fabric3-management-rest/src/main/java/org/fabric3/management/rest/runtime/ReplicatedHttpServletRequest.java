@@ -63,8 +63,6 @@ import javax.servlet.http.Part;
 
 /**
  * Serialized servlet request used to replicate resource requests.
- *
- * @version $Rev: 9973 $ $Date: 2011-02-11 08:52:40 +0100 (Fri, 11 Feb 2011) $
  */
 public class ReplicatedHttpServletRequest implements HttpServletRequest, Serializable {
     private static final long serialVersionUID = 4494355941648639187L;

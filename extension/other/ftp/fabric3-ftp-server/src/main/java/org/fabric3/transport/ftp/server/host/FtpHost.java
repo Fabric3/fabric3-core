@@ -40,8 +40,6 @@ package org.fabric3.transport.ftp.server.host;
 
 /**
  * SPI for integrating an in-process FTP host.
- *
- * @version $Rev$ $Date$
  */
 public interface FtpHost {
 }

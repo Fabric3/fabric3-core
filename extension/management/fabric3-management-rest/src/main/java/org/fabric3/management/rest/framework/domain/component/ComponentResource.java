@@ -43,8 +43,6 @@ import org.fabric3.management.rest.model.Resource;
 
 /**
  * A deployed component.
- *
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 public class ComponentResource extends Resource {
     private static final long serialVersionUID = -1231963830775425265L;

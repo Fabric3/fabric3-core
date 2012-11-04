@@ -41,8 +41,6 @@ import org.fabric3.spi.builder.WiringException;
 
 /**
  * Denotes a missing or invalid DataSource.
- *
- * @version $Rev: 7869 $ $Date: 2009-11-21 00:10:02 +0100 (Sat, 21 Nov 2009) $
  */
 public class DataSourceNotFoundException extends WiringException {
     private static final long serialVersionUID = 1775542460273141013L;

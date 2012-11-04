@@ -60,8 +60,6 @@ import org.fabric3.spi.util.UriHelper;
 /**
  * Implementation of LogicalComponentManager. The runtime domain configuration (created during bootstrap) defaults autowire to ON; the application
  * domain defaults autowire to OFF, which can be overridden by the runtime configuration.
- *
- * @version $Rev$ $Date$
  */
 public class LogicalComponentManagerImpl implements LogicalComponentManager {
     private URI domainUri;

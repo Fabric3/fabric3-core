@@ -42,8 +42,6 @@ import org.fabric3.model.type.contract.DataType;
 /**
  * A JSON type. The physical type represents the form the JSON type is stored in, e.g. a String. The logical type represents the Java class the type
  * corresponds to.
- *
- * @version $Rev$ $Date$
  */
 public class JsonType<T> extends DataType<T> {
     private static final long serialVersionUID = -2572176390449008142L;

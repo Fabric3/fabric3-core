@@ -86,7 +86,7 @@ import org.fabric3.xquery.scdl.XQueryProperty;
 import org.fabric3.xquery.scdl.XQueryServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class XQueryComponentGenerator implements ComponentGenerator<LogicalComponent<XQueryImplementation>> {

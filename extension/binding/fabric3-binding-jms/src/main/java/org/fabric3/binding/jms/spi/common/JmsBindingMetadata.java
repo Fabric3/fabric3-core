@@ -50,8 +50,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * Encapsulates binding configuration.
- *
- * @version $Revision$ $Date$
  */
 public class JmsBindingMetadata extends ModelObject {
     private static final long serialVersionUID = 4623441503097788831L;

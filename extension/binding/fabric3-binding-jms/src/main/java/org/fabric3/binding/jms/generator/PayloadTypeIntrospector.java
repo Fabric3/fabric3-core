@@ -48,8 +48,6 @@ import org.fabric3.model.type.contract.Operation;
 
 /**
  * Introspects operation in parameters to determine the payload type.
- *
- * @version $Rev$ $Date$
  */
 public interface PayloadTypeIntrospector {
 

@@ -52,7 +52,7 @@ import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TransformerInterceptorFactoryImpl implements TransformerInterceptorFactory {
     private TransformerRegistry registry;

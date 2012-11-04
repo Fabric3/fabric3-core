@@ -44,8 +44,6 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation used to indicate an implementation method is an event consumer.
- *
- * @version $Rev$ $Date$
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

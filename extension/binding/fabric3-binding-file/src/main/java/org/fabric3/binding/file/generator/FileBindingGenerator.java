@@ -56,7 +56,7 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 @EagerInit
 public class FileBindingGenerator implements BindingGenerator<FileBindingDefinition> {

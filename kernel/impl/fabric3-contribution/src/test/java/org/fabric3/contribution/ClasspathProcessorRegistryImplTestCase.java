@@ -48,7 +48,7 @@ import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ClasspathProcessorRegistryImplTestCase extends TestCase {
     private ClasspathProcessorRegistryImpl registry;

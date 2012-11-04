@@ -42,8 +42,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * A resource sourced from the runtime domain.
- *
- * @version $Rev$ $Date$
  */
 public class SystemSourcedResourceReference extends ResourceReferenceDefinition {
     private static final long serialVersionUID = 8542386357450347005L;

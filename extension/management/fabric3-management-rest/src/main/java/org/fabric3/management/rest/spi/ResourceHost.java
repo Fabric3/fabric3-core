@@ -39,8 +39,6 @@ package org.fabric3.management.rest.spi;
 
 /**
  * Responsible for dispatching requests to a managed resource.
- *
- * @version $Rev$ $Date$
  */
 public interface ResourceHost {
 

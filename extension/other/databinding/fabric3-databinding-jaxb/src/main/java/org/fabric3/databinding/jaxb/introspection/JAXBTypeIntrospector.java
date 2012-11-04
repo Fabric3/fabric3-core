@@ -70,8 +70,6 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 /**
  * Introspects operations for the presence of JAXB types. If a parameter is a JAXB type, the JAXB intent is added to the operation.
- *
- * @version $Rev$ $Date$
  */
 public class JAXBTypeIntrospector implements OperationIntrospector {
     private static final String DEFAULT = "##default";

@@ -42,8 +42,6 @@ import org.atmosphere.cpr.Broadcaster;
 
 /**
  * Manages active Atmosphere <code>Broadcaster</code> instances.
- *
- * @version $Rev$ $Date$
  */
 public interface BroadcasterManager {
 

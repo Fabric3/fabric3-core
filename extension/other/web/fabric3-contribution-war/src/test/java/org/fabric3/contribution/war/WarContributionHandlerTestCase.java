@@ -52,7 +52,7 @@ import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.archive.Action;
 
 /**
- * @version $Rev: 7146 $ $Date: 2009-06-15 01:28:54 +0200 (Mon, 15 Jun 2009) $
+ *
  */
 public class WarContributionHandlerTestCase extends TestCase {
     private WarContributionHandler handler;

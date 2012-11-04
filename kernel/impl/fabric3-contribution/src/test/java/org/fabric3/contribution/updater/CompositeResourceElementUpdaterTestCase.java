@@ -55,7 +55,7 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class CompositeResourceElementUpdaterTestCase extends TestCase {
     private CompositeResourceElementUpdater updater;

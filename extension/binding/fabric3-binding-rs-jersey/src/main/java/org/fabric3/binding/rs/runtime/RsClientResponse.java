@@ -27,8 +27,6 @@ import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
 
 /**
  * Builds Jersey Client REST Responses.
- *
- * @version $Rev$ $Date$
  */
 public class RsClientResponse {
 

@@ -43,8 +43,6 @@ import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 
 /**
  * Implemented by the JMS provider to resolve connection factories.
- *
- * @version $Rev$ $Date$
  */
 public interface ProviderConnectionFactoryResolver {
 

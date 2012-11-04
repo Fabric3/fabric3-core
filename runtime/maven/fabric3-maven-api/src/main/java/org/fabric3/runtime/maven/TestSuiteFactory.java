@@ -45,8 +45,6 @@ import org.fabric3.host.Names;
 
 /**
  * Creates a Surefire test suite to run as a set of integration tests.
- *
- * @version $Rev$ $Date$
  */
 public interface TestSuiteFactory {
 

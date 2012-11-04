@@ -41,8 +41,6 @@ import javax.xml.stream.XMLStreamReader;
 
 /**
  * Denotes an invalid QName prefix.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidPrefixException extends LoaderException {
     private static final long serialVersionUID = -4896928793798546890L;

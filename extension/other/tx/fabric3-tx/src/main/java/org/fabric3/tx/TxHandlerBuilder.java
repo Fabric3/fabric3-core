@@ -48,8 +48,6 @@ import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
  * Creates a {@link TxEventStreamHandler} for an event stream.
- *
- * @version $Rev$ $Date$
  */
 public class TxHandlerBuilder implements EventStreamHandlerBuilder<TxHandlerDefinition> {
     private TransactionManager transactionManager;

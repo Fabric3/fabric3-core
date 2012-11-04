@@ -77,8 +77,6 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 /**
  * Creates a service proxy that can be shared among invocation chains of a wire. The proxy must be lazily created as opposed to during wire attachment
  * as as the service WSDL is accessed from the endpoint address, which may not be provisioned at that time.
- *
- * @version $Rev$ $Date$
  */
 public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory<Object> {
     private static final QName DEFINITIONS = new QName("http://schemas.xmlsoap.org/wsdl/", "definitions");

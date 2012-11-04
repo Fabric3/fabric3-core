@@ -40,8 +40,6 @@ package org.fabric3.model.type;
 
 /**
  * Represents a comment in a serialized model object.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public class Namespace extends ModelObject {
     private static final long serialVersionUID = -6910817661378113415L;

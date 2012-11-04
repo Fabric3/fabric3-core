@@ -48,8 +48,6 @@ import org.fabric3.spi.contribution.ProcessorRegistry;
 
 /**
  * The base ContributionProcessor implementation.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 @Service(ContributionProcessor.class)

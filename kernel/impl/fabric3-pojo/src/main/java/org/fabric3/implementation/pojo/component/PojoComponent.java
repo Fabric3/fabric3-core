@@ -65,8 +65,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Base class for Java component implementations.
- *
- * @version $Rev$ $Date$
  */
 public abstract class PojoComponent implements ScopedComponent {
     private URI uri;

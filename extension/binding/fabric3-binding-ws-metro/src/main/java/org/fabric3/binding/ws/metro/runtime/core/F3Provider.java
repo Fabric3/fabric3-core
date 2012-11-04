@@ -44,7 +44,7 @@ import javax.xml.ws.ServiceMode;
 import javax.xml.ws.WebServiceProvider;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @ServiceMode(value = Service.Mode.MESSAGE)
 @WebServiceProvider()

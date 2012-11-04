@@ -42,8 +42,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Implemented by a binding extension to receive callbacks when a {@link BindingHandler} becomes available or is removed.
- *
- * @version $Rev$ $Date$
  */
 public interface BindingHandlerRegistryCallback<T> {
 

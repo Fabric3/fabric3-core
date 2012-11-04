@@ -42,8 +42,6 @@ import java.security.Principal;
 
 /**
  * Represents a user role.
- *
- * @version $Rev$ $Date$
  */
 public class Role implements Principal, Serializable {
     private static final long serialVersionUID = 1693670327381297096L;

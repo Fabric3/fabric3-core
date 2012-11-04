@@ -60,8 +60,6 @@ import org.fabric3.spi.model.type.java.Signature;
 
 /**
  * Processes the {@link ManagementOperation} annotation on a component implementation class.
- *
- * @version $Rev: 9043 $ $Date: 2010-05-24 10:51:12 +0200 (Mon, 24 May 2010) $
  */
 public class ManagementOperationProcessor extends AbstractAnnotationProcessor<ManagementOperation> {
 

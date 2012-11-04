@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
- * @version $Rev: 9435 $ $Date: 2010-09-09 17:31:45 +0200 (Thu, 09 Sep 2010) $
+ *
  */
 public class ServiceManagerImpl implements ServiceManager {
     private Map<String, ChainPair> cache = new ConcurrentHashMap<String, ChainPair>();

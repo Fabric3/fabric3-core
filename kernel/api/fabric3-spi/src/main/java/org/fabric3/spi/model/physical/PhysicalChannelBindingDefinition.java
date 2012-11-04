@@ -47,8 +47,6 @@ import java.io.Serializable;
 
 /**
  * Used to provision a binding transport configured on a channel.
- *
- * @version $Revision: 7729 $ $Date: 2009-10-01 18:21:22 +0200 (Thu, 01 Oct 2009) $
  */
 public abstract class PhysicalChannelBindingDefinition implements Serializable {
     private static final long serialVersionUID = -448452657885276687L;

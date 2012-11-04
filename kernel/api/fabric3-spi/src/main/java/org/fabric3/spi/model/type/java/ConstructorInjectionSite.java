@@ -47,8 +47,6 @@ import java.lang.reflect.Constructor;
 
 /**
  * Represents a constructor that is injected into when a component implementation instance is instantiated.
- *
- * @version $Rev$ $Date$
  */
 public class ConstructorInjectionSite extends InjectionSite {
     private static final long serialVersionUID = -6543986170145816234L;

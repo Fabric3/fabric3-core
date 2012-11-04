@@ -43,8 +43,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * A validation failure indicating a binding name must be configured.
- *
- * @version $Rev: 7284 $ $Date: 2009-07-06 02:58:02 +0200 (Mon, 06 Jul 2009) $
  */
 public class BindingNameNotConfigured extends XmlValidationFailure {
     private String bindingName;

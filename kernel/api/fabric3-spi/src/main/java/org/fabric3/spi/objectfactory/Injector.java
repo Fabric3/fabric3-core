@@ -46,8 +46,6 @@ package org.fabric3.spi.objectfactory;
 
 /**
  * Implementations inject an ObjectFactory value on an object instance
- *
- * @version $Rev$ $Date$
  */
 public interface Injector<T> {
 

@@ -51,8 +51,6 @@ import org.fabric3.spi.component.InstanceDestructionException;
 
 /**
  * Defines monitor events for scope containers
- *
- * @version $Rev$ $Date$
  */
 public interface ScopeContainerMonitor {
 

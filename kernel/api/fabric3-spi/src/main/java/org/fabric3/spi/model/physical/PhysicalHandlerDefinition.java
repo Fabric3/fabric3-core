@@ -48,8 +48,6 @@ import java.net.URI;
 
 /**
  * Metadata for attaching a handler to an event stream.
- *
- * @version $Rev$ $Date$
  */
 public class PhysicalHandlerDefinition implements Serializable {
     private static final long serialVersionUID = 660389044446376070L;

@@ -45,8 +45,6 @@ import org.fabric3.transport.ftp.spi.FtpLetContainer;
 
 /**
  * Default implementation of the FtpLet container.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultFtpLetContainer implements FtpLetContainer {
 

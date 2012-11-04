@@ -80,8 +80,6 @@ import org.apache.activemq.util.JMXSupport;
 
 /**
  * Maps from ActiveMQ to Fabric3 JMX MBean naming conventions.
- *
- * @version $Rev$ $Date$
  */
 public class MBeanServerWrapper implements MBeanServer {
     private static final String DOMAIN = "fabric3";

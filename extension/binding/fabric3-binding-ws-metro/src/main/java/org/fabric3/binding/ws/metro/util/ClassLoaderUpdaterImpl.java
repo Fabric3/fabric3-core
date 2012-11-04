@@ -40,7 +40,7 @@ package org.fabric3.binding.ws.metro.util;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ClassLoaderUpdaterImpl implements ClassLoaderUpdater {
 

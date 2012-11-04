@@ -50,8 +50,6 @@ import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
  * Provides utility functions for working with contributions.
- *
- * @version $Rev$ $Date$
  */
 public interface ContributionHelper {
 

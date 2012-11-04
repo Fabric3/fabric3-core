@@ -44,8 +44,6 @@ import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
  * Resolves applicable policy sets by expanding interaction and implementation intents and combining them with explicitly configured policy sets.
- *
- * @version $Rev$ $Date$
  */
 public interface PolicyResolver {
 

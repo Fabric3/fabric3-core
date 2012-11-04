@@ -52,8 +52,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * A reference configured on a component.
- *
- * @version $Rev$ $Date$
  */
 public class ReferenceDefinition extends AbstractPolicyAware {
     private static final long serialVersionUID = 4641581818938572132L;

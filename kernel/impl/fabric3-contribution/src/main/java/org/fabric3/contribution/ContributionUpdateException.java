@@ -40,7 +40,7 @@ package org.fabric3.contribution;
 import org.fabric3.host.contribution.StoreException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ContributionUpdateException extends StoreException {
     private static final long serialVersionUID = -61295843260531594L;

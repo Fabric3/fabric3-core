@@ -45,8 +45,6 @@ import org.fabric3.host.Namespaces;
 
 /**
  * List of intents that may be provided by Metro.
- *
- * @version $Rev$ $Date$
  */
 public class MayProvideIntents {
 

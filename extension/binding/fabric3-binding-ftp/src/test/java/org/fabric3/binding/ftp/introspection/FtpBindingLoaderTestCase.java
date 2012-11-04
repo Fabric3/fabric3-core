@@ -51,7 +51,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class FtpBindingLoaderTestCase extends TestCase {
     private static final String XML_NO_COMMANDS =

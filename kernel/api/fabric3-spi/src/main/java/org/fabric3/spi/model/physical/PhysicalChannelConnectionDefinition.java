@@ -49,8 +49,6 @@ import java.util.List;
 /**
  * Metadata for provisioning a channel connection on a runtime. Specifically, contains metadata for establishing a connection from a source (component
  * producer, channel, or channel binding) to a target (component consumer, channel, or channel binding).
- *
- * @version $Revision: 7729 $ $Date: 2009-10-01 18:21:22 +0200 (Thu, 01 Oct 2009) $
  */
 public class PhysicalChannelConnectionDefinition implements Serializable {
     private static final long serialVersionUID = -3810294574460985743L;

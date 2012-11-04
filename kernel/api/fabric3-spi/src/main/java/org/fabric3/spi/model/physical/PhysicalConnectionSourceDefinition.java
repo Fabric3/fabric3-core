@@ -49,8 +49,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Used to attach the source side of a channel connection. The source may be a producer, channel binding or channel.
- *
- * @version $Revision$ $Date$
  */
 public class PhysicalConnectionSourceDefinition implements Serializable {
     private static final long serialVersionUID = 3395589699751449558L;

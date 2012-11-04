@@ -50,8 +50,6 @@ import org.fabric3.spi.generator.GenerationException;
 
 /**
  * Generates configuration for creating an Infinispan cache on a runtime.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class InfinispanResourceGenerator implements CacheResourceGenerator<InfinispanCacheResourceDefinition> {

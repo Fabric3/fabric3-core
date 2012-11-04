@@ -39,8 +39,6 @@ import org.fabric3.binding.zeromq.runtime.JDK7WorkaroundHelper;
 
 /**
  * Implementations dispatch messages over a ZeroMQ socket.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public final class SocketHelperTestCase extends TestCase {
     private ZMQ.Socket socket;

@@ -53,8 +53,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Abstract base class for annotation processors that provides default implementations of the interface methods that simply return.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractAnnotationProcessor<A extends Annotation> implements AnnotationProcessor<A> {
     private final Class<A> type;

@@ -73,8 +73,6 @@ import static org.fabric3.host.Names.HOST_CONTRIBUTION;
 /**
  * Default implementation of the ContributionLoader. Classloaders corresponding to loaded contributions are registered by name with the system
  * ClassLoaderRegistry.
- *
- * @version $Rev$ $Date$
  */
 public class ContributionLoaderImpl implements ContributionLoader {
     private final ContributionImport hostImport;

@@ -49,7 +49,7 @@ import java.lang.reflect.Method;
 import org.fabric3.spi.component.InstanceInvocationException;
 
 /**
- * @version $Rev: 8947 $ $Date: 2010-05-02 15:09:45 +0200 (Sun, 02 May 2010) $
+ *
  */
 public abstract class AbstractJDKEventHandler implements InvocationHandler {
 

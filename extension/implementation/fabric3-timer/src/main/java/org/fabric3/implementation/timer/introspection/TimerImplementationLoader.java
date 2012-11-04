@@ -62,8 +62,6 @@ import static org.fabric3.implementation.timer.provision.TimerData.UNSPECIFIED;
 
 /**
  * Loads <implementation.timer> entries in a composite.
- *
- * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
  */
 public class TimerImplementationLoader extends AbstractValidatingTypeLoader<TimerImplementation> {
     private final JavaImplementationProcessor implementationProcessor;

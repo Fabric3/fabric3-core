@@ -41,7 +41,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SingletonSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = -8954551053778417834L;

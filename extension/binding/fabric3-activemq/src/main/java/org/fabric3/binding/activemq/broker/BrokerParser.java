@@ -50,8 +50,6 @@ import org.fabric3.binding.activemq.factory.InvalidConfigurationException;
 
 /**
  * Parses broker configuration from the runtime system configuration.
- *
- * @version $Rev$ $Date$
  */
 public class BrokerParser {
 

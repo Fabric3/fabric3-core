@@ -41,8 +41,6 @@ import org.fabric3.transport.ftp.api.FtpLet;
 
 /**
  * SPI for the FTP let container.
- *
- * @version $Rev$ $Date$
  */
 public interface FtpLetContainer {
 

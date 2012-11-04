@@ -60,8 +60,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Processes the @Service annotation on a component implementation class.
- *
- * @version $Rev$ $Date$
  */
 public class OASISServiceProcessor extends AbstractAnnotationProcessor<Service> {
     private final JavaContractProcessor contractProcessor;

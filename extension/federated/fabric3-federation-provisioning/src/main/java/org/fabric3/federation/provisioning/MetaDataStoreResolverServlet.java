@@ -54,8 +54,6 @@ import org.fabric3.spi.security.AuthorizationService;
 /**
  * Used on a controller to return the contents of a contribution associated with the encoded servlet path from the metadata store. The servlet path
  * corresponds to the contribution URI.
- *
- * @version $Rev$ $Date$
  */
 public class MetaDataStoreResolverServlet extends AbstractResolverServlet {
     private static final long serialVersionUID = -5822568715938454572L;

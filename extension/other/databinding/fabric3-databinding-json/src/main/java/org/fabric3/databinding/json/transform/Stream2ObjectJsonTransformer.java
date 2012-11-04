@@ -69,8 +69,6 @@ import org.fabric3.spi.transform.Transformer;
 
 /**
  * Transforms a serialized XML String received as an input stream to a Java object using JSON.
- *
- * @version $Rev: 7714 $ $Date: 2009-09-29 10:24:45 +0200 (Tue, 29 Sep 2009) $
  */
 public class Stream2ObjectJsonTransformer implements Transformer<InputStream, Object> {
     private ObjectMapper mapper;

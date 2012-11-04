@@ -41,8 +41,6 @@ import org.fabric3.implementation.pojo.provision.PojoConnectionTargetDefinition;
 
 /**
  * Used to attach the target side of a channel connection to a Java component consumer.
- *
- * @version $Revision$ $Date$
  */
 public class JavaConnectionTargetDefinition extends PojoConnectionTargetDefinition {
     private static final long serialVersionUID = -2628247005678916473L;

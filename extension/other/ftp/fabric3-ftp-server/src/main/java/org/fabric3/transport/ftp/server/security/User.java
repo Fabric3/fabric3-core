@@ -39,8 +39,6 @@ package org.fabric3.transport.ftp.server.security;
 
 /**
  * Represents a connected user.
- *
- * @version $Rev$ $Date$
  */
 public class User {
 

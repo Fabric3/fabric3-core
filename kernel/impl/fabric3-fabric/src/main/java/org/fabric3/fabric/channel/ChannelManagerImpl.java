@@ -46,8 +46,6 @@ import org.fabric3.spi.channel.ChannelManager;
 
 /**
  * Default ChannelManager implementation.
- *
- * @version $Rev$ $Date$
  */
 public class ChannelManagerImpl implements ChannelManager {
     private Map<URI, Channel> channels = new ConcurrentHashMap<URI, Channel>();

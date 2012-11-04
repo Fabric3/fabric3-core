@@ -39,8 +39,6 @@ package org.fabric3.spi.security;
 
 /**
  * Base authentication exception.
- *
- * @version $Rev$ $Date$
  */
 public class NoCredentialsException extends SecurityException {
     private static final long serialVersionUID = 2419376501383279634L;

@@ -50,8 +50,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Creates {@link ImplementationManager}s.
- *
- * @version $Rev$ $Date$
  */
 public interface ImplementationManagerFactory {
 

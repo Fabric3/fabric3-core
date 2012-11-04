@@ -15,8 +15,6 @@ import org.fabric3.spi.introspection.java.policy.OperationPolicyIntrospector;
 
 /**
  * Default implementation of OperationPolicyIntrospector.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultOperationPolicyIntrospector implements OperationPolicyIntrospector {
     private PolicyAnnotationProcessor policyProcessor;

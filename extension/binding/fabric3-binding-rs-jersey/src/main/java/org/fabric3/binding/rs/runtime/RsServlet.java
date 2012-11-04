@@ -42,7 +42,7 @@ import com.sun.jersey.spi.container.WebApplication;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class RsServlet extends ServletContainer {
     private static final long serialVersionUID = -8351194346044994829L;

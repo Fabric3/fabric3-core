@@ -49,7 +49,7 @@ import org.fabric3.spi.contribution.archive.ClasspathProcessor;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class ClasspathProcessorRegistryImpl implements ClasspathProcessorRegistry {

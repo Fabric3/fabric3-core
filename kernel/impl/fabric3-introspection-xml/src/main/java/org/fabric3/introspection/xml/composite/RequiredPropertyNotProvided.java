@@ -43,7 +43,7 @@ import org.fabric3.model.type.component.Property;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class RequiredPropertyNotProvided extends XmlValidationFailure {
     private String componentName;

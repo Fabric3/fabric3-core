@@ -85,8 +85,6 @@ import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
 
 /**
  * Bootstraps the Fabric3 runtime in WebLogic Server.
- *
- * @version $Rev$ $Date$
  */
 public class Fabric3WebLogicListener implements ServletContextListener {
     private static final String FABRIC3_HOME = "fabric3.home";

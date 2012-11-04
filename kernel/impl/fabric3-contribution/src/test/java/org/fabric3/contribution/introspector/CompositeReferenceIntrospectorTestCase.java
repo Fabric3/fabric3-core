@@ -13,7 +13,7 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class CompositeReferenceIntrospectorTestCase extends TestCase {

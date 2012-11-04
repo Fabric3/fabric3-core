@@ -46,8 +46,6 @@ import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Helper class for JMX operations.
- *
- * @version $Rev$ $Date$
  */
 public final class JmxHelperImpl implements JmxHelper {
     private static final String RUNTIME_MBEAN = "com.bea:Name=RuntimeService,Type=weblogic.management.mbeanservers.runtime.RuntimeServiceMBean";

@@ -44,7 +44,7 @@ import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ChannelConnectionImpl implements ChannelConnection {
     private List<EventStream> streams = new ArrayList<EventStream>();

@@ -41,7 +41,7 @@ import java.net.URI;
 import java.net.URL;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class CommandHelper {
 

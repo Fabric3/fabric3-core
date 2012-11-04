@@ -57,7 +57,7 @@ package org.fabric3.host;
 import junit.framework.TestCase;
 
 /**
- * @version $Rev: 10362 $ $Date: 2011-05-22 23:58:45 +0200 (Sun, 22 May 2011) $
+ *
  */
 public class VersionTestCase extends TestCase {
 

@@ -59,8 +59,6 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loads a property declaration in a composite or on a component.
- *
- * @version $Rev$ $Date$
  */
 public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
     private static final String NAME = "name";

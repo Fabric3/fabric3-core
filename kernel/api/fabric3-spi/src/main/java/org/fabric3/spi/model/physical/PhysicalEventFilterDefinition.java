@@ -47,8 +47,6 @@ import java.io.Serializable;
 
 /**
  * Contains metadata for creating an event filter.
- *
- * @version $Revision$ $Date$
  */
 public class PhysicalEventFilterDefinition implements Serializable {
     private static final long serialVersionUID = 3580784686309686702L;

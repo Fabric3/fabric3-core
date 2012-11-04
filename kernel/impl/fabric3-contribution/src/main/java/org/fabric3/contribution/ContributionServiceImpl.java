@@ -99,8 +99,6 @@ import org.fabric3.spi.introspection.validation.ValidationUtils;
 
 /**
  * Default ContributionService implementation.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ContributionServiceImpl implements ContributionService {

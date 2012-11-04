@@ -69,8 +69,6 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
 
 /**
  * WSDL 1.1 processor implementation.
- *
- * @version $Revsion$ $Date$
  */
 public class Wsdl11ContractProcessor implements WsdlContractProcessor {
 

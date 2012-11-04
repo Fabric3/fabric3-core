@@ -49,8 +49,6 @@ import org.xml.sax.SAXException;
 
 /**
  * Base class for transform tests.
- *
- * @version $Rev$ $Date$
  */
 public abstract class BaseTransformTest extends TestCase {
 

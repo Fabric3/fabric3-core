@@ -45,7 +45,7 @@ import org.easymock.EasyMock;
 import org.fabric3.spi.channel.ChannelConnection;
 
 /**
- * @version $Rev: 8947 $ $Date: 2010-05-02 15:09:45 +0200 (Sun, 02 May 2010) $
+ *
  */
 public class AbstractFanOutHandlerTestCase extends TestCase {
 

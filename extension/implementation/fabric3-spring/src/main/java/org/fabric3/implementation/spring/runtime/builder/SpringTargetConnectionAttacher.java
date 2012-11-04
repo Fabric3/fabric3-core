@@ -55,8 +55,6 @@ import org.fabric3.spi.model.type.java.JavaType;
 
 /**
  * Attaches and detaches a {@link ChannelConnection} from a Spring component consumer.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class SpringTargetConnectionAttacher implements TargetConnectionAttacher<SpringConnectionTargetDefinition> {

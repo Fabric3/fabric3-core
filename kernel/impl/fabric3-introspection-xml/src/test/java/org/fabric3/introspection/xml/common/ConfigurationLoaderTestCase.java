@@ -12,7 +12,7 @@ import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ConfigurationLoaderTestCase extends TestCase {
     private static final String XML = "<configuration xmlns='" + Constants.SCA_NS + "'><key1>value1</key1><key2>value2</key2></configuration>";

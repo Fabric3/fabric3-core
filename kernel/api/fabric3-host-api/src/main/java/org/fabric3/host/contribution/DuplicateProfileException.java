@@ -38,7 +38,7 @@
 package org.fabric3.host.contribution;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DuplicateProfileException extends StoreException {
     private static final long serialVersionUID = -8621467113084253648L;

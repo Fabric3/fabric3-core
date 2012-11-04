@@ -33,8 +33,6 @@ package org.fabric3.binding.zeromq.runtime;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class BrokerException extends Fabric3Exception {
     private static final long serialVersionUID = 4442369221828416074L;

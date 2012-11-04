@@ -47,8 +47,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * Thrown when an error is encountered executing a Command on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public class ExecutionException extends Fabric3Exception {
     private static final long serialVersionUID = 7518538722801035000L;

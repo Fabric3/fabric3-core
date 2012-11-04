@@ -46,8 +46,6 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * Calculates contributions required for a deployment.
- *
- * @version $Rev$ $Date$
  */
 public interface ContributionCollator {
 

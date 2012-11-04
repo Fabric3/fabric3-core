@@ -42,8 +42,6 @@ import java.io.PrintStream;
 /**
  * Commands are constructed by a CommandParser that walks the AST generated from a instructions submitted to the Interpreter. Typically, Commands
  * operate against the DomainController.
- *
- * @version $Rev$ $Date$
  */
 public interface Command {
 

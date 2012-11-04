@@ -49,8 +49,6 @@ import org.fabric3.datasource.spi.DataSourceRegistry;
 /**
  * Wraps a DataSource to retrieve it lazily from the {@link DataSourceRegistry}. Wrapping is necessary as a DataSource may not be registered until
  * after the Spring Security configuration has been instantiated.
- *
- * @version $Rev$ $Date$
  */
 public class DataSourceWrapper implements DataSource {
     private String name;

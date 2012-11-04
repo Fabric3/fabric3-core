@@ -39,8 +39,6 @@ package org.fabric3.datasource.spi;
 
 /**
  * Creates and disposes datasources on a runtime.
- *
- * @version $Rev$ $Date$
  */
 public interface DataSourceFactory {
 

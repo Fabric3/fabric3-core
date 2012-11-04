@@ -49,8 +49,6 @@ import org.fabric3.transport.ftp.api.FtpLet;
 
 /**
  * Handles incoming FTP puts from the protocol stack.
- *
- * @version $Rev$ $Date$
  */
 public class BindingFtpLet implements FtpLet {
     private String servicePath;

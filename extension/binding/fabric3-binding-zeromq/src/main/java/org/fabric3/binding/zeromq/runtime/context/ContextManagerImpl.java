@@ -43,7 +43,7 @@ import org.zeromq.ZMQ.Context;
 import org.fabric3.host.runtime.HostInfo;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 @EagerInit
 public class ContextManagerImpl implements ContextManager {

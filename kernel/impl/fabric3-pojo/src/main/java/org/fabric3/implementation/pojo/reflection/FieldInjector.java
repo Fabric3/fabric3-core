@@ -52,8 +52,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Injects a value created by an {@link ObjectFactory} on a given field.
- *
- * @version $Rev$ $Date$
  */
 public class FieldInjector implements Injector<Object> {
     private final Field field;

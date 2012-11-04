@@ -60,8 +60,6 @@ import org.fabric3.spi.channel.PassThroughHandler;
  * <p/>
  * Messages are formatted using an f3.properties resource bundle visible from the monitor interface classloader. Resource bundles will be searched
  * using a directory hierarchy derived from the monitor interface package.
- *
- * @version $Rev$ $Date$
  */
 public class JDKMonitorProxyService implements MonitorProxyService {
     private String runtimeName;

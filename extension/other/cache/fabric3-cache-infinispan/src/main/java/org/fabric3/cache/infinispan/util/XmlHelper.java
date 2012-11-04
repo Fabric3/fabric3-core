@@ -11,7 +11,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Node;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class XmlHelper {
 

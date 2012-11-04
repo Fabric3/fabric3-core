@@ -45,8 +45,6 @@ package org.fabric3.spi.component;
 
 /**
  * Raised when an error is encountered invoking a component implementation instance.
- *
- * @version $Rev$ $Date$
  */
 public class InstanceInvocationException extends InstanceException {
     private static final long serialVersionUID = -487975880014726227L;

@@ -49,8 +49,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * Denotes an illegal property value.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidPropertyValue extends XmlValidationFailure {
 

@@ -42,8 +42,6 @@ import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 /**
  * Registers {@link BindingHandler}s so that they are available to binding extensions and registers binding extensions to receive updates when {@link
  * BindingHandler}s become available.
- *
- * @version $Rev$ $Date$
  */
 public interface BindingHandlerRegistry {
 

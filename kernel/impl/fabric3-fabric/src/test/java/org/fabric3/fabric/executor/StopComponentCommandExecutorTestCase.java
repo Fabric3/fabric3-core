@@ -55,7 +55,7 @@ import org.fabric3.spi.component.Component;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 
 /**
- * @version $Rev: 10102 $ $Date: 2011-03-15 23:59:22 -0700 (Tue, 15 Mar 2011) $
+ *
  */
 public class StopComponentCommandExecutorTestCase extends TestCase {
 

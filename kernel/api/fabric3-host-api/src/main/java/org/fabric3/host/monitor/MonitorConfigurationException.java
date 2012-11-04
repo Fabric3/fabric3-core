@@ -41,8 +41,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * Throw when an invalid monitor entry in the system configuration is parsed.
- *
- * @version $Rev$ $Date$
  */
 public class MonitorConfigurationException extends Fabric3Exception {
     private static final long serialVersionUID = -1154404114791706327L;

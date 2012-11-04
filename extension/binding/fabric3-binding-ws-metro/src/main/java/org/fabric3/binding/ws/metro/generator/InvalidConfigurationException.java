@@ -40,7 +40,7 @@ package org.fabric3.binding.ws.metro.generator;
 import org.fabric3.spi.generator.GenerationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class InvalidConfigurationException extends GenerationException {
     private static final long serialVersionUID = -6831417172806901148L;

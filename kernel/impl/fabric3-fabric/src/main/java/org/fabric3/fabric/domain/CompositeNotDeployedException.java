@@ -40,7 +40,7 @@ package org.fabric3.fabric.domain;
 import org.fabric3.host.domain.DeploymentException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class CompositeNotDeployedException extends DeploymentException {
     private static final long serialVersionUID = -7120838413998593918L;

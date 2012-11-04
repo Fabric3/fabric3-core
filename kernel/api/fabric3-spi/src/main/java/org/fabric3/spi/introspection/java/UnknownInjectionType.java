@@ -46,8 +46,6 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
  * Denotes an unknown InjectableAttributeType.
- *
- * @version $Rev$ $Date$
  */
 public class UnknownInjectionType extends ValidationFailure {
     private InjectionSite site;

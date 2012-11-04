@@ -50,7 +50,7 @@ import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TransformerPairServiceImplTestCase extends TestCase {
     private static final JavaClass<?> JAVA_TYPE = new JavaClass<Object>(Object.class);

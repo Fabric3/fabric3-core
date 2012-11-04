@@ -47,8 +47,6 @@ import org.fabric3.spi.contribution.manifest.JavaImport;
 /**
  * Wires two contributions, using the Java import/export mechanism, making a set of classes from the exporting contribution visible to the importing
  * contribution. The semantics of a JavaContributionWire are defined by OSGi R4 bundle imports and exports.
- *
- * @version $Rev$ $Date$
  */
 public class JavaContributionWire implements ContributionWire<JavaImport, JavaExport> {
     private static final long serialVersionUID = -2724694051340291455L;

@@ -49,8 +49,6 @@ import com.sun.xml.ws.api.server.Invoker;
 
 /**
  * Configuration for provisioning a service as a web service endpoint.
- *
- * @version $Rev$ $Date$
  */
 public class EndpointConfiguration {
     private Class<?> seiClass;

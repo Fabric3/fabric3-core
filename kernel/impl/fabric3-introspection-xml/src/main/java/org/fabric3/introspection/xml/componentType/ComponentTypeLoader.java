@@ -79,8 +79,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loads a generic component type.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ComponentTypeLoader implements TypeLoader<ComponentType> {

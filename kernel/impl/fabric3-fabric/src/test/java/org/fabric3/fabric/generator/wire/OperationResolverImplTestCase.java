@@ -54,7 +54,7 @@ import org.fabric3.spi.model.type.xsd.XSDSimpleType;
 import org.fabric3.spi.model.type.xsd.XSDType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class OperationResolverImplTestCase extends TestCase {
     private static final QName STRING_QNAME = new QName(XSDType.XSD_NS, "string");

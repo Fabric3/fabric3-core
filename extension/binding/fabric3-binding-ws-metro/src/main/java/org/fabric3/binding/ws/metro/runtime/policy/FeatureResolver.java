@@ -43,8 +43,6 @@ import javax.xml.ws.WebServiceFeature;
 
 /**
  * Resolves the set of features corresponding to intents and policy sets for a bound service or reference.
- *
- * @version $Rev$ $Date$
  */
 public interface FeatureResolver {
 

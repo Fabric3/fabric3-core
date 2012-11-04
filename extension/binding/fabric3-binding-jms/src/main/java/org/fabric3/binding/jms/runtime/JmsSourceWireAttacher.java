@@ -90,8 +90,6 @@ import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches a channel or consumer to a JMS destination.
- *
- * @version $Revision$ $Date$
  */
 public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefinition> {
 

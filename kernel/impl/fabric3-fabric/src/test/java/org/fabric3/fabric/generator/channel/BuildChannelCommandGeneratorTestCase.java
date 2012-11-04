@@ -53,7 +53,7 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class BuildChannelCommandGeneratorTestCase extends TestCase {
 

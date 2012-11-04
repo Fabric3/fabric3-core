@@ -42,7 +42,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DuplicatePromotedService extends XmlValidationFailure {
     public DuplicatePromotedService(String serviceName, XMLStreamReader reader) {

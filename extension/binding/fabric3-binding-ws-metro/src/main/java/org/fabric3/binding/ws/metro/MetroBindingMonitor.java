@@ -44,8 +44,6 @@ import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  * Monitor for communications events.
- *
- * @version $Rev$ $Date$
  */
 public interface MetroBindingMonitor {
 

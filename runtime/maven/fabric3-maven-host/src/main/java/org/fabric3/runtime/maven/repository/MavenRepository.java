@@ -47,8 +47,6 @@ import org.fabric3.host.repository.RepositoryException;
 
 /**
  * A Repository implementation that delegates to a set of local and remote Maven repositories.
- *
- * @version $Rev$ $Date$
  */
 public class MavenRepository implements Repository {
     private MavenHelper helper;

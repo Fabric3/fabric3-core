@@ -45,8 +45,6 @@ package org.fabric3.binding.jms.spi.common;
 
 /**
  * A connection factory configuration.
- *
- * @version $Revision$ $Date$
  */
 public class ConnectionFactoryDefinition extends AdministeredObjectDefinition {
     private static final long serialVersionUID = -1167106940062628310L;

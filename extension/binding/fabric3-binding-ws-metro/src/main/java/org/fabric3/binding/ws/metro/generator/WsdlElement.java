@@ -41,8 +41,6 @@ import javax.xml.namespace.QName;
 
 /**
  * A parsed WSDL element expression.
- *
- * @version $Rev$ $Date$
  */
 public class WsdlElement {
     private QName serviceName;

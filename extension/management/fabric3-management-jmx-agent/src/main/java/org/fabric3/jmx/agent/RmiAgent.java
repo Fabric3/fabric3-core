@@ -45,7 +45,7 @@ import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 
 /**
- * @version $Revision$ $Date$
+ *
  */
 @EagerInit
 public class RmiAgent {

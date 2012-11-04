@@ -41,8 +41,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Denotes an missing callback interface
- *
- * @version $Rev$ $Date$
  */
 
 public class MissingCallback extends ValidationFailure {

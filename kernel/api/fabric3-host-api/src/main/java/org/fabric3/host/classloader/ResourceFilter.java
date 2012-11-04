@@ -45,8 +45,6 @@ import java.util.List;
 
 /**
  * Filters resources against a collection of masks.
- *
- * @version $Rev$ $Date$
  */
 public class ResourceFilter {
     private String[] resourceMasks;

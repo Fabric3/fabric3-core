@@ -47,8 +47,6 @@ import org.fabric3.spi.builder.BuilderException;
 
 /**
  * The builder exception for IF provider.
- *
- * @version $Revision$ $Date$
  */
 public class ImplementationBuildException extends BuilderException {
     private static final long serialVersionUID = -2582100608101918880L;

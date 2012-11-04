@@ -49,8 +49,6 @@ import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
  * Logical binding definition for handlers .
- *
- * @version $Rev$ $Date$
  */
 public class BindingHandlerDefinition extends ResourceDefinition {
     private static final long serialVersionUID = -2097314069798596206L;

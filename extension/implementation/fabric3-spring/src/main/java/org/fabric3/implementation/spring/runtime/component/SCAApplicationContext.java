@@ -45,8 +45,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Set as the parent of the application context associated with a Spring component. This parent will resolve wire and event stream proxies.
- *
- * @version $Rev$ $Date$
  */
 public class SCAApplicationContext extends AbstractApplicationContext {
     private ProxyBeanFactory beanFactory = new ProxyBeanFactory();

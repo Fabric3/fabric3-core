@@ -85,8 +85,6 @@ import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
  * Verifies the distributed domain when run in Controller, transactional mode.
- *
- * @version $Rev: 10127 $ $Date: 2011-03-27 10:41:17 -0700 (Sun, 27 Mar 2011) $
  */
 public class DistributedDomainControllerTestCase extends TestCase {
     private static final URI COMPONENT_URI = URI.create("fabric3://domain/component");

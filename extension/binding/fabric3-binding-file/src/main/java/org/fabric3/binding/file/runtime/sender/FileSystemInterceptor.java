@@ -50,8 +50,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Attached to bound reference invocation chains. Provides a non-transactional output stream for writing a file to the configured location.
- *
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
  */
 public class FileSystemInterceptor implements Interceptor {
     private File outputDirectory;

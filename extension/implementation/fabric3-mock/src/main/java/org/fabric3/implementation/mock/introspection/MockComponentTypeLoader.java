@@ -44,8 +44,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Component type loader for mock components.
- *
- * @version $Rev$ $Date$
  */
 public interface MockComponentTypeLoader {
 

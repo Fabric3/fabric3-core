@@ -48,8 +48,6 @@ import com.sun.xml.ws.wsdl.writer.WSDLResolver;
 
 /**
  * Resolves WSDL and schema artifacts for a SEI to in-memory streams.
- *
- * @version $Rev$ $Date$
  */
 public class GeneratedWsdlResolver implements WSDLResolver {
     private String wsdlName;

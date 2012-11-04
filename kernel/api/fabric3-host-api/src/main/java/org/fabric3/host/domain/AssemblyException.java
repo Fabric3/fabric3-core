@@ -47,8 +47,6 @@ import java.util.List;
 /**
  * Denotes a recoverable failure updating the domain assembly during deployment. For example, a failure may be a reference targeted to a non-existent
  * service.
- *
- * @version $Rev$ $Date$
  */
 public class AssemblyException extends DeploymentException {
     private static final long serialVersionUID = 3957908169593535300L;

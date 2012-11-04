@@ -39,8 +39,6 @@ package org.fabric3.implementation.spring.api;
 
 /**
  * Defines constants used in the Spring extension.
- *
- * @version $Rev$ $Date$
  */
 public interface SpringConstants {
 

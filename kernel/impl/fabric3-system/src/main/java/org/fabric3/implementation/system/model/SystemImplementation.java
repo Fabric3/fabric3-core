@@ -51,8 +51,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Represents the system composite implementation
- *
- * @version $Rev$ $Date$
  */
 public class SystemImplementation extends Implementation<InjectingComponentType> {
     private static final long serialVersionUID = -3698947089871597184L;

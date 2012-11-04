@@ -47,8 +47,6 @@ import org.w3c.dom.Node;
 /**
  * No-op handler for SCA service, reference, property, consumer, and producer elements in a Spring application context. These elements only have
  * significance when determining the component type of the application context and are ignored at runtime when the context is loaded.
- *
- * @version $Rev$ $Date$
  */
 public class SCANamespaceHandler implements NamespaceHandler {
 

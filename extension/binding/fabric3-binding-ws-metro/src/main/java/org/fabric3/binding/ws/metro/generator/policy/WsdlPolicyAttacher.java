@@ -47,8 +47,6 @@ import org.fabric3.binding.ws.metro.generator.PolicyExpressionMapping;
 
 /**
  * Inlines WS-Policy expressions in a WSDL document. Specifically, PolicyReference elements are added to WSDL subjects.
- *
- * @version $Rev$ $Date$
  */
 public interface WsdlPolicyAttacher {
 

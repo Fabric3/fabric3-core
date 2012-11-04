@@ -57,8 +57,6 @@ import org.fabric3.spi.invocation.WorkContext;
 
 /**
  * Stops a component context on a runtime.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class StopContextCommandExecutor implements CommandExecutor<StopContextCommand> {

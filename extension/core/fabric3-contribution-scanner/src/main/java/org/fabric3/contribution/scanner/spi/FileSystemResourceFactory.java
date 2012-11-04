@@ -41,8 +41,6 @@ import java.io.File;
 
 /**
  * Creates {@link FileSystemResource}s for a deployable artifact.
- *
- * @version $Rev$ $Date$
  */
 public interface FileSystemResourceFactory {
 

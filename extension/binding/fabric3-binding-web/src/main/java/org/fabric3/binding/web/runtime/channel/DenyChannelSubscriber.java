@@ -44,8 +44,6 @@ import org.fabric3.spi.channel.EventStream;
 
 /**
  * Denies subscription requests for a channel.
- *
- * @version $Rev$ $Date$
  */
 public class DenyChannelSubscriber implements ChannelSubscriber {
 

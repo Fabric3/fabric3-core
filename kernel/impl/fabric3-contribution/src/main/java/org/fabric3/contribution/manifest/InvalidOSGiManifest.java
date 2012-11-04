@@ -40,7 +40,7 @@ package org.fabric3.contribution.manifest;
 import org.fabric3.host.contribution.ValidationFailure;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class InvalidOSGiManifest extends ValidationFailure {
     private String message;

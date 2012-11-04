@@ -39,8 +39,6 @@ package org.fabric3.contribution.scanner.spi;
 
 /**
  * Base file system resource implementation.
- *
- * @version $Rev$ $Date$
  */
 public abstract class AbstractResource implements FileSystemResource {
     private FileSystemResourceState state = FileSystemResourceState.DETECTED;

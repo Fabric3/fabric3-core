@@ -64,7 +64,7 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ContributionHelperImplTestCase extends TestCase {
     private ContributionHelperImpl helper;

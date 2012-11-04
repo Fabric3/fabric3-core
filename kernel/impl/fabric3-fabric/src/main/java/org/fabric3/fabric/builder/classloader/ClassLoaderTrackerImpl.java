@@ -54,8 +54,6 @@ import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
  * Default implementation of ClassLoaderTracker.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ClassLoaderTrackerImpl implements ClassLoaderTracker {

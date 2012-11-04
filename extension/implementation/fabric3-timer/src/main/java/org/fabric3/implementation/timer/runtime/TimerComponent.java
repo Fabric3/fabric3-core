@@ -58,8 +58,6 @@ import org.fabric3.timer.spi.TimerService;
 
 /**
  * A timer component implementation.
- *
- * @version $Rev: 7881 $ $Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $
  */
 public class TimerComponent extends JavaComponent implements TopologyListener {
     private TimerData data;

@@ -37,8 +37,6 @@ import org.fabric3.spi.channel.ChannelConnection;
 
 /**
  * Implementations receive messages on a ZeroMQ SUB socket. Qualities of service such as reliability may be provided by an implementation.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public interface Subscriber extends AddressListener {
 

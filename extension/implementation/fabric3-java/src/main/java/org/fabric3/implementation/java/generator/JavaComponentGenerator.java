@@ -65,8 +65,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Generates physical metadata for a Java component deployment.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class JavaComponentGenerator implements ComponentGenerator<LogicalComponent<JavaImplementation>> {

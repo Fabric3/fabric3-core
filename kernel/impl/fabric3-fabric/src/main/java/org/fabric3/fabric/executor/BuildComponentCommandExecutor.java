@@ -68,8 +68,6 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
 /**
  * Builds a component on a runtime.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class BuildComponentCommandExecutor implements CommandExecutor<BuildComponentCommand> {

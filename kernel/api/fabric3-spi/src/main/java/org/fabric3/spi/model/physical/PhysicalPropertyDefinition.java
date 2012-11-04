@@ -43,8 +43,6 @@ import org.w3c.dom.Document;
 
 /**
  * A property and its resolved values.
- *
- * @version $Rev$ $Date$
  */
 public class PhysicalPropertyDefinition implements Serializable {
     private static final long serialVersionUID = -9068366603932114615L;

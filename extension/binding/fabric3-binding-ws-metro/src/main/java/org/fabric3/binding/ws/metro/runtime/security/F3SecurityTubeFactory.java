@@ -123,8 +123,6 @@ import com.sun.xml.xwss.XWSSServerTube;
  * security policy version (spVersion) based on endpoint policy. If the policy is attached to operations and not an endpoint subject, spVersion will
  * not be set and result in an NPE further down the call stack. These tubes override SecurityTubeBase.collectPolicies() and set spVersion prior to
  * invoking the super method. This allows operation-level policy to work propely.
- *
- * @version $Rev$ $Date$
  */
 public final class F3SecurityTubeFactory implements TubeFactory, TubelineAssemblyContextUpdater {
 

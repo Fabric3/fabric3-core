@@ -82,7 +82,7 @@ import org.fabric3.runtime.maven.MavenRuntime;
 import static org.fabric3.runtime.maven.itest.TestConstants.DOMAIN;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class MavenRuntimeBooter {
     private static final String SYSTEM_CONFIG_XML_FILE = "systemConfig.xml";

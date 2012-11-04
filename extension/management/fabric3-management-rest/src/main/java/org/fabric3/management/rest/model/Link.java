@@ -43,8 +43,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * A link to a resource.
- *
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 public class Link {
 

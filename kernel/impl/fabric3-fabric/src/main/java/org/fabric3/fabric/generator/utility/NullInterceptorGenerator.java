@@ -47,8 +47,6 @@ import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 
 /**
  * Utility InterceptorGenerator that can be used to avoid generating an interceptor definition for interception-phase policy.
- *
- * @version $Rev$ $Date$
  */
 public class NullInterceptorGenerator implements InterceptorGenerator {
     public PhysicalInterceptorDefinition generate(Element policy, PolicyMetadata metadata, LogicalOperation operation) throws GenerationException {

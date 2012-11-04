@@ -43,8 +43,6 @@ import java.util.Map;
 
 /**
  * Returns the packages that should be exported by the host contribution for the Java 6 platform.
- *
- * @version $Rev$ $Date$
  */
 public final class Java6HostExports {
     private static final Map<String, String> HOST_EXPORTS;

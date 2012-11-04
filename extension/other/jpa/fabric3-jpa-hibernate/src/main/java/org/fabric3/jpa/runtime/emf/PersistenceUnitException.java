@@ -40,7 +40,7 @@ package org.fabric3.jpa.runtime.emf;
 import org.fabric3.jpa.api.JpaResolutionException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PersistenceUnitException extends JpaResolutionException {
     private static final long serialVersionUID = 2897143398279023346L;

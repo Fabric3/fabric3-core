@@ -43,8 +43,6 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * Denotes a duplicate channel name in a composite.
- *
- * @version $Rev$ $Date$
  */
 public class DuplicateChannelName extends XmlValidationFailure {
 

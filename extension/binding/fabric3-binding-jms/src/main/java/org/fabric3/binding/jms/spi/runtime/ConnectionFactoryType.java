@@ -39,8 +39,6 @@ package org.fabric3.binding.jms.spi.runtime;
 
 /**
  * Defines connection factory types.
- *
- * @version $Rev$ $Date$
  */
 public enum ConnectionFactoryType {
     LOCAL, XA

@@ -56,7 +56,7 @@ import org.fabric3.spi.security.BasicAuthenticator;
 import org.fabric3.spi.transform.Transformer;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public final class ResourceHostImplTestCase extends TestCase {
     private ResourceHostImpl host;

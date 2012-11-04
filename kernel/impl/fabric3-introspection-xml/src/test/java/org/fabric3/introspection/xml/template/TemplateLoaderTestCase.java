@@ -53,7 +53,7 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TemplateRegistry;
 
 /**
- * @version $Rev: 9763 $ $Date: 2011-01-03 01:48:06 +0100 (Mon, 03 Jan 2011) $
+ *
  */
 @EagerInit
 public class TemplateLoaderTestCase extends TestCase {

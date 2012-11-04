@@ -44,8 +44,6 @@ import org.fabric3.spi.command.ResponseCommand;
 
 /**
  * Sent to a controller or zone peer to return the provisioning URL of a contribution artifact.
- *
- * @version $Rev: 7888 $ $Date: 2009-11-22 11:27:32 +0100 (Sun, 22 Nov 2009) $
  */
 public class ProvisionCommand implements ResponseCommand {
     private static final long serialVersionUID = -5748556849217168270L;

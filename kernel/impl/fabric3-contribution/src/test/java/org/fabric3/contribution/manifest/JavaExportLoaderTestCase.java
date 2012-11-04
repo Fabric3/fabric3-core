@@ -47,7 +47,7 @@ import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JavaExportLoaderTestCase extends TestCase {
     private static final String XML = "<export.java package=\"org.bar\" version=\"1.0.1\"/>";

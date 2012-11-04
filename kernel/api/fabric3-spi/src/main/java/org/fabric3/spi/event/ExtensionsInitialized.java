@@ -39,8 +39,6 @@ package org.fabric3.spi.event;
 
 /**
  * Signals when runtime extensions are initialized.
- *
- * @version $Rev$ $Date$
  */
 public class ExtensionsInitialized implements Fabric3Event {
 }

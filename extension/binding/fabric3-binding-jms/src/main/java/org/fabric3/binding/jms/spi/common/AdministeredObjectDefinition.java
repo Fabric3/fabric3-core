@@ -38,8 +38,6 @@ package org.fabric3.binding.jms.spi.common;
 
 /**
  * Defines common attributes for a destination or connection factory configuration.
- *
- * @version $Revision$ $Date$
  */
 public abstract class AdministeredObjectDefinition extends PropertyAwareObject {
     private static final long serialVersionUID = 3952595885616542808L;

@@ -50,8 +50,6 @@ import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
  * Dispatches a monitor event from a proxy to a channel.
- *
- * @version $Rev$ $Date$
  */
 public class MonitorHandler implements InvocationHandler, MonitorChannel {
     private static final Object[] EMPTY_DATA = new Object[0];

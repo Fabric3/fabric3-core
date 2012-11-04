@@ -41,8 +41,6 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
  * Metadata to provision datasources configured in a composite.
- *
- * @version $Rev$ $Date$
  */
 public class PhysicalTimerPoolResource extends PhysicalResourceDefinition {
     private static final long serialVersionUID = 6236450787656780995L;

@@ -82,8 +82,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * Attaches the reference end of a wire to a JMS destination.
- *
- * @version $Revision$ $Date$
  */
 public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefinition> {
     private AdministeredObjectResolver resolver;

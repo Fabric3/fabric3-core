@@ -67,8 +67,6 @@ import org.fabric3.spi.model.type.xsd.XSDType;
 
 /**
  * Generates metadata for attaching a service to a websocket or comet connection.
- *
- * @version $Revision$ $Date$
  */
 @EagerInit
 public class WebBindingGenerator implements BindingGenerator<WebBindingDefinition> {

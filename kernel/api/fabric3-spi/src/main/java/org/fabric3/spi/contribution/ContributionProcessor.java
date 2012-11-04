@@ -49,8 +49,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  * The final processing phase is when the contribution is loaded. At this point, all contribution artifacts, including those in dependent
  * contributions, are made available through the provided classloader. Indexed Resources are iterated and all ResourceElement values are loaded via
  * the loader framework. As ResourceElements may refer to other ResourceElements, loading may occur recursively.
- *
- * @version $Rev$ $Date$
  */
 public interface ContributionProcessor {
 

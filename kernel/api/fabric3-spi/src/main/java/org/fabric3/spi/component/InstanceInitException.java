@@ -45,8 +45,6 @@ package org.fabric3.spi.component;
 
 /**
  * Denotes an error initializing a component instance.
- *
- * @version $Rev$ $Date$
  */
 public class InstanceInitException extends InstanceLifecycleException {
     private static final long serialVersionUID = 987684568823134235L;

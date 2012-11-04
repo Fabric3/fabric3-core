@@ -39,8 +39,6 @@ package org.fabric3.host.domain;
 
 /**
  * Thrown when an attempt is made to perform an operation on a contribution that is not in the required installed state.
- *
- * @version $Rev$ $Date$
  */
 public class ContributionNotInstalledException extends DeploymentException {
     private static final long serialVersionUID = -4286636545614691532L;

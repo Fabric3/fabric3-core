@@ -59,8 +59,6 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
  * Generates a command to bind or attach a wire to a reference.
- *
- * @version $Rev$ $Date$
  */
 public class ReferenceCommandGenerator implements CommandGenerator {
     private WireGenerator wireGenerator;

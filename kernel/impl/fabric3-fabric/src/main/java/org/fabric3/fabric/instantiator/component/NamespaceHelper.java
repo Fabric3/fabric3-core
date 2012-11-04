@@ -43,7 +43,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class NamespaceHelper {
 

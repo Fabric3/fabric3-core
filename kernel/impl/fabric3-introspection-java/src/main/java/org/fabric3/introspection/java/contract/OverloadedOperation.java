@@ -41,8 +41,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Indicates that a service contract specification contains an overloaded method.
- *
- * @version $Rev$ $Date$
  */
 public class OverloadedOperation extends ValidationFailure {
     private String method;

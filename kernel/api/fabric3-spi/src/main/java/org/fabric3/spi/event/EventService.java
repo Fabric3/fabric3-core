@@ -39,8 +39,6 @@ package org.fabric3.spi.event;
 
 /**
  * The runtime event service. {@link Fabric3EventListener}s subscribe with this service to receive notification of various runtime events.
- *
- * @version $Rev$ $Date$
  */
 public interface EventService {
 

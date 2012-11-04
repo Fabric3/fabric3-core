@@ -47,8 +47,6 @@ import org.fabric3.model.type.ModelObject;
 
 /**
  * A wire specified in a composite file.
- *
- * @version $Rev$ $Date$
  */
 public class WireDefinition extends ModelObject {
     private static final long serialVersionUID = -2310313135279527903L;

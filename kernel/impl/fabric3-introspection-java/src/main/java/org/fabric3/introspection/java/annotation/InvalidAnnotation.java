@@ -47,8 +47,6 @@ import org.fabric3.host.contribution.ValidationFailure;
 
 /**
  * Denotes an invalid use of an annotation.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidAnnotation extends ValidationFailure {
     private String message;

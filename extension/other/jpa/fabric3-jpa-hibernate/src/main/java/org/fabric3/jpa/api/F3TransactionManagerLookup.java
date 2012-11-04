@@ -48,8 +48,6 @@ import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Resolves a Fabric3 transaction manager for Hibernate.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public final class F3TransactionManagerLookup implements TransactionManagerLookup {

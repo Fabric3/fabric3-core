@@ -58,8 +58,6 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
  * Handles the /domain/components resource by mapping the HTTP GET URL to the logical component hierarchy for a domain.
  * <p/>
  * Note this resource is only present on the controller.
- *
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 @EagerInit
 @Management(path = "/domain/components")

@@ -49,8 +49,6 @@ import org.fabric3.api.annotation.IntentMetaData;
 
 /**
  * Used to specify the current subject roles required to execute a service operation.
- *
- * @version $Rev$ $Date$
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

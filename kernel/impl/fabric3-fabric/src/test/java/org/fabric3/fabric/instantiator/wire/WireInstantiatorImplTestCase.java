@@ -68,7 +68,7 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class WireInstantiatorImplTestCase extends TestCase {
     private ContractMatcher matcher;

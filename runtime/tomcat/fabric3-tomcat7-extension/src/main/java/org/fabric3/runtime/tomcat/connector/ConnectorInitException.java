@@ -42,7 +42,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.fabric3.host.Fabric3Exception;
 
 /**
- * @version $Rev: 10719 $ $Date: 2011-10-01 03:27:41 +0300 (Sat, 01 Oct 2011) $
+ *
  */
 @EagerInit
 public class ConnectorInitException extends Fabric3Exception {

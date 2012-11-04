@@ -69,8 +69,6 @@ import org.fabric3.spi.security.AuthorizationService;
  * and Spring code to use the Spring Security API.
  * <p/>
  * Access decisions are delegated to a Spring <code>AccessDecisionManager<code> instance.
- *
- * @version $Rev$ $Date$
  */
 @Service(names = {AccessDecisionManager.class, AuthorizationService.class})
 public class Fabric3AccessDecisionManager extends AbstractAccessDecisionManager implements AuthorizationService {

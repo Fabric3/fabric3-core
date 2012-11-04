@@ -41,8 +41,6 @@ import org.fabric3.spi.federation.ErrorResponse;
 
 /**
  * A response returned to the controller when a runtime raises an error processing a {@link DeploymentCommand}.
- *
- * @version $Rev$ $Date$
  */
 public class DeploymentErrorResponse implements ErrorResponse {
     private static final long serialVersionUID = 411382659017602521L;

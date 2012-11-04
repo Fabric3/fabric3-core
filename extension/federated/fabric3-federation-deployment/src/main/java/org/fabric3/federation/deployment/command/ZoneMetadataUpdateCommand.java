@@ -43,8 +43,6 @@ import org.fabric3.spi.command.ResponseCommand;
 /**
  * Sent by a controller to a zone leader to obtain transport metadata. A request is sent to existing zone leaders when a controller joins the domain.
  * This occurs when a controller is activated after a zone leader.
- *
- * @version $Rev$ $Date$
  */
 public class ZoneMetadataUpdateCommand implements ResponseCommand {
     private static final long serialVersionUID = -4288029718584274415L;

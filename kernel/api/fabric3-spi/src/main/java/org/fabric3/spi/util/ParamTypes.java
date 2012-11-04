@@ -42,8 +42,6 @@ import java.util.Map;
 
 /**
  * Defines primitives for use in dynamic classloading.
- *
- * @version $Rev$ $Date$
  */
 public class ParamTypes {
 

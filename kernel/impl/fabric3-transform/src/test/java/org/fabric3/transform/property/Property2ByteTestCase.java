@@ -41,8 +41,6 @@ import org.fabric3.spi.transform.TransformationException;
 
 /**
  * Tests String to Byte transform.
- *
- * @version $Rev$ $Date$
  */
 public class Property2ByteTestCase extends BaseTransformTest {
 

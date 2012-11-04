@@ -46,8 +46,6 @@ import org.fabric3.spi.contribution.Import;
 
 /**
  * A QName-based contribution export
- *
- * @version $Rev$ $Date$
  */
 public class QNameExport implements Export {
     private static final long serialVersionUID = -6813997109078522174L;

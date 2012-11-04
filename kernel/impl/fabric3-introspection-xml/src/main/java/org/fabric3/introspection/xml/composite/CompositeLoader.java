@@ -102,8 +102,6 @@ import static org.fabric3.spi.introspection.xml.CompositeConstants.WIRE;
 
 /**
  * Loads a composite component definition from an XML-based assembly file
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {

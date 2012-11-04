@@ -46,7 +46,7 @@ import org.fabric3.admin.interpreter.command.UseCommand;
 import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class UseCommandParser implements CommandParser {
     private DomainConnection domainConnection;

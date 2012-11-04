@@ -44,8 +44,6 @@ import java.net.URI;
  * Represents a connection between a contribution import and a resolved contribution export. ContributionWire subtypes define specific semantics for
  * artifact visibility. For example, a Java-based wire may restrict visibility to a set of packages while a QName-based wire may restrict visibility
  * to a set of artifacts of a specified QName.
- *
- * @version $Rev$ $Date$
  */
 public interface ContributionWire<I extends Import, E extends Export> extends Serializable {
 

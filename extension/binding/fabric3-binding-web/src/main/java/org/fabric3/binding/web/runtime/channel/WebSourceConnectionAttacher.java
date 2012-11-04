@@ -56,8 +56,6 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 /**
  * Attaches a consumer to a channel configured with the web binding. The connection to the channel is local since the web binding does not provide
  * native multicast. Instead, a channel is connected to a web socket or comet connection and multiplexes events using local handlers.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class WebSourceConnectionAttacher implements SourceConnectionAttacher<WebConnectionSourceDefinition> {

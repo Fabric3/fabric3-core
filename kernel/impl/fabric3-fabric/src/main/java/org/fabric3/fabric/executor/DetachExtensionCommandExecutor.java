@@ -60,8 +60,6 @@ import org.fabric3.spi.executor.ExecutionException;
 
 /**
  * Detaches a parent extension classloader from another classloader.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class DetachExtensionCommandExecutor implements CommandExecutor<DetachExtensionCommand> {

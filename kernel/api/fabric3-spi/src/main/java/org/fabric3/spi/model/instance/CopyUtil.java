@@ -50,8 +50,6 @@ import org.fabric3.model.type.component.ResourceReferenceDefinition;
 
 /**
  * Copies a logical model graph.
- *
- * @version $Rev$ $Date$
  */
 public class CopyUtil {
 

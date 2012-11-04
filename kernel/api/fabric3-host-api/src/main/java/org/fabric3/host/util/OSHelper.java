@@ -47,8 +47,6 @@ import java.util.StringTokenizer;
 
 /**
  * Helper methods for parsing with operating system information.
- *
- * @version $Rev$ $Date$
  */
 public final class OSHelper {
     private static final String VERSION_DELIMETER = ".";

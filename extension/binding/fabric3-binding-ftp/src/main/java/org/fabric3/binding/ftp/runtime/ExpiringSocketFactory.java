@@ -46,8 +46,6 @@ import org.apache.commons.net.DefaultSocketFactory;
 
 /**
  * Overrides the DefaultSocketFactory behavior provided by Apache Commons Net by setting a timeout for opening a socket connection.
- *
- * @version $Rev$ $Date$
  */
 public class ExpiringSocketFactory extends DefaultSocketFactory {
     private final int connectTimeout;

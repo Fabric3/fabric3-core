@@ -42,7 +42,7 @@ import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * @version $Rev: 9439 $ $Date: 2010-09-11 22:41:52 +0200 (Sat, 11 Sep 2010) $
+ *
  */
 public interface ServiceMonitor {
 

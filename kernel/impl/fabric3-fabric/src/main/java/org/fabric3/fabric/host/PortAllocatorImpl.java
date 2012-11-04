@@ -70,8 +70,6 @@ import org.fabric3.spi.host.PortAllocator;
  * to binding a TCP or UDP socket in order to free the underlying lock for the socket type. Note that the port will still hold a lock for the other
  * socket type, which will guarantee the port remains inaccessible to other clients if the owning client temporarily releases its socket connection
  * (some transport bindings such as ZeroMQ may close and re-establish socket connections over the life of a communication session).
- *
- * @version $Rev: 10029 $ $Date: 2011-02-21 16:56:40 -0500 (Mon, 21 Feb 2011) $
  */
 @Management(name = "PortAllocator", path = "/runtime/ports", group = "kernel", description = "Manages runtime ports")
 public class PortAllocatorImpl implements PortAllocator {

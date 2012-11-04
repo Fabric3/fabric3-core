@@ -60,8 +60,6 @@ import org.fabric3.wsdl.factory.Wsdl4JFactory;
 
 /**
  * Default EndpointResolver implementation.
- *
- * @version $Rev$ $Date$
  */
 public class EndpointResolverImpl implements EndpointResolver {
     private static final QName SOAP11_ADDRESS = new QName("http://schemas.xmlsoap.org/wsdl/soap/", "address");

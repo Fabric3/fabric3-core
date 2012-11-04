@@ -65,7 +65,7 @@ import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class SingletonComponentGenerator implements ComponentGenerator<LogicalComponent<SingletonImplementation>> {

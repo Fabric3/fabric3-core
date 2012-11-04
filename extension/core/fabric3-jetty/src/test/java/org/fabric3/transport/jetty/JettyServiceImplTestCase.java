@@ -72,7 +72,7 @@ import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JettyServiceImplTestCase extends TestCase {
 

@@ -43,8 +43,6 @@ import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 
 /**
  * Interceptor definition for enforcing authorization.
- *
- * @version $Rev$ $Date$
  */
 public class AuthorizationInterceptorDefinition extends PhysicalInterceptorDefinition {
     private static final long serialVersionUID = -6234482688280435134L;

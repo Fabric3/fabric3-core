@@ -72,8 +72,6 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 
 /**
  * Loader that handles &lt;include&gt; elements.
- *
- * @version $Rev$ $Date$
  */
 public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
     private static final QName INCLUDE = new QName(Constants.SCA_NS, "include");

@@ -51,7 +51,7 @@ import org.jgroups.util.UUID;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JGroupsHelperImplTestCase extends TestCase {
     JGroupsHelperImpl helper;

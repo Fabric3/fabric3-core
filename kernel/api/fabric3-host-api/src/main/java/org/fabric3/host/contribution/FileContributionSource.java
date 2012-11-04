@@ -45,8 +45,6 @@ import org.fabric3.host.stream.UrlSource;
 
 /**
  * A contribution artifact that is sourced from a filesystem.
- *
- * @version $Rev$ $Date$
  */
 public class FileContributionSource implements ContributionSource {
     private URI uri;

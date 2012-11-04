@@ -49,8 +49,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Creates a non-blocking interceptor
- *
- * @version $Rev$ $Date$
  */
 public class NonBlockingInterceptorBuilder implements InterceptorBuilder<NonBlockingInterceptorDefinition> {
     private ExecutorService executorService;

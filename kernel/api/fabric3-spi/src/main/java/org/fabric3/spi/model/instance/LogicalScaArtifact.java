@@ -50,8 +50,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Base class for all logical artifacts.
- *
- * @version $Rev$ $Date$
  */
 public abstract class LogicalScaArtifact<P extends LogicalScaArtifact<?>> implements Serializable {
     private static final long serialVersionUID = 3937960041374196627L;

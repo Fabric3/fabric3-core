@@ -39,8 +39,6 @@ package org.fabric3.host.runtime;
 
 /**
  * Defines runtime states.
- *
- * @version $Rev$ $Date$
  */
 public enum RuntimeState {
 

@@ -68,8 +68,6 @@ import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * Default implementation of the WireInstantiator.
- *
- * @version $Rev$ $Date$
  */
 public class WireInstantiatorImpl implements WireInstantiator {
     private ContractMatcher matcher;

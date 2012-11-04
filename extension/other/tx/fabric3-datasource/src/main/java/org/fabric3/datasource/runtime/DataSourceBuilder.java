@@ -48,7 +48,7 @@ import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.resource.ResourceBuilder;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 @EagerInit
 public class DataSourceBuilder implements ResourceBuilder<PhysicalDataSourceResource> {

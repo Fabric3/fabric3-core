@@ -47,7 +47,7 @@ import org.fabric3.admin.interpreter.communication.CommunicationException;
 import org.fabric3.admin.interpreter.communication.DomainConnection;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PostCommand implements Command {
     private static final String SELF_LINK = "selfLink";

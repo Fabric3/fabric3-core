@@ -52,8 +52,6 @@ import org.fabric3.api.SecuritySubject;
 
 /**
  * Implementation of {@link SecuritySubject} that wraps a Spring <code>Authentication</code> instance.
- *
- * @version $Rev$ $Date$
  */
 public class SpringSecuritySubject implements SecuritySubject, Principal {
     private Authentication authentication;

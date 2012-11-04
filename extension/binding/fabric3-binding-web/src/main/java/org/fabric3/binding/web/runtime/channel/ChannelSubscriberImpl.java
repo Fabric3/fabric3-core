@@ -51,8 +51,6 @@ import org.fabric3.spi.channel.EventStream;
 /**
  * Implements GET semantics for the RESTful publish/subscribe where a GET will either result in the creation of a websocket connection for clients
  * that support it, or a suspended comet connection. Subsequent events published to the channel will be pushed to all subscribed clients.
- *
- * @version $Rev$ $Date$
  */
 public class ChannelSubscriberImpl implements ChannelSubscriber {
     private long timeout;

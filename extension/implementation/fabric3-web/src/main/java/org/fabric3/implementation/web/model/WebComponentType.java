@@ -46,8 +46,6 @@ import org.fabric3.spi.model.type.java.InjectionSite;
 
 /**
  * A component type representing a web component.
- *
- * @version $Rev$ $Date$
  */
 public class WebComponentType extends ComponentType {
     private static final long serialVersionUID = 9213093177241637932L;

@@ -51,7 +51,7 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class NonBlockingInterceptorTestCase extends TestCase {
     private Interceptor next;

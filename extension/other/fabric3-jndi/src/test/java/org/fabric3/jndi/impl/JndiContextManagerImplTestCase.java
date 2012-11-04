@@ -49,7 +49,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class JndiContextManagerImplTestCase extends TestCase {
     private JndiContextManagerImpl manager;

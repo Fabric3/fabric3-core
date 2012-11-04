@@ -43,8 +43,6 @@ import java.util.List;
 
 /**
  * A deployed composite.
- *
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 public class CompositeResource extends ComponentResource {
     private static final long serialVersionUID = -2376688479953947981L;

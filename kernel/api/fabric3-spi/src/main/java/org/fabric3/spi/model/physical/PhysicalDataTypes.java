@@ -49,8 +49,6 @@ import org.fabric3.spi.model.type.xsd.XSDType;
 /**
  * Defines well-known physical data types. Binding and component extensions may declare the physical data types they support for service operation
  * parameters on {@link PhysicalTargetDefinition}.
- *
- * @version $Rev$ $Date$
  */
 public interface PhysicalDataTypes {
 

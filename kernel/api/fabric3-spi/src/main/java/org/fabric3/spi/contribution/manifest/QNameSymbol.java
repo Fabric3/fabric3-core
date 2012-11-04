@@ -43,8 +43,6 @@ import org.fabric3.spi.contribution.Symbol;
 
 /**
  * Encapsulates a an QName-based key
- *
- * @version $Rev$ $Date$
  */
 public class QNameSymbol extends Symbol<QName> {
 

@@ -67,8 +67,6 @@ import org.fabric3.spi.xml.XMLFactory;
  * <li>Resolution of SCDL artifacts by QName is not supported; scdlResource must be used</li>
  * </ul>
  * </pre>
- *
- * @version $Rev$ $Date$
  */
 public class BootstrapLoaderFactory {
 

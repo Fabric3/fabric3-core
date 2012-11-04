@@ -48,8 +48,6 @@ import java.util.List;
 
 /**
  * A reference configured on a component.
- *
- * @version $Rev$ $Date$
  */
 public class ComponentReference extends ReferenceDefinition {
     private static final long serialVersionUID = 2072898078368317712L;

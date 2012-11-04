@@ -51,7 +51,7 @@ import org.fabric3.spi.wire.Wire;
 import org.fabric3.transport.ftp.spi.FtpLetContainer;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class FtpSourceWireAttacher implements SourceWireAttacher<FtpSourceDefinition> {
 

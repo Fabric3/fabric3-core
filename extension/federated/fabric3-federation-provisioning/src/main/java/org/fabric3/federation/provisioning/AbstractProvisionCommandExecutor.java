@@ -56,8 +56,6 @@ import org.fabric3.spi.host.ServletHost;
 /**
  * Processes a request for the provisioning URL of a contribution artifact. This implementation uses a Servlet provided by subclasses to provision
  * artifacts via HTTP.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public abstract class AbstractProvisionCommandExecutor implements CommandExecutor<ProvisionCommand> {

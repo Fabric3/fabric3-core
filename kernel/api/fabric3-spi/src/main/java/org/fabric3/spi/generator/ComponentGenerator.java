@@ -59,8 +59,6 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
  * Generates metadata used to provision components and physical wires to runtimes.
- *
- * @version $Rev$ $Date$
  */
 public interface ComponentGenerator<C extends LogicalComponent<? extends Implementation<?>>> {
 

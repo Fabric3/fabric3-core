@@ -50,7 +50,7 @@ import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DefaultTransformerRegistryTestCase extends TestCase {
     private DefaultTransformerRegistry registry;

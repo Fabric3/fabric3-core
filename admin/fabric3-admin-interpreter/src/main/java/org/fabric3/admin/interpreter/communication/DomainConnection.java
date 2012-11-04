@@ -45,8 +45,6 @@ import java.net.URL;
 
 /**
  * The interface for performing domain administrative operations.
- *
- * @version $Rev$ $Date$
  */
 public interface DomainConnection {
 

@@ -39,8 +39,6 @@ package org.fabric3.binding.activemq.factory;
 
 /**
  * Manages JMS connection factory templates.
- *
- * @version $Rev: 9497 $ $Date: 2010-09-27 00:13:13 +0200 (Mon, 27 Sep 2010) $
  */
 public interface ConnectionFactoryTemplateRegistry {
 

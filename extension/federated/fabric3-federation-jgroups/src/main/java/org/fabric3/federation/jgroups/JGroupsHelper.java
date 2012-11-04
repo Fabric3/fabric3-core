@@ -48,8 +48,6 @@ import org.fabric3.spi.federation.MessageException;
 
 /**
  * Helper service for the JGroups messaging layer.
- *
- * @version $Rev$ $Date$
  */
 public interface JGroupsHelper {
 

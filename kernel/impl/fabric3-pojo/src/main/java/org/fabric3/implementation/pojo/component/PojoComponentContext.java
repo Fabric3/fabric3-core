@@ -50,7 +50,7 @@ import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PojoComponentContext implements ComponentContext {
     private final PojoComponent component;

@@ -39,8 +39,6 @@ package org.fabric3.spi.monitor;
 
 /**
  * Manages and exposes configuration for the runtime monitor implementation.
- *
- * @version $Rev$ $Date$
  */
 public interface MonitorService {
 

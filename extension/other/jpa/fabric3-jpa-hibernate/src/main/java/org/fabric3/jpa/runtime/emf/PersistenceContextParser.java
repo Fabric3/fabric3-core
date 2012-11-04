@@ -42,8 +42,6 @@ import javax.persistence.spi.PersistenceUnitInfo;
 
 /**
  * Parses a persistence.xml file located at /META-INF/persistence.xml for a provided classloader.
- *
- * @version $Rev$ $Date$
  */
 public interface PersistenceContextParser {
 

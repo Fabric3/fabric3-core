@@ -52,8 +52,6 @@ import org.fabric3.spi.invocation.WorkContext;
 
 /**
  * Manages the lifecycle and visibility component implementations instances.
- *
- * @version $Rev$ $Date$
  */
 public interface ScopeContainer {
 

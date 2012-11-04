@@ -79,8 +79,6 @@ import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 
 /**
  * Implementation that synthesizes a singleton component from an existing object instance.
- *
- * @version $Rev$ $Date$
  */
 public class SingletonComponentSynthesizer implements ComponentSynthesizer {
 

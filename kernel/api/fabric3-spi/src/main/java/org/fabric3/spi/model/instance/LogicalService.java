@@ -49,8 +49,6 @@ import org.fabric3.model.type.component.ServiceDefinition;
 
 /**
  * An instantiated service in the domain.
- *
- * @version $Rev$ $Date$
  */
 public class LogicalService extends Bindable {
     private static final long serialVersionUID = -2417797075030173948L;

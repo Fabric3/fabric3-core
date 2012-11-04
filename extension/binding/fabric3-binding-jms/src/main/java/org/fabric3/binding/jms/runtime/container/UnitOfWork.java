@@ -54,8 +54,6 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 
 /**
  * Implements unit of work boundaries for a JMS operation.
- *
- * @version $Rev$ $Date$
  */
 public class UnitOfWork {
     private URI listenerUri;

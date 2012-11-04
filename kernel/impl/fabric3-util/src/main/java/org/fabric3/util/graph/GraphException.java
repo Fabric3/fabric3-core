@@ -39,8 +39,6 @@ package org.fabric3.util.graph;
 
 /**
  * Abstract base exception
- *
- * @version $Rev$ $Date$
  */
 public abstract class GraphException extends Exception {
     private static final long serialVersionUID = 5177083784099403042L;

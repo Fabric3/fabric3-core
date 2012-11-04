@@ -47,8 +47,6 @@ import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 
 /**
  * Thrown when an event stream cannot be mapped to a method on an interface
- *
- * @version $Rev$ $Date$
  */
 public class NoMethodForEventStreamException extends ProxyCreationException {
     private static final long serialVersionUID = -5203755690182265124L;

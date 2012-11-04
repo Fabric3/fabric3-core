@@ -39,8 +39,6 @@ package org.fabric3.host.runtime;
 
 /**
  * Records an extension component provided by the host environment that must be registered with the runtime domain.
- *
- * @version $Rev$ $Date$
  */
 public class ComponentRegistration {
     private String name;

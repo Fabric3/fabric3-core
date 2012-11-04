@@ -48,7 +48,7 @@ import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class Property2QNameTransformer implements SingleTypeTransformer<Node, QName> {
     private static final JavaClass<QName> TARGET = new JavaClass<QName>(QName.class);

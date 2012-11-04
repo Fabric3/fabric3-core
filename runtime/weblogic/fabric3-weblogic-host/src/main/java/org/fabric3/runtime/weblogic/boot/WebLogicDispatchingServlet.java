@@ -59,8 +59,6 @@ import static org.fabric3.runtime.weblogic.api.ServletRequestDispatcher.SERVLET_
 
 /**
  * Forwards incoming HTTP requests to a servlet provided by a binding.
- *
- * @version $Rev$ $Date$
  */
 public class WebLogicDispatchingServlet extends HttpServlet {
     private static final long serialVersionUID = -7044395140732475283L;

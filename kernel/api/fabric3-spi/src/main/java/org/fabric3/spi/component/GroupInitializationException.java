@@ -47,7 +47,7 @@ import java.net.URI;
 import java.util.Set;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class GroupInitializationException extends InstanceLifecycleException {
     private static final long serialVersionUID = 2049226987838195489L;

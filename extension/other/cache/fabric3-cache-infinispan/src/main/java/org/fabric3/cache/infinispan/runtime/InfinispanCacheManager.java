@@ -74,8 +74,6 @@ import org.fabric3.spi.federation.ZoneChannelException;
 
 /**
  * Manages Infinispan cache resources on a runtime.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalResourceDefinition> {

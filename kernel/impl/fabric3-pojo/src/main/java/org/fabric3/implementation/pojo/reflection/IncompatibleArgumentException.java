@@ -46,7 +46,7 @@ package org.fabric3.implementation.pojo.reflection;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class IncompatibleArgumentException extends ObjectCreationException {
     private static final long serialVersionUID = 7837357233260840672L;

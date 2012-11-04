@@ -51,7 +51,7 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class ResourceReferenceCommandGeneratorTestCase extends TestCase {
     private WireGenerator wireGenerator;

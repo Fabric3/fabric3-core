@@ -71,8 +71,6 @@ import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**
  * Loads a component producer configuration.
- *
- * @version $Rev$ $Date$
  */
 public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<ComponentProducer> {
     private static final QName PRODUCER = new QName(SCA_NS, "producer");

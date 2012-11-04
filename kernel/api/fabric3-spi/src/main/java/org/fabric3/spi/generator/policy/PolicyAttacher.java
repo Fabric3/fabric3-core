@@ -46,8 +46,6 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * Applies policy using external policy attachment.
- *
- * @version $Rev$ $Date$
  */
 public interface PolicyAttacher {
 

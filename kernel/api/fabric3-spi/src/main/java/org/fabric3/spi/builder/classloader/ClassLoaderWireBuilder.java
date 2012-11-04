@@ -42,8 +42,6 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
 /**
  * Builds a connection between two classloaders.
- *
- * @version $Rev$ $Date$
  */
 public interface ClassLoaderWireBuilder {
 

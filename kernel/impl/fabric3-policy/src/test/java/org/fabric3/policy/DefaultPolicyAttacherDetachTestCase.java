@@ -60,7 +60,7 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class DefaultPolicyAttacherDetachTestCase extends TestCase {
     private static final QName POLICY_SET = new QName("urn:test", "testPolicy");

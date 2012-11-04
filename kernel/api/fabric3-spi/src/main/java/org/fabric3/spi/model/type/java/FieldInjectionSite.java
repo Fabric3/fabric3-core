@@ -47,8 +47,6 @@ import java.lang.reflect.Field;
 
 /**
  * Represents a field that is injected into when a component implementation instance is instantiated.
- *
- * @version $Rev$ $Date$
  */
 public class FieldInjectionSite extends InjectionSite {
     private static final long serialVersionUID = -6502983302874808563L;

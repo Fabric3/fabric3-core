@@ -56,8 +56,6 @@ import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
  * No-op resolver used during bootstrap.
- *
- * @version $Rev$ $Date$
  */
 public class NullPolicyResolver implements PolicyResolver {
     private static final PolicyResult EMPTY_RESULT = new NullPolicyResult();

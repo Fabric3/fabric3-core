@@ -45,8 +45,6 @@ import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
 /**
  * Default implementation of ClassLoaderWireGenerator.
- *
- * @version $Rev$ $Date$
  */
 public class LocationContributionWireGenerator implements ClassLoaderWireGenerator<LocationContributionWire> {
 

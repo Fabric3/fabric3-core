@@ -62,8 +62,6 @@ import org.fabric3.spi.contribution.manifest.QNameSymbol;
 /**
  * Dynamically updates a composite in a contribution and all references to it in the contribution and importing contributions. Updated references
  * include composite component implementations and includes.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class CompositeResourceElementUpdater implements ResourceElementUpdater<Composite> {

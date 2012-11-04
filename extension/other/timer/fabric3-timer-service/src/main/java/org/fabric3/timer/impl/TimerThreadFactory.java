@@ -42,8 +42,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Factory that returns named threads and sets an uncaught exception handler that forwards exceptions to a monitor.
- *
- * @version $Rev$ $Date$
  */
 public class TimerThreadFactory implements ThreadFactory {
     private AtomicInteger number = new AtomicInteger(1);

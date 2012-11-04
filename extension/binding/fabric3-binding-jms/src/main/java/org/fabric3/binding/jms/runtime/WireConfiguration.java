@@ -46,8 +46,6 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 
 /**
  * Template for configuring non-operation specific objects for a JmsInterceptor. Used by InterceptorConfiguration.
- *
- * @version $Rev$ $Date$
  */
 public class WireConfiguration {
     private CorrelationScheme correlationScheme;

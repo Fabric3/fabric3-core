@@ -61,8 +61,6 @@ import javax.xml.namespace.QName;
  * <li>Uninstalled - The contribution is unloaded.
  * <li>Removed - the contribution is removed from persistent storage.
  * </ul>
- *
- * @version $Rev$ $Date$
  */
 public interface ContributionService {
 

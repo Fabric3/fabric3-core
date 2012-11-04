@@ -19,8 +19,6 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
  * {@link BindingHandler} Adapter for JAX-WS {@link SOAPHandler}.
- *
- * @version $Rev$ $Date$
  */
 public class SOAPMessageHandlerAdapter implements SOAPHandler<SOAPMessageContext> {
     private BindingHandler<SOAPMessage> delegateHandler;

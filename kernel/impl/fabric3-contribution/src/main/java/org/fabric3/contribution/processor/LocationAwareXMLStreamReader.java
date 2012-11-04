@@ -45,8 +45,6 @@ import javax.xml.stream.XMLStreamReader;
 
 /**
  * Wraps an XMLStreamReader to override the Location system id.
- *
- * @version $Rev$ $Date$
  */
 public class LocationAwareXMLStreamReader implements XMLStreamReader {
     private XMLStreamReader delegate;

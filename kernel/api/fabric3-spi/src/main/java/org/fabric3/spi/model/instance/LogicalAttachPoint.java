@@ -41,8 +41,6 @@ import java.net.URI;
 
 /**
  * An addressable policy attachment point.
- *
- * @version $Rev$ $Date$
  */
 public class LogicalAttachPoint extends LogicalScaArtifact<LogicalComponent<?>> {
     private static final long serialVersionUID = -5294444649296282992L;

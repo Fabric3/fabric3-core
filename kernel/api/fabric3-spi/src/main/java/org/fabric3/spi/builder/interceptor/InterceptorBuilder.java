@@ -49,8 +49,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Builds an interceptor for a wire invocation chain.
- *
- * @version $Rev$ $Date$
  */
 public interface InterceptorBuilder<PID extends PhysicalInterceptorDefinition> {
 

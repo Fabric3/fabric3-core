@@ -34,8 +34,6 @@ import org.fabric3.binding.zeromq.runtime.SocketAddress;
 
 /**
  * Denotes a new socket bound on a runtime for an endpoint or the removal of an existing socket.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 public class AddressAnnouncement extends AddressEvent {
     private static final long serialVersionUID = 5338562626119315692L;

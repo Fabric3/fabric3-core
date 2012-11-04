@@ -39,8 +39,6 @@ package org.fabric3.binding.ws.metro.generator.java.codegen;
 
 /**
  * Represents a generated endpoint interface.
- *
- * @version $Rev$ $Date$
  */
 public class GeneratedInterface {
     private byte[] bytes;

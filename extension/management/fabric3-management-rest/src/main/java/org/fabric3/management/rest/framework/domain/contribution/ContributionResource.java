@@ -45,8 +45,6 @@ import org.fabric3.management.rest.model.Resource;
 
 /**
  * A contribution in the domain.
- *
- * @version $Rev: 9923 $ $Date: 2011-02-03 17:11:06 +0100 (Thu, 03 Feb 2011) $
  */
 public class ContributionResource extends Resource {
     private static final long serialVersionUID = -6091215638459429825L;

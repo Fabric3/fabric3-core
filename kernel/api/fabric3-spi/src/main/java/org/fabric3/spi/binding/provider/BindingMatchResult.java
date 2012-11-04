@@ -43,8 +43,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Result for a binding match operation.
- *
- * @version $Rev$ $Date$
  */
 public class BindingMatchResult {
     private boolean match;

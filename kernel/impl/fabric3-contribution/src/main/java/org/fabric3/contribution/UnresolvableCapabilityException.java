@@ -40,7 +40,7 @@ package org.fabric3.contribution;
 import org.fabric3.spi.contribution.DependencyException;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class UnresolvableCapabilityException extends DependencyException {
     private static final long serialVersionUID = -7260056001152727959L;

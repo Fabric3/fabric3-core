@@ -38,7 +38,7 @@
 package org.fabric3.host.contribution;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class RemoveException extends ContributionException {
     private static final long serialVersionUID = 7255116521255472730L;

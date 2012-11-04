@@ -47,8 +47,6 @@ import org.fabric3.spi.model.instance.LogicalWire;
  * <p/>
  * For a given wire or chanel, a variety of transport protocols may potentially be used for the concrete binding. Which provider is selected depends
  * on the algorithm in-force in a particular domain. For example, a domain may use a weighted algorithm where a particular provider is preferred.
- *
- * @version $Rev$ $Date$
  */
 public interface BindingProvider {
 

@@ -50,8 +50,6 @@ import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**
  * An implementation which propagates socket information throughout a distributed domain using the runtime federation API.
- *
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
  */
 @EagerInit
 @Service(AddressCache.class)

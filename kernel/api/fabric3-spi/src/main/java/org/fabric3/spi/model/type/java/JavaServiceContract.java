@@ -53,8 +53,6 @@ import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
  * Represents a service contract specified using a Java interface
- *
- * @version $Rev$ $Date$
  */
 public class JavaServiceContract extends ServiceContract {
 

@@ -45,7 +45,7 @@ import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.contribution.Contribution;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TemplateRegistryImplTestCase extends TestCase {
     private static final URI CONTRIBUTION_URI = URI.create("test");

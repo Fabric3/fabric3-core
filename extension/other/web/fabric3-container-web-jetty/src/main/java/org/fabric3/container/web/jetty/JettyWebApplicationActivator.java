@@ -71,8 +71,6 @@ import org.fabric3.transport.jetty.JettyService;
 
 /**
  * Activates a web application in an embedded Jetty instance.
- *
- * @version $Rev$ $Date$
  */
 public class JettyWebApplicationActivator implements WebApplicationActivator {
     private JettyService jettyService;

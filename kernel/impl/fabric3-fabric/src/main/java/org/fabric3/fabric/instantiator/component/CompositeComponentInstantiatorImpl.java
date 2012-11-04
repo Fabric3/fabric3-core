@@ -71,8 +71,6 @@ import org.fabric3.spi.model.instance.LogicalService;
  * <p/>
  * Service and reference information configured as part of a <code>&lt;component&gt;</code> entry and component type will be merged into a single
  * logical artifact.
- *
- * @version $Rev$ $Date$
  */
 public class CompositeComponentInstantiatorImpl extends AbstractComponentInstantiator implements CompositeComponentInstantiator {
 

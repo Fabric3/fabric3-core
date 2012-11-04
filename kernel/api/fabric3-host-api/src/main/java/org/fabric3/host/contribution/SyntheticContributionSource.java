@@ -45,8 +45,6 @@ import org.fabric3.host.stream.UrlSource;
 
 /**
  * ContributionSource for a directory that serves as a synthetic composite. For example, a datasource directory that contains JDBC drivers.
- *
- * @version $Rev$ $Date$
  */
 public class SyntheticContributionSource implements ContributionSource {
     private static final String CONTENT_TYPE = "application/vnd.fabric3.synthetic";

@@ -45,8 +45,6 @@ import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 
 /**
  * Receives events flowing through a channel and broadcasts them to subscribed websocket and comet connections.
- *
- * @version $Rev$ $Date$
  */
 public class BroadcasterEventStream implements EventStream, EventStreamHandler {
     private Broadcaster broadcaster;

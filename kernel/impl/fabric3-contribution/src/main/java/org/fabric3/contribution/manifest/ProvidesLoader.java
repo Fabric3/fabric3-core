@@ -47,8 +47,6 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
  * Processes a <code>provides</code> element in a contribution manifest
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class ProvidesLoader implements TypeLoader<ProvidesDeclaration> {

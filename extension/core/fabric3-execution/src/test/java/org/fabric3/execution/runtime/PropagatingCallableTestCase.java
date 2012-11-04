@@ -8,7 +8,7 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class PropagatingCallableTestCase extends TestCase {
 

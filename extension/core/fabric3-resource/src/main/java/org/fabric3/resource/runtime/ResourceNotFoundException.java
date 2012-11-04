@@ -41,8 +41,6 @@ import org.fabric3.spi.builder.WiringException;
 
 /**
  * Denotes a missing or invalid resource.
- *
- * @version $Rev$ $Date$
  */
 public class ResourceNotFoundException extends WiringException {
     private static final long serialVersionUID = -6195665759311521757L;

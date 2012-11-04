@@ -42,8 +42,6 @@ import java.util.List;
 
 /**
  * Identifies a native library in a contribution manifest.
- *
- * @version $Rev$ $Date$
  */
 public class Library implements Serializable {
     private static final long serialVersionUID = -3440164417832624801L;

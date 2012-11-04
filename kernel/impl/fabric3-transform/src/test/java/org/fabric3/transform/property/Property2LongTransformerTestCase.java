@@ -41,8 +41,6 @@ import org.fabric3.spi.transform.TransformationException;
 
 /**
  * Tests String to Integer transform.
- *
- * @version $Rev$ $Date$
  */
 public class Property2LongTransformerTestCase extends BaseTransformTest {
 

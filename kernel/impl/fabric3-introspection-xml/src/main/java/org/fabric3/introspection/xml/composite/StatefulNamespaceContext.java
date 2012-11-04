@@ -47,8 +47,6 @@ import javax.xml.namespace.NamespaceContext;
 
 /**
  * A NamespaceContext used for loaded property default values specified on a component configuration.
- *
- * @version $Rev$ $Date$
  */
 public class StatefulNamespaceContext implements NamespaceContext {
     private Map<String, String> prefixToUri = new HashMap<String, String>();

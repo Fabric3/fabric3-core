@@ -41,8 +41,6 @@ import java.util.List;
 
 /**
  * Implementations select a BindingProvider based on some criteria such as a weighting algorithm.
- *
- * @version $Rev$ $Date$
  */
 public interface BindingSelectionStrategy {
 

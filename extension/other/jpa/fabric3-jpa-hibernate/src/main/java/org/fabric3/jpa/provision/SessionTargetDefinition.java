@@ -39,8 +39,6 @@ package org.fabric3.jpa.provision;
 
 /**
  * Contains attach point metadata for an Hibernate Session resource.
- *
- * @version $Rev$ $Date$
  */
 public class SessionTargetDefinition extends AbstractContextTargetDefinition {
     private static final long serialVersionUID = 7712184177617794651L;

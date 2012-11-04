@@ -42,7 +42,7 @@ import java.net.URI;
 import org.fabric3.model.type.component.BindingDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class TestBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 2529090404017606258L;

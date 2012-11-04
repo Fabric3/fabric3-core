@@ -49,8 +49,6 @@ import java.util.List;
 
 /**
  * A producer configured on a component.
- *
- * @version $Rev$ $Date$
  */
 public class ComponentProducer extends ProducerDefinition {
     private static final long serialVersionUID = -4230400252060306972L;

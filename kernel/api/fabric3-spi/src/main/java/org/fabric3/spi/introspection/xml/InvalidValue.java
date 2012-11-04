@@ -41,8 +41,6 @@ import javax.xml.stream.XMLStreamReader;
 
 /**
  * Indicates the loader encountered an invalid value.
- *
- * @version $Rev$ $Date$
  */
 public class InvalidValue extends XmlValidationFailure {
     private Throwable cause;

@@ -53,8 +53,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Loads a Java component implementation in a composite.
- *
- * @version $Rev$ $Date$
  */
 @EagerInit
 public class JavaImplementationLoader extends AbstractValidatingTypeLoader<JavaImplementation> {

@@ -48,8 +48,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 
 /**
  * Used to provision Atmosphere infrastructure for a channel configured with the web binding.
- *
- * @version $Revision$ $Date$
  */
 public class WebChannelBindingDefinition extends PhysicalChannelBindingDefinition {
     private static final long serialVersionUID = 4552388955256225321L;

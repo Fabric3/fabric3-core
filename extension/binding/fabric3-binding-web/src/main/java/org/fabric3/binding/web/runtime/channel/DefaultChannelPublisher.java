@@ -45,8 +45,6 @@ import org.fabric3.spi.channel.EventWrapper;
  * <p/>
  * An event is read from the HTTP request body and stored as a string in an {@link EventWrapper}. XML (JAXB) and JSON are supported as content type
  * systems. It is the responsibility of consumers to deserialize the wrapper content into an expected Java type.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultChannelPublisher implements ChannelPublisher, EventStreamHandler {
     private EventStreamHandler next;

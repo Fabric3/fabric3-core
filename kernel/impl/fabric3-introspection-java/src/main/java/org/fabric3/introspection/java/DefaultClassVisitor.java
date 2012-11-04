@@ -59,8 +59,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Default ClassVisitor implementation.
- *
- * @version $Rev$ $Date$
  */
 public class DefaultClassVisitor implements ClassVisitor {
 

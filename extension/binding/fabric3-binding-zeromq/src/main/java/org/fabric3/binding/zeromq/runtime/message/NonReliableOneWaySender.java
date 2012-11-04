@@ -52,7 +52,7 @@ import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
- * @version $Revision: 10212 $ $Date: 2011-03-15 18:20:58 +0100 (Tue, 15 Mar 2011) $
+ *
  */
 @Management
 public class NonReliableOneWaySender extends AbstractStatistics implements OneWaySender, Thread.UncaughtExceptionHandler {

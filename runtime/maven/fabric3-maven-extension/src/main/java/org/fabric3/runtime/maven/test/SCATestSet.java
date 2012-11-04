@@ -58,7 +58,7 @@ import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SCATestSet implements SurefireTestSet {
     private final String name;

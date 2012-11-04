@@ -40,7 +40,7 @@ package org.fabric3.implementation.system.singleton;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
- * @version $Rev$ $Date$
+ *
  */
 public class SingletonTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = 7622734365822701522L;
