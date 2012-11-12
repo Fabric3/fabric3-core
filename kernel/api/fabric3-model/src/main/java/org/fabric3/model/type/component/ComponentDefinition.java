@@ -55,7 +55,7 @@ import org.fabric3.model.type.AbstractPolicyAware;
 public class ComponentDefinition<I extends Implementation<?>> extends AbstractPolicyAware {
     private static final long serialVersionUID = 4909969579651563484L;
 
-    private final String name;
+    private String name;
     private Autowire autowire = Autowire.INHERITED;
     private I implementation;
     private Map<String, ComponentService> services = new HashMap<String, ComponentService>();
