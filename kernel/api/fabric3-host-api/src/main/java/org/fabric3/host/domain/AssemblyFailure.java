@@ -89,6 +89,15 @@ public abstract class AssemblyFailure {
     }
 
     /**
+     * Returns the abbreviated error message.
+     *
+     * @return the abbreviated error message.
+     */
+    public String getShortMessage() {
+        return getMessage();
+    }
+
+    /**
      * Returns the failure sources.
      *
      * @return the failure sources
