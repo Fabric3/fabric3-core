@@ -46,6 +46,7 @@ package org.fabric3.introspection.xml.composite;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -84,10 +85,11 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
     }
 
     public PropertyValue load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null || name.length() == 0) {
-            MissingAttribute failure = new MissingAttribute("Missing name attribute", reader);
+            MissingAttribute failure = new MissingAttribute("Missing name attribute", startLocation);
             context.addError(failure);
             return null;
         }
@@ -100,7 +102,7 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
             try {
                 type = helper.createQName(typeAttribute, reader);
             } catch (InvalidPrefixException e) {
-                InvalidAttributes error = new InvalidAttributes("Invalid property type namespace:" + e.getMessage(), reader);
+                InvalidAttributes error = new InvalidAttributes("Invalid property type namespace:" + e.getMessage(), startLocation);
                 context.addError(error);
             }
         }
@@ -120,16 +122,17 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
                 value.setType(type);
                 return value;
             } catch (URISyntaxException e) {
-                InvalidValue failure = new InvalidValue("File specified for property " + name + " is invalid: " + file, reader, e);
+                InvalidValue failure = new InvalidValue("File specified for property " + name + " is invalid: " + file, startLocation, e);
                 context.addError(failure);
                 return null;
             }
         } else {
-            return loadInlinePropertyValue(name, reader, context);
+            return loadInlinePropertyValue(name, reader, startLocation, context);
         }
     }
 
-    private PropertyValue loadInlinePropertyValue(String name, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    private PropertyValue loadInlinePropertyValue(String name, XMLStreamReader reader, Location location, IntrospectionContext context)
+            throws XMLStreamException {
         String typeAttribute = reader.getAttributeValue(null, "type");
         String elementAttribute = reader.getAttributeValue(null, "element");
         PropertyMany many = parseMany(reader);
@@ -140,20 +143,20 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
 
         if (typeAttribute != null) {
             if (elementAttribute != null) {
-                InvalidValue failure = new InvalidValue("Cannot supply both type and element for property: " + name, reader);
+                InvalidValue failure = new InvalidValue("Cannot supply both type and element for property: " + name, location);
                 context.addError(failure);
             }
             try {
                 type = helper.createQName(typeAttribute, reader);
             } catch (InvalidPrefixException e) {
-                InvalidAttributes error = new InvalidAttributes("Invalid property type namespace:" + e.getMessage(), reader);
+                InvalidAttributes error = new InvalidAttributes("Invalid property type namespace:" + e.getMessage(), location);
                 context.addError(error);
             }
         } else if (elementAttribute != null) {
             try {
                 element = helper.createQName(elementAttribute, reader);
             } catch (InvalidPrefixException e) {
-                InvalidAttributes error = new InvalidAttributes("Invalid property element namespace:" + e.getMessage(), reader);
+                InvalidAttributes error = new InvalidAttributes("Invalid property element namespace:" + e.getMessage(), location);
                 context.addError(error);
             }
         }
@@ -161,7 +164,7 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
         Document value = helper.loadPropertyValues(reader);
 
         if (valueAttribute != null && value.getDocumentElement().getChildNodes().getLength() > 0) {
-            InvalidPropertyValue error = new InvalidPropertyValue("Property value configured using the value attribute and inline: " + name, reader);
+            InvalidPropertyValue error = new InvalidPropertyValue("Property value configured using a value attribute and inline: " + name, location);
             context.addError(error);
         }
 

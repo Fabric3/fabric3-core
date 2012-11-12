@@ -46,6 +46,7 @@ package org.fabric3.introspection.xml.definitions;
 import java.net.URI;
 import java.util.Set;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -74,6 +75,7 @@ public class BindingTypeLoader extends AbstractValidatingTypeLoader<BindingType>
     }
 
     public BindingType load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
 
         String name = reader.getAttributeValue(null, "name");
@@ -88,8 +90,10 @@ public class BindingTypeLoader extends AbstractValidatingTypeLoader<BindingType>
         } catch (InvalidPrefixException e) {
             String prefix = e.getPrefix();
             URI uri = context.getContributionUri();
-            context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
-                                                            + " is invalid", reader));
+            InvalidQNamePrefix failure =
+                    new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri + " is invalid",
+                                           startLocation);
+            context.addError(failure);
         }
         return null;
 

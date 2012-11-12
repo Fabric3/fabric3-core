@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.timer.introspection;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -47,17 +47,13 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class InvalidTimerExpression extends XmlValidationFailure {
     private Throwable cause;
 
-    public InvalidTimerExpression(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public InvalidTimerExpression(String message, Location location) {
+        super(message, location);
     }
 
-    public InvalidTimerExpression(String message, XMLStreamReader reader, Throwable cause) {
-        super(message, reader);
+    public InvalidTimerExpression(String message, Location location, Throwable cause) {
+        super(message, location);
         this.cause = cause;
-    }
-
-    public Throwable getCause() {
-        return cause;
     }
 
     public String getMessage() {

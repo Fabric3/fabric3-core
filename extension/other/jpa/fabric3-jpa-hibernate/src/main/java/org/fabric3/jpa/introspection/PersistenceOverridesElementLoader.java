@@ -39,6 +39,7 @@
 package org.fabric3.jpa.introspection;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -82,10 +83,11 @@ public class PersistenceOverridesElementLoader implements TypeLoader<ModelObject
         while (true) {
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:
+                Location location = reader.getLocation();
                 try {
                     loaderRegistry.load(reader, ModelObject.class, context);
                 } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement error = new UnrecognizedElement(reader);
+                    UnrecognizedElement error = new UnrecognizedElement(reader, location);
                     context.addError(error);
                 }
                 break;

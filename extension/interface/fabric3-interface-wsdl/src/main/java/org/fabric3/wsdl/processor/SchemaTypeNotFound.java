@@ -46,7 +46,6 @@ public class SchemaTypeNotFound extends ValidationFailure {
     private String message;
 
     protected SchemaTypeNotFound(String message) {
-
         this.message = message;
     }
 

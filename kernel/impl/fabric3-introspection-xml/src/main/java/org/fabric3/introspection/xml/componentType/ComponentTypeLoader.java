@@ -44,6 +44,7 @@
 package org.fabric3.introspection.xml.componentType;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -120,6 +121,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
+                Location location = reader.getLocation();
                 QName qname = reader.getName();
                 if (PROPERTY.equals(qname)) {
                     Property property = propertyLoader.load(reader, introspectionContext);
@@ -138,7 +140,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     try {
                         modelObject = registry.load(reader, ModelObject.class, introspectionContext);
                     } catch (UnrecognizedElementException e) {
-                        UnrecognizedElement failure = new UnrecognizedElement(reader);
+                        UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                         introspectionContext.addError(failure);
                         continue;
                     }
@@ -149,7 +151,8 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     } else if (modelObject instanceof ReferenceDefinition) {
                         type.add((ReferenceDefinition) modelObject);
                     } else {
-                        introspectionContext.addError(new UnrecognizedElement(reader));
+                        UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                        introspectionContext.addError(failure);
                         continue;
                     }
                 }
@@ -161,10 +164,11 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
     }
 
     private ServiceDefinition loadService(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateServiceAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute failure = new MissingAttribute("Missing name attribute", reader);
+            MissingAttribute failure = new MissingAttribute("Missing name attribute", startLocation);
             context.addError(failure);
             return null;
         }
@@ -177,6 +181,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
             int i = reader.next();
             switch (i) {
             case XMLStreamConstants.START_ELEMENT:
+                Location location = reader.getLocation();
                 callback = CALLBACK.equals(reader.getName());
                 if (callback) {
                     reader.nextTag();
@@ -186,7 +191,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                 try {
                     type = registry.load(reader, ModelObject.class, context);
                 } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                     context.addError(failure);
                     continue;
                 }
@@ -197,18 +202,18 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, def.getCallbackBindings(), reader, context);
+                            BindingHelper.configureName(binding, def.getCallbackBindings(), location, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, def.getCallbackBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, def.getCallbackBindings(), location, context);
                         if (check) {
                             def.addCallbackBinding(binding);
                         }
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, def.getBindings(), reader, context);
+                            BindingHelper.configureName(binding, def.getBindings(), location, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, def.getBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, def.getBindings(), location, context);
                         if (check) {
                             def.addBinding(binding);
                         }
@@ -217,7 +222,8 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     // error loading, the element, ignore as an error will have been reported
                     break;
                 } else {
-                    context.addError(new UnrecognizedElement(reader));
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                    context.addError(failure);
                     continue;
                 }
                 if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
@@ -235,10 +241,11 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
     }
 
     private ReferenceDefinition loadReference(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateReferenceAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingReferenceName failure = new MissingReferenceName(reader);
+            MissingReferenceName failure = new MissingReferenceName(startLocation);
             context.addError(failure);
             return null;
         }
@@ -250,7 +257,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                 multiplicity = Multiplicity.fromString(value);
             }
         } catch (IllegalArgumentException e) {
-            InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + value, reader);
+            InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + value, startLocation);
             context.addError(failure);
         }
         ReferenceDefinition reference = new ReferenceDefinition(name, multiplicity);
@@ -261,6 +268,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
+                Location location = reader.getLocation();
                 callback = CALLBACK.equals(reader.getName());
                 if (callback) {
                     reader.nextTag();
@@ -272,7 +280,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     // TODO when the loader registry is replaced this try..catch must be replaced with a check for a loader and an
                     // UnrecognizedElement added to the context if none is found
                 } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                     context.addError(failure);
                     continue;
                 }
@@ -283,18 +291,18 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, reference.getCallbackBindings(), reader, context);
+                            BindingHelper.configureName(binding, reference.getCallbackBindings(), startLocation, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, reference.getCallbackBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, reference.getCallbackBindings(), startLocation, context);
                         if (check) {
                             reference.addCallbackBinding(binding);
                         }
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, reference.getBindings(), reader, context);
+                            BindingHelper.configureName(binding, reference.getBindings(), startLocation, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, reference.getBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, reference.getBindings(), startLocation, context);
                         if (check) {
                             reference.addBinding(binding);
                         }
@@ -303,7 +311,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     // no type, continue processing
                     continue;
                 } else {
-                    context.addError(new UnrecognizedElement(reader));
+                    context.addError(new UnrecognizedElement(reader, location));
                     continue;
                 }
                 if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
@@ -321,19 +329,21 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
     }
 
     private void validateReferenceAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!"name".equals(name) && !"requires".equals(name) && !"policySets".equals(name) && !"multiplicity".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
+                context.addError(new UnrecognizedAttribute(name, location));
             }
         }
     }
 
     private void validateServiceAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!"name".equals(name) && !"requires".equals(name) && !"policySets".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
+                context.addError(new UnrecognizedAttribute(name, location));
             }
         }
     }

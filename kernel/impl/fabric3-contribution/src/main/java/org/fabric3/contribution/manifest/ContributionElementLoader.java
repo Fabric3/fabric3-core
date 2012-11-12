@@ -44,6 +44,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -59,7 +60,6 @@ import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
-import org.fabric3.spi.model.os.Library;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -69,6 +69,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
+import org.fabric3.spi.model.os.Library;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.fabric3.host.Namespaces.F3;
@@ -120,12 +121,14 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
             switch (event) {
             case START_ELEMENT:
                 element = reader.getName();
+                Location location = reader.getLocation();
+
                 if (DEPLOYABLE.equals(element)) {
                     validateDeployableAttributes(reader, context);
                     String name = reader.getAttributeValue(null, "composite");
                     if (name == null) {
                         MissingManifestAttribute failure =
-                                new MissingManifestAttribute("Composite attribute must be specified", reader);
+                                new MissingManifestAttribute("Composite attribute must be specified", location);
                         context.addError(failure);
                         return null;
                     }
@@ -139,7 +142,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                         if (ns == null) {
                             URI uri = context.getContributionUri();
                             context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in the contribution manifest file for "
-                                                                            + uri + " is invalid", reader));
+                                                                            + uri + " is invalid", location));
                             return null;
                         }
                         qName = new QName(ns, localPart, prefix);
@@ -158,7 +161,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                     validateScanAttributes(reader, context);
                     String excludeAttr = reader.getAttributeValue(null, "exclude");
                     if (excludeAttr == null) {
-                        MissingAttribute error = new MissingAttribute("The exclude attribute must be set on the scan element", reader);
+                        MissingAttribute error = new MissingAttribute("The exclude attribute must be set on the scan element", location);
                         context.addError(error);
                         continue;
                     }
@@ -174,7 +177,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                     try {
                         o = registry.load(reader, Object.class, context);
                     } catch (UnrecognizedElementException e) {
-                        UnrecognizedElement failure = new UnrecognizedElement(reader);
+                        UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                         context.addError(failure);
                         return null;
                     }
@@ -192,7 +195,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                         Library library = (Library) o;
                         manifest.addLibrary(library);
                     } else if (o != null) {
-                        UnrecognizedElement failure = new UnrecognizedElement(reader);
+                        UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                         context.addError(failure);
                         return null;
                     }
@@ -208,9 +211,10 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
     }
 
     private void parseProvidedCapabilities(ContributionManifest manifest, XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute error = new MissingAttribute("Capability name must be specified", reader);
+            MissingAttribute error = new MissingAttribute("Capability name must be specified", location);
             context.addError(error);
             return;
         }
@@ -219,9 +223,10 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
     }
 
     private void parseRequiredCapabilities(ContributionManifest manifest, XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute error = new MissingAttribute("Capability name must be specified", reader);
+            MissingAttribute error = new MissingAttribute("Capability name must be specified", location);
             context.addError(error);
             return;
         }
@@ -247,7 +252,8 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                     runtimeModes.add(RuntimeMode.VM);
                 } else {
                     runtimeModes = Deployable.DEFAULT_MODES;
-                    InvalidValue error = new InvalidValue("Invalid mode attribute: " + modeAttr, reader);
+                    Location location = reader.getLocation();
+                    InvalidValue error = new InvalidValue("Invalid mode attribute: " + modeAttr, location);
                     context.addError(error);
                     break;
                 }
@@ -266,28 +272,31 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
     }
 
     private void validateContributionAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!"extension".equals(name) && !"description".equals(name) && !"capabilities".equals(name) && !"required-capabilities".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
+                context.addError(new UnrecognizedAttribute(name, location));
             }
         }
     }
 
     private void validateDeployableAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!"composite".equals(name) && !"modes".equals(name) && !"environments".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
+                context.addError(new UnrecognizedAttribute(name, location));
             }
         }
     }
 
     private void validateScanAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!"exclude".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
+                context.addError(new UnrecognizedAttribute(name, location));
             }
         }
     }

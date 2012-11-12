@@ -39,6 +39,7 @@
 package org.fabric3.introspection.xml.binding;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -80,6 +81,7 @@ public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding> {
     }
 
     public SCABinding load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         Target target = null;
         String uriAttr = reader.getAttributeValue(null, "uri");
@@ -88,7 +90,7 @@ public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding> {
             try {
                 target = helper.parseTarget(uriAttr, reader);
             } catch (InvalidTargetException e) {
-                InvalidValue error = new InvalidValue("Invalid URI specified on binding.sca", reader);
+                InvalidValue error = new InvalidValue("Invalid URI specified on binding.sca", startLocation);
                 context.addError(error);
             }
         }
@@ -98,10 +100,11 @@ public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding> {
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
+                Location location = reader.getLocation();
                 try {
                     registry.load(reader, ModelObject.class, context);
                 } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement error = new UnrecognizedElement(reader);
+                    UnrecognizedElement error = new UnrecognizedElement(reader, location);
                     context.addError(error);
                     continue;
                 }

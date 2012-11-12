@@ -45,6 +45,7 @@ package org.fabric3.introspection.xml.composite;
 
 import java.net.URI;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -91,11 +92,12 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
     }
 
     public ChannelDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
 
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute failure = new MissingAttribute("Component name not specified", reader);
+            MissingAttribute failure = new MissingAttribute("Component name not specified", startLocation);
             context.addError(failure);
             return null;
         }
@@ -112,18 +114,20 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
+                Location location = reader.getLocation();
+
                 QName elementName = reader.getName();
                 ModelObject type;
                 try {
                     type = registry.load(reader, ModelObject.class, context);
                 } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                     context.addError(failure);
                     continue;
                 }
                 if (type instanceof BindingDefinition) {
                     BindingDefinition binding = (BindingDefinition) type;
-                    boolean check = BindingHelper.checkDuplicateNames(binding, definition.getBindings(), reader, context);
+                    boolean check = BindingHelper.checkDuplicateNames(binding, definition.getBindings(), location, context);
                     if (check) {
                         definition.addBinding(binding);
                     }
@@ -131,7 +135,7 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
                     // no type, continue processing
                     continue;
                 } else {
-                    context.addError(new UnrecognizedElement(reader));
+                    context.addError(new UnrecognizedElement(reader, location));
                     continue;
                 }
                 if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {

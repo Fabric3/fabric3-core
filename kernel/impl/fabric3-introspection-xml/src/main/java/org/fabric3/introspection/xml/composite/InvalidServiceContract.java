@@ -43,7 +43,7 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -55,11 +55,11 @@ public class InvalidServiceContract extends XmlValidationFailure {
     /**
      * Constructor.
      *
-     * @param message the message
-     * @param reader  the StAX reader positioned on the unrecognized element
+     * @param message  the message
+     * @param location the location where the error was raised
      */
-    public InvalidServiceContract(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public InvalidServiceContract(String message, Location location) {
+        super(message, location);
     }
 
 

@@ -37,7 +37,7 @@
 */
 package org.fabric3.introspection.xml.common;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -47,8 +47,8 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class BindingNameNotConfigured extends XmlValidationFailure {
     private String bindingName;
 
-    public BindingNameNotConfigured(String bindingName, XMLStreamReader reader) {
-        super("A binding name must be configured for bindings on " + bindingName, reader);
+    public BindingNameNotConfigured(String bindingName, Location location) {
+        super("A binding name must be configured for bindings on " + bindingName, location);
         this.bindingName = bindingName;
     }
 

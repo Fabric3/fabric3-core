@@ -39,6 +39,7 @@ package org.fabric3.introspection.xml.definitions;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -94,6 +95,8 @@ public class DefinitionsIndexer implements XmlIndexer {
             try {
                 switch (reader.next()) {
                 case START_ELEMENT:
+                    Location location = reader.getLocation();
+
                     QName qname = reader.getName();
                     if (!INTENT.equals(qname)
                             && !POLICY_SET.equals(qname)
@@ -103,13 +106,14 @@ public class DefinitionsIndexer implements XmlIndexer {
                     }
                     String nameAttr = reader.getAttributeValue(null, "name");
                     if (nameAttr == null) {
-                        context.addError(new MissingAttribute("Definition name not specified", reader));
+                        context.addError(new MissingAttribute("Definition name not specified", location));
                         return;
                     }
                     NamespaceContext namespaceContext = reader.getNamespaceContext();
                     QName name = LoaderUtil.getQName(nameAttr, targetNamespace, namespaceContext);
                     QNameSymbol symbol = new QNameSymbol(name);
-                    ResourceElement<QNameSymbol, AbstractPolicyDefinition> element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(symbol);
+                    ResourceElement<QNameSymbol, AbstractPolicyDefinition> element =
+                            new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(symbol);
                     resource.addResourceElement(element);
                     break;
                 case XMLStreamConstants.END_DOCUMENT:

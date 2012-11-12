@@ -46,6 +46,7 @@ package org.fabric3.introspection.xml.composite;
 import java.net.URI;
 import java.net.URL;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -104,11 +105,13 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
     }
 
     public Include load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
+
         validateAttributes(reader, context);
 
         String nameAttr = reader.getAttributeValue(null, "name");
         if (nameAttr == null || nameAttr.length() == 0) {
-            MissingAttribute failure = new MissingAttribute("Missing name attribute", reader);
+            MissingAttribute failure = new MissingAttribute("Missing name attribute", startLocation);
             context.addError(failure);
             return null;
         }
@@ -122,7 +125,7 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
         if (scdlResource != null) {
             url = cl.getResource(scdlResource);
             if (url == null) {
-                MissingComposite failure = new MissingComposite("Composite file not found: " + scdlResource, reader);
+                MissingComposite failure = new MissingComposite("Composite file not found: " + scdlResource, startLocation);
                 context.addError(failure);
                 return null;
             }
@@ -141,7 +144,7 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
                 ResourceElement<QNameSymbol, Composite> element = store.resolve(contributionUri, Composite.class, symbol, context);
                 if (element == null) {
                     String id = name.toString();
-                    MissingComposite failure = new MissingComposite("Composite not found: " + id, reader);
+                    MissingComposite failure = new MissingComposite("Composite not found: " + id, startLocation);
                     context.addError(failure);
                     // add pointer
                     URI uri = context.getContributionUri();
@@ -153,7 +156,7 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
                 include.setIncluded(composite);
                 return include;
             } catch (StoreException e) {
-                ElementLoadFailure failure = new ElementLoadFailure("Error loading element", e, reader);
+                ElementLoadFailure failure = new ElementLoadFailure("Error loading element", e, startLocation);
                 context.addError(failure);
                 return null;
             }
@@ -163,12 +166,14 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
     private Include loadFromSideFile(QName name, ClassLoader cl, URI contributionUri, URL url, XMLStreamReader reader, IntrospectionContext context) {
         Include include = new Include();
         IntrospectionContext childContext = new DefaultIntrospectionContext(contributionUri, cl, url);
+        Location startLocation = reader.getLocation();
+
         Composite composite;
         try {
             Source source = new UrlSource(url);
             composite = registry.load(source, Composite.class, childContext);
         } catch (LoaderException e) {
-            InvalidInclude failure = new InvalidInclude("Error loading include: " + name, e, reader);
+            InvalidInclude failure = new InvalidInclude("Error loading include: " + name, e, startLocation);
             context.addError(failure);
             return null;
         }

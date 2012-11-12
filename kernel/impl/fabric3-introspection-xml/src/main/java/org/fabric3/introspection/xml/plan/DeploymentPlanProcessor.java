@@ -38,6 +38,7 @@
 package org.fabric3.introspection.xml.plan;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -80,20 +81,20 @@ public class DeploymentPlanProcessor implements XmlResourceElementLoader {
         return PLAN;
     }
 
-
     @Init
     public void init() {
         registry.register(this);
     }
 
     public void load(XMLStreamReader reader, Resource resource, IntrospectionContext context) throws InstallException {
+        Location startLocation = reader.getLocation();
         try {
             QName qname = reader.getName();
             assert PLAN.equals(qname);
             String planName = reader.getAttributeValue(null, "name");
             if (planName == null) {
                 // this won't happen as it is checked in the indexer
-                context.addError(new MissingAttribute("Deployment plan name not specified", reader));
+                context.addError(new MissingAttribute("Deployment plan name not specified", startLocation));
                 return;
             }
             DeploymentPlan plan = new DeploymentPlan(planName);
@@ -132,15 +133,16 @@ public class DeploymentPlanProcessor implements XmlResourceElementLoader {
      * @return true if the mapping was processed successfully, false if there was a validation error
      */
     private boolean processDeployableMapping(DeploymentPlan plan, XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         String deployableName = reader.getAttributeValue(null, "deployable");
         if (deployableName == null) {
-            context.addError(new MissingAttribute("Deployable name not specified in mapping", reader));
+            context.addError(new MissingAttribute("Deployable name not specified in mapping", location));
             return false;
         }
         QName deployable = LoaderUtil.getQName(deployableName, null, reader.getNamespaceContext());
         String zoneName = reader.getAttributeValue(null, "zone");
         if (zoneName == null) {
-            context.addError(new MissingAttribute("Zone not specified in mapping", reader));
+            context.addError(new MissingAttribute("Zone not specified in mapping", location));
             return false;
         }
         plan.addDeployableMapping(deployable, zoneName);

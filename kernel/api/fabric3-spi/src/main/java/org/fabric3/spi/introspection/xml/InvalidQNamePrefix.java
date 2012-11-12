@@ -37,14 +37,14 @@
 */
 package org.fabric3.spi.introspection.xml;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 /**
  *
  */
 public class InvalidQNamePrefix extends XmlValidationFailure {
 
-    public InvalidQNamePrefix(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public InvalidQNamePrefix(String message, Location location) {
+        super(message, location);
     }
 }

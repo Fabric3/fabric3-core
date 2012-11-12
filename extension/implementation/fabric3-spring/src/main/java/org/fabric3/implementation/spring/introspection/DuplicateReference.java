@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.spring.introspection;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -46,8 +46,8 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateReference extends XmlValidationFailure {
 
-    public DuplicateReference(String name, XMLStreamReader reader) {
-        super("A reference with the name name" + name + "is already specified", reader);
+    public DuplicateReference(String name, Location location) {
+        super("A reference with the name name" + name + "is already specified", location);
     }
 
 }

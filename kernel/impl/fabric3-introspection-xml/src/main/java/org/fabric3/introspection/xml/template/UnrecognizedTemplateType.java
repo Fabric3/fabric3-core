@@ -37,7 +37,7 @@
 */
 package org.fabric3.introspection.xml.template;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -46,7 +46,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class UnrecognizedTemplateType extends XmlValidationFailure {
 
-    public UnrecognizedTemplateType(String name, XMLStreamReader reader) {
-        super("Template type not recognized: " + name, reader);
+    public UnrecognizedTemplateType(String name, Location location) {
+        super("Template type not recognized: " + name, location);
     }
 }

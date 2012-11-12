@@ -46,6 +46,7 @@ package org.fabric3.binding.ws.loader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -84,7 +85,7 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
     public WsBindingLoader(@Reference LoaderHelper loaderHelper, @Reference LoaderRegistry registry) {
         this.loaderHelper = loaderHelper;
         this.registry = registry;
-        addAttributes("uri","impl","wsdlElement","wsdlLocation","requires","policySets","name","retries");
+        addAttributes("uri", "impl", "wsdlElement", "wsdlLocation", "requires", "policySets", "name", "retries");
     }
 
     @SuppressWarnings({"unchecked"})
@@ -107,6 +108,7 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
+                Location location = reader.getLocation();
                 try {
                     Object elementValue = registry.load(reader, Object.class, context);
                     if (elementValue instanceof BindingHandlerDefinition) {
@@ -115,7 +117,7 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
                         binding.setConfiguration((Map<String, String>) elementValue);
                     }
                 } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                     context.addError(failure);
                 }
 
@@ -140,7 +142,8 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
             try {
                 targetUri = new URI(uri);
             } catch (URISyntaxException ex) {
-                InvalidValue failure = new InvalidValue("The web services binding URI is not a valid: " + uri, reader);
+                Location location = reader.getLocation();
+                InvalidValue failure = new InvalidValue("The web services binding URI is not a valid: " + uri, location);
                 context.addError(failure);
             }
         }
@@ -153,7 +156,8 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
             try {
                 return Integer.parseInt(retries);
             } catch (NumberFormatException e) {
-                InvalidValue error = new InvalidValue("The retries attribute must be a valid number", reader);
+                Location location = reader.getLocation();
+                InvalidValue error = new InvalidValue("The retries attribute must be a valid number", location);
                 context.addError(error);
             }
         }

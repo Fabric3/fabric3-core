@@ -40,6 +40,7 @@ package org.fabric3.binding.test;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -60,6 +61,7 @@ public class TestBindingLoader implements TypeLoader<TestBindingDefinition> {
     public static final QName BINDING_QNAME = new QName(Namespaces.F3, "binding.test");
 
     public TestBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
 
         TestBindingDefinition definition = null;
         String uri = null;
@@ -72,7 +74,7 @@ public class TestBindingLoader implements TypeLoader<TestBindingDefinition> {
             String name = reader.getAttributeValue(null, "name");
             definition = new TestBindingDefinition(name, targetUri);
         } catch (URISyntaxException ex) {
-            InvalidValue failure = new InvalidValue("The binding URI is not valid: " + uri, reader);
+            InvalidValue failure = new InvalidValue("The binding URI is not valid: " + uri, startLocation);
             context.addError(failure);
         }
         LoaderUtil.skipToEndElement(reader);

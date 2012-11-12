@@ -43,6 +43,7 @@
  */
 package org.fabric3.introspection.xml.composite;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -79,6 +80,7 @@ public class WireLoader extends AbstractValidatingTypeLoader<WireDefinition> {
 
     @SuppressWarnings({"VariableNotUsedInsideIf"})
     public WireDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
 
         String referenceAttribute = reader.getAttributeValue(null, "source");
@@ -93,7 +95,7 @@ public class WireLoader extends AbstractValidatingTypeLoader<WireDefinition> {
             referenceTarget = helper.parseTarget(referenceAttribute, reader);
             serviceTarget = helper.parseTarget(serviceAttribute, reader);
         } catch (InvalidTargetException e) {
-            InvalidValue failure = new InvalidValue("Invalid wire attribute", reader, e);
+            InvalidValue failure = new InvalidValue("Invalid wire attribute", startLocation, e);
             context.addError(failure);
         }
         WireDefinition definition = new WireDefinition(referenceTarget, serviceTarget, replace);

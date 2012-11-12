@@ -37,16 +37,16 @@
 */
 package org.fabric3.implementation.junit.introspection;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * Thrown when attempting to load an invalid context configuration for a JUnit implementation.
  */
-public class InvalidContextConfiguraton extends XmlValidationFailure {
+public class InvalidContextConfiguration extends XmlValidationFailure {
 
-    public InvalidContextConfiguraton(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public InvalidContextConfiguration(String message, Location location) {
+        super(message, location);
     }
 }

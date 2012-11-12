@@ -45,6 +45,7 @@ package org.fabric3.monitor.introspection;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -107,10 +108,11 @@ public class MonitorImplementationLoader implements TypeLoader<MonitorImplementa
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             // no attributes are legal
             String name = reader.getAttributeLocalName(i);
-            context.addError(new UnrecognizedAttribute(name, reader));
+            context.addError(new UnrecognizedAttribute(name, location));
         }
     }
 

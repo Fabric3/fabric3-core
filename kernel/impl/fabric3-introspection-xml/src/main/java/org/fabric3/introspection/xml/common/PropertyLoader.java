@@ -44,6 +44,7 @@
 package org.fabric3.introspection.xml.common;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -55,7 +56,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 
 /**
  * Loads a property declaration in a composite or on a component.
@@ -84,6 +84,8 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
 
     @SuppressWarnings({"VariableNotUsedInsideIf"})
     public Property load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
+
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, NAME);
         String manyAttr = reader.getAttributeValue(null, MANY);
@@ -94,7 +96,7 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
         String elementAttribute = reader.getAttributeValue(null, ELEMENT);
 
         if (typeAttribute != null && elementAttribute != null) {
-            InvalidAttributes error = new InvalidAttributes("Cannot specify both type and element attributes for a property", reader);
+            InvalidAttributes error = new InvalidAttributes("Cannot specify both type and element attributes for a property", startLocation);
             context.addError(error);
         }
 
@@ -104,14 +106,14 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
             try {
                 type = helper.createQName(typeAttribute, reader);
             } catch (InvalidPrefixException e) {
-                InvalidAttributes error = new InvalidAttributes("Invalid property type namespace:" + e.getMessage(), reader);
+                InvalidAttributes error = new InvalidAttributes("Invalid property type namespace:" + e.getMessage(), startLocation);
                 context.addError(error);
             }
         } else if (elementAttribute != null) {
             try {
                 element = helper.createQName(elementAttribute, reader);
             } catch (InvalidPrefixException e) {
-                InvalidAttributes error = new InvalidAttributes("Invalid property element namespace:" + e.getMessage(), reader);
+                InvalidAttributes error = new InvalidAttributes("Invalid property element namespace:" + e.getMessage(), startLocation);
                 context.addError(error);
             }
         }
@@ -120,7 +122,8 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
         Document value = helper.loadPropertyValues(reader);
 
         if (valueAttribute != null && value.getDocumentElement().getChildNodes().getLength() > 0) {
-            InvalidPropertyValue error = new InvalidPropertyValue("Property value configured using the value attribute and inline: " + name, reader);
+            InvalidPropertyValue error =
+                    new InvalidPropertyValue("Property value configured using the value attribute and inline: " + name, startLocation);
             context.addError(error);
         }
         Property property = new Property(name);
@@ -149,7 +152,8 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
         property.setElement(element);
         property.setMany(many);
         if (!many && value.getDocumentElement().getChildNodes().getLength() > 1) {
-            InvalidPropertyValue error = new InvalidPropertyValue("A single-valued property is configured with multiple values: " + name, reader);
+            InvalidPropertyValue error =
+                    new InvalidPropertyValue("A single-valued property is configured with multiple values: " + name, startLocation);
             context.addError(error);
         } else {
             if (valueAttribute != null) {

@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.java.introspection;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -68,11 +69,12 @@ public class JavaImplementationLoader extends AbstractValidatingTypeLoader<JavaI
 
 
     public JavaImplementation load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, introspectionContext);
         JavaImplementation implementation = new JavaImplementation();
         String implClass = reader.getAttributeValue(null, "class");
         if (implClass == null) {
-            MissingAttribute failure = new MissingAttribute("The class attribute was not specified", reader);
+            MissingAttribute failure = new MissingAttribute("The class attribute was not specified", startLocation);
             introspectionContext.addError(failure);
             LoaderUtil.skipToEndElement(reader);
             return implementation;

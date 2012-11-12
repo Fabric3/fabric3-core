@@ -55,6 +55,8 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
+import static org.easymock.EasyMock.expect;
+
 /**
  *
  */
@@ -70,6 +72,7 @@ public class SystemImplementationLoaderTestCase extends TestCase {
 
         EasyMock.replay(implementationProcessor);
 
+        EasyMock.expect(reader.getLocation()).andReturn(null).atLeastOnce();
         EasyMock.expect(reader.getAttributeCount()).andReturn(0);
         EasyMock.expect(reader.getAttributeValue(null, "class")).andReturn(getClass().getName());
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);

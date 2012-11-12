@@ -89,6 +89,7 @@ public class IncludeLoaderTestCase extends TestCase {
     private Composite composite;
 
     public void testResolveQName() throws Exception {
+        expect(reader.getLocation()).andReturn(null).atLeastOnce();
         expect(reader.getAttributeCount()).andReturn(0);
         expect(reader.getAttributeValue(null, "name")).andReturn(name.getLocalPart());
         expect(reader.getNamespaceContext()).andReturn(namespaceContext);
@@ -117,6 +118,7 @@ public class IncludeLoaderTestCase extends TestCase {
         includeURL = cl.getResource(resource);
         assertNotNull(includeURL);
 
+        expect(reader.getLocation()).andReturn(null).atLeastOnce();
         expect(reader.getAttributeCount()).andReturn(0);
         expect(reader.getAttributeValue(null, "name")).andReturn(name.getLocalPart());
         expect(reader.getNamespaceContext()).andReturn(namespaceContext);

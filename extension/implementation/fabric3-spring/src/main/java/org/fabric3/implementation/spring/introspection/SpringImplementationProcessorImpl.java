@@ -40,6 +40,7 @@ package org.fabric3.implementation.spring.introspection;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -153,10 +154,11 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
      * @return true if processing completed without validation errors
      */
     private boolean processBean(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         String id = reader.getAttributeValue(null, "id");
         String name = reader.getAttributeValue(null, "name");
         if (id == null && name == null) {
-            MissingAttribute failure = new MissingAttribute("A bean id or name must be specified", reader);
+            MissingAttribute failure = new MissingAttribute("A bean id or name must be specified", location);
             context.addError(failure);
             return false;
         }
@@ -166,7 +168,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             try {
                 clazz = context.getClassLoader().loadClass(classAttr);
             } catch (ClassNotFoundException e) {
-                InvalidValue failure = new InvalidValue("Bean class not found: " + classAttr, reader, e);
+                InvalidValue failure = new InvalidValue("Bean class not found: " + classAttr, location, e);
                 context.addError(failure);
             }
         }
@@ -188,21 +190,22 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
      * @return true if processing completed without validation errors
      */
     private boolean processService(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
+        Location startLocation = reader.getLocation();
         // TODO This does not currently support policy declarations
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute failure = new MissingAttribute("A service name must be specified", reader);
+            MissingAttribute failure = new MissingAttribute("A service name must be specified", startLocation);
             context.addError(failure);
             return false;
         }
         if (type.getServices().containsKey(name)) {
-            DuplicateService failure = new DuplicateService(name, reader);
+            DuplicateService failure = new DuplicateService(name, startLocation);
             context.addError(failure);
             return false;
         }
         String target = reader.getAttributeValue(null, "target");
         if (target == null) {
-            MissingAttribute failure = new MissingAttribute("A service target must be specified", reader);
+            MissingAttribute failure = new MissingAttribute("A service target must be specified", startLocation);
             context.addError(failure);
             return false;
         }
@@ -214,7 +217,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
                 ClassLoader loader = context.getClassLoader();
                 interfaze = loader.loadClass(typeAttr);
             } catch (ClassNotFoundException e) {
-                InvalidValue failure = new InvalidValue("Service interface not found: " + typeAttr, reader);
+                InvalidValue failure = new InvalidValue("Service interface not found: " + typeAttr, startLocation);
                 context.addError(failure);
                 return false;
             }
@@ -236,20 +239,21 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
     private boolean processReference(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
         // TODO This does not currently support policy declarations
         // TODO This does not currently support the @default attribute
+        Location startLocation = reader.getLocation();
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute failure = new MissingAttribute("A reference name must be specified", reader);
+            MissingAttribute failure = new MissingAttribute("A reference name must be specified", startLocation);
             context.addError(failure);
             return false;
         }
         if (type.getReferences().containsKey(name)) {
-            DuplicateReference failure = new DuplicateReference(name, reader);
+            DuplicateReference failure = new DuplicateReference(name, startLocation);
             context.addError(failure);
             return false;
         }
         String typeAttr = reader.getAttributeValue(null, "type");
         if (typeAttr == null) {
-            MissingAttribute failure = new MissingAttribute("A service type must be specified", reader);
+            MissingAttribute failure = new MissingAttribute("A service type must be specified", startLocation);
             context.addError(failure);
             return false;
         }
@@ -258,7 +262,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             ClassLoader loader = context.getClassLoader();
             interfaze = loader.loadClass(typeAttr);
         } catch (ClassNotFoundException e) {
-            InvalidValue failure = new InvalidValue("Service interface not found: " + typeAttr, reader);
+            InvalidValue failure = new InvalidValue("Service interface not found: " + typeAttr, startLocation);
             context.addError(failure);
             return false;
         }
@@ -277,15 +281,16 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
      * @return true if processing completed without validation errors
      */
     private boolean processProperty(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
+        Location startLocation = reader.getLocation();
         // TODO handle types
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute failure = new MissingAttribute("A property name must be specified", reader);
+            MissingAttribute failure = new MissingAttribute("A property name must be specified", startLocation);
             context.addError(failure);
             return false;
         }
         if (type.getProperties().containsKey(name)) {
-            DuplicateProperty failure = new DuplicateProperty(name, reader);
+            DuplicateProperty failure = new DuplicateProperty(name, startLocation);
             context.addError(failure);
             return false;
         }
@@ -303,20 +308,21 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
      * @return true if processing completed without validation errors
      */
     private <T> boolean processConsumer(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
+        Location startLocation = reader.getLocation();
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute failure = new MissingAttribute("A consumer name must be specified", reader);
+            MissingAttribute failure = new MissingAttribute("A consumer name must be specified", startLocation);
             context.addError(failure);
             return false;
         }
         if (type.getConsumers().containsKey(name)) {
-            DuplicateConsumer failure = new DuplicateConsumer(name, reader);
+            DuplicateConsumer failure = new DuplicateConsumer(name, startLocation);
             context.addError(failure);
             return false;
         }
         String typeAttr = reader.getAttributeValue(null, "type");
         if (typeAttr == null) {
-            MissingAttribute failure = new MissingAttribute("A consumer data type must be specified", reader);
+            MissingAttribute failure = new MissingAttribute("A consumer data type must be specified", startLocation);
             context.addError(failure);
             return false;
         }
@@ -325,20 +331,20 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             ClassLoader loader = context.getClassLoader();
             consumerType = cast(loader.loadClass(typeAttr));
         } catch (ClassNotFoundException e) {
-            InvalidValue failure = new InvalidValue("Consumer interface not found: " + typeAttr, reader);
+            InvalidValue failure = new InvalidValue("Consumer interface not found: " + typeAttr, startLocation);
             context.addError(failure);
             return false;
         }
         JavaClass<T> dataType = new JavaClass<T>(consumerType);
         String target = reader.getAttributeValue(null, "target");
         if (target == null) {
-            MissingAttribute failure = new MissingAttribute("A consumer target must be specified", reader);
+            MissingAttribute failure = new MissingAttribute("A consumer target must be specified", startLocation);
             context.addError(failure);
             return false;
         }
         String[] targetTokens = target.split("/");
         if (targetTokens.length != 2) {
-            InvalidValue failure = new InvalidValue("Target value must be in the form beanName/methodName", reader);
+            InvalidValue failure = new InvalidValue("Target value must be in the form beanName/methodName", startLocation);
             context.addError(failure);
             return false;
         }
@@ -357,21 +363,22 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
      * @return true if processing completed without validation errors
      */
     private boolean processProducer(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
+        Location startLocation = reader.getLocation();
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute failure = new MissingAttribute("A producer name must be specified", reader);
+            MissingAttribute failure = new MissingAttribute("A producer name must be specified", startLocation);
             context.addError(failure);
             return false;
         }
-        if (type.getConsumers().containsKey(name)) {
-            DuplicateConsumer failure = new DuplicateConsumer(name, reader);
+        if (type.getProducers().containsKey(name)) {
+            DuplicateProducer failure = new DuplicateProducer(name, startLocation);
             context.addError(failure);
             return false;
         }
 
         String typeAttr = reader.getAttributeValue(null, "type");
         if (typeAttr == null) {
-            MissingAttribute failure = new MissingAttribute("A producer data type must be specified", reader);
+            MissingAttribute failure = new MissingAttribute("A producer data type must be specified", startLocation);
             context.addError(failure);
             return false;
         }
@@ -380,7 +387,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             ClassLoader loader = context.getClassLoader();
             interfaze = loader.loadClass(typeAttr);
         } catch (ClassNotFoundException e) {
-            InvalidValue failure = new InvalidValue("Service interface not found: " + typeAttr, reader);
+            InvalidValue failure = new InvalidValue("Service interface not found: " + typeAttr, startLocation);
             context.addError(failure);
             return false;
         }

@@ -39,6 +39,7 @@ package org.fabric3.introspection.xml.composite;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
@@ -49,12 +50,12 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class InvalidInclude extends XmlValidationFailure {
     private Throwable cause;
 
-    public InvalidInclude(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public InvalidInclude(String message, Location location) {
+        super(message, location);
     }
 
-    public InvalidInclude(String message, Throwable cause, XMLStreamReader reader) {
-        super(message, reader);
+    public InvalidInclude(String message, Throwable cause, Location location) {
+        super(message, location);
         this.cause = cause;
     }
 

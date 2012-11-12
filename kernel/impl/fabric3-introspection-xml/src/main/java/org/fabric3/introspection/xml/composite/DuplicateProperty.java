@@ -37,6 +37,7 @@
 */
 package org.fabric3.introspection.xml.composite;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
@@ -46,8 +47,8 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateProperty extends XmlValidationFailure {
 
-    public DuplicateProperty(String propertyName, XMLStreamReader reader) {
-        super("The property " + propertyName + " is configured more than once on the component", reader);
+    public DuplicateProperty(String propertyName, Location location) {
+        super("The property " + propertyName + " is configured more than once on the component", location);
     }
 
 }

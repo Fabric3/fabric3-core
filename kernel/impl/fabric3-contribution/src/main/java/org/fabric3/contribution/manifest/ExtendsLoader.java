@@ -37,6 +37,7 @@
 */
 package org.fabric3.contribution.manifest;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -56,14 +57,14 @@ public class ExtendsLoader extends AbstractValidatingTypeLoader<ExtendsDeclarati
     }
 
     public ExtendsDeclaration load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingPackage failure = new MissingPackage("No name specified for extends declaration", reader);
+            MissingPackage failure = new MissingPackage("No name specified for extends declaration", startLocation);
             context.addError(failure);
             return null;
         }
-
         return new ExtendsDeclaration(name);
     }
 

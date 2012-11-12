@@ -39,6 +39,7 @@ package org.fabric3.contribution.processor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -109,8 +110,9 @@ public class XmlResourceProcessor implements ResourceProcessor {
         } catch (XMLStreamException e) {
             resource.setState(ResourceState.ERROR);
             // artifact is invalid, issue a warning
+            Location location = reader.getLocation();
             InvalidXmlArtifact warning =
-                    new InvalidXmlArtifact("Invalid XML in " + source.getSystemId() + ". The error reported was:\n " + e.getMessage(), reader);
+                    new InvalidXmlArtifact("Invalid XML in " + source.getSystemId() + ". The error reported was:\n " + e.getMessage(), location);
             context.addWarning(warning);
         } catch (IOException e) {
             throw new InstallException(e);

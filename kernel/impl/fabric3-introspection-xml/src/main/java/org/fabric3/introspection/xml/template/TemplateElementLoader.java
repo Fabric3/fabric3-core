@@ -40,6 +40,7 @@ package org.fabric3.introspection.xml.template;
 
 import java.net.URI;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -90,17 +91,18 @@ public class TemplateElementLoader extends AbstractValidatingTypeLoader<ModelObj
     }
 
     public ModelObject load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute error = new MissingAttribute("Template name not specified", reader);
+            MissingAttribute error = new MissingAttribute("Template name not specified", startLocation);
             context.addError(error);
             LoaderUtil.skipToEndElement(reader);
             return null;
         }
         int val = reader.nextTag();
         if (val == XMLStreamConstants.END_ELEMENT && reader.getName().getLocalPart().equals("template")) {
-            InvalidTemplateDefinition error = new InvalidTemplateDefinition("Template body is missing: " + name, reader);
+            InvalidTemplateDefinition error = new InvalidTemplateDefinition("Template body is missing: " + name, startLocation);
             context.addError(error);
             return null;
         }
@@ -110,11 +112,11 @@ public class TemplateElementLoader extends AbstractValidatingTypeLoader<ModelObj
             templateRegistry.register(name, uri, parsed);
             LoaderUtil.skipToEndElement(reader);
         } catch (UnrecognizedElementException e) {
-            UnrecognizedTemplateType error = new UnrecognizedTemplateType(reader.getName().toString(), reader);
+            UnrecognizedTemplateType error = new UnrecognizedTemplateType(reader.getName().toString(), startLocation);
             context.addError(error);
             LoaderUtil.skipToEndElement(reader);
         } catch (DuplicateTemplateException e) {
-            DuplicateTemplate error = new DuplicateTemplate(name, reader);
+            DuplicateTemplate error = new DuplicateTemplate(name, startLocation);
             context.addError(error);
         }
         return null;

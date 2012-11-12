@@ -40,6 +40,7 @@ package org.fabric3.jndi.introspection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -74,10 +75,11 @@ public class JndiContextLoader implements TypeLoader<JndiContextDefinition> {
         while (true) {
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:
+                Location location = reader.getLocation();
                 if ("context".equals(reader.getName().getLocalPart())) {
                     String name = reader.getAttributeValue(null, "name");
                     if (name == null) {
-                        MissingAttribute error = new MissingAttribute("Missing context name", reader);
+                        MissingAttribute error = new MissingAttribute("Missing context name", location);
                         context.addError(error);
                         continue;
                     }
@@ -85,19 +87,19 @@ public class JndiContextLoader implements TypeLoader<JndiContextDefinition> {
                     contexts.put(name, properties);
                 } else if ("property".equals(reader.getName().getLocalPart())) {
                     if (properties == null) {
-                        InvalidValue error = new InvalidValue("Invalid JNDI configuration", reader);
+                        InvalidValue error = new InvalidValue("Invalid JNDI configuration", location);
                         context.addError(error);
                         continue;
                     }
                     String name = reader.getAttributeValue(null, "name");
                     if (name == null) {
-                        MissingAttribute error = new MissingAttribute("Missing property name", reader);
+                        MissingAttribute error = new MissingAttribute("Missing property name", location);
                         context.addError(error);
                         continue;
                     }
                     String value = reader.getAttributeValue(null, "value");
                     if (value == null) {
-                        MissingAttribute error = new MissingAttribute("Missing property value", reader);
+                        MissingAttribute error = new MissingAttribute("Missing property value", location);
                         context.addError(error);
                         continue;
                     }

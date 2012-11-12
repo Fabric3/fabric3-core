@@ -46,6 +46,7 @@ package org.fabric3.introspection.xml.definitions;
 import java.net.URI;
 import java.util.Set;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -66,21 +67,21 @@ import org.fabric3.spi.introspection.xml.LoaderUtil;
  */
 @EagerInit
 public class ImplementationTypeLoader extends AbstractValidatingTypeLoader<ImplementationType> {
-
-    private final LoaderHelper helper;
+    private LoaderHelper helper;
 
     public ImplementationTypeLoader(@Reference LoaderHelper helper) {
         this.helper = helper;
-        addAttributes("name","alwaysProvides","mayProvide");
+        addAttributes("name", "alwaysProvides", "mayProvide");
     }
 
     public ImplementationType load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         try {
             String name = reader.getAttributeValue(null, "name");
             QName qName = helper.createQName(name, reader);
-            if (!qName.getLocalPart().startsWith("implementation.")){
-                InvalidValue error = new InvalidValue("Invalid implementation value", reader);
+            if (!qName.getLocalPart().startsWith("implementation.")) {
+                InvalidValue error = new InvalidValue("Invalid implementation value", startLocation);
                 context.addError(error);
             }
             Set<QName> alwaysProvides = helper.parseListOfQNames(reader, "alwaysProvides");
@@ -93,8 +94,10 @@ public class ImplementationTypeLoader extends AbstractValidatingTypeLoader<Imple
         } catch (InvalidPrefixException e) {
             String prefix = e.getPrefix();
             URI uri = context.getContributionUri();
-            context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
-                    + " is invalid", reader));
+            InvalidQNamePrefix failure =
+                    new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
+                                                   + " is invalid", startLocation);
+            context.addError(failure);
 
         }
         return null;

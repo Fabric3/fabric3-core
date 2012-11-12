@@ -48,6 +48,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -145,6 +146,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
     }
 
     public JmsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
 
         String bindingName = reader.getAttributeValue(null, "name");
@@ -155,7 +157,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             try {
                 metadata = JmsLoaderHelper.parseUri(uri);
             } catch (JmsUriException e) {
-                InvalidValue failure = new InvalidValue("Invalid JMS binding URI: " + uri, reader, e);
+                InvalidValue failure = new InvalidValue("Invalid JMS binding URI: " + uri, startLocation, e);
                 context.addError(failure);
                 return null;
             }
@@ -180,18 +182,20 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             switch (reader.next()) {
             case START_ELEMENT:
                 name = reader.getName().getLocalPart();
+                Location location = reader.getLocation();
                 if ("handler".equals(name)) {
                     try {
                         BindingHandlerDefinition handler = registry.load(reader, BindingHandlerDefinition.class, context);
                         definition.addHandler(handler);
                     } catch (UnrecognizedElementException e) {
-                        UnrecognizedElement failure = new UnrecognizedElement(reader);
+                        UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                         context.addError(failure);
                     }
                 } else if ("destination".equals(name)) {
                     if (uri != null) {
-                        InvalidJmsBinding error =
-                                new InvalidJmsBinding("A destination cannot be defined in a JMS uri and as part of the binding.jms element", reader);
+                        InvalidJmsBinding error = new InvalidJmsBinding(
+                                "A destination cannot be defined both as a JMS uri and as part of the binding.jms element",
+                                location);
                         context.addError(error);
                     }
                     DestinationDefinition destination = loadDestination(reader, context);
@@ -244,31 +248,34 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
                                         String targetNamespace,
                                         XMLStreamReader reader,
                                         IntrospectionContext context) {
+        Location startLocation = reader.getLocation();
         String correlationScheme = reader.getAttributeValue(null, "correlationScheme");
         if (correlationScheme != null) {
             QName scheme = LoaderUtil.getQName(correlationScheme, targetNamespace, namespace);
             // support lax namespaces
-            if ("messageID".equalsIgnoreCase(scheme.getLocalPart())) {
+            String localPart = scheme.getLocalPart();
+            if ("messageID".equalsIgnoreCase(localPart)) {
                 metadata.setCorrelationScheme(CorrelationScheme.MESSAGE_ID);
-            } else if ("correlationID".equalsIgnoreCase(scheme.getLocalPart())) {
+            } else if ("correlationID".equalsIgnoreCase(localPart)) {
                 metadata.setCorrelationScheme(CorrelationScheme.CORRELATION_ID);
-            } else if ("none".equalsIgnoreCase(scheme.getLocalPart())) {
+            } else if ("none".equalsIgnoreCase(localPart)) {
                 metadata.setCorrelationScheme(CorrelationScheme.NONE);
             } else {
-                InvalidValue error = new InvalidValue("Invalid value specified for correlationScheme attribute: " + scheme.getLocalPart(), reader);
+                InvalidValue error = new InvalidValue("Invalid value specified for correlationScheme attribute: " + localPart, startLocation);
                 context.addError(error);
             }
         }
     }
 
     private void loadFabric3Attributes(JmsBindingMetadata metadata, XMLStreamReader reader, IntrospectionContext context) {
+        Location startLocation = reader.getLocation();
         String cacheLevel = reader.getAttributeValue(null, "cache");
         if ("connection".equalsIgnoreCase(cacheLevel)) {
             metadata.setCacheLevel((CacheLevel.CONNECTION));
         } else if ("session".equalsIgnoreCase(cacheLevel)) {
             metadata.setCacheLevel((CacheLevel.ADMINISTERED_OBJECTS));
         } else if (cacheLevel != null) {
-            InvalidValue error = new InvalidValue("Invalid cache level attribute", reader);
+            InvalidValue error = new InvalidValue("Invalid cache level attribute", startLocation);
             context.addError(error);
         }
 
@@ -283,7 +290,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
                 int val = Integer.parseInt(idleLimit);
                 metadata.setIdleLimit(val);
             } catch (NumberFormatException e) {
-                InvalidValue error = new InvalidValue("Invalid idle.limit attribute", reader, e);
+                InvalidValue error = new InvalidValue("Invalid idle.limit attribute", startLocation, e);
                 context.addError(error);
             }
         }
@@ -294,7 +301,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             try {
                 receiveVal = Integer.parseInt(receiveTimeout);
             } catch (NumberFormatException e) {
-                InvalidValue error = new InvalidValue("Invalid receive.timeout attribute", reader, e);
+                InvalidValue error = new InvalidValue("Invalid receive.timeout attribute", startLocation, e);
                 context.addError(error);
             }
         }
@@ -306,7 +313,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             try {
                 responseVal = Integer.parseInt(responseTimeout);
             } catch (NumberFormatException e) {
-                InvalidValue error = new InvalidValue("Invalid response.timeout attribute", reader, e);
+                InvalidValue error = new InvalidValue("Invalid response.timeout attribute", startLocation, e);
                 context.addError(error);
             }
         }
@@ -318,7 +325,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
                 int val = Integer.parseInt(maxMessagesProcess);
                 metadata.setMaxMessagesToProcess(val);
             } catch (NumberFormatException e) {
-                InvalidValue error = new InvalidValue("Invalid max.messages attribute", reader, e);
+                InvalidValue error = new InvalidValue("Invalid max.messages attribute", startLocation, e);
                 context.addError(error);
             }
         }
@@ -329,7 +336,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
                 int val = Integer.parseInt(recoveryInterval);
                 metadata.setRecoveryInterval(val);
             } catch (NumberFormatException e) {
-                InvalidValue error = new InvalidValue("Invalid recovery.interval attribute", reader, e);
+                InvalidValue error = new InvalidValue("Invalid recovery.interval attribute", startLocation, e);
                 context.addError(error);
             }
         }
@@ -340,7 +347,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
                 int val = Integer.parseInt(max);
                 metadata.setMaxReceivers(val);
             } catch (NumberFormatException e) {
-                InvalidValue error = new InvalidValue("Invalid max.receivers attribute", reader, e);
+                InvalidValue error = new InvalidValue("Invalid max.receivers attribute", startLocation, e);
                 context.addError(error);
             }
         }
@@ -350,7 +357,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
                 int val = Integer.parseInt(min);
                 metadata.setMinReceivers(val);
             } catch (NumberFormatException e) {
-                InvalidValue error = new InvalidValue("Invalid min.receivers attribute", reader, e);
+                InvalidValue error = new InvalidValue("Invalid min.receivers attribute", startLocation, e);
                 context.addError(error);
             }
         }
@@ -366,6 +373,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
 
 
     private ResponseDefinition loadResponse(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location location = reader.getLocation();
         ResponseDefinition response = new ResponseDefinition();
         String name;
         while (true) {
@@ -403,6 +411,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
     }
 
     private DestinationDefinition loadDestination(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location location = reader.getLocation();
         DestinationDefinition destination = new DestinationDefinition();
         String jndiName = reader.getAttributeValue(null, "jndiName");
         if (jndiName != null) {
@@ -411,7 +420,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             // support name attribute as well
             String name = reader.getAttributeValue(null, "name");
             if (name == null) {
-                MissingAttribute error = new MissingAttribute("Destination must have either a jndiName or name attribute set", reader);
+                MissingAttribute error = new MissingAttribute("Destination must have either a jndiName or name attribute set", location);
                 context.addError(error);
             }
         }
@@ -424,7 +433,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             } else if ("topic".equalsIgnoreCase(type)) {
                 destination.setType(DestinationType.TOPIC);
             } else {
-                InvalidValue error = new InvalidValue("Invalid value specified for destination type: " + type, reader);
+                InvalidValue error = new InvalidValue("Invalid value specified for destination type: " + type, location);
                 context.addError(error);
             }
         }
@@ -433,6 +442,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
     }
 
     private CreateOption parseCreate(XMLStreamReader reader, IntrospectionContext context) {
+        Location startLocation = reader.getLocation();
         String create = reader.getAttributeValue(null, "create");
         if (create != null) {
             if ("always".equals(create)) {
@@ -442,7 +452,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             } else if ("ifNotExist".equalsIgnoreCase(create)) {
                 return CreateOption.IF_NOT_EXIST;
             } else {
-                InvalidValue error = new InvalidValue("Invalid value specified for create attribute: " + create, reader);
+                InvalidValue error = new InvalidValue("Invalid value specified for create attribute: " + create, startLocation);
                 context.addError(error);
             }
         }
@@ -450,6 +460,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
     }
 
     private void loadHeaders(HeadersDefinition headers, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         String deliveryMode = reader.getAttributeValue(null, "deliveryMode");
         if (deliveryMode != null) {
             if ("PERSISTENT".equalsIgnoreCase(deliveryMode)) {
@@ -457,7 +468,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             } else if ("NONPERSISTENT".equalsIgnoreCase(deliveryMode)) {
                 headers.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
             } else {
-                InvalidValue failure = new InvalidValue("Invalid delivery mode: " + deliveryMode, reader);
+                InvalidValue failure = new InvalidValue("Invalid delivery mode: " + deliveryMode, startLocation);
                 context.addError(failure);
             }
         }
@@ -467,11 +478,11 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
                 Integer value = Integer.valueOf(priority);
                 headers.setPriority(value);
                 if (value < 0 || value > 9) {
-                    InvalidValue failure = new InvalidValue("Invalid priority: " + priority + ". Values must be from 0-9.", reader);
+                    InvalidValue failure = new InvalidValue("Invalid priority: " + priority + ". Values must be from 0-9.", startLocation);
                     context.addError(failure);
                 }
             } catch (NumberFormatException nfe) {
-                InvalidValue failure = new InvalidValue("Invalid priority: " + priority, reader, nfe);
+                InvalidValue failure = new InvalidValue("Invalid priority: " + priority, startLocation, nfe);
                 context.addError(failure);
             }
         }
@@ -480,7 +491,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             try {
                 headers.setTimeToLive(Long.valueOf(timeToLive));
             } catch (NumberFormatException nfe) {
-                InvalidValue failure = new InvalidValue("Invalid time-to-live value: " + timeToLive, reader, nfe);
+                InvalidValue failure = new InvalidValue("Invalid time-to-live value: " + timeToLive, startLocation, nfe);
                 context.addError(failure);
             }
         }
@@ -489,9 +500,10 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
     }
 
     private MessageSelection loadMessageSelection(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location location = reader.getLocation();
         String selector = reader.getAttributeValue(null, "selector");
         if (selector == null) {
-            MissingAttribute error = new MissingAttribute("Selector not specified for message selection", reader);
+            MissingAttribute error = new MissingAttribute("Selector not specified for message selection", location);
             context.addError(error);
             selector = "invalid";
         }
@@ -557,20 +569,23 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
     private void validate(JmsBindingDefinition definition, XMLStreamReader reader, IntrospectionContext context) {
         JmsBindingMetadata metadata = definition.getJmsMetadata();
         if (metadata.getConnectionFactory().isConfigured() && metadata.getDestination() == null) {
-            InvalidJmsBinding error = new InvalidJmsBinding("A destination must be specified", reader);
+            Location location = reader.getLocation();
+            InvalidJmsBinding error = new InvalidJmsBinding("A destination must be specified", location);
             context.addError(error);
         }
         if (metadata.getActivationSpec() != null && metadata.getConnectionFactory().isConfigured()) {
+            Location location = reader.getLocation();
             InvalidJmsBinding error =
-                    new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding", reader);
+                    new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding", location);
             context.addError(error);
         }
         DestinationDefinition requestDestination = metadata.getDestination();
         ActivationSpec requestSpec = metadata.getActivationSpec();
         if (requestDestination != null && requestSpec != null) {
             if (requestDestination.getName() != null && !requestDestination.getName().equals(requestSpec.getName())) {
+                Location location = reader.getLocation();
                 InvalidJmsBinding error =
-                        new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination", reader);
+                        new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination", location);
                 context.addError(error);
             }
         }
@@ -579,15 +594,17 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         if (response != null) {
             ActivationSpec responseSpec = response.getActivationSpec();
             if (responseSpec != null && response.getConnectionFactory().isConfigured()) {
+                Location location = reader.getLocation();
                 InvalidJmsBinding error =
-                        new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding", reader);
+                        new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding", location);
                 context.addError(error);
             }
             DestinationDefinition responseDestination = response.getDestination();
             if (responseDestination != null && responseSpec != null) {
                 if (responseDestination.getName() != null && !responseDestination.getName().equals(responseSpec.getName())) {
+                    Location location = reader.getLocation();
                     InvalidJmsBinding error =
-                            new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination", reader);
+                            new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination", location);
                     context.addError(error);
                 }
             }
@@ -598,7 +615,8 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         for (OperationPropertiesDefinition entry : metadata.getOperationProperties().values()) {
             String name = entry.getSelectedOperation();
             if (seen.contains(name)) {
-                InvalidJmsBinding error = new InvalidJmsBinding("Duplicate selected operation for property defined: " + name, reader);
+                Location location = reader.getLocation();
+                InvalidJmsBinding error = new InvalidJmsBinding("Duplicate selected operation for property defined: " + name, location);
                 context.addError(error);
             } else {
                 seen.add(name);

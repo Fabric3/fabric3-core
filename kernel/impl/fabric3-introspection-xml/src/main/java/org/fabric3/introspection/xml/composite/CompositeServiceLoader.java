@@ -46,6 +46,7 @@ package org.fabric3.introspection.xml.composite;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -91,28 +92,29 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
     }
 
     public CompositeService load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute failure = new MissingAttribute("Service name not specified", reader);
+            MissingAttribute failure = new MissingAttribute("Service name not specified", startLocation);
             context.addError(failure);
             return null;
         }
         String promote = reader.getAttributeValue(null, "promote");
         if (promote == null) {
-            MissingPromotion error = new MissingPromotion("Promotion not specified on composite service " + name, reader);
+            MissingPromotion error = new MissingPromotion("Promotion not specified on composite service " + name, startLocation);
             context.addError(error);
         }
         URI uri;
         try {
             uri = loaderHelper.parseUri(promote);
         } catch (URISyntaxException e) {
-            InvalidValue error = new InvalidValue("Invalid promote URI specified on service " + name, reader, e);
+            InvalidValue error = new InvalidValue("Invalid promote URI specified on service " + name, startLocation, e);
             context.addError(error);
             uri = URI.create("");
         }
         if (uri == null) {
-            InvalidValue error = new InvalidValue("Empty promote URI specified on service " + name, reader);
+            InvalidValue error = new InvalidValue("Empty promote URI specified on service " + name, startLocation);
             context.addError(error);
             uri = URI.create("");
         }
@@ -128,6 +130,7 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
             int i = reader.next();
             switch (i) {
             case START_ELEMENT:
+                Location location = reader.getLocation();
                 callback = CALLBACK.equals(reader.getName());
                 if (callback) {
                     reader.nextTag();
@@ -137,7 +140,7 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
                 try {
                     type = registry.load(reader, ModelObject.class, context);
                 } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                     context.addError(failure);
                     continue;
 
@@ -149,18 +152,18 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, service.getCallbackBindings(), reader, context);
+                            BindingHelper.configureName(binding, service.getCallbackBindings(), location, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, service.getCallbackBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, service.getCallbackBindings(), location, context);
                         if (check) {
                             service.addCallbackBinding(binding);
                         }
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, service.getBindings(), reader, context);
+                            BindingHelper.configureName(binding, service.getBindings(), location, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, service.getBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, service.getBindings(), location, context);
                         if (check) {
                             service.addBinding(binding);
                         }
@@ -169,7 +172,7 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
                     // there was an error loading the element, ignore it as the errors will have been reported
                     continue;
                 } else {
-                    context.addError(new UnrecognizedElement(reader));
+                    context.addError(new UnrecognizedElement(reader, location));
                     continue;
                 }
                 if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {

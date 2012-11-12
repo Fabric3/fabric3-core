@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.spring.introspection;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -70,13 +71,14 @@ public class SpringImplementationLoader extends AbstractValidatingTypeLoader<Spr
     }
 
     public SpringImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         ClassLoader classLoader = context.getClassLoader();
         updateClassLoader(classLoader);
         SpringImplementation implementation = new SpringImplementation();
         String locationAttr = reader.getAttributeValue(null, "location");
         if (locationAttr == null) {
-            MissingAttribute failure = new MissingAttribute("The location attribute was not specified", reader);
+            MissingAttribute failure = new MissingAttribute("The location attribute was not specified", startLocation);
             context.addError(failure);
             LoaderUtil.skipToEndElement(reader);
             return implementation;

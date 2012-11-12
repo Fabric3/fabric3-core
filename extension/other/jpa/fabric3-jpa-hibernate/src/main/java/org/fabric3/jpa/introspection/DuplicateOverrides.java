@@ -37,7 +37,7 @@
 */
 package org.fabric3.jpa.introspection;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -46,7 +46,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateOverrides extends XmlValidationFailure {
 
-    public DuplicateOverrides(String name, XMLStreamReader reader) {
-        super("Duplicate persistence overrides: " + name, reader);
+    public DuplicateOverrides(String name, Location location) {
+        super("Duplicate persistence overrides: " + name, location);
     }
 }

@@ -37,16 +37,16 @@
 */
 package org.fabric3.introspection.xml.template;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * Raised when a reference to a non-existant template is encountered.
+ * Raised when a reference to a non-existent template is encountered.
  */
 public class TemplateNotFound extends XmlValidationFailure {
 
-    public TemplateNotFound(String name, XMLStreamReader reader) {
-        super("Template not found: " + name, reader);
+    public TemplateNotFound(String name, Location location) {
+        super("Template not found: " + name, location);
     }
 }

@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -114,6 +115,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
+                Location location = reader.getLocation();
                 QName qname = reader.getName();
                 AbstractPolicyDefinition definition = null;
                 if (INTENT.equals(qname)) {
@@ -143,26 +145,26 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
                 } else if (EXTERNAL_ATTACHMENT.equals(qname)) {
                     // TODO implement
                 } else {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                     context.addError(failure);
                 }
                 if (definition != null) {
                     if (definitions.contains(definition)) {
                         QName name = definition.getName();
-                        DuplicatePolicyDefinition error = new DuplicatePolicyDefinition("Duplicate policy definition: " + name, reader);
+                        DuplicatePolicyDefinition error = new DuplicatePolicyDefinition("Duplicate policy definition: " + name, location);
                         context.addError(error);
                     }
                     definitions.add(definition);
                 }
                 break;
             case END_ELEMENT:
-                assert DEFINITIONS.equals(reader.getName());
                 // update indexed elements with the loaded definitions
                 for (AbstractPolicyDefinition candidate : definitions) {
                     boolean found = false;
                     for (ResourceElement element : resource.getResourceElements()) {
                         Symbol candidateSymbol = new QNameSymbol(candidate.getName());
                         if (element.getSymbol().equals(candidateSymbol)) {
+                            //noinspection unchecked
                             element.setValue(candidate);
                             found = true;
                         }
@@ -223,10 +225,12 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
     }
 
     private void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!"targetNamespace".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
+                UnrecognizedAttribute failure = new UnrecognizedAttribute(name, location);
+                context.addError(failure);
             }
         }
     }

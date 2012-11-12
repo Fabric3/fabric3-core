@@ -37,7 +37,7 @@
 */
 package org.fabric3.introspection.xml.definitions;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -46,8 +46,8 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicatePolicyDefinition extends XmlValidationFailure {
 
-    public DuplicatePolicyDefinition(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public DuplicatePolicyDefinition(String message, Location location) {
+        super(message, location);
     }
 
 }

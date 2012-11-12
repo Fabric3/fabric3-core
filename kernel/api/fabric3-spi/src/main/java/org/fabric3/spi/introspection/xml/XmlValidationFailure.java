@@ -38,7 +38,6 @@
 package org.fabric3.spi.introspection.xml;
 
 import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.host.contribution.ValidationFailure;
 
@@ -46,25 +45,24 @@ import org.fabric3.host.contribution.ValidationFailure;
  * Base class for validation failures occurring in XML artifacts.
  */
 public abstract class XmlValidationFailure extends ValidationFailure {
-    private final int line;
-    private final int column;
-    private final String message;
-    private String resourceURI;
-    private int offset;
+    private int line = -1;
+    private int column = -1;
+    private int offset = -1;
+    private String resourceURI = "system";
+    private String message;
 
-    protected XmlValidationFailure(String message, XMLStreamReader reader) {
+    protected XmlValidationFailure(String message, Location location) {
         this.message = message;
-        Location location = reader.getLocation();
         if (location != null) {
             line = location.getLineNumber();
             column = location.getColumnNumber();
             offset = location.getCharacterOffset();
             resourceURI = location.getSystemId();
-        } else {
-            resourceURI = "system";
-            line = -1;
-            column = -1;
         }
+    }
+
+    protected XmlValidationFailure(String message) {
+        this(message, null);
     }
 
     public int getLine() {

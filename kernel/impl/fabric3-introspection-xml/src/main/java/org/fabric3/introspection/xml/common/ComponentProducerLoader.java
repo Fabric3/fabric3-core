@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -92,11 +93,12 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
     }
 
     public ComponentProducer load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
 
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingProducerName failure = new MissingProducerName(reader);
+            MissingProducerName failure = new MissingProducerName(startLocation);
             context.addError(failure);
             return null;
         }
@@ -113,7 +115,7 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
                 }
             }
         } catch (URISyntaxException e) {
-            InvalidValue failure = new InvalidValue("Invalid target format", reader, e);
+            InvalidValue failure = new InvalidValue("Invalid target format", startLocation, e);
             context.addError(failure);
         }
         ComponentProducer producer = new ComponentProducer(name, targets);
@@ -129,12 +131,13 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
+                Location location = reader.getLocation();
                 QName elementName = reader.getName();
                 ModelObject type;
                 try {
                     type = registry.load(reader, ModelObject.class, context);
                 } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                     context.addError(failure);
                     continue;
                 }
@@ -142,7 +145,7 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
                     producer.setServiceContract((ServiceContract) type);
                 } else if (type instanceof BindingDefinition) {
                     BindingDefinition binding = (BindingDefinition) type;
-                    boolean check = BindingHelper.checkDuplicateNames(binding, producer.getBindings(), reader, context);
+                    boolean check = BindingHelper.checkDuplicateNames(binding, producer.getBindings(), location, context);
                     if (check) {
                         producer.addBinding(binding);
                     }
@@ -150,7 +153,7 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
                     // no type, continue processing
                     continue;
                 } else {
-                    context.addError(new UnrecognizedElement(reader));
+                    context.addError(new UnrecognizedElement(reader, location));
                     continue;
                 }
                 if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {

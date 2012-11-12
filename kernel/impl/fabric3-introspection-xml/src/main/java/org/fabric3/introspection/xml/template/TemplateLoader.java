@@ -38,6 +38,7 @@
  */
 package org.fabric3.introspection.xml.template;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -73,18 +74,19 @@ public class TemplateLoader extends AbstractValidatingTypeLoader<ModelObject> {
     }
 
     public ModelObject load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
 
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute error = new MissingAttribute("Attribute name must be specified", reader);
+            MissingAttribute error = new MissingAttribute("Attribute name must be specified", startLocation);
             context.addError(error);
             LoaderUtil.skipToEndElement(reader);
             return null;
         }
         ModelObject parsed = registry.resolve(expectedType, name);
         if (parsed == null) {
-            TemplateNotFound error = new TemplateNotFound(name, reader);
+            TemplateNotFound error = new TemplateNotFound(name, startLocation);
             context.addError(error);
         }
         LoaderUtil.skipToEndElement(reader);

@@ -43,6 +43,7 @@
  */
 package org.fabric3.implementation.system.introspection;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -75,10 +76,11 @@ public class SystemImplementationLoader extends AbstractValidatingTypeLoader<Sys
     }
 
     public SystemImplementation load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, introspectionContext);
         String implClass = reader.getAttributeValue(null, "class");
         if (implClass == null) {
-            MissingAttribute failure = new MissingAttribute("Implementation class must be specified using the class attribute", reader);
+            MissingAttribute failure = new MissingAttribute("Implementation class must be specified using the class attribute", startLocation);
             introspectionContext.addError(failure);
             return null;
         }

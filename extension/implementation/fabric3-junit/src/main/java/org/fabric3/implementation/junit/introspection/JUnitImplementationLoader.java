@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.junit.introspection;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -94,22 +95,24 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
+                Location startLocation = reader.getLocation();
+
                 name = reader.getName().getLocalPart();
                 if ("configuration".equals(name)) {
                     configuration = new ContextConfiguration();
                 }
                 if ("username".equals(name)) {
                     if (configuration == null) {
-                        InvalidContextConfiguraton error =
-                                new InvalidContextConfiguraton("Username element must be contained within a configuration element", reader);
+                        InvalidContextConfiguration error =
+                                new InvalidContextConfiguration("Username element must be contained within a configuration element", startLocation);
                         context.addError(error);
                     } else {
                         configuration.setUsername(reader.getElementText());
                     }
                 } else if ("password".equals(name)) {
                     if (configuration == null) {
-                        InvalidContextConfiguraton error =
-                                new InvalidContextConfiguraton("Password element must be contained within a configuration element", reader);
+                        InvalidContextConfiguration error =
+                                new InvalidContextConfiguration("Password element must be contained within a configuration element", startLocation);
                         context.addError(error);
                     } else {
                         configuration.setPassword(reader.getElementText());

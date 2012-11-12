@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.introspection.xml;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 /**
  *
@@ -45,8 +45,8 @@ import javax.xml.stream.XMLStreamReader;
 public class ElementLoadFailure extends XmlValidationFailure {
     private Throwable cause;
 
-    public ElementLoadFailure(String message, Throwable cause, XMLStreamReader reader) {
-        super(message, reader);
+    public ElementLoadFailure(String message, Throwable cause, Location location) {
+        super(message, location);
         this.cause = cause;
     }
 

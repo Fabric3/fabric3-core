@@ -37,7 +37,7 @@
 */
 package org.fabric3.introspection.xml.composite;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
@@ -46,20 +46,9 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  *
  */
 public class PropertyValueNotSpecified extends XmlValidationFailure {
-    private String propertyName;
-    private ComponentDefinition definition;
 
-    public PropertyValueNotSpecified(String propertyName, ComponentDefinition definition, XMLStreamReader reader) {
-        super("The property " + propertyName + " on component " + definition.getName() + " does not have a value", reader);
-        this.propertyName = propertyName;
-        this.definition = definition;
+    public PropertyValueNotSpecified(String propertyName, ComponentDefinition definition, Location location) {
+        super("The property " + propertyName + " on component " + definition.getName() + " does not have a value", location);
     }
 
-    public String getPropertyName() {
-        return propertyName;
-    }
-
-    public ComponentDefinition getComponentDefinition() {
-        return definition;
-    }
 }

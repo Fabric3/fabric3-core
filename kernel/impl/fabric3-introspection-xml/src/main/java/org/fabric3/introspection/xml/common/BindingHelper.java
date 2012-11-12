@@ -38,7 +38,7 @@
 package org.fabric3.introspection.xml.common;
 
 import java.util.List;
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -53,17 +53,17 @@ public class BindingHelper {
      *
      * @param binding  the binding
      * @param bindings the existing configured bindings parsed prior to this one
-     * @param reader   the stream reader
+     * @param location the location of the binding configuration
      * @param context  the introspection context
      */
     public static void configureName(BindingDefinition binding,
                                      List<BindingDefinition> bindings,
-                                     XMLStreamReader reader,
+                                     Location location,
                                      IntrospectionContext context) {
         String name = binding.getType().getLocalPart();
         if (searchName(name, bindings)) {
             binding.setName(name);
-            BindingNameNotConfigured error = new BindingNameNotConfigured(binding.getType().toString(), reader);
+            BindingNameNotConfigured error = new BindingNameNotConfigured(binding.getType().toString(), location);
             context.addError(error);
         } else {
             binding.setName(name);
@@ -76,18 +76,18 @@ public class BindingHelper {
      *
      * @param binding  the binding to check
      * @param bindings the existing bindings
-     * @param reader   the stream reader
+     * @param location the location of the binding configuration
      * @param context  the introspection context
      * @return true if the bindings do not contain duplicates, otherwise false
      */
     public static boolean checkDuplicateNames(BindingDefinition binding,
                                               List<BindingDefinition> bindings,
-                                              XMLStreamReader reader,
+                                              Location location,
                                               IntrospectionContext context) {
         for (BindingDefinition definition : bindings) {
             String bindingName = definition.getName();
             if (bindingName.equals(binding.getName())) {
-                InvalidBindingName error = new InvalidBindingName("Duplicate binding named " + bindingName, reader);
+                InvalidBindingName error = new InvalidBindingName("Duplicate binding named " + bindingName, location);
                 context.addError(error);
                 return false;
             }

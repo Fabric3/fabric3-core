@@ -38,6 +38,7 @@
 package org.fabric3.cache.introspection;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -101,10 +102,11 @@ public class CacheResourceLoader extends AbstractValidatingTypeLoader<CacheSetRe
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:
                 if ("cache".equals(reader.getName().getLocalPart())) {
+                    Location location = reader.getLocation();
                     String name = reader.getAttributeValue(null, "name");
 
                     if (null == name) {
-                        MissingAttribute error = new MissingAttribute("Cache name not specified", reader);
+                        MissingAttribute error = new MissingAttribute("Cache name not specified", location);
                         context.addError(error);
                         name = "default";
                     }
@@ -115,7 +117,7 @@ public class CacheResourceLoader extends AbstractValidatingTypeLoader<CacheSetRe
                         configuration.setCacheName(name);
                         definition.addDefinition(configuration);
                     } catch (UnrecognizedElementException e) {
-                        UnrecognizedElement error = new UnrecognizedElement(reader);
+                        UnrecognizedElement error = new UnrecognizedElement(reader, location);
                         context.addError(error);
                         continue;
                     }

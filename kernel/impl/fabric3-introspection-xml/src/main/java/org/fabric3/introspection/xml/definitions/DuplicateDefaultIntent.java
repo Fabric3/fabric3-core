@@ -43,17 +43,18 @@
  */
 package org.fabric3.introspection.xml.definitions;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
- * Denotes a multiple default attributes on qualfied intents.
+ * Denotes a multiple default attributes on qualified intents.
  */
 public class DuplicateDefaultIntent extends XmlValidationFailure {
 
-    public DuplicateDefaultIntent(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public DuplicateDefaultIntent(String message, Location location) {
+        super(message, location);
     }
 
 }

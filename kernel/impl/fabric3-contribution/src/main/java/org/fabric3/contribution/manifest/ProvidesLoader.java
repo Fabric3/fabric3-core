@@ -37,6 +37,7 @@
 */
 package org.fabric3.contribution.manifest;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -52,9 +53,10 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 public class ProvidesLoader implements TypeLoader<ProvidesDeclaration> {
 
     public ProvidesDeclaration load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingPackage failure = new MissingPackage("No name specified for provides declaration", reader);
+            MissingPackage failure = new MissingPackage("No name specified for provides declaration", startLocation);
             context.addError(failure);
             return null;
         }

@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -84,7 +85,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
 
     public ComponentReferenceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         super(registry);
-        addAttributes("name","autowire","target","multiplicity","requires","policySets","nonOverridable");
+        addAttributes("name", "autowire", "target", "multiplicity", "requires", "policySets", "nonOverridable");
         this.loaderHelper = loaderHelper;
     }
 
@@ -98,17 +99,19 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
     }
 
     public ComponentReference load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
+
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingReferenceName failure = new MissingReferenceName(reader);
+            MissingReferenceName failure = new MissingReferenceName(startLocation);
             context.addError(failure);
             return null;
         }
 
         String autowire = reader.getAttributeValue(null, "autowire");
 
-        Multiplicity multiplicity = parseMultiplicity(reader, context);
+        Multiplicity multiplicity = parseMultiplicity(reader, startLocation, context);
 
         ComponentReference reference = new ComponentReference(name, multiplicity);
         if ("true".equalsIgnoreCase(autowire)) {
@@ -118,7 +121,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
         }
 
 
-        String targetAttribute = parseTargets(reference, reader, context);
+        String targetAttribute = parseTargets(reference, reader, startLocation, context);
 
         String nonOverridable = reader.getAttributeValue(null, "nonOverridable");
         if (nonOverridable != null) {
@@ -146,8 +149,10 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
         boolean callback = false;
         boolean bindingError = false;  // used to avoid reporting multiple binding errors
         while (true) {
+
             switch (reader.next()) {
             case START_ELEMENT:
+                Location location = reader.getLocation();
                 callback = CALLBACK.equals(reader.getName());
                 if (callback) {
                     reader.nextTag();
@@ -157,7 +162,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
                 try {
                     type = registry.load(reader, ModelObject.class, context);
                 } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                     context.addError(failure);
                     continue;
                 }
@@ -170,18 +175,19 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
                             // bindings cannot be configured on references if the @target attribute is used
                             InvalidBinding error =
                                     new InvalidBinding("Bindings cannot be configured when the target attribute on a reference is used: "
-                                                               + name, reader);
+                                                               + name, location);
                             context.addError(error);
                             bindingError = true;
                         }
                         continue;
                     }
-                    configureBinding(reference, binding, callback, reader, context);
+                    configureBinding(reference, binding, callback, location, context);
                 } else if (type == null) {
                     // no type, continue processing
                     continue;
                 } else {
-                    context.addError(new UnrecognizedElement(reader));
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                    context.addError(failure);
                     continue;
                 }
                 if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
@@ -198,7 +204,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
         }
     }
 
-    private Multiplicity parseMultiplicity(XMLStreamReader reader, IntrospectionContext context) {
+    private Multiplicity parseMultiplicity(XMLStreamReader reader, Location location, IntrospectionContext context) {
         String value = reader.getAttributeValue(null, "multiplicity");
         Multiplicity multiplicity = null;
         try {
@@ -206,13 +212,13 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
                 multiplicity = Multiplicity.fromString(value);
             }
         } catch (IllegalArgumentException e) {
-            InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + value, reader);
+            InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + value, location);
             context.addError(failure);
         }
         return multiplicity;
     }
 
-    private String parseTargets(ComponentReference reference, XMLStreamReader reader, IntrospectionContext context) {
+    private String parseTargets(ComponentReference reference, XMLStreamReader reader, Location location, IntrospectionContext context) {
         String targetAttribute = reader.getAttributeValue(null, "target");
         List<Target> targets = new ArrayList<Target>();
         try {
@@ -225,7 +231,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
                 }
             }
         } catch (InvalidTargetException e) {
-            InvalidValue failure = new InvalidValue("Invalid target format", reader, e);
+            InvalidValue failure = new InvalidValue("Invalid target format", location, e);
             context.addError(failure);
         }
         reference.addTargets(targets);
@@ -235,21 +241,21 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
     private void configureBinding(ComponentReference reference,
                                   BindingDefinition binding,
                                   boolean callback,
-                                  XMLStreamReader reader,
+                                  Location location,
                                   IntrospectionContext context) {
         if (callback) {
             if (binding.getName() == null) {
                 // set the default binding name
-                BindingHelper.configureName(binding, reference.getCallbackBindings(), reader, context);
+                BindingHelper.configureName(binding, reference.getCallbackBindings(), location, context);
             }
             reference.addCallbackBinding(binding);
         } else {
             if (binding.getName() == null) {
                 // set the default binding name
-                BindingHelper.configureName(binding, reference.getBindings(), reader, context);
+                BindingHelper.configureName(binding, reference.getBindings(), location, context);
             }
 
-            boolean check = BindingHelper.checkDuplicateNames(binding, reference.getBindings(), reader, context);
+            boolean check = BindingHelper.checkDuplicateNames(binding, reference.getBindings(), location, context);
             if (check) {
                 reference.addBinding(binding);
             }

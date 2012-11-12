@@ -43,6 +43,7 @@
  */
 package org.fabric3.introspection.xml.common;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -75,10 +76,11 @@ public class JavaInterfaceLoader extends AbstractValidatingTypeLoader<ServiceCon
     }
 
     public ServiceContract load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "interface");
         if (name == null) {
-            MissingAttribute failure = new MissingAttribute("An interface must be specified using the class attribute", reader);
+            MissingAttribute failure = new MissingAttribute("An interface must be specified using the class attribute", startLocation);
             context.addError(failure);
             LoaderUtil.skipToEndElement(reader);
             return null;
@@ -87,7 +89,7 @@ public class JavaInterfaceLoader extends AbstractValidatingTypeLoader<ServiceCon
         try {
             interfaceClass = helper.loadClass(name, context.getClassLoader());
         } catch (ImplementationNotFoundException e) {
-            ResourceNotFound failure = new ResourceNotFound("Interface not found: " + name, reader);
+            ResourceNotFound failure = new ResourceNotFound("Interface not found: " + name, startLocation);
             context.addError(failure);
             LoaderUtil.skipToEndElement(reader);
             return null;
@@ -98,7 +100,7 @@ public class JavaInterfaceLoader extends AbstractValidatingTypeLoader<ServiceCon
         try {
             callbackClass = (name != null) ? helper.loadClass(name, context.getClassLoader()) : null;
         } catch (ImplementationNotFoundException e) {
-            ResourceNotFound failure = new ResourceNotFound("Callback interface not found: " + name, reader);
+            ResourceNotFound failure = new ResourceNotFound("Callback interface not found: " + name, startLocation);
             context.addError(failure);
             LoaderUtil.skipToEndElement(reader);
             return null;

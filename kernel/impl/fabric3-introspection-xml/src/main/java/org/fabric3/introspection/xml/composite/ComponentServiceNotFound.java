@@ -37,7 +37,7 @@
 */
 package org.fabric3.introspection.xml.composite;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
@@ -46,20 +46,9 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  * A validation failure indicating an attempt to configure a non-existent component service.
  */
 public class ComponentServiceNotFound extends XmlValidationFailure {
-    private String serviceName;
-    private ComponentDefinition definition;
 
-    public ComponentServiceNotFound(String serviceName, ComponentDefinition definition, XMLStreamReader reader) {
-        super("The component " + definition.getName() + " does not have a service " + serviceName, reader);
-        this.serviceName = serviceName;
-        this.definition = definition;
+    public ComponentServiceNotFound(String serviceName, ComponentDefinition definition, Location location) {
+        super("The component " + definition.getName() + " does not have a service " + serviceName, location);
     }
 
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public ComponentDefinition getComponentDefinition() {
-        return definition;
-    }
 }

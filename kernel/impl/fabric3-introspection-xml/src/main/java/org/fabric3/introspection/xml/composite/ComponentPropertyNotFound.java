@@ -37,6 +37,7 @@
 */
 package org.fabric3.introspection.xml.composite;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -46,20 +47,9 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  * A validation failure indicating an attempt to configure a non-existent component property.
  */
 public class ComponentPropertyNotFound extends XmlValidationFailure {
-    private String propertyName;
-    private ComponentDefinition definition;
 
-    public ComponentPropertyNotFound(String propertyName, ComponentDefinition definition, XMLStreamReader reader) {
-        super("The component " + definition.getName() + " does not have a property " + propertyName, reader);
-        this.propertyName = propertyName;
-        this.definition = definition;
+    public ComponentPropertyNotFound(String propertyName, ComponentDefinition definition, Location location) {
+        super("The component " + definition.getName() + " does not have a property " + propertyName, location);
     }
 
-    public ComponentDefinition getComponentDefinition() {
-        return definition;
-    }
-
-    public String getPropertyName() {
-        return propertyName;
-    }
 }

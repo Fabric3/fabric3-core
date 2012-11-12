@@ -63,6 +63,7 @@ public class QNameImportLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         reader = EasyMock.createMock(XMLStreamReader.class);
+        EasyMock.expect(reader.getLocation()).andReturn(null).atLeastOnce();
         EasyMock.expect(reader.getAttributeCount()).andReturn(0);
         EasyMock.expect(reader.getAttributeValue(null, "namespace")).andReturn("namespace");
         EasyMock.expect(reader.getAttributeValue(null, "location")).andReturn("location");

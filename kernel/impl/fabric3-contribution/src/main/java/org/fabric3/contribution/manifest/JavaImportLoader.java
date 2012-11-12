@@ -39,6 +39,7 @@ package org.fabric3.contribution.manifest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -62,11 +63,12 @@ public class JavaImportLoader extends AbstractValidatingTypeLoader<JavaImport> {
     }
 
     public JavaImport load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
 
         String statement = reader.getAttributeValue(null, "package");
         if (statement == null) {
-            MissingPackage failure = new MissingPackage("No package name specified", reader);
+            MissingPackage failure = new MissingPackage("No package name specified", startLocation);
             context.addError(failure);
             return null;
         }
@@ -94,7 +96,7 @@ public class JavaImportLoader extends AbstractValidatingTypeLoader<JavaImport> {
             try {
                 locationUri = new URI(location);
             } catch (URISyntaxException e) {
-                InvalidValue error = new InvalidValue("Invalid location attribute", reader, e);
+                InvalidValue error = new InvalidValue("Invalid location attribute", startLocation, e);
                 context.addError(error);
             }
         }
@@ -113,7 +115,8 @@ public class JavaImportLoader extends AbstractValidatingTypeLoader<JavaImport> {
             Version packageVersion = new Version(version);
             return new PackageInfo(statement, packageVersion, minInclusive, required);
         } catch (IllegalArgumentException e) {
-            InvalidValue failure = new InvalidValue("Invalid import package version", reader, e);
+            Location location = reader.getLocation();
+            InvalidValue failure = new InvalidValue("Invalid import package version", location, e);
             context.addError(failure);
             return null;
         }
@@ -124,6 +127,7 @@ public class JavaImportLoader extends AbstractValidatingTypeLoader<JavaImport> {
                                    boolean required,
                                    XMLStreamReader reader,
                                    IntrospectionContext context) {
+        Location location = reader.getLocation();
         String minInclusiveAttr = reader.getAttributeValue(null, "minInclusive");
         boolean minInclusive = minInclusiveAttr == null || Boolean.parseBoolean(minInclusiveAttr);
         String maxVersion = reader.getAttributeValue(null, "max");
@@ -132,7 +136,7 @@ public class JavaImportLoader extends AbstractValidatingTypeLoader<JavaImport> {
         try {
             minimum = new Version(minVersion);
         } catch (IllegalArgumentException e) {
-            InvalidValue failure = new InvalidValue("Invalid minimum package version", reader, e);
+            InvalidValue failure = new InvalidValue("Invalid minimum package version", location, e);
             context.addError(failure);
             return null;
         }
@@ -140,7 +144,7 @@ public class JavaImportLoader extends AbstractValidatingTypeLoader<JavaImport> {
             try {
                 maximum = new Version(maxVersion);
             } catch (IllegalArgumentException e) {
-                InvalidValue failure = new InvalidValue("Invalid maximum package version", reader, e);
+                InvalidValue failure = new InvalidValue("Invalid maximum package version", location, e);
                 context.addError(failure);
                 return null;
             }

@@ -38,6 +38,7 @@
 package org.fabric3.introspection.xml.plan;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.annotation.EagerInit;
@@ -61,9 +62,7 @@ import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN_NA
  */
 @EagerInit
 public class DeploymentPlanIndexer implements XmlIndexer {
-
     private XmlIndexerRegistry registry;
-
 
     public DeploymentPlanIndexer(@Reference XmlIndexerRegistry registry) {
         this.registry = registry;
@@ -79,11 +78,10 @@ public class DeploymentPlanIndexer implements XmlIndexer {
     }
 
     public void index(Resource resource, XMLStreamReader reader, IntrospectionContext context) {
-        QName qname = reader.getName();
-        assert PLAN.equals(qname);
+        Location startLocation = reader.getLocation();
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            context.addError(new MissingAttribute("Deployment plan name not specified", reader));
+            context.addError(new MissingAttribute("Deployment plan name not specified", startLocation));
             return;
         }
         QName planQName = new QName(PLAN_NAMESPACE, name);

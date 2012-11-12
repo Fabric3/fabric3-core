@@ -39,6 +39,7 @@ package org.fabric3.binding.zeromq.introspection;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -77,6 +78,7 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
     }
 
     public ZeroMQBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
 
         validateAttributes(reader, context);
 
@@ -88,9 +90,10 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
         String target = reader.getAttributeValue(null, "target");
         if (target != null) {
             try {
-                definition.setTargetUri(new URI(target));
+                URI targetUri = new URI(target);
+                definition.setTargetUri(targetUri);
             } catch (URISyntaxException e) {
-                InvalidValue error = new InvalidValue("Invalid target URI specified: " + target, reader, e);
+                InvalidValue error = new InvalidValue("Invalid target URI specified: " + target, startLocation, e);
                 context.addError(error);
             }
         }
@@ -124,7 +127,8 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
             }
             return Long.parseLong(val);
         } catch (NumberFormatException e) {
-            InvalidValue error = new InvalidValue("Invalid value specified for " + name, reader, e);
+            Location location = reader.getLocation();
+            InvalidValue error = new InvalidValue("Invalid value specified for " + name, location, e);
             context.addError(error);
             return -1;
         }

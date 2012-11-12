@@ -37,6 +37,7 @@
 */
 package org.fabric3.timer.introspection;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -59,10 +60,11 @@ public class TimerPoolResourceLoader extends AbstractValidatingTypeLoader<TimerP
     }
 
     public TimerPoolResource load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute error = new MissingAttribute("Name not specified for timer pool", reader);
+            MissingAttribute error = new MissingAttribute("Name not specified for timer pool", startLocation);
             context.addError(error);
             return new TimerPoolResource("error");
         }
@@ -75,7 +77,7 @@ public class TimerPoolResourceLoader extends AbstractValidatingTypeLoader<TimerP
                 int coreSize = Integer.parseInt(coreSizeAttr);
                 return new TimerPoolResource(name, coreSize);
             } catch (NumberFormatException e) {
-                InvalidValue error = new InvalidValue("Invalid core size specified for timer pool", reader, e);
+                InvalidValue error = new InvalidValue("Invalid core size specified for timer pool", startLocation, e);
                 context.addError(error);
                 return new TimerPoolResource(name);
             }

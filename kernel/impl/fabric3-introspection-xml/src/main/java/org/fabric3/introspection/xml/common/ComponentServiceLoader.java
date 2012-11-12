@@ -44,6 +44,7 @@
 package org.fabric3.introspection.xml.common;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -92,10 +93,12 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
     }
 
     public ComponentService load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
+
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute failure = new MissingAttribute("Missing name attribute", reader);
+            MissingAttribute failure = new MissingAttribute("Missing name attribute", startLocation);
             context.addError(failure);
             return null;
         }
@@ -112,6 +115,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
             int i = reader.next();
             switch (i) {
             case XMLStreamConstants.START_ELEMENT:
+                Location location = reader.getLocation();
                 callback = CALLBACK.equals(reader.getName());
                 if (callback) {
                     reader.nextTag();
@@ -121,7 +125,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                 try {
                     type = registry.load(reader, ModelObject.class, context);
                 } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                     context.addError(failure);
                     LoaderUtil.skipToEndElement(reader);
                     continue;
@@ -133,9 +137,9 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, definition.getCallbackBindings(), reader, context);
+                            BindingHelper.configureName(binding, definition.getCallbackBindings(), location, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, definition.getCallbackBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, definition.getCallbackBindings(), location, context);
                         if (check) {
                             definition.addCallbackBinding(binding);
                         }
@@ -143,9 +147,9 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, definition.getBindings(), reader, context);
+                            BindingHelper.configureName(binding, definition.getBindings(), location, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, definition.getBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, definition.getBindings(), location, context);
                         if (check) {
                             definition.addBinding(binding);
                         }
@@ -154,7 +158,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                     // error loading, the element, ignore as an error will have been reported
                     break;
                 } else {
-                    context.addError(new UnrecognizedElement(reader));
+                    context.addError(new UnrecognizedElement(reader, location));
                     continue;
                 }
                 if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {

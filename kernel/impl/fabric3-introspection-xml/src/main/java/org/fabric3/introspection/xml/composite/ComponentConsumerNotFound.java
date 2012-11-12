@@ -37,7 +37,7 @@
 */
 package org.fabric3.introspection.xml.composite;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
@@ -46,20 +46,9 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  * A validation failure indicating an attempt to configure a non-existent component consumer.
  */
 public class ComponentConsumerNotFound extends XmlValidationFailure {
-    private String name;
-    private ComponentDefinition definition;
 
-    public ComponentConsumerNotFound(String name, ComponentDefinition definition, XMLStreamReader reader) {
-        super("The component " + definition.getName() + " does not have a consumer " + name, reader);
-        this.name = name;
-        this.definition = definition;
+    public ComponentConsumerNotFound(String name, ComponentDefinition definition, Location location) {
+        super("The component " + definition.getName() + " does not have a consumer " + name, location);
     }
 
-    public String getConsumerName() {
-        return name;
-    }
-
-    public ComponentDefinition getComponentDefinition() {
-        return definition;
-    }
 }

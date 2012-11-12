@@ -37,7 +37,7 @@
 */
 package org.fabric3.introspection.xml.template;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -46,7 +46,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class InvalidTemplateDefinition extends XmlValidationFailure {
 
-    public InvalidTemplateDefinition(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public InvalidTemplateDefinition(String message, Location location) {
+        super(message, location);
     }
 }

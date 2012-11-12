@@ -44,6 +44,7 @@
 package org.fabric3.spi.introspection.xml;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.host.Namespaces;
@@ -54,13 +55,8 @@ import org.fabric3.host.Namespaces;
 public class UnrecognizedElement extends XmlValidationFailure {
     private QName name;
 
-    /**
-     * Constructor that indicates which resource could not be found. The supplied parameter is also returned as the message.
-     *
-     * @param reader the StAX reader positioned on the unrecognized element
-     */
-    public UnrecognizedElement(XMLStreamReader reader) {
-        super("Unrecognized element", reader);
+    public UnrecognizedElement(XMLStreamReader reader, Location location) {
+        super("Unrecognized element", location);
         name = reader.getName();
     }
 

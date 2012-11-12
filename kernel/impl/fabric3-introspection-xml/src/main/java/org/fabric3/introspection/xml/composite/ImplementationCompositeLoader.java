@@ -46,6 +46,7 @@ package org.fabric3.introspection.xml.composite;
 import java.net.URI;
 import java.net.URL;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -77,7 +78,7 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<CompositeImplementation> {
     private static final QName IMPL = new QName(Constants.SCA_NS, "implementation.composite");
 
-    private final MetaDataStore store;
+    private MetaDataStore store;
 
     public ImplementationCompositeLoader(@Reference LoaderRegistry registry, @Reference MetaDataStore store) {
         super(registry);
@@ -89,79 +90,93 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
         return IMPL;
     }
 
-    public CompositeImplementation load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
-        assert CompositeImplementation.IMPLEMENTATION_COMPOSITE.equals(reader.getName());
-        validateAttributes(reader, introspectionContext);
+    public CompositeImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
+        validateAttributes(reader, context);
         // read name now b/c the reader skips ahead
-        String nameAttr = reader.getAttributeValue(null, "name");
         String scdlResource = reader.getAttributeValue(null, "scdlResource");
-        LoaderUtil.skipToEndElement(reader);
 
-        ClassLoader cl = introspectionContext.getClassLoader();
-        CompositeImplementation impl = new CompositeImplementation();
-        URI contributionUri = introspectionContext.getContributionUri();
-        URL url;
+        CompositeImplementation implementation;
         if (scdlResource != null) {
-            url = cl.getResource(scdlResource);
-            if (url == null) {
-                MissingComposite failure = new MissingComposite("Composite file not found: " + scdlResource, reader);
-                introspectionContext.addError(failure);
-                return impl;
-            }
-            Source source = new UrlSource(url);
-            IntrospectionContext childContext = new DefaultIntrospectionContext(contributionUri, cl, url);
-            Composite composite;
-            try {
-                composite = registry.load(source, Composite.class, childContext);
-                if (childContext.hasErrors()) {
-                    introspectionContext.addErrors(childContext.getErrors());
-                }
-                if (childContext.hasWarnings()) {
-                    introspectionContext.addWarnings(childContext.getWarnings());
-                }
-                if (composite == null) {
-                    // error loading composite, return
-                    return null;
-                }
-            } catch (LoaderException e) {
-                ElementLoadFailure failure = new ElementLoadFailure("Error loading element", e, reader);
-                introspectionContext.addError(failure);
-                return null;
-            }
-            impl.setName(composite.getName());
-            impl.setComponentType(composite);
-            return impl;
+            implementation = parseScdlResource(scdlResource, startLocation, context);
         } else {
-            if (nameAttr == null || nameAttr.length() == 0) {
-                MissingAttribute failure = new MissingAttribute("Missing name attribute", reader);
-                introspectionContext.addError(failure);
-                return null;
-            }
-            QName name = LoaderUtil.getQName(nameAttr, introspectionContext.getTargetNamespace(), reader.getNamespaceContext());
-
-            try {
-                QNameSymbol symbol = new QNameSymbol(name);
-                ResourceElement<QNameSymbol, Composite> element = store.resolve(contributionUri, Composite.class, symbol, introspectionContext);
-                if (element == null) {
-                    String id = name.toString();
-                    MissingComposite failure = new MissingComposite("Composite not found: " + id, reader);
-                    introspectionContext.addError(failure);
-                    // add pointer
-                    URI uri = introspectionContext.getContributionUri();
-                    Composite pointer = new Composite(name, true, uri);
-                    impl.setComponentType(pointer);
-                    return impl;
-                }
-                impl.setComponentType(element.getValue());
-                return impl;
-            } catch (StoreException e) {
-                ElementLoadFailure failure = new ElementLoadFailure("Error loading element", e, reader);
-                introspectionContext.addError(failure);
-                return null;
-
-            }
+            implementation= resolveByName(reader, startLocation, context);
         }
 
+        LoaderUtil.skipToEndElement(reader);
+        return implementation;
+    }
+
+    private CompositeImplementation parseScdlResource(String scdlResource, Location startLocation, IntrospectionContext context) {
+        ClassLoader cl = context.getClassLoader();
+        CompositeImplementation impl = new CompositeImplementation();
+        URI contributionUri = context.getContributionUri();
+
+        URL url = cl.getResource(scdlResource);
+        if (url == null) {
+            MissingComposite failure = new MissingComposite("Composite file not found: " + scdlResource, startLocation);
+            context.addError(failure);
+            return impl;
+        }
+        Source source = new UrlSource(url);
+        IntrospectionContext childContext = new DefaultIntrospectionContext(contributionUri, cl, url);
+        Composite composite;
+        try {
+            composite = registry.load(source, Composite.class, childContext);
+            if (childContext.hasErrors()) {
+                context.addErrors(childContext.getErrors());
+            }
+            if (childContext.hasWarnings()) {
+                context.addWarnings(childContext.getWarnings());
+            }
+            if (composite == null) {
+                // error loading composite, return
+                return null;
+            }
+        } catch (LoaderException e) {
+            ElementLoadFailure failure = new ElementLoadFailure("Error loading element", e, startLocation);
+            context.addError(failure);
+            return null;
+        }
+        impl.setName(composite.getName());
+        impl.setComponentType(composite);
+        return impl;
+    }
+
+    private CompositeImplementation resolveByName(XMLStreamReader reader, Location startLocation, IntrospectionContext context) {
+        String nameAttr = reader.getAttributeValue(null, "name");
+        if (nameAttr == null || nameAttr.length() == 0) {
+            MissingAttribute failure = new MissingAttribute("Missing name attribute", startLocation);
+            context.addError(failure);
+            return null;
+        }
+
+        CompositeImplementation impl = new CompositeImplementation();
+        URI contributionUri = context.getContributionUri();
+
+        QName name = LoaderUtil.getQName(nameAttr, context.getTargetNamespace(), reader.getNamespaceContext());
+
+        try {
+            QNameSymbol symbol = new QNameSymbol(name);
+            ResourceElement<QNameSymbol, Composite> element = store.resolve(contributionUri, Composite.class, symbol, context);
+            if (element == null) {
+                String id = name.toString();
+                MissingComposite failure = new MissingComposite("Composite not found: " + id, startLocation);
+                context.addError(failure);
+                // add pointer
+                URI uri = context.getContributionUri();
+                Composite pointer = new Composite(name, true, uri);
+                impl.setComponentType(pointer);
+                return impl;
+            }
+            impl.setComponentType(element.getValue());
+            return impl;
+        } catch (StoreException e) {
+            ElementLoadFailure failure = new ElementLoadFailure("Error loading element", e, startLocation);
+            context.addError(failure);
+            return null;
+
+        }
     }
 
 }

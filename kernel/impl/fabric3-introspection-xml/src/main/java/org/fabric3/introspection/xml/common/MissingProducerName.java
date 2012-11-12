@@ -43,7 +43,7 @@
  */
 package org.fabric3.introspection.xml.common;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -52,8 +52,8 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class MissingProducerName extends XmlValidationFailure {
 
-    public MissingProducerName(XMLStreamReader reader) {
-        super("No producer name specified", reader);
+    public MissingProducerName(Location location) {
+        super("No producer name specified", location);
     }
 
 }

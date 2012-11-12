@@ -37,6 +37,7 @@
 */
 package org.fabric3.introspection.xml.common;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
@@ -45,7 +46,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  * A validation failure indicating an attempt to configure an invalid binding name.
  */
 public class InvalidBindingName extends XmlValidationFailure {
-    public InvalidBindingName(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public InvalidBindingName(String message, Location location) {
+        super(message, location);
     }
 }

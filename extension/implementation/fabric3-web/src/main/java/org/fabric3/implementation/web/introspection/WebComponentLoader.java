@@ -44,6 +44,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -98,9 +99,11 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
     }
 
     public WebImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
+
         validateAttributes(reader, context);
 
-        URI uri = parseUri(reader, context);
+        URI uri = parseUri(reader, startLocation, context);
         WebImplementation impl = new WebImplementation(uri);
 
 
@@ -122,7 +125,7 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
             if (e.getCause() instanceof FileNotFoundException) {
                 // ignore since we allow component types not to be specified in the web app 
             } else {
-                ElementLoadFailure failure = new ElementLoadFailure("Error loading web.componentType", e, reader);
+                ElementLoadFailure failure = new ElementLoadFailure("Error loading web.componentType", e, startLocation);
                 context.addError(failure);
                 return null;
             }
@@ -131,18 +134,18 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
         return impl;
     }
 
-    private URI parseUri(XMLStreamReader reader, IntrospectionContext context) {
+    private URI parseUri(XMLStreamReader reader, Location location, IntrospectionContext context) {
         URI uri = null;
         String uriStr = reader.getAttributeValue(null, "uri");
         if (uriStr != null) {
             if (uriStr.length() < 1) {
-                InvalidValue failure = new InvalidValue("Web component URI must specify a value", reader);
+                InvalidValue failure = new InvalidValue("Web component URI must specify a value", location);
                 context.addError(failure);
             } else {
                 try {
                     uri = new URI(uriStr);
                 } catch (URISyntaxException e) {
-                    InvalidValue failure = new InvalidValue("Web component URI is not a valid: " + uri, reader);
+                    InvalidValue failure = new InvalidValue("Web component URI is not a valid: " + uri, location);
                     context.addError(failure);
                 }
             }

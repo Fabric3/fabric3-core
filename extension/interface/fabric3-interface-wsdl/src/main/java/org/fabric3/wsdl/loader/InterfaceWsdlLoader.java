@@ -40,6 +40,7 @@ package org.fabric3.wsdl.loader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -82,23 +83,25 @@ public class InterfaceWsdlLoader extends AbstractValidatingTypeLoader<WsdlServic
     }
 
     public WsdlServiceContract load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
-        validateRemotable(reader, context);
-        WsdlServiceContract wsdlContract = processInterface(reader, context);
+        validateRemotable(reader, startLocation, context);
+        WsdlServiceContract wsdlContract = processInterface(reader, startLocation, context);
         processCallbackInterface(reader, wsdlContract, context);
         helper.loadPolicySetsAndIntents(wsdlContract, reader, context);
         LoaderUtil.skipToEndElement(reader);
         return wsdlContract;
     }
 
-    private WsdlServiceContract processInterface(XMLStreamReader reader, IntrospectionContext context) {
+    private WsdlServiceContract processInterface(XMLStreamReader reader, Location location, IntrospectionContext context) {
+        Location startLocation = reader.getLocation();
         String interfaze = reader.getAttributeValue(null, "interface");
         if (interfaze == null) {
-            MissingAttribute failure = new MissingAttribute("Interface attribute is required", reader);
+            MissingAttribute failure = new MissingAttribute("Interface attribute is required", startLocation);
             context.addError(failure);
             return new WsdlServiceContract(null, null);
         }
-        QName portTypeName = parseQName(interfaze, reader, context);
+        QName portTypeName = parseQName(interfaze, location, context);
         if (portTypeName == null) {
             return new WsdlServiceContract(null, null);
         }
@@ -106,9 +109,11 @@ public class InterfaceWsdlLoader extends AbstractValidatingTypeLoader<WsdlServic
     }
 
     private void processCallbackInterface(XMLStreamReader reader, WsdlServiceContract wsdlContract, IntrospectionContext context) {
+        Location startLocation = reader.getLocation();
+
         String callbackInterfaze = reader.getAttributeValue(null, "callbackInterface");
         if (callbackInterfaze != null) {
-            QName callbackName = parseQName(callbackInterfaze, reader, context);
+            QName callbackName = parseQName(callbackInterfaze, startLocation, context);
             if (callbackName == null) {
                 return;
             }
@@ -120,7 +125,7 @@ public class InterfaceWsdlLoader extends AbstractValidatingTypeLoader<WsdlServic
                 if (!result.isAssignable()) {
                     IncompatibleContracts error =
                             new IncompatibleContracts("The callback contract specified on interface.wsdl is not compatible with" +
-                                                              " the one specified in the WSDL portType: " + result.getError(), reader);
+                                                              " the one specified in the WSDL portType: " + result.getError(), startLocation);
                     context.addError(error);
                 }
             }
@@ -128,34 +133,35 @@ public class InterfaceWsdlLoader extends AbstractValidatingTypeLoader<WsdlServic
         }
     }
 
-    QName parseQName(String portType, XMLStreamReader reader, IntrospectionContext context) {
+    QName parseQName(String portType, Location location, IntrospectionContext context) {
         try {
             URI uri = new URI(portType);
             String namespace = UriHelper.getDefragmentedNameAsString(uri);
             String localExpression = uri.getFragment();
             if (localExpression == null || !localExpression.toLowerCase().startsWith("wsdl.porttype(") || !localExpression.endsWith(")")) {
                 InvalidValue error = new InvalidValue("A port type expression must be specified of the form <namespace>#wsdl.portType(portType): "
-                                                              + portType, reader);
+                                                              + portType, location);
                 context.addError(error);
                 return null;
             }
             String localPart = localExpression.substring(14, localExpression.length() - 1);
             return new QName(namespace, localPart);
         } catch (URISyntaxException e) {
-            InvalidValue error = new InvalidValue("Invalid port type identifier: " + portType, reader, e);
+            InvalidValue error = new InvalidValue("Invalid port type identifier: " + portType, location, e);
             context.addError(error);
             return null;
         }
     }
 
     private WsdlServiceContract resolveContract(QName portTypeName, XMLStreamReader reader, IntrospectionContext context) {
+        Location startLocation = reader.getLocation();
         WsdlServiceContractSymbol symbol = new WsdlServiceContractSymbol(portTypeName);
         URI contributionUri = context.getContributionUri();
         ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract> element;
         try {
             element = store.resolve(contributionUri, WsdlServiceContract.class, symbol, context);
         } catch (StoreException e) {
-            ElementLoadFailure failure = new ElementLoadFailure("Error loading element", e, reader);
+            ElementLoadFailure failure = new ElementLoadFailure("Error loading element", e, startLocation);
             context.addError(failure);
             return new WsdlServiceContract(null, null);
         }
@@ -170,12 +176,12 @@ public class InterfaceWsdlLoader extends AbstractValidatingTypeLoader<WsdlServic
         return contract.copy();
     }
 
-    private void validateRemotable(XMLStreamReader reader, IntrospectionContext context) {
+    private void validateRemotable(XMLStreamReader reader, Location location, IntrospectionContext context) {
         String remotableAttr = reader.getAttributeValue(null, "remotable");
         if (remotableAttr != null) {
             boolean remotable = Boolean.parseBoolean(remotableAttr);
             if (!remotable) {
-                InvalidValue error = new InvalidValue("WSDL interfaces cannot set remotable to false", reader);
+                InvalidValue error = new InvalidValue("WSDL interfaces cannot set remotable to false", location);
                 context.addError(error);
             }
         }

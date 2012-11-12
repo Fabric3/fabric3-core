@@ -43,7 +43,7 @@
  */
 package org.fabric3.introspection.xml.common;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -52,8 +52,8 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class MissingReferenceName extends XmlValidationFailure {
 
-    public MissingReferenceName(XMLStreamReader reader) {
-        super("No reference name specified", reader);
+    public MissingReferenceName(Location location) {
+        super("No reference name specified", location);
     }
 
 }

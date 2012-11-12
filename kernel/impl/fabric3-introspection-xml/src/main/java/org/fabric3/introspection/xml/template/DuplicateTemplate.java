@@ -37,7 +37,7 @@
 */
 package org.fabric3.introspection.xml.template;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -46,7 +46,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateTemplate extends XmlValidationFailure {
 
-    public DuplicateTemplate(String name, XMLStreamReader reader) {
-        super("Duplicate template: " + name, reader);
+    public DuplicateTemplate(String name, Location location) {
+        super("Duplicate template: " + name, location);
     }
 }

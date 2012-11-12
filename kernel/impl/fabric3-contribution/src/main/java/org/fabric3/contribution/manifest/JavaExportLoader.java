@@ -37,6 +37,7 @@
 */
 package org.fabric3.contribution.manifest;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -60,11 +61,12 @@ public class JavaExportLoader extends AbstractValidatingTypeLoader<JavaExport> {
     }
 
     public JavaExport load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
 
         String statement = reader.getAttributeValue(null, "package");
         if (statement == null) {
-            MissingPackage failure = new MissingPackage("No package name specified", reader);
+            MissingPackage failure = new MissingPackage("No package name specified", startLocation);
             context.addError(failure);
             return null;
         }
@@ -75,7 +77,7 @@ public class JavaExportLoader extends AbstractValidatingTypeLoader<JavaExport> {
             try {
                 packageVersion = new Version(version);
             } catch (IllegalArgumentException e) {
-                context.addError(new InvalidValue("Invalid export version", reader, e));
+                context.addError(new InvalidValue("Invalid export version", startLocation, e));
                 packageVersion = new Version("0");
             }
             info = new PackageInfo(statement, packageVersion, true, true);

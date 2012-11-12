@@ -39,18 +39,19 @@ package org.fabric3.contribution.manifest;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.host.Version;
-import org.fabric3.spi.model.os.Library;
-import org.fabric3.spi.model.os.OperatingSystemSpec;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
+import org.fabric3.spi.model.os.Library;
+import org.fabric3.spi.model.os.OperatingSystemSpec;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -64,14 +65,15 @@ public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {
     private static final String LIBRARY = "library";
 
     public LibraryLoader() {
-        addAttributes("name","processor","version","min","max","minInclusive","maxInclusive");
+        addAttributes("name", "processor", "version", "min", "max", "minInclusive", "maxInclusive");
     }
 
     public Library load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateLibraryAttributes(reader, context);
         String path = reader.getAttributeValue(null, "path");
         if (path == null) {
-            MissingPackage failure = new MissingPackage("No path specified for library declaration", reader);
+            MissingPackage failure = new MissingPackage("No path specified for library declaration", startLocation);
             context.addError(failure);
             return null;
         }
@@ -110,10 +112,11 @@ public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {
      * @return the parsed entry or null
      */
     private OperatingSystemSpec parseOperatingSystem(XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingPackage failure = new MissingPackage("No name specified for operating systems declaration", reader);
+            MissingPackage failure = new MissingPackage("No name specified for operating systems declaration", location);
             context.addError(failure);
             return null;
         }
@@ -134,6 +137,7 @@ public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {
 
 
     private OperatingSystemSpec parseVersion(String name, String versionStr, XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         try {
             Version version = new Version(versionStr);
             String minInclusiveAttr = reader.getAttributeValue(null, "minInclusive");
@@ -141,7 +145,7 @@ public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {
             String processor = reader.getAttributeValue(null, "processor");
             return new OperatingSystemSpec(name, processor, version, minInclusive);
         } catch (IllegalArgumentException e) {
-            InvalidValue failure = new InvalidValue("Invalid operating systems version", reader, e);
+            InvalidValue failure = new InvalidValue("Invalid operating systems version", location, e);
             context.addError(failure);
             return null;
         }
@@ -161,7 +165,8 @@ public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {
         try {
             minimum = new Version(minVersion);
         } catch (IllegalArgumentException e) {
-            InvalidValue failure = new InvalidValue("Invalid minimum package version", reader, e);
+            Location location = reader.getLocation();
+            InvalidValue failure = new InvalidValue("Invalid minimum package version", location, e);
             context.addError(failure);
             return null;
         }
@@ -169,7 +174,8 @@ public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {
             try {
                 maximum = new Version(maxVersion);
             } catch (IllegalArgumentException e) {
-                InvalidValue failure = new InvalidValue("Invalid maximum package version", reader, e);
+                Location location = reader.getLocation();
+                InvalidValue failure = new InvalidValue("Invalid maximum package version", location, e);
                 context.addError(failure);
                 return null;
             }
@@ -179,14 +185,15 @@ public class LibraryLoader extends AbstractValidatingTypeLoader<Library> {
 
 
     private void validateLibraryAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!"path".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
+                UnrecognizedAttribute failure = new UnrecognizedAttribute(name, location);
+                context.addError(failure);
             }
         }
     }
-
 
 
 }

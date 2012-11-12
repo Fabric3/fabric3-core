@@ -41,6 +41,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -73,16 +74,17 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
 
     public IntentLoader(@Reference LoaderHelper helper) {
         this.helper = helper;
-        addAttributes("name","constrains","requires","excludes","intentType","appliesTo","mutuallyExclusive");
+        addAttributes("name", "constrains", "requires", "excludes", "intentType", "appliesTo", "mutuallyExclusive");
     }
 
     public Intent load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         QName qName = LoaderUtil.getQName(name, context.getTargetNamespace(), reader.getNamespaceContext());
 
         if (name != null && name.contains(".")) {
-            InvalidValue error = new InvalidValue("Profile intent names cannot contain a '.':" + qName, reader);
+            InvalidValue error = new InvalidValue("Profile intent names cannot contain a '.':" + qName, startLocation);
             context.addError(error);
         }
 
@@ -94,8 +96,10 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
             } catch (InvalidPrefixException e) {
                 String prefix = e.getPrefix();
                 URI uri = context.getContributionUri();
-                context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
-                        + " is invalid", reader));
+                InvalidQNamePrefix failure =
+                        new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
+                                                       + " is invalid", startLocation);
+                context.addError(failure);
                 return null;
             }
         }
@@ -105,7 +109,8 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
             try {
                 intentType = IntentType.valueOf(intentTypeVal.toUpperCase());
             } catch (IllegalArgumentException e) {
-                context.addError(new UnrecognizedAttribute("Unknown intentType value: " + intentTypeVal, reader));
+                UnrecognizedAttribute failure = new UnrecognizedAttribute("Unknown intentType value: " + intentTypeVal, startLocation);
+                context.addError(failure);
                 return null;
             }
         }
@@ -115,8 +120,10 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
         } catch (InvalidPrefixException e) {
             String prefix = e.getPrefix();
             URI uri = context.getContributionUri();
-            context.addError(new InvalidQNamePrefix("The requires prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
-                    + " is invalid", reader));
+            InvalidQNamePrefix failure =
+                    new InvalidQNamePrefix("The requires prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
+                                                   + " is invalid", startLocation);
+            context.addError(failure);
             return null;
         }
 
@@ -128,8 +135,10 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
         } catch (InvalidPrefixException e) {
             String prefix = e.getPrefix();
             URI uri = context.getContributionUri();
-            context.addError(new InvalidQNamePrefix("The excludes prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
-                    + " is invalid", reader));
+            InvalidQNamePrefix failure =
+                    new InvalidQNamePrefix("The excludes prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
+                                                   + " is invalid", startLocation);
+            context.addError(failure);
             return null;
         }
 
@@ -139,9 +148,11 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
             switch (reader.next()) {
             case START_ELEMENT:
                 if (QUALIFIER.equals(reader.getName())) {
+                    Location location = reader.getLocation();
+
                     String nameAttr = reader.getAttributeValue(null, "name");
                     if (nameAttr == null) {
-                        context.addError(new MissingAttribute("Qualifier name not specified", reader));
+                        context.addError(new MissingAttribute("Qualifier name not specified", location));
                         return null;
                     }
                     String defaultStr = reader.getAttributeValue(null, "default");
@@ -149,7 +160,8 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
                     if (isDefault) {
                         if (defaultSet) {
                             DuplicateDefaultIntent error =
-                                    new DuplicateDefaultIntent("More than one qualified intent is specified as the default for: " + qName, reader);
+                                    new DuplicateDefaultIntent("More than one qualified intent is specified as the default for: " + qName,
+                                                               location);
                             context.addError(error);
                         } else {
                             defaultSet = true;
@@ -157,7 +169,7 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
                     }
                     Qualifier qualifier = new Qualifier(nameAttr, isDefault);
                     if (qualifiers.contains(qualifier)) {
-                        DuplicateQualifiedName error = new DuplicateQualifiedName("Duplicate qualified intent specified for:" + qName, reader);
+                        DuplicateQualifiedName error = new DuplicateQualifiedName("Duplicate qualified intent specified for:" + qName, location);
                         context.addError(error);
                     } else {
                         qualifiers.add(qualifier);

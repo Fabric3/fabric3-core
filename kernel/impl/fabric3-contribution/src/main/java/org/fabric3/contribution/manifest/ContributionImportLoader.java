@@ -39,6 +39,7 @@ package org.fabric3.contribution.manifest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -60,10 +61,11 @@ public class ContributionImportLoader extends AbstractValidatingTypeLoader<Contr
     }
 
     public ContributionImport load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         String uriStr = reader.getAttributeValue(null, "uri");
         if (uriStr == null) {
-            MissingManifestAttribute failure = new MissingManifestAttribute("The uri attribute must be specified", reader);
+            MissingManifestAttribute failure = new MissingManifestAttribute("The uri attribute must be specified", startLocation);
             context.addError(failure);
             return null;
         }
@@ -71,7 +73,7 @@ public class ContributionImportLoader extends AbstractValidatingTypeLoader<Contr
             URI uri = new URI(uriStr);
             return new ContributionImport(uri);
         } catch (URISyntaxException e) {
-            InvalidValue error = new InvalidValue("Invalid uri attribute", reader, e);
+            InvalidValue error = new InvalidValue("Invalid uri attribute", startLocation, e);
             context.addError(error);
         }
         return new ContributionImport(INVALID_URI);

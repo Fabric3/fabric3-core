@@ -40,6 +40,7 @@ package org.fabric3.spi.introspection.xml;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -58,10 +59,12 @@ public abstract class AbstractValidatingTypeLoader<OUTPUT> implements TypeLoader
     }
 
     protected void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
+        Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!attributes.contains(name)) {
-                context.addError(new UnrecognizedAttribute(name, reader));
+                UnrecognizedAttribute failure = new UnrecognizedAttribute(name, location);
+                context.addError(failure);
             }
         }
     }

@@ -37,7 +37,7 @@
 */
 package org.fabric3.introspection.xml.composite;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -46,8 +46,8 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateInclude extends XmlValidationFailure {
 
-    public DuplicateInclude(String includeName, XMLStreamReader reader) {
-        super("An included composite with the name" + includeName + "is already specified", reader);
+    public DuplicateInclude(String includeName, Location location) {
+        super("An included composite with the name" + includeName + "is already specified", location);
     }
 
 }

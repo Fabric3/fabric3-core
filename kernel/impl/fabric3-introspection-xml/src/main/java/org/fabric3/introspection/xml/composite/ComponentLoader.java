@@ -43,9 +43,11 @@
  */
 package org.fabric3.introspection.xml.composite;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -133,10 +135,11 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
 
     @SuppressWarnings({"VariableNotUsedInsideIf"})
     public ComponentDefinition<?> load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute failure = new MissingAttribute("Component name not specified", reader);
+            MissingAttribute failure = new MissingAttribute("Component name not specified", startLocation);
             context.addError(failure);
             return null;
         }
@@ -160,84 +163,45 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 
+        if (roundTrip) {
+            LoaderUtil.nextTagRecord(definition, reader);
+        } else {
+            reader.nextTag();
+        }
+        QName elementName = reader.getName();
         Implementation<?> impl;
+        Location marker = reader.getLocation();
         try {
-            if (roundTrip) {
-                LoaderUtil.nextTagRecord(definition, reader);
-            } else {
-                reader.nextTag();
-            }
-            QName elementName = reader.getName();
             if (COMPONENT.equals(elementName)) {
                 // the reader has hit the end of the component definition without an implementation being specified
                 MissingComponentImplementation error =
-                        new MissingComponentImplementation("The component " + name + " must specify an implementation", reader);
+                        new MissingComponentImplementation("The component " + name + " must specify an implementation", startLocation);
                 context.addError(error);
                 return definition;
             } else if (PROPERTY.equals(elementName) || REFERENCE.equals(elementName) || SERVICE.equals(elementName) || PRODUCER.equals(elementName)) {
                 MissingComponentImplementation error = new MissingComponentImplementation("The component " + name
                                                                                                   + " must specify an implementation as the first child element",
-                                                                                          reader);
+                                                                                          startLocation);
                 context.addError(error);
                 return definition;
             }
             impl = registry.load(reader, Implementation.class, context);
-            if (impl == null || impl.getComponentType() == null) {
-                // error loading impl
-                return definition;
-            }
-
-            if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
-                // ensure that the implementation loader has positioned the cursor to the end element 
-                throw new AssertionError("Implementation loader must position the cursor to the end element");
-            }
-            definition.setImplementation(impl);
-            ComponentType componentType = impl.getComponentType();
-
-            while (true) {
-                switch (reader.next()) {
-                case START_ELEMENT:
-                    QName qname = reader.getName();
-                    if (PROPERTY.equals(qname)) {
-                        parsePropertyValue(definition, componentType, reader, context);
-                    } else if (REFERENCE.equals(qname)) {
-                        parseReference(definition, componentType, reader, context);
-                    } else if (SERVICE.equals(qname)) {
-                        parseService(definition, componentType, reader, context);
-                    } else if (PRODUCER.equals(qname)) {
-                        parseProducer(definition, componentType, reader, context);
-                    } else if (CONSUMER.equals(qname)) {
-                        parseConsumer(definition, componentType, reader, context);
-                    } else {
-                        // Unknown extension element - issue an error and continue
-                        context.addError(new UnrecognizedElement(reader));
-                        LoaderUtil.skipToEndElement(reader);
-                    }
-                    break;
-                case END_ELEMENT:
-                    assert COMPONENT.equals(reader.getName());
-                    validateRequiredProperties(definition, reader, context);
-                    return definition;
-                case XMLStreamReader.COMMENT:
-                    if (!roundTrip) {
-                        continue;
-                    }
-                    String comment = reader.getText();
-                    definition.addComment(comment);
-                    continue;
-                default:
-                    if (!roundTrip) {
-                        continue;
-                    }
-                    comment = reader.getText();
-                    definition.addText(comment);
-                }
-            }
         } catch (UnrecognizedElementException e) {
-            UnrecognizedElement failure = new UnrecognizedElement(reader);
+            UnrecognizedElement failure = new UnrecognizedElement(reader, marker);
             context.addError(failure);
             return null;
         }
+        if (impl == null || impl.getComponentType() == null) {
+            // error loading impl
+            return definition;
+        }
+
+        if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
+            // ensure that the implementation loader has positioned the cursor to the end element
+            throw new AssertionError("Implementation loader must position the cursor to the end element");
+        }
+        definition.setImplementation(impl);
+        return parseSubElements(definition, reader, context);
     }
 
     public QName getXMLType() {
@@ -248,6 +212,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                               ComponentType componentType,
                               XMLStreamReader reader,
                               IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
+        Location startLocation = reader.getLocation();
         ComponentService service = registry.load(reader, ComponentService.class, context);
         if (service == null) {
             // there was an error with the service configuration, just skip it
@@ -257,18 +222,71 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         ServiceDefinition typeService = componentType.getServices().get(name);
         if (typeService == null) {
             // ensure the service exists
-            ComponentServiceNotFound failure = new ComponentServiceNotFound(name, definition, reader);
+            ComponentServiceNotFound failure = new ComponentServiceNotFound(name, definition, startLocation);
             context.addError(failure);
             return;
         }
 
-        processServiceContract(service, typeService, reader, context);
+        processServiceContract(service, typeService, startLocation, context);
 
         if (definition.getServices().containsKey(name)) {
-            DuplicateComponentService failure = new DuplicateComponentService(name, definition.getName(), reader);
+            DuplicateComponentService failure = new DuplicateComponentService(name, startLocation);
             context.addError(failure);
         } else {
             definition.add(service);
+        }
+    }
+
+    private ComponentDefinition<?> parseSubElements(ComponentDefinition<Implementation<?>> definition,
+                                                    XMLStreamReader reader,
+                                                    IntrospectionContext context) throws XMLStreamException {
+        ComponentType componentType = definition.getImplementation().getComponentType();
+
+        Map<Property, Location> propertyLocations = new HashMap<Property, Location>();
+        while (true) {
+            switch (reader.next()) {
+            case START_ELEMENT:
+                Location location = reader.getLocation();
+                try {
+                    QName qname = reader.getName();
+                    if (PROPERTY.equals(qname)) {
+                        parsePropertyValue(definition, componentType, reader, propertyLocations, context);
+                    } else if (REFERENCE.equals(qname)) {
+                        parseReference(definition, componentType, reader, context);
+                    } else if (SERVICE.equals(qname)) {
+                        parseService(definition, componentType, reader, context);
+                    } else if (PRODUCER.equals(qname)) {
+                        parseProducer(definition, componentType, reader, context);
+                    } else if (CONSUMER.equals(qname)) {
+                        parseConsumer(definition, componentType, reader, context);
+                    } else {
+                        // Unknown extension element - issue an error and continue
+                        UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                        context.addError(failure);
+                        LoaderUtil.skipToEndElement(reader);
+                    }
+                } catch (UnrecognizedElementException e) {
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                    context.addError(failure);
+                }
+                break;
+            case END_ELEMENT:
+                validateRequiredProperties(definition, propertyLocations, context);
+                return definition;
+            case XMLStreamReader.COMMENT:
+                if (!roundTrip) {
+                    continue;
+                }
+                String comment = reader.getText();
+                definition.addComment(comment);
+                continue;
+            default:
+                if (!roundTrip) {
+                    continue;
+                }
+                comment = reader.getText();
+                definition.addText(comment);
+            }
         }
     }
 
@@ -276,6 +294,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                                 ComponentType componentType,
                                 XMLStreamReader reader,
                                 IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
+        Location startLocation = reader.getLocation();
         ComponentReference reference = registry.load(reader, ComponentReference.class, context);
         if (reference == null) {
             // there was an error with the reference configuration, just skip it
@@ -285,31 +304,28 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         ReferenceDefinition typeReference = componentType.getReferences().get(name);
         if (typeReference == null) {
             // ensure the reference exists
-            ComponentReferenceNotFound failure = new ComponentReferenceNotFound(name, definition, reader);
+            ComponentReferenceNotFound failure = new ComponentReferenceNotFound(name, definition, startLocation);
             context.addError(failure);
             return;
         }
 
         if (!reference.getCallbackBindings().isEmpty()) {
-            if (typeReference != null) {
-                if (typeReference.getServiceContract() != null && typeReference.getServiceContract().getCallbackContract() == null) {
-                    InvalidServiceContract failure = new InvalidServiceContract(
-                            "Reference is configured with a callback binding but its service contract is not bidirectional: " + name,
-                            reader);
-                    context.addError(failure);
-                }
-
+            if (typeReference.getServiceContract() != null && typeReference.getServiceContract().getCallbackContract() == null) {
+                InvalidServiceContract failure = new InvalidServiceContract(
+                        "Reference is configured with a callback binding but its service contract is not bidirectional: " + name,
+                        startLocation);
+                context.addError(failure);
             }
         }
-        processReferenceContract(reference, typeReference, reader, context);
+        processReferenceContract(reference, typeReference, startLocation, context);
 
         if (definition.getReferences().containsKey(name)) {
-            DuplicateComponentReference failure = new DuplicateComponentReference(name, definition.getName(), reader);
+            DuplicateComponentReference failure = new DuplicateComponentReference(name, startLocation);
             context.addError(failure);
             return;
         }
 
-        processMultiplicity(reference, typeReference, reader, context);
+        processMultiplicity(reference, typeReference, reader, startLocation, context);
         definition.add(reference);
 
     }
@@ -318,6 +334,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                                ComponentType componentType,
                                XMLStreamReader reader,
                                IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
+        Location startLocation = reader.getLocation();
         ComponentProducer producer = registry.load(reader, ComponentProducer.class, context);
         if (producer == null) {
             // there was an error with the producer configuration, just skip it
@@ -327,7 +344,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         ProducerDefinition typeProducer = componentType.getProducers().get(name);
         if (typeProducer == null) {
             // ensure the producer exists
-            ComponentProducerNotFound failure = new ComponentProducerNotFound(name, definition, reader);
+            ComponentProducerNotFound failure = new ComponentProducerNotFound(name, definition, startLocation);
             context.addError(failure);
             return;
         }
@@ -338,6 +355,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                                ComponentType componentType,
                                XMLStreamReader reader,
                                IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
+        Location startLocation = reader.getLocation();
+
         ComponentConsumer consumer = registry.load(reader, ComponentConsumer.class, context);
         if (consumer == null) {
             // there was an error with the consumer configuration, just skip it
@@ -347,7 +366,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         ConsumerDefinition typeConsumer = componentType.getConsumers().get(name);
         if (typeConsumer == null) {
             // ensure the consumer exists
-            ComponentConsumerNotFound failure = new ComponentConsumerNotFound(name, definition, reader);
+            ComponentConsumerNotFound failure = new ComponentConsumerNotFound(name, definition, startLocation);
             context.addError(failure);
             return;
         }
@@ -359,7 +378,9 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private void parsePropertyValue(ComponentDefinition<?> definition,
                                     ComponentType componentType,
                                     XMLStreamReader reader,
+                                    Map<Property, Location> propertyLocations,
                                     IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
+        Location startLocation = reader.getLocation();
         PropertyValue value = registry.load(reader, PropertyValue.class, context);
         if (value == null) {
             // there was an error with the property configuration, just skip it
@@ -369,21 +390,22 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         Property property = componentType.getProperties().get(name);
         if (property == null) {
             // ensure the property exists
-            ComponentPropertyNotFound failure = new ComponentPropertyNotFound(value.getName(), definition, reader);
+            ComponentPropertyNotFound failure = new ComponentPropertyNotFound(value.getName(), definition, startLocation);
             context.addError(failure);
             return;
         }
-        validatePropertyType(value, property, reader, context);
+        validatePropertyType(value, property, startLocation, context);
+        propertyLocations.put(property, startLocation);
         if (definition.getPropertyValues().containsKey(value.getName())) {
             String id = value.getName();
-            DuplicateConfiguredProperty failure = new DuplicateConfiguredProperty(id, definition, reader);
+            DuplicateConfiguredProperty failure = new DuplicateConfiguredProperty(id, definition, startLocation);
             context.addError(failure);
         } else {
             definition.add(value);
         }
         if (value.getValue() != null && value.getValue().getDocumentElement().getChildNodes().getLength() == 0 && property.isRequired()) {
             // property value not specified
-            PropertyValueNotSpecified failure = new PropertyValueNotSpecified(value.getName(), definition, reader);
+            PropertyValueNotSpecified failure = new PropertyValueNotSpecified(value.getName(), definition, startLocation);
             context.addError(failure);
         }
     }
@@ -394,13 +416,10 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      *
      * @param service     the service
      * @param typeService the component type service
-     * @param reader      the reader
+     * @param location    the location in the composite where the contract is defined
      * @param context     the context
      */
-    private void processServiceContract(ComponentService service,
-                                        ServiceDefinition typeService,
-                                        XMLStreamReader reader,
-                                        IntrospectionContext context) {
+    private void processServiceContract(ComponentService service, ServiceDefinition typeService, Location location, IntrospectionContext context) {
         if (service.getServiceContract() == null) {
             // if the service contract is not set, inherit from the component type service
             service.setServiceContract(typeService.getServiceContract());
@@ -410,11 +429,11 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             if (!result.isAssignable()) {
                 String name = service.getName();
                 IncompatibleContracts error = new IncompatibleContracts("The component service interface " + name
-                                                                                + " is not compatible with the promoted service " + typeService.getName() + ": " + result.getError(),
-                                                                        reader);
+                                                                                + " is not compatible with the promoted service "
+                                                                                + typeService.getName() + ": " + result.getError(), location);
                 context.addError(error);
             } else {
-                matchServiceCallbackContracts(service, typeService, reader, context);
+                matchServiceCallbackContracts(service, typeService, location, context);
             }
         }
     }
@@ -425,12 +444,12 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      *
      * @param reference     the reference
      * @param typeReference the component type reference
-     * @param reader        the reader
+     * @param location      the location in the composite where the reference is defines
      * @param context       the context
      */
     private void processReferenceContract(ComponentReference reference,
                                           ReferenceDefinition typeReference,
-                                          XMLStreamReader reader,
+                                          Location location,
                                           IntrospectionContext context) {
         if (reference.getServiceContract() == null) {
             // if the reference contract is not set, inherit from the component type service
@@ -441,11 +460,11 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             if (!result.isAssignable()) {
                 String name = reference.getName();
                 IncompatibleContracts error = new IncompatibleContracts("The component reference contract " + name
-                                                                                + " is not compatible with the promoted reference " + typeReference.getName() + ": " + result.getError(),
-                                                                        reader);
+                                                                                + " is not compatible with the promoted reference "
+                                                                                + typeReference.getName() + ": " + result.getError(), location);
                 context.addError(error);
             } else {
-                matchReferenceCallbackContracts(reference, typeReference, reader, context);
+                matchReferenceCallbackContracts(reference, typeReference, location, context);
             }
         }
     }
@@ -455,12 +474,12 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      *
      * @param service     the service
      * @param typeService the component type service
-     * @param reader      the reader
+     * @param location    the location where the contract is defined in the composite
      * @param context     the context
      */
     private void matchServiceCallbackContracts(ComponentService service,
                                                ServiceDefinition typeService,
-                                               XMLStreamReader reader,
+                                               Location location,
                                                IntrospectionContext context) {
         ServiceContract callbackContract = service.getServiceContract().getCallbackContract();
         if (callbackContract == null) {
@@ -469,7 +488,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         ServiceContract typeCallbackContract = typeService.getServiceContract().getCallbackContract();
         if (typeCallbackContract == null) {
             IncompatibleContracts error =
-                    new IncompatibleContracts("Component type for service " + service.getName() + " does not have a callback contract", reader);
+                    new IncompatibleContracts("Component type for service " + service.getName() + " does not have a callback contract", location);
             context.addError(error);
             return;
         }
@@ -477,8 +496,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         if (!result.isAssignable()) {
             String name = service.getName();
             IncompatibleContracts error = new IncompatibleContracts("The component service " + name + " callback contract is not compatible with " +
-                                                                            "the promoted service " + typeService.getName() + " callback contract: " + result.getError(),
-                                                                    reader);
+                                                                            "the promoted service " + typeService.getName()
+                                                                            + " callback contract: " + result.getError(), location);
             context.addError(error);
         }
     }
@@ -488,12 +507,12 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      *
      * @param reference     the reference
      * @param typeReference the component type reference
-     * @param reader        the reader
+     * @param location      the location where the contract is defined in the composite
      * @param context       the context
      */
     private void matchReferenceCallbackContracts(ComponentReference reference,
                                                  ReferenceDefinition typeReference,
-                                                 XMLStreamReader reader,
+                                                 Location location,
                                                  IntrospectionContext context) {
         ServiceContract callbackContract = reference.getServiceContract().getCallbackContract();
         if (callbackContract == null) {
@@ -502,7 +521,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         ServiceContract typeCallbackContract = typeReference.getServiceContract().getCallbackContract();
         if (typeCallbackContract == null) {
             IncompatibleContracts error =
-                    new IncompatibleContracts("Component type for reference " + reference.getName() + " does not have a callback contract", reader);
+                    new IncompatibleContracts("Component type for reference " + reference.getName() + " does not have a callback contract", location);
             context.addError(error);
             return;
         }
@@ -510,8 +529,9 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         if (!result.isAssignable()) {
             String name = reference.getName();
             IncompatibleContracts error = new IncompatibleContracts("The component reference " + name + " callback contract is not compatible with " +
-                                                                            "the promoted reference " + typeReference.getName() + " callback contract: " + result.getError(),
-                                                                    reader);
+                                                                            "the promoted reference " + typeReference.getName()
+                                                                            + " callback contract: " + result.getError(),
+                                                                    location);
             context.addError(error);
         }
     }
@@ -524,11 +544,13 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param reference     the reference
      * @param typeReference the promoted reference
      * @param reader        the reader
+     * @param location      the current location
      * @param context       the context
      */
     private void processMultiplicity(ComponentReference reference,
                                      ReferenceDefinition typeReference,
                                      XMLStreamReader reader,
+                                     Location location,
                                      IntrospectionContext context) {
         String name = reference.getName();
         if (reference.getMultiplicity() == null) {
@@ -536,37 +558,42 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             reference.setMultiplicity(multiplicity);
         } else {
             if (!loaderHelper.canNarrow(reference.getMultiplicity(), typeReference.getMultiplicity())) {
-                InvalidValue failure = new InvalidValue("The multiplicity setting for reference " + name + " widens the default setting", reader);
+                InvalidValue failure = new InvalidValue("The multiplicity setting for reference " + name + " widens the default setting", location);
                 context.addError(failure);
             }
         }
         List<Target> targets = reference.getTargets();
         Multiplicity multiplicity = reference.getMultiplicity();
         if (targets.size() > 1 && (Multiplicity.ZERO_ONE == multiplicity || Multiplicity.ONE_ONE == multiplicity)) {
-            InvalidValue failure = new InvalidValue("Multiple targets configured on reference " + name + ", which takes a single target", reader);
+            InvalidValue failure = new InvalidValue("Multiple targets configured on reference " + name + ", which takes a single target", location);
             context.addError(failure);
         }
     }
 
-    private void validateRequiredProperties(ComponentDefinition<?> definition, XMLStreamReader reader, IntrospectionContext context) {
+    private void validateRequiredProperties(ComponentDefinition<?> definition,
+                                            Map<Property, Location> propertyLocations,
+                                            IntrospectionContext context) {
         ComponentType type = definition.getImplementation().getComponentType();
         Map<String, ? extends Property> properties = type.getProperties();
         Map<String, PropertyValue> values = definition.getPropertyValues();
         for (Property property : properties.values()) {
             PropertyValue value = values.get(property.getName());
             if (property.isRequired() && value == null) {
-                RequiredPropertyNotProvided failure = new RequiredPropertyNotProvided(property, definition.getName(), reader);
+                String name = definition.getName();
+                Location location = propertyLocations.get(property);
+                RequiredPropertyNotProvided failure = new RequiredPropertyNotProvided(property, name, location);
                 context.addError(failure);
                 continue;
             }
             if (value != null) {
+                Location location = propertyLocations.get(property);
                 // null check since an optional property may not be configured on the component
-                validateAndSetMany(value, property, reader, context);
+                validateAndSetMany(value, property, location, context);
             }
         }
     }
 
-    private void validateAndSetMany(PropertyValue propertyValue, Property property, XMLStreamReader reader, IntrospectionContext context) {
+    private void validateAndSetMany(PropertyValue propertyValue, Property property, Location location, IntrospectionContext context) {
         PropertyMany propertyMany = propertyValue.getMany();
         if (PropertyMany.NOT_SPECIFIED == propertyMany) {
             if (property.isMany()) {
@@ -577,7 +604,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         } else if (PropertyMany.MANY == propertyMany) {
             if (!property.isMany()) {
                 InvalidPropertyConfiguration error = new InvalidPropertyConfiguration("Illegal attempt to make a property many-valued when its " +
-                                                                                              "component type is single-valued", reader);
+                                                                                              "component type is single-valued", location);
                 context.addError(error);
                 return;
 
@@ -591,13 +618,13 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             // null check since optional properties may have null values
             // validate the many
             String name = propertyValue.getName();
-            InvalidPropertyValue error = new InvalidPropertyValue("A single-valued property is configured with multiple values: " + name, reader);
+            InvalidPropertyValue error = new InvalidPropertyValue("A single-valued property is configured with multiple values: " + name, location);
             context.addError(error);
         }
     }
 
     @SuppressWarnings({"VariableNotUsedInsideIf"})
-    private void validatePropertyType(PropertyValue value, Property property, XMLStreamReader reader, IntrospectionContext context) {
+    private void validatePropertyType(PropertyValue value, Property property, Location location, IntrospectionContext context) {
         QName propType = property.getType();
         QName propElement = property.getElement();
         QName valType = value.getType();
@@ -605,21 +632,21 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         if (propType != null) {
             if (valElement != null) {
                 InvalidAttributes error = new InvalidAttributes("Cannot specify property schema type and element type on property configuration: "
-                                                                        + value.getName(), reader);
+                                                                        + value.getName(), location);
                 context.addError(error);
             } else if (valType != null && !valType.equals(propType)) {
                 InvalidAttributes error = new InvalidAttributes("Property type " + propType + " and property configuration type " + valType
-                                                                        + " do not match: " + value.getName(), reader);
+                                                                        + " do not match: " + value.getName(), location);
                 context.addError(error);
             }
         } else if (propElement != null) {
             if (valType != null) {
                 InvalidAttributes error = new InvalidAttributes("Cannot specify property element type and property configuration schema type: "
-                                                                        + value.getName(), reader);
+                                                                        + value.getName(), location);
                 context.addError(error);
             } else if (valElement != null && !valElement.equals(propElement)) {
                 InvalidAttributes error = new InvalidAttributes("Property element type " + propElement + " and property configuration element type "
-                                                                        + valElement + " do not match: " + value.getName(), reader);
+                                                                        + valElement + " do not match: " + value.getName(), location);
                 context.addError(error);
             }
         }

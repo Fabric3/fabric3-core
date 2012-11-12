@@ -39,6 +39,7 @@ package org.fabric3.binding.rs.introspection;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -67,6 +68,7 @@ public class RsBindingLoader extends AbstractValidatingTypeLoader<RsBindingDefin
     }
 
     public RsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
 
         String bindingName = reader.getAttributeValue(null, "name");
@@ -74,14 +76,14 @@ public class RsBindingLoader extends AbstractValidatingTypeLoader<RsBindingDefin
         URI uri;
 
         if (uriStr == null) {
-            MissingAttribute failure = new MissingAttribute("URI not specified", reader);
+            MissingAttribute failure = new MissingAttribute("URI not specified", startLocation);
             context.addError(failure);
             return null;
         }
         try {
             uri = new URI(uriStr);
         } catch (URISyntaxException ex) {
-            InvalidValue failure = new InvalidValue("Invalid URI value", reader);
+            InvalidValue failure = new InvalidValue("Invalid URI value", startLocation);
             context.addError(failure);
             return null;
         }

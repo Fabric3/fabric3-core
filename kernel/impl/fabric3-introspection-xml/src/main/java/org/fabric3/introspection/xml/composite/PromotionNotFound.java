@@ -37,7 +37,7 @@
 */
 package org.fabric3.introspection.xml.composite;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -46,7 +46,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class PromotionNotFound extends XmlValidationFailure {
 
-    public PromotionNotFound(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public PromotionNotFound(String message, Location location) {
+        super(message, location);
     }
 }

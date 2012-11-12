@@ -39,6 +39,7 @@ package org.fabric3.contribution.manifest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -60,10 +61,11 @@ public class QNameImportLoader extends AbstractValidatingTypeLoader<QNameImport>
     }
 
     public QNameImport load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         String ns = reader.getAttributeValue(null, "namespace");
         if (ns == null) {
-            MissingManifestAttribute failure = new MissingManifestAttribute("The namespace attribute must be specified", reader);
+            MissingManifestAttribute failure = new MissingManifestAttribute("The namespace attribute must be specified", startLocation);
             context.addError(failure);
             return null;
         }
@@ -73,7 +75,7 @@ public class QNameImportLoader extends AbstractValidatingTypeLoader<QNameImport>
             try {
                 locationUri = new URI(location);
             } catch (URISyntaxException e) {
-                InvalidValue error = new InvalidValue("Invalid location attribute", reader, e);
+                InvalidValue error = new InvalidValue("Invalid location attribute", startLocation, e);
                 context.addError(error);
             }
         }

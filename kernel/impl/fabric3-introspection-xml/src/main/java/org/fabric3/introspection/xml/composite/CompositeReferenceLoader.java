@@ -48,6 +48,7 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -85,7 +86,7 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
     public CompositeReferenceLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         this.registry = registry;
         this.loaderHelper = loaderHelper;
-        addAttributes("name","autowire","promote","multiplicity","requires","policySets");
+        addAttributes("name", "autowire", "promote", "multiplicity", "requires", "policySets");
     }
 
     @Property(required = false)
@@ -94,10 +95,11 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
     }
 
     public CompositeReference load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute failure = new MissingAttribute("Reference name not specified", reader);
+            MissingAttribute failure = new MissingAttribute("Reference name not specified", startLocation);
             context.addError(failure);
             return null;
         }
@@ -107,13 +109,13 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
         try {
             promotedUris = loaderHelper.parseListOfUris(reader, "promote");
         } catch (URISyntaxException e) {
-            InvalidValue error = new InvalidValue("Invalid promote URI specified on reference: " + name, reader, e);
+            InvalidValue error = new InvalidValue("Invalid promote URI specified on reference: " + name, startLocation, e);
             context.addError(error);
             promotedUris = Collections.emptyList();
             promoteError = true;
         }
         if (!promoteError && (promotedUris == null || promotedUris.isEmpty())) {
-            MissingPromotion error = new MissingPromotion("Promotion not specified on composite reference " + name, reader);
+            MissingPromotion error = new MissingPromotion("Promotion not specified on composite reference " + name, startLocation);
             context.addError(error);
         }
         Multiplicity multiplicity = null;
@@ -123,7 +125,7 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
                 multiplicity = Multiplicity.fromString(multiplicityValue);
             }
         } catch (IllegalArgumentException e) {
-            InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + multiplicityValue, reader);
+            InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + multiplicityValue, startLocation);
             context.addError(failure);
         }
 
@@ -143,6 +145,7 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
         while (true) {
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:
+                Location location = reader.getLocation();
                 callback = CALLBACK.equals(reader.getName());
                 if (callback) {
                     reader.nextTag();
@@ -152,7 +155,7 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
                 try {
                     type = registry.load(reader, ModelObject.class, context);
                 } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                     context.addError(failure);
                     continue;
                 }
@@ -163,18 +166,18 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, reference.getCallbackBindings(), reader, context);
+                            BindingHelper.configureName(binding, reference.getCallbackBindings(), location, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, reference.getCallbackBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, reference.getCallbackBindings(), location, context);
                         if (check) {
                             reference.addCallbackBinding(binding);
                         }
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, reference.getBindings(), reader, context);
+                            BindingHelper.configureName(binding, reference.getBindings(), location, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, reference.getBindings(), reader, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, reference.getBindings(), location, context);
                         if (check) {
                             reference.addBinding(binding);
                         }
@@ -183,7 +186,8 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
                     // there was an error loading the element, ignore it as the errors will have been reported
                     continue;
                 } else {
-                    context.addError(new UnrecognizedElement(reader));
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                    context.addError(failure);
                     continue;
                 }
                 if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {

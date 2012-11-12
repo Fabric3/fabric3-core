@@ -37,15 +37,15 @@
 */
 package org.fabric3.spi.introspection.xml;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 /**
  *
  */
 public class IncompatibleContracts extends XmlValidationFailure {
 
-    public IncompatibleContracts(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public IncompatibleContracts(String message, Location location) {
+        super(message, location);
     }
 
 }

@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -57,7 +56,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 public class BindingHelperTestCase extends TestCase {
     public static final QName QNAME = new QName("foo", "bar");
 
-    private XMLStreamReader reader;
+    private Location location;
 
     @SuppressWarnings({"serial"})
     public void testBinding() throws Exception {
@@ -71,14 +70,15 @@ public class BindingHelperTestCase extends TestCase {
 
         IntrospectionContext context = new DefaultIntrospectionContext();
 
-        BindingHelper.configureName(newBinding, bindings, reader, context);
+        BindingHelper.configureName(newBinding, bindings, location, context);
 
         assertTrue(context.getErrors().isEmpty());
     }
 
     /**
-     * Tests that two bindings configured with the default name and
-     * @throws Exception
+     * Tests that two bindings configured with the default name.
+     *
+     * @throws Exception if the test fails
      */
     @SuppressWarnings({"serial"})
     public void testBindingError() throws Exception {
@@ -97,11 +97,12 @@ public class BindingHelperTestCase extends TestCase {
 
         IntrospectionContext context = new DefaultIntrospectionContext();
 
-        BindingHelper.configureName(newBinding, bindings, reader, context);
+        BindingHelper.configureName(newBinding, bindings, location, context);
 
         assertTrue(context.getErrors().get(0) instanceof BindingNameNotConfigured);
     }
 
+    @SuppressWarnings({"serial"})
     public void testSyntheticBindingName() throws Exception {
         BindingDefinition existingBinding = new BindingDefinition("service", URI.create("target"), QNAME) {
         };
@@ -113,7 +114,7 @@ public class BindingHelperTestCase extends TestCase {
 
         IntrospectionContext context = new DefaultIntrospectionContext();
 
-        BindingHelper.configureName(newBinding, bindings, reader, context);
+        BindingHelper.configureName(newBinding, bindings, location, context);
 
         assertTrue(context.getErrors().isEmpty());
     }
@@ -122,10 +123,7 @@ public class BindingHelperTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        Location location = EasyMock.createNiceMock(Location.class);
+        location = EasyMock.createNiceMock(Location.class);
         EasyMock.replay(location);
-        reader = EasyMock.createNiceMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getLocation()).andReturn(location);
-        EasyMock.replay(reader);
     }
 }

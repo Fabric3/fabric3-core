@@ -38,7 +38,7 @@
 package org.fabric3.wsdl.loader;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -54,9 +54,9 @@ public class InterfaceWsdlLoaderTestCase extends TestCase {
     public void testParseUri() throws Exception {
         LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
         InterfaceWsdlLoader loader = new InterfaceWsdlLoader(null, null, helper);
-        XMLStreamReader reader = EasyMock.createNiceMock(XMLStreamReader.class);
+        Location location = EasyMock.createNiceMock(Location.class);
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
-        QName name = loader.parseQName("http://www.stockquote.org/StockQuoteService#wsdl.portType(StockQuote)", reader, context);
+        QName name = loader.parseQName("http://www.stockquote.org/StockQuoteService#wsdl.portType(StockQuote)", location, context);
         assertEquals("http://www.stockquote.org/StockQuoteService", name.getNamespaceURI());
         assertEquals("StockQuote", name.getLocalPart());
     }

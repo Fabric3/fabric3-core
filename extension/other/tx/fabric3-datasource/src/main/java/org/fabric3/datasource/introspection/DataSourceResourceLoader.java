@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -74,6 +75,7 @@ public class DataSourceResourceLoader implements TypeLoader<DataSourceResource> 
         while (true) {
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:
+                Location location = reader.getLocation();
                 if ("datasource".equals(reader.getName().getLocalPart())) {
                     String name = readMandatoryAttribute("name", reader, context);
                     DataSourceType dataSourceType;
@@ -84,7 +86,7 @@ public class DataSourceResourceLoader implements TypeLoader<DataSourceResource> 
                         try {
                             dataSourceType = DataSourceType.valueOf(type.toUpperCase());
                         } catch (IllegalArgumentException e) {
-                            InvalidValue error = new InvalidValue("Datasource type must be either xa or non_xa", reader, e);
+                            InvalidValue error = new InvalidValue("Datasource type must be either xa or non_xa", location, e);
                             context.addError(error);
                             dataSourceType = DataSourceType.NON_XA;
                         }
@@ -108,21 +110,21 @@ public class DataSourceResourceLoader implements TypeLoader<DataSourceResource> 
                         String name = reader.getName().getLocalPart();
                         String value = reader.getElementText();
                         if ("maxPoolSize".equals(name)) {
-                            configuration.setMaxPoolSize(parseInt(value, reader, context));
+                            configuration.setMaxPoolSize(parseInt(value, location, context));
                         } else if ("minPoolSize".equals(name)) {
-                            configuration.setMinPoolSize(parseInt(value, reader, context));
+                            configuration.setMinPoolSize(parseInt(value, location, context));
                         } else if ("connectionTimeout".equals(name)) {
-                            configuration.setConnectionTimeout(parseInt(value, reader, context));
+                            configuration.setConnectionTimeout(parseInt(value, location, context));
                         } else if ("loginTimeout".equals(name)) {
-                            configuration.setLoginTimeout(parseInt(value, reader, context));
+                            configuration.setLoginTimeout(parseInt(value, location, context));
                         } else if ("maintenanceInterval".equals(name)) {
-                            configuration.setMaintenanceInterval(parseInt(value, reader, context));
+                            configuration.setMaintenanceInterval(parseInt(value, location, context));
                         } else if ("maxIdle".equals(name)) {
-                            configuration.setMaxIdle(parseInt(value, reader, context));
+                            configuration.setMaxIdle(parseInt(value, location, context));
                         } else if ("poolSize".equals(name)) {
-                            configuration.setPoolSize(parseInt(value, reader, context));
+                            configuration.setPoolSize(parseInt(value, location, context));
                         } else if ("reap".equals(name)) {
-                            configuration.setReap(parseInt(value, reader, context));
+                            configuration.setReap(parseInt(value, location, context));
                         } else if ("query".equals(name)) {
                             configuration.setQuery(value);
                         } else {
@@ -156,17 +158,17 @@ public class DataSourceResourceLoader implements TypeLoader<DataSourceResource> 
     private String readMandatoryAttribute(String name, XMLStreamReader reader, IntrospectionContext context) {
         String val = reader.getAttributeValue(null, name);
         if (val == null) {
-            InvalidValue error = new InvalidValue("Datasource " + name + " must be specified", reader);
+            InvalidValue error = new InvalidValue("Datasource " + name + " must be specified", reader.getLocation());
             context.addError(error);
         }
         return val;
     }
 
-    private int parseInt(String value, XMLStreamReader reader, IntrospectionContext context) {
+    private int parseInt(String value, Location location, IntrospectionContext context) {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            context.addError(new InvalidValue("Invalid value", reader, e));
+            context.addError(new InvalidValue("Invalid value", location, e));
             return 0;
         }
     }

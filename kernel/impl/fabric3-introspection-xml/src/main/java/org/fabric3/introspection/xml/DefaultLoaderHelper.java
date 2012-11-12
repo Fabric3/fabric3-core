@@ -55,6 +55,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -146,8 +147,10 @@ public class DefaultLoaderHelper implements LoaderHelper {
         } catch (InvalidPrefixException e) {
             String prefix = e.getPrefix();
             URI uri = context.getContributionUri();
-            context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in contribution " + uri
-                                                            + " is invalid", reader));
+            Location location = reader.getLocation();
+            InvalidQNamePrefix failure =
+                    new InvalidQNamePrefix("The prefix " + prefix + " specified in contribution " + uri + " is invalid", location);
+            context.addError(failure);
         }
     }
 
@@ -404,7 +407,8 @@ public class DefaultLoaderHelper implements LoaderHelper {
             if (!intent.getExcludes().isEmpty()) {
                 for (QName exclude : intent.getExcludes()) {
                     if (excluded.contains(exclude) || intentNames.contains(exclude)) {
-                        InvalidValue error = new InvalidValue("Mutually exclusive intents configured: " + exclude, reader);
+                        Location location = reader.getLocation();
+                        InvalidValue error = new InvalidValue("Mutually exclusive intents configured: " + exclude, location);
                         context.addError(error);
                     } else {
                         excluded.add(exclude);

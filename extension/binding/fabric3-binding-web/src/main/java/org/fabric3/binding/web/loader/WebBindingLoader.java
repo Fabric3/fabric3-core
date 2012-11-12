@@ -37,6 +37,7 @@
  */
 package org.fabric3.binding.web.loader;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -64,6 +65,7 @@ public class WebBindingLoader extends AbstractValidatingTypeLoader<WebBindingDef
     }
 
     public WebBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         String bindingName = reader.getAttributeValue(null, "name");
         OperationsAllowed allowed = OperationsAllowed.ALL;
@@ -72,14 +74,14 @@ public class WebBindingLoader extends AbstractValidatingTypeLoader<WebBindingDef
             try {
                 allowed = OperationsAllowed.valueOf(allowedStr.toUpperCase());
             } catch (IllegalArgumentException e) {
-                context.addError(new InvalidValue("Invalid allowed type: " + allowedStr, reader));
+                context.addError(new InvalidValue("Invalid allowed type: " + allowedStr, startLocation));
             }
         }
 
         String wireFormat = reader.getAttributeValue(null, "wireFormat");
         if (wireFormat != null) {
             if (!wireFormat.equalsIgnoreCase("json") || !wireFormat.equalsIgnoreCase("xml")) {
-                InvalidValue error = new InvalidValue("Invalid wire format: " + wireFormat, reader);
+                InvalidValue error = new InvalidValue("Invalid wire format: " + wireFormat, startLocation);
                 context.addError(error);
             }
         }

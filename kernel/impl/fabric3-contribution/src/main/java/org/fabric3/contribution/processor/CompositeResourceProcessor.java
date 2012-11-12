@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -96,9 +97,10 @@ public class CompositeResourceProcessor implements ResourceProcessor {
             stream = source.openStream();
             reader = xmlFactory.createXMLStreamReader(stream);
             reader.nextTag();
+            Location startLocation = reader.getLocation();
             String name = reader.getAttributeValue(null, "name");
             if (name == null) {
-                context.addError(new MissingAttribute("Composite name not specified", reader));
+                context.addError(new MissingAttribute("Composite name not specified", startLocation));
                 return;
             }
             String targetNamespace = reader.getAttributeValue(null, "targetNamespace");
@@ -176,7 +178,8 @@ public class CompositeResourceProcessor implements ResourceProcessor {
                 for (ResourceElement<?, ?> elementEntry : entry.getResourceElements()) {
                     if (element.getSymbol().equals(elementEntry.getSymbol())) {
                         QName name = element.getSymbol().getKey();
-                        DuplicateComposite error = new DuplicateComposite("Duplicate composite found with name: " + name, reader);
+                        Location location = reader.getLocation();
+                        DuplicateComposite error = new DuplicateComposite("Duplicate composite found with name: " + name, location);
                         context.addError(error);
                         break;
                     }

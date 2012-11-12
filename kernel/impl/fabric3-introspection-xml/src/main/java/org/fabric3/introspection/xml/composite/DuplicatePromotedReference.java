@@ -37,6 +37,7 @@
 */
 package org.fabric3.introspection.xml.composite;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
@@ -45,8 +46,9 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  *
  */
 public class DuplicatePromotedReference extends XmlValidationFailure {
-    public DuplicatePromotedReference(String referenceName, XMLStreamReader reader) {
-        super("More than one promoted reference with the name " + referenceName + " was found in the composite ", reader);
+
+    public DuplicatePromotedReference(String referenceName, Location location) {
+        super("More than one promoted reference with the name " + referenceName + " was found in the composite ", location);
     }
 
 }

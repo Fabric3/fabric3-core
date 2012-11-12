@@ -42,6 +42,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -74,11 +75,12 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
     private final LoaderHelper helper;
 
     public PolicySetLoader(@Reference LoaderHelper helper) {
-        addAttributes("name","provides","appliesTo","phase","attachTo");
+        addAttributes("name", "provides", "appliesTo", "phase", "attachTo");
         this.helper = helper;
     }
 
     public PolicySet load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, context);
         Element policyElement = helper.transform(reader).getDocumentElement();
 
@@ -91,7 +93,7 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
             try {
                 provides.add(helper.createQName(tok.nextToken(), reader));
             } catch (InvalidPrefixException e) {
-                raiseInvalidPrefix(reader, context, e);
+                raiseInvalidPrefix(startLocation, context, e);
                 return null;
             }
         }
@@ -111,7 +113,7 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
                 if ("intentMap".equals(nodeName)) {
                     parseIntentMaps(element, intentMaps, reader, context);
                 } else if ("policySetReference".equals(nodeName)) {
-                    parsePolicyReference(element, policySetReferences, reader, context);
+                    parsePolicyReference(element, policySetReferences, reader, startLocation, context);
                 } else {
                     // the node is not an intent map or policy set reference, it must be an extension element
                     extension = (Element) children.item(i);
@@ -123,7 +125,7 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
         URI uri = context.getContributionUri();
         PolicySet policySet = new PolicySet(qName, provides, appliesTo, attachTo, extension, phase, intentMaps, uri);
         policySet.setPolicySetReferences(policySetReferences);
-        validate(policySet, reader, context);
+        validate(policySet, startLocation, context);
         return policySet;
     }
 
@@ -136,11 +138,13 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
      * @param context    the current introspection context
      */
     private void parseIntentMaps(Element element, Set<IntentMap> intentMaps, XMLStreamReader reader, IntrospectionContext context) {
+        Location startLocation = reader.getLocation();
         try {
+
             QName providedIntent = helper.createQName(element.getAttribute("provides"), reader);
             IntentMap intentMap = new IntentMap(providedIntent);
             if (intentMaps.contains(intentMap)) {
-                DuplicateIntentMap error = new DuplicateIntentMap("Duplicate intent map defined for " + providedIntent, reader);
+                DuplicateIntentMap error = new DuplicateIntentMap("Duplicate intent map defined for " + providedIntent, startLocation);
                 context.addError(error);
             } else {
                 intentMaps.add(intentMap);
@@ -167,7 +171,7 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
             }
 
         } catch (InvalidPrefixException e) {
-            raiseInvalidPrefix(reader, context, e);
+            raiseInvalidPrefix(startLocation, context, e);
         }
     }
 
@@ -177,19 +181,24 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
      * @param element             the policy set contents to parse
      * @param policySetReferences the collection of policy set references to update
      * @param reader              the StAX reader
+     * @param location            the location
      * @param context             the current introspection context
      */
-    private void parsePolicyReference(Element element, Set<QName> policySetReferences, XMLStreamReader reader, IntrospectionContext context) {
+    private void parsePolicyReference(Element element,
+                                      Set<QName> policySetReferences,
+                                      XMLStreamReader reader,
+                                      Location location,
+                                      IntrospectionContext context) {
         try {
             QName referenceName = helper.createQName(element.getAttribute("name"), reader);
             if (referenceName == null) {
-                MissingAttribute error = new MissingAttribute("Policy reference must have a name", reader);
+                MissingAttribute error = new MissingAttribute("Policy reference must have a name", location);
                 context.addError(error);
             } else {
                 policySetReferences.add(referenceName);
             }
         } catch (InvalidPrefixException e) {
-            raiseInvalidPrefix(reader, context, e);
+            raiseInvalidPrefix(location, context, e);
         }
     }
 
@@ -210,7 +219,8 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
                 try {
                     phase = PolicyPhase.valueOf(phaseAttr.toUpperCase());
                 } catch (IllegalArgumentException e) {
-                    UnrecognizedAttribute failure = new UnrecognizedAttribute("Invalid phase: " + phaseAttr, reader);
+                    Location location = reader.getLocation();
+                    UnrecognizedAttribute failure = new UnrecognizedAttribute("Invalid phase: " + phaseAttr, location);
                     context.addError(failure);
                     phase = PolicyPhase.INTERCEPTION;
                 }
@@ -222,19 +232,21 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
         return phase;
     }
 
-    private void raiseInvalidPrefix(XMLStreamReader reader, IntrospectionContext context, InvalidPrefixException e) {
+    private void raiseInvalidPrefix(Location location, IntrospectionContext context, InvalidPrefixException e) {
         String prefix = e.getPrefix();
         URI uri = context.getContributionUri();
-        context.addError(new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
-                + " is invalid", reader));
+        InvalidQNamePrefix failure = new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
+                                                                    + " is invalid", location);
+        context.addError(failure);
     }
 
-    private void validate(PolicySet policySet, XMLStreamReader reader, IntrospectionContext context) {
+    private void validate(PolicySet policySet, Location location, IntrospectionContext context) {
         // validate intent maps
         for (IntentMap intentMap : policySet.getIntentMaps()) {
             if (!policySet.doesProvide(intentMap.getProvides())) {
                 InvalidValue error = new InvalidValue("Provides on intent map " + intentMap.getProvides()
-                        + " does not match a provides entry on the parent policy set: " + policySet.getName(), reader);
+                                                              + " does not match a provides entry on the parent policy set: " + policySet.getName(),
+                                                      location);
                 context.addError(error);
             }
         }

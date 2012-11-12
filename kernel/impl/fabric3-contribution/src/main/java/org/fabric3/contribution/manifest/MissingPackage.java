@@ -37,7 +37,7 @@
 */
 package org.fabric3.contribution.manifest;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -46,7 +46,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class MissingPackage extends XmlValidationFailure {
 
-    public MissingPackage(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public MissingPackage(String message, Location location) {
+        super(message, location);
     }
 }

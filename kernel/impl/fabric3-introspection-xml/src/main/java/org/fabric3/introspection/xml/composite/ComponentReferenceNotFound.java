@@ -37,7 +37,7 @@
 */
 package org.fabric3.introspection.xml.composite;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
@@ -46,20 +46,9 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  * A validation failure indicating an attempt to configure a non-existent component reference.
  */
 public class ComponentReferenceNotFound extends XmlValidationFailure {
-    private String referenceName;
-    private ComponentDefinition definition;
 
-    public ComponentReferenceNotFound(String referenceName, ComponentDefinition definition, XMLStreamReader reader) {
-        super("The component " + definition.getName() + " does not have a reference " + referenceName, reader);
-        this.referenceName = referenceName;
-        this.definition = definition;
+    public ComponentReferenceNotFound(String referenceName, ComponentDefinition definition, Location location) {
+        super("The component " + definition.getName() + " does not have a reference " + referenceName, location);
     }
 
-    public String getReferenceName() {
-        return referenceName;
-    }
-
-    public ComponentDefinition getComponentDefinition() {
-        return definition;
-    }
 }

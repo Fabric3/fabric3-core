@@ -43,15 +43,15 @@
  */
 package org.fabric3.spi.introspection.xml;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 /**
  * Denotes a missing attribute
  */
 public class MissingAttribute extends XmlValidationFailure {
 
-    public MissingAttribute(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public MissingAttribute(String message,Location location) {
+        super(message, location);
     }
 
 }

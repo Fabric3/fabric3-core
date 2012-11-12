@@ -37,7 +37,7 @@
 */
 package org.fabric3.introspection.xml.composite;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -45,14 +45,9 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  *
  */
 public class DuplicateComponentService extends XmlValidationFailure {
-    private String componentName;
 
-    public DuplicateComponentService(String referenceName, String componentName, XMLStreamReader reader) {
-        super("The service " + referenceName + " is configured more than once on the component ", reader);
-        this.componentName = componentName;
+    public DuplicateComponentService(String referenceName, Location location) {
+        super("The service " + referenceName + " is configured more than once on the component ", location);
     }
 
-    public String getComponentName() {
-        return componentName;
-    }
 }

@@ -42,6 +42,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -88,9 +89,10 @@ public class PersistenceUnitOverridesElementLoader implements TypeLoader<ModelOb
     }
 
     public ModelObject load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
-            MissingAttribute error = new MissingAttribute("Persistence unit name not specified", reader);
+            MissingAttribute error = new MissingAttribute("Persistence unit name not specified", startLocation);
             context.addError(error);
             LoaderUtil.skipToEndElement(reader);
             return null;
@@ -113,7 +115,7 @@ public class PersistenceUnitOverridesElementLoader implements TypeLoader<ModelOb
                         PersistenceOverrides overrides = new PersistenceOverrides(name, properties);
                         overrideRegistry.register(uri, overrides);
                     } catch (DuplicateOverridesException e) {
-                        DuplicateOverrides error = new DuplicateOverrides(name, reader);
+                        DuplicateOverrides error = new DuplicateOverrides(name, startLocation);
                         context.addError(error);
                     }
                     return null;

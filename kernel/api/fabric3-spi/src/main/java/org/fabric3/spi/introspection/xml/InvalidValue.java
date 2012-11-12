@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.introspection.xml;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 /**
  * Indicates the loader encountered an invalid value.
@@ -45,12 +45,12 @@ import javax.xml.stream.XMLStreamReader;
 public class InvalidValue extends XmlValidationFailure {
     private Throwable cause;
 
-    public InvalidValue(String message, XMLStreamReader reader) {
-        super(message, reader);
+    public InvalidValue(String message, Location location) {
+        super(message, location);
     }
 
-    public InvalidValue(String message, XMLStreamReader reader, Throwable cause) {
-        super(message, reader);
+    public InvalidValue(String message, Location location, Throwable cause) {
+        super(message, location);
         this.cause = cause;
     }
 

@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.spring.introspection;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -46,8 +46,8 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateProducer extends XmlValidationFailure {
 
-    public DuplicateProducer(String name, XMLStreamReader reader) {
-        super("A producer with the name name" + name + "is already specified", reader);
+    public DuplicateProducer(String name, Location location) {
+        super("A producer with the name name" + name + "is already specified", location);
     }
 
 }

@@ -37,6 +37,7 @@
  */
 package org.fabric3.binding.file.introspection;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -75,6 +76,7 @@ public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingD
     }
 
     public FileBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
 
         validateAttributes(reader, context);
 
@@ -82,7 +84,7 @@ public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingD
 
         String location = reader.getAttributeValue(null, "location");
         if (location == null) {
-            MissingAttribute error = new MissingAttribute("The location attribute must be specified", reader);
+            MissingAttribute error = new MissingAttribute("The location attribute must be specified", startLocation);
             context.addError(error);
         }
 
@@ -90,7 +92,7 @@ public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingD
 
         Strategy strategy = parseStrategy(reader);
         if (Strategy.ARCHIVE == strategy && archiveLocation == null) {
-            MissingAttribute error = new MissingAttribute("An archive location must be specified", reader);
+            MissingAttribute error = new MissingAttribute("An archive location must be specified", startLocation);
             context.addError(error);
         }
         String errorLocation = reader.getAttributeValue(null, "error.location");
@@ -126,7 +128,8 @@ public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingD
             try {
                 delay = Long.parseLong(delayStr);
             } catch (NumberFormatException e) {
-                InvalidValue error = new InvalidValue("Invalid delay value", reader, e);
+                Location location = reader.getLocation();
+                InvalidValue error = new InvalidValue("Invalid delay value", location, e);
                 context.addError(error);
             }
         }

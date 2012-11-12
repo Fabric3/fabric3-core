@@ -43,7 +43,7 @@
  */
 package org.fabric3.spi.introspection.xml;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.Location;
 
 /**
  * Failure that indicates an attribute was encountered that could not be handled.
@@ -54,11 +54,11 @@ public class UnrecognizedAttribute extends XmlValidationFailure {
     /**
      * Constructor.
      *
-     * @param name   the attribute name
-     * @param reader the StAX reader positioned on the unrecognized element
+     * @param name     the attribute name
+     * @param location the location of the the unrecognized element
      */
-    public UnrecognizedAttribute(String name, XMLStreamReader reader) {
-        super("Unrecognized element", reader);
+    public UnrecognizedAttribute(String name, Location location) {
+        super("Unrecognized element", location);
         this.name = name;
     }
 

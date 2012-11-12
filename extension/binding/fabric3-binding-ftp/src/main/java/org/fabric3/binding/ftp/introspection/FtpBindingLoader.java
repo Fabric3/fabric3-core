@@ -39,6 +39,7 @@ package org.fabric3.binding.ftp.introspection;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -68,10 +69,11 @@ public class FtpBindingLoader extends AbstractValidatingTypeLoader<FtpBindingDef
      */
     public FtpBindingLoader(@Reference LoaderHelper loaderHelper) {
         this.loaderHelper = loaderHelper;
-        addAttributes("uri","requires","policySets","mode","tmpFileSuffix");
+        addAttributes("uri", "requires", "policySets", "mode", "tmpFileSuffix");
     }
 
     public FtpBindingDefinition load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
         validateAttributes(reader, introspectionContext);
 
         FtpBindingDefinition bd = null;
@@ -82,7 +84,7 @@ public class FtpBindingLoader extends AbstractValidatingTypeLoader<FtpBindingDef
             uri = reader.getAttributeValue(null, "uri");
             String transferMode = reader.getAttributeValue(null, "mode");
             if (uri == null) {
-                MissingAttribute failure = new MissingAttribute("A binding URI must be specified ", reader);
+                MissingAttribute failure = new MissingAttribute("A binding URI must be specified ", startLocation);
                 introspectionContext.addError(failure);
                 return null;
             }
@@ -123,7 +125,7 @@ public class FtpBindingLoader extends AbstractValidatingTypeLoader<FtpBindingDef
             }
 
         } catch (URISyntaxException ex) {
-            InvalidValue failure = new InvalidValue("The FTP binding URI is not valid: " + uri, reader);
+            InvalidValue failure = new InvalidValue("The FTP binding URI is not valid: " + uri, startLocation);
             introspectionContext.addError(failure);
         }
 
@@ -141,11 +143,12 @@ public class FtpBindingLoader extends AbstractValidatingTypeLoader<FtpBindingDef
                 }
                 break;
             case XMLStreamConstants.START_ELEMENT:
+                Location location = reader.getLocation();
                 if ("command".equals(reader.getName().getLocalPart())) {
                     reader.next();
                     bd.addSTORCommand(reader.getText());
                 } else {
-                    UnrecognizedElement error = new UnrecognizedElement(reader);
+                    UnrecognizedElement error = new UnrecognizedElement(reader, location);
                     context.addError(error);
                     return false;
                 }
