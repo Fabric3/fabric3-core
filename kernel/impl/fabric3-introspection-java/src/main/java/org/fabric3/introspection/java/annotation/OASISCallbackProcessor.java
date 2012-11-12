@@ -105,7 +105,7 @@ public class OASISCallbackProcessor extends AbstractAnnotationProcessor<Callback
             Class<?> clazz = field.getDeclaringClass();
             InvalidAccessor warning =
                     new InvalidAccessor("Illegal callback. The field " + field.getName() + " on " + clazz.getName()
-                                                + " is annotated with @Callback and must be public or protected.", clazz);
+                                                + " is annotated with @Callback and must be public or protected.");
             context.addError(warning);
         }
     }
@@ -114,7 +114,7 @@ public class OASISCallbackProcessor extends AbstractAnnotationProcessor<Callback
         if (!Modifier.isProtected(method.getModifiers()) && !Modifier.isPublic(method.getModifiers())) {
             Class<?> clazz = method.getDeclaringClass();
             InvalidAccessor warning = new InvalidAccessor("Illegal callback. The method " + method
-                                                                  + " is annotated with @Callback and must be public or protected.", clazz);
+                                                                  + " is annotated with @Callback and must be public or protected.");
             context.addError(warning);
         }
     }

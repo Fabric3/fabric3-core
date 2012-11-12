@@ -55,4 +55,8 @@ public class InvalidOSGiManifest extends ValidationFailure {
     public String getMessage() {
         return message + ". Error was: " + ex;
     }
+
+    public String getShortMessage() {
+        return message + ". Error was: " + ex.getMessage();
+    }
 }

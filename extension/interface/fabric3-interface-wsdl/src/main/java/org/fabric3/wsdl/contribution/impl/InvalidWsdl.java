@@ -46,22 +46,22 @@ public class InvalidWsdl extends ValidationFailure {
     private String message;
     private Throwable cause;
 
-    public InvalidWsdl(String message) {
-        this.message = message;
-    }
-
     public InvalidWsdl(String message, Throwable cause) {
         this.message = message;
         this.cause = cause;
     }
 
-    public Throwable getCause() {
-        return cause;
-    }
-
     public String getMessage() {
         if (cause != null) {
-            return message + ". The original error was: \n" + cause.toString();
+            return message + ". The original error was: \n" + cause;
+        } else {
+            return message;
+        }
+    }
+
+    public String getShortMessage() {
+        if (cause != null) {
+            return message + ". The original error was: \n" + cause.getMessage();
         } else {
             return message;
         }

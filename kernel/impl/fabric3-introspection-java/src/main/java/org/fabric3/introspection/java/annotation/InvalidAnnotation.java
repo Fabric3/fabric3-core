@@ -67,4 +67,12 @@ public class InvalidAnnotation extends ValidationFailure {
         }
         return message + ".\n" + e;
     }
+
+    public String getShortMessage() {
+        if (e == null) {
+            return message;
+        }
+        return message + ": " + e.getMessage();
+    }
+
 }

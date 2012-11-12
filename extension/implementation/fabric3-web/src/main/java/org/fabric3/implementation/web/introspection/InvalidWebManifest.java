@@ -52,11 +52,12 @@ public class InvalidWebManifest extends ValidationFailure {
         this.cause = cause;
     }
 
-    public Throwable getCause() {
-        return cause;
+    public String getMessage() {
+        return message + ". The original cause was: \n" + cause.toString();
     }
 
-    public String getMessage() {
-        return message + ". Original cause was: \n" + cause.toString();
+    public String getShortMessage() {
+        return message + ". The original cause was: \n" + cause.getMessage();
     }
+
 }

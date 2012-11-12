@@ -40,7 +40,6 @@ package org.fabric3.introspection.xml.composite;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
@@ -69,4 +68,13 @@ public class InvalidInclude extends XmlValidationFailure {
             return super.getMessage();
         }
     }
+
+    public String getShortMessage() {
+        if (cause != null) {
+            return getMessage() + ": " + cause.getMessage();
+        } else {
+            return super.getShortMessage();
+        }
+    }
+
 }

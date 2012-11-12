@@ -50,19 +50,14 @@ import org.fabric3.host.contribution.ValidationFailure;
  */
 public class InvalidAccessor extends ValidationFailure {
     private String message;
-    private Class<?> implClass;
 
-    public InvalidAccessor(String message, Class<?> implClass) {
+    public InvalidAccessor(String message) {
         super();
         this.message = message;
-        this.implClass = implClass;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public Class<?> getImplementationClass() {
-        return implClass;
-    }
 }

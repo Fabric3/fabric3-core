@@ -67,4 +67,9 @@ public class UnrecognizedAttribute extends XmlValidationFailure {
                 " at ").append(getLine()).append(",").append(getColumn()).append(" was not recognized.");
         return b.toString();
     }
+
+    public String getShortMessage() {
+        return new StringBuffer("The attribute ").append(name).append(" was not recognized").toString();
+    }
+
 }

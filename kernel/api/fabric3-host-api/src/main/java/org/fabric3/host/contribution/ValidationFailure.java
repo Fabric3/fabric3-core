@@ -48,4 +48,13 @@ public abstract class ValidationFailure {
      * @return the message associated with the error.
      */
     public abstract String getMessage();
+
+    /**
+     * Returns the abbreviated  message associated with the error.
+     *
+     * @return the abbreviated message associated with the error.
+     */
+    public String getShortMessage() {
+        return getMessage();
+    }
 }

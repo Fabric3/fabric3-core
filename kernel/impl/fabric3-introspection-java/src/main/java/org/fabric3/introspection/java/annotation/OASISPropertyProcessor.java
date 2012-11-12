@@ -112,12 +112,12 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
             if (annotation.required()) {
                 InvalidAccessor error =
                         new InvalidAccessor("Invalid required property. The field " + field.getName() + " on " + clazz.getName()
-                                                    + " is annotated with @Property but properties must be public or protected.", clazz);
+                                                    + " is annotated with @Property but properties must be public or protected.");
                 context.addError(error);
             } else {
                 InvalidAccessor warning =
                         new InvalidAccessor("Ignoring the field " + field.getName() + " annotated with @Property on " + clazz.getName()
-                                                    + ". Properties must be public or protected.", clazz);
+                                                    + ". Properties must be public or protected.");
                 context.addWarning(warning);
             }
         }
@@ -134,12 +134,12 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
             if (annotation.required()) {
                 InvalidAccessor error =
                         new InvalidAccessor("Invalid required property. The method " + method
-                                                    + " is annotated with @Property and must be public or protected.", clazz);
+                                                    + " is annotated with @Property and must be public or protected.");
                 context.addError(error);
                 return false;
             } else {
                 InvalidAccessor warning =
-                        new InvalidAccessor("Ignoring " + method + " annotated with @Property. Property " + "must be public or protected.", clazz);
+                        new InvalidAccessor("Ignoring " + method + " annotated with @Property. Property " + "must be public or protected.");
                 context.addWarning(warning);
                 return false;
             }

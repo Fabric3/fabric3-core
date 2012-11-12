@@ -60,4 +60,9 @@ public class InvalidIntentName extends ValidationFailure {
     public String getMessage() {
         return "Invalid intent name " + name + ".\n" + e;
     }
+
+    public String getShortMessage() {
+        return "Invalid intent name " + name + ": " + e.getMessage();
+    }
+
 }

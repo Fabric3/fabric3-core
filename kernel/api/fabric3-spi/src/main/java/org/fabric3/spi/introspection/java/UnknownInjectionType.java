@@ -66,15 +66,15 @@ public class UnknownInjectionType extends ValidationFailure {
     public String getMessage() {
         if (site instanceof FieldInjectionSite) {
             FieldInjectionSite field = (FieldInjectionSite) site;
-            return "Unknow injection type " + type + " on field " + field.getName() + " in class " + clazz;
+            return "Unknown injection type " + type + " on field " + field.getName() + " in class " + clazz;
         } else if (site instanceof MethodInjectionSite) {
             MethodInjectionSite method = (MethodInjectionSite) site;
-            return "Unknow injection type " + type + " on method " + method.getSignature() + " in class " + clazz;
+            return "Unknown injection type " + type + " on method " + method.getSignature() + " in class " + clazz;
         } else if (site instanceof ConstructorInjectionSite) {
             ConstructorInjectionSite ctor = (ConstructorInjectionSite) site;
-            return "Unknow injection type " + type + " on constructor " + ctor.getSignature() + " in class " + clazz;
+            return "Unknown injection type " + type + " on constructor " + ctor.getSignature() + " in class " + clazz;
         } else {
-            return "Unknow injection type " + type + " found in class " + clazz;
+            return "Unknown injection type " + type + " found in class " + clazz;
         }
     }
 }

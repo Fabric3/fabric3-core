@@ -51,6 +51,11 @@ public class ElementLoadFailure extends XmlValidationFailure {
     }
 
     public String getMessage() {
-        return super.getMessage() + ". Original error was: \n" + cause;
+        return super.getMessage() + ". The original error was: \n" + cause;
     }
+
+    public String getShortMessage() {
+        return super.getMessage() + ". The original error was: " + cause.getMessage();
+    }
+
 }

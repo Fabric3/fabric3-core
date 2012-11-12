@@ -64,4 +64,12 @@ public class ContributionIndexingFailure extends ValidationFailure {
         }
         return "Error indexing file " + file + "\n " + ex;
     }
+
+    public String getShortMessage() {
+        if (ex == null) {
+            return "Error indexing file " + file;
+        }
+        return "Error indexing file " + file + ":  " + ex.getMessage();
+    }
+
 }

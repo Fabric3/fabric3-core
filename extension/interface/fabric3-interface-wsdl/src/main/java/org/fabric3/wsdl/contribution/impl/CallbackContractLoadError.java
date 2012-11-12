@@ -52,6 +52,10 @@ public class CallbackContractLoadError extends ValidationFailure {
     }
 
     public String getMessage() {
-        return message + ". Original error was: \n" + cause;
+        return message + ". The original error was: \n" + cause;
+    }
+
+    public String getShortMessage() {
+        return message + ". The original error was: " + cause.getMessage();
     }
 }

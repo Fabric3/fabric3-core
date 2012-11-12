@@ -78,4 +78,14 @@ public class UnrecognizedElement extends XmlValidationFailure {
                     + "If this is not a typo, check to ensure extensions are configured properly.";
         }
     }
+
+    public String getShortMessage() {
+        String namespace = name.getNamespaceURI();
+        if (DeprecatedNamespaceHelper.isDeprecatedNamespace(namespace)) {
+            return "The element uses the deprecated namespace " + namespace + ". Please change it to " + Namespaces.F3;
+        } else {
+            return "The element " + name + " was not recognized";
+        }
+    }
+
 }

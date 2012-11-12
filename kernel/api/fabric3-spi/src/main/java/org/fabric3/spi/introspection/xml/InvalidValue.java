@@ -65,4 +65,13 @@ public class InvalidValue extends XmlValidationFailure {
             return super.getMessage();
         }
     }
+
+    public String getShortMessage() {
+        if (cause != null) {
+            return super.getMessage() + ". The original error was: " + cause.getMessage();
+        } else {
+            return super.getMessage();
+        }
+    }
+
 }

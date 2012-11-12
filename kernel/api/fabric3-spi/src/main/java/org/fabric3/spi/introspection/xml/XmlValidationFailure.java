@@ -90,4 +90,8 @@ public abstract class XmlValidationFailure extends ValidationFailure {
         return builder.toString();
     }
 
+    public String getShortMessage() {
+        return message;
+    }
+
 }
