@@ -170,5 +170,10 @@ public class DeploymentsResourceServiceTestCase extends TestCase {
         public MockFailure() {
             super(URI.create("components"), URI.create("contribution1"), Collections.emptyList());
         }
+
+        public String getMessage() {
+            return "";
+        }
+
     }
 }

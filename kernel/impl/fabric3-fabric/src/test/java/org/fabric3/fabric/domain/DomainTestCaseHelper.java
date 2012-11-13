@@ -101,6 +101,9 @@ public class DomainTestCaseHelper {
                 domainComposite.addComponent(logicalComponent);
                 InstantiationContext context = new InstantiationContext();
                 context.addError(new AssemblyFailure(COMPONENT_URI, CONTRIBUTION_URI, Collections.emptyList()) {
+                    public String getMessage() {
+                        return "";
+                    }
                 });
                 return context;
             }

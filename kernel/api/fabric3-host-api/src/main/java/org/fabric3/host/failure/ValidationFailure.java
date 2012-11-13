@@ -38,23 +38,8 @@
 package org.fabric3.host.failure;
 
 /**
- * Base class for validation failures.
+ * Base class for failures raised during contribution introspection.
  */
-public abstract class ValidationFailure {
+public abstract class ValidationFailure extends Failure {
 
-    /**
-     * Returns the message associated with the error.
-     *
-     * @return the message associated with the error.
-     */
-    public abstract String getMessage();
-
-    /**
-     * Returns the abbreviated  message associated with the error.
-     *
-     * @return the abbreviated message associated with the error.
-     */
-    public String getShortMessage() {
-        return getMessage();
-    }
 }

@@ -43,7 +43,7 @@ import java.util.List;
 /**
  * Base class for recoverable errors updating the domain assembly encountered during a deployment.
  */
-public abstract class AssemblyFailure {
+public abstract class AssemblyFailure extends Failure{
     private URI componentUri;
     private URI contributionUri;
     private List<?> sources;
@@ -77,24 +77,6 @@ public abstract class AssemblyFailure {
      */
     public URI getComponentUri() {
         return componentUri;
-    }
-
-    /**
-     * Returns the error message.
-     *
-     * @return the error message.
-     */
-    public String getMessage() {
-        return "";
-    }
-
-    /**
-     * Returns the abbreviated error message.
-     *
-     * @return the abbreviated error message.
-     */
-    public String getShortMessage() {
-        return getMessage();
     }
 
     /**
