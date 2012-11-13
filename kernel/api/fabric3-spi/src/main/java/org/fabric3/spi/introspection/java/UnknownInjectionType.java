@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.introspection.java;
 
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.InjectableType;

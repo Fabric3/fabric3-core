@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.host.contribution;
+package org.fabric3.host.failure;
 
 /**
  * Base class for validation failures.

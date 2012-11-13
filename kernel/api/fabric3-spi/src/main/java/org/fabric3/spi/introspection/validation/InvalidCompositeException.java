@@ -49,7 +49,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.fabric3.host.contribution.ValidationException;
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 
 /**
  *

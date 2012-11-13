@@ -39,6 +39,8 @@ package org.fabric3.host.contribution;
 
 import java.util.List;
 
+import org.fabric3.host.failure.ValidationFailure;
+
 /**
  * Base class for exceptions indicating a contribution has failed validation.
  */

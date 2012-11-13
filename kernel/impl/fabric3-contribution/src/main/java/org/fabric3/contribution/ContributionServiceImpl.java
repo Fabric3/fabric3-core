@@ -72,7 +72,7 @@ import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.contribution.RemoveException;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UninstallException;
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 import org.fabric3.host.repository.Repository;
 import org.fabric3.host.repository.RepositoryException;
 import org.fabric3.host.stream.Source;

@@ -1,6 +1,6 @@
 package org.fabric3.implementation.java.introspection;
 
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 
 /**
  *

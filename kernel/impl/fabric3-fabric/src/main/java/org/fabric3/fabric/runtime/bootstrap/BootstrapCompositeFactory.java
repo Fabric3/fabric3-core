@@ -45,7 +45,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.fabric.xml.XMLFactoryImpl;
 import org.fabric3.host.contribution.ContributionException;
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;

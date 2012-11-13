@@ -39,7 +39,7 @@ package org.fabric3.contribution;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 
 /**
  * Thrown when a deployable composite specified in the sca-contribution is invalid.

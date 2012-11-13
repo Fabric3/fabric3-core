@@ -43,7 +43,7 @@
  */
 package org.fabric3.introspection.java.contract;
 
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 
 /**
  */

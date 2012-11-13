@@ -43,7 +43,7 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 
 /**
  * Denotes an invalid accessor value for a field or method annotated with @Resource, @Reference, or @Property.

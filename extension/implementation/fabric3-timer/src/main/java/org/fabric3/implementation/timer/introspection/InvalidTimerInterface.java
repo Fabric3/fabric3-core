@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.timer.introspection;
 
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 import org.fabric3.implementation.timer.model.TimerImplementation;
 
 /**

@@ -43,7 +43,7 @@
  */
 package org.fabric3.cache.spi;
 
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 
 public class MissingCacheName extends ValidationFailure {
     private String location;

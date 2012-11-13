@@ -50,7 +50,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.fabric3.host.contribution.ArtifactValidationFailure;
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.common.PropertyLoader;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;

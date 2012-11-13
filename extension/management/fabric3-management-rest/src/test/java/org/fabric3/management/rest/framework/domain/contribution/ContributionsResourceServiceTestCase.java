@@ -56,7 +56,7 @@ import org.fabric3.host.contribution.DuplicateContributionException;
 import org.fabric3.host.contribution.RemoveException;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UnresolvedImportException;
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.ResourceException;

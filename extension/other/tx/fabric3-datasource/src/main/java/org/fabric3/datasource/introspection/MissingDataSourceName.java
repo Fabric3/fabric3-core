@@ -43,7 +43,7 @@
  */
 package org.fabric3.datasource.introspection;
 
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 
 /**
  * Denotes the use of <code>@Resource</code> for a <code>DataSource</code> type without a mapped name.

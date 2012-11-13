@@ -39,7 +39,7 @@ package org.fabric3.runtime.maven.contribution;
 
 import java.io.File;
 
-import org.fabric3.host.contribution.ValidationFailure;
+import org.fabric3.host.failure.ValidationFailure;
 
 /**
  * Validation warning indicating that the possible contribution file with the given File could not be loaded.
