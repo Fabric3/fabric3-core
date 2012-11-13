@@ -44,5 +44,25 @@ import org.fabric3.model.type.ModelObject;
  */
 public class ResourceDefinition extends ModelObject {
     private static final long serialVersionUID = -3860710064340747379L;
+    private Composite parent;
+
+    /**
+     * Returns the parent composite of this resource.
+     *
+     * @return the parent composite
+     */
+    public Composite getParent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent composite of this resource.
+     *
+     * @param parent the parent composite
+     */
+    public void setParent(Composite parent) {
+        this.parent = parent;
+    }
+
 
 }

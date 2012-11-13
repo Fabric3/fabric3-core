@@ -259,6 +259,7 @@ public class Composite extends ComponentType implements PolicyAware {
      * @param component the component
      */
     public void add(ComponentDefinition<? extends Implementation<?>> component) {
+        component.setParent(this);
         if (roundTrip) {
             pushElement(component);
         }
@@ -281,6 +282,7 @@ public class Composite extends ComponentType implements PolicyAware {
      * @param wire the wire
      */
     public void add(WireDefinition wire) {
+        wire.setParent(this);
         if (roundTrip) {
             pushElement(wire);
         }
@@ -303,6 +305,7 @@ public class Composite extends ComponentType implements PolicyAware {
      * @param channel the channel
      */
     public void add(ChannelDefinition channel) {
+        channel.setParent(this);
         if (roundTrip) {
             pushElement(channel);
         }
@@ -325,6 +328,7 @@ public class Composite extends ComponentType implements PolicyAware {
      * @param resource the resource
      */
     public void add(ResourceDefinition resource) {
+        resource.setParent(this);
         if (roundTrip) {
             pushElement(resource);
         }
@@ -347,6 +351,7 @@ public class Composite extends ComponentType implements PolicyAware {
      * @param include the composite to include
      */
     public void add(Include include) {
+        include.setParent(this);
         includes.put(include.getName(), include);
         componentsView.putAll(include.getIncluded().getComponents());
         referencesView.putAll(include.getIncluded().getReferences());

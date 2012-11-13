@@ -53,16 +53,18 @@ import org.fabric3.model.type.contract.ServiceContract;
 /**
  * A reference configured on a component.
  */
-public class ReferenceDefinition extends AbstractPolicyAware {
+public class ReferenceDefinition extends BindableDefinition {
     private static final long serialVersionUID = 4641581818938572132L;
+
     private String name;
+    private ComponentType parent;
+
     private ServiceContract serviceContract;
     private Multiplicity multiplicity;
     private boolean keyed;
     private DataType<?> keyDataType;
     private Autowire autowire = Autowire.INHERITED;
 
-    private List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
     private List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
 
     /**
@@ -100,6 +102,24 @@ public class ReferenceDefinition extends AbstractPolicyAware {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns the parent component type of this reference.
+     *
+     * @return the parent component type
+     */
+    public ComponentType getParent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent component type of this reference.
+     *
+     * @param parent the parent component type
+     */
+    public void setParent(ComponentType parent) {
+        this.parent = parent;
     }
 
     /**
@@ -145,24 +165,6 @@ public class ReferenceDefinition extends AbstractPolicyAware {
      */
     public boolean isRequired() {
         return multiplicity == Multiplicity.ONE_ONE || multiplicity == Multiplicity.ONE_N;
-    }
-
-    /**
-     * Returns the bindings configured on the reference.
-     *
-     * @return the bindings configured on the reference
-     */
-    public List<BindingDefinition> getBindings() {
-        return bindings;
-    }
-
-    /**
-     * Adds a configured binding.
-     *
-     * @param binding the binding to be added
-     */
-    public void addBinding(BindingDefinition binding) {
-        this.bindings.add(binding);
     }
 
     /**

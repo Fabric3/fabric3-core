@@ -56,15 +56,17 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     private static final long serialVersionUID = 4909969579651563484L;
 
     private String name;
-    private Autowire autowire = Autowire.INHERITED;
+    private Composite parent;
     private I implementation;
+    private String key;
+    private URI contributionUri;
+    private Autowire autowire = Autowire.INHERITED;
+
     private Map<String, ComponentService> services = new HashMap<String, ComponentService>();
     private Map<String, ComponentReference> references = new HashMap<String, ComponentReference>();
     private Map<String, ComponentProducer> producers = new HashMap<String, ComponentProducer>();
     private Map<String, ComponentConsumer> consumers = new HashMap<String, ComponentConsumer>();
     private Map<String, PropertyValue> propertyValues = new HashMap<String, PropertyValue>();
-    private String key;
-    private URI contributionUri;
 
     /**
      * Constructor.
@@ -87,11 +89,30 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     }
 
     /**
+     * Returns the composite this component is contained in.
+     *
+     * @return the composite this component is contained in
+     */
+    public Composite getParent() {
+        return parent;
+    }
+
+    /**
+     * Sets the composite this component is contained in.
+     *
+     * @param parent the composite
+     */
+    public void setParent(Composite parent) {
+        this.parent = parent;
+    }
+
+    /**
      * Sets the component implementation.
      *
      * @param implementation the component implementation
      */
     public void setImplementation(I implementation) {
+        implementation.setParent(this);
         if (roundTrip) {
             pushElement(implementation);
         }
@@ -158,6 +179,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param reference the reference to add
      */
     public void add(ComponentReference reference) {
+        reference.setParent(this);
         pushElement(reference);
         references.put(reference.getName(), reference);
     }
@@ -168,6 +190,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param reference the reference to remove
      */
     public void remove(ComponentReference reference) {
+        reference.setParent((ComponentDefinition<?>) null);
         removeElement(reference);
         references.remove(reference.getName());
     }
@@ -187,6 +210,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param service the service to add
      */
     public void add(ComponentService service) {
+        service.setParent(this);
         pushElement(service);
         services.put(service.getName(), service);
     }
@@ -197,6 +221,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param service the service to remove
      */
     public void remove(ComponentService service) {
+        service.setParent((ComponentDefinition<?>) null);
         removeElement(service);
         services.remove(service.getName());
     }
@@ -208,6 +233,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param producer the producer to add
      */
     public void add(ComponentProducer producer) {
+        producer.setParent(this);
         pushElement(producer);
         producers.put(producer.getName(), producer);
     }
@@ -218,6 +244,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param producer the producer to remove
      */
     public void remove(ComponentProducer producer) {
+        producer.setParent((ComponentDefinition<?>) null);
         removeElement(producer);
         producers.remove(producer.getName());
     }
@@ -238,6 +265,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param consumer the consumer to add
      */
     public void add(ComponentConsumer consumer) {
+        consumer.setParent(this);
         pushElement(consumer);
         consumers.put(consumer.getName(), consumer);
     }
@@ -248,10 +276,10 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param consumer the consumer to remove
      */
     public void remove(ComponentConsumer consumer) {
+        consumer.setParent((ComponentDefinition<?>) null);
         removeElement(consumer);
         consumers.remove(consumer.getName());
     }
-
 
     /**
      * Returns the consumers configured by this component definition.
@@ -277,6 +305,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param value the property value to add
      */
     public void add(PropertyValue value) {
+        value.setParent(this);
         pushElement(value);
         propertyValues.put(value.getName(), value);
     }
@@ -287,6 +316,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param value the value to remove
      */
     public void remove(PropertyValue value) {
+        value.setValue(null);
         removeElement(value);
         propertyValues.remove(value.getName());
     }

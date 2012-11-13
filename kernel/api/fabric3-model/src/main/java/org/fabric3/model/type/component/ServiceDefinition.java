@@ -46,17 +46,17 @@ package org.fabric3.model.type.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.model.type.AbstractPolicyAware;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * A component type service.
  */
-public class ServiceDefinition extends AbstractPolicyAware {
+public class ServiceDefinition extends BindableDefinition {
     private static final long serialVersionUID = -3331868180749278028L;
+
     private String name;
+    private ComponentType parent;
     private ServiceContract serviceContract;
-    private List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
     private List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
 
     public ServiceDefinition(String name) {
@@ -78,6 +78,24 @@ public class ServiceDefinition extends AbstractPolicyAware {
     }
 
     /**
+     * Returns the parent component type of this service.
+     *
+     * @return the parent component type
+     */
+    public ComponentType getParent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent component type of this service.
+     *
+     * @param parent the parent component type
+     */
+    public void setParent(ComponentType parent) {
+        this.parent = parent;
+    }
+
+    /**
      * Returns the service contract
      *
      * @return the service contract
@@ -93,24 +111,6 @@ public class ServiceDefinition extends AbstractPolicyAware {
      */
     public void setServiceContract(ServiceContract contract) {
         this.serviceContract = contract;
-    }
-
-    /**
-     * Returns the bindings configured for the service
-     *
-     * @return the bindings configured for the service
-     */
-    public List<BindingDefinition> getBindings() {
-        return bindings;
-    }
-
-    /**
-     * Configures the service with a binding
-     *
-     * @param binding the binding
-     */
-    public void addBinding(BindingDefinition binding) {
-        this.bindings.add(binding);
     }
 
     /**

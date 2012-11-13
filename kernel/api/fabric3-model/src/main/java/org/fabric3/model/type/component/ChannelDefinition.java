@@ -44,14 +44,15 @@ import java.util.List;
 import org.fabric3.model.type.AbstractPolicyAware;
 
 /**
- * A channel configuration ina composite.
+ * A channel configuration in a composite.
  */
-public class ChannelDefinition extends AbstractPolicyAware {
+public class ChannelDefinition extends BindableDefinition {
     private static final long serialVersionUID = 8735705202863105855L;
 
     private String name;
+    private Composite parent;
+
     private URI contributionUri;
-    private List<BindingDefinition> bindings;
 
     public ChannelDefinition(String name, URI contributionUri) {
         this.name = name;
@@ -69,30 +70,30 @@ public class ChannelDefinition extends AbstractPolicyAware {
     }
 
     /**
+     * Returns the parent composite of this channel.
+     *
+     * @return the parent composite
+     */
+    public Composite getParent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent composite of this channel.
+     *
+     * @param parent the parent composite
+     */
+    public void setParent(Composite parent) {
+        this.parent = parent;
+    }
+
+    /**
      * Returns the URI of the contribution this channel is defined in.
      *
      * @return the URI of the contribution this channel is defined in
      */
     public URI getContributionUri() {
         return contributionUri;
-    }
-
-    /**
-     * Returns the bindings configured on the channel.
-     *
-     * @return the bindings configured on the channel
-     */
-    public List<BindingDefinition> getBindings() {
-        return bindings;
-    }
-
-    /**
-     * Adds a configured binding.
-     *
-     * @param binding the binding to be added
-     */
-    public void addBinding(BindingDefinition binding) {
-        this.bindings.add(binding);
     }
 
 }

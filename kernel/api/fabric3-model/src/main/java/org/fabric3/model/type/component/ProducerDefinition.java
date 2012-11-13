@@ -49,10 +49,11 @@ import org.fabric3.model.type.contract.ServiceContract;
 /**
  * A component type producer.
  */
-public class ProducerDefinition extends AbstractPolicyAware {
+public class ProducerDefinition extends BindableDefinition {
     private static final long serialVersionUID = -4222312633353056234L;
 
     private String name;
+    private ComponentType parent;
     private ServiceContract serviceContract;
 
     /**
@@ -77,6 +78,24 @@ public class ProducerDefinition extends AbstractPolicyAware {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns the parent component type of this producer.
+     *
+     * @return the parent component type
+     */
+    public ComponentType getParent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent component type of this producer.
+     *
+     * @param parent the parent component type
+     */
+    public void setParent(ComponentType parent) {
+        this.parent = parent;
     }
 
     /**

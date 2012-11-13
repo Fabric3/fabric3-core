@@ -44,7 +44,6 @@
 package org.fabric3.model.type.component;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,45 +51,55 @@ import java.util.List;
  */
 public class ComponentProducer extends ProducerDefinition {
     private static final long serialVersionUID = -4230400252060306972L;
+
+    private ComponentDefinition<?> parent;
     private List<URI> targets;
-    private List<BindingDefinition> bindings;
 
     /**
      * Constructor.
      *
-     * @param name     the name of the producer being configured
-     * @param targets  the channel targets
+     * @param name    the name of the producer being configured
+     * @param targets the channel targets
      */
     public ComponentProducer(String name, List<URI> targets) {
         super(name);
         this.targets = targets;
-        bindings = new ArrayList<BindingDefinition>();
     }
 
+    /**
+     * Returns the parent component of this producer.
+     *
+     * @return the parent component
+     */
+    public ComponentDefinition<?> getParentComponent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent component of this producer.
+     *
+     * @param parent the parent component
+     */
+    public void setParent(ComponentDefinition<?> parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * Returns the URIs of channels this producer sends messages to.
+     *
+     * @return the URIs of channels this producer sends messages to
+     */
     public List<URI> getTargets() {
         return targets;
     }
 
+    /**
+     * Adds the URI of a channel this producer sends messages to.
+     *
+     * @param target the channel URI
+     */
     public void addTarget(URI target) {
         targets.add(target);
-    }
-
-    /**
-     * Returns the bindings configured on the producer.
-     *
-     * @return the bindings configured on the producer
-     */
-    public List<BindingDefinition> getBindings() {
-        return bindings;
-    }
-
-    /**
-     * Adds a configured binding.
-     *
-     * @param binding the binding to be added
-     */
-    public void addBinding(BindingDefinition binding) {
-        this.bindings.add(binding);
     }
 
 }

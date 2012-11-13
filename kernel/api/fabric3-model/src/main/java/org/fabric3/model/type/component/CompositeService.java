@@ -52,6 +52,7 @@ import org.fabric3.model.type.contract.ServiceContract;
  */
 public class CompositeService extends ServiceDefinition {
     private static final long serialVersionUID = 7831894579780963064L;
+
     private URI promote;
 
     /**

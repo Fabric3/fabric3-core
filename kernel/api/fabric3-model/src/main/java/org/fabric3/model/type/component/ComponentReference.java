@@ -51,8 +51,10 @@ import java.util.List;
  */
 public class ComponentReference extends ReferenceDefinition {
     private static final long serialVersionUID = 2072898078368317712L;
+
     private List<Target> targets = new ArrayList<Target>();
     private boolean nonOverridable;
+    private ComponentDefinition<?> parent;
 
     /**
      * Constructor.
@@ -62,6 +64,24 @@ public class ComponentReference extends ReferenceDefinition {
      */
     public ComponentReference(String name, Multiplicity multiplicity) {
         super(name, multiplicity);
+    }
+
+    /**
+     * Returns the parent component of this reference.
+     *
+     * @return the parent component
+     */
+    public ComponentDefinition<?> getParentComponent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent component of this reference.
+     *
+     * @param parent the parent component
+     */
+    public void setParent(ComponentDefinition<?> parent) {
+        this.parent = parent;
     }
 
     public List<Target> getTargets() {

@@ -52,8 +52,9 @@ import java.util.List;
  */
 public class ComponentConsumer extends ConsumerDefinition {
     private static final long serialVersionUID = -4230400252060306972L;
+
+    private ComponentDefinition<?> parent;
     private List<URI> sources;
-    private List<BindingDefinition> bindings;
 
     /**
      * Constructor.
@@ -67,26 +68,31 @@ public class ComponentConsumer extends ConsumerDefinition {
         bindings = new ArrayList<BindingDefinition>();
     }
 
+    /**
+     * Returns the parent component of this consumer.
+     *
+     * @return the parent component
+     */
+    public ComponentDefinition<?> getParentComponent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent component of this consumer.
+     *
+     * @param parent the parent component
+     */
+    public void setParent(ComponentDefinition<?> parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * Returns the URIs of channels this consumer receives events from.
+     *
+     * @return the URIs of channels this consumer receives events from
+     */
     public List<URI> getSources() {
         return sources;
-    }
-
-    /**
-     * Returns the bindings configured on the consumer.
-     *
-     * @return the bindings configured on the consumer
-     */
-    public List<BindingDefinition> getBindings() {
-        return bindings;
-    }
-
-    /**
-     * Adds a configured binding.
-     *
-     * @param binding the binding to be added
-     */
-    public void addBinding(BindingDefinition binding) {
-        this.bindings.add(binding);
     }
 
 }

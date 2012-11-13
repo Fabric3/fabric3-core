@@ -57,6 +57,8 @@ import org.fabric3.model.type.CapabilityAware;
 public class ComponentType extends AbstractPolicyAware implements CapabilityAware {
     private static final long serialVersionUID = 5302580019263119837L;
 
+    private Implementation parent;
+
     private Map<String, ServiceDefinition> services = new HashMap<String, ServiceDefinition>();
     private Map<String, ConsumerDefinition> consumers = new HashMap<String, ConsumerDefinition>();
     private Map<String, ReferenceDefinition> references = new HashMap<String, ReferenceDefinition>();
@@ -64,6 +66,24 @@ public class ComponentType extends AbstractPolicyAware implements CapabilityAwar
     private Map<String, Property> properties = new HashMap<String, Property>();
     private Map<String, ResourceReferenceDefinition> resourceReferences = new HashMap<String, ResourceReferenceDefinition>();
     private Set<String> requiredCapabilities = new HashSet<String>();
+
+    /**
+     * Returns the parent implementation.
+     *
+     * @return the parent implementation
+     */
+    public Implementation getParent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent implementation.
+     *
+     * @param parent the parent implementation
+     */
+    public void setParent(Implementation parent) {
+        this.parent = parent;
+    }
 
     /**
      * Returns the services provided by the implementation keyed by name.
@@ -80,6 +100,7 @@ public class ComponentType extends AbstractPolicyAware implements CapabilityAwar
      * @param service the service to add
      */
     public void add(ServiceDefinition service) {
+        service.setParent(this);
         if (roundTrip) {
             pushElement(service);
         }
@@ -101,6 +122,7 @@ public class ComponentType extends AbstractPolicyAware implements CapabilityAwar
      * @param consumer the consumer to add
      */
     public void add(ConsumerDefinition consumer) {
+        consumer.setParent(this);
         if (roundTrip) {
             pushElement(consumer);
         }
@@ -122,6 +144,7 @@ public class ComponentType extends AbstractPolicyAware implements CapabilityAwar
      * @param reference the reference to add
      */
     public void add(ReferenceDefinition reference) {
+        reference.setParent(this);
         if (roundTrip) {
             pushElement(reference);
         }
@@ -143,6 +166,7 @@ public class ComponentType extends AbstractPolicyAware implements CapabilityAwar
      * @param producer the producer to add
      */
     public void add(ProducerDefinition producer) {
+        producer.setParent(this);
         if (roundTrip) {
             pushElement(producer);
         }
@@ -164,6 +188,7 @@ public class ComponentType extends AbstractPolicyAware implements CapabilityAwar
      * @param property the property to add
      */
     public void add(Property property) {
+        property.setParent(this);
         if (roundTrip) {
             pushElement(property);
         }
@@ -185,6 +210,7 @@ public class ComponentType extends AbstractPolicyAware implements CapabilityAwar
      * @param definition the resource reference to add
      */
     public void add(ResourceReferenceDefinition definition) {
+        definition.setParent(this);
         if (roundTrip) {
             pushElement(definition);
         }

@@ -51,10 +51,12 @@ import org.fabric3.model.type.contract.DataType;
 /**
  * A component type consumer.
  */
-public class ConsumerDefinition extends AbstractPolicyAware {
+public class ConsumerDefinition extends BindableDefinition {
     private static final long serialVersionUID = -4222312633353056234L;
 
     private String name;
+    private ComponentType parent;
+
     private List<DataType<?>> types;
 
     /**
@@ -84,6 +86,24 @@ public class ConsumerDefinition extends AbstractPolicyAware {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns the parent component type of this consumer.
+     *
+     * @return the parent component type
+     */
+    public ComponentType getParent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent component type of this consumer.
+     *
+     * @param parent the parent component type
+     */
+    public void setParent(ComponentType parent) {
+        this.parent = parent;
     }
 
     /**

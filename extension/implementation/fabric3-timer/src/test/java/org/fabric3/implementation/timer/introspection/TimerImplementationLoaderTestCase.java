@@ -53,6 +53,7 @@ import org.fabric3.implementation.timer.model.TimerImplementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  *
@@ -167,7 +168,9 @@ public class TimerImplementationLoaderTestCase extends TestCase {
         super.setUp();
         xmlFactory = XMLInputFactory.newInstance();
         context = new DefaultIntrospectionContext(URI.create("test"), getClass().getClassLoader());
-        JavaImplementationProcessor processor = EasyMock.createNiceMock(JavaImplementationProcessor.class);
+        JavaImplementationProcessor processor = EasyMock.createMock(JavaImplementationProcessor.class);
+        EasyMock.expect(processor.introspect(EasyMock.isA(String.class), EasyMock.eq(context))).andReturn(new InjectingComponentType());
+        EasyMock.replay(processor);
         LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
         loader = new TimerImplementationLoader(processor, helper);
     }

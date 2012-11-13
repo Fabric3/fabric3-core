@@ -49,6 +49,27 @@ package org.fabric3.model.type.component;
 public class ComponentService extends ServiceDefinition {
     private static final long serialVersionUID = 1076710434904709542L;
 
+    private ComponentDefinition<?> parent;
+
+    /**
+     * Returns the parent component of this reference.
+     *
+     * @return the parent component
+     */
+    public ComponentDefinition<?> getParentComponent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent component of this reference.
+     *
+     * @param parent the parent component
+     */
+    public void setParent(ComponentDefinition<?> parent) {
+        this.parent = parent;
+    }
+
+
     public ComponentService(String name) {
         super(name);
     }

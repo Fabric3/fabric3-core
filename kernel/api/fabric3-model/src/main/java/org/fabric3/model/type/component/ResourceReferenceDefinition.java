@@ -53,6 +53,7 @@ public class ResourceReferenceDefinition extends ModelObject {
     private static final long serialVersionUID = 4241666632750146304L;
 
     private String name;
+    private ComponentType parent;
     private boolean optional;
     private ServiceContract serviceContract;
 
@@ -69,6 +70,24 @@ public class ResourceReferenceDefinition extends ModelObject {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns the parent component type of this resource reference.
+     *
+     * @return the parent component type
+     */
+    public ComponentType getParent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent component type of this resource reference.
+     *
+     * @param parent the parent component type
+     */
+    public void setParent(ComponentType parent) {
+        this.parent = parent;
     }
 
     /**
