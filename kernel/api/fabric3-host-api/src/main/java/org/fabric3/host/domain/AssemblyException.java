@@ -44,6 +44,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.fabric3.host.failure.AssemblyFailure;
+
 /**
  * Denotes a recoverable failure updating the domain assembly during deployment. For example, a failure may be a reference targeted to a non-existent
  * service.

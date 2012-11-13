@@ -41,7 +41,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collections;
 
-import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.host.failure.AssemblyFailure;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**

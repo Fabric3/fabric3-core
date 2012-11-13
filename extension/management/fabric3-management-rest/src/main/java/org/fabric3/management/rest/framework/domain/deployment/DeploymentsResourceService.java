@@ -54,7 +54,7 @@ import org.fabric3.api.annotation.management.OperationType;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.domain.AssemblyException;
-import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.host.failure.AssemblyFailure;
 import org.fabric3.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.host.domain.ContributionNotFoundException;
 import org.fabric3.host.domain.DeployableNotFoundException;

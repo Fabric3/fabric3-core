@@ -39,7 +39,7 @@ package org.fabric3.fabric.instantiator;
 
 import java.util.Collections;
 
-import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.host.failure.AssemblyFailure;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**

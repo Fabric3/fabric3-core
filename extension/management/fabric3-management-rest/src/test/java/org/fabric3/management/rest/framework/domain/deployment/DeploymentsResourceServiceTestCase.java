@@ -49,7 +49,7 @@ import org.easymock.EasyMock;
 
 import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.domain.AssemblyException;
-import org.fabric3.host.domain.AssemblyFailure;
+import org.fabric3.host.failure.AssemblyFailure;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Resource;
