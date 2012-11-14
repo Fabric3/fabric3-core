@@ -37,6 +37,9 @@
 */
 package org.fabric3.host.failure;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * The base type for all failures raised in the system. Failures are raised during contribution introspection in response to a syntactic error or
  * during deployment when an logical instantiation or wiring exception is encountered.
@@ -58,5 +61,15 @@ public abstract class Failure {
     public String getShortMessage() {
         return getMessage();
     }
+
+    /**
+     * Returns the objects that are a source of a failure.
+     *
+     * @return the failure sources
+     */
+    public List<?> getSources() {
+        return Collections.emptyList();
+    }
+
 
 }
