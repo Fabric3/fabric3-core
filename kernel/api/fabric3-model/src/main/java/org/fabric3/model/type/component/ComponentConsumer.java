@@ -47,10 +47,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.model.type.ModelObject;
+
 /**
  * A consumer configured on a component.
  */
-public class ComponentConsumer extends ConsumerDefinition {
+public class ComponentConsumer extends AbstractConsumer {
     private static final long serialVersionUID = -4230400252060306972L;
 
     private ComponentDefinition<?> parent;
@@ -63,7 +65,7 @@ public class ComponentConsumer extends ConsumerDefinition {
      * @param sources the channel targets
      */
     public ComponentConsumer(String name, List<URI> sources) {
-        super(name, null);
+        super(name);
         this.sources = sources;
         bindings = new ArrayList<BindingDefinition>();
     }
@@ -73,7 +75,7 @@ public class ComponentConsumer extends ConsumerDefinition {
      *
      * @return the parent component
      */
-    public ComponentDefinition<?> getParentComponent() {
+    public ComponentDefinition<?> getParent() {
         return parent;
     }
 
@@ -82,8 +84,9 @@ public class ComponentConsumer extends ConsumerDefinition {
      *
      * @param parent the parent component
      */
-    public void setParent(ComponentDefinition<?> parent) {
-        this.parent = parent;
+    public void setParent(ModelObject parent) {
+        // XCV FIXME
+        this.parent = (ComponentDefinition<?>) parent;
     }
 
     /**

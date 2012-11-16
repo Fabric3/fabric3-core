@@ -325,7 +325,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             return;
         }
 
-        processMultiplicity(reference, typeReference, reader, startLocation, context);
+        processMultiplicity(reference, typeReference, startLocation, context);
         definition.add(reference);
 
     }
@@ -543,13 +543,11 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      *
      * @param reference     the reference
      * @param typeReference the promoted reference
-     * @param reader        the reader
      * @param location      the current location
      * @param context       the context
      */
     private void processMultiplicity(ComponentReference reference,
                                      AbstractReference typeReference,
-                                     XMLStreamReader reader,
                                      Location location,
                                      IntrospectionContext context) {
         String name = reference.getName();

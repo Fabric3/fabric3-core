@@ -45,54 +45,62 @@ package org.fabric3.model.type.component;
 
 import java.util.List;
 
-import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.contract.DataType;
 
 /**
- * A component type consumer.
+ * An abstract consumer type.
  */
-public class ConsumerDefinition extends AbstractConsumer {
-    private static final long serialVersionUID = -4222312633353056234L;
+public abstract class AbstractConsumer extends BindableDefinition {
+    private static final long serialVersionUID = -2867241238552796639L;
 
-    private ComponentType parent;
+    private String name;
+    private List<DataType<?>> types;
+
 
     /**
      * Constructor.
      *
      * @param name the consumer name
      */
-    public ConsumerDefinition(String name) {
-        this(name, null);
+    public AbstractConsumer(String name) {
+        this.name = name;
     }
 
     /**
      * Constructor.
      *
      * @param name  the consumer name
+     * @param types the data types
+     */
+    public AbstractConsumer(String name, List<DataType<?>> types) {
+        this.name = name;
+        this.types = types;
+    }
+
+    /**
+     * Returns the consumer name.
+     *
+     * @return the reference name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the data types required by this consumer.
+     *
+     * @return the data types required by this consumer
+     */
+    public List<DataType<?>> getTypes() {
+        return types;
+    }
+
+    /**
+     * Sets the data types required by this consumer.
+     *
      * @param types the data types required by this consumer
      */
-    public ConsumerDefinition(String name, List<DataType<?>> types) {
-        super(name, types);
+    public void setTypes(List<DataType<?>> types) {
+        this.types = types;
     }
-
-    /**
-     * Returns the parent component type of this consumer.
-     *
-     * @return the parent component type
-     */
-    public ComponentType getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent component type of this consumer.
-     *
-     * @param parent the parent component type
-     */
-    public void setParent(ModelObject parent) {
-        // XCV FIXME
-        this.parent = (ComponentType) parent;
-    }
-
-
 }
