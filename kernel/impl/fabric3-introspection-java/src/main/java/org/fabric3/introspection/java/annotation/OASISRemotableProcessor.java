@@ -66,7 +66,7 @@ public class OASISRemotableProcessor<I extends Implementation<? extends Injectin
     }
 
     public void visitType(Remotable annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
-        ServiceContract serviceContract = contractProcessor.introspect(type, context);
+        ServiceContract serviceContract = contractProcessor.introspect(type, context, componentType);
         ServiceDefinition definition = new ServiceDefinition(serviceContract.getInterfaceName(), serviceContract);
         componentType.add(definition);
     }

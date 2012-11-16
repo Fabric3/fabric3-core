@@ -97,7 +97,7 @@ public class ResourceProcessor extends AbstractAnnotationProcessor<Resource> {
         ResourceTypeHandler handler = handlers.get(type);
         if (handler != null) {
             // there is a specific Handler for this type
-            definition = handler.createResourceReference(name, annotation, constructor, context);
+            definition = handler.createResourceReference(name, annotation, constructor, componentType, context);
         } else {
             boolean optional = annotation.optional();
             String mappedName = annotation.name();
@@ -105,7 +105,7 @@ public class ResourceProcessor extends AbstractAnnotationProcessor<Resource> {
                 // default to the field type simple name
                 mappedName = type.getSimpleName();
             }
-            definition = createResource(name, type, optional, mappedName, context);
+            definition = createResource(name, type, optional, mappedName, componentType, context);
         }
         componentType.add(definition, site);
 
@@ -122,7 +122,7 @@ public class ResourceProcessor extends AbstractAnnotationProcessor<Resource> {
         ResourceTypeHandler handler = handlers.get(type);
         if (handler != null) {
             // there is a specific Handler for this type
-            definition = handler.createResourceReference(name, annotation, field, context);
+            definition = handler.createResourceReference(name, annotation, field, componentType, context);
         } else {
             boolean optional = annotation.optional();
             String mappedName = annotation.name();
@@ -130,7 +130,7 @@ public class ResourceProcessor extends AbstractAnnotationProcessor<Resource> {
                 // default to the field type simple name
                 mappedName = type.getSimpleName();
             }
-            definition = createResource(name, type, optional, mappedName, context);
+            definition = createResource(name, type, optional, mappedName, componentType, context);
         }
         componentType.add(definition, site);
     }
@@ -149,7 +149,7 @@ public class ResourceProcessor extends AbstractAnnotationProcessor<Resource> {
         ResourceTypeHandler handler = handlers.get(type);
         if (handler != null) {
             // there is a specific Handler for this type
-            definition = handler.createResourceReference(name, annotation, method, context);
+            definition = handler.createResourceReference(name, annotation, method, componentType, context);
         } else {
             boolean optional = annotation.optional();
             String mappedName = annotation.name();
@@ -157,7 +157,7 @@ public class ResourceProcessor extends AbstractAnnotationProcessor<Resource> {
                 // default to the field type simple name
                 mappedName = type.getSimpleName();
             }
-            definition = createResource(name, type, optional, mappedName, context);
+            definition = createResource(name, type, optional, mappedName, componentType, context);
         }
         componentType.add(definition, site);
     }
@@ -166,8 +166,9 @@ public class ResourceProcessor extends AbstractAnnotationProcessor<Resource> {
                                                           Class<?> type,
                                                           boolean optional,
                                                           String mappedName,
+                                                          InjectingComponentType componentType,
                                                           IntrospectionContext context) {
-        ServiceContract serviceContract = contractProcessor.introspect(type, context);
+        ServiceContract serviceContract = contractProcessor.introspect(type, context, componentType);
         return new SystemSourcedResourceReference(name, optional, mappedName, serviceContract);
     }
 }

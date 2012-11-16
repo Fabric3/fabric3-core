@@ -37,16 +37,17 @@
 */
 package org.fabric3.implementation.timer.introspection;
 
-import org.fabric3.host.failure.ValidationFailure;
 import org.fabric3.implementation.timer.model.TimerImplementation;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  *
  */
-public class InvalidTimerInterface extends ValidationFailure {
+public class InvalidTimerInterface extends JavaValidationFailure {
     private TimerImplementation implementation;
 
-    public InvalidTimerInterface(TimerImplementation implementation) {
+    public InvalidTimerInterface(Class<?> clazz, TimerImplementation implementation) {
+        super(clazz, implementation);
         this.implementation = implementation;
     }
 

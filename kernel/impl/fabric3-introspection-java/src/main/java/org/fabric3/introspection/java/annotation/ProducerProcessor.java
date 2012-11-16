@@ -82,7 +82,7 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<Producer> {
         String name = helper.getSiteName(field, annotation.value());
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
-        ProducerDefinition definition = createDefinition(name, type, implClass, context);
+        ProducerDefinition definition = createDefinition(name, type, implClass, componentType, context);
         componentType.add(definition, site);
     }
 
@@ -95,7 +95,7 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<Producer> {
         String name = helper.getSiteName(method, annotation.value());
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        ProducerDefinition definition = createDefinition(name, type, implClass, context);
+        ProducerDefinition definition = createDefinition(name, type, implClass, componentType, context);
         componentType.add(definition, site);
     }
 
@@ -109,14 +109,18 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<Producer> {
         String name = helper.getSiteName(constructor, index, annotation.value());
         Type type = helper.getGenericType(constructor, index);
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
-        ProducerDefinition definition = createDefinition(name, type, implClass, context);
+        ProducerDefinition definition = createDefinition(name, type, implClass, componentType, context);
         componentType.add(definition, site);
     }
 
-    protected ProducerDefinition createDefinition(String name, Type type, Class<?> implClass, IntrospectionContext context) {
+    protected ProducerDefinition createDefinition(String name,
+                                                  Type type,
+                                                  Class<?> implClass,
+                                                  InjectingComponentType componentType,
+                                                  IntrospectionContext context) {
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> baseType = helper.getBaseType(type, typeMapping);
-        ServiceContract contract = contractProcessor.introspect(baseType, implClass, context);
+        ServiceContract contract = contractProcessor.introspect(baseType, implClass, context, componentType);
         // TODO handle policies
         return new ProducerDefinition(name, contract);
     }

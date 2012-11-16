@@ -37,20 +37,18 @@
 */
 package org.fabric3.implementation.spring.introspection;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  *
  */
-public class UnknownServiceType extends ValidationFailure {
+public class UnknownServiceType extends JavaValidationFailure {
     private String serviceName;
 
-    public UnknownServiceType(String serviceName) {
+    public UnknownServiceType(String serviceName, Class<?> clazz, ComponentType componentType) {
+        super(clazz, componentType);
         this.serviceName = serviceName;
-    }
-
-    public String getServiceName() {
-        return serviceName;
     }
 
     public String getMessage() {

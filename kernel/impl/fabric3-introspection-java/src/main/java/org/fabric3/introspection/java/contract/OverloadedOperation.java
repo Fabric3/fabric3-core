@@ -37,17 +37,20 @@
 */
 package org.fabric3.introspection.java.contract;
 
-import org.fabric3.host.failure.ValidationFailure;
+import java.lang.reflect.Method;
+
+import org.fabric3.model.type.ModelObject;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  * Indicates that a service contract specification contains an overloaded method.
  */
-public class OverloadedOperation extends ValidationFailure {
+public class OverloadedOperation extends JavaValidationFailure {
     private String method;
 
-    public OverloadedOperation(String method) {
-        super();
-        this.method = method;
+    public OverloadedOperation(Method method, ModelObject... modelObjects) {
+        super(method, modelObjects);
+        this.method = method.toString();
     }
 
     public String getMessage() {

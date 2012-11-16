@@ -10,6 +10,7 @@ import org.easymock.EasyMock;
 
 import org.fabric3.api.annotation.Cache;
 import org.fabric3.cache.model.CacheReferenceDefinition;
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -32,7 +33,8 @@ public class CacheProcessorTestCase extends TestCase {
 
         JavaServiceContract contract = new JavaServiceContract();
         EasyMock.expect(contractProcessor.introspect(EasyMock.isA(Class.class),
-                                                     EasyMock.isA(IntrospectionContext.class))).andReturn(contract);
+                                                     EasyMock.isA(IntrospectionContext.class),
+                                                     EasyMock.isA(ComponentType.class))).andReturn(contract);
 
         EasyMock.expect(helper.getSiteName(EasyMock.isA(Field.class), (String) EasyMock.isNull())).andReturn("cache");
         EasyMock.replay(contractProcessor, helper);
@@ -53,7 +55,8 @@ public class CacheProcessorTestCase extends TestCase {
 
         JavaServiceContract contract = new JavaServiceContract();
         EasyMock.expect(contractProcessor.introspect(EasyMock.isA(Class.class),
-                                                     EasyMock.isA(IntrospectionContext.class))).andReturn(contract);
+                                                     EasyMock.isA(IntrospectionContext.class),
+                                                     EasyMock.isA(ComponentType.class))).andReturn(contract);
 
         EasyMock.expect(helper.getSiteName(EasyMock.isA(Method.class), (String) EasyMock.isNull())).andReturn("cache");
         EasyMock.replay(contractProcessor, helper);
@@ -74,7 +77,8 @@ public class CacheProcessorTestCase extends TestCase {
 
         JavaServiceContract contract = new JavaServiceContract();
         EasyMock.expect(contractProcessor.introspect(EasyMock.isA(Class.class),
-                                                     EasyMock.isA(IntrospectionContext.class))).andReturn(contract);
+                                                     EasyMock.isA(IntrospectionContext.class),
+                                                     EasyMock.isA(ComponentType.class))).andReturn(contract);
 
         EasyMock.replay(contractProcessor, helper);
 

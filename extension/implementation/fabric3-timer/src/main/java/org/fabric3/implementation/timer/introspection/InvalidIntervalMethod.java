@@ -37,19 +37,20 @@
 */
 package org.fabric3.implementation.timer.introspection;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.implementation.timer.model.TimerImplementation;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  *
  */
-public class InvalidIntervalMethod extends ValidationFailure {
+public class InvalidIntervalMethod extends JavaValidationFailure {
     private String message;
 
-    public InvalidIntervalMethod(String message) {
+    public InvalidIntervalMethod(String message, Class<?> clazz, TimerImplementation implementation) {
+        super(clazz, implementation);
         this.message = message;
     }
 
-    @Override
     public String getMessage() {
         return message;
     }

@@ -43,13 +43,17 @@
  */
 package org.fabric3.cache.spi;
 
-import org.fabric3.host.failure.ValidationFailure;
+import java.lang.reflect.Member;
 
-public class MissingCacheName extends ValidationFailure {
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
+
+public class MissingCacheName extends JavaValidationFailure {
     private String location;
 
-    public MissingCacheName(Class<?> clazz) {
-        this.location = clazz.getName();
+    public MissingCacheName(Member member, InjectingComponentType componentType) {
+        super(member, componentType);
+        this.location = member.getDeclaringClass().getName();
     }
 
     public String getMessage() {

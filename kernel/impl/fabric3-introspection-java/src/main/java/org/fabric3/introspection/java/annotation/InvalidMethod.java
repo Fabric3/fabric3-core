@@ -43,16 +43,19 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import org.fabric3.host.failure.ValidationFailure;
+import java.lang.reflect.Method;
+
+import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  * Denotes an invalid method annotated with an SCA annotation
  */
-public class InvalidMethod extends ValidationFailure {
+public class InvalidMethod extends JavaValidationFailure {
     private String message;
 
-    public InvalidMethod(String message) {
-        super();
+    public InvalidMethod(String message, Method method, ComponentType componentType) {
+        super(method, componentType);
         this.message = message;
     }
 

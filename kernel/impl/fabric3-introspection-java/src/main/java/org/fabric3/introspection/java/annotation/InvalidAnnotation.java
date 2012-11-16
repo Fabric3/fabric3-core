@@ -43,20 +43,22 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  * Denotes an invalid use of an annotation.
  */
-public class InvalidAnnotation extends ValidationFailure {
+public class InvalidAnnotation extends JavaValidationFailure {
     private String message;
     private Exception e;
 
-    public InvalidAnnotation(String message) {
+    public InvalidAnnotation(String message, Class<?> clazz) {
+        super(clazz);
         this.message = message;
     }
 
-    public InvalidAnnotation(String message, Exception e) {
+    public InvalidAnnotation(String message, Class<?> clazz, Exception e) {
+        super(clazz);
         this.message = message;
         this.e = e;
     }

@@ -87,7 +87,7 @@ public class MockComponentTypeLoaderImpl implements MockComponentTypeLoader {
                 continue;
             }
 
-            ServiceContract serviceContract = contractProcessor.introspect(interfaceClass, context);
+            ServiceContract serviceContract = contractProcessor.introspect(interfaceClass, context, componentType);
 
             String name = interfaceClass.getName();
             int index = name.lastIndexOf('.');

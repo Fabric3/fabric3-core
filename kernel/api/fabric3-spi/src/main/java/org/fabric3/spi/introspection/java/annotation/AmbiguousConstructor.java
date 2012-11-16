@@ -43,16 +43,17 @@
  */
 package org.fabric3.spi.introspection.java.annotation;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  *
  */
-public class AmbiguousConstructor extends ValidationFailure {
+public class AmbiguousConstructor extends JavaValidationFailure {
     private Class<?> clazz;
 
-    public AmbiguousConstructor(Class<?> clazz) {
-        super();
+    public AmbiguousConstructor(Class<?> clazz, InjectingComponentType type) {
+        super(clazz, type);
         this.clazz = clazz;
     }
 

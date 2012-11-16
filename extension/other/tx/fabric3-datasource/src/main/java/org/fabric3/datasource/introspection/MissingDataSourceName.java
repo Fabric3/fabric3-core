@@ -43,16 +43,20 @@
  */
 package org.fabric3.datasource.introspection;
 
-import org.fabric3.host.failure.ValidationFailure;
+import java.lang.reflect.Member;
+
+import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  * Denotes the use of <code>@Resource</code> for a <code>DataSource</code> type without a mapped name.
  */
-public class MissingDataSourceName extends ValidationFailure {
+public class MissingDataSourceName extends JavaValidationFailure {
     private String location;
 
-    public MissingDataSourceName(Class<?> clazz) {
-        this.location = clazz.getName();
+    public MissingDataSourceName(Member member, ComponentType componentType) {
+        super(member, componentType);
+        this.location = member.getDeclaringClass().getName();
     }
 
     public String getMessage() {

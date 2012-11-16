@@ -53,7 +53,6 @@ public class MissingResource extends ValidationFailure {
     private String name;
 
     public MissingResource(String description, String name) {
-        super();
         this.description = description;
         this.name = name;
     }

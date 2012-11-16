@@ -1,15 +1,17 @@
 package org.fabric3.implementation.java.introspection;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  *
  */
-public class IllegalManagementAttribute extends ValidationFailure {
+public class IllegalManagementAttribute extends JavaValidationFailure {
     private String implClass;
 
-    public IllegalManagementAttribute(String implClass) {
-        this.implClass = implClass;
+    public IllegalManagementAttribute(Class<?> implClass, InjectingComponentType componentType) {
+        super(implClass, componentType);
+        this.implClass = implClass.getName();
     }
 
     public String getMessage() {

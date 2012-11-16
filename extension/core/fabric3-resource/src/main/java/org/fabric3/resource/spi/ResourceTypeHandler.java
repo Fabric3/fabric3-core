@@ -42,6 +42,7 @@ import java.lang.reflect.Member;
 import org.fabric3.api.annotation.Resource;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Implementations extend resource processing by handling <code>@Resource</code> annotations for specific types such as DataSources.
@@ -51,11 +52,16 @@ public interface ResourceTypeHandler {
     /**
      * Creates a {@link ResourceReferenceDefinition} for a given type.
      *
-     * @param resourceName the name of the resource injection site
-     * @param annotation   the resource annotation
-     * @param member       the Field, Constructor, or Method where the resource is injected
-     * @param context      the current introspection context
-     * @return the ResourceDefinition
+     * @param resourceName  the name of the resource injection site
+     * @param annotation    the resource annotation
+     * @param member        the Field, Constructor, or Method where the resource is injected
+     * @param componentType the component type being introspected
+     * @param context       the current introspection context  @return the ResourceDefinition
+     * @return the resource definition
      */
-    ResourceReferenceDefinition createResourceReference(String resourceName, Resource annotation, Member member, IntrospectionContext context);
+    ResourceReferenceDefinition createResourceReference(String resourceName,
+                                                        Resource annotation,
+                                                        Member member,
+                                                        InjectingComponentType componentType,
+                                                        IntrospectionContext context);
 }

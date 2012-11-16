@@ -39,6 +39,7 @@ package org.fabric3.implementation.system.introspection;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -112,7 +113,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
 
             Type parameterType = parameterTypes[i];
             String name = helper.getSiteName(constructor, i, null);
-            processSite(componentType, typeMapping, name, parameterType, site, context);
+            processSite(componentType, typeMapping, name, constructor, parameterType, site, context);
         }
     }
 
@@ -130,7 +131,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
 
             String name = helper.getSiteName(setter, null);
             Type parameterType = setter.getGenericParameterTypes()[0];
-            processSite(componentType, typeMapping, name, parameterType, site, context);
+            processSite(componentType, typeMapping, name, setter, parameterType, site, context);
         }
     }
 
@@ -148,7 +149,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
 
             String name = helper.getSiteName(field, null);
             Type parameterType = field.getGenericType();
-            processSite(componentType, typeMapping, name, parameterType, site, context);
+            processSite(componentType, typeMapping, name, field, parameterType, site, context);
         }
     }
 
@@ -156,6 +157,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
     private void processSite(InjectingComponentType componentType,
                              TypeMapping typeMapping,
                              String name,
+                             Member member,
                              Type parameterType,
                              InjectionSite site,
                              IntrospectionContext context) {
@@ -169,7 +171,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
             break;
         default:
             String clazz = componentType.getImplClass();
-            UnknownInjectionType error = new UnknownInjectionType(site, type, clazz);
+            UnknownInjectionType error = new UnknownInjectionType(site, type, clazz, member, componentType);
             context.addError(error);
         }
     }
@@ -188,7 +190,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
                               InjectionSite site,
                               IntrospectionContext context) {
         Class<?> type = helper.getBaseType(parameterType, typeMapping);
-        ServiceContract contract = contractProcessor.introspect(type, context);
+        ServiceContract contract = contractProcessor.introspect(type, context, componentType);
         ReferenceDefinition reference = new ReferenceDefinition(name, contract);
         helper.processMultiplicity(reference, false, parameterType, typeMapping);
         componentType.add(reference, site);

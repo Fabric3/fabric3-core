@@ -43,19 +43,19 @@
  */
 package org.fabric3.spi.introspection.java;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Denotes an invalid implementation.
  */
-public class InvalidImplementation extends ValidationFailure {
+public class InvalidImplementation extends JavaValidationFailure {
     private String description;
     private String name;
 
-    public InvalidImplementation(String description, String name) {
-        super();
+    public InvalidImplementation(String description, Class clazz, InjectingComponentType componentType) {
+        super(clazz, componentType);
         this.description = description;
-        this.name = name;
+        this.name = clazz.getName();
     }
 
     public String getMessage() {

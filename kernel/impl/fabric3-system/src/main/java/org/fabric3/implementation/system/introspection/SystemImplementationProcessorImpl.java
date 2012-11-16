@@ -96,7 +96,7 @@ public class SystemImplementationProcessorImpl implements ImplementationProcesso
             return componentType;
         }
         if (implClass.isInterface()) {
-            InvalidImplementation failure = new InvalidImplementation("Implementation class is an interface", className);
+            InvalidImplementation failure = new InvalidImplementation("Implementation class is an interface", implClass, componentType);
             context.addError(failure);
             return componentType;
         }

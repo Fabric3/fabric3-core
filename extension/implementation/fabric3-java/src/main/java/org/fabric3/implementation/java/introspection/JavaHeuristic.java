@@ -40,6 +40,7 @@ package org.fabric3.implementation.java.introspection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -101,7 +102,7 @@ public class JavaHeuristic implements HeuristicProcessor {
         serviceHeuristic.applyHeuristics(componentType, implClass, context);
 
         if (componentType.getConstructor() == null) {
-            Signature ctor = findConstructor(implClass, context);
+            Signature ctor = findConstructor(implClass, componentType, context);
             componentType.setConstructor(ctor);
         }
 
@@ -113,13 +114,13 @@ public class JavaHeuristic implements HeuristicProcessor {
 
         String scope = componentType.getScope();
         if (componentType.isManaged() && !Scope.getScope(scope).isSingleton()) {
-            IllegalManagementAttribute warning = new IllegalManagementAttribute(implClass.getName());
+            IllegalManagementAttribute warning = new IllegalManagementAttribute(implClass, componentType);
             context.addWarning(warning);
         }
 
     }
 
-    private Signature findConstructor(Class<?> implClass, IntrospectionContext context) {
+    private Signature findConstructor(Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         Constructor<?>[] constructors = implClass.getDeclaredConstructors();
         Constructor<?> selected = null;
         if (constructors.length == 1) {
@@ -128,7 +129,7 @@ public class JavaHeuristic implements HeuristicProcessor {
             for (Constructor<?> constructor : constructors) {
                 if (constructor.isAnnotationPresent(org.oasisopen.sca.annotation.Constructor.class)) {
                     if (selected != null) {
-                        context.addError(new AmbiguousConstructor(implClass));
+                        context.addError(new AmbiguousConstructor(implClass, componentType));
                         return null;
                     }
                     selected = constructor;
@@ -143,7 +144,7 @@ public class JavaHeuristic implements HeuristicProcessor {
                                     || annotation.annotationType().equals(Producer.class)
                                     || annotation.annotationType().equals(Monitor.class)) {
                                 if (selected != null) {
-                                    context.addError(new AmbiguousConstructor(implClass));
+                                    context.addError(new AmbiguousConstructor(implClass, componentType));
                                     return null;
                                 }
                                 selected = constructor;
@@ -152,7 +153,7 @@ public class JavaHeuristic implements HeuristicProcessor {
                     }
                 }
                 if (selected == null) {
-                    context.addError(new NoConstructorFound(implClass));
+                    context.addError(new NoConstructorFound(implClass, componentType));
                     return null;
                 }
             }
@@ -190,7 +191,7 @@ public class JavaHeuristic implements HeuristicProcessor {
 
             String name = helper.getSiteName(constructor, i, null);
             Annotation[] annotations = constructor.getParameterAnnotations()[i];
-            processSite(componentType, name, parameterType, implClass, site, annotations, context);
+            processSite(componentType, name, constructor, parameterType, implClass, site, annotations, context);
         }
     }
 
@@ -210,7 +211,7 @@ public class JavaHeuristic implements HeuristicProcessor {
             Type genericType = setter.getGenericParameterTypes()[0];
             Class<?> parameterType = helper.getBaseType(genericType, typeMapping);
             Annotation[] annotations = setter.getAnnotations();
-            processSite(componentType, name, parameterType, implClass, site, annotations, context);
+            processSite(componentType, name, setter, parameterType, implClass, site, annotations, context);
         }
     }
 
@@ -229,13 +230,14 @@ public class JavaHeuristic implements HeuristicProcessor {
             TypeMapping typeMapping = context.getTypeMapping(implClass);
             Class<?> parameterType = helper.getBaseType(field.getGenericType(), typeMapping);
             Annotation[] annotations = field.getAnnotations();
-            processSite(componentType, name, parameterType, implClass, site, annotations, context);
+            processSite(componentType, name, field, parameterType, implClass, site, annotations, context);
         }
     }
 
 
     private void processSite(InjectingComponentType componentType,
                              String name,
+                             Member member,
                              Class<?> parameterType,
                              Class<?> declaringClass,
                              InjectionSite site,
@@ -251,10 +253,10 @@ public class JavaHeuristic implements HeuristicProcessor {
             addReference(componentType, name, parameterType, declaringClass, site, annotations, context);
             break;
         case CALLBACK:
-            context.addError(new UnknownInjectionType(site, type, componentType.getImplClass()));
+            context.addError(new UnknownInjectionType(site, type, componentType.getImplClass(), member, componentType));
             break;
         default:
-            context.addError(new UnknownInjectionType(site, type, componentType.getImplClass()));
+            context.addError(new UnknownInjectionType(site, type, componentType.getImplClass(), member, componentType));
         }
     }
 
@@ -280,7 +282,7 @@ public class JavaHeuristic implements HeuristicProcessor {
                               Annotation[] annotations,
                               IntrospectionContext context) {
         TypeMapping typeMapping = context.getTypeMapping(declaringClass);
-        ServiceContract contract = contractProcessor.introspect(parameterType, context);
+        ServiceContract contract = contractProcessor.introspect(parameterType, context, componentType);
         ReferenceDefinition reference = new ReferenceDefinition(name, contract);
         helper.processMultiplicity(reference, false, parameterType, typeMapping);
         if (policyProcessor != null) {

@@ -77,9 +77,9 @@ public class JUnitImplementationProcessorImpl implements JUnitImplementationProc
             if (cause instanceof ClassNotFoundException || cause instanceof NoClassDefFoundError) {
                 // CNFE and NCDFE may be thrown as a result of a referenced class not being on the classpath
                 // If this is the case, ensure the correct class name is reported, not just the implementation 
-                context.addError(new ImplementationArtifactNotFound(className, e.getCause().getMessage()));
+                context.addError(new ImplementationArtifactNotFound(className, e.getCause().getMessage(), componentType));
             } else {
-                context.addError(new ImplementationArtifactNotFound(className));
+                context.addError(new ImplementationArtifactNotFound(className, componentType));
             }
             return componentType;
         }

@@ -43,14 +43,16 @@
  */
 package org.fabric3.introspection.java.contract;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.model.type.ModelObject;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  */
-public class InvalidCallbackContract extends ValidationFailure {
+public class InvalidCallbackContract extends JavaValidationFailure {
     private String message;
 
-    public InvalidCallbackContract(String message) {
+    public InvalidCallbackContract(String message, Class<?> callbackClass, ModelObject[] modelObjects) {
+        super(callbackClass, modelObjects);
         this.message = message;
     }
 

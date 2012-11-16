@@ -37,7 +37,9 @@
 */
 package org.fabric3.spi.introspection.java;
 
-import org.fabric3.host.failure.ValidationFailure;
+import java.lang.reflect.Member;
+
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.InjectableType;
@@ -47,13 +49,13 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 /**
  * Denotes an unknown InjectableAttributeType.
  */
-public class UnknownInjectionType extends ValidationFailure {
+public class UnknownInjectionType extends JavaValidationFailure {
     private InjectionSite site;
     private InjectableType type;
     private String clazz;
 
-    public UnknownInjectionType(InjectionSite site, InjectableType type, String clazz) {
-        super();
+    public UnknownInjectionType(InjectionSite site, InjectableType type, String clazz, Member member, ComponentType componentType) {
+        super(member, componentType);
         this.site = site;
         this.type = type;
         this.clazz = clazz;

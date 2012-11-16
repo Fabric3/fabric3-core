@@ -37,17 +37,18 @@
 */
 package org.fabric3.introspection.java.contract;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.model.type.ModelObject;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  * Denotes an missing callback interface
  */
 
-public class MissingCallback extends ValidationFailure {
+public class MissingCallback extends JavaValidationFailure {
     private Class<?> clazz;
 
-    public MissingCallback(Class<?> clazz) {
-        super();
+    public MissingCallback(Class<?> clazz, ModelObject... modelObjects) {
+        super(clazz, modelObjects);
         this.clazz = clazz;
     }
 

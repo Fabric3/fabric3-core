@@ -45,7 +45,6 @@ import org.easymock.EasyMock;
 
 import org.fabric3.api.annotation.Resource;
 import org.fabric3.datasource.model.DataSourceResourceReference;
-import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
@@ -62,7 +61,7 @@ public class DataSourceTypeHandlerTestCase extends TestCase {
     public void testName() throws Exception {
         Field field = Test.class.getDeclaredField("source");
         Resource resource = field.getAnnotation(Resource.class);
-        DataSourceResourceReference definition = handler.createResourceReference("resource", resource, field, context);
+        DataSourceResourceReference definition = handler.createResourceReference("resource", resource, field, null, context);
         assertEquals("resource", definition.getName());
         assertEquals("datasource", definition.getDataSourceName());
         assertNotNull(definition.getServiceContract());
@@ -72,7 +71,7 @@ public class DataSourceTypeHandlerTestCase extends TestCase {
     public void testOptional() throws Exception {
         Field field = Test.class.getDeclaredField("optional");
         Resource resource = field.getAnnotation(Resource.class);
-        DataSourceResourceReference definition = handler.createResourceReference("resource", resource, field, context);
+        DataSourceResourceReference definition = handler.createResourceReference("resource", resource, field, null, context);
         assertEquals("resource", definition.getName());
         assertEquals("datasource", definition.getDataSourceName());
         assertNotNull(definition.getServiceContract());
@@ -84,7 +83,7 @@ public class DataSourceTypeHandlerTestCase extends TestCase {
     public void testMissingName() throws Exception {
         Field field = Test.class.getDeclaredField("badSource");
         Resource resource = field.getAnnotation(Resource.class);
-        handler.createResourceReference("resource", resource, field, context);
+        handler.createResourceReference("resource", resource, field, null, context);
         assertTrue(context.hasErrors());
         assertTrue(context.getErrors().get(0) instanceof MissingDataSourceName);
 
@@ -101,7 +100,7 @@ public class DataSourceTypeHandlerTestCase extends TestCase {
 
         handler = new DataSourceTypeHandler(processor);
         handler.init();
-        
+
         context = new DefaultIntrospectionContext();
     }
 

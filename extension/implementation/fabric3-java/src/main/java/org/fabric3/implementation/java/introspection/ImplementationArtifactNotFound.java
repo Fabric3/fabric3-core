@@ -37,22 +37,23 @@
 */
 package org.fabric3.implementation.java.introspection;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.model.type.ModelObject;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  *
  */
-public class ImplementationArtifactNotFound extends ValidationFailure {
+public class ImplementationArtifactNotFound extends JavaValidationFailure {
     private String artifact;
     private String clazz;
 
-    public ImplementationArtifactNotFound(String clazz) {
-        super();
+    public ImplementationArtifactNotFound(String clazz, ModelObject modelObject) {
+        super(null, modelObject);
         this.clazz = clazz;
     }
 
-    public ImplementationArtifactNotFound(String clazz, String artifact) {
-        super();
+    public ImplementationArtifactNotFound(String clazz, String artifact, ModelObject modelObject) {
+        super(null, modelObject);
         this.clazz = clazz;
         this.artifact = artifact.replace("/", ".");
     }

@@ -34,32 +34,37 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.jpa.introspection;
+*/
+package org.fabric3.spi.introspection.java;
 
-import java.lang.reflect.Member;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import org.fabric3.spi.introspection.java.JavaValidationFailure;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.model.type.ModelObject;
 
 /**
- * Denotes an invalid persistence context type.
+ * Base class for validation failures occurring in Java artifacts.
  */
-public class InvalidPersistenceContextType extends JavaValidationFailure {
-    private String message;
+public abstract class JavaValidationFailure extends ValidationFailure {
+    private List<Object> sources;
+    private transient Object codeLocation;
 
-    public InvalidPersistenceContextType(String message, Member member, InjectingComponentType componentType) {
-        super(member, componentType);
-        this.message = message;
+    public JavaValidationFailure(Object codeLocation, ModelObject... sources) {
+        this.sources = new ArrayList<Object>();
+        if (sources != null) {
+            this.sources.addAll(Arrays.asList(sources));
+        }
+        this.codeLocation = codeLocation;
     }
 
-    public String getMessage() {
-        return message;
+    public List<Object> getSources() {
+        return sources;
     }
+
+    public Object getCodeLocation() {
+        return codeLocation;
+    }
+
 }

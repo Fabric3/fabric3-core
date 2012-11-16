@@ -79,7 +79,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
     public void testNoInterface() throws IntrospectionException {
         EasyMock.expect(helper.getImplementedInterfaces(NoInterface.class)).andReturn(NOCLASSES);
         IntrospectionContext context = new DefaultIntrospectionContext();
-        EasyMock.expect(contractProcessor.introspect(NoInterface.class, context)).andReturn(noInterfaceContract);
+        EasyMock.expect(contractProcessor.introspect(NoInterface.class, context, componentType)).andReturn(noInterfaceContract);
         control.replay();
 
         heuristic.applyHeuristics(componentType, NoInterface.class, context);
@@ -95,7 +95,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
 
         IntrospectionContext context = new DefaultIntrospectionContext();
         EasyMock.expect(helper.getImplementedInterfaces(OneInterface.class)).andReturn(interfaces);
-        EasyMock.expect(contractProcessor.introspect(ServiceInterface.class, context)).andReturn(
+        EasyMock.expect(contractProcessor.introspect(ServiceInterface.class, context, componentType)).andReturn(
                 serviceInterfaceContract);
         control.replay();
 

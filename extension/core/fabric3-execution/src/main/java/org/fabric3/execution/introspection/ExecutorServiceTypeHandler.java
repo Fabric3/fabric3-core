@@ -51,6 +51,7 @@ import org.fabric3.resource.spi.ResourceTypeHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Handles resource injection for the runtime <code>ExecutorService</code>.
@@ -73,7 +74,7 @@ public class ExecutorServiceTypeHandler implements ResourceTypeHandler {
     public ExecutorServiceResourceReference createResourceReference(String resourceName,
                                                                     Resource annotation,
                                                                     Member member,
-                                                                    IntrospectionContext context) {
+                                                                    InjectingComponentType componentType, IntrospectionContext context) {
         return new ExecutorServiceResourceReference(resourceName, contract);
     }
 }

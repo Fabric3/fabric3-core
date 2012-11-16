@@ -57,7 +57,7 @@ public class SystemConstructorHeuristic implements HeuristicProcessor {
             return;
         }
 
-        Signature signature = findConstructor(implClass, context);
+        Signature signature = findConstructor(implClass, componentType, context);
         componentType.setConstructor(signature);
     }
 
@@ -67,11 +67,12 @@ public class SystemConstructorHeuristic implements HeuristicProcessor {
      * For now, we require that the class have a single constructor or one annotated with @Constructor. If there is more than one, the default
      * constructor will be selected or an org.osoa.sca.annotations.Constructor annotation must be used.
      *
-     * @param implClass the class we are inspecting
-     * @param context   the introspection context to report errors and warnings
+     * @param implClass     the class we are inspecting
+     * @param componentType the parent component type
+     * @param context       the introspection context to report errors and warnings
      * @return the signature of the constructor to use
      */
-    Signature findConstructor(Class<?> implClass, IntrospectionContext context) {
+    Signature findConstructor(Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         Constructor<?>[] constructors = implClass.getDeclaredConstructors();
         Constructor<?> selected = null;
         if (constructors.length == 1) {
@@ -80,7 +81,7 @@ public class SystemConstructorHeuristic implements HeuristicProcessor {
             for (Constructor<?> constructor : constructors) {
                 if (constructor.isAnnotationPresent(org.oasisopen.sca.annotation.Constructor.class)) {
                     if (selected != null) {
-                        context.addError(new AmbiguousConstructor(implClass));
+                        context.addError(new AmbiguousConstructor(implClass, componentType));
                         return null;
                     }
                     selected = constructor;
@@ -90,7 +91,7 @@ public class SystemConstructorHeuristic implements HeuristicProcessor {
                 try {
                     selected = implClass.getConstructor();
                 } catch (NoSuchMethodException e) {
-                    context.addError(new NoConstructorFound(implClass));
+                    context.addError(new NoConstructorFound(implClass, componentType));
                     return null;
                 }
             }

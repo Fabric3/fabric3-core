@@ -42,6 +42,7 @@ import java.util.Set;
 
 import org.oasisopen.sca.annotation.Reference;
 
+import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -96,23 +97,26 @@ public class JavaServiceHeuristic implements HeuristicProcessor {
         if (interfaces.size() == 1) {
             // The class implements a single interface, use it
             Class<?> service = interfaces.iterator().next();
-            ServiceDefinition serviceDefinition = createServiceDefinition(service, implClass, context);
+            ServiceDefinition serviceDefinition = createServiceDefinition(service, implClass, componentType, context);
             componentType.add(serviceDefinition);
         } else if (interfaces.size() == 2) {
             // The class implements two interfaces. If one of them is a management interface, use the other
             // No management interfaces, use the impl class per SCA rules
-            ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, context);
+            ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, componentType, context);
             componentType.add(serviceDefinition);
         } else {
             // multiple interfaces, use the impl class per SCA rules
-            ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, context);
+            ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, componentType, context);
             componentType.add(serviceDefinition);
         }
     }
 
     @SuppressWarnings({"unchecked"})
-    private ServiceDefinition createServiceDefinition(Class<?> serviceInterface, Class<?> implClass, IntrospectionContext context) {
-        ServiceContract contract = contractProcessor.introspect(serviceInterface, context);
+    private ServiceDefinition createServiceDefinition(Class<?> serviceInterface,
+                                                      Class<?> implClass,
+                                                      ComponentType componentType,
+                                                      IntrospectionContext context) {
+        ServiceContract contract = contractProcessor.introspect(serviceInterface, context, componentType);
         ServiceDefinition definition = new ServiceDefinition(contract.getInterfaceName(), contract);
         introspectPolicy(serviceInterface, implClass, contract, definition, context);
         return definition;

@@ -40,6 +40,7 @@ package org.fabric3.implementation.junit.introspection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -97,7 +98,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
         serviceHeuristic.applyHeuristics(componentType, implClass, context);
 
         if (componentType.getConstructor() == null) {
-            Signature ctor = findConstructor(implClass, context);
+            Signature ctor = findConstructor(implClass, componentType, context);
             componentType.setConstructor(ctor);
         }
 
@@ -127,7 +128,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
         return null;
     }
 
-    private Signature findConstructor(Class<?> implClass, IntrospectionContext context) {
+    private Signature findConstructor(Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         Constructor<?>[] constructors = implClass.getDeclaredConstructors();
         Constructor<?> selected = null;
         if (constructors.length == 1) {
@@ -136,14 +137,14 @@ public class JUnitHeuristic implements HeuristicProcessor {
             for (Constructor<?> constructor : constructors) {
                 if (constructor.isAnnotationPresent(org.oasisopen.sca.annotation.Constructor.class)) {
                     if (selected != null) {
-                        context.addError(new AmbiguousConstructor(implClass));
+                        context.addError(new AmbiguousConstructor(implClass, componentType));
                         return null;
                     }
                     selected = constructor;
                 }
             }
             if (selected == null) {
-                context.addError(new NoConstructorFound(implClass));
+                context.addError(new NoConstructorFound(implClass, componentType));
                 return null;
             }
         }
@@ -178,7 +179,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
             Type parameterType = parameterTypes[i];
             String name = helper.getSiteName(constructor, i, null);
             Annotation[] annotations = constructor.getParameterAnnotations()[i];
-            processSite(componentType, typeMapping, name, parameterType, site, annotations, context);
+            processSite(componentType, typeMapping, name, constructor, parameterType, site, annotations, context);
         }
     }
 
@@ -197,7 +198,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
             String name = helper.getSiteName(setter, null);
             Type parameterType = setter.getGenericParameterTypes()[0];
             Annotation[] annotations = setter.getAnnotations();
-            processSite(componentType, typeMapping, name, parameterType, site, annotations, context);
+            processSite(componentType, typeMapping, name, setter, parameterType, site, annotations, context);
         }
     }
 
@@ -216,7 +217,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
             String name = helper.getSiteName(field, null);
             Type parameterType = field.getGenericType();
             Annotation[] annotations = field.getAnnotations();
-            processSite(componentType, typeMapping, name, parameterType, site, annotations, context);
+            processSite(componentType, typeMapping, name, field, parameterType, site, annotations, context);
         }
     }
 
@@ -224,6 +225,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
     private void processSite(InjectingComponentType componentType,
                              TypeMapping typeMapping,
                              String name,
+                             Member member,
                              Type parameterType,
                              InjectionSite site,
                              Annotation[] annotations,
@@ -240,7 +242,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
             // ignore
             break;
         default:
-            context.addError(new UnknownInjectionType(site, type, componentType.getImplClass()));
+            context.addError(new UnknownInjectionType(site, type, componentType.getImplClass(), member, componentType));
             break;
         }
     }
@@ -260,7 +262,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
                               Annotation[] annotations,
                               IntrospectionContext context) {
         Class<?> type = helper.getBaseType(parameterType, typeMapping);
-        ServiceContract contract = contractProcessor.introspect(type, context);
+        ServiceContract contract = contractProcessor.introspect(type, context, componentType);
         ReferenceDefinition reference = new ReferenceDefinition(name, contract);
         helper.processMultiplicity(reference, false, parameterType, typeMapping);
         if (policyProcessor != null) {

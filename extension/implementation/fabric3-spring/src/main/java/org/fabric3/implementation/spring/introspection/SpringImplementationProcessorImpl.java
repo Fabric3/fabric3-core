@@ -221,7 +221,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
                 context.addError(failure);
                 return false;
             }
-            contract = contractProcessor.introspect(interfaze, context);
+            contract = contractProcessor.introspect(interfaze, context, type);
         }
         SpringService definition = new SpringService(name, contract, target);
         type.add(definition);
@@ -266,7 +266,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             context.addError(failure);
             return false;
         }
-        ServiceContract contract = contractProcessor.introspect(interfaze, context);
+        ServiceContract contract = contractProcessor.introspect(interfaze, context, type);
         ReferenceDefinition definition = new ReferenceDefinition(name, contract);
         type.add(definition);
         return true;
@@ -391,7 +391,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             context.addError(failure);
             return false;
         }
-        ServiceContract contract = contractProcessor.introspect(interfaze, context);
+        ServiceContract contract = contractProcessor.introspect(interfaze, context, type);
 
         ProducerDefinition definition = new ProducerDefinition(name, contract);
         type.add(definition);
@@ -440,12 +440,12 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
                 definition = type.getBeansByName().get(target);
             }
             if (definition == null) {
-                ServiceTargetNotFound failure = new ServiceTargetNotFound(service.getName(), target);
+                ServiceTargetNotFound failure = new ServiceTargetNotFound(service.getName(), target, type);
                 context.addError(failure);
                 continue;
             }
             if (service.getServiceContract() == null) {
-                introspectContract(service, definition, context);
+                introspectContract(service, definition, type, context);
             }
         }
     }
@@ -455,37 +455,38 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
      *
      * @param service    the service
      * @param definition the bean definition
+     * @param type       the component type
      * @param context    the context for reporting errors
      */
-    private void introspectContract(SpringService service, BeanDefinition definition, IntrospectionContext context) {
+    private void introspectContract(SpringService service, BeanDefinition definition, SpringComponentType type, IntrospectionContext context) {
         Class<?> beanClass = definition.getBeanClass();
         String serviceName = service.getName();
         if (beanClass == null) {
-            UnknownServiceType failure = new UnknownServiceType(serviceName);
+            UnknownServiceType failure = new UnknownServiceType(serviceName, beanClass, type);
             context.addError(failure);
             return;
         }
         Class<?>[] interfaces = beanClass.getInterfaces();
         if (interfaces.length == 0) {
             // use the implementation class
-            ServiceContract contract = contractProcessor.introspect(beanClass, context);
+            ServiceContract contract = contractProcessor.introspect(beanClass, context, type);
             service.setServiceContract(contract);
         } else if (interfaces.length == 1) {
             // default service
-            ServiceContract contract = contractProcessor.introspect(interfaces[0], context);
+            ServiceContract contract = contractProcessor.introspect(interfaces[0], context, type);
             service.setServiceContract(contract);
         } else {
             // match on service name
             ServiceContract contract = null;
             for (Class<?> interfaze : interfaces) {
                 if (serviceName.equals(interfaze.getSimpleName())) {
-                    contract = contractProcessor.introspect(interfaze, context);
+                    contract = contractProcessor.introspect(interfaze, context, type);
                     service.setServiceContract(contract);
                     break;
                 }
             }
             if (contract == null) {
-                UnknownServiceType failure = new UnknownServiceType(serviceName);
+                UnknownServiceType failure = new UnknownServiceType(serviceName, beanClass, type);
                 context.addError(failure);
             }
         }

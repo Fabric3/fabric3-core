@@ -43,16 +43,19 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import org.fabric3.host.failure.ValidationFailure;
+import java.lang.reflect.Member;
+
+import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  * Denotes an invalid type for a field or setter annotated with @Context
  */
-public class InvalidContextType extends ValidationFailure {
+public class InvalidContextType extends JavaValidationFailure {
     private String message;
 
-    public InvalidContextType(String message) {
-        super();
+    public InvalidContextType(String message, Member member, ComponentType componentType) {
+        super(member, componentType);
         this.message = message;
     }
 

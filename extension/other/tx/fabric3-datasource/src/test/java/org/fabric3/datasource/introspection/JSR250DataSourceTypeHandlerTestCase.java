@@ -61,7 +61,7 @@ public class JSR250DataSourceTypeHandlerTestCase extends TestCase {
     public void testName() throws Exception {
         Field field = Test.class.getDeclaredField("source");
         Resource resource = field.getAnnotation(Resource.class);
-        DataSourceResourceReference definition = handler.createResourceReference("resource", resource, field, context);
+        DataSourceResourceReference definition = handler.createResourceReference("resource", resource, field, null, context);
         assertEquals("resource", definition.getName());
         assertEquals("datasource", definition.getDataSourceName());
         assertNotNull(definition.getServiceContract());
@@ -71,7 +71,7 @@ public class JSR250DataSourceTypeHandlerTestCase extends TestCase {
     public void testOptional() throws Exception {
         Field field = Test.class.getDeclaredField("optional");
         Resource resource = field.getAnnotation(Resource.class);
-        DataSourceResourceReference definition = handler.createResourceReference("resource", resource, field, context);
+        DataSourceResourceReference definition = handler.createResourceReference("resource", resource, field, null, context);
         assertEquals("resource", definition.getName());
         assertEquals("datasource", definition.getDataSourceName());
         assertNotNull(definition.getServiceContract());
@@ -83,14 +83,13 @@ public class JSR250DataSourceTypeHandlerTestCase extends TestCase {
     public void testMissingName() throws Exception {
         Field field = Test.class.getDeclaredField("badSource");
         Resource resource = field.getAnnotation(Resource.class);
-        handler.createResourceReference("resource", resource, field, context);
+        handler.createResourceReference("resource", resource, field, null, context);
         assertTrue(context.hasErrors());
         assertTrue(context.getErrors().get(0) instanceof MissingDataSourceName);
 
         EasyMock.verify(processor);
     }
 
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
         processor = EasyMock.createMock(JavaContractProcessor.class);
@@ -100,7 +99,7 @@ public class JSR250DataSourceTypeHandlerTestCase extends TestCase {
 
         handler = new JSR250DataSourceTypeHandler(processor);
         handler.init();
-        
+
         context = new DefaultIntrospectionContext();
     }
 

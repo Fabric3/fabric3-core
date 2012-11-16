@@ -95,15 +95,15 @@ public class JUnitServiceHeuristic implements HeuristicProcessor {
                 if (interfaze.getCanonicalName().endsWith("Test")) {
                     continue;
                 }
-                ServiceDefinition serviceDefinition = createServiceDefinition(interfaze, context);
+                ServiceDefinition serviceDefinition = createServiceDefinition(interfaze, componentType, context);
                 componentType.add(serviceDefinition);
             }
         }
     }
 
     @SuppressWarnings({"unchecked"})
-    private ServiceDefinition createServiceDefinition(Class<?> serviceInterface, IntrospectionContext context) {
-        ServiceContract contract = contractProcessor.introspect(serviceInterface, context);
+    private ServiceDefinition createServiceDefinition(Class<?> serviceInterface, InjectingComponentType componentType, IntrospectionContext context) {
+        ServiceContract contract = contractProcessor.introspect(serviceInterface, context, componentType);
         ServiceDefinition definition = new ServiceDefinition(contract.getInterfaceName(), contract);
         Annotation[] annotations = serviceInterface.getAnnotations();
         if (policyProcessor != null) {

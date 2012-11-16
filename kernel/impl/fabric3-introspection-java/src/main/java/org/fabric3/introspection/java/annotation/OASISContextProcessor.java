@@ -44,6 +44,7 @@
 package org.fabric3.introspection.java.annotation;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
@@ -76,7 +77,7 @@ public class OASISContextProcessor<I extends Implementation<? extends InjectingC
     public void visitField(Context annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
-        visit(type, componentType, site, field.getDeclaringClass(), context);
+        visit(type, componentType, site, field.getDeclaringClass(), field, context);
     }
 
     public void visitMethod(Context annotation,
@@ -86,18 +87,23 @@ public class OASISContextProcessor<I extends Implementation<? extends InjectingC
                             IntrospectionContext context) {
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        visit(type, componentType, site, method.getDeclaringClass(), context);
+        visit(type, componentType, site, method.getDeclaringClass(), method, context);
     }
 
-    private void visit(Type type, InjectingComponentType componentType, InjectionSite site, Class<?> clazz, IntrospectionContext context) {
+    private void visit(Type type,
+                       InjectingComponentType componentType,
+                       InjectionSite site,
+                       Class<?> clazz,
+                       Member member,
+                       IntrospectionContext context) {
         if (!(type instanceof Class)) {
-            context.addError(new InvalidContextType("Context type " + type + " is not supported in " + clazz.getName()));
+            context.addError(new InvalidContextType("Context type " + type + " is not supported in " + clazz.getName(), member, componentType));
         } else if (RequestContext.class.isAssignableFrom((Class<?>) type)) {
             componentType.addInjectionSite(site, Injectable.OASIS_REQUEST_CONTEXT);
         } else if (ComponentContext.class.isAssignableFrom((Class<?>) type)) {
             componentType.addInjectionSite(site, Injectable.OASIS_COMPONENT_CONTEXT);
         } else {
-            context.addError(new InvalidContextType("Context type is not supported: " + type));
+            context.addError(new InvalidContextType("Context type is not supported: " + type, member, componentType));
         }
     }
 }

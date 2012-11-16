@@ -56,6 +56,7 @@ import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Remotable;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -95,12 +96,12 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
         this.operationIntrospectors = operationIntrospectors;
     }
 
-    public JavaServiceContract introspect(Class<?> interfaze, IntrospectionContext context) {
+    public JavaServiceContract introspect(Class<?> interfaze, IntrospectionContext context, ModelObject... modelObjects) {
         return introspect(interfaze, interfaze, context);
     }
 
-    public JavaServiceContract introspect(Class<?> interfaze, Class<?> baseClass, IntrospectionContext context) {
-        JavaServiceContract contract = introspectInterface(interfaze, baseClass, context);
+    public JavaServiceContract introspect(Class<?> interfaze, Class<?> baseClass, IntrospectionContext context, ModelObject... modelObjects) {
+        JavaServiceContract contract = introspectInterface(interfaze, baseClass, context, modelObjects);
         Callback callback = interfaze.getAnnotation(Callback.class);
         if (callback != null) {
             Class<?> callbackClass = callback.value();
@@ -109,9 +110,13 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
         return contract;
     }
 
-    private void introspectCallback(Class<?> interfaze, Class<?> callbackClass, JavaServiceContract contract, IntrospectionContext context) {
+    private void introspectCallback(Class<?> interfaze,
+                                    Class<?> callbackClass,
+                                    JavaServiceContract contract,
+                                    IntrospectionContext context,
+                                    ModelObject... modelObjects) {
         if (Void.class.equals(callbackClass)) {
-            context.addError(new MissingCallback(interfaze));
+            context.addError(new MissingCallback(interfaze, modelObjects));
             return;
         }
         // the base class for the callback interface is always itself since it is not referenceable in Java from the service implementation
@@ -121,13 +126,16 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
             String forwardName = contract.getInterfaceName();
             String callbackName = callbackContract.getInterfaceName();
             InvalidCallbackContract error = new InvalidCallbackContract("The remotable attribute on the forward and callback contract do not match: "
-                                                                                + forwardName + "," + callbackName);
+                                                                                + forwardName + "," + callbackName, callbackClass, modelObjects);
             context.addError(error);
         }
         contract.setCallbackContract(callbackContract);
     }
 
-    private JavaServiceContract introspectInterface(Class<?> interfaze, Class<?> baseClass, IntrospectionContext context) {
+    private JavaServiceContract introspectInterface(Class<?> interfaze,
+                                                    Class<?> baseClass,
+                                                    IntrospectionContext context,
+                                                    ModelObject... modelObjects) {
         JavaServiceContract contract = new JavaServiceContract(interfaze);
         contract.setInterfaceName(interfaze.getSimpleName());
 
@@ -135,7 +143,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
                 interfaze.isAnnotationPresent(org.oasisopen.sca.annotation.Remotable.class) || interfaze.isAnnotationPresent(Remotable.class);
         contract.setRemotable(remotable);
 
-        List<Operation> operations = introspectOperations(interfaze, baseClass, remotable, context);
+        List<Operation> operations = introspectOperations(interfaze, baseClass, remotable, context, modelObjects);
         contract.setOperations(operations);
         for (InterfaceIntrospector introspector : interfaceIntrospectors) {
             introspector.introspect(contract, interfaze, context);
@@ -146,7 +154,8 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
     private List<Operation> introspectOperations(Class<?> interfaze,
                                                  Class<?> baseClass,
                                                  boolean remotable,
-                                                 IntrospectionContext context) {
+                                                 IntrospectionContext context,
+                                                 ModelObject... modelObjects) {
         Method[] methods = interfaze.getMethods();
         List<Operation> operations = new ArrayList<Operation>(methods.length);
 
@@ -174,7 +183,7 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
                 introspector.introspect(operation, method, context);
             }
             if (remotable) {
-                checkOverloadedOperations(method, operations, context);
+                checkOverloadedOperations(method, operations, context, modelObjects);
             }
             operations.add(operation);
         }
@@ -246,15 +255,16 @@ public class JavaContractProcessorImpl implements JavaContractProcessor {
     /**
      * Validates a remotable interface does not contain overloaded operations by comparing the current method to introspected operations.
      *
-     * @param method     the method being introspected
-     * @param operations the interface operations
-     * @param context    the introspection context
+     * @param method       the method being introspected
+     * @param operations   the interface operations
+     * @param context      the introspection context
+     * @param modelObjects the parent model objects
      */
-    private void checkOverloadedOperations(Method method, List<Operation> operations, IntrospectionContext context) {
+    private void checkOverloadedOperations(Method method, List<Operation> operations, IntrospectionContext context, ModelObject... modelObjects) {
         for (Operation entry : operations) {
             String name = method.getName();
             if (entry.getName().equals(name)) {
-                OverloadedOperation error = new OverloadedOperation(method.toString());
+                OverloadedOperation error = new OverloadedOperation(method, modelObjects);
                 context.addError(error);
             }
         }

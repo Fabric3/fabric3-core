@@ -43,16 +43,19 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import org.fabric3.host.failure.ValidationFailure;
+import java.lang.reflect.Member;
+
+import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  * Denotes an invalid accessor value for a field or method annotated with @Resource, @Reference, or @Property.
  */
-public class InvalidAccessor extends ValidationFailure {
+public class InvalidAccessor extends JavaValidationFailure {
     private String message;
 
-    public InvalidAccessor(String message) {
-        super();
+    public InvalidAccessor(String message, Member member, ComponentType componentType) {
+        super(member, componentType);
         this.message = message;
     }
 

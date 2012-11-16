@@ -78,7 +78,7 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
                            Class<?> implClass,
                            InjectingComponentType componentType,
                            IntrospectionContext context) {
-        validate(annotation, field, context);
+        validate(annotation, field, componentType, context);
         String name = helper.getSiteName(field, annotation.name());
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
@@ -93,7 +93,7 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
                             Class<?> implClass,
                             InjectingComponentType componentType,
                             IntrospectionContext context) {
-        boolean result = validate(annotation, method, context);
+        boolean result = validate(annotation, method, componentType, context);
         if (!result) {
             return;
         }
@@ -106,26 +106,34 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
         componentType.add(property, site);
     }
 
-    private void validate(org.oasisopen.sca.annotation.Property annotation, Field field, IntrospectionContext context) {
+    private void validate(org.oasisopen.sca.annotation.Property annotation,
+                          Field field,
+                          InjectingComponentType componentType,
+                          IntrospectionContext context) {
         if (!Modifier.isProtected(field.getModifiers()) && !Modifier.isPublic(field.getModifiers())) {
             Class<?> clazz = field.getDeclaringClass();
             if (annotation.required()) {
                 InvalidAccessor error =
                         new InvalidAccessor("Invalid required property. The field " + field.getName() + " on " + clazz.getName()
-                                                    + " is annotated with @Property but properties must be public or protected.");
+                                                    + " is annotated with @Property but properties must be public or protected.",
+                                            field,
+                                            componentType);
                 context.addError(error);
             } else {
                 InvalidAccessor warning =
                         new InvalidAccessor("Ignoring the field " + field.getName() + " annotated with @Property on " + clazz.getName()
-                                                    + ". Properties must be public or protected.");
+                                                    + ". Properties must be public or protected.", field, componentType);
                 context.addWarning(warning);
             }
         }
     }
 
-    private boolean validate(org.oasisopen.sca.annotation.Property annotation, Method method, IntrospectionContext context) {
+    private boolean validate(org.oasisopen.sca.annotation.Property annotation,
+                             Method method,
+                             InjectingComponentType componentType,
+                             IntrospectionContext context) {
         if (method.getParameterTypes().length != 1) {
-            InvalidMethod error = new InvalidMethod("Setter methods for properties must have a single parameter: " + method);
+            InvalidMethod error = new InvalidMethod("Setter methods for properties must have a single parameter: " + method, method, componentType);
             context.addError(error);
             return false;
         }
@@ -134,12 +142,14 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
             if (annotation.required()) {
                 InvalidAccessor error =
                         new InvalidAccessor("Invalid required property. The method " + method
-                                                    + " is annotated with @Property and must be public or protected.");
+                                                    + " is annotated with @Property and must be public or protected.", method, componentType);
                 context.addError(error);
                 return false;
             } else {
                 InvalidAccessor warning =
-                        new InvalidAccessor("Ignoring " + method + " annotated with @Property. Property " + "must be public or protected.");
+                        new InvalidAccessor("Ignoring " + method + " annotated with @Property. Property " + "must be public or protected.",
+                                            method,
+                                            componentType);
                 context.addWarning(warning);
                 return false;
             }

@@ -43,16 +43,17 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  *
  */
-public class InvalidIntentName extends ValidationFailure {
+public class InvalidIntentName extends JavaValidationFailure {
     private String name;
     private Exception e;
 
-    protected InvalidIntentName(String name, Exception e) {
+    protected InvalidIntentName(String name, Class<?> clazz, Exception e) {
+        super(clazz);
         this.name = name;
         this.e = e;
     }

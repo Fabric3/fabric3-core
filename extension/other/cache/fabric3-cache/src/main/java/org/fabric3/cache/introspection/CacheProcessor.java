@@ -78,20 +78,20 @@ public class CacheProcessor extends AbstractAnnotationProcessor<Cache> {
         String name = helper.getSiteName(field, null);
         FieldInjectionSite site = new FieldInjectionSite(field);
         Class<?> type = field.getType();
-        ResourceReferenceDefinition definition = create(name, annotation, type, field, context);
+        ResourceReferenceDefinition definition = create(name, annotation, type, field, componentType, context);
         componentType.add(definition, site);
     }
 
     public void visitMethod(Cache annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         if (method.getParameterTypes().length != 1) {
-            InvalidCacheSetter error = new InvalidCacheSetter("Setter must contain one parameter: " + method);
+            InvalidCacheSetter error = new InvalidCacheSetter("Setter must contain one parameter: " + method, method, componentType);
             context.addError(error);
             return;
         }
         String name = helper.getSiteName(method, null);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         Class<?> type = method.getParameterTypes()[0];
-        ResourceReferenceDefinition definition = create(name, annotation, type, method, context);
+        ResourceReferenceDefinition definition = create(name, annotation, type, method, componentType, context);
         componentType.add(definition, site);
     }
 
@@ -103,15 +103,20 @@ public class CacheProcessor extends AbstractAnnotationProcessor<Cache> {
                                           IntrospectionContext context) {
         String name = annotation.name();
         Class<?> type = constructor.getParameterTypes()[index];
-        ResourceReferenceDefinition definition = create(name, annotation, type, constructor, context);
+        ResourceReferenceDefinition definition = create(name, annotation, type, constructor, componentType, context);
         componentType.add(definition);
     }
 
-    private ResourceReferenceDefinition create(String name, Cache annotation, Class<?> type, Member member, IntrospectionContext context) {
-        ServiceContract contract = contractProcessor.introspect(type, context);
+    private ResourceReferenceDefinition create(String name,
+                                               Cache annotation,
+                                               Class<?> type,
+                                               Member member,
+                                               InjectingComponentType componentType,
+                                               IntrospectionContext context) {
+        ServiceContract contract = contractProcessor.introspect(type, context, componentType);
         String cacheName = annotation.name();
         if (cacheName.length() == 0) {
-            MissingCacheName error = new MissingCacheName(member.getDeclaringClass());
+            MissingCacheName error = new MissingCacheName(member, componentType);
             context.addError(error);
             return new CacheReferenceDefinition(name, contract, false, "error");
         }

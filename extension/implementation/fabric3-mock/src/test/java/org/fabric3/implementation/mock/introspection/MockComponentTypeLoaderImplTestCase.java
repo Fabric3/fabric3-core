@@ -71,7 +71,8 @@ public class MockComponentTypeLoaderImplTestCase extends TestCase {
                 EasyMock.isA(IntrospectionContext.class))).andReturn(controlContract);
         EasyMock.expect(processor.introspect(
                 EasyMock.eq(Foo.class),
-                EasyMock.isA(IntrospectionContext.class))).andReturn(fooContract);
+                EasyMock.isA(IntrospectionContext.class),
+                EasyMock.isA(InjectingComponentType.class))).andReturn(fooContract);
         EasyMock.replay(processor);
 
         MockComponentTypeLoader componentTypeLoader = new MockComponentTypeLoaderImpl(processor);

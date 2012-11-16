@@ -43,16 +43,19 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import org.fabric3.host.failure.ValidationFailure;
+import java.lang.reflect.Method;
+
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Denotes an invalid consumer method.
  */
-public class InvalidConsumerMethod extends ValidationFailure {
+public class InvalidConsumerMethod extends JavaValidationFailure {
     private String message;
 
-    public InvalidConsumerMethod(String message) {
-        super();
+    public InvalidConsumerMethod(String message, Method method, InjectingComponentType componentType) {
+        super(method, componentType);
         this.message = message;
     }
 

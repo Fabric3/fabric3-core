@@ -79,14 +79,14 @@ public class JavaImplementationProcessorImpl implements JavaImplementationProces
             if (cause instanceof ClassNotFoundException || cause instanceof NoClassDefFoundError) {
                 // CNFE and NCDFE may be thrown as a result of a referenced class not being on the classpath
                 // If this is the case, ensure the correct class name is reported, not just the implementation 
-                context.addError(new ImplementationArtifactNotFound(className, e.getCause().getMessage()));
+                context.addError(new ImplementationArtifactNotFound(className, e.getCause().getMessage(), componentType));
             } else {
-                context.addError(new ImplementationArtifactNotFound(className));
+                context.addError(new ImplementationArtifactNotFound(className, componentType));
             }
             return componentType;
         }
         if (implClass.isInterface()) {
-            InvalidImplementation failure = new InvalidImplementation("Implementation class is an interface", className);
+            InvalidImplementation failure = new InvalidImplementation("Implementation class is an interface", implClass, componentType);
             context.addError(failure);
             return componentType;
         }
@@ -103,17 +103,17 @@ public class JavaImplementationProcessorImpl implements JavaImplementationProces
             heuristic.applyHeuristics(componentType, implClass, context);
         } catch (NoClassDefFoundError e) {
             // May be thrown as a result of a referenced class not being on the classpath
-            context.addError(new ImplementationArtifactNotFound(className, e.getMessage()));
+            context.addError(new ImplementationArtifactNotFound(className, e.getMessage(), componentType));
         }
         validateScope(componentType, implClass, context);
         return componentType;
 
     }
 
-    private void validateScope(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
+    private void validateScope(InjectingComponentType componentType, Class<?> implClass,  IntrospectionContext context) {
         String scope = componentType.getScope();
         if (componentType.isEagerInit() && !Scope.COMPOSITE.getScope().equals(scope) && !Scope.DOMAIN.getScope().equals(scope)) {
-            EagerInitNotSupported warning = new EagerInitNotSupported(implClass);
+            EagerInitNotSupported warning = new EagerInitNotSupported(implClass, componentType);
             context.addWarning(warning);
         }
     }

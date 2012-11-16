@@ -62,15 +62,15 @@ public class OASISInitProcessor extends AbstractAnnotationProcessor<Init> {
     }
 
     public void visitMethod(Init annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
-        if (!validate(method, context)) {
+        if (!validate(method, context, componentType)) {
             return;
         }
         componentType.setInitMethod(new Signature(method));
     }
 
-    private boolean validate(Method method, IntrospectionContext context) {
+    private boolean validate(Method method, IntrospectionContext context, InjectingComponentType componentType) {
         if (!"void".equals(method.getReturnType().getName())) {
-            InvalidMethod error = new InvalidMethod("Method marked with @Init must return void: " + method);
+            InvalidMethod error = new InvalidMethod("Method marked with @Init must return void: " + method, method, componentType);
             context.addError(error);
             return false;
         }

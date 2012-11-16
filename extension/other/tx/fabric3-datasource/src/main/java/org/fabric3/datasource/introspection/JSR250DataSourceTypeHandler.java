@@ -51,6 +51,7 @@ import org.fabric3.resource.spi.ResourceTypeHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Handles resource injection for <code>DataSource</code> types.
@@ -70,10 +71,14 @@ public class JSR250DataSourceTypeHandler implements ResourceTypeHandler {
         contract = contractProcessor.introspect(DataSource.class, new DefaultIntrospectionContext());
     }
 
-    public DataSourceResourceReference createResourceReference(String resourceName, Resource annotation, Member member, IntrospectionContext context) {
+    public DataSourceResourceReference createResourceReference(String resourceName,
+                                                               Resource annotation,
+                                                               Member member,
+                                                               InjectingComponentType componentType,
+                                                               IntrospectionContext context) {
         String dataSourceName = annotation.name();
         if (dataSourceName.length() == 0) {
-            MissingDataSourceName error = new MissingDataSourceName(member.getDeclaringClass());
+            MissingDataSourceName error = new MissingDataSourceName(member, componentType);
             context.addError(error);
             return new DataSourceResourceReference(resourceName, contract, annotation.optional(), "error");
         }

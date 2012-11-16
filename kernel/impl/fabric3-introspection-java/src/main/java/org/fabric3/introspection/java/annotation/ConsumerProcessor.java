@@ -82,7 +82,8 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
                             InjectingComponentType componentType,
                             IntrospectionContext context) {
         if (method.getParameterTypes().length > 1) {
-            InvalidConsumerMethod failure = new InvalidConsumerMethod("Consumer method " + method + " has more than one parameter");
+            InvalidConsumerMethod failure =
+                    new InvalidConsumerMethod("Consumer method " + method + " has more than one parameter", method, componentType);
             context.addError(failure);
             return;
         }

@@ -81,7 +81,8 @@ public class JavaHeuristicTestCase extends TestCase {
         EasyMock.expect(helper.inferType(EasyMock.isA(Class.class), EasyMock.isA(TypeMapping.class))).andReturn(InjectableType.REFERENCE);
 
         EasyMock.expect(contractProcessor.introspect(EasyMock.isA(Class.class),
-                                                     EasyMock.isA(IntrospectionContext.class))).andReturn(new JavaServiceContract());
+                                                     EasyMock.isA(IntrospectionContext.class),
+                                                     EasyMock.isA(InjectingComponentType.class))).andReturn(new JavaServiceContract());
         EasyMock.replay(helper, contractProcessor);
 
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
@@ -104,7 +105,8 @@ public class JavaHeuristicTestCase extends TestCase {
         EasyMock.expect(helper.inferType(EasyMock.isA(Class.class), EasyMock.isA(TypeMapping.class))).andReturn(InjectableType.REFERENCE);
 
         EasyMock.expect(contractProcessor.introspect(EasyMock.isA(Class.class),
-                                                     EasyMock.isA(IntrospectionContext.class))).andReturn(new JavaServiceContract());
+                                                     EasyMock.isA(IntrospectionContext.class),
+                                                     EasyMock.isA(InjectingComponentType.class))).andReturn(new JavaServiceContract());
         EasyMock.replay(helper, contractProcessor);
 
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();

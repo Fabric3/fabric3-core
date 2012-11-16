@@ -102,7 +102,7 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
         }
         processInitialDelay(data, reader, startLocation, context);
         processTimeUnit(data, reader, startLocation, context);
-        processIntervalClass(reader, context, data);
+        processIntervalClass(reader, context, implementation);
         processRepeatInterval(reader, startLocation, context, data);
         processRepeatFixedRate(reader, startLocation, context, data);
         processFireOnce(reader, startLocation, context, data);
@@ -171,14 +171,14 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
         try {
             Class<?> clazz = context.getClassLoader().loadClass(implClass);
             if (!(Runnable.class.isAssignableFrom(clazz))) {
-                InvalidTimerInterface failure = new InvalidTimerInterface(implementation);
+                InvalidTimerInterface failure = new InvalidTimerInterface(clazz, implementation);
                 context.addError(failure);
                 LoaderUtil.skipToEndElement(reader);
                 return false;
 
             }
         } catch (ClassNotFoundException e) {
-            ImplementationArtifactNotFound failure = new ImplementationArtifactNotFound(implClass, e.getMessage());
+            ImplementationArtifactNotFound failure = new ImplementationArtifactNotFound(implClass, e.getMessage(), implementation);
             context.addError(failure);
             LoaderUtil.skipToEndElement(reader);
             return false;
@@ -186,7 +186,9 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
         return true;
     }
 
-    private void processIntervalClass(XMLStreamReader reader, IntrospectionContext context, TimerData data) throws XMLStreamException {
+    private void processIntervalClass(XMLStreamReader reader, IntrospectionContext context, TimerImplementation implementation)
+            throws XMLStreamException {
+        TimerData data = implementation.getTimerData();
         String intervalClass = reader.getAttributeValue(null, "intervalClass");
         if (intervalClass == null) {
             // no task defined
@@ -198,11 +200,11 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
             try {
                 clazz.getMethod("nextInterval");
             } catch (NoSuchMethodException e) {
-                InvalidIntervalClass failure = new InvalidIntervalClass(intervalClass);
+                InvalidIntervalClass failure = new InvalidIntervalClass(clazz, implementation);
                 context.addError(failure);
             }
         } catch (ClassNotFoundException e) {
-            ImplementationArtifactNotFound failure = new ImplementationArtifactNotFound(intervalClass, e.getMessage());
+            ImplementationArtifactNotFound failure = new ImplementationArtifactNotFound(intervalClass, e.getMessage(), implementation);
             context.addError(failure);
         }
 
@@ -219,7 +221,8 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
             data.setIntervalMethod(true);  // set regardless of whether the method is valid
             data.setType(TimerType.RECURRING);
             if (!Long.class.equals(type) && !Long.TYPE.equals(type)) {
-                InvalidIntervalMethod failure = new InvalidIntervalMethod("The nextInterval method must return a long value: " + name);
+                InvalidIntervalMethod failure =
+                        new InvalidIntervalMethod("The nextInterval method must return a long value: " + name, clazz, implementation);
                 context.addError(failure);
             }
         } catch (ClassNotFoundException e) {

@@ -38,6 +38,7 @@
 package org.fabric3.jpa.introspection;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -83,7 +84,7 @@ public class PersistenceContextProcessor extends AbstractAnnotationProcessor<Per
         FieldInjectionSite site = new FieldInjectionSite(field);
         String name = helper.getSiteName(field, null);
         if (EntityManager.class.equals(field.getType())) {
-            PersistenceContextResourceReference definition = createDefinition(name, annotation, componentType, context);
+            PersistenceContextResourceReference definition = createDefinition(name, field, annotation, componentType, context);
             componentType.add(definition, site);
         } else {
             HibernateSessionResourceReference definition = createSessionDefinition(name, annotation, componentType);
@@ -101,7 +102,7 @@ public class PersistenceContextProcessor extends AbstractAnnotationProcessor<Per
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         String name = helper.getSiteName(method, null);
         if (EntityManager.class.equals(method.getParameterTypes()[0])) {
-            PersistenceContextResourceReference definition = createDefinition(name, annotation, componentType, context);
+            PersistenceContextResourceReference definition = createDefinition(name, method, annotation, componentType, context);
             componentType.add(definition, site);
         } else {
             HibernateSessionResourceReference definition = createSessionDefinition(name, annotation, componentType);
@@ -112,13 +113,15 @@ public class PersistenceContextProcessor extends AbstractAnnotationProcessor<Per
     }
 
     private PersistenceContextResourceReference createDefinition(String name,
+                                                                 Member member,
                                                                  PersistenceContext annotation,
                                                                  InjectingComponentType componentType,
                                                                  IntrospectionContext context) {
         String unitName = annotation.unitName();
         PersistenceContextType type = annotation.type();
         if (PersistenceContextType.EXTENDED == type) {
-            InvalidPersistenceContextType error = new InvalidPersistenceContextType("Extended persistence contexts not supported: " + unitName);
+            InvalidPersistenceContextType error =
+                    new InvalidPersistenceContextType("Extended persistence contexts not supported: " + unitName, member, componentType);
             context.addError(error);
         }
         boolean multiThreaded = Scope.COMPOSITE.getScope().equals(componentType.getScope());

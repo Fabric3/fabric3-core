@@ -50,6 +50,7 @@ import junit.framework.TestCase;
 
 import org.fabric3.api.annotation.Producer;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -122,11 +123,11 @@ public class ProducerProcessorTestCase extends TestCase {
         JavaContractProcessor contractProcessor = new JavaContractProcessor() {
 
 
-            public JavaServiceContract introspect(Class<?> interfaze, IntrospectionContext context) {
+            public JavaServiceContract introspect(Class<?> interfaze, IntrospectionContext context, ModelObject... modelObjects) {
                 return contract;
             }
 
-            public JavaServiceContract introspect(Class<?> interfaze, Class<?> baseClass, IntrospectionContext context) {
+            public JavaServiceContract introspect(Class<?> interfaze, Class<?> baseClass, IntrospectionContext context, ModelObject... modelObjects) {
                 return contract;
             }
         };

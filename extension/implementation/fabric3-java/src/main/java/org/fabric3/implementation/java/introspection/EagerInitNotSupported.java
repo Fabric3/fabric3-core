@@ -37,16 +37,17 @@
 */
 package org.fabric3.implementation.java.introspection;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  *
  */
-public class EagerInitNotSupported extends ValidationFailure {
+public class EagerInitNotSupported extends JavaValidationFailure {
     private Class<?> clazz;
 
-    protected EagerInitNotSupported(Class<?> clazz) {
-        super();
+    protected EagerInitNotSupported(Class<?> clazz, InjectingComponentType componentType) {
+        super(clazz, componentType);
         this.clazz = clazz;
     }
 

@@ -77,12 +77,12 @@ public class OASISCallbackProcessor extends AbstractAnnotationProcessor<Callback
 
 
     public void visitField(Callback annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
-        validate(field, context);
+        validate(field, componentType, context);
 
         String name = helper.getSiteName(field, null);
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
-        CallbackDefinition definition = createDefinition(name, type, implClass, context);
+        CallbackDefinition definition = createDefinition(name, type, implClass, componentType, context);
         componentType.add(definition, site);
     }
 
@@ -91,38 +91,43 @@ public class OASISCallbackProcessor extends AbstractAnnotationProcessor<Callback
                             Class<?> implClass,
                             InjectingComponentType componentType,
                             IntrospectionContext context) {
-        validate(method, context);
+        validate(method, componentType, context);
 
         String name = helper.getSiteName(method, null);
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        CallbackDefinition definition = createDefinition(name, type, implClass, context);
+        CallbackDefinition definition = createDefinition(name, type, implClass, componentType, context);
         componentType.add(definition, site);
     }
 
-    private void validate(Field field, IntrospectionContext context) {
+    private void validate(Field field, InjectingComponentType componentType, IntrospectionContext context) {
         if (!Modifier.isProtected(field.getModifiers()) && !Modifier.isPublic(field.getModifiers())) {
             Class<?> clazz = field.getDeclaringClass();
             InvalidAccessor warning =
                     new InvalidAccessor("Illegal callback. The field " + field.getName() + " on " + clazz.getName()
-                                                + " is annotated with @Callback and must be public or protected.");
+                                                + " is annotated with @Callback and must be public or protected.", field, componentType);
             context.addError(warning);
         }
     }
 
-    private void validate(Method method, IntrospectionContext context) {
+    private void validate(Method method, InjectingComponentType componentType, IntrospectionContext context) {
         if (!Modifier.isProtected(method.getModifiers()) && !Modifier.isPublic(method.getModifiers())) {
-            Class<?> clazz = method.getDeclaringClass();
-            InvalidAccessor warning = new InvalidAccessor("Illegal callback. The method " + method
-                                                                  + " is annotated with @Callback and must be public or protected.");
+            InvalidAccessor warning =
+                    new InvalidAccessor("Illegal callback. The method " + method + " is annotated with @Callback and must be public or protected.",
+                                        method,
+                                        componentType);
             context.addError(warning);
         }
     }
 
-    private CallbackDefinition createDefinition(String name, Type type, Class<?> implClass, IntrospectionContext context) {
+    private CallbackDefinition createDefinition(String name,
+                                                Type type,
+                                                Class<?> implClass,
+                                                InjectingComponentType componentType,
+                                                IntrospectionContext context) {
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> baseType = helper.getBaseType(type, typeMapping);
-        ServiceContract contract = contractProcessor.introspect(baseType, implClass, context);
+        ServiceContract contract = contractProcessor.introspect(baseType, implClass, context, componentType);
         return new CallbackDefinition(name, contract);
     }
 

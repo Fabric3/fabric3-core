@@ -96,7 +96,7 @@ public class JSR250ResourceProcessor extends AbstractAnnotationProcessor<Resourc
                 // default to the field type simple name
                 mappedName = type.getSimpleName();
             }
-            definition = createResource(name, type, false, mappedName, context);
+            definition = createResource(name, type, false, mappedName, componentType, context);
         }
         componentType.add(definition, site);
     }
@@ -123,7 +123,7 @@ public class JSR250ResourceProcessor extends AbstractAnnotationProcessor<Resourc
                 // default to the field type simple name
                 mappedName = type.getSimpleName();
             }
-            definition = createResource(name, type, false, mappedName, context);
+            definition = createResource(name, type, false, mappedName, componentType, context);
         }
         componentType.add(definition, site);
     }
@@ -132,8 +132,9 @@ public class JSR250ResourceProcessor extends AbstractAnnotationProcessor<Resourc
                                                           Class<?> type,
                                                           boolean optional,
                                                           String mappedName,
+                                                          InjectingComponentType componentType,
                                                           IntrospectionContext context) {
-        ServiceContract serviceContract = contractProcessor.introspect(type, context);
+        ServiceContract serviceContract = contractProcessor.introspect(type, context, componentType);
         return new SystemSourcedResourceReference(name, optional, mappedName, serviceContract);
     }
 }

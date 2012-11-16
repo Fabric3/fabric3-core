@@ -43,16 +43,18 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  *
  */
-public class InvalidScope extends ValidationFailure {
+public class InvalidScope extends JavaValidationFailure {
     private Class<?> clazz;
     private String scopeName;
 
-    protected InvalidScope(Class<?> clazz, String scopeName) {
+    protected InvalidScope(Class<?> clazz, String scopeName, ComponentType componentType) {
+        super(clazz, componentType);
         this.clazz = clazz;
         this.scopeName = scopeName;
     }

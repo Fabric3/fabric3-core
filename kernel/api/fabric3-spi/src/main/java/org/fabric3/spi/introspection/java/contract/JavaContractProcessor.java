@@ -43,6 +43,7 @@
  */
 package org.fabric3.spi.introspection.java.contract;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
@@ -54,24 +55,26 @@ public interface JavaContractProcessor {
      * Introspects a Java class and return the JavaServiceContract. If validation errors or warnings are encountered, they will be reported in the
      * IntrospectionContext.
      *
-     * @param interfaze the Java class to introspect
-     * @param context   the introspection context for reporting errors and warnings
+     * @param interfaze    the Java class to introspect
+     * @param context      the introspection context for reporting errors and warnings
+     * @param modelObjects the parent model objects. May be null.
      * @return the ServiceContract corresponding to the interface type
      */
-    JavaServiceContract introspect(Class<?> interfaze, IntrospectionContext context);
+    JavaServiceContract introspect(Class<?> interfaze, IntrospectionContext context, ModelObject... modelObjects);
 
     /**
      * Introspects a generic Java class and return the JavaServiceContract. If validation errors or warnings are encountered, they will be reported in
      * the IntrospectionContext.
      *
-     * @param interfaze the Java class to introspect
-     * @param baseClass the base class to use for introspecting and resolving generic formal types to actual types. For example, a service contract on
-     *                  a reference may contain a formal type declaration (e.g. T) that is defined by the implementation class where the reference is
-     *                  injected. The base class may also be the same as the interface to be introspected in cases where a service contract is not
-     *                  associated with an implementation class.
-     * @param context   the introspection context for reporting errors and warnings
+     * @param interfaze    the Java class to introspect
+     * @param baseClass    the base class to use for introspecting and resolving generic formal types to actual types. For example, a service contract
+     *                     on a reference may contain a formal type declaration (e.g. T) that is defined by the implementation class where the
+     *                     reference is injected. The base class may also be the same as the interface to be introspected in cases where a service
+     *                     contract is not associated with an implementation class.
+     * @param context      the introspection context for reporting errors and warnings
+     * @param modelObjects the parent model objects. May be null.
      * @return the ServiceContract corresponding to the interface type
      */
-    JavaServiceContract introspect(Class<?> interfaze, Class<?> baseClass, IntrospectionContext context);
+    JavaServiceContract introspect(Class<?> interfaze, Class<?> baseClass, IntrospectionContext context, ModelObject... modelObjects);
 
 }

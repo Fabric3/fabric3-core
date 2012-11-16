@@ -66,15 +66,15 @@ public class OASISDestroyProcessor extends AbstractAnnotationProcessor<Destroy> 
                             Class<?> implClass,
                             InjectingComponentType componentType,
                             IntrospectionContext context) {
-        if (!validate(method, context)) {
+        if (!validate(method, context, componentType)) {
             return;
         }
         componentType.setDestroyMethod(new Signature(method));
     }
 
-    private boolean validate(Method method, IntrospectionContext context) {
+    private boolean validate(Method method, IntrospectionContext context, InjectingComponentType componentType) {
         if (!"void".equals(method.getReturnType().getName())) {
-            InvalidMethod error = new InvalidMethod("Method marked with @Destroy must return void: " + method);
+            InvalidMethod error = new InvalidMethod("Method marked with @Destroy must return void: " + method, method, componentType);
             context.addError(error);
             return false;
         }

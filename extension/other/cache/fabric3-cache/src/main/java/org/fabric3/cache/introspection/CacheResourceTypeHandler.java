@@ -54,6 +54,7 @@ import org.fabric3.resource.spi.ResourceTypeHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Introspects {@link Resource} annotations when used with <code>ConcurrentMap</code> types.
@@ -74,10 +75,14 @@ public class CacheResourceTypeHandler implements ResourceTypeHandler {
     }
 
 
-    public ResourceReferenceDefinition createResourceReference(String name, Resource annotation, Member member, IntrospectionContext context) {
+    public ResourceReferenceDefinition createResourceReference(String name,
+                                                               Resource annotation,
+                                                               Member member,
+                                                               InjectingComponentType componentType,
+                                                               IntrospectionContext context) {
         String cacheName = annotation.name();
         if (cacheName.length() == 0) {
-            MissingCacheName error = new MissingCacheName(member.getDeclaringClass());
+            MissingCacheName error = new MissingCacheName(member, componentType);
             context.addError(error);
             return new CacheReferenceDefinition(name, contract, false, "error");
         }

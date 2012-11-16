@@ -37,16 +37,16 @@
 */
 package org.fabric3.spi.introspection.java;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  *
  */
-public class NoConstructorFound extends ValidationFailure {
+public class NoConstructorFound extends JavaValidationFailure {
     private Class<?> clazz;
 
-    public NoConstructorFound(Class<?> clazz) {
-        super();
+    public NoConstructorFound(Class<?> clazz, InjectingComponentType componentType) {
+        super(clazz, componentType);
         this.clazz = clazz;
     }
 

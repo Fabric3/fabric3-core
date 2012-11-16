@@ -52,9 +52,9 @@ import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.annotation.Intent;
 import org.oasisopen.sca.annotation.PolicySets;
+import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Qualifier;
 import org.oasisopen.sca.annotation.Requires;
-import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.api.annotation.IntentMetaData;
 import org.fabric3.model.type.PolicyAware;
@@ -96,7 +96,7 @@ public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor 
                 QName qName = QName.valueOf(intent);
                 modelObject.addIntent(qName);
             } catch (IllegalArgumentException e) {
-                InvalidIntentName error = new InvalidIntentName(intent, e);
+                InvalidIntentName error = new InvalidIntentName(intent, annotation.getClass(), e);
                 context.addError(error);
             }
         }
@@ -116,7 +116,7 @@ public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor 
                 QName qName = QName.valueOf(set);
                 modelObject.addPolicySet(qName);
             } catch (IllegalArgumentException e) {
-                InvalidIntentName error = new InvalidIntentName(set, e);
+                InvalidIntentName error = new InvalidIntentName(set, null, e);
                 context.addError(error);
             }
         }
@@ -129,7 +129,9 @@ public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor 
      * @param modelObject the model object the intent is associated with
      * @param context     the current introspection context
      */
-    private void processIntentAnnotation(Annotation annotation, PolicyAware modelObject, IntrospectionContext context) {
+    private void processIntentAnnotation(Annotation annotation,
+                                         PolicyAware modelObject,
+                                         IntrospectionContext context) {
         Class<? extends Annotation> annotClass = annotation.annotationType();
         if (annotClass.isAnnotationPresent(Intent.class)) {
             Intent intent = annotClass.getAnnotation(Intent.class);
@@ -151,11 +153,11 @@ public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor 
                     modelObject.addMetadata(name, metadata);
                 }
             } catch (IllegalArgumentException e) {
-                context.addError(new InvalidIntentName(val, e));
+                context.addError(new InvalidIntentName(val, annotClass, e));
             } catch (IllegalAccessException e) {
-                context.addError(new InvalidAnnotation("Error reading annotation value " + annotClass.getName(), e));
+                context.addError(new InvalidAnnotation("Error reading annotation value " + annotClass.getName(), annotClass, e));
             } catch (InvocationTargetException e) {
-                context.addError(new InvalidAnnotation("Error reading annotation value" + annotClass.getName(), e));
+                context.addError(new InvalidAnnotation("Error reading annotation value" + annotClass.getName(), annotClass, e));
             }
         } else {
             // check if the annotation is an intent annotation but not marked with the @Intent annotation
@@ -193,7 +195,8 @@ public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor 
                 } else {
                     String metadataName = metadataAnnotClass.getName();
                     String annotationName = annotClass.getName();
-                    InvalidAnnotation error = new InvalidAnnotation("Value for " + metadataName + " must be String or String[]:  " + annotationName);
+                    InvalidAnnotation error =
+                            new InvalidAnnotation("Value for " + metadataName + " must be String or String[]:  " + annotationName, annotClass);
                     context.addError(error);
                 }
             }

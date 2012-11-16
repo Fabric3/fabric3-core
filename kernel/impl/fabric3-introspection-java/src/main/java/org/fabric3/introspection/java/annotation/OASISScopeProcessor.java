@@ -67,7 +67,7 @@ public class OASISScopeProcessor extends AbstractAnnotationProcessor<Scope> {
         if (!COMPOSITE.getScope().equals(scopeName)
                 && !STATELESS.getScope().equals(scopeName)
                 && !DOMAIN.getScope().equals(scopeName)) {
-            InvalidScope failure = new InvalidScope(type, scopeName);
+            InvalidScope failure = new InvalidScope(type, scopeName, componentType);
             context.addError(failure);
             return;
         }

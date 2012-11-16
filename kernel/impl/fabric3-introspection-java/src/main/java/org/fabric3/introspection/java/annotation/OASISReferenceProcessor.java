@@ -52,8 +52,12 @@ import java.lang.reflect.Type;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.component.ReferenceDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
+import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
+import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
@@ -63,11 +67,22 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 /**
  *
  */
-public class OASISReferenceProcessor extends AbstractReferenceProcessor<Reference> {
+public class OASISReferenceProcessor extends AbstractAnnotationProcessor<Reference> {
+    private JavaContractProcessor contractProcessor;
+    private IntrospectionHelper helper;
+    private PolicyAnnotationProcessor policyProcessor;
+
+    @Reference
+    public void setPolicyProcessor(PolicyAnnotationProcessor processor) {
+        this.policyProcessor = processor;
+    }
+
 
     public OASISReferenceProcessor(@org.oasisopen.sca.annotation.Reference JavaContractProcessor contractProcessor,
                                    @org.oasisopen.sca.annotation.Reference IntrospectionHelper helper) {
-        super(Reference.class, contractProcessor, helper);
+        super(Reference.class);
+        this.contractProcessor = contractProcessor;
+        this.helper = helper;
     }
 
     public void visitField(Reference annotation,
@@ -80,7 +95,7 @@ public class OASISReferenceProcessor extends AbstractReferenceProcessor<Referenc
         FieldInjectionSite site = new FieldInjectionSite(field);
         Annotation[] annotations = field.getAnnotations();
         boolean required = annotation.required();
-        ReferenceDefinition definition = createDefinition(name, required, type, implClass, annotations, context);
+        ReferenceDefinition definition = createDefinition(name, required, type, implClass, annotations, componentType, context);
         componentType.add(definition, site);
     }
 
@@ -94,7 +109,7 @@ public class OASISReferenceProcessor extends AbstractReferenceProcessor<Referenc
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         Annotation[] annotations = method.getAnnotations();
-        ReferenceDefinition definition = createDefinition(name, annotation.required(), type, implClass, annotations, context);
+        ReferenceDefinition definition = createDefinition(name, annotation.required(), type, implClass, annotations, componentType, context);
         componentType.add(definition, site);
     }
 
@@ -110,9 +125,30 @@ public class OASISReferenceProcessor extends AbstractReferenceProcessor<Referenc
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
         Annotation[] annotations = constructor.getParameterAnnotations()[index];
         boolean required = annotation.required();
-        ReferenceDefinition definition = createDefinition(name, required, type, implClass, annotations, context);
+        ReferenceDefinition definition = createDefinition(name, required, type, implClass, annotations, componentType, context);
         componentType.add(definition, site);
     }
 
+
+    @SuppressWarnings({"unchecked"})
+    private ReferenceDefinition createDefinition(String name,
+                                                 boolean required,
+                                                 Type type,
+                                                 Class<?> implClass,
+                                                 Annotation[] annotations,
+                                                 InjectingComponentType componentType,
+                                                 IntrospectionContext context) {
+        TypeMapping typeMapping = context.getTypeMapping(implClass);
+        Class<?> baseType = helper.getBaseType(type, typeMapping);
+        ServiceContract contract = contractProcessor.introspect(baseType, implClass, context, componentType);
+        ReferenceDefinition definition = new ReferenceDefinition(name, contract);
+        helper.processMultiplicity(definition, required, type, typeMapping);
+        if (policyProcessor != null) {
+            for (Annotation annotation : annotations) {
+                policyProcessor.process(annotation, definition, context);
+            }
+        }
+        return definition;
+    }
 
 }

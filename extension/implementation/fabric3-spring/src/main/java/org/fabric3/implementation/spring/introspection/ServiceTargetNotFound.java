@@ -37,26 +37,20 @@
 */
 package org.fabric3.implementation.spring.introspection;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.implementation.spring.model.SpringComponentType;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  *
  */
-public class ServiceTargetNotFound extends ValidationFailure {
+public class ServiceTargetNotFound extends JavaValidationFailure {
     private String serviceName;
     private String target;
 
-    public ServiceTargetNotFound(String serviceName, String target) {
+    public ServiceTargetNotFound(String serviceName, String target, SpringComponentType type) {
+        super(null, type);
         this.serviceName = serviceName;
         this.target = target;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public String getTarget() {
-        return target;
     }
 
     public String getMessage() {

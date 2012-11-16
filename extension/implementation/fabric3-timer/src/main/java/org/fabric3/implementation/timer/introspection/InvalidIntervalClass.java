@@ -37,19 +37,21 @@
 */
 package org.fabric3.implementation.timer.introspection;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.implementation.timer.model.TimerImplementation;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  *
  */
-public class InvalidIntervalClass extends ValidationFailure {
-    private String taskClass;
+public class InvalidIntervalClass extends JavaValidationFailure {
+    private String className;
 
-    public InvalidIntervalClass(String taskClass) {
-        this.taskClass = taskClass;
+    public InvalidIntervalClass(Class<?> taskClass, TimerImplementation implementation) {
+        super(taskClass, implementation);
+        this.className = taskClass.getName();
     }
 
     public String getMessage() {
-        return "Interval class must implement the public method nextInterval(): " + taskClass;
+        return "Interval class must implement the public method nextInterval(): " + className;
     }
 }
