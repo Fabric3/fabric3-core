@@ -175,13 +175,13 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             if (COMPONENT.equals(elementName)) {
                 // the reader has hit the end of the component definition without an implementation being specified
                 MissingComponentImplementation error =
-                        new MissingComponentImplementation("The component " + name + " must specify an implementation", startLocation);
+                        new MissingComponentImplementation("The component " + name + " must specify an implementation", startLocation, definition);
                 context.addError(error);
                 return definition;
             } else if (PROPERTY.equals(elementName) || REFERENCE.equals(elementName) || SERVICE.equals(elementName) || PRODUCER.equals(elementName)) {
                 MissingComponentImplementation error = new MissingComponentImplementation("The component " + name
                                                                                                   + " must specify an implementation as the first child element",
-                                                                                          startLocation);
+                                                                                          startLocation, definition);
                 context.addError(error);
                 return definition;
             }
@@ -230,7 +230,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         processServiceContract(service, typeService, startLocation, context);
 
         if (definition.getServices().containsKey(name)) {
-            DuplicateComponentService failure = new DuplicateComponentService(name, startLocation);
+            DuplicateComponentService failure = new DuplicateComponentService(name, startLocation, definition);
             context.addError(failure);
         } else {
             definition.add(service);
@@ -366,7 +366,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         ConsumerDefinition typeConsumer = componentType.getConsumers().get(name);
         if (typeConsumer == null) {
             // ensure the consumer exists
-            ComponentConsumerNotFound failure = new ComponentConsumerNotFound(name, definition, startLocation);
+            ComponentConsumerNotFound failure = new ComponentConsumerNotFound(name, definition, startLocation, consumer);
             context.addError(failure);
             return;
         }
@@ -390,7 +390,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         Property property = componentType.getProperties().get(name);
         if (property == null) {
             // ensure the property exists
-            ComponentPropertyNotFound failure = new ComponentPropertyNotFound(value.getName(), definition, startLocation);
+            ComponentPropertyNotFound failure = new ComponentPropertyNotFound(value.getName(), definition, startLocation, componentType);
             context.addError(failure);
             return;
         }
@@ -618,7 +618,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             // null check since optional properties may have null values
             // validate the many
             String name = propertyValue.getName();
-            InvalidPropertyValue error = new InvalidPropertyValue("A single-valued property is configured with multiple values: " + name, location);
+            InvalidPropertyValue error =
+                    new InvalidPropertyValue("A single-valued property is configured with multiple values: " + name, location, property);
             context.addError(error);
         }
     }
@@ -632,21 +633,21 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         if (propType != null) {
             if (valElement != null) {
                 InvalidAttributes error = new InvalidAttributes("Cannot specify property schema type and element type on property configuration: "
-                                                                        + value.getName(), location);
+                                                                        + value.getName(), location, property);
                 context.addError(error);
             } else if (valType != null && !valType.equals(propType)) {
                 InvalidAttributes error = new InvalidAttributes("Property type " + propType + " and property configuration type " + valType
-                                                                        + " do not match: " + value.getName(), location);
+                                                                        + " do not match: " + value.getName(), location, property);
                 context.addError(error);
             }
         } else if (propElement != null) {
             if (valType != null) {
                 InvalidAttributes error = new InvalidAttributes("Cannot specify property element type and property configuration schema type: "
-                                                                        + value.getName(), location);
+                                                                        + value.getName(), location, property);
                 context.addError(error);
             } else if (valElement != null && !valElement.equals(propElement)) {
                 InvalidAttributes error = new InvalidAttributes("Property element type " + propElement + " and property configuration element type "
-                                                                        + valElement + " do not match: " + value.getName(), location);
+                                                                        + valElement + " do not match: " + value.getName(), location, property);
                 context.addError(error);
             }
         }

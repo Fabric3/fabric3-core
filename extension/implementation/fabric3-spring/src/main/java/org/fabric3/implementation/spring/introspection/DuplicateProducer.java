@@ -39,6 +39,7 @@ package org.fabric3.implementation.spring.introspection;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -46,8 +47,8 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateProducer extends XmlValidationFailure {
 
-    public DuplicateProducer(String name, Location location) {
-        super("A producer with the name name" + name + "is already specified", location);
+    public DuplicateProducer(String name, Location location, ModelObject modelObject) {
+        super("A producer with the name name" + name + "is already specified", location, modelObject);
     }
 
 }

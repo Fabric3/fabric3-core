@@ -125,9 +125,11 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
         if (scdlResource != null) {
             url = cl.getResource(scdlResource);
             if (url == null) {
-                MissingComposite failure = new MissingComposite("Composite file not found: " + scdlResource, startLocation);
+                Include include = new Include();
+                include.setName(name);
+                MissingComposite failure = new MissingComposite("Composite file not found: " + scdlResource, startLocation, include);
                 context.addError(failure);
-                return null;
+                return include;
             }
             return loadFromSideFile(name, cl, contributionUri, url, reader, context);
         } else {
@@ -144,7 +146,7 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
                 ResourceElement<QNameSymbol, Composite> element = store.resolve(contributionUri, Composite.class, symbol, context);
                 if (element == null) {
                     String id = name.toString();
-                    MissingComposite failure = new MissingComposite("Composite not found: " + id, startLocation);
+                    MissingComposite failure = new MissingComposite("Composite not found: " + id, startLocation, include);
                     context.addError(failure);
                     // add pointer
                     URI uri = context.getContributionUri();

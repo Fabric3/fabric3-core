@@ -95,8 +95,11 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
         String typeAttribute = reader.getAttributeValue(null, TYPE);
         String elementAttribute = reader.getAttributeValue(null, ELEMENT);
 
+        Property property = new Property(name);
+
         if (typeAttribute != null && elementAttribute != null) {
-            InvalidAttributes error = new InvalidAttributes("Cannot specify both type and element attributes for a property", startLocation);
+            InvalidAttributes error =
+                    new InvalidAttributes("Cannot specify both type and element attributes for a property", startLocation, property);
             context.addError(error);
         }
 
@@ -106,14 +109,14 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
             try {
                 type = helper.createQName(typeAttribute, reader);
             } catch (InvalidPrefixException e) {
-                InvalidAttributes error = new InvalidAttributes("Invalid property type namespace:" + e.getMessage(), startLocation);
+                InvalidAttributes error = new InvalidAttributes("Invalid property type namespace:" + e.getMessage(), startLocation, property);
                 context.addError(error);
             }
         } else if (elementAttribute != null) {
             try {
                 element = helper.createQName(elementAttribute, reader);
             } catch (InvalidPrefixException e) {
-                InvalidAttributes error = new InvalidAttributes("Invalid property element namespace:" + e.getMessage(), startLocation);
+                InvalidAttributes error = new InvalidAttributes("Invalid property element namespace:" + e.getMessage(), startLocation, property);
                 context.addError(error);
             }
         }
@@ -123,10 +126,9 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
 
         if (valueAttribute != null && value.getDocumentElement().getChildNodes().getLength() > 0) {
             InvalidPropertyValue error =
-                    new InvalidPropertyValue("Property value configured using the value attribute and inline: " + name, startLocation);
+                    new InvalidPropertyValue("Property value configured using the value attribute and inline: " + name, startLocation, property);
             context.addError(error);
         }
-        Property property = new Property(name);
         if (roundTrip) {
             property.enableRoundTrip();
             if (manyAttr != null) {
@@ -153,7 +155,7 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
         property.setMany(many);
         if (!many && value.getDocumentElement().getChildNodes().getLength() > 1) {
             InvalidPropertyValue error =
-                    new InvalidPropertyValue("A single-valued property is configured with multiple values: " + name, startLocation);
+                    new InvalidPropertyValue("A single-valued property is configured with multiple values: " + name, startLocation, property);
             context.addError(error);
         } else {
             if (valueAttribute != null) {

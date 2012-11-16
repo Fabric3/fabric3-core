@@ -199,7 +199,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             return false;
         }
         if (type.getServices().containsKey(name)) {
-            DuplicateService failure = new DuplicateService(name, startLocation);
+            DuplicateService failure = new DuplicateService(name, startLocation, type);
             context.addError(failure);
             return false;
         }
@@ -371,7 +371,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             return false;
         }
         if (type.getProducers().containsKey(name)) {
-            DuplicateProducer failure = new DuplicateProducer(name, startLocation);
+            DuplicateProducer failure = new DuplicateProducer(name, startLocation, type);
             context.addError(failure);
             return false;
         }

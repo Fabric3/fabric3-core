@@ -37,9 +37,13 @@
 */
 package org.fabric3.spi.introspection.xml;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.xml.stream.Location;
 
 import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.model.type.ModelObject;
 
 /**
  * Base class for validation failures occurring in XML artifacts.
@@ -51,13 +55,19 @@ public abstract class XmlValidationFailure extends ValidationFailure {
     private String resourceURI = "system";
     private String message;
 
-    protected XmlValidationFailure(String message, Location location) {
+    private List<Object> sources;
+
+    protected XmlValidationFailure(String message, Location location, ModelObject... sources) {
         this.message = message;
         if (location != null) {
             line = location.getLineNumber();
             column = location.getColumnNumber();
             offset = location.getCharacterOffset();
             resourceURI = location.getSystemId();
+        }
+        this.sources = new ArrayList<Object>();
+        if (sources != null) {
+            this.sources.addAll(Arrays.asList(sources));
         }
     }
 
@@ -79,6 +89,10 @@ public abstract class XmlValidationFailure extends ValidationFailure {
 
     public String getResourceURI() {
         return resourceURI;
+    }
+
+    public List<Object> getSources() {
+        return sources;
     }
 
     public String getMessage() {

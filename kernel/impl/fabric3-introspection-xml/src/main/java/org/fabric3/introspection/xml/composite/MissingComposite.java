@@ -38,8 +38,8 @@
 package org.fabric3.introspection.xml.composite;
 
 import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -47,7 +47,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class MissingComposite extends XmlValidationFailure {
 
-    protected MissingComposite(String message, Location location) {
-        super(message, location);
+    protected MissingComposite(String message, Location location, ModelObject modelObject) {
+        super(message, location, modelObject);
     }
 }

@@ -100,7 +100,7 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
         if (scdlResource != null) {
             implementation = parseScdlResource(scdlResource, startLocation, context);
         } else {
-            implementation= resolveByName(reader, startLocation, context);
+            implementation = resolveByName(reader, startLocation, context);
         }
 
         LoaderUtil.skipToEndElement(reader);
@@ -114,7 +114,7 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
 
         URL url = cl.getResource(scdlResource);
         if (url == null) {
-            MissingComposite failure = new MissingComposite("Composite file not found: " + scdlResource, startLocation);
+            MissingComposite failure = new MissingComposite("Composite file not found: " + scdlResource, startLocation, impl);
             context.addError(failure);
             return impl;
         }
@@ -161,7 +161,7 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
             ResourceElement<QNameSymbol, Composite> element = store.resolve(contributionUri, Composite.class, symbol, context);
             if (element == null) {
                 String id = name.toString();
-                MissingComposite failure = new MissingComposite("Composite not found: " + id, startLocation);
+                MissingComposite failure = new MissingComposite("Composite not found: " + id, startLocation, impl);
                 context.addError(failure);
                 // add pointer
                 URI uri = context.getContributionUri();
