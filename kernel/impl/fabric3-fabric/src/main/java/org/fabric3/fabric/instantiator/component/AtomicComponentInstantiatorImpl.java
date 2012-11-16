@@ -44,6 +44,7 @@ import org.oasisopen.sca.annotation.Property;
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.model.type.component.AbstractReference;
+import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentConsumer;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -55,7 +56,6 @@ import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ProducerDefinition;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -105,7 +105,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
     }
 
     private void createServices(ComponentDefinition<?> definition, LogicalComponent<?> component, ComponentType componentType) {
-        for (ServiceDefinition service : componentType.getServices().values()) {
+        for (AbstractService service : componentType.getServices().values()) {
             String name = service.getName();
             URI serviceUri = component.getUri().resolve('#' + name);
             LogicalService logicalService = new LogicalService(serviceUri, service, component);

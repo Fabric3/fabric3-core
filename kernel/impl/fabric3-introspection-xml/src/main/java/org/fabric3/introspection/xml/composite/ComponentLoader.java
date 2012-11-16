@@ -60,6 +60,7 @@ import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.introspection.xml.common.InvalidAttributes;
 import org.fabric3.introspection.xml.common.InvalidPropertyValue;
 import org.fabric3.model.type.component.AbstractReference;
+import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentConsumer;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -74,8 +75,6 @@ import org.fabric3.model.type.component.ProducerDefinition;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.PropertyMany;
 import org.fabric3.model.type.component.PropertyValue;
-import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.component.Target;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
@@ -220,7 +219,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             return;
         }
         String name = service.getName();
-        ServiceDefinition typeService = componentType.getServices().get(name);
+        AbstractService typeService = componentType.getServices().get(name);
         if (typeService == null) {
             // ensure the service exists
             ComponentServiceNotFound failure = new ComponentServiceNotFound(name, definition, startLocation);
@@ -420,7 +419,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param location    the location in the composite where the contract is defined
      * @param context     the context
      */
-    private void processServiceContract(ComponentService service, ServiceDefinition typeService, Location location, IntrospectionContext context) {
+    private void processServiceContract(ComponentService service, AbstractService typeService, Location location, IntrospectionContext context) {
         if (service.getServiceContract() == null) {
             // if the service contract is not set, inherit from the component type service
             service.setServiceContract(typeService.getServiceContract());
@@ -479,7 +478,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param context     the context
      */
     private void matchServiceCallbackContracts(ComponentService service,
-                                               ServiceDefinition typeService,
+                                               AbstractService typeService,
                                                Location location,
                                                IntrospectionContext context) {
         ServiceContract callbackContract = service.getServiceContract().getCallbackContract();

@@ -43,38 +43,68 @@
  */
 package org.fabric3.model.type.component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.fabric3.model.type.ModelObject;
+import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * A service configured on a component.
+ * An abstract service type.
  */
-public class ComponentService extends AbstractService {
-    private static final long serialVersionUID = 1076710434904709542L;
+public abstract class AbstractService extends BindableDefinition {
+    private static final long serialVersionUID = -6122186697990043751L;
 
-    private ComponentDefinition<?> parent;
+    private String name;
+    private ServiceContract serviceContract;
+    private List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
 
-    public ComponentService(String name) {
-        super(name, null);
+    public AbstractService(String name, ServiceContract serviceContract) {
+        this.name = name;
+        this.serviceContract = serviceContract;
     }
 
     /**
-     * Returns the parent component of this reference.
+     * Return the name of this service definition.
      *
-     * @return the parent component
+     * @return the name of this service definition
      */
-    public ComponentDefinition<?> getParent() {
-        return parent;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Sets the parent component of this reference.
+     * Returns the service contract
      *
-     * @param parent the parent component
+     * @return the service contract
      */
-    public void setParent(ModelObject parent) {
-        // XCV fixme
-        this.parent = (ComponentDefinition<?>) parent;
+    public ServiceContract getServiceContract() {
+        return serviceContract;
     }
 
+    /**
+     * Sets the service contract
+     *
+     * @param contract the service contract
+     */
+    public void setServiceContract(ServiceContract contract) {
+        this.serviceContract = contract;
+    }
+
+    /**
+     * @return List of callback bindings defined against the reference.
+     */
+    public List<BindingDefinition> getCallbackBindings() {
+        return callbackBindings;
+    }
+
+    /**
+     * @param binding callback binding to be added.
+     */
+    public void addCallbackBinding(BindingDefinition binding) {
+        this.callbackBindings.add(binding);
+    }
+
+    public abstract void setParent(ModelObject parent);
 
 }

@@ -70,9 +70,9 @@ import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Remotable;
 import org.oasisopen.sca.annotation.Service;
 
+import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
@@ -286,7 +286,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
         return interfaces;
     }
 
-    public Set<Method> getInjectionMethods(Class<?> type, Collection<ServiceDefinition> services) {
+    public Set<Method> getInjectionMethods(Class<?> type, Collection<AbstractService> services) {
         Set<Signature> exclude = getOperations(services);
         Set<Method> methods = new HashSet<Method>();
         while (type != null) {
@@ -335,9 +335,9 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
 
     }
 
-    private Set<Signature> getOperations(Collection<ServiceDefinition> services) {
+    private Set<Signature> getOperations(Collection<AbstractService> services) {
         Set<Signature> operations = new HashSet<Signature>();
-        for (ServiceDefinition definition : services) {
+        for (AbstractService definition : services) {
             List<? extends Operation> ops = definition.getServiceContract().getOperations();
             for (Operation operation : ops) {
                 String name = operation.getName();

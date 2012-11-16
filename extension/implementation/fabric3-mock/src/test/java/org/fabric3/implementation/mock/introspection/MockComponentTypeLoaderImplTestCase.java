@@ -44,7 +44,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
-import org.fabric3.model.type.component.ServiceDefinition;
+import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
@@ -83,11 +83,11 @@ public class MockComponentTypeLoaderImplTestCase extends TestCase {
         InjectingComponentType componentType = componentTypeLoader.load(mockedInterfaces, context);
 
         assertNotNull(componentType);
-        java.util.Map<String, ServiceDefinition> services = componentType.getServices();
+        java.util.Map<String, AbstractService> services = componentType.getServices();
 
         assertEquals(2, services.size());    // 4 because the mock service is added implicitly
 
-        ServiceDefinition service = services.get("Foo");
+        AbstractService service = services.get("Foo");
         assertNotNull(service);
         assertEquals(Foo.class.getName(), service.getServiceContract().getQualifiedInterfaceName());
 

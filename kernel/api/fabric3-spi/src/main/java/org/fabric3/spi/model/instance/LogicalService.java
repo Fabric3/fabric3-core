@@ -45,7 +45,7 @@ package org.fabric3.spi.model.instance;
 
 import java.net.URI;
 
-import org.fabric3.model.type.component.ServiceDefinition;
+import org.fabric3.model.type.component.AbstractService;
 
 /**
  * An instantiated service in the domain.
@@ -53,7 +53,7 @@ import org.fabric3.model.type.component.ServiceDefinition;
 public class LogicalService extends Bindable {
     private static final long serialVersionUID = -2417797075030173948L;
 
-    private ServiceDefinition definition;
+    private AbstractService definition;
     private URI promote;
     private LogicalComponent<?> leafComponent;
     private LogicalService leafService;
@@ -65,7 +65,7 @@ public class LogicalService extends Bindable {
      * @param definition the service definition
      * @param parent     the service parent component
      */
-    public LogicalService(URI uri, ServiceDefinition definition, LogicalComponent<?> parent) {
+    public LogicalService(URI uri, AbstractService definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
         if (definition != null) {
@@ -82,7 +82,7 @@ public class LogicalService extends Bindable {
      *
      * @return the service definition for the logical service
      */
-    public ServiceDefinition getDefinition() {
+    public AbstractService getDefinition() {
         return definition;
     }
 

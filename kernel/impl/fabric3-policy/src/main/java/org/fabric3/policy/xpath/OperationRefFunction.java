@@ -45,7 +45,7 @@ import org.jaxen.Function;
 import org.jaxen.FunctionCallException;
 
 import org.fabric3.model.type.component.AbstractReference;
-import org.fabric3.model.type.component.ServiceDefinition;
+import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -80,7 +80,7 @@ public class OperationRefFunction implements Function {
 
     private void find(String interfaceName, String operationName, LogicalComponent<?> component, List<LogicalOperation> operations) {
         for (LogicalService service : component.getServices()) {
-            ServiceDefinition definition = service.getDefinition();
+            AbstractService definition = service.getDefinition();
             ServiceContract contract = definition.getServiceContract();
             // match on the name of the service contract but return the logical operation
             if (contract.getInterfaceName().equals(interfaceName)) {

@@ -50,11 +50,11 @@ import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
 import org.fabric3.model.type.component.AbstractReference;
+import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.ComponentService;
 import org.fabric3.model.type.component.Property;
-import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
@@ -142,7 +142,7 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
 
         ComponentDefinition<XQueryImplementation> definition = component.getDefinition();
 
-        for (Map.Entry<String, ServiceDefinition> entry : definition.getImplementation().getComponentType().getServices().entrySet()) {
+        for (Map.Entry<String, AbstractService> entry : definition.getImplementation().getComponentType().getServices().entrySet()) {
             String serviceName = entry.getKey();
             XQueryServiceContract service = (XQueryServiceContract) entry.getValue().getServiceContract();
             if (service.getQname() == null && "XQueryService".equals(serviceName)) {
@@ -231,7 +231,7 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
         LogicalComponent<XQueryImplementation> source = (LogicalComponent<XQueryImplementation>) service.getParent();
         XQueryComponentType type = source.getDefinition().getImplementation().getComponentType();
         String name = null;
-        for (Map.Entry<String, ServiceDefinition> entry : type.getServices().entrySet()) {
+        for (Map.Entry<String, AbstractService> entry : type.getServices().entrySet()) {
             ServiceContract candidateContract = entry.getValue().getServiceContract();
             MatchResult result = matcher.isAssignableFrom(candidateContract, callbackContract, false);
             if (result.isAssignable()) {

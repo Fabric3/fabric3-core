@@ -78,7 +78,7 @@ public class Composite extends ComponentType implements PolicyAware {
     // views are caches of all properties, references, wires, or components contained in the composite and its included composites
     private Map<String, Property> propertiesView = new HashMap<String, Property>();
     private Map<String, AbstractReference> referencesView = new HashMap<String, AbstractReference>();
-    private Map<String, ServiceDefinition> servicesView = new HashMap<String, ServiceDefinition>();
+    private Map<String, AbstractService> servicesView = new HashMap<String, AbstractService>();
     private Map<String, ComponentDefinition<? extends Implementation<?>>> componentsView =
             new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
     private Map<String, ChannelDefinition> channelsView = new HashMap<String, ChannelDefinition>();
@@ -220,8 +220,7 @@ public class Composite extends ComponentType implements PolicyAware {
         referencesView.put(reference.getName(), reference);
     }
 
-    @Override
-    public Map<String, ServiceDefinition> getServices() {
+    public Map<String, AbstractService> getServices() {
         return servicesView;
     }
 
@@ -235,8 +234,7 @@ public class Composite extends ComponentType implements PolicyAware {
     }
 
     @SuppressWarnings({"unchecked"})
-    @Override
-    public void add(ServiceDefinition service) {
+    public void add(AbstractService service) {
         if (!(service instanceof CompositeService)) {
             throw new IllegalArgumentException("Service type must be " + CompositeService.class.getName());
         }
@@ -421,7 +419,7 @@ public class Composite extends ComponentType implements PolicyAware {
      *
      * @return services
      */
-    public Map<String, ServiceDefinition> getDeclaredServices() {
+    public Map<String, AbstractService> getDeclaredServices() {
         return super.getServices();
     }
 

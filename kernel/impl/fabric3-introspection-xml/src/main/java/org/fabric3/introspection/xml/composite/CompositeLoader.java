@@ -60,6 +60,7 @@ import org.fabric3.host.contribution.ArtifactValidationFailure;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.AbstractReference;
+import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -74,7 +75,6 @@ import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.PropertyValue;
 import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.component.WireDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
@@ -493,7 +493,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
     }
 
     private void updateAndValidateServicePromotions(Composite type, Map<ModelObject, Location> locations, IntrospectionContext context) {
-        for (ServiceDefinition definition : type.getServices().values()) {
+        for (AbstractService definition : type.getServices().values()) {
             CompositeService service = (CompositeService) definition;
             Location location = locations.get(service);
             URI promotedUri = service.getPromote();
@@ -507,7 +507,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             }
             String componentName = UriHelper.getDefragmentedNameAsString(promotedUri);
             ComponentDefinition promotedComponent = type.getComponents().get(componentName);
-            ServiceDefinition promotedService;
+            AbstractService promotedService;
             String name = service.getName();
             if (promotedComponent == null) {
                 PromotionNotFound error =
@@ -526,7 +526,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         continue;
                     }
                 } else {
-                    Map<String, ServiceDefinition> services = componentType.getServices();
+                    Map<String, AbstractService> services = componentType.getServices();
                     int numberOfServices = services.size();
                     if (numberOfServices == 2) {
                         PromotionNotFound error = new PromotionNotFound("A promoted service must be specified for " + name, location);
@@ -614,7 +614,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
      * @param context         the context
      */
     private void processServiceContract(CompositeService service,
-                                        ServiceDefinition promotedService,
+                                        AbstractService promotedService,
                                         Map<ModelObject, Location> locations,
                                         IntrospectionContext context) {
         if (service.getServiceContract() == null) {
@@ -680,7 +680,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
      * @param context         the context
      */
     private void matchServiceCallbackContracts(CompositeService service,
-                                               ServiceDefinition promotedService,
+                                               AbstractService promotedService,
                                                Map<ModelObject, Location> locations,
                                                IntrospectionContext context) {
         ServiceContract callbackContract = service.getServiceContract().getCallbackContract();

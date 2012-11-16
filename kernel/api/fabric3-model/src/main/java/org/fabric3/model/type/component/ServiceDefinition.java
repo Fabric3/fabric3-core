@@ -46,12 +46,13 @@ package org.fabric3.model.type.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * A component type service.
  */
-public class ServiceDefinition extends BindableDefinition {
+public class ServiceDefinition extends AbstractService {
     private static final long serialVersionUID = -3331868180749278028L;
 
     private String name;
@@ -64,6 +65,7 @@ public class ServiceDefinition extends BindableDefinition {
     }
 
     public ServiceDefinition(String name, ServiceContract serviceContract) {
+        super(name, serviceContract);
         this.name = name;
         this.serviceContract = serviceContract;
     }
@@ -91,8 +93,9 @@ public class ServiceDefinition extends BindableDefinition {
      *
      * @param parent the parent component type
      */
-    public void setParent(ComponentType parent) {
-        this.parent = parent;
+    public void setParent(ModelObject parent) {
+        // xcv fixme
+        this.parent = (ComponentType) parent;
     }
 
     /**

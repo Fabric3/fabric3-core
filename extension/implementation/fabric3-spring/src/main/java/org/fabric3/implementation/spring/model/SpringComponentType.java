@@ -40,6 +40,7 @@ package org.fabric3.implementation.spring.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
@@ -77,8 +78,7 @@ public class SpringComponentType extends InjectingComponentType {
     }
 
     @SuppressWarnings({"unchecked"})
-    @Override
-    public void add(ServiceDefinition service) {
+    public void add(AbstractService service) {
         if (!(service instanceof SpringService)) {
             throw new IllegalArgumentException("Service type must be " + SpringService.class.getName());
         }

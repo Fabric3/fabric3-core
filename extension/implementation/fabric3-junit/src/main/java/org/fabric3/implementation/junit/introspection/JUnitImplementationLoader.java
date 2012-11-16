@@ -47,7 +47,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.model.JUnitBindingDefinition;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
-import org.fabric3.model.type.component.ServiceDefinition;
+import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
@@ -79,7 +79,7 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
         // Add a binding only on the JUnit service (which is the impl class) so wires are generated to the test operations.
         // These wires will be used by the testing runtime to dispatch to the JUnit components.
         ContextConfiguration configuration = loadConfiguration(reader, context);
-        for (ServiceDefinition serviceDefinition : implementation.getComponentType().getServices().values()) {
+        for (AbstractService serviceDefinition : implementation.getComponentType().getServices().values()) {
             if (serviceDefinition.getServiceContract().getQualifiedInterfaceName().equals(implementation.getImplementationClass())) {
                 JUnitBindingDefinition bindingDefinition = new JUnitBindingDefinition(configuration);
                 serviceDefinition.addBinding(bindingDefinition);

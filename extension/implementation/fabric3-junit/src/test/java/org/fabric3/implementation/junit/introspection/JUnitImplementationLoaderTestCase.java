@@ -47,6 +47,7 @@ import org.easymock.IAnswer;
 
 import org.fabric3.implementation.junit.model.JUnitBindingDefinition;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
+import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -83,7 +84,7 @@ public class JUnitImplementationLoaderTestCase extends TestCase {
         XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(CONFIGURATION_XML));
         reader.nextTag();
         JUnitImplementation definition = loader.load(reader, context);
-        ServiceDefinition serviceDefinition = definition.getComponentType().getServices().get("Foo");
+        AbstractService serviceDefinition = definition.getComponentType().getServices().get("Foo");
         JUnitBindingDefinition bindingDefinition = (JUnitBindingDefinition) serviceDefinition.getBindings().get(0);
         assertEquals("username", bindingDefinition.getConfiguration().getUsername());
         assertEquals("password", bindingDefinition.getConfiguration().getPassword());

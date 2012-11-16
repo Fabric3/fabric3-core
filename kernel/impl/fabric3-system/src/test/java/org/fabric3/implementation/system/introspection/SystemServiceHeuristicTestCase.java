@@ -52,6 +52,7 @@ import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
+import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -83,7 +84,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
         control.replay();
 
         heuristic.applyHeuristics(componentType, NoInterface.class, context);
-        Map<String, ServiceDefinition> services = componentType.getServices();
+        Map<String, AbstractService> services = componentType.getServices();
         assertEquals(1, services.size());
         assertEquals(noInterfaceContract, services.get("NoInterface").getServiceContract());
         control.verify();
@@ -100,7 +101,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
         control.replay();
 
         heuristic.applyHeuristics(componentType, OneInterface.class, context);
-        Map<String, ServiceDefinition> services = componentType.getServices();
+        Map<String, AbstractService> services = componentType.getServices();
         assertEquals(1, services.size());
         assertEquals(serviceInterfaceContract, services.get("ServiceInterface").getServiceContract());
         control.verify();
@@ -112,7 +113,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
         control.replay();
 
         heuristic.applyHeuristics(componentType, NoInterface.class, context);
-        Map<String, ServiceDefinition> services = componentType.getServices();
+        Map<String, AbstractService> services = componentType.getServices();
         assertEquals(1, services.size());
         assertSame(definition, services.get("Contract"));
         control.verify();

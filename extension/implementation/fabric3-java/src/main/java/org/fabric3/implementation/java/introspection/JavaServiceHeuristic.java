@@ -42,6 +42,7 @@ import java.util.Set;
 
 import org.oasisopen.sca.annotation.Reference;
 
+import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -79,7 +80,7 @@ public class JavaServiceHeuristic implements HeuristicProcessor {
     public void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         // if any services have been defined, just introspect policy
         if (!componentType.getServices().isEmpty()) {
-            for (ServiceDefinition definition : componentType.getServices().values()) {
+            for (AbstractService definition : componentType.getServices().values()) {
                 JavaServiceContract contract = (JavaServiceContract) definition.getServiceContract();
                 Class<?> serviceInterface;
                 try {
@@ -125,7 +126,7 @@ public class JavaServiceHeuristic implements HeuristicProcessor {
     private void introspectPolicy(Class<?> serviceInterface,
                                   Class<?> implClass,
                                   ServiceContract contract,
-                                  ServiceDefinition definition,
+                                  AbstractService definition,
                                   IntrospectionContext context) {
         Annotation[] annotations = serviceInterface.getAnnotations();
         if (policyProcessor != null) {
