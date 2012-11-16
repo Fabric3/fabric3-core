@@ -46,6 +46,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.fabric.instantiator.AutowireInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.ReferenceNotFound;
+import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentReference;
@@ -148,7 +149,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
 
             if (componentReference.getAutowire() == Autowire.ON
                     || (componentReference.getAutowire() == Autowire.INHERITED && component.getAutowire() == Autowire.ON)) {
-                ReferenceDefinition referenceDefinition = logicalReference.getDefinition();
+                AbstractReference referenceDefinition = logicalReference.getDefinition();
                 ServiceContract requiredContract = referenceDefinition.getServiceContract();
                 boolean resolved = resolveByType(component.getParent(), logicalReference, requiredContract);
                 if (!resolved) {

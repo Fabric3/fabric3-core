@@ -46,9 +46,9 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
@@ -181,7 +181,7 @@ public class WireGeneratorImpl implements WireGenerator {
         PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(binding, contract, operations, targetPolicy);
         if (callbackContract != null) {
             // if there is a callback wire associated with this forward wire, calculate its URI
-            ReferenceDefinition referenceDefinition = reference.getDefinition();
+            AbstractReference referenceDefinition = reference.getDefinition();
             URI callbackUri = generateCallbackUri(component, callbackContract, referenceDefinition.getName());
             targetDefinition.setCallbackUri(callbackUri);
         }
@@ -283,7 +283,7 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalService service = wire.getTarget().getLeafService();
         LogicalComponent source = reference.getParent();
         LogicalComponent target = service.getLeafComponent();
-        ReferenceDefinition referenceDefinition = reference.getDefinition();
+        AbstractReference referenceDefinition = reference.getDefinition();
         ServiceContract referenceContract = reference.getServiceContract();
 
         // resolve policies
@@ -349,7 +349,7 @@ public class WireGeneratorImpl implements WireGenerator {
         LogicalService service = wire.getTarget();
         LogicalComponent source = reference.getParent();
         LogicalComponent target = service.getLeafComponent();
-        ReferenceDefinition referenceDefinition = reference.getDefinition();
+        AbstractReference referenceDefinition = reference.getDefinition();
         ServiceContract referenceContract = reference.getServiceContract();
         ServiceContract serviceContract = service.getServiceContract();
         ServiceContract callbackContract = serviceContract.getCallbackContract();

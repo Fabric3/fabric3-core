@@ -47,9 +47,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentReference;
-import org.fabric3.model.type.component.ReferenceDefinition;
 
 /**
  * A reference on an instantiated component in the domain.
@@ -57,7 +57,7 @@ import org.fabric3.model.type.component.ReferenceDefinition;
 public class LogicalReference extends Bindable {
     private static final long serialVersionUID = 2308698868251298609L;
 
-    private ReferenceDefinition definition;
+    private AbstractReference definition;
     private List<URI> promotedUris;
     private boolean resolved;
     private Autowire autowire = Autowire.INHERITED;
@@ -70,7 +70,7 @@ public class LogicalReference extends Bindable {
      * @param definition the reference type definition
      * @param parent     the parent component
      */
-    public LogicalReference(URI uri, ReferenceDefinition definition, LogicalComponent<?> parent) {
+    public LogicalReference(URI uri, AbstractReference definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
         promotedUris = new ArrayList<URI>();
@@ -87,7 +87,7 @@ public class LogicalReference extends Bindable {
      *
      * @return the reference type definition
      */
-    public ReferenceDefinition getDefinition() {
+    public AbstractReference getDefinition() {
         return definition;
     }
 

@@ -43,29 +43,17 @@
  */
 package org.fabric3.model.type.component;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.fabric3.model.type.AbstractPolicyAware;
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * A reference configured on a component.
  */
-public class ReferenceDefinition extends BindableDefinition {
+public class ReferenceDefinition extends AbstractReference {
     private static final long serialVersionUID = 4641581818938572132L;
 
-    private String name;
     private ComponentType parent;
-
-    private ServiceContract serviceContract;
-    private Multiplicity multiplicity;
-    private boolean keyed;
-    private DataType<?> keyDataType;
-    private Autowire autowire = Autowire.INHERITED;
-
-    private List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
 
     /**
      * Constructor.
@@ -77,9 +65,14 @@ public class ReferenceDefinition extends BindableDefinition {
         this(name, serviceContract, Multiplicity.ONE_ONE);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param name         the reference name
+     * @param multiplicity the reference multiplicity
+     */
     public ReferenceDefinition(String name, Multiplicity multiplicity) {
-        this.name = name;
-        this.multiplicity = multiplicity;
+        this(name, null, multiplicity);
     }
 
     /**
@@ -90,18 +83,7 @@ public class ReferenceDefinition extends BindableDefinition {
      * @param multiplicity    the reference multiplicity
      */
     public ReferenceDefinition(String name, ServiceContract serviceContract, Multiplicity multiplicity) {
-        this.name = name;
-        this.serviceContract = serviceContract;
-        this.multiplicity = multiplicity;
-    }
-
-    /**
-     * Returns the reference name.
-     *
-     * @return the reference name
-     */
-    public String getName() {
-        return name;
+        super(name, serviceContract, multiplicity);
     }
 
     /**
@@ -118,125 +100,10 @@ public class ReferenceDefinition extends BindableDefinition {
      *
      * @param parent the parent component type
      */
-    public void setParent(ComponentType parent) {
-        this.parent = parent;
+    public void setParent(ModelObject parent) {
+        //xcv FIXME
+        this.parent = (ComponentType) parent;
     }
 
-    /**
-     * Returns the service contract required by this reference.
-     *
-     * @return the service contract required by this reference
-     */
-    public ServiceContract getServiceContract() {
-        return serviceContract;
-    }
-
-    /**
-     * Sets the service contract required by this reference.
-     *
-     * @param serviceContract the service contract required by this reference
-     */
-    public void setServiceContract(ServiceContract serviceContract) {
-        this.serviceContract = serviceContract;
-    }
-
-    /**
-     * Returns the reference multiplicity.
-     *
-     * @return the reference multiplicity
-     */
-    public Multiplicity getMultiplicity() {
-        return multiplicity;
-    }
-
-    /**
-     * Sets the reference multiplicity.
-     *
-     * @param multiplicity the reference multiplicity
-     */
-    public void setMultiplicity(Multiplicity multiplicity) {
-        this.multiplicity = multiplicity;
-    }
-
-    /**
-     * Returns true if the reference is required
-     *
-     * @return true if the reference is required
-     */
-    public boolean isRequired() {
-        return multiplicity == Multiplicity.ONE_ONE || multiplicity == Multiplicity.ONE_N;
-    }
-
-    /**
-     * Returns the callback bindings configured on the reference
-     *
-     * @return the callback bindings configured on the reference.
-     */
-    public List<BindingDefinition> getCallbackBindings() {
-        return callbackBindings;
-    }
-
-    /**
-     * Adds a configured callback binding.
-     *
-     * @param binding callback binding to be added
-     */
-    public void addCallbackBinding(BindingDefinition binding) {
-        this.callbackBindings.add(binding);
-    }
-
-    /**
-     * Returns true if the reference is a keyed reference, i.e. is a map-style multiplicity.
-     *
-     * @return true if the reference is a keyed reference
-     */
-    public boolean isKeyed() {
-        return keyed;
-    }
-
-    /**
-     * Sets if if the reference is a keyed reference.
-     *
-     * @param keyed true if the reference is a keyed reference
-     */
-    public void setKeyed(boolean keyed) {
-        this.keyed = keyed;
-    }
-
-    /**
-     * Returns the reference key type.
-     *
-     * @return the reference key type.
-     */
-    public DataType<?> getKeyDataType() {
-        return keyDataType;
-    }
-
-    /**
-     * Sets the reference key type.
-     *
-     * @param keyDataType the reference key type
-     */
-    public void setKeyDataType(DataType<?> keyDataType) {
-        this.keyDataType = keyDataType;
-    }
-
-    /**
-     * Returns the autowire setting for the reference.
-     *
-     * @return true if autowire is enabled for the reference.
-     */
-    public Autowire getAutowire() {
-        return autowire;
-    }
-
-    /**
-     * Sets autowire for the reference.
-     *
-     * @param autowire true if autowire is enabled.
-     */
-    public void setAutowire(Autowire autowire) {
-        this.autowire = autowire;
-    }
 
 }

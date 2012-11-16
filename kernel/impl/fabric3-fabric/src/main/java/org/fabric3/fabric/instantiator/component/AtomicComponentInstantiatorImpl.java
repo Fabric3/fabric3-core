@@ -43,6 +43,7 @@ import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
+import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentConsumer;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -53,7 +54,6 @@ import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ProducerDefinition;
-import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -138,7 +138,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
     }
 
     private void createReferences(ComponentDefinition<?> definition, LogicalComponent<?> component, ComponentType componentType) {
-        for (ReferenceDefinition reference : componentType.getReferences().values()) {
+        for (AbstractReference reference : componentType.getReferences().values()) {
             String name = reference.getName();
             URI referenceUri = component.getUri().resolve('#' + name);
             LogicalReference logicalReference = new LogicalReference(referenceUri, reference, component);

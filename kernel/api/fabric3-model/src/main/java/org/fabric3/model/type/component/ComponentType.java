@@ -61,7 +61,7 @@ public class ComponentType extends AbstractPolicyAware implements CapabilityAwar
 
     private Map<String, ServiceDefinition> services = new HashMap<String, ServiceDefinition>();
     private Map<String, ConsumerDefinition> consumers = new HashMap<String, ConsumerDefinition>();
-    private Map<String, ReferenceDefinition> references = new HashMap<String, ReferenceDefinition>();
+    private Map<String, AbstractReference> references = new HashMap<String, AbstractReference>();
     private Map<String, ProducerDefinition> producers = new HashMap<String, ProducerDefinition>();
     private Map<String, Property> properties = new HashMap<String, Property>();
     private Map<String, ResourceReferenceDefinition> resourceReferences = new HashMap<String, ResourceReferenceDefinition>();
@@ -134,7 +134,7 @@ public class ComponentType extends AbstractPolicyAware implements CapabilityAwar
      *
      * @return references defined by the implementation
      */
-    public Map<String, ReferenceDefinition> getReferences() {
+    public Map<String, AbstractReference> getReferences() {
         return references;
     }
 
@@ -143,7 +143,7 @@ public class ComponentType extends AbstractPolicyAware implements CapabilityAwar
      *
      * @param reference the reference to add
      */
-    public void add(ReferenceDefinition reference) {
+    public void add(AbstractReference reference) {
         reference.setParent(this);
         if (roundTrip) {
             pushElement(reference);

@@ -59,6 +59,7 @@ import org.w3c.dom.Document;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.introspection.xml.common.InvalidAttributes;
 import org.fabric3.introspection.xml.common.InvalidPropertyValue;
+import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentConsumer;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -301,7 +302,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             return;
         }
         String name = reference.getName();
-        ReferenceDefinition typeReference = componentType.getReferences().get(name);
+        AbstractReference typeReference = componentType.getReferences().get(name);
         if (typeReference == null) {
             // ensure the reference exists
             ComponentReferenceNotFound failure = new ComponentReferenceNotFound(name, definition, startLocation);
@@ -448,7 +449,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param context       the context
      */
     private void processReferenceContract(ComponentReference reference,
-                                          ReferenceDefinition typeReference,
+                                          AbstractReference typeReference,
                                           Location location,
                                           IntrospectionContext context) {
         if (reference.getServiceContract() == null) {
@@ -511,7 +512,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param context       the context
      */
     private void matchReferenceCallbackContracts(ComponentReference reference,
-                                                 ReferenceDefinition typeReference,
+                                                 AbstractReference typeReference,
                                                  Location location,
                                                  IntrospectionContext context) {
         ServiceContract callbackContract = reference.getServiceContract().getCallbackContract();
@@ -548,7 +549,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
      * @param context       the context
      */
     private void processMultiplicity(ComponentReference reference,
-                                     ReferenceDefinition typeReference,
+                                     AbstractReference typeReference,
                                      XMLStreamReader reader,
                                      Location location,
                                      IntrospectionContext context) {

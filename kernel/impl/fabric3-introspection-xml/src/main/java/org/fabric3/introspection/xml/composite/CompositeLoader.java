@@ -59,6 +59,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.host.contribution.ArtifactValidationFailure;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.model.type.ModelObject;
+import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -72,7 +73,6 @@ import org.fabric3.model.type.component.Include;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.PropertyValue;
-import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.component.WireDefinition;
@@ -233,8 +233,8 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                 if (!COMPOSITE.equals(reader.getName())) {
                     continue;
                 }
-                updateAndValidateServicePromotions(type, locations, reader, childContext);
-                updateAndValidateReferencePromotions(type, locations, reader, childContext);
+                updateAndValidateServicePromotions(type, locations, childContext);
+                updateAndValidateReferencePromotions(type, locations, childContext);
                 updateContext(context, childContext, compositeName);
                 return type;
             case XMLStreamReader.COMMENT:
@@ -492,10 +492,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         type.add(include);
     }
 
-    private void updateAndValidateServicePromotions(Composite type,
-                                                    Map<ModelObject, Location> locations,
-                                                    XMLStreamReader reader,
-                                                    IntrospectionContext context) {
+    private void updateAndValidateServicePromotions(Composite type, Map<ModelObject, Location> locations, IntrospectionContext context) {
         for (ServiceDefinition definition : type.getServices().values()) {
             CompositeService service = (CompositeService) definition;
             Location location = locations.get(service);
@@ -555,11 +552,8 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
     }
 
-    private void updateAndValidateReferencePromotions(Composite type,
-                                                      Map<ModelObject, Location> locations,
-                                                      XMLStreamReader reader,
-                                                      IntrospectionContext context) {
-        for (ReferenceDefinition definition : type.getReferences().values()) {
+    private void updateAndValidateReferencePromotions(Composite type, Map<ModelObject, Location> locations, IntrospectionContext context) {
+        for (AbstractReference definition : type.getReferences().values()) {
             CompositeReference reference = (CompositeReference) definition;
             Location location = locations.get(reference);
             for (URI promotedUri : reference.getPromotedUris()) {
@@ -578,7 +572,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         context.addError(error);
                         continue;
                     }
-                    ReferenceDefinition promotedReference;
+                    AbstractReference promotedReference;
                     if (referenceName == null && promoted.getComponentType().getReferences().size() == 1) {
                         promotedReference = promoted.getComponentType().getReferences().values().iterator().next();
                     } else {
@@ -652,7 +646,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
      * @param context           the context
      */
     private void processReferenceContract(CompositeReference reference,
-                                          ReferenceDefinition promotedReference,
+                                          AbstractReference promotedReference,
                                           Map<ModelObject, Location> locations,
                                           IntrospectionContext context) {
         if (reference.getServiceContract() == null) {
@@ -721,7 +715,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
      * @param context           the context
      */
     private void matchReferenceCallbackContracts(CompositeReference reference,
-                                                 ReferenceDefinition promotedReference,
+                                                 AbstractReference promotedReference,
                                                  Map<ModelObject, Location> locations,
                                                  IntrospectionContext context) {
         ServiceContract callbackContract = reference.getServiceContract().getCallbackContract();
@@ -758,7 +752,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
      * @param context           the context
      */
     private void processMultiplicity(CompositeReference reference,
-                                     ReferenceDefinition promotedReference,
+                                     AbstractReference promotedReference,
                                      Location location,
                                      IntrospectionContext context) {
         // set the multiplicity to inherit from the promoted reference

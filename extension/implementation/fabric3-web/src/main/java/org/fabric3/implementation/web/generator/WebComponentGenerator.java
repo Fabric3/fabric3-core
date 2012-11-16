@@ -52,9 +52,9 @@ import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
 import org.fabric3.implementation.web.provision.WebComponentSourceDefinition;
 import org.fabric3.implementation.web.provision.WebContextInjectionSite;
+import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Property;
-import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.EffectivePolicy;
@@ -134,7 +134,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
 
     private Map<String, Map<String, InjectionSite>> generateInjectionMapping(WebComponentType type) {
         Map<String, Map<String, InjectionSite>> mappings = new HashMap<String, Map<String, InjectionSite>>();
-        for (ReferenceDefinition definition : type.getReferences().values()) {
+        for (AbstractReference definition : type.getReferences().values()) {
             generateReferenceInjectionMapping(definition, type, mappings);
         }
         for (Property property : type.getProperties().values()) {
@@ -144,7 +144,7 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         return mappings;
     }
 
-    private void generateReferenceInjectionMapping(ReferenceDefinition definition,
+    private void generateReferenceInjectionMapping(AbstractReference definition,
                                                    WebComponentType type,
                                                    Map<String, Map<String, InjectionSite>> mappings) {
         Map<String, InjectionSite> mapping = mappings.get(definition.getName());

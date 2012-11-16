@@ -58,6 +58,7 @@ import org.fabric3.introspection.xml.common.ComponentReferenceLoader;
 import org.fabric3.model.type.Comment;
 import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.Text;
+import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.Multiplicity;
@@ -93,8 +94,8 @@ public class ComponentLoaderRoundTripTestCase extends TestCase {
         assertTrue(stack.get(0) instanceof Implementation);
         assertTrue(stack.get(1) instanceof Comment);
         assertTrue(stack.get(2) instanceof Text);
-        assertEquals("ref1", ((ReferenceDefinition) stack.get(3)).getName());
-        assertEquals("ref2", ((ReferenceDefinition) stack.get(4)).getName());
+        assertEquals("ref1", ((AbstractReference) stack.get(3)).getName());
+        assertEquals("ref2", ((AbstractReference) stack.get(4)).getName());
     }
 
     protected void setUp() throws Exception {

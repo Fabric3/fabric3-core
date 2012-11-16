@@ -209,10 +209,9 @@ public class WireInstantiatorImpl implements WireInstantiator {
     /**
      * Resolves the wire source to a reference provided by a component in the parent composite.
      *
-     *
-     * @param target          the reference target
-     * @param parent          the parent composite
-     * @param context         the logical context to report errors against
+     * @param target  the reference target
+     * @param parent  the parent composite
+     * @param context the logical context to report errors against
      * @return the resolved reference or null if not found
      */
     private LogicalReference resolveReference(Target target, LogicalCompositeComponent parent, InstantiationContext context) {

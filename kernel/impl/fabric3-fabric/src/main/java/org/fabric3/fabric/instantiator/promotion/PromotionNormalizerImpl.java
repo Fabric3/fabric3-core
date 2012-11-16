@@ -50,11 +50,11 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
+import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.spi.generator.policy.PolicyRegistry;
 import org.fabric3.spi.model.instance.Bindable;
@@ -197,7 +197,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         Autowire autowire = Autowire.INHERITED;
 
         for (LogicalReference reference : references) {
-            ReferenceDefinition referenceDefinition = reference.getDefinition();
+            AbstractReference referenceDefinition = reference.getDefinition();
             if (referenceDefinition.getAutowire() == Autowire.INHERITED) {
                 reference.setAutowire(autowire);
             } else {

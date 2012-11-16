@@ -46,10 +46,12 @@ package org.fabric3.model.type.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.model.type.ModelObject;
+
 /**
  * A reference configured on a component.
  */
-public class ComponentReference extends ReferenceDefinition {
+public class ComponentReference extends AbstractReference {
     private static final long serialVersionUID = 2072898078368317712L;
 
     private List<Target> targets = new ArrayList<Target>();
@@ -63,7 +65,7 @@ public class ComponentReference extends ReferenceDefinition {
      * @param multiplicity the reference multiplicity
      */
     public ComponentReference(String name, Multiplicity multiplicity) {
-        super(name, multiplicity);
+        super(name, null, multiplicity);
     }
 
     /**
@@ -71,7 +73,7 @@ public class ComponentReference extends ReferenceDefinition {
      *
      * @return the parent component
      */
-    public ComponentDefinition<?> getParentComponent() {
+    public ComponentDefinition<?> getComponent() {
         return parent;
     }
 
@@ -80,8 +82,9 @@ public class ComponentReference extends ReferenceDefinition {
      *
      * @param parent the parent component
      */
-    public void setParent(ComponentDefinition<?> parent) {
-        this.parent = parent;
+    public void setParent(ModelObject parent) {
+        // XCV FIXME
+        this.parent = (ComponentDefinition<?>) parent;
     }
 
     public List<Target> getTargets() {

@@ -56,9 +56,9 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 import org.fabric3.implementation.web.model.WebImplementation;
+import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Property;
-import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
@@ -115,7 +115,7 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
             ComponentType type = impl.getComponentType();
             // FIXME we should allow implementation to specify the component type;
             ComponentType componentType = loadComponentType(context);
-            for (Map.Entry<String, ReferenceDefinition> entry : componentType.getReferences().entrySet()) {
+            for (Map.Entry<String, AbstractReference> entry : componentType.getReferences().entrySet()) {
                 type.add(entry.getValue());
             }
             for (Map.Entry<String, Property> entry : componentType.getProperties().entrySet()) {
