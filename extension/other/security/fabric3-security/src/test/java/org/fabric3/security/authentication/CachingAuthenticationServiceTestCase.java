@@ -106,6 +106,7 @@ public class CachingAuthenticationServiceTestCase extends TestCase {
         EasyMock.verify(authService, transformer, registry, host, session, request, response);
     }
 
+    @SuppressWarnings({"unchecked"})
     public void testXml() throws Exception {
         Transformer transformer = EasyMock.createMock(Transformer.class);
         UsernamePasswordToken token = new UsernamePasswordToken();

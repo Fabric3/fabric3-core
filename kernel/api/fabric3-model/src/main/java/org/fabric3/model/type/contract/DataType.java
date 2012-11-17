@@ -43,18 +43,18 @@
  */
 package org.fabric3.model.type.contract;
 
+import java.io.Serializable;
 import javax.xml.namespace.QName;
-
-import org.fabric3.model.type.ModelObject;
 
 /**
  * Representation of a user-supplied data type comprising a abstract logical form and a runtime-specific physical form. The logical form describes an
  * abstract type in some arbitrary type system such as XML Schema type or Java Classes. It describes the type of data the user is expecting to use.
  * The physical form describes the representation of that logical data actually used by the runtime. This may describe a Java Object (i.e. the
  * physical form would be the Java Type of that Object typically a Class) or it may describe a surrogate for that Object such as a stream.
+ *
  * @param <L> the type of identifier for the logical type system used by this DataType (such as an XML QName or Java Class)
  */
-public abstract class DataType<L> extends ModelObject {
+public abstract class DataType<L> implements Serializable {
     private static final long serialVersionUID = 1848442023940979720L;
     private Class<?> physical;
     private L logical;

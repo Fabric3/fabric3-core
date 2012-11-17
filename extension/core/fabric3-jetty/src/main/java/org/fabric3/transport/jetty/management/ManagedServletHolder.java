@@ -63,7 +63,7 @@ public class ManagedServletHolder extends ServletHolder {
         super(servlet);
     }
 
-    public ManagedServletHolder(Class servlet) {
+    public ManagedServletHolder(Class<? extends Servlet> servlet) {
         super(servlet);
     }
 
