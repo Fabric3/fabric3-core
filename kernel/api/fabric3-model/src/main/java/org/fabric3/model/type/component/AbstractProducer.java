@@ -43,16 +43,16 @@
  */
 package org.fabric3.model.type.component;
 
-import org.fabric3.model.type.AbstractPolicyAware;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * A component type producer.
+ * An abstract producer type.
  */
-public class ProducerDefinition extends AbstractProducer {
-    private static final long serialVersionUID = -4222312633353056234L;
+public abstract class AbstractProducer extends BindableDefinition {
+    private static final long serialVersionUID = -5994359066654367488L;
 
-    private ComponentType parent;
+    private String name;
+    private ServiceContract serviceContract;
 
     /**
      * Constructor.
@@ -60,30 +60,46 @@ public class ProducerDefinition extends AbstractProducer {
      * @param name            the producer name
      * @param serviceContract the service contract required by this producer
      */
-    public ProducerDefinition(String name, ServiceContract serviceContract) {
-        super(name, serviceContract);
-    }
-
-    public ProducerDefinition(String name) {
-        super(name);
+    public AbstractProducer(String name, ServiceContract serviceContract) {
+        this.name = name;
+        this.serviceContract = serviceContract;
     }
 
     /**
-     * Returns the parent component type of this producer.
+     * Constructor.
      *
-     * @return the parent component type
+     * @param name the producer name
      */
-    public ComponentType getParent() {
-        return parent;
+    public AbstractProducer(String name) {
+        this(name, null);
     }
 
     /**
-     * Sets the parent component type of this producer.
+     * Returns the producer name.
      *
-     * @param parent the parent component type
+     * @return the producer name
      */
-    public void setParent(ComponentType parent) {
-        this.parent = parent;
+    public String getName() {
+        return name;
     }
+
+    /**
+     * Returns the service contract required by this producer.
+     *
+     * @return the service contract required by this producer
+     */
+    public ServiceContract getServiceContract() {
+        return serviceContract;
+    }
+
+    /**
+     * Sets the service contract required by this producer.
+     *
+     * @param serviceContract the service contract required by this producer
+     */
+    public void setServiceContract(ServiceContract serviceContract) {
+        this.serviceContract = serviceContract;
+    }
+
 
 }

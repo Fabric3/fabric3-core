@@ -49,7 +49,7 @@ import java.util.List;
 /**
  * A producer configured on a component.
  */
-public class ComponentProducer extends ProducerDefinition {
+public class ComponentProducer extends AbstractProducer {
     private static final long serialVersionUID = -4230400252060306972L;
 
     private ComponentDefinition<?> parent;
@@ -71,7 +71,7 @@ public class ComponentProducer extends ProducerDefinition {
      *
      * @return the parent component
      */
-    public ComponentDefinition<?> getParentComponent() {
+    public ComponentDefinition<?> getComponent() {
         return parent;
     }
 
