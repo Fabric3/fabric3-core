@@ -65,7 +65,8 @@ public class CompositeReferenceWriter extends AbstractTypeWriter<CompositeRefere
         xmlWriter.writeStartElement("reference");
         xmlWriter.writeAttribute("name", reference.getName());
         writePromotedUris(reference, xmlWriter);
-        for (ModelObject modelObject : reference.getElementStack()) {
+        List<ModelObject> elementStack = reference.getElementStack();
+        for (ModelObject modelObject : elementStack) {
             writer.write(modelObject, xmlWriter);
         }
         xmlWriter.writeEndElement();

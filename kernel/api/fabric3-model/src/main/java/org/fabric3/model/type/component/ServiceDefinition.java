@@ -46,17 +46,15 @@ package org.fabric3.model.type.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * A component type service.
+ * A service introspected from a component type.
  */
-public class ServiceDefinition extends AbstractService {
+public class ServiceDefinition extends AbstractService<ComponentType> {
     private static final long serialVersionUID = -3331868180749278028L;
 
     private String name;
-    private ComponentType parent;
     private ServiceContract serviceContract;
     private List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
 
@@ -77,25 +75,6 @@ public class ServiceDefinition extends AbstractService {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Returns the parent component type of this service.
-     *
-     * @return the parent component type
-     */
-    public ComponentType getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent component type of this service.
-     *
-     * @param parent the parent component type
-     */
-    public void setParent(ModelObject parent) {
-        // xcv fixme
-        this.parent = (ComponentType) parent;
     }
 
     /**

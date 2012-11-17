@@ -43,17 +43,13 @@
  */
 package org.fabric3.model.type.component;
 
-import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * A reference configured on a component.
+ * A reference introspected from a component type.
  */
-public class ReferenceDefinition extends AbstractReference {
+public class ReferenceDefinition extends AbstractReference<ComponentType> {
     private static final long serialVersionUID = 4641581818938572132L;
-
-    private ComponentType parent;
 
     /**
      * Constructor.
@@ -85,25 +81,5 @@ public class ReferenceDefinition extends AbstractReference {
     public ReferenceDefinition(String name, ServiceContract serviceContract, Multiplicity multiplicity) {
         super(name, serviceContract, multiplicity);
     }
-
-    /**
-     * Returns the parent component type of this reference.
-     *
-     * @return the parent component type
-     */
-    public ComponentType getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent component type of this reference.
-     *
-     * @param parent the parent component type
-     */
-    public void setParent(ModelObject parent) {
-        //xcv FIXME
-        this.parent = (ComponentType) parent;
-    }
-
 
 }

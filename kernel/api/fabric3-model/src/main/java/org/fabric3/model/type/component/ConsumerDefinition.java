@@ -45,16 +45,13 @@ package org.fabric3.model.type.component;
 
 import java.util.List;
 
-import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.contract.DataType;
 
 /**
- * A component type consumer.
+ * A consumer introspected from a component type.
  */
-public class ConsumerDefinition extends AbstractConsumer {
+public class ConsumerDefinition extends AbstractConsumer<ComponentType> {
     private static final long serialVersionUID = -4222312633353056234L;
-
-    private ComponentType parent;
 
     /**
      * Constructor.
@@ -74,25 +71,5 @@ public class ConsumerDefinition extends AbstractConsumer {
     public ConsumerDefinition(String name, List<DataType<?>> types) {
         super(name, types);
     }
-
-    /**
-     * Returns the parent component type of this consumer.
-     *
-     * @return the parent component type
-     */
-    public ComponentType getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent component type of this consumer.
-     *
-     * @param parent the parent component type
-     */
-    public void setParent(ModelObject parent) {
-        // XCV FIXME
-        this.parent = (ComponentType) parent;
-    }
-
 
 }

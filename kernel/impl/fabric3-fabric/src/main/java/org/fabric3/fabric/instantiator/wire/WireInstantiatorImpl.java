@@ -49,6 +49,7 @@ import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.NoServiceOnComponent;
 import org.fabric3.fabric.instantiator.ServiceNotFound;
 import org.fabric3.fabric.instantiator.WireInstantiator;
+import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.Composite;
@@ -130,7 +131,8 @@ public class WireInstantiatorImpl implements WireInstantiator {
         }
         if (scaBindings.isEmpty()) {
             //  if the component reference has no bindings, use the composite definition's
-            for (BindingDefinition binding : reference.getDefinition().getBindings()) {
+            AbstractReference<?> definition = reference.getDefinition();
+            for (BindingDefinition binding : definition.getBindings()) {
                 if (binding instanceof SCABinding) {
                     SCABinding scaBinding = (SCABinding) binding;
                     scaBindings.add(scaBinding);

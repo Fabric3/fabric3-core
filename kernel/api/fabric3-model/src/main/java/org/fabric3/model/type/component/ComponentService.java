@@ -43,38 +43,14 @@
  */
 package org.fabric3.model.type.component;
 
-import org.fabric3.model.type.ModelObject;
-
 /**
  * A service configured on a component.
  */
-public class ComponentService extends AbstractService {
+public class ComponentService extends AbstractService<ComponentDefinition> {
     private static final long serialVersionUID = 1076710434904709542L;
-
-    private ComponentDefinition<?> parent;
 
     public ComponentService(String name) {
         super(name, null);
     }
-
-    /**
-     * Returns the parent component of this reference.
-     *
-     * @return the parent component
-     */
-    public ComponentDefinition<?> getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent component of this reference.
-     *
-     * @param parent the parent component
-     */
-    public void setParent(ModelObject parent) {
-        // XCV fixme
-        this.parent = (ComponentDefinition<?>) parent;
-    }
-
 
 }

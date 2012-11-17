@@ -48,10 +48,9 @@ import org.fabric3.model.type.ModelObject;
 /**
  * A wire specified in a composite file.
  */
-public class WireDefinition extends ModelObject {
+public class WireDefinition extends ModelObject<Composite> {
     private static final long serialVersionUID = -2310313135279527903L;
 
-    private Composite parent;
     private Target reference;
     private Target service;
     private boolean replace;
@@ -60,24 +59,6 @@ public class WireDefinition extends ModelObject {
         this.reference = reference;
         this.service = service;
         this.replace = replace;
-    }
-
-    /**
-     * Returns the parent composite of this wire.
-     *
-     * @return the composite
-     */
-    public Composite getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent composite of this wire.
-     *
-     * @param parent the parent composite
-     */
-    public void setParent(Composite parent) {
-        this.parent = parent;
     }
 
     /**

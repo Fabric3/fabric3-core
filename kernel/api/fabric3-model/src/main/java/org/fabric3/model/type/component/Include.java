@@ -51,11 +51,10 @@ import org.fabric3.model.type.ModelObject;
 /**
  * A composite include.
  */
-public class Include extends ModelObject {
+public class Include extends ModelObject<Composite> {
     private static final long serialVersionUID = 3982129607792011105L;
 
     private QName name;
-    private Composite parent;
     private URL scdlLocation;
     private Composite included;
 
@@ -76,26 +75,6 @@ public class Include extends ModelObject {
     public void setName(QName name) {
         this.name = name;
     }
-
-    /**
-     * Returns the composite this include is contained in.
-     *
-     * @return the composite this include is contained in
-     */
-    public Composite getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the composite this include is contained in.
-     *
-     * @param parent the include
-     */
-    public void setParent(Composite parent) {
-        this.parent = parent;
-    }
-
-
 
     /**
      * Returns the location of the SCDL for composite being included.

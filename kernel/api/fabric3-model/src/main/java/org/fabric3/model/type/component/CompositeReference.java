@@ -47,12 +47,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.model.type.ModelObject;
-
 /**
  * A promoted composite reference.
  */
-public class CompositeReference extends AbstractReference {
+public class CompositeReference extends AbstractReference<Composite> {
     private static final long serialVersionUID = 5387987439912912994L;
 
     private List<URI> promotedUris;
@@ -91,8 +89,4 @@ public class CompositeReference extends AbstractReference {
         promotedUris.add(uri);
     }
 
-
-    public void setParent(ModelObject parent) {
-       // XCV FIXME
-    }
 }

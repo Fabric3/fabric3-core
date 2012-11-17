@@ -54,7 +54,7 @@ import org.fabric3.model.type.ModelObject;
 /**
  * The value of a configured component property.
  */
-public class PropertyValue extends ModelObject {
+public class PropertyValue extends ModelObject<ComponentDefinition> {
     private static final long serialVersionUID = -1638553201072873854L;
     private String name;
     private String source;
@@ -64,7 +64,6 @@ public class PropertyValue extends ModelObject {
     private Document value;
     private NamespaceContext namespaceContext;
     private PropertyMany many;
-    private ComponentDefinition<?> parent;
 
     /**
      * Constructor specifying the name of a property and the XPath source expression.
@@ -117,24 +116,6 @@ public class PropertyValue extends ModelObject {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * Returns the parent component of this property.
-     *
-     * @return the parent component
-     */
-    public ComponentDefinition<?> getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent component of this property.
-     *
-     * @param parent the parent component
-     */
-    public void setParent(ComponentDefinition<?> parent) {
-        this.parent = parent;
     }
 
     /**

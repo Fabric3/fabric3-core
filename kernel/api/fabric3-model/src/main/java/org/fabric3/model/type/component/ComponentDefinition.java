@@ -52,11 +52,10 @@ import org.fabric3.model.type.AbstractPolicyAware;
 /**
  * A component configuration in a composite file.
  */
-public class ComponentDefinition<I extends Implementation<?>> extends AbstractPolicyAware {
+public class ComponentDefinition<I extends Implementation<?>> extends AbstractPolicyAware<Composite> {
     private static final long serialVersionUID = 4909969579651563484L;
 
     private String name;
-    private Composite parent;
     private I implementation;
     private String key;
     private URI contributionUri;
@@ -86,24 +85,6 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     public ComponentDefinition(String name, I implementation) {
         this.name = name;
         this.implementation = implementation;
-    }
-
-    /**
-     * Returns the composite this component is contained in.
-     *
-     * @return the composite this component is contained in
-     */
-    public Composite getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the composite this component is contained in.
-     *
-     * @param parent the composite
-     */
-    public void setParent(Composite parent) {
-        this.parent = parent;
     }
 
     /**
@@ -190,7 +171,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param reference the reference to remove
      */
     public void remove(ComponentReference reference) {
-        reference.setParent((ComponentDefinition<?>) null);
+        reference.setParent(null);
         removeElement(reference);
         references.remove(reference.getName());
     }
@@ -221,7 +202,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param service the service to remove
      */
     public void remove(ComponentService service) {
-        service.setParent((ComponentDefinition<?>) null);
+        service.setParent(null);
         removeElement(service);
         services.remove(service.getName());
     }
@@ -244,7 +225,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param producer the producer to remove
      */
     public void remove(ComponentProducer producer) {
-        producer.setParent((ComponentDefinition<?>) null);
+        producer.setParent(null);
         removeElement(producer);
         producers.remove(producer.getName());
     }
@@ -276,7 +257,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      * @param consumer the consumer to remove
      */
     public void remove(ComponentConsumer consumer) {
-        consumer.setParent((ComponentDefinition<?>) null);
+        consumer.setParent(null);
         removeElement(consumer);
         consumers.remove(consumer.getName());
     }

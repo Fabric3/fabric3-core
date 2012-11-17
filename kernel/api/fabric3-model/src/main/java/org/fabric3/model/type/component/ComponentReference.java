@@ -46,17 +46,15 @@ package org.fabric3.model.type.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.model.type.ModelObject;
-
 /**
  * A reference configured on a component.
  */
-public class ComponentReference extends AbstractReference {
+public class ComponentReference extends AbstractReference<ComponentDefinition> {
     private static final long serialVersionUID = 2072898078368317712L;
 
     private List<Target> targets = new ArrayList<Target>();
     private boolean nonOverridable;
-    private ComponentDefinition<?> parent;
+    private ComponentDefinition parent;
 
     /**
      * Constructor.
@@ -73,7 +71,7 @@ public class ComponentReference extends AbstractReference {
      *
      * @return the parent component
      */
-    public ComponentDefinition<?> getComponent() {
+    public ComponentDefinition getComponent() {
         return parent;
     }
 
@@ -82,9 +80,8 @@ public class ComponentReference extends AbstractReference {
      *
      * @param parent the parent component
      */
-    public void setParent(ModelObject parent) {
-        // XCV FIXME
-        this.parent = (ComponentDefinition<?>) parent;
+    public void setParent(ComponentDefinition parent) {
+        this.parent = parent;
     }
 
     public List<Target> getTargets() {

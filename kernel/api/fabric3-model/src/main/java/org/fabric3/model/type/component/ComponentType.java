@@ -54,10 +54,8 @@ import org.fabric3.model.type.CapabilityAware;
 /**
  * A base component type.
  */
-public class ComponentType extends AbstractPolicyAware implements CapabilityAware {
+public class ComponentType extends AbstractPolicyAware<Implementation> implements CapabilityAware {
     private static final long serialVersionUID = 5302580019263119837L;
-
-    private Implementation parent;
 
     private Map<String, AbstractService> services = new HashMap<String, AbstractService>();
     private Map<String, ConsumerDefinition> consumers = new HashMap<String, ConsumerDefinition>();
@@ -66,24 +64,6 @@ public class ComponentType extends AbstractPolicyAware implements CapabilityAwar
     private Map<String, Property> properties = new HashMap<String, Property>();
     private Map<String, ResourceReferenceDefinition> resourceReferences = new HashMap<String, ResourceReferenceDefinition>();
     private Set<String> requiredCapabilities = new HashSet<String>();
-
-    /**
-     * Returns the parent implementation.
-     *
-     * @return the parent implementation
-     */
-    public Implementation getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent implementation.
-     *
-     * @param parent the parent implementation
-     */
-    public void setParent(Implementation parent) {
-        this.parent = parent;
-    }
 
     /**
      * Returns the services provided by the implementation keyed by name.

@@ -105,7 +105,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
     }
 
     private void createServices(ComponentDefinition<?> definition, LogicalComponent<?> component, ComponentType componentType) {
-        for (AbstractService service : componentType.getServices().values()) {
+        for (AbstractService<?> service : componentType.getServices().values()) {
             String name = service.getName();
             URI serviceUri = component.getUri().resolve('#' + name);
             LogicalService logicalService = new LogicalService(serviceUri, service, component);

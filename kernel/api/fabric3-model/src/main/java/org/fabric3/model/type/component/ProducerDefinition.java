@@ -43,16 +43,13 @@
  */
 package org.fabric3.model.type.component;
 
-import org.fabric3.model.type.AbstractPolicyAware;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * A component type producer.
+ * A producer introspected from a component type.
  */
-public class ProducerDefinition extends AbstractProducer {
+public class ProducerDefinition extends AbstractProducer<ComponentType> {
     private static final long serialVersionUID = -4222312633353056234L;
-
-    private ComponentType parent;
 
     /**
      * Constructor.
@@ -66,24 +63,6 @@ public class ProducerDefinition extends AbstractProducer {
 
     public ProducerDefinition(String name) {
         super(name);
-    }
-
-    /**
-     * Returns the parent component type of this producer.
-     *
-     * @return the parent component type
-     */
-    public ComponentType getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent component type of this producer.
-     *
-     * @param parent the parent component type
-     */
-    public void setParent(ComponentType parent) {
-        this.parent = parent;
     }
 
 }

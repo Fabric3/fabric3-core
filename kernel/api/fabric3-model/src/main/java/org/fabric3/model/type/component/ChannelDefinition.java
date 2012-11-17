@@ -39,19 +39,14 @@ package org.fabric3.model.type.component;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.List;
-
-import org.fabric3.model.type.AbstractPolicyAware;
 
 /**
  * A channel configuration in a composite.
  */
-public class ChannelDefinition extends BindableDefinition {
+public class ChannelDefinition extends BindableDefinition<Composite> {
     private static final long serialVersionUID = 8735705202863105855L;
 
     private String name;
-    private Composite parent;
-
     private URI contributionUri;
 
     public ChannelDefinition(String name, URI contributionUri) {
@@ -67,24 +62,6 @@ public class ChannelDefinition extends BindableDefinition {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Returns the parent composite of this channel.
-     *
-     * @return the parent composite
-     */
-    public Composite getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent composite of this channel.
-     *
-     * @param parent the parent composite
-     */
-    public void setParent(Composite parent) {
-        this.parent = parent;
     }
 
     /**

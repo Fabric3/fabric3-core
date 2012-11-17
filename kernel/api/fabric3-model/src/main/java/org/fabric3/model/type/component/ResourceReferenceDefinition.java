@@ -47,13 +47,12 @@ import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * A reference to a system resource contained by a component.
+ * A reference to a system resource introspected from a component type.
  */
-public class ResourceReferenceDefinition extends ModelObject {
+public class ResourceReferenceDefinition extends ModelObject<ComponentType> {
     private static final long serialVersionUID = 4241666632750146304L;
 
     private String name;
-    private ComponentType parent;
     private boolean optional;
     private ServiceContract serviceContract;
 
@@ -70,24 +69,6 @@ public class ResourceReferenceDefinition extends ModelObject {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Returns the parent component type of this resource reference.
-     *
-     * @return the parent component type
-     */
-    public ComponentType getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent component type of this resource reference.
-     *
-     * @param parent the parent component type
-     */
-    public void setParent(ComponentType parent) {
-        this.parent = parent;
     }
 
     /**

@@ -45,13 +45,12 @@ package org.fabric3.model.type.component;
 
 import java.net.URI;
 
-import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * A promoted composite service.
  */
-public class CompositeService extends AbstractService {
+public class CompositeService extends AbstractService<Composite> {
     private static final long serialVersionUID = 7831894579780963064L;
 
     private URI promote;
@@ -77,7 +76,4 @@ public class CompositeService extends AbstractService {
         return promote;
     }
 
-    public void setParent(ModelObject parent) {
-      // xcv fixme
-    }
 }

@@ -52,11 +52,10 @@ import org.fabric3.model.type.ModelObject;
 /**
  * A component type property.
  */
-public class Property extends ModelObject {
+public class Property extends ModelObject<ComponentType> {
     private static final long serialVersionUID = -1930360315004829917L;
 
     private String name;
-    private ComponentType parent;
     private boolean many;
     private boolean required;
     private Document defaultValue;
@@ -83,24 +82,6 @@ public class Property extends ModelObject {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * Returns the parent component type of this property.
-     *
-     * @return the parent component type
-     */
-    public ComponentType getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent component type of this property.
-     *
-     * @param parent the parent component type
-     */
-    public void setParent(ComponentType parent) {
-        this.parent = parent;
     }
 
     /**

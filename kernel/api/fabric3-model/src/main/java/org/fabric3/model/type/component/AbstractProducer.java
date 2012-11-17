@@ -43,12 +43,13 @@
  */
 package org.fabric3.model.type.component;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
  * An abstract producer type.
  */
-public abstract class AbstractProducer extends BindableDefinition {
+public abstract class AbstractProducer<P extends ModelObject> extends BindableDefinition<P> {
     private static final long serialVersionUID = -5994359066654367488L;
 
     private String name;

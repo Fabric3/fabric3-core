@@ -53,12 +53,13 @@ import java.util.Set;
 /**
  * The base class for assembly model types.
  */
-public abstract class ModelObject implements Serializable {
+public abstract class ModelObject<P extends ModelObject> implements Serializable {
     private static final long serialVersionUID = -4731760911483352681L;
 
     protected boolean roundTrip;
     private List<ModelObject> elementStack;
     private Set<String> attributes;
+    private P parent;
 
     /**
      * Adds a text value read from the composite serialized form.
@@ -159,4 +160,21 @@ public abstract class ModelObject implements Serializable {
         elementStack.remove(element);
     }
 
+    /**
+     * Returns the parent of this object or null if there is no parent.
+     *
+     * @return the parent of this object or nul
+     */
+    public P getParent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent of this object or null if there is no parent.
+     *
+     * @param parent the parent of this object or nul
+     */
+    public void setParent(P parent) {
+        this.parent = parent;
+    }
 }

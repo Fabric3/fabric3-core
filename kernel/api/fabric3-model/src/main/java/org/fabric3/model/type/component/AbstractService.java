@@ -52,7 +52,7 @@ import org.fabric3.model.type.contract.ServiceContract;
 /**
  * An abstract service type.
  */
-public abstract class AbstractService extends BindableDefinition {
+public abstract class AbstractService<P extends ModelObject> extends BindableDefinition<P> {
     private static final long serialVersionUID = -6122186697990043751L;
 
     private String name;
@@ -105,6 +105,5 @@ public abstract class AbstractService extends BindableDefinition {
         this.callbackBindings.add(binding);
     }
 
-    public abstract void setParent(ModelObject parent);
 
 }

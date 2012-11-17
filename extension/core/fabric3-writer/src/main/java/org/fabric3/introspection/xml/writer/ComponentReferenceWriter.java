@@ -38,6 +38,7 @@
  */
 package org.fabric3.introspection.xml.writer;
 
+import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -82,7 +83,8 @@ public class ComponentReferenceWriter extends AbstractTypeWriter<ComponentRefere
         if (targets.length() > 0) {
             xmlWriter.writeAttribute("target", targets.toString());
         }
-        for (ModelObject modelObject : reference.getElementStack()) {
+        List<ModelObject> elementStack = reference.getElementStack();
+        for (ModelObject modelObject : elementStack) {
             writer.write(modelObject, xmlWriter);
         }
         xmlWriter.writeEndElement();

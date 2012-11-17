@@ -52,7 +52,7 @@ import javax.xml.namespace.QName;
 /**
  * Base class for types that intents and policySets may be associated with.
  */
-public abstract class AbstractPolicyAware extends ModelObject implements PolicyAware {
+public abstract class AbstractPolicyAware<P extends ModelObject> extends ModelObject<P> implements PolicyAware {
     private static final long serialVersionUID = -3494285576822641528L;
 
     private Set<QName> intents = new LinkedHashSet<QName>();

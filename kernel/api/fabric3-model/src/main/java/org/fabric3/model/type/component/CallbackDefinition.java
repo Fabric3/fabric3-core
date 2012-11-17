@@ -49,7 +49,7 @@ import org.fabric3.model.type.contract.ServiceContract;
 /**
  * A component type callback.
  */
-public class CallbackDefinition extends ModelObject {
+public class CallbackDefinition extends ModelObject<ComponentType> {
     private static final long serialVersionUID = -1845071329121684755L;
 
     private String name;

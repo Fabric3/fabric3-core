@@ -54,10 +54,8 @@ import org.fabric3.model.type.CapabilityAware;
 /**
  * Base binding representation.
  */
-public abstract class BindingDefinition extends AbstractPolicyAware implements CapabilityAware {
+public abstract class BindingDefinition extends AbstractPolicyAware<BindableDefinition> implements CapabilityAware {
     private static final long serialVersionUID = 8780407747984243865L;
-
-    private BindableDefinition parent;
 
     private URI targetUri;
     private QName type;
@@ -87,24 +85,6 @@ public abstract class BindingDefinition extends AbstractPolicyAware implements C
         this.name = name;
         this.targetUri = targetUri;
         this.type = type;
-    }
-
-    /**
-     * Returns the parent bindable.
-     *
-     * @return the parent bindable
-     */
-    public BindableDefinition getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent bindable.
-     *
-     * @param parent the parent bindable
-     */
-    public void setParent(BindableDefinition parent) {
-        this.parent = parent;
     }
 
     public String getName() {

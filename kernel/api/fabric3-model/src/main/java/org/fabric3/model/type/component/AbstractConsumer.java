@@ -45,12 +45,13 @@ package org.fabric3.model.type.component;
 
 import java.util.List;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.contract.DataType;
 
 /**
  * An abstract consumer type.
  */
-public abstract class AbstractConsumer extends BindableDefinition {
+public abstract class AbstractConsumer<P extends ModelObject> extends BindableDefinition<P> {
     private static final long serialVersionUID = -2867241238552796639L;
 
     private String name;

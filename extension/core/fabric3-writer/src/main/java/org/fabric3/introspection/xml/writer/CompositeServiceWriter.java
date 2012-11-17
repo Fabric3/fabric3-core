@@ -38,6 +38,7 @@
  */
 package org.fabric3.introspection.xml.writer;
 
+import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -65,7 +66,8 @@ public class CompositeServiceWriter extends AbstractTypeWriter<CompositeService>
         if (service.getPromote() != null) {
             xmlWriter.writeAttribute("promote", service.getPromote().toString());
         }
-        for (ModelObject modelObject : service.getElementStack()) {
+        List<ModelObject> elementStack = service.getElementStack();
+        for (ModelObject modelObject : elementStack) {
             writer.write(modelObject, xmlWriter);
         }
         xmlWriter.writeEndElement();

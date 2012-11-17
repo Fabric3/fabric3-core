@@ -53,7 +53,7 @@ import org.fabric3.model.type.contract.ServiceContract;
 /**
  * An abstract reference type.
  */
-public abstract class AbstractReference extends BindableDefinition {
+public abstract class AbstractReference<P extends ModelObject> extends BindableDefinition<P> {
     private static final long serialVersionUID = -3579257861036837317L;
 
     private String name;
@@ -206,5 +206,4 @@ public abstract class AbstractReference extends BindableDefinition {
         this.keyDataType = keyDataType;
     }
 
-    public abstract void setParent(ModelObject parent);
 }

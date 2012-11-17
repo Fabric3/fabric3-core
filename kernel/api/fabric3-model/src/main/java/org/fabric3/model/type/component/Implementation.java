@@ -53,10 +53,8 @@ import org.fabric3.model.type.CapabilityAware;
 /**
  * A base component implementation.
  */
-public abstract class Implementation<T extends ComponentType> extends AbstractPolicyAware implements CapabilityAware {
+public abstract class Implementation<T extends ComponentType> extends AbstractPolicyAware<ComponentDefinition> implements CapabilityAware {
     private static final long serialVersionUID = -6060603636927660850L;
-
-    private ComponentDefinition<?> parent;
 
     private T componentType;
     private final Set<String> requiredCapabilities = new HashSet<String>();
@@ -67,25 +65,6 @@ public abstract class Implementation<T extends ComponentType> extends AbstractPo
     protected Implementation(T componentType) {
         this.componentType = componentType;
     }
-
-    /**
-     * Returns the parent component of this implementation.
-     *
-     * @return the parent component
-     */
-    public ComponentDefinition<?> getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent component of this implementation.
-     *
-     * @param parent the parent component
-     */
-    public void setParent(ComponentDefinition<?> parent) {
-        this.parent = parent;
-    }
-
 
     /**
      * Returns the component type.

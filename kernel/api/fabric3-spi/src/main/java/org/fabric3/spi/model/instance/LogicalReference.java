@@ -70,7 +70,7 @@ public class LogicalReference extends Bindable {
      * @param definition the reference type definition
      * @param parent     the parent component
      */
-    public LogicalReference(URI uri, AbstractReference definition, LogicalComponent<?> parent) {
+    public LogicalReference(URI uri, AbstractReference<?> definition, LogicalComponent<?> parent) {
         super(uri, definition != null ? definition.getServiceContract() : null, parent);
         this.definition = definition;
         promotedUris = new ArrayList<URI>();
@@ -171,7 +171,6 @@ public class LogicalReference extends Bindable {
         this.leafReference = leafReference;
     }
 
-    @Override
     public boolean equals(Object obj) {
 
         if (this == obj) {
@@ -187,7 +186,6 @@ public class LogicalReference extends Bindable {
 
     }
 
-    @Override
     public int hashCode() {
         return getUri().hashCode();
     }
