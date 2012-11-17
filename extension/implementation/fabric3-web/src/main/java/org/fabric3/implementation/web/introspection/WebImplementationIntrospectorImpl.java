@@ -45,6 +45,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.implementation.web.model.WebComponentType;
 import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.model.type.component.AbstractReference;
+import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
@@ -113,7 +114,7 @@ public class WebImplementationIntrospectorImpl implements WebImplementationIntro
      * @param context       the introspection context
      */
     private void mergeComponentTypes(WebComponentType webType, InjectingComponentType componentType, IntrospectionContext context) {
-        for (Map.Entry<String, AbstractReference> entry : componentType.getReferences().entrySet()) {
+        for (Map.Entry<String, ReferenceDefinition> entry : componentType.getReferences().entrySet()) {
             String name = entry.getKey();
             AbstractReference reference = webType.getReferences().get(name);
             if (reference != null) {

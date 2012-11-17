@@ -49,12 +49,12 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
-import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.ComponentService;
 import org.fabric3.model.type.component.Property;
+import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
@@ -165,7 +165,7 @@ public class XQueryComponentGenerator implements ComponentGenerator<LogicalCompo
                 }
             }
         }
-        for (Map.Entry<String, AbstractReference> entry : definition.getImplementation().getComponentType().getReferences().entrySet()) {
+        for (Map.Entry<String, ReferenceDefinition> entry : definition.getImplementation().getComponentType().getReferences().entrySet()) {
             String referenceName = entry.getKey();
             XQueryServiceContract reference = (XQueryServiceContract) entry.getValue().getServiceContract();
             addFunctions(entry.getKey(), reference, referenceFunctions);

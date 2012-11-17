@@ -77,7 +77,7 @@ public class Composite extends ComponentType implements PolicyAware {
 
     // views are caches of all properties, references, wires, or components contained in the composite and its included composites
     private Map<String, Property> propertiesView = new HashMap<String, Property>();
-    private Map<String, AbstractReference> referencesView = new HashMap<String, AbstractReference>();
+    private Map<String, ReferenceDefinition> referencesView = new HashMap<String, ReferenceDefinition>();
     private Map<String, AbstractService> servicesView = new HashMap<String, AbstractService>();
     private Map<String, ComponentDefinition<? extends Implementation<?>>> componentsView =
             new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
@@ -187,7 +187,6 @@ public class Composite extends ComponentType implements PolicyAware {
         return pointer;
     }
 
-    @Override
     public Map<String, Property> getProperties() {
         return propertiesView;
     }
@@ -197,8 +196,7 @@ public class Composite extends ComponentType implements PolicyAware {
         propertiesView.put(property.getName(), property);
     }
 
-    @Override
-    public Map<String, AbstractReference> getReferences() {
+    public Map<String, ReferenceDefinition> getReferences() {
         return referencesView;
     }
 
@@ -211,8 +209,7 @@ public class Composite extends ComponentType implements PolicyAware {
         return cast(referencesView);
     }
 
-    @Override
-    public void add(AbstractReference reference) {
+    public void add(ReferenceDefinition reference) {
         if (!(reference instanceof CompositeReference)) {
             throw new IllegalArgumentException("Reference type must be " + CompositeReference.class.getName());
         }
@@ -233,8 +230,7 @@ public class Composite extends ComponentType implements PolicyAware {
         return cast(servicesView);
     }
 
-    @SuppressWarnings({"unchecked"})
-    public void add(AbstractService service) {
+    public void add(ServiceDefinition service) {
         if (!(service instanceof CompositeService)) {
             throw new IllegalArgumentException("Service type must be " + CompositeService.class.getName());
         }
@@ -410,7 +406,7 @@ public class Composite extends ComponentType implements PolicyAware {
      *
      * @return references
      */
-    public Map<String, AbstractReference> getDeclaredReferences() {
+    public Map<String, ReferenceDefinition> getDeclaredReferences() {
         return super.getReferences();
     }
 

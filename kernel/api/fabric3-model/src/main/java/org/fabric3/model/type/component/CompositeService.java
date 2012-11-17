@@ -50,7 +50,7 @@ import org.fabric3.model.type.contract.ServiceContract;
 /**
  * A promoted composite service.
  */
-public class CompositeService extends AbstractService<Composite> {
+public class CompositeService extends ServiceDefinition {
     private static final long serialVersionUID = 7831894579780963064L;
 
     private URI promote;
@@ -74,6 +74,17 @@ public class CompositeService extends AbstractService<Composite> {
      */
     public URI getPromote() {
         return promote;
+    }
+
+    public Composite getParent() {
+        return (Composite) super.getParent();
+    }
+
+    public void setParent(ComponentType parent) {
+        if (!(parent instanceof Composite)) {
+            throw new IllegalArgumentException("Parent must be of type " + Composite.class.getName());
+        }
+        super.setParent(parent);
     }
 
 }

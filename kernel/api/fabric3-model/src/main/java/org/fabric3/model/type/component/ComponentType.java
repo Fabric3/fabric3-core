@@ -59,7 +59,7 @@ public class ComponentType extends AbstractPolicyAware<Implementation> implement
 
     private Map<String, AbstractService> services = new HashMap<String, AbstractService>();
     private Map<String, ConsumerDefinition> consumers = new HashMap<String, ConsumerDefinition>();
-    private Map<String, AbstractReference> references = new HashMap<String, AbstractReference>();
+    private Map<String, ReferenceDefinition> references = new HashMap<String, ReferenceDefinition>();
     private Map<String, ProducerDefinition> producers = new HashMap<String, ProducerDefinition>();
     private Map<String, Property> properties = new HashMap<String, Property>();
     private Map<String, ResourceReferenceDefinition> resourceReferences = new HashMap<String, ResourceReferenceDefinition>();
@@ -79,7 +79,7 @@ public class ComponentType extends AbstractPolicyAware<Implementation> implement
      *
      * @param service the service to add
      */
-    public void add(AbstractService service) {
+    public void add(ServiceDefinition service) {
         service.setParent(this);
         if (roundTrip) {
             pushElement(service);
@@ -114,7 +114,7 @@ public class ComponentType extends AbstractPolicyAware<Implementation> implement
      *
      * @return references defined by the implementation
      */
-    public Map<String, AbstractReference> getReferences() {
+    public Map<String, ReferenceDefinition> getReferences() {
         return references;
     }
 
@@ -123,7 +123,7 @@ public class ComponentType extends AbstractPolicyAware<Implementation> implement
      *
      * @param reference the reference to add
      */
-    public void add(AbstractReference reference) {
+    public void add(ReferenceDefinition reference) {
         reference.setParent(this);
         if (roundTrip) {
             pushElement(reference);

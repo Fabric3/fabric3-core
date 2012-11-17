@@ -50,7 +50,7 @@ import java.util.List;
 /**
  * A promoted composite reference.
  */
-public class CompositeReference extends AbstractReference<Composite> {
+public class CompositeReference extends ReferenceDefinition {
     private static final long serialVersionUID = 5387987439912912994L;
 
     private List<URI> promotedUris;
@@ -89,4 +89,14 @@ public class CompositeReference extends AbstractReference<Composite> {
         promotedUris.add(uri);
     }
 
+    public Composite getParent() {
+        return (Composite) super.getParent();
+    }
+
+    public void setParent(ComponentType parent) {
+        if (!(parent instanceof Composite)) {
+            throw new IllegalArgumentException("Parent must be of type " + Composite.class.getName());
+        }
+        super.setParent(parent);
+    }
 }
