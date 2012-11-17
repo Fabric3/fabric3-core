@@ -52,7 +52,7 @@ import org.fabric3.model.type.ModelObject;
 /**
  * A policy set intent map.
  */
-public final class IntentMap extends ModelObject {
+public final class IntentMap extends ModelObject<PolicySet> {
     private static final long serialVersionUID = -1786000484366117318L;
     private QName provides;
     private Set<IntentQualifier> qualifiers = new HashSet<IntentQualifier>();

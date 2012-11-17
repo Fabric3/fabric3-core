@@ -50,7 +50,7 @@ import org.fabric3.model.type.ModelObject;
 /**
  * Base policy definition type.
  */
-public abstract class AbstractPolicyDefinition extends ModelObject {
+public abstract class AbstractPolicyDefinition extends ModelObject<ModelObject> {
     private static final long serialVersionUID = -4450566760116409021L;
 
     private final QName name;

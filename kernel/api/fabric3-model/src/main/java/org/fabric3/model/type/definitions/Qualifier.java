@@ -37,10 +37,13 @@
 */
 package org.fabric3.model.type.definitions;
 
+import java.io.Serializable;
+
 /**
  * A qualifier element in an intent definition.
  */
-public class Qualifier {
+public class Qualifier implements Serializable {
+    private static final long serialVersionUID = -7431370537858001929L;
     private String name;
     private boolean defaultQualifier;
 

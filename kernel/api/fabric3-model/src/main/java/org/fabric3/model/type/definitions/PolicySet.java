@@ -88,6 +88,11 @@ public final class PolicySet extends AbstractPolicyDefinition {
         super(name);
         this.providedIntents = providedIntents;
         this.intentMaps = intentMaps;
+        if (intentMaps != null) {
+            for (IntentMap intentMap : intentMaps) {
+                intentMap.setParent(this);
+            }
+        }
         this.attachTo = "".equals(attachTo) ? null : attachTo;
         this.appliesTo = "".equals(appliesTo) ? null : appliesTo;
         this.expression = expression;

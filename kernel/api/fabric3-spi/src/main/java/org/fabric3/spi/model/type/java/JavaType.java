@@ -48,6 +48,7 @@ import org.fabric3.model.type.contract.DataType;
  * generic parameter types can be used for type checking. For non-generic types, the physical and logical types will be the same.
  */
 public abstract class JavaType<T> extends DataType<T> {
+    private static final long serialVersionUID = 9025728312058285754L;
     private QName xsdType;
 
     public JavaType(Class<?> physical, T logical) {
