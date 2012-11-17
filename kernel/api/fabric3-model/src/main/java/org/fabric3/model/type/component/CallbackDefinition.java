@@ -58,6 +58,9 @@ public class CallbackDefinition extends ModelObject<ComponentType> {
     public CallbackDefinition(String name, ServiceContract serviceContract) {
         this.name = name;
         this.serviceContract = serviceContract;
+        if (serviceContract != null) {
+            serviceContract.setParent(this);
+        }
     }
 
     /**

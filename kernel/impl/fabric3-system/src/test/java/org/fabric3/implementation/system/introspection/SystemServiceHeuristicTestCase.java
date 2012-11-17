@@ -52,6 +52,7 @@ import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.AbstractService;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -96,8 +97,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
 
         IntrospectionContext context = new DefaultIntrospectionContext();
         EasyMock.expect(helper.getImplementedInterfaces(OneInterface.class)).andReturn(interfaces);
-        EasyMock.expect(contractProcessor.introspect(ServiceInterface.class, context, componentType)).andReturn(
-                serviceInterfaceContract);
+        EasyMock.expect(contractProcessor.introspect(ServiceInterface.class, context, componentType)).andReturn(serviceInterfaceContract);
         control.replay();
 
         heuristic.applyHeuristics(componentType, OneInterface.class, context);
@@ -148,6 +148,7 @@ public class SystemServiceHeuristicTestCase extends TestCase {
         @SuppressWarnings("unchecked")
         JavaServiceContract contract = EasyMock.createMock(JavaServiceContract.class);
         EasyMock.expect(contract.getInterfaceName()).andStubReturn(type.getSimpleName());
+        contract.setParent(EasyMock.isA(ModelObject.class));
         EasyMock.replay(contract);
         return contract;
     }

@@ -47,11 +47,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.model.type.AbstractPolicyAware;
+import org.fabric3.model.type.ModelObject;
 
 /**
  * Base class representing service contract information.
  */
-public abstract class ServiceContract extends AbstractPolicyAware {
+public abstract class ServiceContract extends AbstractPolicyAware<ModelObject> {
     private static final long serialVersionUID = 7930416351019873131L;
     protected boolean remotable;
     protected String interfaceName;
@@ -137,6 +138,9 @@ public abstract class ServiceContract extends AbstractPolicyAware {
      */
     public void setCallbackContract(ServiceContract callbackContract) {
         this.callbackContract = callbackContract;
+        if (callbackContract != null) {
+            callbackContract.setParent(this);
+        }
     }
 
     public abstract String getQualifiedInterfaceName();

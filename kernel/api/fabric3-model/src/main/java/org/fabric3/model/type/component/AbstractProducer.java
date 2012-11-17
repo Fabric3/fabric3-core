@@ -64,6 +64,9 @@ public abstract class AbstractProducer<P extends ModelObject> extends BindableDe
     public AbstractProducer(String name, ServiceContract serviceContract) {
         this.name = name;
         this.serviceContract = serviceContract;
+        if (serviceContract != null) {
+            serviceContract.setParent(this);
+        }
     }
 
     /**

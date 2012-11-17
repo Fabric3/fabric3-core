@@ -77,6 +77,9 @@ public abstract class AbstractReference<P extends ModelObject> extends BindableD
     public AbstractReference(String name, ServiceContract serviceContract, Multiplicity multiplicity) {
         this.name = name;
         this.serviceContract = serviceContract;
+        if (serviceContract != null) {
+            serviceContract.setParent(this);
+        }
         this.multiplicity = multiplicity;
     }
 

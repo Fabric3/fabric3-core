@@ -62,6 +62,9 @@ public abstract class AbstractService<P extends ModelObject> extends BindableDef
     public AbstractService(String name, ServiceContract serviceContract) {
         this.name = name;
         this.serviceContract = serviceContract;
+        if (serviceContract != null) {
+            serviceContract.setParent(this);
+        }
     }
 
     /**

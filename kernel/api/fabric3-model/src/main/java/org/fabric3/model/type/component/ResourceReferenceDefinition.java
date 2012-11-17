@@ -59,6 +59,9 @@ public class ResourceReferenceDefinition extends ModelObject<ComponentType> {
     public ResourceReferenceDefinition(String name, ServiceContract serviceContract, boolean optional) {
         this.name = name;
         this.serviceContract = serviceContract;
+        if (serviceContract != null) {
+            serviceContract.setParent(this);
+        }
         this.optional = optional;
     }
 

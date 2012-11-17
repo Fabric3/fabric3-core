@@ -43,9 +43,6 @@
  */
 package org.fabric3.model.type.component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.fabric3.model.type.contract.ServiceContract;
 
 /**
@@ -54,59 +51,12 @@ import org.fabric3.model.type.contract.ServiceContract;
 public class ServiceDefinition extends AbstractService<ComponentType> {
     private static final long serialVersionUID = -3331868180749278028L;
 
-    private String name;
-    private ServiceContract serviceContract;
-    private List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
-
     public ServiceDefinition(String name) {
         this(name, null);
     }
 
     public ServiceDefinition(String name, ServiceContract serviceContract) {
         super(name, serviceContract);
-        this.name = name;
-        this.serviceContract = serviceContract;
-    }
-
-    /**
-     * Return the name of this service definition.
-     *
-     * @return the name of this service definition
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns the service contract
-     *
-     * @return the service contract
-     */
-    public ServiceContract getServiceContract() {
-        return serviceContract;
-    }
-
-    /**
-     * Sets the service contract
-     *
-     * @param contract the service contract
-     */
-    public void setServiceContract(ServiceContract contract) {
-        this.serviceContract = contract;
-    }
-
-    /**
-     * @return List of callback bindings defined against the reference.
-     */
-    public List<BindingDefinition> getCallbackBindings() {
-        return callbackBindings;
-    }
-
-    /**
-     * @param binding callback binding to be added.
-     */
-    public void addCallbackBinding(BindingDefinition binding) {
-        this.callbackBindings.add(binding);
     }
 
 }
