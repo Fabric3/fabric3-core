@@ -89,9 +89,9 @@ public class SystemImplementationProcessorImpl implements ImplementationProcesso
                 // CNFE and NCDFE may be thrown as a result of a referenced class not being on the classpath
                 // If this is the case, ensure the correct class name is reported, not just the implementation
                 String message = e.getCause().getMessage();
-                context.addError(new MissingResource("Class referenced from system implementation not found on classpath", message));
+                context.addError(new MissingResource("Class referenced from system implementation not found on classpath", message, componentType));
             } else {
-                context.addError(new MissingResource("System implementation class not found on classpath", className));
+                context.addError(new MissingResource("System implementation class not found on classpath", className, componentType));
             }
             return componentType;
         }

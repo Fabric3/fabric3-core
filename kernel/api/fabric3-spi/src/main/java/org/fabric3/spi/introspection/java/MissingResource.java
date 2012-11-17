@@ -43,16 +43,17 @@
  */
 package org.fabric3.spi.introspection.java;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.model.type.ModelObject;
 
 /**
  * Denotes a missing resource such as a class file.
  */
-public class MissingResource extends ValidationFailure {
+public class MissingResource extends JavaValidationFailure {
     private String description;
     private String name;
 
-    public MissingResource(String description, String name) {
+    public MissingResource(String description, String name, ModelObject... sources) {
+        super(null, sources);
         this.description = description;
         this.name = name;
     }

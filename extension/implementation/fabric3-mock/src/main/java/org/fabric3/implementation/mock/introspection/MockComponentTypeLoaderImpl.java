@@ -82,7 +82,7 @@ public class MockComponentTypeLoaderImpl implements MockComponentTypeLoader {
             try {
                 interfaceClass = classLoader.loadClass(mockedInterface);
             } catch (ClassNotFoundException e) {
-                MissingResource failure = new MissingResource("Mock interface not found: " + mockedInterface, mockedInterface);
+                MissingResource failure = new MissingResource("Mock interface not found: " + mockedInterface, mockedInterface, componentType);
                 context.addError(failure);
                 continue;
             }
