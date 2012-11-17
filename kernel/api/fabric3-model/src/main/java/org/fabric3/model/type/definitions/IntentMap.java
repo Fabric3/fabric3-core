@@ -88,7 +88,6 @@ public final class IntentMap extends ModelObject {
         return qualifiers;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -99,7 +98,6 @@ public final class IntentMap extends ModelObject {
 
     }
 
-    @Override
     public int hashCode() {
         return provides != null ? provides.hashCode() : 0;
     }

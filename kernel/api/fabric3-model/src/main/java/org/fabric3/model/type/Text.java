@@ -41,7 +41,7 @@ package org.fabric3.model.type;
 /**
  * Text in a serialized model object.
  */
-public class Text extends ModelObject {
+public class Text extends ModelObject<ModelObject> {
     private static final long serialVersionUID = 5106488253948375490L;
 
     private String text;

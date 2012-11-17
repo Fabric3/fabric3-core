@@ -197,7 +197,6 @@ public final class PolicySet extends AbstractPolicyDefinition {
         return intentMaps;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -215,7 +214,6 @@ public final class PolicySet extends AbstractPolicyDefinition {
         return true;
     }
 
-    @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (providedIntents != null ? providedIntents.hashCode() : 0);

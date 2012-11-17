@@ -43,12 +43,12 @@
  */
 package org.fabric3.model.type.component;
 
-import org.fabric3.model.type.ModelObject;
+import java.io.Serializable;
 
 /**
  * Defines the component implementation instance lifecycle.
  */
-public class Scope extends ModelObject {
+public class Scope implements Serializable {
     private static final long serialVersionUID = -5300929173662672089L;
     public static final Scope STATELESS = new Scope("STATELESS", false);
     public static final Scope COMPOSITE = new Scope("COMPOSITE", true);

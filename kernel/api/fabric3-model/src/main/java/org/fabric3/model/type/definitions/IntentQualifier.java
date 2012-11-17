@@ -69,7 +69,6 @@ public final class IntentQualifier extends ModelObject {
         return content;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -80,7 +79,6 @@ public final class IntentQualifier extends ModelObject {
 
     }
 
-    @Override
     public int hashCode() {
         return name != null ? name.hashCode() : 0;
     }

@@ -41,7 +41,7 @@ package org.fabric3.model.type;
 /**
  * A comment in a serialized model object.
  */
-public class Comment extends ModelObject {
+public class Comment extends ModelObject<ModelObject> {
     private static final long serialVersionUID = 5106488253948375490L;
 
     private String comment;

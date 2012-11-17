@@ -37,13 +37,13 @@
 */
 package org.fabric3.model.type.component;
 
-import org.fabric3.model.type.ModelObject;
+import java.io.Serializable;
 
 /**
  * Encapsulates information needed to identify a component/service, component/service/binding, component/reference or component/reference/binding.
  * Targets are relative to a composite and not absolute.
  */
-public class Target extends ModelObject {
+public class Target implements Serializable {
     private static final long serialVersionUID = 8616545726099554138L;
 
     private String component;

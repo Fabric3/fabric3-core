@@ -71,6 +71,7 @@ public abstract class ModelObject<P extends ModelObject> implements Serializable
             return;
         }
         Text text = new Text(val);
+        text.setParent(this);
         pushElement(text);
     }
 
@@ -84,6 +85,7 @@ public abstract class ModelObject<P extends ModelObject> implements Serializable
             return;
         }
         Comment comment = new Comment(val);
+        comment.setParent(this);
         pushElement(comment);
     }
 

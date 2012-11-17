@@ -38,10 +38,12 @@
  */
 package org.fabric3.model.type;
 
+import java.io.Serializable;
+
 /**
  * Represents a comment in a serialized model object.
  */
-public class Namespace extends ModelObject {
+public class Namespace implements Serializable {
     private static final long serialVersionUID = -6910817661378113415L;
 
     private String prefix;
