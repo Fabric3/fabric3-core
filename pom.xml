@@ -1,283 +1,301 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
- See the NOTICE file distributed with this work for information
- regarding copyright ownership.  This file is licensed
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
+<!-- See the NOTICE file distributed with this work for information regarding 
+	copyright ownership. This file is licensed to you under the Apache License, 
+	Version 2.0 (the "License"); you may not use this file except in compliance 
+	with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-   http://www.apache.org/licenses/LICENSE-2.0
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.codehaus.fabric3</groupId>
+		<artifactId>parent</artifactId>
+		<version>7</version>
+	</parent>
+	<groupId>org.codehaus.fabric3</groupId>
+	<artifactId>fabric3-core</artifactId>
+	<version>1.9.7-SNAPSHOT</version>
+	<name>Fabric3 Core POM</name>
+	<description>Fabric3 Core POM.</description>
+	<packaging>pom</packaging>
 
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modules>
+		<module>kernel</module>
+		<module>extension</module>
+		<module>runtime</module>
+		<module>admin</module>
+		<module>profile</module>
+	</modules>
 
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.codehaus.fabric3</groupId>
-        <artifactId>parent</artifactId>
-        <version>7</version>
-    </parent>
-    <groupId>org.codehaus.fabric3</groupId>
-    <artifactId>fabric3-core</artifactId>
-    <version>1.9.7-SNAPSHOT</version>
-    <name>Fabric3 Core POM</name>
-    <description>Fabric3 Core POM.</description>
-    <packaging>pom</packaging>
+	<properties>
+		<fabric3.release.version>1.9.7</fabric3.release.version>
+		<sca.api.version>1.1.3</sca.api.version>
+		<jta.version>1.1.1</jta.version>
+		<jms.version>1.1.1</jms.version>
+		<annotations.version>1.0.1</annotations.version>
+		<stax.api.version>1.0-2</stax.api.version>
 
-    <modules>
-        <module>kernel</module>
-        <module>extension</module>
-        <module>runtime</module>
-        <module>admin</module>
-        <module>profile</module>
-    </modules>
+		<!-- if the Woodstox version changes, update BootExports entry -->
+		<woodstox.version>4.1.3</woodstox.version>
+		<jackson.version>1.6.4</jackson.version>
+		<jaxb.api.version>2.2-promoted-b50</jaxb.api.version>
+		<web.services.version>2.0.1</web.services.version>
+		<jax.rs.version>1.1.1</jax.rs.version>
+		<servlet.groupId>org.mortbay.jetty</servlet.groupId>
+		<servlet.artifactId>servlet-api</servlet.artifactId>
+		<servlet.version>3.0.20100224</servlet.version>
+		<jetty.version>8.1.7.v20120910</jetty.version>
 
-    <properties>
-        <fabric3.release.version>1.9.7</fabric3.release.version>
-        <sca.api.version>1.1.3</sca.api.version>
-        <jta.version>1.1.1</jta.version>
-        <jms.version>1.1.1</jms.version>
-        <annotations.version>1.0.1</annotations.version>
-        <stax.api.version>1.0-2</stax.api.version>
+		<!-- if the Logback version changes, update the export added via BootExports.addExport() 
+			in Fabric3Server -->
+		<logback.version>1.0.0</logback.version>
 
-        <!-- if the Woodstox version changes, update BootExports entry -->
-        <woodstox.version>4.1.3</woodstox.version>
-        <jackson.version>1.6.4</jackson.version>
-        <jaxb.api.version>2.2-promoted-b50</jaxb.api.version>
-        <web.services.version>2.0.1</web.services.version>
-        <jax.rs.version>1.1.1</jax.rs.version>
-        <servlet.groupId>org.mortbay.jetty</servlet.groupId>
-        <servlet.artifactId>servlet-api</servlet.artifactId>
-        <servlet.version>3.0.20100224</servlet.version>
-        <jetty.version>8.1.7.v20120910</jetty.version>
+		<atomikos.version>3.7.0</atomikos.version>
+		<atomosphere.version>0.9.2</atomosphere.version>
+	</properties>
 
-        <!-- if the Logback version changes, update the export added via BootExports.addExport() in Fabric3Server  -->
-        <logback.version>1.0.0</logback.version>
-
-        <atomikos.version>3.7.0</atomikos.version>
-        <atomosphere.version>0.9.2</atomosphere.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>3.8.2</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymock</artifactId>
-                <version>2.2</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymockclassextension</artifactId>
-                <version>2.2</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>3.8.2</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.easymock</groupId>
+				<artifactId>easymock</artifactId>
+				<version>2.2</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.easymock</groupId>
+				<artifactId>easymockclassextension</artifactId>
+				<version>2.2</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 
-    <build>
-        <defaultGoal>install</defaultGoal>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.3.2</version>
-                    <configuration>
-                        <source>1.5</source>
-                        <target>1.5</target>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.6</version>
-                    <configuration>
-                        <includes>
-                            <include>**/*TestCase.java</include>
-                        </includes>
-                        <reportFormat>brief</reportFormat>
-                        <useFile>false</useFile>
-                        <forkMode>once</forkMode>
-                        <argLine>-ea</argLine>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>2.1.2</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.3.1</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.7</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <quiet>true</quiet>
-                        <links>
-                            <link>http://download.oracle.com/javase/6/docs/api/</link>
-                        </links>
-                        <header>${project.name}</header>
-                        <bottom><![CDATA[Copyright &copy; {inceptionYear}-{currentYear} Metaform Systems.]]></bottom>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>1.1</version>
-                    <executions>
-                        <execution>
-                            <id>sign-artifacts</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>sign</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-bundle-plugin</artifactId>
-                    <version>2.3.5</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <instructions>
-                            <Private-Package />
-                        </instructions>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.fabric3</groupId>
-                    <artifactId>fabric3-contribution-plugin</artifactId>
-                    <version>1.9.6</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.2-beta-4</version>
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>single</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <descriptors>
-                            <descriptor>assembly.xml</descriptor>
-                        </descriptors>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.0</version>
-                    <configuration>
-                        <tagBase>https://svn.codehaus.org/fabric3/modules/tags</tagBase>
-                        <remoteTagging>true</remoteTagging>
-                        <preparationGoals>clean install</preparationGoals>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+	<build>
+		<defaultGoal>install</defaultGoal>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+					<configuration>
+						<source>1.5</source>
+						<target>1.5</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.6</version>
+					<configuration>
+						<includes>
+							<include>**/*TestCase.java</include>
+						</includes>
+						<reportFormat>brief</reportFormat>
+						<useFile>false</useFile>
+						<forkMode>once</forkMode>
+						<argLine>-ea</argLine>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.1.2</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.3.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.7</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<quiet>true</quiet>
+						<links>
+							<link>http://download.oracle.com/javase/6/docs/api/</link>
+						</links>
+						<header>${project.name}</header>
+						<bottom><![CDATA[Copyright &copy; {inceptionYear}-{currentYear} Metaform Systems.]]></bottom>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>1.1</version>
+					<executions>
+						<execution>
+							<id>sign-artifacts</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>sign</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<version>2.3.5</version>
+					<extensions>true</extensions>
+					<configuration>
+						<instructions>
+							<Private-Package />
+						</instructions>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.fabric3</groupId>
+					<artifactId>fabric3-contribution-plugin</artifactId>
+					<version>1.9.6</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.2-beta-4</version>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>single</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<descriptors>
+							<descriptor>assembly.xml</descriptor>
+						</descriptors>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.0</version>
+					<configuration>
+						<tagBase>https://svn.codehaus.org/fabric3/modules/tags</tagBase>
+						<remoteTagging>true</remoteTagging>
+						<preparationGoals>clean install</preparationGoals>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-plugin-plugin</artifactId>
+										<versionRange>[2.2,)</versionRange>
+										<goals>
+											<goal>descriptor</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
-    <profiles>
-        <profile>
-            <id>bamboo</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <uniqueVersion>true</uniqueVersion>
-                    <id>fabric3-codehaus-ci</id>
-                    <name>Snapshot repository available from Codehaus' Bamboo server</name>
-                    <url>file:///opt/ci.repository.codehaus.org/</url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-        <profile>
-            <id>release-profile</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>sources</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+	<profiles>
+		<profile>
+			<id>bamboo</id>
+			<distributionManagement>
+				<snapshotRepository>
+					<uniqueVersion>true</uniqueVersion>
+					<id>fabric3-codehaus-ci</id>
+					<name>Snapshot repository available from Codehaus' Bamboo server</name>
+					<url>file:///opt/ci.repository.codehaus.org/</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+		<profile>
+			<id>release-profile</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-gpg-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>sources</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
-    <repositories>
-        <repository>
-            <id>repository.codehaus.org</id>
-            <name>Fabric3 Releases</name>
-            <url>http://repository.codehaus.org/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+	<repositories>
+		<repository>
+			<id>repository.codehaus.org</id>
+			<name>Fabric3 Releases</name>
+			<url>http://repository.codehaus.org/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
-    <scm>
-        <connection>scm:svn:http://svn.codehaus.org/fabric3/modules/trunk</connection>
-        <developerConnection>scm:svn:https://svn.codehaus.org/fabric3/modules/trunk</developerConnection>
-        <url>http://svn.fabric3.codehaus.org/browse/fabric3/modules/trunk</url>
-    </scm>
+	<scm>
+		<connection>scm:svn:http://svn.codehaus.org/fabric3/modules/trunk</connection>
+		<developerConnection>scm:svn:https://svn.codehaus.org/fabric3/modules/trunk</developerConnection>
+		<url>http://svn.fabric3.codehaus.org/browse/fabric3/modules/trunk</url>
+	</scm>
 
 </project>
