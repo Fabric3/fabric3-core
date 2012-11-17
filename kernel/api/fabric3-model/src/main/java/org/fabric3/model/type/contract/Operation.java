@@ -51,7 +51,7 @@ import org.fabric3.model.type.AbstractPolicyAware;
 /**
  * An operation on a service contract.
  */
-public class Operation extends AbstractPolicyAware {
+public class Operation extends AbstractPolicyAware<ServiceContract> {
     private static final long serialVersionUID = 5279880534105654066L;
     private String name;
     private String wsdlName;
@@ -61,7 +61,7 @@ public class Operation extends AbstractPolicyAware {
     private List<DataType<?>> faultTypes;
 
     /**
-     * Construct a minimally-specified operation
+     * Constructor.
      *
      * @param name       the name of the operation
      * @param inputTypes the data types of parameters passed to the operation

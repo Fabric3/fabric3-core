@@ -115,6 +115,9 @@ public abstract class ServiceContract extends AbstractPolicyAware {
      * @param operations the operations for the service contract
      */
     public void setOperations(List<Operation> operations) {
+        for (Operation operation : operations) {
+            operation.setParent(this);
+        }
         this.operations = operations;
     }
 
