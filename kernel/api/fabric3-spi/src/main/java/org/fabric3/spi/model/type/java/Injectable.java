@@ -48,7 +48,7 @@ import org.fabric3.model.type.ModelObject;
 /**
  * Identifies an attribute of the component that can be injected into an instance.
  */
-public class Injectable extends ModelObject {
+public class Injectable extends ModelObject<InjectingComponentType> {
     private static final long serialVersionUID = -3313258224983902890L;
     public static final Injectable OASIS_COMPONENT_CONTEXT = new Injectable(InjectableType.CONTEXT, "OASISComponentContext");
     public static final Injectable OASIS_REQUEST_CONTEXT = new Injectable(InjectableType.CONTEXT, "RequestContext");

@@ -53,7 +53,7 @@ import org.fabric3.model.type.ModelObject;
 /**
  * Encapsulates management metadata about a component implementation.
  */
-public class ManagementInfo extends ModelObject {
+public class ManagementInfo extends ModelObject<InjectingComponentType> {
     private static final long serialVersionUID = 8421549578785177167L;
 
     private String name;
@@ -147,6 +147,7 @@ public class ManagementInfo extends ModelObject {
      * @param info the operation information
      */
     public void addOperation(ManagementOperationInfo info) {
+        info.setParent(this);
         operations.add(info);
     }
 

@@ -167,6 +167,7 @@ public class InjectingComponentType extends ComponentType {
      * @param managementInfo the ManagementInfo
      */
     public void setManagementInfo(ManagementInfo managementInfo) {
+        managementInfo.setParent(this);
         this.managementInfo = managementInfo;
     }
 
@@ -246,6 +247,7 @@ public class InjectingComponentType extends ComponentType {
      * @param injectionSite the proxy injection site
      */
     public void add(CallbackDefinition definition, InjectionSite injectionSite) {
+        definition.setParent(this);
         String name = definition.getName();
         callbacks.put(name, definition);
         Injectable injectable = new Injectable(InjectableType.CALLBACK, name);
@@ -268,6 +270,8 @@ public class InjectingComponentType extends ComponentType {
      * @param source the value to be injected
      */
     public void addInjectionSite(InjectionSite site, Injectable source) {
+        site.setParent(this);
+        source.setParent(this);
         injectionSites.put(site, source);
     }
 

@@ -51,7 +51,7 @@ import org.fabric3.model.type.ModelObject;
 /**
  * Encapsulates management information about a component operation.
  */
-public class ManagementOperationInfo extends ModelObject {
+public class ManagementOperationInfo extends ModelObject<ManagementInfo> {
     private static final long serialVersionUID = 138617917546848298L;
 
     private Signature signature;
