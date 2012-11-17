@@ -43,6 +43,7 @@
  */
 package org.fabric3.spi.model.type.java;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ import org.fabric3.model.type.ModelObject;
 /**
  * Description of a method signature.
  */
-public class Signature extends ModelObject {
+public class Signature implements Serializable {
     private static final long serialVersionUID = 4851321624672183132L;
     //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6176992
     private static final Map<String, Class<?>> PRIMITIVES_TYPES;
