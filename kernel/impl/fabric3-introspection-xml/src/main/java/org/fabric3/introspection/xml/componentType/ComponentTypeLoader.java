@@ -131,8 +131,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     service = loadService(reader, introspectionContext);
                     type.add(service);
                 } else if (REFERENCE.equals(qname)) {
-                    ReferenceDefinition reference;
-                    reference = loadReference(reader, introspectionContext);
+                    ReferenceDefinition reference = loadReference(reader, introspectionContext);
                     type.add(reference);
                 } else {
                     // Extension element - for now try to load and see if we can handle it
