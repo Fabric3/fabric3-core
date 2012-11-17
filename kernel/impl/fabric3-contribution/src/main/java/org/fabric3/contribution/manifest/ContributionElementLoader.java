@@ -68,7 +68,6 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 import org.fabric3.spi.model.os.Library;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -173,28 +172,21 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                     manifest.setScanExcludes(patterns);
 
                 } else {
-                    Object o;
-                    try {
-                        o = registry.load(reader, Object.class, context);
-                    } catch (UnrecognizedElementException e) {
-                        UnrecognizedElement failure = new UnrecognizedElement(reader, location);
-                        context.addError(failure);
-                        return null;
-                    }
-                    if (o instanceof Export) {
-                        manifest.addExport((Export) o);
-                    } else if (o instanceof Import) {
-                        manifest.addImport((Import) o);
-                    } else if (o instanceof ExtendsDeclaration) {
-                        ExtendsDeclaration declaration = (ExtendsDeclaration) o;
+                    Object object = registry.load(reader, Object.class, context);
+                    if (object instanceof Export) {
+                        manifest.addExport((Export) object);
+                    } else if (object instanceof Import) {
+                        manifest.addImport((Import) object);
+                    } else if (object instanceof ExtendsDeclaration) {
+                        ExtendsDeclaration declaration = (ExtendsDeclaration) object;
                         manifest.addExtend(declaration.getName());
-                    } else if (o instanceof ProvidesDeclaration) {
-                        ProvidesDeclaration declaration = (ProvidesDeclaration) o;
+                    } else if (object instanceof ProvidesDeclaration) {
+                        ProvidesDeclaration declaration = (ProvidesDeclaration) object;
                         manifest.addExtensionPoint(declaration.getName());
-                    } else if (o instanceof Library) {
-                        Library library = (Library) o;
+                    } else if (object instanceof Library) {
+                        Library library = (Library) object;
                         manifest.addLibrary(library);
-                    } else if (o != null) {
+                    } else if (object != null) {
                         UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                         context.addError(failure);
                         return null;

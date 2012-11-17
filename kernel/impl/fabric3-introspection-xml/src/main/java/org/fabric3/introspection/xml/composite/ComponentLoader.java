@@ -87,7 +87,6 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -169,28 +168,21 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             reader.nextTag();
         }
         QName elementName = reader.getName();
-        Implementation<?> impl;
-        Location marker = reader.getLocation();
-        try {
-            if (COMPONENT.equals(elementName)) {
-                // the reader has hit the end of the component definition without an implementation being specified
-                MissingComponentImplementation error =
-                        new MissingComponentImplementation("The component " + name + " must specify an implementation", startLocation, definition);
-                context.addError(error);
-                return definition;
-            } else if (PROPERTY.equals(elementName) || REFERENCE.equals(elementName) || SERVICE.equals(elementName) || PRODUCER.equals(elementName)) {
-                MissingComponentImplementation error = new MissingComponentImplementation("The component " + name
-                                                                                                  + " must specify an implementation as the first child element",
-                                                                                          startLocation, definition);
-                context.addError(error);
-                return definition;
-            }
-            impl = registry.load(reader, Implementation.class, context);
-        } catch (UnrecognizedElementException e) {
-            UnrecognizedElement failure = new UnrecognizedElement(reader, marker);
-            context.addError(failure);
-            return null;
+
+        if (COMPONENT.equals(elementName)) {
+            // the reader has hit the end of the component definition without an implementation being specified
+            MissingComponentImplementation error =
+                    new MissingComponentImplementation("The component " + name + " must specify an implementation", startLocation, definition);
+            context.addError(error);
+            return definition;
+        } else if (PROPERTY.equals(elementName) || REFERENCE.equals(elementName) || SERVICE.equals(elementName) || PRODUCER.equals(elementName)) {
+            MissingComponentImplementation error = new MissingComponentImplementation("The component " + name
+                                                                                              + " must specify an implementation as the first child element",
+                                                                                      startLocation, definition);
+            context.addError(error);
+            return definition;
         }
+        Implementation<?> impl = registry.load(reader, Implementation.class, context);
         if (impl == null || impl.getComponentType() == null) {
             // error loading impl
             return definition;
@@ -211,7 +203,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private void parseService(ComponentDefinition<?> definition,
                               ComponentType componentType,
                               XMLStreamReader reader,
-                              IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
+                              IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
         ComponentService service = registry.load(reader, ComponentService.class, context);
         if (service == null) {
@@ -247,27 +239,22 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             switch (reader.next()) {
             case START_ELEMENT:
                 Location location = reader.getLocation();
-                try {
-                    QName qname = reader.getName();
-                    if (PROPERTY.equals(qname)) {
-                        parsePropertyValue(definition, componentType, reader, propertyLocations, context);
-                    } else if (REFERENCE.equals(qname)) {
-                        parseReference(definition, componentType, reader, context);
-                    } else if (SERVICE.equals(qname)) {
-                        parseService(definition, componentType, reader, context);
-                    } else if (PRODUCER.equals(qname)) {
-                        parseProducer(definition, componentType, reader, context);
-                    } else if (CONSUMER.equals(qname)) {
-                        parseConsumer(definition, componentType, reader, context);
-                    } else {
-                        // Unknown extension element - issue an error and continue
-                        UnrecognizedElement failure = new UnrecognizedElement(reader, location);
-                        context.addError(failure);
-                        LoaderUtil.skipToEndElement(reader);
-                    }
-                } catch (UnrecognizedElementException e) {
+                QName qname = reader.getName();
+                if (PROPERTY.equals(qname)) {
+                    parsePropertyValue(definition, componentType, reader, propertyLocations, context);
+                } else if (REFERENCE.equals(qname)) {
+                    parseReference(definition, componentType, reader, context);
+                } else if (SERVICE.equals(qname)) {
+                    parseService(definition, componentType, reader, context);
+                } else if (PRODUCER.equals(qname)) {
+                    parseProducer(definition, componentType, reader, context);
+                } else if (CONSUMER.equals(qname)) {
+                    parseConsumer(definition, componentType, reader, context);
+                } else {
+                    // Unknown extension element - issue an error and continue
                     UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                     context.addError(failure);
+                    LoaderUtil.skipToEndElement(reader);
                 }
                 break;
             case END_ELEMENT:
@@ -293,7 +280,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private void parseReference(ComponentDefinition<?> definition,
                                 ComponentType componentType,
                                 XMLStreamReader reader,
-                                IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
+                                IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
         ComponentReference reference = registry.load(reader, ComponentReference.class, context);
         if (reference == null) {
@@ -333,7 +320,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private void parseProducer(ComponentDefinition<Implementation<?>> definition,
                                ComponentType componentType,
                                XMLStreamReader reader,
-                               IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
+                               IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
         ComponentProducer producer = registry.load(reader, ComponentProducer.class, context);
         if (producer == null) {
@@ -354,7 +341,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     private void parseConsumer(ComponentDefinition<Implementation<?>> definition,
                                ComponentType componentType,
                                XMLStreamReader reader,
-                               IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
+                               IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         ComponentConsumer consumer = registry.load(reader, ComponentConsumer.class, context);
@@ -379,7 +366,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                                     ComponentType componentType,
                                     XMLStreamReader reader,
                                     Map<Property, Location> propertyLocations,
-                                    IntrospectionContext context) throws XMLStreamException, UnrecognizedElementException {
+                                    IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
         PropertyValue value = registry.load(reader, PropertyValue.class, context);
         if (value == null) {

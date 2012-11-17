@@ -72,7 +72,6 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -135,21 +134,14 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     type.add(reference);
                 } else {
                     // Extension element - for now try to load and see if we can handle it
-                    ModelObject modelObject;
-                    try {
-                        modelObject = registry.load(reader, ModelObject.class, introspectionContext);
-                    } catch (UnrecognizedElementException e) {
-                        UnrecognizedElement failure = new UnrecognizedElement(reader, location);
-                        introspectionContext.addError(failure);
-                        continue;
-                    }
+                    ModelObject modelObject = registry.load(reader, ModelObject.class, introspectionContext);
                     if (modelObject instanceof Property) {
                         type.add((Property) modelObject);
                     } else if (modelObject instanceof ServiceDefinition) {
                         type.add((ServiceDefinition) modelObject);
                     } else if (modelObject instanceof ReferenceDefinition) {
                         type.add((ReferenceDefinition) modelObject);
-                    } else {
+                    } else if (modelObject != null) {
                         UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                         introspectionContext.addError(failure);
                         continue;
@@ -186,14 +178,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     reader.nextTag();
                 }
                 QName elementName = reader.getName();
-                ModelObject type;
-                try {
-                    type = registry.load(reader, ModelObject.class, context);
-                } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
-                    context.addError(failure);
-                    continue;
-                }
+                ModelObject type = registry.load(reader, ModelObject.class, context);
                 if (type instanceof ServiceContract) {
                     def.setServiceContract((ServiceContract) type);
                 } else if (type instanceof BindingDefinition) {
@@ -219,7 +204,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     }
                 } else if (type == null) {
                     // error loading, the element, ignore as an error will have been reported
-                    break;
+                    continue;
                 } else {
                     UnrecognizedElement failure = new UnrecognizedElement(reader, location);
                     context.addError(failure);
@@ -273,16 +258,9 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     reader.nextTag();
                 }
                 QName elementName = reader.getName();
-                ModelObject type;
-                try {
-                    type = registry.load(reader, ModelObject.class, context);
-                    // TODO when the loader registry is replaced this try..catch must be replaced with a check for a loader and an
-                    // UnrecognizedElement added to the context if none is found
-                } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
-                    context.addError(failure);
-                    continue;
-                }
+                ModelObject type = registry.load(reader, ModelObject.class, context);
+                // TODO when the loader registry is replaced this try..catch must be replaced with a check for a loader and an
+                // UnrecognizedElement added to the context if none is found
                 if (type instanceof ServiceContract) {
                     reference.setServiceContract((ServiceContract) type);
                 } else if (type instanceof BindingDefinition) {

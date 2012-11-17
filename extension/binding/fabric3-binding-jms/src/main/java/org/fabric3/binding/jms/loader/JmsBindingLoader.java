@@ -78,8 +78,6 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -184,13 +182,8 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
                 name = reader.getName().getLocalPart();
                 Location location = reader.getLocation();
                 if ("handler".equals(name)) {
-                    try {
-                        BindingHandlerDefinition handler = registry.load(reader, BindingHandlerDefinition.class, context);
-                        definition.addHandler(handler);
-                    } catch (UnrecognizedElementException e) {
-                        UnrecognizedElement failure = new UnrecognizedElement(reader, location);
-                        context.addError(failure);
-                    }
+                    BindingHandlerDefinition handler = registry.load(reader, BindingHandlerDefinition.class, context);
+                    definition.addHandler(handler);
                 } else if ("destination".equals(name)) {
                     if (uri != null) {
                         InvalidJmsBinding error = new InvalidJmsBinding(

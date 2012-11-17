@@ -57,7 +57,6 @@ import org.fabric3.spi.event.ExtensionsInitialized;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 /**
  * Parses persistence entries specified in the system configuration.
@@ -112,8 +111,6 @@ public class SystemConfigOverrideParser implements Fabric3EventListener<Extensio
                     monitor.parseError(error.getMessage());
                 }
             }
-        } catch (UnrecognizedElementException e) {
-            monitor.error(e);
         } catch (XMLStreamException e) {
             monitor.error(e);
         } finally {

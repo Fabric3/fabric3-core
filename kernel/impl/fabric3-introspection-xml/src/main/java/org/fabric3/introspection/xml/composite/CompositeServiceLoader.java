@@ -65,7 +65,6 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -136,15 +135,7 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
                     reader.nextTag();
                 }
                 QName elementName = reader.getName();
-                ModelObject type;
-                try {
-                    type = registry.load(reader, ModelObject.class, context);
-                } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
-                    context.addError(failure);
-                    continue;
-
-                }
+                ModelObject type = registry.load(reader, ModelObject.class, context);
                 if (type instanceof ServiceContract) {
                     service.setServiceContract((ServiceContract) type);
                 } else if (type instanceof BindingDefinition) {

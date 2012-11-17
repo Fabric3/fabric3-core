@@ -63,12 +63,10 @@ public interface Loader {
      * @param type    the type of Java object that should be returned
      * @param context the current loader context
      * @return the model object obtained by parsing the current element on the stream
-     * @throws UnrecognizedElementException if no loader was found for the element
      * @throws XMLStreamException           if there was a problem reading the stream
      * @throws ClassCastException           if the XML type cannot be cast to the expected output type
      */
-    <OUTPUT> OUTPUT load(XMLStreamReader reader, Class<OUTPUT> type, IntrospectionContext context)
-            throws XMLStreamException, UnrecognizedElementException;
+    <OUTPUT> OUTPUT load(XMLStreamReader reader, Class<OUTPUT> type, IntrospectionContext context) throws XMLStreamException;
 
     /**
      * Load a model object from a specified location.

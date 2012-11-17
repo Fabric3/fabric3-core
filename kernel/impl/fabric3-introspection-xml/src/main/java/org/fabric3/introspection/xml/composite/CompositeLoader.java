@@ -88,7 +88,6 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 import org.fabric3.spi.util.UriHelper;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -267,16 +266,9 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
     private void handleExtensionElement(Composite type, XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
         // Extension element - for now try to load and see if we can handle it
-        ModelObject modelObject;
-        try {
-            modelObject = registry.load(reader, ModelObject.class, context);
-            // TODO when the loader registry is replaced this try..catch must be replaced with a check for a loader and an
-            // UnrecognizedElement added to the context if none is found
-        } catch (UnrecognizedElementException e) {
-            UnrecognizedElement failure = new UnrecognizedElement(reader, startLocation);
-            context.addError(failure);
-            return;
-        }
+        ModelObject modelObject = registry.load(reader, ModelObject.class, context);
+        // TODO when the loader registry is replaced this try..catch must be replaced with a check for a loader and an
+        // UnrecognizedElement added to the context if none is found
         if (modelObject instanceof Property) {
             type.add((Property) modelObject);
         } else if (modelObject instanceof CompositeService) {
@@ -300,18 +292,11 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                             QName compositeName,
                             IntrospectionContext context,
                             IntrospectionContext parentContext) throws XMLStreamException {
-        Location startLocation = reader.getLocation();
         WireDefinition wire;
-        try {
-            wire = registry.load(reader, WireDefinition.class, context);
-        } catch (UnrecognizedElementException e) {
-            updateContext(parentContext, context, compositeName);
-            UnrecognizedElement failure = new UnrecognizedElement(reader, startLocation);
-            context.addError(failure);
-            return;
-        }
+        wire = registry.load(reader, WireDefinition.class, context);
         if (wire == null) {
             // error encountered loading the wire
+            updateContext(parentContext, context, compositeName);
             return;
         }
         type.add(wire);
@@ -325,17 +310,10 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                                     IntrospectionContext context,
                                     IntrospectionContext parentContext) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        ComponentDefinition<?> componentDefinition;
-        try {
-            componentDefinition = registry.load(reader, ComponentDefinition.class, context);
-        } catch (UnrecognizedElementException e) {
-            updateContext(parentContext, context, compositeName);
-            UnrecognizedElement failure = new UnrecognizedElement(reader, startLocation);
-            context.addError(failure);
-            return false;
-        }
+        ComponentDefinition<?> componentDefinition = registry.load(reader, ComponentDefinition.class, context);
         if (componentDefinition == null) {
             // error encountered loading the componentDefinition
+            updateContext(parentContext, context, compositeName);
             return false;
         }
         String key = componentDefinition.getName();
@@ -370,17 +348,10 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                                IntrospectionContext context,
                                IntrospectionContext parentContext) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        ChannelDefinition channelDefinition;
-        try {
-            channelDefinition = registry.load(reader, ChannelDefinition.class, context);
-        } catch (UnrecognizedElementException e) {
-            updateContext(parentContext, context, compositeName);
-            UnrecognizedElement failure = new UnrecognizedElement(reader, startLocation);
-            context.addError(failure);
-            return;
-        }
+        ChannelDefinition channelDefinition = registry.load(reader, ChannelDefinition.class, context);
         if (channelDefinition == null) {
             // error encountered loading the channel definition
+            updateContext(parentContext, context, compositeName);
             return;
         }
         String key = channelDefinition.getName();
@@ -454,17 +425,10 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                                IntrospectionContext context,
                                IntrospectionContext parentContext) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        Include include;
-        try {
-            include = registry.load(reader, Include.class, context);
-        } catch (UnrecognizedElementException e) {
-            updateContext(parentContext, context, compositeName);
-            UnrecognizedElement failure = new UnrecognizedElement(reader, startLocation);
-            context.addError(failure);
-            return;
-        }
+        Include  include = registry.load(reader, Include.class, context);
         if (include == null) {
             // error encountered loading the include
+            updateContext(parentContext, context, compositeName);
             return;
         }
         QName includeName = include.getName();

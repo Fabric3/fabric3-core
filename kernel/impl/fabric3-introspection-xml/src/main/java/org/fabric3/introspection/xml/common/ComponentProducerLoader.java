@@ -64,7 +64,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -133,14 +132,7 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
             case START_ELEMENT:
                 Location location = reader.getLocation();
                 QName elementName = reader.getName();
-                ModelObject type;
-                try {
-                    type = registry.load(reader, ModelObject.class, context);
-                } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
-                    context.addError(failure);
-                    continue;
-                }
+                ModelObject type = registry.load(reader, ModelObject.class, context);
                 if (type instanceof ServiceContract) {
                     producer.setServiceContract((ServiceContract) type);
                 } else if (type instanceof BindingDefinition) {

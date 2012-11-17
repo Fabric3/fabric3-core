@@ -69,7 +69,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -119,29 +118,13 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
                 QName qname = reader.getName();
                 AbstractPolicyDefinition definition = null;
                 if (INTENT.equals(qname)) {
-                    try {
-                        definition = loaderRegistry.load(reader, Intent.class, context);
-                    } catch (UnrecognizedElementException e) {
-                        throw new InstallException(e);
-                    }
+                    definition = loaderRegistry.load(reader, Intent.class, context);
                 } else if (POLICY_SET.equals(qname)) {
-                    try {
-                        definition = loaderRegistry.load(reader, PolicySet.class, context);
-                    } catch (UnrecognizedElementException e) {
-                        throw new InstallException(e);
-                    }
+                    definition = loaderRegistry.load(reader, PolicySet.class, context);
                 } else if (BINDING_TYPE.equals(qname)) {
-                    try {
-                        definition = loaderRegistry.load(reader, BindingType.class, context);
-                    } catch (UnrecognizedElementException e) {
-                        throw new InstallException(e);
-                    }
+                    definition = loaderRegistry.load(reader, BindingType.class, context);
                 } else if (IMPLEMENTATION_TYPE.equals(qname)) {
-                    try {
-                        definition = loaderRegistry.load(reader, ImplementationType.class, context);
-                    } catch (UnrecognizedElementException e) {
-                        throw new InstallException(e);
-                    }
+                    definition = loaderRegistry.load(reader, ImplementationType.class, context);
                 } else if (EXTERNAL_ATTACHMENT.equals(qname)) {
                     // TODO implement
                 } else {

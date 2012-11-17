@@ -60,8 +60,6 @@ import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -108,19 +106,12 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                Location location = reader.getLocation();
-                try {
-                    Object elementValue = registry.load(reader, Object.class, context);
-                    if (elementValue instanceof BindingHandlerDefinition) {
-                        binding.addHandler((BindingHandlerDefinition) elementValue);
-                    } else if (elementValue instanceof Map) {
-                        binding.setConfiguration((Map<String, String>) elementValue);
-                    }
-                } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
-                    context.addError(failure);
+                Object elementValue = registry.load(reader, Object.class, context);
+                if (elementValue instanceof BindingHandlerDefinition) {
+                    binding.addHandler((BindingHandlerDefinition) elementValue);
+                } else if (elementValue instanceof Map) {
+                    binding.setConfiguration((Map<String, String>) elementValue);
                 }
-
                 break;
             case END_ELEMENT:
                 String name = reader.getName().getLocalPart();

@@ -39,7 +39,6 @@
 package org.fabric3.introspection.xml.template;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -54,8 +53,6 @@ import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 /**
  * Loads a <code>&lt;templates&gt;</code> element in a composite.
@@ -86,13 +83,7 @@ public class TemplatesElementLoader implements TypeLoader<ModelObject> {
         while (true) {
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:
-                Location location = reader.getLocation();
-                try {
-                    loaderRegistry.load(reader, ModelObject.class, context);
-                } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement error = new UnrecognizedElement(reader, location);
-                    context.addError(error);
-                }
+                loaderRegistry.load(reader, ModelObject.class, context);
                 break;
             case XMLStreamConstants.END_ELEMENT:
                 if ("templates".equals(reader.getName().getLocalPart())) {

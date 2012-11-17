@@ -59,7 +59,6 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TemplateRegistry;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 /**
  * Loads a <code>&lt;template&gt;</code> element in a composite.
@@ -110,10 +109,6 @@ public class TemplateElementLoader extends AbstractValidatingTypeLoader<ModelObj
             URI uri = context.getContributionUri();
             ModelObject parsed = loaderRegistry.load(reader, ModelObject.class, context);
             templateRegistry.register(name, uri, parsed);
-            LoaderUtil.skipToEndElement(reader);
-        } catch (UnrecognizedElementException e) {
-            UnrecognizedTemplateType error = new UnrecognizedTemplateType(reader.getName().toString(), startLocation);
-            context.addError(error);
             LoaderUtil.skipToEndElement(reader);
         } catch (DuplicateTemplateException e) {
             DuplicateTemplate error = new DuplicateTemplate(name, startLocation);

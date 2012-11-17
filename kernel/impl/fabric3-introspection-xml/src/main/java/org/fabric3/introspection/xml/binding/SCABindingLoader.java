@@ -54,8 +54,6 @@ import org.fabric3.spi.introspection.xml.InvalidTargetException;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 import org.fabric3.spi.model.type.binding.SCABinding;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -100,14 +98,7 @@ public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding> {
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:
-                Location location = reader.getLocation();
-                try {
-                    registry.load(reader, ModelObject.class, context);
-                } catch (UnrecognizedElementException e) {
-                    UnrecognizedElement error = new UnrecognizedElement(reader, location);
-                    context.addError(error);
-                    continue;
-                }
+                registry.load(reader, ModelObject.class, context);
                 break;
             case END_ELEMENT:
                 if ("binding.sca".equals(reader.getName().getLocalPart())) {

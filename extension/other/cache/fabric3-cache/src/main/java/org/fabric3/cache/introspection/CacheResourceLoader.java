@@ -56,8 +56,6 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
 
 /**
  * Loads cache configurations specified in a composite. The format of the caches element is:
@@ -111,16 +109,13 @@ public class CacheResourceLoader extends AbstractValidatingTypeLoader<CacheSetRe
                         name = "default";
                     }
 
-                    try {
-                        reader.nextTag();
-                        CacheResourceDefinition configuration = registry.load(reader, CacheResourceDefinition.class, context);
-                        configuration.setCacheName(name);
-                        definition.addDefinition(configuration);
-                    } catch (UnrecognizedElementException e) {
-                        UnrecognizedElement error = new UnrecognizedElement(reader, location);
-                        context.addError(error);
+                    reader.nextTag();
+                    CacheResourceDefinition configuration = registry.load(reader, CacheResourceDefinition.class, context);
+                    if (configuration == null) {
                         continue;
                     }
+                    configuration.setCacheName(name);
+                    definition.addDefinition(configuration);
                 }
                 break;
             case XMLStreamConstants.END_ELEMENT:

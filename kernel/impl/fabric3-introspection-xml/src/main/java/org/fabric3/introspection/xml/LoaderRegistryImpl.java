@@ -62,7 +62,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedElementException;
+import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**
@@ -94,15 +94,16 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         loaders.remove(element);
     }
 
-    public <O> O load(XMLStreamReader reader, Class<O> type, IntrospectionContext introspectionContext)
-            throws XMLStreamException, UnrecognizedElementException {
+    public <O> O load(XMLStreamReader reader, Class<O> type, IntrospectionContext introspectionContext) throws XMLStreamException {
         QName name = reader.getName();
         TypeLoader<?> loader = loaders.get(name);
         if (loader == null) {
             loader = mappedLoaders.get(name);
         }
         if (loader == null) {
-            throw new UnrecognizedElementException(reader);
+            UnrecognizedElement failure = new UnrecognizedElement(reader, reader.getLocation());
+            introspectionContext.addError(failure);
+            return null;
         }
         return type.cast(loader.load(reader, introspectionContext));
     }
@@ -130,10 +131,8 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         }
     }
 
-    private <O> O load(String id, InputStream stream, Class<O> type, IntrospectionContext ctx)
-            throws XMLStreamException, UnrecognizedElementException {
+    private <O> O load(String id, InputStream stream, Class<O> type, IntrospectionContext ctx) throws XMLStreamException {
         XMLStreamReader reader;
-
         // if the id is a URL, use it as the system id
         if (isURL(id)) {
             reader = xmlFactory.createXMLStreamReader(id, stream);
@@ -165,8 +164,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         try {
             new URL(path);
             return true;
-        }
-        catch (MalformedURLException ex) {
+        } catch (MalformedURLException ex) {
             return false;
         }
     }
