@@ -103,6 +103,7 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
             if (typeAttribute != null) {
                 try {
                     type = helper.createQName(typeAttribute, reader);
+                    value.setType(type);
                 } catch (InvalidPrefixException e) {
                     InvalidAttributes error = new InvalidAttributes("Invalid property type namespace:" + e.getMessage(), startLocation, value);
                     context.addError(error);
@@ -147,8 +148,6 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
         PropertyMany many = parseMany(reader);
         String valueAttribute = reader.getAttributeValue(null, "value");
 
-        QName type = null;
-        QName element = null;
 
         PropertyValue propertyValue = new PropertyValue(name, many);
 
@@ -160,8 +159,6 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
             value = helper.loadPropertyValue(valueAttribute);
         }
         propertyValue.setValue(value);
-        propertyValue.setElement(element);
-        propertyValue.setType(type);
 
         if (valueAttribute != null && value.getDocumentElement().getChildNodes().getLength() > 0) {
             InvalidPropertyValue error =
@@ -169,6 +166,8 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
             context.addError(error);
         }
 
+        QName type = null;
+        QName element = null;
         if (typeAttribute != null) {
             if (elementAttribute != null) {
                 InvalidValue failure = new InvalidValue("Cannot supply both type and element for property: " + name, location);
@@ -188,6 +187,8 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
                 context.addError(error);
             }
         }
+        propertyValue.setElement(element);
+        propertyValue.setType(type);
 
         return propertyValue;
     }
