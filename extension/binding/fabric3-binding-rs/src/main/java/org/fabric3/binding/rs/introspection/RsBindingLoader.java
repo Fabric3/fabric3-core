@@ -69,7 +69,6 @@ public class RsBindingLoader extends AbstractValidatingTypeLoader<RsBindingDefin
 
     public RsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
 
         String bindingName = reader.getAttributeValue(null, "name");
         String uriStr = reader.getAttributeValue(null, "uri");
@@ -89,6 +88,9 @@ public class RsBindingLoader extends AbstractValidatingTypeLoader<RsBindingDefin
         }
         RsBindingDefinition definition = new RsBindingDefinition(bindingName, uri);
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
+
+        validateAttributes(reader, context, definition);
+
         LoaderUtil.skipToEndElement(reader);
         return definition;
     }

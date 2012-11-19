@@ -44,6 +44,7 @@
 package org.fabric3.model.type.component;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,6 +65,16 @@ public class ComponentProducer extends AbstractProducer<ComponentDefinition> {
     public ComponentProducer(String name, List<URI> targets) {
         super(name);
         this.targets = targets;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param name the name of the producer being configured
+     */
+    public ComponentProducer(String name) {
+        super(name);
+        this.targets = new ArrayList<URI>();
     }
 
     /**
@@ -91,6 +102,15 @@ public class ComponentProducer extends AbstractProducer<ComponentDefinition> {
      */
     public List<URI> getTargets() {
         return targets;
+    }
+
+    /**
+     * Sets the URIs of channels this producer sends messages to.
+     *
+     * @param targets the URIs of channels this producer sends messages to
+     */
+    public void setTargets(List<URI> targets) {
+        this.targets = targets;
     }
 
     /**

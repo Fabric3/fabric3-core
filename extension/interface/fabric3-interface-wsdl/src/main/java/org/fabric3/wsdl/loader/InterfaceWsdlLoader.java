@@ -84,11 +84,13 @@ public class InterfaceWsdlLoader extends AbstractValidatingTypeLoader<WsdlServic
 
     public WsdlServiceContract load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
         validateRemotable(reader, startLocation, context);
         WsdlServiceContract wsdlContract = processInterface(reader, startLocation, context);
         processCallbackInterface(reader, wsdlContract, context);
         helper.loadPolicySetsAndIntents(wsdlContract, reader, context);
+
+        validateAttributes(reader, context, wsdlContract);
+
         LoaderUtil.skipToEndElement(reader);
         return wsdlContract;
     }

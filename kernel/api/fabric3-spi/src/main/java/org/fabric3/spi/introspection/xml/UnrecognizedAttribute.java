@@ -45,6 +45,8 @@ package org.fabric3.spi.introspection.xml;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.ModelObject;
+
 /**
  * Failure that indicates an attribute was encountered that could not be handled.
  */
@@ -56,9 +58,10 @@ public class UnrecognizedAttribute extends XmlValidationFailure {
      *
      * @param name     the attribute name
      * @param location the location of the the unrecognized element
+     * @param sources  the failure sources
      */
-    public UnrecognizedAttribute(String name, Location location) {
-        super("Unrecognized element", location);
+    public UnrecognizedAttribute(String name, Location location, ModelObject... sources) {
+        super("Unrecognized element", location, sources);
         this.name = name;
     }
 

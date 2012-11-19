@@ -72,10 +72,12 @@ public class SpringImplementationLoader extends AbstractValidatingTypeLoader<Spr
 
     public SpringImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
+        SpringImplementation implementation = new SpringImplementation();
+
+        validateAttributes(reader, context, implementation);
+
         ClassLoader classLoader = context.getClassLoader();
         updateClassLoader(classLoader);
-        SpringImplementation implementation = new SpringImplementation();
         String locationAttr = reader.getAttributeValue(null, "location");
         if (locationAttr == null) {
             MissingAttribute failure = new MissingAttribute("The location attribute was not specified", startLocation);

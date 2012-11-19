@@ -76,7 +76,6 @@ public class ImplementationTypeLoader extends AbstractValidatingTypeLoader<Imple
 
     public ImplementationType load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
         try {
             String name = reader.getAttributeValue(null, "name");
             QName qName = helper.createQName(name, reader);
@@ -86,11 +85,12 @@ public class ImplementationTypeLoader extends AbstractValidatingTypeLoader<Imple
             }
             Set<QName> alwaysProvides = helper.parseListOfQNames(reader, "alwaysProvides");
             Set<QName> mayProvide = helper.parseListOfQNames(reader, "mayProvide");
+            ImplementationType implementationType = new ImplementationType(qName, alwaysProvides, mayProvide);
+
+            validateAttributes(reader, context, implementationType);
 
             LoaderUtil.skipToEndElement(reader);
-
-            return new ImplementationType(qName, alwaysProvides, mayProvide);
-
+            return implementationType;
         } catch (InvalidPrefixException e) {
             String prefix = e.getPrefix();
             URI uri = context.getContributionUri();

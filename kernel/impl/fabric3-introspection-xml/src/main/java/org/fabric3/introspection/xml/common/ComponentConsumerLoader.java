@@ -92,7 +92,6 @@ public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Compon
 
     public ComponentConsumer load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
 
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
@@ -102,21 +101,24 @@ public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Compon
         }
 
         String targetAttribute = reader.getAttributeValue(null, "source");
-        List<URI> targets = new ArrayList<URI>();
+        List<URI> sources = new ArrayList<URI>();
+        ComponentConsumer consumer = new ComponentConsumer(name);
         try {
             if (targetAttribute != null) {
                 StringTokenizer tokenizer = new StringTokenizer(targetAttribute);
                 while (tokenizer.hasMoreTokens()) {
                     String token = tokenizer.nextToken();
                     URI target = new URI(token);
-                    targets.add(target);
+                    sources.add(target);
                 }
             }
         } catch (URISyntaxException e) {
-            InvalidValue failure = new InvalidValue("Invalid source format", startLocation, e);
+            InvalidValue failure = new InvalidValue("Invalid source format", startLocation, e, consumer);
             context.addError(failure);
         }
-        ComponentConsumer consumer = new ComponentConsumer(name, targets);
+        consumer.setSources(sources);
+
+        validateAttributes(reader, context, consumer);
 
         if (roundTrip) {
             consumer.enableRoundTrip();

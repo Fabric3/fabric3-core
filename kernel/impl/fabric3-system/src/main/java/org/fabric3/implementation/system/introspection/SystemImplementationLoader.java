@@ -77,7 +77,10 @@ public class SystemImplementationLoader extends AbstractValidatingTypeLoader<Sys
 
     public SystemImplementation load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, introspectionContext);
+        SystemImplementation implementation = new SystemImplementation();
+
+        validateAttributes(reader, introspectionContext, implementation);
+
         String implClass = reader.getAttributeValue(null, "class");
         if (implClass == null) {
             MissingAttribute failure = new MissingAttribute("Implementation class must be specified using the class attribute", startLocation);
@@ -86,7 +89,6 @@ public class SystemImplementationLoader extends AbstractValidatingTypeLoader<Sys
         }
         LoaderUtil.skipToEndElement(reader);
 
-        SystemImplementation implementation = new SystemImplementation();
         implementation.setImplementationClass(implClass);
         InjectingComponentType componentType = implementationProcessor.introspect(implClass, introspectionContext);
         implementation.setComponentType(componentType);

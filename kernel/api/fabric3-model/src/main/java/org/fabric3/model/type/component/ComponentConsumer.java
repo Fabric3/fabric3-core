@@ -45,6 +45,7 @@ package org.fabric3.model.type.component;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -68,6 +69,17 @@ public class ComponentConsumer extends AbstractConsumer<ComponentDefinition> {
     }
 
     /**
+     * Constructor.
+     *
+     * @param name the name of the consumer being configured
+     */
+    public ComponentConsumer(String name) {
+        super(name);
+        this.sources = Collections.emptyList();
+        bindings = new ArrayList<BindingDefinition>();
+    }
+
+    /**
      * Returns the URIs of channels this consumer receives events from.
      *
      * @return the URIs of channels this consumer receives events from
@@ -76,4 +88,12 @@ public class ComponentConsumer extends AbstractConsumer<ComponentDefinition> {
         return sources;
     }
 
+    /**
+     * Sets the source channel uris.
+     *
+     * @param sources the source channel uris
+     */
+    public void setSources(List<URI> sources) {
+        this.sources = sources;
+    }
 }

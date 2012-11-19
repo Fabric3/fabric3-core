@@ -59,6 +59,7 @@ import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.ResourceNotFound;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
  * Loads a Java interface definition from an XML-based assembly file
@@ -72,18 +73,18 @@ public class JavaInterfaceLoader extends AbstractValidatingTypeLoader<ServiceCon
                                @Reference IntrospectionHelper helper) {
         this.contractProcessor = contractProcessor;
         this.helper = helper;
-        addAttributes("interface","callbackInterface");
+        addAttributes("interface", "callbackInterface");
     }
 
     public ServiceContract load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "interface");
         if (name == null) {
-            MissingAttribute failure = new MissingAttribute("An interface must be specified using the class attribute", startLocation);
+            JavaServiceContract contract = new JavaServiceContract();
+            MissingAttribute failure = new MissingAttribute("An interface must be specified using the class attribute", startLocation, contract);
             context.addError(failure);
             LoaderUtil.skipToEndElement(reader);
-            return null;
+            return contract;
         }
         Class<?> interfaceClass;
         try {
@@ -95,16 +96,22 @@ public class JavaInterfaceLoader extends AbstractValidatingTypeLoader<ServiceCon
             return null;
         }
 
+        ServiceContract serviceContract = contractProcessor.introspect(interfaceClass, context);
+
+        validateAttributes(reader, context, serviceContract);
+
         name = reader.getAttributeValue(null, "callbackInterface");
+
         Class<?> callbackClass;
         try {
             callbackClass = (name != null) ? helper.loadClass(name, context.getClassLoader()) : null;
         } catch (ImplementationNotFoundException e) {
-            ResourceNotFound failure = new ResourceNotFound("Callback interface not found: " + name, startLocation);
+            ResourceNotFound failure = new ResourceNotFound("Callback interface not found: " + name, startLocation, serviceContract);
             context.addError(failure);
             LoaderUtil.skipToEndElement(reader);
-            return null;
+            return serviceContract;
         }
+
 
         LoaderUtil.skipToEndElement(reader);
 
@@ -114,7 +121,6 @@ public class JavaInterfaceLoader extends AbstractValidatingTypeLoader<ServiceCon
             context.addTypeMapping(interfaceClass, mapping);
         }
         helper.resolveTypeParameters(interfaceClass, mapping);
-        ServiceContract serviceContract = contractProcessor.introspect(interfaceClass, context);
         if (callbackClass != null) {
             helper.resolveTypeParameters(callbackClass, mapping);
             ServiceContract callbackContract = contractProcessor.introspect(callbackClass, context);

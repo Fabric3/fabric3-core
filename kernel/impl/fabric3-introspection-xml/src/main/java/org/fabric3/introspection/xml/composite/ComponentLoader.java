@@ -135,7 +135,6 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     @SuppressWarnings({"VariableNotUsedInsideIf"})
     public ComponentDefinition<?> load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingAttribute failure = new MissingAttribute("Component name not specified", startLocation);
@@ -161,6 +160,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         definition.setKey(key);
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
+
+        validateAttributes(reader, context, definition);
 
         if (roundTrip) {
             LoaderUtil.nextTagRecord(definition, reader);

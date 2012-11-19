@@ -43,6 +43,7 @@ import java.util.Set;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -58,12 +59,12 @@ public abstract class AbstractValidatingTypeLoader<OUTPUT> implements TypeLoader
         this.attributes.addAll(Arrays.asList(attributes));
     }
 
-    protected void validateAttributes(XMLStreamReader reader, IntrospectionContext context) {
+    protected void validateAttributes(XMLStreamReader reader, IntrospectionContext context, ModelObject... sources) {
         Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!attributes.contains(name)) {
-                UnrecognizedAttribute failure = new UnrecognizedAttribute(name, location);
+                UnrecognizedAttribute failure = new UnrecognizedAttribute(name, location, sources);
                 context.addError(failure);
             }
         }

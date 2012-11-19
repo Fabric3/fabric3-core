@@ -70,8 +70,10 @@ public class JavaImplementationLoader extends AbstractValidatingTypeLoader<JavaI
 
     public JavaImplementation load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, introspectionContext);
         JavaImplementation implementation = new JavaImplementation();
+
+        validateAttributes(reader, introspectionContext, implementation);
+
         String implClass = reader.getAttributeValue(null, "class");
         if (implClass == null) {
             MissingAttribute failure = new MissingAttribute("The class attribute was not specified", startLocation);

@@ -76,7 +76,6 @@ public class BindingTypeLoader extends AbstractValidatingTypeLoader<BindingType>
 
     public BindingType load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
 
         String name = reader.getAttributeValue(null, "name");
         QName qName = LoaderUtil.getQName(name, context.getTargetNamespace(), reader.getNamespaceContext());
@@ -85,8 +84,10 @@ public class BindingTypeLoader extends AbstractValidatingTypeLoader<BindingType>
         try {
             alwaysProvides = helper.parseListOfQNames(reader, "alwaysProvides");
             Set<QName> mayProvide = helper.parseListOfQNames(reader, "mayProvide");
+            BindingType bindingType = new BindingType(qName, alwaysProvides, mayProvide);
+            validateAttributes(reader, context, bindingType);
             LoaderUtil.skipToEndElement(reader);
-            return new BindingType(qName, alwaysProvides, mayProvide);
+            return bindingType;
         } catch (InvalidPrefixException e) {
             String prefix = e.getPrefix();
             URI uri = context.getContributionUri();

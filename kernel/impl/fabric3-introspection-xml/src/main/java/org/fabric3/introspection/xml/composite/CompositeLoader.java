@@ -165,7 +165,6 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         // track locations so they can be used to report validation errors after the parser has been advanced
         Map<ModelObject, Location> locations = new HashMap<ModelObject, Location>();
 
-        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         String targetNamespace = reader.getAttributeValue(null, "targetNamespace");
         String localStr = reader.getAttributeValue(null, "local");
@@ -195,6 +194,9 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         type.setLocal(local);
 
         loaderHelper.loadPolicySetsAndIntents(type, reader, childContext);
+
+        validateAttributes(reader, context, type);
+
         while (true) {
             int val = reader.next();
             switch (val) {
@@ -425,7 +427,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                                IntrospectionContext context,
                                IntrospectionContext parentContext) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        Include  include = registry.load(reader, Include.class, context);
+        Include include = registry.load(reader, Include.class, context);
         if (include == null) {
             // error encountered loading the include
             updateContext(parentContext, context, compositeName);

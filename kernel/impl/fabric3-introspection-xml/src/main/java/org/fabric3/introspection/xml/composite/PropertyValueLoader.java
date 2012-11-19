@@ -86,7 +86,6 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
 
     public PropertyValue load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null || name.length() == 0) {
             MissingAttribute failure = new MissingAttribute("Missing name attribute", startLocation);
@@ -99,7 +98,6 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
         String typeAttribute = reader.getAttributeValue(null, "type");
         QName type = null;
         if (source != null) {
-            LoaderUtil.skipToEndElement(reader);
             PropertyValue value = new PropertyValue(name, source);
             value.setType(type);
             if (typeAttribute != null) {
@@ -110,6 +108,8 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
                     context.addError(error);
                 }
             }
+            validateAttributes(reader, context, value);
+            LoaderUtil.skipToEndElement(reader);
             return value;
         } else if (file != null) {
             try {
@@ -117,7 +117,6 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
                 if (!uri.isAbsolute()) {
                     uri = context.getSourceBase().toURI().resolve(uri);
                 }
-                LoaderUtil.skipToEndElement(reader);
                 PropertyValue value = new PropertyValue(name, uri);
                 if (typeAttribute != null) {
                     try {
@@ -128,6 +127,8 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
                     }
                 }
                 value.setType(type);
+                validateAttributes(reader, context, value);
+                LoaderUtil.skipToEndElement(reader);
                 return value;
             } catch (URISyntaxException e) {
                 InvalidValue failure = new InvalidValue("File specified for property " + name + " is invalid: " + file, startLocation, e);
@@ -149,13 +150,16 @@ public class PropertyValueLoader extends AbstractExtensibleTypeLoader<PropertyVa
         QName type = null;
         QName element = null;
 
+        PropertyValue propertyValue = new PropertyValue(name, many);
+
+        validateAttributes(reader, context, propertyValue);
+
         Document value = helper.loadPropertyValues(reader);
 
         if (valueAttribute != null) {
             value = helper.loadPropertyValue(valueAttribute);
         }
-
-        PropertyValue propertyValue = new PropertyValue(name, value, many);
+        propertyValue.setValue(value);
         propertyValue.setElement(element);
         propertyValue.setType(type);
 

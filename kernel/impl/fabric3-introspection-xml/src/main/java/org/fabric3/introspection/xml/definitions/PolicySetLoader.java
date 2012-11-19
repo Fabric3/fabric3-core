@@ -81,11 +81,16 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
 
     public PolicySet load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
+
+        PolicySet policySet = new PolicySet();
+
+        validateAttributes(reader, context, policySet);
+
         Element policyElement = helper.transform(reader).getDocumentElement();
 
         String name = policyElement.getAttribute("name");
         QName qName = new QName(context.getTargetNamespace(), name);
+        policySet.setName(qName);
 
         Set<QName> provides = new HashSet<QName>();
         StringTokenizer tok = new StringTokenizer(policyElement.getAttribute("provides"));
@@ -97,11 +102,15 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
                 return null;
             }
         }
+        policySet.setProvidedIntents(provides);
 
         String appliesTo = policyElement.getAttribute("appliesTo");
         String attachTo = policyElement.getAttribute("attachTo");
 
-        Element extension = null;
+        policySet.setAppliesTo(appliesTo);
+        policySet.setAttachTo(attachTo);
+
+        Element expression = null;
         Set<IntentMap> intentMaps = new HashSet<IntentMap>();
         Set<QName> policySetReferences = new HashSet<QName>();
         NodeList children = policyElement.getChildNodes();
@@ -116,15 +125,20 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
                     parsePolicyReference(element, policySetReferences, reader, startLocation, context);
                 } else {
                     // the node is not an intent map or policy set reference, it must be an extension element
-                    extension = (Element) children.item(i);
+                    expression = (Element) children.item(i);
                 }
             }
         }
-
-        PolicyPhase phase = parsePhase(extension, reader, context);
-        URI uri = context.getContributionUri();
-        PolicySet policySet = new PolicySet(qName, provides, appliesTo, attachTo, extension, phase, intentMaps, uri);
+        policySet.setExpression(expression);
+        policySet.setIntentMaps(intentMaps);
         policySet.setPolicySetReferences(policySetReferences);
+
+        PolicyPhase phase = parsePhase(expression, reader, context);
+        policySet.setPhase(phase);
+
+        URI uri = context.getContributionUri();
+        policySet.setContributionUri(uri);
+
         validate(policySet, startLocation, context);
         return policySet;
     }

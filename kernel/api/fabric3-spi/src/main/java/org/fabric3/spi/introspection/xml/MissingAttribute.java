@@ -45,13 +45,15 @@ package org.fabric3.spi.introspection.xml;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.ModelObject;
+
 /**
  * Denotes a missing attribute
  */
 public class MissingAttribute extends XmlValidationFailure {
 
-    public MissingAttribute(String message,Location location) {
-        super(message, location);
+    public MissingAttribute(String message, Location location, ModelObject... sources) {
+        super(message, location, sources);
     }
 
 }

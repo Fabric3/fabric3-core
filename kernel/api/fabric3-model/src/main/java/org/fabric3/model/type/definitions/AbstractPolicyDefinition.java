@@ -53,7 +53,7 @@ import org.fabric3.model.type.ModelObject;
 public abstract class AbstractPolicyDefinition extends ModelObject<ModelObject> {
     private static final long serialVersionUID = -4450566760116409021L;
 
-    private final QName name;
+    private QName name;
 
     /**
      * Constructor.
@@ -65,12 +65,27 @@ public abstract class AbstractPolicyDefinition extends ModelObject<ModelObject> 
     }
 
     /**
+     * Constructor.
+     */
+    protected AbstractPolicyDefinition() {
+    }
+
+    /**
      * Returns the qualified name of the definition.
      *
      * @return the qualified name of the definition
      */
     public final QName getName() {
         return name;
+    }
+
+    /**
+     * Sets the qualified name of the definition.
+     *
+     * @param name the qualified name of the definition
+     */
+    public void setName(QName name) {
+        this.name = name;
     }
 
     public boolean equals(Object other) {

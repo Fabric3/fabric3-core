@@ -61,7 +61,6 @@ public class TimerPoolResourceLoader extends AbstractValidatingTypeLoader<TimerP
 
     public TimerPoolResource load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingAttribute error = new MissingAttribute("Name not specified for timer pool", startLocation);
@@ -69,19 +68,23 @@ public class TimerPoolResourceLoader extends AbstractValidatingTypeLoader<TimerP
             return new TimerPoolResource("error");
         }
         String coreSizeAttr = reader.getAttributeValue(null, "size");
-        LoaderUtil.skipToEndElement(reader);
+        TimerPoolResource resource;
         if (coreSizeAttr == null) {
-            return new TimerPoolResource(name);
+            resource = new TimerPoolResource(name);
         } else {
             try {
                 int coreSize = Integer.parseInt(coreSizeAttr);
-                return new TimerPoolResource(name, coreSize);
+                resource = new TimerPoolResource(name, coreSize);
             } catch (NumberFormatException e) {
                 InvalidValue error = new InvalidValue("Invalid core size specified for timer pool", startLocation, e);
                 context.addError(error);
                 return new TimerPoolResource(name);
             }
         }
+        validateAttributes(reader, context, resource);
+
+        LoaderUtil.skipToEndElement(reader);
+        return resource;
     }
 
 }

@@ -93,7 +93,6 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
 
     public ComponentProducer load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
 
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
@@ -103,21 +102,27 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
         }
 
         String targetAttribute = reader.getAttributeValue(null, "target");
+        ComponentProducer producer = new ComponentProducer(name);
+
         List<URI> targets = new ArrayList<URI>();
-        try {
-            if (targetAttribute != null) {
-                StringTokenizer tokenizer = new StringTokenizer(targetAttribute);
-                while (tokenizer.hasMoreTokens()) {
-                    String token = tokenizer.nextToken();
+        if (targetAttribute != null) {
+            StringTokenizer tokenizer = new StringTokenizer(targetAttribute);
+            while (tokenizer.hasMoreTokens()) {
+                String token = tokenizer.nextToken();
+                try {
                     URI target = new URI(token);
                     targets.add(target);
+                } catch (URISyntaxException e) {
+                    InvalidValue failure = new InvalidValue("Invalid target format", startLocation, e);
+                    context.addError(failure);
                 }
             }
-        } catch (URISyntaxException e) {
-            InvalidValue failure = new InvalidValue("Invalid target format", startLocation, e);
-            context.addError(failure);
         }
-        ComponentProducer producer = new ComponentProducer(name, targets);
+
+        producer.setTargets(targets);
+
+        validateAttributes(reader, context, producer);
+
         if (roundTrip) {
             producer.enableRoundTrip();
             //noinspection VariableNotUsedInsideIf

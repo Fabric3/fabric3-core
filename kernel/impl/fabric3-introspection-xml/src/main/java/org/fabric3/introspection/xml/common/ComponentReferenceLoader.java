@@ -100,7 +100,6 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
     public ComponentReference load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
-        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingReferenceName failure = new MissingReferenceName(startLocation);
@@ -127,6 +126,8 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
             reference.setNonOverridable(Boolean.parseBoolean(nonOverridable));
         }
         loaderHelper.loadPolicySetsAndIntents(reference, reader, context);
+
+        validateAttributes(reader, context, reference);
 
         if (roundTrip) {
             reference.enableRoundTrip();

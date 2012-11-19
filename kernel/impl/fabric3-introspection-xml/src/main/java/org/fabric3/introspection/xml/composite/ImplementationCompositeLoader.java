@@ -92,7 +92,6 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
 
     public CompositeImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
         // read name now b/c the reader skips ahead
         String scdlResource = reader.getAttributeValue(null, "scdlResource");
 
@@ -102,6 +101,8 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
         } else {
             implementation = resolveByName(reader, startLocation, context);
         }
+
+        validateAttributes(reader, context, implementation);
 
         LoaderUtil.skipToEndElement(reader);
         return implementation;

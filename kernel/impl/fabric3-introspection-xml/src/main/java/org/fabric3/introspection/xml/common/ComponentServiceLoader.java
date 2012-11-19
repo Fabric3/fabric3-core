@@ -94,7 +94,6 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
     public ComponentService load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
-        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingAttribute failure = new MissingAttribute("Missing name attribute", startLocation);
@@ -108,6 +107,8 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
 
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
+
+        validateAttributes(reader, context, definition);
 
         boolean callback = false;
         while (true) {

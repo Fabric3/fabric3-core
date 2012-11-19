@@ -79,7 +79,6 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
 
     public Intent load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         QName qName = LoaderUtil.getQName(name, context.getTargetNamespace(), reader.getNamespaceContext());
 
@@ -143,6 +142,12 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
         }
 
         Set<Qualifier> qualifiers = new HashSet<Qualifier>();
+        // create the intent before the qualifiers are populated so attributes can be validated
+        Intent intent= new Intent(qName, constrains, requires, qualifiers, mutuallyExclusive, excludes, intentType, false);
+
+        validateAttributes(reader, context, intent);
+
+        // populates the qualifiers
         boolean defaultSet = false;
         while (true) {
             switch (reader.next()) {

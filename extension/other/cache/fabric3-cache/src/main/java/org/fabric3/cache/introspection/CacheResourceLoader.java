@@ -94,8 +94,10 @@ public class CacheResourceLoader extends AbstractValidatingTypeLoader<CacheSetRe
 
 
     public CacheSetResourceDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        validateAttributes(reader, context);
         CacheSetResourceDefinition definition = new CacheSetResourceDefinition();
+
+        validateAttributes(reader, context, definition);
+
         while (true) {
             switch (reader.next()) {
             case XMLStreamConstants.START_ELEMENT:

@@ -80,7 +80,6 @@ public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding> {
 
     public SCABinding load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
         Target target = null;
         String uriAttr = reader.getAttributeValue(null, "uri");
 
@@ -95,6 +94,9 @@ public class SCABindingLoader extends AbstractExtensibleTypeLoader<SCABinding> {
         String name = reader.getAttributeValue(null, "name");
         SCABinding binding = new SCABinding(name, target);
         helper.loadPolicySetsAndIntents(binding, reader, context);
+
+        validateAttributes(reader, context, binding);
+
         while (true) {
             switch (reader.next()) {
             case START_ELEMENT:

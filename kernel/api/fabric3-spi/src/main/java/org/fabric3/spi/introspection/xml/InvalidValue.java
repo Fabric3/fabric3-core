@@ -39,18 +39,20 @@ package org.fabric3.spi.introspection.xml;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.ModelObject;
+
 /**
  * Indicates the loader encountered an invalid value.
  */
 public class InvalidValue extends XmlValidationFailure {
     private Throwable cause;
 
-    public InvalidValue(String message, Location location) {
-        super(message, location);
+    public InvalidValue(String message, Location location, ModelObject... sources) {
+        super(message, location, sources);
     }
 
-    public InvalidValue(String message, Location location, Throwable cause) {
-        super(message, location);
+    public InvalidValue(String message, Location location, Throwable cause, ModelObject... sources) {
+        super(message, location, sources);
         this.cause = cause;
     }
 

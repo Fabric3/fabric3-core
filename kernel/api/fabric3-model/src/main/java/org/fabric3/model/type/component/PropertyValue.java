@@ -101,6 +101,17 @@ public class PropertyValue extends ModelObject<ComponentDefinition> {
     }
 
     /**
+     * Constructor for inline property values.
+     *
+     * @param name      the name of the property
+     * @param many      the property many parameter
+     */
+    public PropertyValue(String name, PropertyMany many) {
+        this.name = name;
+        this.many = many;
+    }
+
+    /**
      * Returns the name of the property that this value is for.
      *
      * @return the name of the property that this value is for

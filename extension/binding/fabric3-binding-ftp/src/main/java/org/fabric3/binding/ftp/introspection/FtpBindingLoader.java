@@ -74,7 +74,6 @@ public class FtpBindingLoader extends AbstractValidatingTypeLoader<FtpBindingDef
 
     public FtpBindingDefinition load(XMLStreamReader reader, IntrospectionContext introspectionContext) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, introspectionContext);
 
         FtpBindingDefinition bd = null;
         String uri = null;
@@ -101,6 +100,9 @@ public class FtpBindingLoader extends AbstractValidatingTypeLoader<FtpBindingDef
             }
 
             loaderHelper.loadPolicySetsAndIntents(bd, reader, introspectionContext);
+
+            validateAttributes(reader, introspectionContext, bd);
+
             while (true) {
                 switch (reader.next()) {
                 case XMLStreamConstants.END_ELEMENT:

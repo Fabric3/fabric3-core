@@ -85,8 +85,10 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
     public TimerImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
-        validateAttributes(reader, context);
         TimerImplementation implementation = new TimerImplementation();
+
+        validateAttributes(reader, context, implementation);
+
         if (!processImplementationClass(implementation, reader, context)) {
             // an error with the implementation class, return a dummy implementation
             InjectingComponentType type = new InjectingComponentType(null);

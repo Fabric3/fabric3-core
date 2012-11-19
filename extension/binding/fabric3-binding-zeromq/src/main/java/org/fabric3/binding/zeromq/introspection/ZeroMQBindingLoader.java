@@ -80,8 +80,6 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
     public ZeroMQBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
-        validateAttributes(reader, context);
-
         String bindingName = reader.getAttributeValue(null, "name");
 
         ZeroMQMetadata metadata = new ZeroMQMetadata();
@@ -115,6 +113,9 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
         metadata.setWireFormat(wireFormat);
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
+
+        validateAttributes(reader, context, definition);
+
         LoaderUtil.skipToEndElement(reader);
         return definition;
     }

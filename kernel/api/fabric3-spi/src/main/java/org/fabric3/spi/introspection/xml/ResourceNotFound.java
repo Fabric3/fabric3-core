@@ -45,11 +45,13 @@ package org.fabric3.spi.introspection.xml;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.ModelObject;
+
 /**
  *
  */
 public class ResourceNotFound extends XmlValidationFailure {
-    public ResourceNotFound(String message, Location location) {
-        super(message, location);
+    public ResourceNotFound(String message, Location location, ModelObject... sources) {
+        super(message, location, sources);
     }
 }

@@ -102,6 +102,80 @@ public final class PolicySet extends AbstractPolicyDefinition {
     }
 
     /**
+     * Creates an empty policy set.
+     */
+    public PolicySet() {
+    }
+
+    /**
+     * Sets the intents provided by this policy set.
+     *
+     * @param providedIntents the intents
+     */
+    public void setProvidedIntents(Set<QName> providedIntents) {
+        this.providedIntents = providedIntents;
+    }
+
+    /**
+     * Sets the policy expression
+     *
+     * @param expression this policy expression
+     */
+    public void setExpression(Element expression) {
+        this.expression = expression;
+    }
+
+    /**
+     * Sets the applies to expression.
+     *
+     * @param appliesTo the applies to expression
+     */
+    public void setAppliesTo(String appliesTo) {
+        this.appliesTo = "".equals(appliesTo) ? null : appliesTo;
+    }
+
+    /**
+     * Sets the attach to expression.
+     *
+     * @param attachTo the attach to expression
+     */
+    public void setAttachTo(String attachTo) {
+        this.attachTo = "".equals(attachTo) ? null : attachTo;
+    }
+
+    /**
+     * Sets the policy phase.
+     *
+     * @param phase the phase
+     */
+    public void setPhase(PolicyPhase phase) {
+        this.phase = phase;
+    }
+
+    /**
+     * Sets the contribution URI where this policy set is defined.
+     *
+     * @param contributionUri the contribution URI
+     */
+    public void setContributionUri(URI contributionUri) {
+        this.contributionUri = contributionUri;
+    }
+
+    /**
+     * Sets the intent maps.
+     *
+     * @param intentMaps the intent maps
+     */
+    public void setIntentMaps(Set<IntentMap> intentMaps) {
+        this.intentMaps = intentMaps;
+        if (intentMaps != null) {
+            for (IntentMap intentMap : intentMaps) {
+                intentMap.setParent(this);
+            }
+        }
+    }
+
+    /**
      * Returns the XPath expression to the element to which the policy set applies.
      *
      * @return the apples to XPath expression.
@@ -178,7 +252,7 @@ public final class PolicySet extends AbstractPolicyDefinition {
     /**
      * Returns the policy set references contained in the policy set.
      *
-     * @return
+     * @return the policy set references
      */
     public Set<QName> getPolicySetReferences() {
         return policySetReferences;

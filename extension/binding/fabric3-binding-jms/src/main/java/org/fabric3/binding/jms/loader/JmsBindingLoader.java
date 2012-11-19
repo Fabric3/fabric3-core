@@ -145,7 +145,6 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
 
     public JmsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
 
         String bindingName = reader.getAttributeValue(null, "name");
 
@@ -163,6 +162,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             metadata = new JmsBindingMetadata();
         }
         JmsBindingDefinition definition = new JmsBindingDefinition(bindingName, metadata);
+
         NamespaceContext namespace = reader.getNamespaceContext();
         String targetNamespace = context.getTargetNamespace();
 
@@ -173,6 +173,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
 
         loadFabric3Attributes(metadata, reader, context);
 
+        validateAttributes(reader, context, definition);
 
         String name;
         while (true) {

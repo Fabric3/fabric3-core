@@ -107,7 +107,6 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
     public Include load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
-        validateAttributes(reader, context);
 
         String nameAttr = reader.getAttributeValue(null, "name");
         if (nameAttr == null || nameAttr.length() == 0) {
@@ -117,6 +116,10 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
         }
         QName name = LoaderUtil.getQName(nameAttr, context.getTargetNamespace(), reader.getNamespaceContext());
         String scdlResource = reader.getAttributeValue(null, "scdlResource");
+
+        Include include = new Include();
+        validateAttributes(reader, context, include);
+
         LoaderUtil.skipToEndElement(reader);
 
         ClassLoader cl = context.getClassLoader();
@@ -125,13 +128,13 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
         if (scdlResource != null) {
             url = cl.getResource(scdlResource);
             if (url == null) {
-                Include include = new Include();
                 include.setName(name);
                 MissingComposite failure = new MissingComposite("Composite file not found: " + scdlResource, startLocation, include);
                 context.addError(failure);
                 return include;
             }
-            return loadFromSideFile(name, cl, contributionUri, url, reader, context);
+            loadFromSideFile(include, name, cl, contributionUri, url, reader, context);
+            return include;
         } else {
             if (store == null) {
                 // throw error as this is invalid in a bootstrap environment
@@ -140,7 +143,6 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
 
             try {
                 QNameSymbol symbol = new QNameSymbol(name);
-                Include include = new Include();
                 include.setName(name);
 
                 ResourceElement<QNameSymbol, Composite> element = store.resolve(contributionUri, Composite.class, symbol, context);
@@ -156,17 +158,23 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
                 }
                 Composite composite = element.getValue();
                 include.setIncluded(composite);
+
                 return include;
             } catch (StoreException e) {
                 ElementLoadFailure failure = new ElementLoadFailure("Error loading element", e, startLocation);
                 context.addError(failure);
-                return null;
+                return include;
             }
         }
     }
 
-    private Include loadFromSideFile(QName name, ClassLoader cl, URI contributionUri, URL url, XMLStreamReader reader, IntrospectionContext context) {
-        Include include = new Include();
+    private void loadFromSideFile(Include include,
+                                  QName name,
+                                  ClassLoader cl,
+                                  URI contributionUri,
+                                  URL url,
+                                  XMLStreamReader reader,
+                                  IntrospectionContext context) {
         IntrospectionContext childContext = new DefaultIntrospectionContext(contributionUri, cl, url);
         Location startLocation = reader.getLocation();
 
@@ -175,9 +183,9 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
             Source source = new UrlSource(url);
             composite = registry.load(source, Composite.class, childContext);
         } catch (LoaderException e) {
-            InvalidInclude failure = new InvalidInclude("Error loading include: " + name, e, startLocation);
+            InvalidInclude failure = new InvalidInclude("Error loading include: " + name, e, startLocation, include);
             context.addError(failure);
-            return null;
+            return;
         }
         if (childContext.hasErrors()) {
             context.addErrors(childContext.getErrors());
@@ -188,7 +196,6 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
         include.setName(name);
         include.setScdlLocation(url);
         include.setIncluded(composite);
-        return include;
     }
 
 }

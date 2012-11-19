@@ -81,13 +81,11 @@ public class WireLoader extends AbstractValidatingTypeLoader<WireDefinition> {
     @SuppressWarnings({"VariableNotUsedInsideIf"})
     public WireDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
 
         String referenceAttribute = reader.getAttributeValue(null, "source");
         String serviceAttribute = reader.getAttributeValue(null, "target");
         String replaceAttribute = reader.getAttributeValue(null, "replace");
         boolean replace = Boolean.parseBoolean(replaceAttribute);
-        LoaderUtil.skipToEndElement(reader);
 
         Target referenceTarget = null;
         Target serviceTarget = null;
@@ -112,6 +110,8 @@ public class WireLoader extends AbstractValidatingTypeLoader<WireDefinition> {
             }
         }
 
+        validateAttributes(reader, context, definition);
+        LoaderUtil.skipToEndElement(reader);
         return definition;
     }
 

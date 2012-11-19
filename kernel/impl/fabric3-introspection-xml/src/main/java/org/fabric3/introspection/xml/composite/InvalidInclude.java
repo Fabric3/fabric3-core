@@ -41,6 +41,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -49,12 +50,12 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class InvalidInclude extends XmlValidationFailure {
     private Throwable cause;
 
-    public InvalidInclude(String message, Location location) {
-        super(message, location);
+    public InvalidInclude(String message, Location location, ModelObject... sources) {
+        super(message, location, sources);
     }
 
-    public InvalidInclude(String message, Throwable cause, Location location) {
-        super(message, location);
+    public InvalidInclude(String message, Throwable cause, Location location, ModelObject... sources) {
+        super(message, location, sources);
         this.cause = cause;
     }
 

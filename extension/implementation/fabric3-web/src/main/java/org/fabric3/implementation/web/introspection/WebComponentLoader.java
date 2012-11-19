@@ -101,11 +101,10 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
     public WebImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
-        validateAttributes(reader, context);
-
         URI uri = parseUri(reader, startLocation, context);
         WebImplementation impl = new WebImplementation(uri);
 
+        validateAttributes(reader, context, impl);
 
         for (WebImplementationIntrospector introspector : introspectors) {
             introspector.introspect(impl, context);

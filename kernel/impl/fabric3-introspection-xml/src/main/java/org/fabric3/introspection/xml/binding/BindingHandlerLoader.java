@@ -69,19 +69,24 @@ public class BindingHandlerLoader extends AbstractValidatingTypeLoader<BindingHa
 
     public BindingHandlerDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
         String target = reader.getAttributeValue(null, "target");
         if (target == null || "".equals(target)) {
             InvalidValue error = new InvalidValue("Target attribute is not specified", startLocation);
             context.addError(error);
+            // catch invalid attributes as well
+            validateAttributes(reader, context, INVALID_DEFINITION);
             return INVALID_DEFINITION;
         }
         try {
             URI targetUri = new URI(target);
-            return new BindingHandlerDefinition(targetUri);
+            BindingHandlerDefinition definition = new BindingHandlerDefinition(targetUri);
+            validateAttributes(reader, context, definition);
+            return definition;
         } catch (URISyntaxException e) {
             InvalidValue error = new InvalidValue("Target attribute is not a valid URI: " + target, startLocation);
             context.addError(error);
+            // catch invalid attributes as well
+            validateAttributes(reader, context, INVALID_DEFINITION);
             return INVALID_DEFINITION;
         }
     }

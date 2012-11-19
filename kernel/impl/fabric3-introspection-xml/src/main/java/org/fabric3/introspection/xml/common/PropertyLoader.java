@@ -86,7 +86,6 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
     public Property load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
-        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, NAME);
         String manyAttr = reader.getAttributeValue(null, MANY);
         boolean many = Boolean.parseBoolean(manyAttr);
@@ -96,6 +95,8 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
         String elementAttribute = reader.getAttributeValue(null, ELEMENT);
 
         Property property = new Property(name);
+
+        validateAttributes(reader, context, property);
 
         if (typeAttribute != null && elementAttribute != null) {
             InvalidAttributes error =

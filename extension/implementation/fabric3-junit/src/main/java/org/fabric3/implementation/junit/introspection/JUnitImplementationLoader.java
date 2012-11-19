@@ -69,10 +69,11 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
     }
 
     public JUnitImplementation load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        validateAttributes(reader, context);
-
         String className = reader.getAttributeValue(null, "class");
         JUnitImplementation implementation = new JUnitImplementation(className);
+
+        validateAttributes(reader, context, implementation);
+
         InjectingComponentType componentType = implementationProcessor.introspect(className, context);
         implementation.setComponentType(componentType);
 

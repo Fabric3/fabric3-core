@@ -92,7 +92,6 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
 
     public CompositeService load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingAttribute failure = new MissingAttribute("Service name not specified", startLocation);
@@ -124,6 +123,9 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
 
 
         loaderHelper.loadPolicySetsAndIntents(service, reader, context);
+
+        validateAttributes(reader, context, service);
+
         boolean callback = false;
         while (true) {
             int i = reader.next();

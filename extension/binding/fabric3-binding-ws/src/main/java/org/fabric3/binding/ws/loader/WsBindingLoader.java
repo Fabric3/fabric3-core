@@ -88,7 +88,6 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
 
     @SuppressWarnings({"unchecked"})
     public WsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        validateAttributes(reader, context);
 
         String wsdlElement = reader.getAttributeValue(null, "wsdlElement");
         String wsdlLocation = reader.getAttributeValue(WSDL_NS, "wsdlLocation");
@@ -101,6 +100,8 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
         WsBindingDefinition binding = new WsBindingDefinition(bindingName, targetUri, wsdlLocation, wsdlElement, retries);
 
         loaderHelper.loadPolicySetsAndIntents(binding, reader, context);
+
+        validateAttributes(reader, context, binding);
 
         //Load optional sub elements config parameters
         while (true) {

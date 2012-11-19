@@ -78,8 +78,6 @@ public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingD
     public FileBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
-        validateAttributes(reader, context);
-
         String bindingName = reader.getAttributeValue(null, "name");
 
         String location = reader.getAttributeValue(null, "location");
@@ -108,6 +106,9 @@ public class FileBindingLoader extends AbstractValidatingTypeLoader<FileBindingD
                 new FileBindingDefinition(bindingName, pattern, location, strategy, archiveLocation, errorLocation, adapterClass, adapterUri, delay);
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
+
+        validateAttributes(reader, context, definition);
+
         LoaderUtil.skipToEndElement(reader);
         return definition;
     }

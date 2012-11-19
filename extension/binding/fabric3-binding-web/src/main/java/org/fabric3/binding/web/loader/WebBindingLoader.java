@@ -66,7 +66,6 @@ public class WebBindingLoader extends AbstractValidatingTypeLoader<WebBindingDef
 
     public WebBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
         String bindingName = reader.getAttributeValue(null, "name");
         OperationsAllowed allowed = OperationsAllowed.ALL;
         String allowedStr = reader.getAttributeValue(null, "allowed");
@@ -87,6 +86,9 @@ public class WebBindingLoader extends AbstractValidatingTypeLoader<WebBindingDef
         }
         WebBindingDefinition definition = new WebBindingDefinition(bindingName, allowed, wireFormat);
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
+
+        validateAttributes(reader, context, definition);
+
         LoaderUtil.skipToEndElement(reader);
         return definition;
     }
