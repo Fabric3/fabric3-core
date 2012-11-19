@@ -152,7 +152,7 @@ public class InstantiationTestCase extends TestCase {
     }
 
     private ComponentDefinition<?> createParentWithServiceAndReference() {
-        CompositeService service = new CompositeService("service", null, null);
+        CompositeService service = new CompositeService("service");
         List<URI> references = Collections.emptyList();
         CompositeReference reference = new CompositeReference("reference", references, Multiplicity.ONE_ONE);
         Composite type = new Composite(null);

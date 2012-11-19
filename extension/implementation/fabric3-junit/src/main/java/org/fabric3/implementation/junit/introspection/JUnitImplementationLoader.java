@@ -79,7 +79,7 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
 
         // Add a binding only on the JUnit service (which is the impl class) so wires are generated to the test operations.
         // These wires will be used by the testing runtime to dispatch to the JUnit components.
-        ContextConfiguration configuration = loadConfiguration(reader, context);
+        ContextConfiguration configuration = loadConfiguration(reader, implementation, context);
         for (AbstractService serviceDefinition : implementation.getComponentType().getServices().values()) {
             if (serviceDefinition.getServiceContract().getQualifiedInterfaceName().equals(implementation.getImplementationClass())) {
                 JUnitBindingDefinition bindingDefinition = new JUnitBindingDefinition(configuration);
@@ -90,7 +90,8 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
         return implementation;
     }
 
-    private ContextConfiguration loadConfiguration(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+    private ContextConfiguration loadConfiguration(XMLStreamReader reader, JUnitImplementation implementation, IntrospectionContext context)
+            throws XMLStreamException {
         ContextConfiguration configuration = null;
         String name;
         while (true) {
@@ -105,7 +106,9 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
                 if ("username".equals(name)) {
                     if (configuration == null) {
                         InvalidContextConfiguration error =
-                                new InvalidContextConfiguration("Username element must be contained within a configuration element", startLocation);
+                                new InvalidContextConfiguration("Username element must be contained within a configuration element",
+                                                                startLocation,
+                                                                implementation);
                         context.addError(error);
                     } else {
                         configuration.setUsername(reader.getElementText());
@@ -113,7 +116,9 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
                 } else if ("password".equals(name)) {
                     if (configuration == null) {
                         InvalidContextConfiguration error =
-                                new InvalidContextConfiguration("Password element must be contained within a configuration element", startLocation);
+                                new InvalidContextConfiguration("Password element must be contained within a configuration element",
+                                                                startLocation,
+                                                                implementation);
                         context.addError(error);
                     } else {
                         configuration.setPassword(reader.getElementText());

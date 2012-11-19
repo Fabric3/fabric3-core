@@ -39,6 +39,7 @@ package org.fabric3.implementation.timer.introspection;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -47,12 +48,12 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class InvalidTimerExpression extends XmlValidationFailure {
     private Throwable cause;
 
-    public InvalidTimerExpression(String message, Location location) {
-        super(message, location);
+    public InvalidTimerExpression(String message, Location location, ModelObject modelObject) {
+        super(message, location, modelObject);
     }
 
-    public InvalidTimerExpression(String message, Location location, Throwable cause) {
-        super(message, location);
+    public InvalidTimerExpression(String message, Location location, Throwable cause, ModelObject modelObject) {
+        super(message, location, modelObject);
         this.cause = cause;
     }
 

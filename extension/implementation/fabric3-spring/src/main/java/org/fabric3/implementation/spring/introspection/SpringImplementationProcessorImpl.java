@@ -247,7 +247,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             return false;
         }
         if (type.getReferences().containsKey(name)) {
-            DuplicateReference failure = new DuplicateReference(name, startLocation);
+            DuplicateReference failure = new DuplicateReference(name, startLocation, type);
             context.addError(failure);
             return false;
         }
@@ -290,7 +290,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             return false;
         }
         if (type.getProperties().containsKey(name)) {
-            DuplicateProperty failure = new DuplicateProperty(name, startLocation);
+            DuplicateProperty failure = new DuplicateProperty(name, startLocation, type);
             context.addError(failure);
             return false;
         }
@@ -316,7 +316,7 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             return false;
         }
         if (type.getConsumers().containsKey(name)) {
-            DuplicateConsumer failure = new DuplicateConsumer(name, startLocation);
+            DuplicateConsumer failure = new DuplicateConsumer(name, startLocation, type);
             context.addError(failure);
             return false;
         }

@@ -39,6 +39,7 @@ package org.fabric3.implementation.spring.introspection;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.implementation.spring.model.SpringComponentType;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -46,8 +47,8 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateProperty extends XmlValidationFailure {
 
-    public DuplicateProperty(String name, Location location) {
-        super("A property with the name name" + name + "is already specified", location);
+    public DuplicateProperty(String name, Location location, SpringComponentType type) {
+        super("A property with the name name" + name + "is already specified", location, type);
     }
 
 }

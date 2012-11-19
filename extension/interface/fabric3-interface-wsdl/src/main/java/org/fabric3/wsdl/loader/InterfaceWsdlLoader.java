@@ -127,7 +127,8 @@ public class InterfaceWsdlLoader extends AbstractValidatingTypeLoader<WsdlServic
                 if (!result.isAssignable()) {
                     IncompatibleContracts error =
                             new IncompatibleContracts("The callback contract specified on interface.wsdl is not compatible with" +
-                                                              " the one specified in the WSDL portType: " + result.getError(), startLocation);
+                                                              " the one specified in the WSDL portType: "
+                                                              + result.getError(), startLocation, callbackContract);
                     context.addError(error);
                 }
             }

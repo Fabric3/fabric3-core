@@ -63,7 +63,7 @@ public class BindingHelper {
         String name = binding.getType().getLocalPart();
         if (searchName(name, bindings)) {
             binding.setName(name);
-            BindingNameNotConfigured error = new BindingNameNotConfigured(binding.getType().toString(), location);
+            BindingNameNotConfigured error = new BindingNameNotConfigured(binding, location);
             context.addError(error);
         } else {
             binding.setName(name);
@@ -87,7 +87,7 @@ public class BindingHelper {
         for (BindingDefinition definition : bindings) {
             String bindingName = definition.getName();
             if (bindingName.equals(binding.getName())) {
-                InvalidBindingName error = new InvalidBindingName("Duplicate binding named " + bindingName, location);
+                InvalidBindingName error = new InvalidBindingName("Duplicate binding named " + bindingName, location, definition);
                 context.addError(error);
                 return false;
             }

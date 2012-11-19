@@ -48,7 +48,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class ComponentProducerNotFound extends XmlValidationFailure {
 
     public ComponentProducerNotFound(String name, ComponentDefinition definition, Location location) {
-        super("The component " + definition.getName() + " does not have a producer " + name, location);
+        super("The component " + definition.getName() + " does not have a producer " + name, location, definition);
     }
 
 }

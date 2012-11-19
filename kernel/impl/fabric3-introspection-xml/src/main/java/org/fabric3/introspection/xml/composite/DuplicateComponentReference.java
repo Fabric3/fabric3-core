@@ -38,8 +38,8 @@
 package org.fabric3.introspection.xml.composite;
 
 import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -47,8 +47,8 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateComponentReference extends XmlValidationFailure {
 
-    public DuplicateComponentReference(String referenceName, Location location) {
-        super("The reference " + referenceName + " is configured more than once on the component ", location);
+    public DuplicateComponentReference(String referenceName, Location location, ModelObject modelObject) {
+        super("The reference " + referenceName + " is configured more than once on the component ", location, modelObject);
     }
 
 }

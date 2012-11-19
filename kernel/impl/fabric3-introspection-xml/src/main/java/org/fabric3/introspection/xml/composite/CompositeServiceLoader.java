@@ -98,25 +98,11 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
             context.addError(failure);
             return null;
         }
-        String promote = reader.getAttributeValue(null, "promote");
-        if (promote == null) {
-            MissingPromotion error = new MissingPromotion("Promotion not specified on composite service " + name, startLocation);
-            context.addError(error);
-        }
-        URI uri;
-        try {
-            uri = loaderHelper.parseUri(promote);
-        } catch (URISyntaxException e) {
-            InvalidValue error = new InvalidValue("Invalid promote URI specified on service " + name, startLocation, e);
-            context.addError(error);
-            uri = URI.create("");
-        }
-        if (uri == null) {
-            InvalidValue error = new InvalidValue("Empty promote URI specified on service " + name, startLocation);
-            context.addError(error);
-            uri = URI.create("");
-        }
-        CompositeService service = new CompositeService(name, null, uri);
+        CompositeService service = new CompositeService(name);
+
+        URI uri = parsePromote(service, reader, startLocation, context);
+        service.setPromote(uri);
+
         if (roundTrip) {
             service.enableRoundTrip();
         }
@@ -165,7 +151,7 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
                     // there was an error loading the element, ignore it as the errors will have been reported
                     continue;
                 } else {
-                    context.addError(new UnrecognizedElement(reader, location));
+                    context.addError(new UnrecognizedElement(reader, location, service));
                     continue;
                 }
                 if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
@@ -180,6 +166,29 @@ public class CompositeServiceLoader extends AbstractValidatingTypeLoader<Composi
                 return service;
             }
         }
+    }
+
+    private URI parsePromote(CompositeService service, XMLStreamReader reader, Location startLocation, IntrospectionContext context) {
+        String name = service.getName();
+        String promote = reader.getAttributeValue(null, "promote");
+        if (promote == null) {
+            MissingPromotion error = new MissingPromotion("Promotion not specified on composite service " + name, startLocation, service);
+            context.addError(error);
+        }
+        URI uri;
+        try {
+            uri = loaderHelper.parseUri(promote);
+        } catch (URISyntaxException e) {
+            InvalidValue error = new InvalidValue("Invalid promote URI specified on service " + name, startLocation, e, service);
+            context.addError(error);
+            uri = URI.create("");
+        }
+        if (uri == null) {
+            InvalidValue error = new InvalidValue("Empty promote URI specified on service " + name, startLocation, service);
+            context.addError(error);
+            uri = URI.create("");
+        }
+        return uri;
     }
 
 }

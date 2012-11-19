@@ -39,6 +39,7 @@ package org.fabric3.introspection.xml.composite;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -46,7 +47,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateChannelName extends XmlValidationFailure {
 
-    public DuplicateChannelName(String name, Location location) {
-        super("More than one channel configured with name: " + name, location);
+    public DuplicateChannelName(String name, Location location, ModelObject modelObject) {
+        super("More than one channel configured with name: " + name, location, modelObject);
     }
 }

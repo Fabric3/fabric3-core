@@ -150,7 +150,7 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
                     // no type, continue processing
                     continue;
                 } else {
-                    context.addError(new UnrecognizedElement(reader, location));
+                    context.addError(new UnrecognizedElement(reader, location, producer));
                     continue;
                 }
                 if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {

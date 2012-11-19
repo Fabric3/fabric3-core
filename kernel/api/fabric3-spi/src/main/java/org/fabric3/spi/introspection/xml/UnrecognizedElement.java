@@ -48,6 +48,7 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.host.Namespaces;
+import org.fabric3.model.type.ModelObject;
 
 /**
  * Failure that indicates an element was encountered that could not be handled.
@@ -55,8 +56,8 @@ import org.fabric3.host.Namespaces;
 public class UnrecognizedElement extends XmlValidationFailure {
     private QName name;
 
-    public UnrecognizedElement(XMLStreamReader reader, Location location) {
-        super("Unrecognized element", location);
+    public UnrecognizedElement(XMLStreamReader reader, Location location, ModelObject... sources) {
+        super("Unrecognized element", location, sources);
         name = reader.getName();
     }
 

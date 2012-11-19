@@ -44,8 +44,8 @@
 package org.fabric3.introspection.xml.definitions;
 
 import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -53,8 +53,8 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateDefaultIntent extends XmlValidationFailure {
 
-    public DuplicateDefaultIntent(String message, Location location) {
-        super(message, location);
+    public DuplicateDefaultIntent(String message, Location location, ModelObject source) {
+        super(message, location, source);
     }
 
 }

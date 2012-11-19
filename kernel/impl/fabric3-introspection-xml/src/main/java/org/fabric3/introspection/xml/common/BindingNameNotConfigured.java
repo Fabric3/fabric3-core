@@ -39,20 +39,16 @@ package org.fabric3.introspection.xml.common;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  * A validation failure indicating a binding name must be configured.
  */
 public class BindingNameNotConfigured extends XmlValidationFailure {
-    private String bindingName;
 
-    public BindingNameNotConfigured(String bindingName, Location location) {
-        super("A binding name must be configured for bindings on " + bindingName, location);
-        this.bindingName = bindingName;
+    public BindingNameNotConfigured(BindingDefinition binding, Location location) {
+        super("A binding name must be configured for bindings on " + binding.getType().toString(), location, binding);
     }
 
-    public String getBindingName() {
-        return bindingName;
-    }
 }

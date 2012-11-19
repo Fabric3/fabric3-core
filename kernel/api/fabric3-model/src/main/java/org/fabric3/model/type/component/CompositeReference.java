@@ -72,12 +72,32 @@ public class CompositeReference extends ReferenceDefinition {
     }
 
     /**
+     * Construct a composite reference.
+     *
+     * @param name the name of the composite reference
+     */
+    public CompositeReference(String name) {
+        super(name, null, Multiplicity.ONE_ONE);
+        this.promotedUris = new ArrayList<URI>();
+    }
+
+
+    /**
      * Returns the list of references this composite reference promotes.
      *
      * @return the list of references this composite reference promotes
      */
     public List<URI> getPromotedUris() {
         return promotedUris;
+    }
+
+    /**
+     * Sets the list of references this composite reference promotes.
+     *
+     * @param promotedUris the list of references this composite reference promotes
+     */
+    public void setPromotedUris(List<URI> promotedUris) {
+        this.promotedUris = promotedUris;
     }
 
     /**

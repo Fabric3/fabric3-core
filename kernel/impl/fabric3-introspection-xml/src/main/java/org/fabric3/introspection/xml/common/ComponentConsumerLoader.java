@@ -145,7 +145,7 @@ public class ComponentConsumerLoader extends AbstractExtensibleTypeLoader<Compon
                     // no type, continue processing
                     continue;
                 } else {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location, consumer);
                     context.addError(failure);
                     continue;
                 }

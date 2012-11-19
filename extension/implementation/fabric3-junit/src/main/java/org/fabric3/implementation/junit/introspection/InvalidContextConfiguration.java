@@ -39,6 +39,7 @@ package org.fabric3.implementation.junit.introspection;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -46,7 +47,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class InvalidContextConfiguration extends XmlValidationFailure {
 
-    public InvalidContextConfiguration(String message, Location location) {
-        super(message, location);
+    public InvalidContextConfiguration(String message, Location location, ModelObject modelObject) {
+        super(message, location, modelObject);
     }
 }

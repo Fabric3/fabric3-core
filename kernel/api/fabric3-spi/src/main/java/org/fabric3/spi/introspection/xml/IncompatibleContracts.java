@@ -39,13 +39,15 @@ package org.fabric3.spi.introspection.xml;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.ModelObject;
+
 /**
  *
  */
 public class IncompatibleContracts extends XmlValidationFailure {
 
-    public IncompatibleContracts(String message, Location location) {
-        super(message, location);
+    public IncompatibleContracts(String message, Location location, ModelObject modelObject) {
+        super(message, location, modelObject);
     }
 
 }

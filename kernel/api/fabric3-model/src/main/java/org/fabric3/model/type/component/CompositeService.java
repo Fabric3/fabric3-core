@@ -45,8 +45,6 @@ package org.fabric3.model.type.component;
 
 import java.net.URI;
 
-import org.fabric3.model.type.contract.ServiceContract;
-
 /**
  * A promoted composite service.
  */
@@ -58,13 +56,21 @@ public class CompositeService extends ServiceDefinition {
     /**
      * Create a composite service definition.
      *
-     * @param name            the name to assign to the service
-     * @param serviceContract the service contract to expose
-     * @param promote         the component service that is being promoted
+     * @param name    the name to assign to the service
+     * @param promote the component service that is being promoted
      */
-    public CompositeService(String name, ServiceContract serviceContract, URI promote) {
-        super(name, serviceContract);
+    public CompositeService(String name, URI promote) {
+        super(name, null);
         this.promote = promote;
+    }
+
+    /**
+     * Create a composite service definition.
+     *
+     * @param name the name to assign to the service
+     */
+    public CompositeService(String name) {
+        super(name, null);
     }
 
     /**
@@ -74,6 +80,15 @@ public class CompositeService extends ServiceDefinition {
      */
     public URI getPromote() {
         return promote;
+    }
+
+    /**
+     * Sets the URI of the component service that is being promoted.
+     *
+     * @param promote the URI of the component service that is being promoted
+     */
+    public void setPromote(URI promote) {
+        this.promote = promote;
     }
 
     public Composite getParent() {

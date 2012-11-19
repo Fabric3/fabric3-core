@@ -127,7 +127,7 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
                     // no type, continue processing
                     continue;
                 } else {
-                    context.addError(new UnrecognizedElement(reader, location));
+                    context.addError(new UnrecognizedElement(reader, location, definition));
                     continue;
                 }
                 if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {

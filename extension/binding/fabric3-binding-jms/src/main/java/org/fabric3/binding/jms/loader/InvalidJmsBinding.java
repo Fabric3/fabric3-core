@@ -38,8 +38,8 @@
 package org.fabric3.binding.jms.loader;
 
 import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -47,7 +47,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class InvalidJmsBinding extends XmlValidationFailure {
 
-    public InvalidJmsBinding(String message, Location location) {
+    public InvalidJmsBinding(String message, Location location, ModelObject modelObject) {
         super(message, location);
     }
 

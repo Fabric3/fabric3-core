@@ -48,7 +48,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class PropertyValueNotSpecified extends XmlValidationFailure {
 
     public PropertyValueNotSpecified(String propertyName, ComponentDefinition definition, Location location) {
-        super("The property " + propertyName + " on component " + definition.getName() + " does not have a value", location);
+        super("The property " + propertyName + " on component " + definition.getName() + " does not have a value", location, definition);
     }
 
 }

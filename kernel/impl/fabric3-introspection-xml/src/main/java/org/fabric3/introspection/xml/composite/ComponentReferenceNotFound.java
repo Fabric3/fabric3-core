@@ -48,7 +48,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class ComponentReferenceNotFound extends XmlValidationFailure {
 
     public ComponentReferenceNotFound(String referenceName, ComponentDefinition definition, Location location) {
-        super("The component " + definition.getName() + " does not have a reference " + referenceName, location);
+        super("The component " + definition.getName() + " does not have a reference " + referenceName, location, definition);
     }
 
 }

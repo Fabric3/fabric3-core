@@ -48,7 +48,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class ComponentServiceNotFound extends XmlValidationFailure {
 
     public ComponentServiceNotFound(String serviceName, ComponentDefinition definition, Location location) {
-        super("The component " + definition.getName() + " does not have a service " + serviceName, location);
+        super("The component " + definition.getName() + " does not have a service " + serviceName, location, definition);
     }
 
 }

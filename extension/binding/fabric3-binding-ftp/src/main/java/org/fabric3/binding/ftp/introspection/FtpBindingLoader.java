@@ -150,7 +150,7 @@ public class FtpBindingLoader extends AbstractValidatingTypeLoader<FtpBindingDef
                     reader.next();
                     bd.addSTORCommand(reader.getText());
                 } else {
-                    UnrecognizedElement error = new UnrecognizedElement(reader, location);
+                    UnrecognizedElement error = new UnrecognizedElement(reader, location, bd);
                     context.addError(error);
                     return false;
                 }

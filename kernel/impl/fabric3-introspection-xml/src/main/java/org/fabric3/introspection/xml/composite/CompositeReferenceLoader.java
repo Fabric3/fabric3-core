@@ -103,32 +103,36 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
             return null;
         }
 
+        CompositeReference reference = new CompositeReference(name);
+
         List<URI> promotedUris;
         boolean promoteError = false;
         try {
             promotedUris = loaderHelper.parseListOfUris(reader, "promote");
         } catch (URISyntaxException e) {
-            InvalidValue error = new InvalidValue("Invalid promote URI specified on reference: " + name, startLocation, e);
+            InvalidValue error = new InvalidValue("Invalid promote URI specified on reference: " + name, startLocation, e, reference);
             context.addError(error);
             promotedUris = Collections.emptyList();
             promoteError = true;
         }
         if (!promoteError && (promotedUris == null || promotedUris.isEmpty())) {
-            MissingPromotion error = new MissingPromotion("Promotion not specified on composite reference " + name, startLocation);
+            MissingPromotion error = new MissingPromotion("Promotion not specified on composite reference " + name, startLocation, reference);
             context.addError(error);
         }
-        Multiplicity multiplicity = null;
+        Multiplicity multiplicity = Multiplicity.ONE_ONE;
         String multiplicityValue = reader.getAttributeValue(null, "multiplicity");
         try {
             if (multiplicityValue != null) {
                 multiplicity = Multiplicity.fromString(multiplicityValue);
             }
         } catch (IllegalArgumentException e) {
-            InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + multiplicityValue, startLocation);
+            InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + multiplicityValue, startLocation, reference);
             context.addError(failure);
         }
 
-        CompositeReference reference = new CompositeReference(name, promotedUris, multiplicity);
+        reference.setMultiplicity(multiplicity);
+        reference.setPromotedUris(promotedUris);
+
         if (roundTrip) {
             reference.enableRoundTrip();
             //noinspection VariableNotUsedInsideIf
@@ -178,7 +182,7 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
                     // there was an error loading the element, ignore it as the errors will have been reported
                     continue;
                 } else {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location, reference);
                     context.addError(failure);
                     continue;
                 }

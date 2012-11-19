@@ -179,7 +179,8 @@ public class CompositeResourceProcessor implements ResourceProcessor {
                     if (element.getSymbol().equals(elementEntry.getSymbol())) {
                         QName name = element.getSymbol().getKey();
                         Location location = reader.getLocation();
-                        DuplicateComposite error = new DuplicateComposite("Duplicate composite found with name: " + name, location);
+                        Composite composite = element.getValue();
+                        DuplicateComposite error = new DuplicateComposite("Duplicate composite found with name: " + name, location, composite);
                         context.addError(error);
                         break;
                     }

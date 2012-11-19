@@ -39,13 +39,15 @@ package org.fabric3.introspection.xml.composite;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.component.Composite;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  *
  */
 public class DuplicatePromotedService extends XmlValidationFailure {
-    public DuplicatePromotedService(String serviceName, Location location) {
-        super("More than one promoted service with the name " + serviceName + " was found in the composite ", location);
+
+    public DuplicatePromotedService(String serviceName, Location location, Composite type) {
+        super("More than one promoted service with the name " + serviceName + " was found in the composite ", location, type);
     }
 }

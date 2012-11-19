@@ -39,6 +39,7 @@ package org.fabric3.contribution.processor;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.component.Composite;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -46,7 +47,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateComposite extends XmlValidationFailure {
 
-    public DuplicateComposite(String message, Location location) {
-        super(message, location);
+    public DuplicateComposite(String message, Location location, Composite composite) {
+        super(message, location, composite);
     }
 }

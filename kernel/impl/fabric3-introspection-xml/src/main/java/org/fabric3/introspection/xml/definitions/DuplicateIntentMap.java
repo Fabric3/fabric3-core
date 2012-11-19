@@ -39,6 +39,7 @@ package org.fabric3.introspection.xml.definitions;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.definitions.IntentMap;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -46,8 +47,8 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
  */
 public class DuplicateIntentMap extends XmlValidationFailure {
 
-    public DuplicateIntentMap(String message, Location location) {
-        super(message, location);
+    public DuplicateIntentMap(String message, Location location, IntentMap intentMap) {
+        super(message, location, intentMap);
     }
 
 }

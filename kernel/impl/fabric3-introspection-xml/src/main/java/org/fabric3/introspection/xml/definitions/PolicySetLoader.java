@@ -158,7 +158,7 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
             QName providedIntent = helper.createQName(element.getAttribute("provides"), reader);
             IntentMap intentMap = new IntentMap(providedIntent);
             if (intentMaps.contains(intentMap)) {
-                DuplicateIntentMap error = new DuplicateIntentMap("Duplicate intent map defined for " + providedIntent, startLocation);
+                DuplicateIntentMap error = new DuplicateIntentMap("Duplicate intent map defined for " + providedIntent, startLocation, intentMap);
                 context.addError(error);
             } else {
                 intentMaps.add(intentMap);

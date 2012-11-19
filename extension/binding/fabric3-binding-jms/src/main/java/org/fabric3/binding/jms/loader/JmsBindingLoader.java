@@ -189,7 +189,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
                     if (uri != null) {
                         InvalidJmsBinding error = new InvalidJmsBinding(
                                 "A destination cannot be defined both as a JMS uri and as part of the binding.jms element",
-                                location);
+                                location, definition);
                         context.addError(error);
                     }
                     DestinationDefinition destination = loadDestination(reader, context);
@@ -367,7 +367,6 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
 
 
     private ResponseDefinition loadResponse(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        Location location = reader.getLocation();
         ResponseDefinition response = new ResponseDefinition();
         String name;
         while (true) {
@@ -564,13 +563,13 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         JmsBindingMetadata metadata = definition.getJmsMetadata();
         if (metadata.getConnectionFactory().isConfigured() && metadata.getDestination() == null) {
             Location location = reader.getLocation();
-            InvalidJmsBinding error = new InvalidJmsBinding("A destination must be specified", location);
+            InvalidJmsBinding error = new InvalidJmsBinding("A destination must be specified", location, definition);
             context.addError(error);
         }
         if (metadata.getActivationSpec() != null && metadata.getConnectionFactory().isConfigured()) {
             Location location = reader.getLocation();
             InvalidJmsBinding error =
-                    new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding", location);
+                    new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding", location, definition);
             context.addError(error);
         }
         DestinationDefinition requestDestination = metadata.getDestination();
@@ -579,7 +578,9 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             if (requestDestination.getName() != null && !requestDestination.getName().equals(requestSpec.getName())) {
                 Location location = reader.getLocation();
                 InvalidJmsBinding error =
-                        new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination", location);
+                        new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination",
+                                              location,
+                                              definition);
                 context.addError(error);
             }
         }
@@ -590,7 +591,9 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             if (responseSpec != null && response.getConnectionFactory().isConfigured()) {
                 Location location = reader.getLocation();
                 InvalidJmsBinding error =
-                        new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding", location);
+                        new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding",
+                                              location,
+                                              definition);
                 context.addError(error);
             }
             DestinationDefinition responseDestination = response.getDestination();
@@ -598,7 +601,9 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
                 if (responseDestination.getName() != null && !responseDestination.getName().equals(responseSpec.getName())) {
                     Location location = reader.getLocation();
                     InvalidJmsBinding error =
-                            new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination", location);
+                            new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination",
+                                                  location,
+                                                  definition);
                     context.addError(error);
                 }
             }
@@ -610,7 +615,7 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             String name = entry.getSelectedOperation();
             if (seen.contains(name)) {
                 Location location = reader.getLocation();
-                InvalidJmsBinding error = new InvalidJmsBinding("Duplicate selected operation for property defined: " + name, location);
+                InvalidJmsBinding error = new InvalidJmsBinding("Duplicate selected operation for property defined: " + name, location, definition);
                 context.addError(error);
             } else {
                 seen.add(name);

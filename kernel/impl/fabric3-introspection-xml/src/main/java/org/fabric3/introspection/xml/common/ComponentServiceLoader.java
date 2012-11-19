@@ -152,7 +152,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                     LoaderUtil.skipToEndElement(reader);
                     break;
                 } else {
-                    context.addError(new UnrecognizedElement(reader, location));
+                    context.addError(new UnrecognizedElement(reader, location, definition));
                     continue;
                 }
                 if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {

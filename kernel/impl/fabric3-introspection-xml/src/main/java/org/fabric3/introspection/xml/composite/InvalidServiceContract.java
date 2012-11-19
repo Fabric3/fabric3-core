@@ -45,6 +45,7 @@ package org.fabric3.introspection.xml.composite;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
@@ -55,11 +56,12 @@ public class InvalidServiceContract extends XmlValidationFailure {
     /**
      * Constructor.
      *
-     * @param message  the message
-     * @param location the location where the error was raised
+     * @param message     the message
+     * @param location    the location where the error was raised
+     * @param modelObject the source of the error
      */
-    public InvalidServiceContract(String message, Location location) {
-        super(message, location);
+    public InvalidServiceContract(String message, Location location, ModelObject modelObject) {
+        super(message, location, modelObject);
     }
 
 

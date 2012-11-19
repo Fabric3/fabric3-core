@@ -253,7 +253,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                     parseConsumer(definition, componentType, reader, context);
                 } else {
                     // Unknown extension element - issue an error and continue
-                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location, definition);
                     context.addError(failure);
                     LoaderUtil.skipToEndElement(reader);
                 }
@@ -301,14 +301,14 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             if (typeReference.getServiceContract() != null && typeReference.getServiceContract().getCallbackContract() == null) {
                 InvalidServiceContract failure = new InvalidServiceContract(
                         "Reference is configured with a callback binding but its service contract is not bidirectional: " + name,
-                        startLocation);
+                        startLocation, reference);
                 context.addError(failure);
             }
         }
         processReferenceContract(reference, typeReference, startLocation, context);
 
         if (definition.getReferences().containsKey(name)) {
-            DuplicateComponentReference failure = new DuplicateComponentReference(name, startLocation);
+            DuplicateComponentReference failure = new DuplicateComponentReference(name, startLocation, definition);
             context.addError(failure);
             return;
         }
@@ -354,7 +354,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         ConsumerDefinition typeConsumer = componentType.getConsumers().get(name);
         if (typeConsumer == null) {
             // ensure the consumer exists
-            ComponentConsumerNotFound failure = new ComponentConsumerNotFound(name, definition, startLocation, consumer);
+            ComponentConsumerNotFound failure = new ComponentConsumerNotFound(name, definition, startLocation);
             context.addError(failure);
             return;
         }
@@ -378,7 +378,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         Property property = componentType.getProperties().get(name);
         if (property == null) {
             // ensure the property exists
-            ComponentPropertyNotFound failure = new ComponentPropertyNotFound(value.getName(), definition, startLocation, componentType);
+            ComponentPropertyNotFound failure = new ComponentPropertyNotFound(value.getName(), definition, startLocation);
             context.addError(failure);
             return;
         }
@@ -418,7 +418,9 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                 String name = service.getName();
                 IncompatibleContracts error = new IncompatibleContracts("The component service interface " + name
                                                                                 + " is not compatible with the promoted service "
-                                                                                + typeService.getName() + ": " + result.getError(), location);
+                                                                                + typeService.getName() + ": " + result.getError(),
+                                                                        location,
+                                                                        service);
                 context.addError(error);
             } else {
                 matchServiceCallbackContracts(service, typeService, location, context);
@@ -449,7 +451,9 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
                 String name = reference.getName();
                 IncompatibleContracts error = new IncompatibleContracts("The component reference contract " + name
                                                                                 + " is not compatible with the promoted reference "
-                                                                                + typeReference.getName() + ": " + result.getError(), location);
+                                                                                + typeReference.getName() + ": " + result.getError(),
+                                                                        location,
+                                                                        reference);
                 context.addError(error);
             } else {
                 matchReferenceCallbackContracts(reference, typeReference, location, context);
@@ -476,7 +480,9 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         ServiceContract typeCallbackContract = typeService.getServiceContract().getCallbackContract();
         if (typeCallbackContract == null) {
             IncompatibleContracts error =
-                    new IncompatibleContracts("Component type for service " + service.getName() + " does not have a callback contract", location);
+                    new IncompatibleContracts("Component type for service " + service.getName() + " does not have a callback contract",
+                                              location,
+                                              service);
             context.addError(error);
             return;
         }
@@ -485,7 +491,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             String name = service.getName();
             IncompatibleContracts error = new IncompatibleContracts("The component service " + name + " callback contract is not compatible with " +
                                                                             "the promoted service " + typeService.getName()
-                                                                            + " callback contract: " + result.getError(), location);
+                                                                            + " callback contract: " + result.getError(), location, service);
             context.addError(error);
         }
     }
@@ -509,7 +515,9 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         ServiceContract typeCallbackContract = typeReference.getServiceContract().getCallbackContract();
         if (typeCallbackContract == null) {
             IncompatibleContracts error =
-                    new IncompatibleContracts("Component type for reference " + reference.getName() + " does not have a callback contract", location);
+                    new IncompatibleContracts("Component type for reference " + reference.getName() + " does not have a callback contract",
+                                              location,
+                                              reference);
             context.addError(error);
             return;
         }
@@ -518,8 +526,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             String name = reference.getName();
             IncompatibleContracts error = new IncompatibleContracts("The component reference " + name + " callback contract is not compatible with " +
                                                                             "the promoted reference " + typeReference.getName()
-                                                                            + " callback contract: " + result.getError(),
-                                                                    location);
+                                                                            + " callback contract: " + result.getError(), location, reference);
             context.addError(error);
         }
     }
@@ -565,9 +572,8 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         for (Property property : properties.values()) {
             PropertyValue value = values.get(property.getName());
             if (property.isRequired() && value == null) {
-                String name = definition.getName();
                 Location location = propertyLocations.get(property);
-                RequiredPropertyNotProvided failure = new RequiredPropertyNotProvided(property, name, location);
+                RequiredPropertyNotProvided failure = new RequiredPropertyNotProvided(property, definition, location);
                 context.addError(failure);
                 continue;
             }
@@ -590,7 +596,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         } else if (PropertyMany.MANY == propertyMany) {
             if (!property.isMany()) {
                 InvalidPropertyConfiguration error = new InvalidPropertyConfiguration("Illegal attempt to make a property many-valued when its " +
-                                                                                              "component type is single-valued", location);
+                                                                                              "component type is single-valued", location, property);
                 context.addError(error);
                 return;
 

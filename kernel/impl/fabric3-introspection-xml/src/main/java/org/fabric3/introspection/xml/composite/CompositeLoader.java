@@ -284,7 +284,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         } else if (modelObject == null) {
             // loaders may elect to return a null element; ignore
         } else {
-            UnrecognizedElement failure = new UnrecognizedElement(reader, startLocation);
+            UnrecognizedElement failure = new UnrecognizedElement(reader, startLocation, type);
             context.addError(failure);
         }
     }
@@ -320,7 +320,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
         String key = componentDefinition.getName();
         if (type.getComponents().containsKey(key)) {
-            DuplicateComponentName failure = new DuplicateComponentName(key, startLocation);
+            DuplicateComponentName failure = new DuplicateComponentName(key, startLocation, type);
             context.addError(failure);
             return false;
         }
@@ -358,7 +358,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
         String key = channelDefinition.getName();
         if (type.getChannels().containsKey(key)) {
-            DuplicateChannelName failure = new DuplicateChannelName(key, startLocation);
+            DuplicateChannelName failure = new DuplicateChannelName(key, startLocation, type);
             context.addError(failure);
             return;
         }
@@ -376,7 +376,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
         if (type.getReferences().containsKey(reference.getName())) {
             String key = reference.getName();
-            DuplicatePromotedReference failure = new DuplicatePromotedReference(key, startLocation);
+            DuplicatePromotedReference failure = new DuplicatePromotedReference(key, startLocation, type);
             context.addError(failure);
         } else {
             type.add(reference);
@@ -394,7 +394,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
         if (type.getServices().containsKey(service.getName())) {
             String key = service.getName();
-            DuplicatePromotedService failure = new DuplicatePromotedService(key, startLocation);
+            DuplicatePromotedService failure = new DuplicatePromotedService(key, startLocation, type);
             context.addError(failure);
         } else {
             locations.put(service, startLocation);
@@ -412,7 +412,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         }
         String key = property.getName();
         if (type.getProperties().containsKey(key)) {
-            DuplicateProperty failure = new DuplicateProperty(key, startLocation);
+            DuplicateProperty failure = new DuplicateProperty(key, startLocation, type);
             context.addError(failure);
         } else {
             type.add(property);
@@ -436,7 +436,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         QName includeName = include.getName();
         if (type.getIncludes().containsKey(includeName)) {
             String identifier = includeName.toString();
-            DuplicateInclude failure = new DuplicateInclude(identifier, startLocation);
+            DuplicateInclude failure = new DuplicateInclude(identifier, startLocation, include);
             context.addError(failure);
             return;
         }
@@ -450,7 +450,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         for (ComponentDefinition definition : included.getComponents().values()) {
             String key = definition.getName();
             if (type.getComponents().containsKey(key)) {
-                DuplicateComponentName failure = new DuplicateComponentName(key, startLocation);
+                DuplicateComponentName failure = new DuplicateComponentName(key, startLocation, type);
                 context.addError(failure);
             }
         }
@@ -477,7 +477,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             String name = service.getName();
             if (promotedComponent == null) {
                 PromotionNotFound error =
-                        new PromotionNotFound("Component " + componentName + " referenced by " + name + " not found", location);
+                        new PromotionNotFound("Component " + componentName + " referenced by " + name + " not found", location, service);
                 context.addError(error);
                 continue;
             } else {
@@ -487,7 +487,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     promotedService = componentType.getServices().get(serviceName);
                     if (promotedService == null) {
                         PromotionNotFound error =
-                                new PromotionNotFound("Service " + serviceName + " promoted by " + name + " not found", location);
+                                new PromotionNotFound("Service " + serviceName + " promoted by " + name + " not found", location, service);
                         context.addError(error);
                         continue;
                     }
@@ -495,7 +495,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     Map<String, AbstractService> services = componentType.getServices();
                     int numberOfServices = services.size();
                     if (numberOfServices == 2) {
-                        PromotionNotFound error = new PromotionNotFound("A promoted service must be specified for " + name, location);
+                        PromotionNotFound error = new PromotionNotFound("A promoted service must be specified for " + name, location, service);
                         context.addError(error);
                         return;
 
@@ -503,12 +503,12 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                         promotedService = services.values().iterator().next();
                     } else if (numberOfServices == 0) {
                         PromotionNotFound error =
-                                new PromotionNotFound("Component " + componentName + " has no services to promote", location);
+                                new PromotionNotFound("Component " + componentName + " has no services to promote", location, service);
                         context.addError(error);
                         continue;
                     } else {
                         PromotionNotFound error =
-                                new PromotionNotFound("A promoted service must be specified for " + name, location);
+                                new PromotionNotFound("A promoted service must be specified for " + name, location, service);
                         context.addError(error);
                         continue;
                     }
@@ -528,13 +528,15 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                 String referenceName = promotedUri.getFragment();
                 if (promoted == null) {
                     PromotionNotFound error =
-                            new PromotionNotFound("Component " + componentName + " referenced by " + reference.getName() + " not found", location);
+                            new PromotionNotFound("Component " + componentName + " referenced by " + reference.getName() + " not found",
+                                                  location,
+                                                  reference);
                     context.addError(error);
                     return;
                 } else {
                     if (referenceName == null && promoted.getComponentType().getReferences().size() != 1) {
                         PromotionNotFound error =
-                                new PromotionNotFound("A promoted reference must be specified for " + reference.getName(), location);
+                                new PromotionNotFound("A promoted reference must be specified for " + reference.getName(), location, reference);
                         context.addError(error);
                         continue;
                     }
@@ -546,7 +548,9 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                     }
                     if (referenceName != null && promotedReference == null) {
                         PromotionNotFound error =
-                                new PromotionNotFound("Reference " + referenceName + " promoted by " + reference.getName() + " not found", location);
+                                new PromotionNotFound("Reference " + referenceName + " promoted by " + reference.getName() + " not found",
+                                                      location,
+                                                      reference);
                         context.addError(error);
                         continue;
                     }
@@ -559,7 +563,9 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                             if (promotedReference.getMultiplicity().equals(Multiplicity.ONE_ONE) || promotedReference.getMultiplicity().equals(
                                     Multiplicity.ZERO_ONE)) {
                                 IllegalPromotion failure =
-                                        new IllegalPromotion("Cannot promote a 0..1 or 1..1 non-overridable reference: " + referenceName, location);
+                                        new IllegalPromotion("Cannot promote a 0..1 or 1..1 non-overridable reference: " + referenceName,
+                                                             location,
+                                                             promotedReference);
                                 context.addError(failure);
                             }
                         }
@@ -594,7 +600,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                 Location location = locations.get(service);
                 IncompatibleContracts error =
                         new IncompatibleContracts("The composite service interface " + name + " is not compatible with the promoted service "
-                                                          + promotedService.getName() + ": " + result.getError(), location);
+                                                          + promotedService.getName() + ": " + result.getError(), location, service);
                 context.addError(error);
             } else {
                 matchServiceCallbackContracts(service, promotedService, locations, context);
@@ -629,7 +635,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
                 IncompatibleContracts error = new IncompatibleContracts("The composite service interface " + name
                                                                                 + " is not compatible with the promoted service "
                                                                                 + promotedReference.getName() + ": " + result.getError(),
-                                                                        location);
+                                                                        location, reference);
                 context.addError(error);
             } else {
                 matchReferenceCallbackContracts(reference, promotedReference, locations, context);
@@ -657,7 +663,9 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         if (promotedCallbackContract == null) {
             Location location = locations.get(service);
             IncompatibleContracts error =
-                    new IncompatibleContracts("Component type for service " + service.getName() + " does not have a callback contract", location);
+                    new IncompatibleContracts("Component type for service " + service.getName() + " does not have a callback contract",
+                                              location,
+                                              service);
             context.addError(error);
             return;
         }
@@ -667,7 +675,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             String name = service.getName();
             IncompatibleContracts error = new IncompatibleContracts("The composite service " + name + " callback contract is not compatible with " +
                                                                             "the promoted service " + promotedService.getName()
-                                                                            + " callback contract: " + result.getError(), location);
+                                                                            + " callback contract: " + result.getError(), location, service);
             context.addError(error);
         }
     }
@@ -692,7 +700,9 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         if (promotedCallbackContract == null) {
             Location location = locations.get(reference);
             IncompatibleContracts error =
-                    new IncompatibleContracts("Component type for reference " + reference.getName() + " does not have a callback contract", location);
+                    new IncompatibleContracts("Component type for reference " + reference.getName() + " does not have a callback contract",
+                                              location,
+                                              reference);
             context.addError(error);
             return;
         }
@@ -702,7 +712,7 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             String name = reference.getName();
             IncompatibleContracts error = new IncompatibleContracts("The composite reference " + name + " callback contract is not compatible with " +
                                                                             "the promoted reference " + promotedReference.getName()
-                                                                            + " callback contract: " + result.getError(), location);
+                                                                            + " callback contract: " + result.getError(), location, reference);
             context.addError(error);
         }
     }

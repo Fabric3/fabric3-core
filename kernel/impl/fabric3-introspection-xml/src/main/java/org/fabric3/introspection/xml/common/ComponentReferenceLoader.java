@@ -168,7 +168,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
                             // bindings cannot be configured on references if the @target attribute is used
                             InvalidBinding error =
                                     new InvalidBinding("Bindings cannot be configured when the target attribute on a reference is used: "
-                                                               + name, location);
+                                                               + name, location, binding);
                             context.addError(error);
                             bindingError = true;
                         }
@@ -179,7 +179,7 @@ public class ComponentReferenceLoader extends AbstractExtensibleTypeLoader<Compo
                     // no type, continue processing
                     continue;
                 } else {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location, reference);
                     context.addError(failure);
                     continue;
                 }

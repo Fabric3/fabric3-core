@@ -47,4 +47,6 @@ public class InvalidQNamePrefix extends XmlValidationFailure {
     public InvalidQNamePrefix(String message, Location location) {
         super(message, location);
     }
+
+
 }

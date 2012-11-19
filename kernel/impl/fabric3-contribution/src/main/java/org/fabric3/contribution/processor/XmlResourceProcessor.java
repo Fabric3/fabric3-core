@@ -110,7 +110,10 @@ public class XmlResourceProcessor implements ResourceProcessor {
         } catch (XMLStreamException e) {
             resource.setState(ResourceState.ERROR);
             // artifact is invalid, issue a warning
-            Location location = reader.getLocation();
+            Location location = null;
+            if (reader != null) {
+                location = reader.getLocation();
+            }
             InvalidXmlArtifact warning =
                     new InvalidXmlArtifact("Invalid XML in " + source.getSystemId() + ". The error reported was:\n " + e.getMessage(), location);
             context.addWarning(warning);

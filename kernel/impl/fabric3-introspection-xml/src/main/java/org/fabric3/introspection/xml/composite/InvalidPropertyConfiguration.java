@@ -39,13 +39,14 @@ package org.fabric3.introspection.xml.composite;
 
 import javax.xml.stream.Location;
 
+import org.fabric3.model.type.ModelObject;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  */
 public class InvalidPropertyConfiguration extends XmlValidationFailure {
 
-    public InvalidPropertyConfiguration(String message, Location location) {
-        super(message, location);
+    public InvalidPropertyConfiguration(String message, Location location, ModelObject modelObject) {
+        super(message, location, modelObject);
     }
 }

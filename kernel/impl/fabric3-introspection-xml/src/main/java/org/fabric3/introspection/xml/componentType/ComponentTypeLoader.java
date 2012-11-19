@@ -142,7 +142,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     } else if (modelObject instanceof ReferenceDefinition) {
                         type.add((ReferenceDefinition) modelObject);
                     } else if (modelObject != null) {
-                        UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                        UnrecognizedElement failure = new UnrecognizedElement(reader, location, type);
                         introspectionContext.addError(failure);
                         continue;
                     }
@@ -163,9 +163,9 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
             context.addError(failure);
             return null;
         }
-        ServiceDefinition def = new ServiceDefinition(name, null);
+        ServiceDefinition service = new ServiceDefinition(name, null);
 
-        loaderHelper.loadPolicySetsAndIntents(def, reader, context);
+        loaderHelper.loadPolicySetsAndIntents(service, reader, context);
 
         boolean callback = false;
         while (true) {
@@ -180,33 +180,33 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                 QName elementName = reader.getName();
                 ModelObject type = registry.load(reader, ModelObject.class, context);
                 if (type instanceof ServiceContract) {
-                    def.setServiceContract((ServiceContract) type);
+                    service.setServiceContract((ServiceContract) type);
                 } else if (type instanceof BindingDefinition) {
                     BindingDefinition binding = (BindingDefinition) type;
                     if (callback) {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, def.getCallbackBindings(), location, context);
+                            BindingHelper.configureName(binding, service.getCallbackBindings(), location, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, def.getCallbackBindings(), location, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, service.getCallbackBindings(), location, context);
                         if (check) {
-                            def.addCallbackBinding(binding);
+                            service.addCallbackBinding(binding);
                         }
                     } else {
                         if (binding.getName() == null) {
                             // set the default binding name
-                            BindingHelper.configureName(binding, def.getBindings(), location, context);
+                            BindingHelper.configureName(binding, service.getBindings(), location, context);
                         }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, def.getBindings(), location, context);
+                        boolean check = BindingHelper.checkDuplicateNames(binding, service.getBindings(), location, context);
                         if (check) {
-                            def.addBinding(binding);
+                            service.addBinding(binding);
                         }
                     }
                 } else if (type == null) {
                     // error loading, the element, ignore as an error will have been reported
                     continue;
                 } else {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                    UnrecognizedElement failure = new UnrecognizedElement(reader, location, service);
                     context.addError(failure);
                     continue;
                 }
@@ -219,7 +219,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     callback = false;
                     break;
                 }
-                return def;
+                return service;
             }
         }
     }
@@ -288,7 +288,7 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                     // no type, continue processing
                     continue;
                 } else {
-                    context.addError(new UnrecognizedElement(reader, location));
+                    context.addError(new UnrecognizedElement(reader, location, reference));
                     continue;
                 }
                 if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {

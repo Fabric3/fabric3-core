@@ -143,7 +143,7 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
 
         Set<Qualifier> qualifiers = new HashSet<Qualifier>();
         // create the intent before the qualifiers are populated so attributes can be validated
-        Intent intent= new Intent(qName, constrains, requires, qualifiers, mutuallyExclusive, excludes, intentType, false);
+        Intent intent = new Intent(qName, constrains, requires, qualifiers, mutuallyExclusive, excludes, intentType, false);
 
         validateAttributes(reader, context, intent);
 
@@ -164,9 +164,8 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
                     Boolean isDefault = Boolean.valueOf(defaultStr);
                     if (isDefault) {
                         if (defaultSet) {
-                            DuplicateDefaultIntent error =
-                                    new DuplicateDefaultIntent("More than one qualified intent is specified as the default for: " + qName,
-                                                               location);
+                            DuplicateDefaultIntent error = new DuplicateDefaultIntent("More than one qualified intent is specified as the default " +
+                                                                                              "for: " + qName, location, intent);
                             context.addError(error);
                         } else {
                             defaultSet = true;
@@ -174,7 +173,8 @@ public class IntentLoader extends AbstractValidatingTypeLoader<Intent> {
                     }
                     Qualifier qualifier = new Qualifier(nameAttr, isDefault);
                     if (qualifiers.contains(qualifier)) {
-                        DuplicateQualifiedName error = new DuplicateQualifiedName("Duplicate qualified intent specified for:" + qName, location);
+                        DuplicateQualifiedName error =
+                                new DuplicateQualifiedName("Duplicate qualified intent specified for:" + qName, location, intent);
                         context.addError(error);
                     } else {
                         qualifiers.add(qualifier);
