@@ -37,18 +37,19 @@
 */
 package org.fabric3.runtime.tomcat.servlet;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.apache.catalina.comet.CometEvent;
+import org.apache.catalina.comet.CometProcessor;
+
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.catalina.comet.CometEvent;
-import org.apache.catalina.comet.CometProcessor;
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A servlet registered in the Tomcat host runtime that forwards requests to other servlets. For example, servlets that handle requests destined to
@@ -66,7 +67,8 @@ public class Fabric3DispatchingServlet extends HttpServlet implements CometProce
     }
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String path = req.getPathInfo();
+        HttpServletRequest request = req;
+        String path = request.getPathInfo();
         Servlet servlet = servlets.get(path);
         if (servlet == null) {
             int i;
@@ -75,6 +77,7 @@ public class Fabric3DispatchingServlet extends HttpServlet implements CometProce
                 while ((i = path.lastIndexOf("/")) >= 0) {
                     servlet = servlets.get(path.substring(0, i) + "/*");
                     if (servlet != null) {
+                        request = new MappedHttpServletRequest(req,path.substring(0,i));
                         break;
                     }
                     path = path.substring(0, i);
@@ -86,7 +89,8 @@ public class Fabric3DispatchingServlet extends HttpServlet implements CometProce
                 return;
             }
         }
-        servlet.service(req, resp);
+
+        servlet.service(request,resp);
     }
 
     public void registerMapping(String path, Servlet servlet) throws ServletException {
@@ -137,4 +141,17 @@ public class Fabric3DispatchingServlet extends HttpServlet implements CometProce
         }
 	}
 
+    private class MappedHttpServletRequest extends HttpServletRequestWrapper{
+
+        private String servletPath;
+        public MappedHttpServletRequest(HttpServletRequest request,String servletPath) {
+            super(request);
+            this.servletPath = servletPath;
+        }
+
+        @Override
+        public String getServletPath() {
+            return servletPath;
+        }
+    }
 }
