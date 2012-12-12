@@ -92,7 +92,6 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
 
     public ChannelDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
 
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
@@ -103,6 +102,8 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
 
         URI uri = context.getContributionUri();
         ChannelDefinition definition = new ChannelDefinition(name, uri);
+
+        validateAttributes(reader, context, definition);
 
         if (roundTrip) {
             definition.enableRoundTrip();

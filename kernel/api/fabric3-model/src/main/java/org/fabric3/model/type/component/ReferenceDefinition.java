@@ -74,6 +74,15 @@ public class ReferenceDefinition extends AbstractReference<ComponentType> {
     /**
      * Constructor.
      *
+     * @param name the reference name
+     */
+    public ReferenceDefinition(String name) {
+        this(name, null, Multiplicity.ONE_ONE);
+    }
+
+    /**
+     * Constructor.
+     *
      * @param name            the reference name
      * @param serviceContract the service contract required by this reference
      * @param multiplicity    the reference multiplicity

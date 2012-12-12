@@ -156,7 +156,6 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
 
     private ServiceDefinition loadService(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateServiceAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingAttribute failure = new MissingAttribute("Missing name attribute", startLocation);
@@ -164,6 +163,8 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
             return null;
         }
         ServiceDefinition service = new ServiceDefinition(name, null);
+
+        validateServiceAttributes(reader, service, context);
 
         loaderHelper.loadPolicySetsAndIntents(service, reader, context);
 
@@ -226,13 +227,14 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
 
     private ReferenceDefinition loadReference(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateReferenceAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingReferenceName failure = new MissingReferenceName(startLocation);
             context.addError(failure);
             return null;
         }
+
+        ReferenceDefinition reference = new ReferenceDefinition(name);
 
         String value = reader.getAttributeValue(null, "multiplicity");
         Multiplicity multiplicity = Multiplicity.ONE_ONE;   // for component types, default 1..1
@@ -241,10 +243,12 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
                 multiplicity = Multiplicity.fromString(value);
             }
         } catch (IllegalArgumentException e) {
-            InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + value, startLocation);
+            InvalidValue failure = new InvalidValue("Invalid multiplicity value: " + value, startLocation, reference);
             context.addError(failure);
         }
-        ReferenceDefinition reference = new ReferenceDefinition(name, multiplicity);
+        reference.setMultiplicity(multiplicity);
+
+        validateReferenceAttributes(reader, reference, context);
 
         loaderHelper.loadPolicySetsAndIntents(reference, reader, context);
 
@@ -305,22 +309,22 @@ public class ComponentTypeLoader implements TypeLoader<ComponentType> {
         }
     }
 
-    private void validateReferenceAttributes(XMLStreamReader reader, IntrospectionContext context) {
+    private void validateReferenceAttributes(XMLStreamReader reader, ReferenceDefinition reference, IntrospectionContext context) {
         Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!"name".equals(name) && !"requires".equals(name) && !"policySets".equals(name) && !"multiplicity".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, location));
+                context.addError(new UnrecognizedAttribute(name, location, reference));
             }
         }
     }
 
-    private void validateServiceAttributes(XMLStreamReader reader, IntrospectionContext context) {
+    private void validateServiceAttributes(XMLStreamReader reader, ServiceDefinition service, IntrospectionContext context) {
         Location location = reader.getLocation();
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!"name".equals(name) && !"requires".equals(name) && !"policySets".equals(name)) {
-                context.addError(new UnrecognizedAttribute(name, location));
+                context.addError(new UnrecognizedAttribute(name, location, service));
             }
         }
     }

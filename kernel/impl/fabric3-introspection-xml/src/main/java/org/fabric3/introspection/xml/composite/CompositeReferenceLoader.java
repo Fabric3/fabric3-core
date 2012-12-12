@@ -95,7 +95,6 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
 
     public CompositeReference load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
-        validateAttributes(reader, context);
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingAttribute failure = new MissingAttribute("Reference name not specified", startLocation);
@@ -104,6 +103,7 @@ public class CompositeReferenceLoader extends AbstractValidatingTypeLoader<Compo
         }
 
         CompositeReference reference = new CompositeReference(name);
+        validateAttributes(reader, context, reference);
 
         List<URI> promotedUris;
         boolean promoteError = false;
