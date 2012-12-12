@@ -75,6 +75,8 @@ public class SystemConfigLoaderTestCase extends TestCase {
             "   </federation>" +
             "</config>";
 
+    private static final String PRODUCT_CONFIG = "<config><runtime product='Foo'/></config>";
+
     private static final String CONFIG_DEFAULT = "<config>" +
             "   <web.server>" +
             "       <http port='8181'/>" +
@@ -138,6 +140,24 @@ public class SystemConfigLoaderTestCase extends TestCase {
         URI uri = loader.parseDomainName(systemConfig);
         URI result = URI.create("fabric3://domain");
         assertEquals(result, uri);
+    }
+
+    public void testParseProductName() throws Exception {
+        SystemConfigLoader loader = new SystemConfigLoader();
+        ByteArrayInputStream stream = new ByteArrayInputStream(PRODUCT_CONFIG.getBytes());
+        InputStreamSource source = new InputStreamSource("stream", stream);
+        Document systemConfig = loader.loadSystemConfig(source);
+        String name = loader.parseProductName(systemConfig);
+        assertEquals("Foo", name);
+    }
+
+    public void testParseDefaultProductName() throws Exception {
+        SystemConfigLoader loader = new SystemConfigLoader();
+        ByteArrayInputStream stream = new ByteArrayInputStream(CONFIG_DEFAULT.getBytes());
+        InputStreamSource source = new InputStreamSource("stream", stream);
+        Document systemConfig = loader.loadSystemConfig(source);
+        String name = loader.parseProductName(systemConfig);
+        assertEquals("Fabric3", name);
     }
 
     public void testParseZoneName() throws Exception {

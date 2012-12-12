@@ -195,6 +195,30 @@ public class SystemConfigLoader {
         throw new ParseException("Invalid system configuration: more than one <runtime> element specified");
     }
 
+    /**
+     * Returns the product name. If not configured, "Fabric3" will be returned.
+     *
+     * @param systemConfig the system configuration
+     * @return the product name
+     * @throws ParseException if there is an error parsing the domain name
+     */
+    public String parseProductName(Document systemConfig) throws ParseException {
+        Element root = systemConfig.getDocumentElement();
+        NodeList nodes = root.getElementsByTagName("runtime");
+        if (nodes.getLength() == 1) {
+            Element node = (Element) nodes.item(0);
+            String name = node.getAttribute("product");
+            if (name.length() > 0) {
+                return name;
+            } else {
+                return "Fabric3";
+            }
+        } else if (nodes.getLength() == 0) {
+            return "Fabric3";
+        }
+        throw new ParseException("Invalid system configuration: more than one <runtime> element specified");
+    }
+
     public String parseZoneName(Document systemConfig) throws ParseException {
         Element root = systemConfig.getDocumentElement();
         NodeList nodes = root.getElementsByTagName("zoneName");

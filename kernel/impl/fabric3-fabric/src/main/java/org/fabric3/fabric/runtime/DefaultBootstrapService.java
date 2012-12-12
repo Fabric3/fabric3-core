@@ -113,6 +113,10 @@ public class DefaultBootstrapService implements BootstrapService {
         return systemConfigLoader.parseDeployDirectories(systemConfig);
     }
 
+    public String parseProductName(Document systemConfig) throws ParseException {
+        return systemConfigLoader.parseProductName(systemConfig);
+    }
+
     public String getRuntimeName(URI domainName, String zoneName, String runtimeId, RuntimeMode mode) {
         String runtimeName;
         if (RuntimeMode.CONTROLLER == mode) {

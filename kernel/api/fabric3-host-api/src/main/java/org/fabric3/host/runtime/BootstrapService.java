@@ -130,6 +130,15 @@ public interface BootstrapService {
     List<File> parseDeployDirectories(Document systemConfig) throws ParseException;
 
     /**
+     * Returns the product name. If one is not explicitly configured, "Fabric3" will be returned.
+     *
+     * @param systemConfig the system configuration
+     * @return the parsed runtime environment
+     * @throws ParseException if there is an error parsing the product name
+     */
+    String parseProductName(Document systemConfig) throws ParseException;
+
+    /**
      * Returns the unique runtime name.
      *
      * @param domainName the domain name

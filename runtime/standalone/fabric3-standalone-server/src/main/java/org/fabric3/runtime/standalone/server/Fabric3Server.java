@@ -145,6 +145,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             String zoneName = bootstrapService.parseZoneName(systemConfig);
 
+            String productName = bootstrapService.parseProductName(systemConfig);
+
             String runtimeName = bootstrapService.getRuntimeName(domainName, zoneName, params.name, mode);
 
             List<File> deployDirs = bootstrapService.parseDeployDirectories(systemConfig);
@@ -199,11 +201,11 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
             monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
-            monitor.started(mode.toString(), environment);
+            monitor.started(productName, mode.toString(), environment);
 
             try {
                 latch.await();
-                monitor.stopped();
+                monitor.stopped(productName);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -298,13 +300,13 @@ public class Fabric3Server implements Fabric3ServerMBean {
         @Severe("Shutdown error")
         void shutdownError(Exception e);
 
-        @Info("Fabric3 ready [Mode:{0}, Environment: {1}]")
-        void started(String mode, String environment);
+        @Info("{0} ready [Mode:{1}, Environment: {2}]")
+        void started(String mode, String environment, String s);
 
-        @Info("Fabric3 shutdown")
-        void stopped();
+        @Info("{0} shutdown")
+        void stopped(String productName);
 
-        @Info("Fabric3 exited abnormally, Caused by")
+        @Info("Runtime exited abnormally, Caused by")
         void exited(Exception e);
 
     }
