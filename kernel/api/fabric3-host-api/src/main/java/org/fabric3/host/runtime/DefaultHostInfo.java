@@ -68,6 +68,7 @@ public class DefaultHostInfo implements HostInfo {
 
     private List<File> deployDirectories;
     private OperatingSystem operatingSystem;
+    private boolean javaEEXAEnabled;
     private File dataDirectory;
 
     /**
@@ -86,6 +87,7 @@ public class DefaultHostInfo implements HostInfo {
      * @param tempDirectory     the directory for writing temporary files
      * @param deployDirectories the directory for file system-based deployments
      * @param operatingSystem   the current operating system
+     * @param javaEEXAEnabled   true if the host is a Java EE XA-enabled container
      */
     public DefaultHostInfo(String runtimeName,
                            RuntimeMode runtimeMode,
@@ -99,7 +101,8 @@ public class DefaultHostInfo implements HostInfo {
                            File dataDirectory,
                            File tempDirectory,
                            List<File> deployDirectories,
-                           OperatingSystem operatingSystem) {
+                           OperatingSystem operatingSystem,
+                           boolean javaEEXAEnabled) {
         this.runtimeName = runtimeName;
         this.runtimeMode = runtimeMode;
         this.environment = environment;
@@ -111,6 +114,7 @@ public class DefaultHostInfo implements HostInfo {
         this.configDirectory = configDir;
         this.dataDirectory = dataDirectory;
         this.tempDirectory = tempDirectory;
+        this.javaEEXAEnabled = javaEEXAEnabled;
         this.nativeDirectory = new File(tempDirectory, "native");
         this.deployDirectories = deployDirectories;
         this.operatingSystem = operatingSystem;
@@ -174,6 +178,10 @@ public class DefaultHostInfo implements HostInfo {
 
     public List<File> getDeployDirectories() {
         return deployDirectories;
+    }
+
+    public boolean isJavaEEXAEnabled() {
+        return javaEEXAEnabled;
     }
 
 }

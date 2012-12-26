@@ -246,7 +246,7 @@ public class DistributedDomainControllerTestCase extends TestCase {
         // generation and deployment should not be done
         control.replay();
 
-        Map<QName,String> deployables = Collections.singletonMap(DEPLOYABLE, "fabric3.synthetic");
+        Map<QName, String> deployables = Collections.singletonMap(DEPLOYABLE, "fabric3.synthetic");
         DomainJournal journal = new DomainJournal(Collections.<URI>emptyList(), deployables);
         domain.recover(journal);
 
@@ -287,7 +287,8 @@ public class DistributedDomainControllerTestCase extends TestCase {
         super.setUp();
         URI uri = URI.create("fabric3://domain");
         // set controller mode
-        HostInfo info = new DefaultHostInfo("runtime", RuntimeMode.CONTROLLER, null, uri, null, null, null, null, null, null, null, null, null);
+        HostInfo info =
+                new DefaultHostInfo("runtime", RuntimeMode.CONTROLLER, null, uri, null, null, null, null, null, null, null, null, null, false);
 
         control = EasyMock.createControl();
         MetaDataStore store = control.createMock(MetaDataStore.class);

@@ -159,7 +159,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
                                                                runtimeDir,
                                                                configDir,
                                                                extensionsDir,
-                                                               deployDirs);
+                                                               deployDirs,
+                                                               false);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());

@@ -194,7 +194,8 @@ public final class BootstrapHelper {
      * @param runtimeDir        the base directory containing non-sharable, read-write runtime artifacts
      * @param configDir         the root configuration directory
      * @param extensionsDir     the sharable extensions directory
-     * @param deployDirectories additional deploy directories. These may be absolute or relative to the runtime directory.     @return the host info
+     * @param deployDirectories additional deploy directories. These may be absolute or relative to the runtime directory.
+     * @param javaEEXAEnabled   true if the host is a Java EE XA-enabled container
      * @return the host information
      * @throws IOException if there is an error accessing a host info directory
      */
@@ -205,7 +206,8 @@ public final class BootstrapHelper {
                                           File runtimeDir,
                                           File configDir,
                                           File extensionsDir,
-                                          List<File> deployDirectories) throws IOException {
+                                          List<File> deployDirectories,
+                                          boolean javaEEXAEnabled) throws IOException {
         File repositoryDir = getDirectory(runtimeDir, "repository");
         File userRepositoryDir = new File(repositoryDir, "user");
         File runtimeRepositoryDir = new File(repositoryDir, "runtime");
@@ -238,7 +240,8 @@ public final class BootstrapHelper {
                                    dataDir,
                                    tempDir,
                                    deployDirs,
-                                   os);
+                                   os,
+                                   javaEEXAEnabled);
     }
 
     public static OperatingSystem getOperatingSystem() {

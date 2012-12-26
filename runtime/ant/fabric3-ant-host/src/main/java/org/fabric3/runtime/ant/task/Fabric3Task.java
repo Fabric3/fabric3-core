@@ -58,6 +58,7 @@ import org.w3c.dom.Document;
 
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.classloader.MaskingClassLoader;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.ContributionSource;
@@ -73,7 +74,6 @@ import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HiddenPackages;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.classloader.MaskingClassLoader;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
@@ -174,7 +174,8 @@ public class Fabric3Task extends Task {
                                                                runtimeDir,
                                                                configDir,
                                                                extensionsDir,
-                                                               deployDirs);
+                                                               deployDirs,
+                                                               false);
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 

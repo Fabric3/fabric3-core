@@ -185,7 +185,7 @@ public class RuntimeDomainTestCase extends TestCase {
         MetaDataStore store = control.createMock(MetaDataStore.class);
 
         URI uri = URI.create("fabric3://domain");
-        HostInfo info = new DefaultHostInfo("runtime", RuntimeMode.VM, null, uri, null, null, null, null, null, null, null, null, null);
+        HostInfo info = new DefaultHostInfo("runtime", RuntimeMode.VM, null, uri, null, null, null, null, null, null, null, null, null, false);
         ContributionHelperImpl helper = new ContributionHelperImpl(store, info);
 
         lcm = new LogicalComponentManagerImpl(info);

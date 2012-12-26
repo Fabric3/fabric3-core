@@ -139,4 +139,8 @@ public class MavenHostInfoImpl implements MavenHostInfo {
     public Set<URL> getDependencyUrls() {
         return dependencyUrls;
     }
+
+    public boolean isJavaEEXAEnabled() {
+        return false;
+    }
 }

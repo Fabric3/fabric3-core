@@ -161,4 +161,12 @@ public interface HostInfo {
      * @return the current operating system.
      */
     OperatingSystem getOperatingSystem();
+
+    /**
+     * Returns true if the host environment is a Java EE container with XA-enabled. May be used by extensions that need to be aware they are running
+     * in an XA-enabled container when creating resources (e.g. JMS transacted sessions).
+     *
+     * @return true if the host environment is a Java EE container with XA-enabled
+     */
+    boolean isJavaEEXAEnabled();
 }

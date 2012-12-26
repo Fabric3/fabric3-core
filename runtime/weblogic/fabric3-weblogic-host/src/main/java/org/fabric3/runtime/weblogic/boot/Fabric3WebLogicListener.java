@@ -215,7 +215,8 @@ public class Fabric3WebLogicListener implements ServletContextListener {
                                                                runtimeDir,
                                                                configDir,
                                                                extensionsDir,
-                                                               deployDirs);
+                                                               deployDirs,
+                                                               true);
 
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
