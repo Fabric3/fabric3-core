@@ -113,6 +113,7 @@ public class AdaptiveMessageContainer {
 
     private Set<MessageReceiver> receivers = new HashSet<MessageReceiver>();
     private List<Runnable> pausedWork = new LinkedList<Runnable>();
+    private boolean javaEEXAEnabled;
 
     /**
      * Constructor. Creates a new container for receiving messages from a destination and dispatching them to a MessageListener.
@@ -123,6 +124,7 @@ public class AdaptiveMessageContainer {
      * @param work              the unit of work
      * @param statistics        the message statistics tracker
      * @param executorService   the work scheduler to schedule message receivers
+     * @param javaEEXAEnabled   true if the host is a Java EE XA-enabled container
      * @param monitor           the monitor for reporting events and errors
      */
     public AdaptiveMessageContainer(ContainerConfiguration configuration,
@@ -131,6 +133,7 @@ public class AdaptiveMessageContainer {
                                     UnitOfWork work,
                                     ContainerStatistics statistics,
                                     ExecutorService executorService,
+                                    boolean javaEEXAEnabled,
                                     MessageContainerMonitor monitor) {
         listenerUri = configuration.getUri();
         destinationType = configuration.getDestinationType();
@@ -157,6 +160,7 @@ public class AdaptiveMessageContainer {
         this.work = work;
         this.statistics = statistics;
         this.executorService = executorService;
+        this.javaEEXAEnabled = javaEEXAEnabled;
         this.monitor = monitor;
     }
 
@@ -653,8 +657,12 @@ public class AdaptiveMessageContainer {
      * @throws JMSException if there is an error creating the session
      */
     private Session createSession(Connection connection) throws JMSException {
+        if (javaEEXAEnabled && TransactionType.GLOBAL == transactionType) {
+            // Java EE containers requires require the transacted parameter to be set to false for XA transactions
+            return connection.createSession(false, Session.SESSION_TRANSACTED);
+        }
+        // non-Java EE/XA environment (e.g. Atomikos, a local transaction or no transaction)
         boolean transacted = TransactionType.SESSION == transactionType || TransactionType.GLOBAL == transactionType;
-        // FIXME Atomikos requires this set to "true" but app servers (and Java EE) requires it to be false for XA transactions
         return connection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
     }
 

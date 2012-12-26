@@ -55,6 +55,7 @@ import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeStart;
@@ -81,6 +82,8 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
     private TransactionManager tm;
     private MessageContainerMonitor containerMonitor;
     private ManagementService managementService;
+    private HostInfo hostInfo;
+
     private ContainerManagerMonitor managerMonitor;
     private int transactionTimeout = DEFAULT_TRX_TIMEOUT;
 
@@ -88,12 +91,14 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
                                        @Reference ExecutorService executorService,
                                        @Reference TransactionManager tm,
                                        @Reference ManagementService managementService,
+                                       @Reference HostInfo hostInfo,
                                        @Monitor MessageContainerMonitor containerMonitor,
                                        @Monitor ContainerManagerMonitor managerMonitor) {
         this.eventService = eventService;
         this.executorService = executorService;
         this.tm = tm;
         this.managementService = managementService;
+        this.hostInfo = hostInfo;
         this.containerMonitor = containerMonitor;
         this.managerMonitor = managerMonitor;
     }
@@ -183,6 +188,7 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
                                                                           transactionHelper,
                                                                           statistics,
                                                                           executorService,
+                                                                          hostInfo.isJavaEEXAEnabled(),
                                                                           containerMonitor);
         containers.put(uri, container);
 
