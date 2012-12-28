@@ -142,6 +142,15 @@ public class Contribution implements Serializable {
     }
 
     /**
+     * Used to override the contribution location during processing.
+     *
+     * @param location the new contribution location
+     */
+    public void setLocation(URL location) {
+        this.location = location;
+    }
+
+    /**
      * Returns the MIME type for the contribution.
      *
      * @return the MIME type for the contribution
