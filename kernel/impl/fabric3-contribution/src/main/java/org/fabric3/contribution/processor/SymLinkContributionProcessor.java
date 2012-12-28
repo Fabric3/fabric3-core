@@ -90,6 +90,8 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
         try {
             Contribution syntheticContribution = createSyntheticContribution(contribution);
             processorRegistry.processManifest(syntheticContribution, context);
+            // override the location
+            contribution.setLocation(syntheticContribution.getLocation());
             contribution.setManifest(syntheticContribution.getManifest());
             contribution.addMetaData(contribution.getUri(), syntheticContribution);
         } catch (IOException e) {
