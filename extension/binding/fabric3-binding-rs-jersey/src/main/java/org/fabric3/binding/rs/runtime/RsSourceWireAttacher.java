@@ -41,9 +41,13 @@ import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import com.sun.jersey.server.impl.application.WebApplicationImpl;
 import com.sun.jersey.spi.container.JavaMethodInvokerFactory;
 import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -70,6 +74,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
     private ClassLoaderRegistry classLoaderRegistry;
     private RsContainerManager containerManager;
     private RsWireAttacherMonitor monitor;
+    private Level logLevel = Level.WARNING;
 
     public RsSourceWireAttacher(@Reference ServletHost servletHost,
                                 @Reference ClassLoaderRegistry registry,
@@ -82,6 +87,12 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         this.monitor = monitor;
         // TODO make realm configurable
         overrideDefaultInvoker(authenticator);
+        setDebugLevel();
+    }
+
+    @Property(required = false)
+    public void setLogLevel(String level) {
+        this.logLevel = Level.parse(level);
     }
 
     public void attach(RsSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WireAttachException {
@@ -174,5 +185,9 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         }
     }
 
+    private void setDebugLevel() {
+        Logger logger = Logger.getLogger("com.sun.jersey");
+        logger.setLevel(logLevel);
+    }
 
 }
