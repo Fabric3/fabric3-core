@@ -19,9 +19,11 @@ import org.fabric3.spi.wire.Wire;
  * Attaches a reference to the RS binding.
  */
 public class RsTargetWireAttacher implements TargetWireAttacher<RsTargetDefinition> {
-
-    @Reference
     private ClassLoaderRegistry classLoaderRegistry;
+
+    public RsTargetWireAttacher(@Reference ClassLoaderRegistry classLoaderRegistry) {
+        this.classLoaderRegistry = classLoaderRegistry;
+    }
 
     public void attach(PhysicalSourceDefinition sourceDefinition, RsTargetDefinition def, Wire wire) throws WiringException {
         ClassLoader targetClassLoader = classLoaderRegistry.getClassLoader(def.getClassLoaderId());
