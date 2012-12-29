@@ -37,12 +37,12 @@
 */
 package org.fabric3.binding.rs.runtime;
 
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
+import com.sun.jersey.spi.container.JavaMethodInvokerFactory;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -53,7 +53,6 @@ import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
@@ -71,7 +70,6 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
     private ClassLoaderRegistry classLoaderRegistry;
     private RsContainerManager containerManager;
     private RsWireAttacherMonitor monitor;
-    private BasicAuthenticator authenticator;
 
     public RsSourceWireAttacher(@Reference ServletHost servletHost,
                                 @Reference ClassLoaderRegistry registry,
@@ -83,7 +81,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         this.containerManager = containerManager;
         this.monitor = monitor;
         // TODO make realm configurable
-        this.authenticator = authenticator;
+        overrideDefaultInvoker(authenticator);
     }
 
     public void attach(RsSourceDefinition source, PhysicalTargetDefinition target, Wire wire) throws WireAttachException {
@@ -142,45 +140,38 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
             invocationChains.put(operation.getName(), chain);
         }
 
-        MethodInterceptor methodInterceptor = createMethodInterceptor(sourceDefinition, invocationChains);
-
         Class<?> interfaze = classLoader.loadClass(sourceDefinition.getRsClass());
-        Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(interfaze);
-        enhancer.setCallback(methodInterceptor);
-
-        // CGLib requires a classloader with access to the application classloader and this extension classloader
-        MultiParentClassLoader rsClassLoader = new MultiParentClassLoader(URI.create("RESTClassLoader"), getClass().getClassLoader());
-        rsClassLoader.addParent(classLoader);
-        enhancer.setClassLoader(rsClassLoader);
-
-        ClassLoader old = Thread.currentThread().getContextClassLoader();
-        try {
-            // set the TCCL as Jersey uses it to dynamically load classes
-            Thread.currentThread().setContextClassLoader(rsClassLoader);
-            Object instance = enhancer.create();
-            container.addResource(interfaze, instance);
-        } finally {
-            Thread.currentThread().setContextClassLoader(old);
-        }
+        ResourceInstance instance = new ResourceInstance(invocationChains, authenticate(sourceDefinition));
+        container.addResource(interfaze, instance);
     }
 
-    private MethodInterceptor createMethodInterceptor(RsSourceDefinition sourceDefinition, Map<String, InvocationChain> invocationChains) {
-        MethodInterceptor methodInterceptor;
+    private boolean authenticate(RsSourceDefinition sourceDefinition) {
         if (AuthenticationType.BASIC == sourceDefinition.getAuthenticationType()) {
-            methodInterceptor = new RsMethodInterceptor(invocationChains, authenticator);
-            for (InvocationChain chain : invocationChains.values()) {
-                RsAuthorizationInterceptor authInterceptor = new RsAuthorizationInterceptor();
-                chain.addInterceptor(0, authInterceptor);
-            }
+            return true;
         } else if (AuthenticationType.STATEFUL_FORM == sourceDefinition.getAuthenticationType()) {
             throw new UnsupportedOperationException();
         } else if (AuthenticationType.DIGEST == sourceDefinition.getAuthenticationType()) {
             throw new UnsupportedOperationException();
-        } else {
-            methodInterceptor = new RsMethodInterceptor(invocationChains);
         }
-        return methodInterceptor;
+        return false;
+    }
+
+    /**
+     * Overrides the default Jersey invoker which reflectively calls methods on a Java instance with one that passes an invocation down a component's
+     * invocation chain.
+     *
+     * @param authenticator the security authenticator
+     */
+    private void overrideDefaultInvoker(BasicAuthenticator authenticator) {
+        try {
+            Field field = JavaMethodInvokerFactory.class.getDeclaredField("defaultInstance");
+            field.setAccessible(true);
+            field.set(null, new F3MethodInvoker(authenticator));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
 
