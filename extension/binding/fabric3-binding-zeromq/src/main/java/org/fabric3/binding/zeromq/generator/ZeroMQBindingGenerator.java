@@ -87,29 +87,10 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
             URI targetUri = URI.create("zmq://" + contract.getInterfaceName());
             return new ZeroMQTargetDefinition(targetUri, metadata);
         }
-        LogicalCompositeComponent composite = binding.getParent().getParent().getParent();
-        URI parent = composite.getUri();
-        URI targetUri = URI.create(parent.toString() + "/" + binding.getDefinition().getTargetUri());
-        if (targetUri.getFragment() == null) {
-            LogicalComponent<?> component = composite.getComponent(targetUri);
-            if (component == null) {
-                throw new GenerationException("Target component not found: " + targetUri);
-            }
-            if (component.getServices().size() != 1) {
-                throw new GenerationException("Target component must have exactly one service if the service is not specified in the target URI");
-            }
-            Collection<LogicalService> services = component.getServices();
-            targetUri = services.iterator().next().getUri();
-        } else {
-            URI defragmented = UriHelper.getDefragmentedName(targetUri);
-            LogicalComponent component = composite.getComponent(defragmented);
-            if (component == null) {
-                throw new GenerationException("Target component not found: " + targetUri);
-            }
-
-        }
+        URI targetUri = parseTargetUri(binding);
         return generateTarget(contract, targetUri, metadata);
     }
+
 
     public ZeroMQTargetDefinition generateServiceBindingTarget(LogicalBinding<ZeroMQBindingDefinition> binding,
                                                                ServiceContract contract,
@@ -127,6 +108,51 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
             return new ZeroMQTargetDefinition(targetUri, callbackUri, metadata);
         }
         return new ZeroMQTargetDefinition(targetUri, metadata);
+    }
+
+    private URI parseTargetUri(LogicalBinding<ZeroMQBindingDefinition> binding) throws GenerationException {
+        LogicalCompositeComponent composite = binding.getParent().getParent().getParent();
+        URI parent = composite.getUri();
+
+        String bindingTarget = binding.getDefinition().getTargetUri().toString();
+        URI targetUri;
+        if (bindingTarget.contains("/")) {
+            String[] tokens = bindingTarget.split("/");
+            if (tokens.length != 2) {
+                throw new GenerationException("Invalid target specified on binding: " + bindingTarget);
+            }
+            targetUri = URI.create(parent.toString() + "/" + tokens[0]);
+            LogicalComponent<?> component = composite.getComponent(targetUri);
+            if (component == null) {
+                throw new GenerationException("Target component not found: " + targetUri);
+            }
+            LogicalService service = component.getService(tokens[1]);
+            if (service == null) {
+                throw new GenerationException("Target service not found on component " + targetUri + ": " + tokens[1]);
+            }
+            targetUri = service.getUri();
+        } else {
+            targetUri = URI.create(parent.toString() + "/" + bindingTarget);
+            if (targetUri.getFragment() == null) {
+                LogicalComponent<?> component = composite.getComponent(targetUri);
+                if (component == null) {
+                    throw new GenerationException("Target component not found: " + targetUri);
+                }
+                if (component.getServices().size() != 1) {
+                    throw new GenerationException("Target component must have exactly one service if the service is not specified in the target URI");
+                }
+                Collection<LogicalService> services = component.getServices();
+                targetUri = services.iterator().next().getUri();
+            } else {
+                URI defragmented = UriHelper.getDefragmentedName(targetUri);
+                LogicalComponent component = composite.getComponent(defragmented);
+                if (component == null) {
+                    throw new GenerationException("Target component not found: " + targetUri);
+                }
+
+            }
+        }
+        return targetUri;
     }
 
     private void validateServiceContract(ServiceContract contract) throws InvalidContractException {
