@@ -43,10 +43,21 @@ public class ZeroMQSourceDefinition extends PhysicalSourceDefinition {
     private URI callbackUri;
     private ZeroMQMetadata metadata;
 
+    /**
+     * Constructor for a bidirectional service.
+     *
+     * @param metadata the ZeroMQ metadata to configure the underlying socket
+     */
     public ZeroMQSourceDefinition(ZeroMQMetadata metadata) {
         this.metadata = metadata;
     }
 
+    /**
+     * Constructor for a bidirectional service.
+     *
+     * @param callbackUri the callback URI
+     * @param metadata    the ZeroMQ metadata to configure the underlying socket
+     */
     public ZeroMQSourceDefinition(URI callbackUri, ZeroMQMetadata metadata) {
         this.callbackUri = callbackUri;
         this.metadata = metadata;
@@ -59,4 +70,5 @@ public class ZeroMQSourceDefinition extends PhysicalSourceDefinition {
     public ZeroMQMetadata getMetadata() {
         return metadata;
     }
+
 }

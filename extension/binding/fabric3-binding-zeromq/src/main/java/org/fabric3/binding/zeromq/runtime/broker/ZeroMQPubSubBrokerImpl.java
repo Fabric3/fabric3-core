@@ -54,35 +54,44 @@ import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.federation.AddressAnnouncement;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
 import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
-import org.fabric3.binding.zeromq.runtime.handler.DeserializingEventStreamHandler;
 import org.fabric3.binding.zeromq.runtime.handler.PublisherHandler;
-import org.fabric3.binding.zeromq.runtime.handler.SerializingEventStreamHandler;
+import org.fabric3.binding.zeromq.runtime.handler.UnwrappingHandler;
+import org.fabric3.binding.zeromq.runtime.handler.WrappingHandler;
 import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
 import org.fabric3.binding.zeromq.runtime.message.NonReliablePublisher;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableSubscriber;
 import org.fabric3.binding.zeromq.runtime.message.Publisher;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.channel.HandlerCreationException;
+import org.fabric3.spi.channel.TransformerHandlerFactory;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
+import org.fabric3.spi.model.physical.ParameterTypeHelper;
+import org.fabric3.spi.model.type.java.JavaClass;
 
 /**
  *
  */
 @Service(ZeroMQPubSubBroker.class)
 public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventListener<RuntimeStop> {
+    private static final DataType<?> BYTES = new JavaClass<byte[]>(byte[].class);
+
     private static final String ZMQ = "zmq";
 
     private ContextManager manager;
     private AddressCache addressCache;
     private ExecutorService executorService;
     private PortAllocator allocator;
+    private TransformerHandlerFactory handlerFactory;
     private ZeroMQManagementService managementService;
     private EventService eventService;
     private HostInfo info;
@@ -98,6 +107,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                                   @Reference AddressCache addressCache,
                                   @Reference ExecutorService executorService,
                                   @Reference PortAllocator allocator,
+                                  @Reference TransformerHandlerFactory handlerFactory,
                                   @Reference ZeroMQManagementService managementService,
                                   @Reference EventService eventService,
                                   @Reference HostInfo info,
@@ -106,6 +116,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         this.addressCache = addressCache;
         this.executorService = executorService;
         this.allocator = allocator;
+        this.handlerFactory = handlerFactory;
         this.managementService = managementService;
         this.eventService = eventService;
         this.info = info;
@@ -138,15 +149,11 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         eventService.subscribe(RuntimeStop.class, this);
     }
 
-    public void subscribe(URI subscriberId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) {
+    public void subscribe(URI subscriberId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) throws BrokerException {
         String channelName = metadata.getChannelName();
         Subscriber subscriber = subscribers.get(channelName);
         if (subscriber == null) {
-            AsyncFanOutHandler fanOutHandler = new AsyncFanOutHandler(executorService);
-
-            DeserializingEventStreamHandler head = new DeserializingEventStreamHandler(loader);
-            head.setNext(fanOutHandler);
-
+            EventStreamHandler head = createSubscriberHandlers(connection, loader);
             List<SocketAddress> addresses = addressCache.getActiveAddresses(channelName);
             subscriber = new NonReliableSubscriber(subscriberId.toString(), manager, addresses, head, metadata, pollTimeout, monitor);
             subscriber.addConnection(subscriberId, connection);
@@ -177,7 +184,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         monitor.onUnsubscribe(id);
     }
 
-    public void connect(String connectionId, ChannelConnection connection, ZeroMQMetadata metadata) throws BrokerException {
+    public void connect(String connectionId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) throws BrokerException {
         String channelName = metadata.getChannelName();
         PublisherHolder holder = publishers.get(channelName);
         if (holder == null) {
@@ -188,7 +195,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 SocketAddress address = new SocketAddress(runtimeName, "tcp", host, port);
 
                 Publisher publisher = new NonReliablePublisher(manager, address, metadata, pollTimeout, monitor);
-                attachConnection(connection, publisher);
+                attachConnection(connection, publisher, loader);
 
                 AddressAnnouncement event = new AddressAnnouncement(channelName, AddressAnnouncement.Type.ACTIVATED, address);
                 addressCache.publish(event);
@@ -203,7 +210,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
             }
         } else {
             Publisher publisher = holder.getPublisher();
-            attachConnection(connection, publisher);
+            attachConnection(connection, publisher, loader);
             holder.getConnectionIds().add(connectionId);
         }
     }
@@ -250,10 +257,61 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         stopAll();
     }
 
-    private void attachConnection(ChannelConnection connection, Publisher publisher) {
+    private void attachConnection(ChannelConnection connection, Publisher publisher, ClassLoader loader) throws BrokerException {
         for (EventStream stream : connection.getEventStreams()) {
-            stream.addHandler(new SerializingEventStreamHandler());
+            try {
+                DataType<?> dataType = getEventType(stream, loader);
+                EventStreamHandler transformer = handlerFactory.createHandler(dataType, BYTES, loader);
+                stream.addHandler(new UnwrappingHandler());
+                stream.addHandler(transformer);
+            } catch (ClassNotFoundException e) {
+                throw new BrokerException("Error loading event type", e);
+            } catch (HandlerCreationException e) {
+                throw new BrokerException(e);
+            }
             stream.addHandler(new PublisherHandler(publisher));
+        }
+    }
+
+    private EventStreamHandler createSubscriberHandlers(ChannelConnection connection, ClassLoader loader) throws BrokerException {
+        try {
+            DataType<?> dataType = getEventTypeForConnection(connection, loader);
+            EventStreamHandler head = handlerFactory.createHandler(BYTES, dataType, loader);
+            WrappingHandler wrappingHandler = new WrappingHandler();
+            AsyncFanOutHandler fanOutHandler = new AsyncFanOutHandler(executorService);
+            wrappingHandler.setNext(fanOutHandler);
+            head.setNext(wrappingHandler);
+            return head;
+        } catch (HandlerCreationException e) {
+            throw new BrokerException(e);
+        }
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private DataType<?> getEventType(EventStream stream, ClassLoader loader) throws ClassNotFoundException {
+        Class<?> type;
+        List<String> eventTypes = stream.getDefinition().getEventTypes();
+        if (eventTypes.isEmpty()) {
+            // default to Object if there are no event types
+            type = Object.class;
+        } else {
+            type = ParameterTypeHelper.loadClass(eventTypes.get(0), loader);
+        }
+        return new JavaClass(type);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private DataType<?> getEventTypeForConnection(ChannelConnection connection, ClassLoader loader) throws BrokerException {
+        if (!connection.getEventStreams().isEmpty() && !connection.getEventStreams().get(0).getDefinition().getEventTypes().isEmpty()) {
+            try {
+                String eventType = connection.getEventStreams().get(0).getDefinition().getEventTypes().get(0);
+                Class<?> type = ParameterTypeHelper.loadClass(eventType, loader);
+                return new JavaClass(type);
+            } catch (ClassNotFoundException e) {
+                throw new BrokerException(e);
+            }
+        } else {
+            return new JavaClass<Object>(Object.class);
         }
     }
 

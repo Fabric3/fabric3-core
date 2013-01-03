@@ -44,6 +44,7 @@ import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.w3c.dom.Document;
 
+import org.fabric3.fabric.interceptor.TransformerInterceptorFactoryImpl;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.model.physical.PhysicalDataTypes;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;

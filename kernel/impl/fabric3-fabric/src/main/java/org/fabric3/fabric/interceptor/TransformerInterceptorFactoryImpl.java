@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.builder.transform;
+package org.fabric3.fabric.interceptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,9 @@ import java.util.List;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.builder.WiringException;
+import org.fabric3.spi.wire.InterceptorCreationException;
+import org.fabric3.spi.wire.NoInterceptorException;
+import org.fabric3.spi.wire.TransformerInterceptorFactory;
 import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.transform.TransformationException;
@@ -66,7 +68,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
                                          List<DataType<?>> sources,
                                          List<DataType<?>> targets,
                                          ClassLoader targetLoader,
-                                         ClassLoader sourceLoader) throws WiringException {
+                                         ClassLoader sourceLoader) throws InterceptorCreationException {
         List<Class<?>> targetTypes = loadTargetInputTypes(definition, targetLoader);
         List<Class<?>> sourceTypes = loadSourceInputTypes(definition, targetLoader);
         try {
@@ -90,7 +92,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
                 }
             }
             if (inTransformer == null) {
-                throw new NoTransformerException("No transformer found for operation: " + definition.getName());
+                throw new NoInterceptorException("No transformer found for operation: " + definition.getName());
             }
 
             // create the output transformer which flips the source and target types of the forward interceptor
@@ -99,11 +101,11 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
             Transformer<Object, Object> outTransformer =
                     (Transformer<Object, Object>) registry.getTransformer(selectedTarget, selectedSource, targetOutTypes, sourceOutTypes);
             if (outTransformer == null) {
-                throw new NoTransformerException("No transformer from type " + selectedTarget + " to type " + selectedSource);
+                throw new NoInterceptorException("No transformer from type " + selectedTarget + " to type " + selectedSource);
             }
             return new TransformerInterceptor(inTransformer, outTransformer, targetLoader, sourceLoader);
         } catch (TransformationException e) {
-            throw new WiringException(e);
+            throw new InterceptorCreationException(e);
         }
     }
 
@@ -113,13 +115,15 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      * @param definition the physical operation definition
      * @param loader     the  contribution classloader
      * @return a collection of loaded parameter types
-     * @throws WiringException if an error occurs loading the parameter types
+     * @throws InterceptorCreationException
+     *          if an error occurs loading the parameter types
      */
-    private List<Class<?>> loadSourceInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
+    private List<Class<?>> loadSourceInputTypes(PhysicalOperationDefinition definition, ClassLoader loader)
+            throws InterceptorCreationException {
         try {
             return ParameterTypeHelper.loadSourceInParameterTypes(definition, loader);
         } catch (ClassNotFoundException e) {
-            throw new WiringException(e);
+            throw new InterceptorCreationException(e);
         }
     }
 
@@ -129,13 +133,15 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      * @param definition the physical operation definition
      * @param loader     the  contribution classloader
      * @return a collection of loaded parameter types
-     * @throws WiringException if an error occurs loading the parameter types
+     * @throws InterceptorCreationException
+     *          if an error occurs loading the parameter types
      */
-    private List<Class<?>> loadTargetInputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
+    private List<Class<?>> loadTargetInputTypes(PhysicalOperationDefinition definition, ClassLoader loader)
+            throws InterceptorCreationException {
         try {
             return ParameterTypeHelper.loadTargetInParameterTypes(definition, loader);
         } catch (ClassNotFoundException e) {
-            throw new WiringException(e);
+            throw new InterceptorCreationException(e);
         }
     }
 
@@ -145,9 +151,11 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      * @param definition the physical operation definition
      * @param loader     the  contribution classloader
      * @return a collection of loaded parameter types
-     * @throws WiringException if an error occurs loading the parameter types
+     * @throws InterceptorCreationException
+     *          if an error occurs loading the parameter types
      */
-    private List<Class<?>> loadSourceOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
+    private List<Class<?>> loadSourceOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader)
+            throws InterceptorCreationException {
         List<Class<?>> types = new ArrayList<Class<?>>();
         try {
             Class<?> outParam = ParameterTypeHelper.loadSourceOutputType(definition, loader);
@@ -156,7 +164,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
             //  Set<Class<?>> faults = ParameterTypeHelper.loadFaultTypes(definition, loader);
             //  types.addAll(faults);
         } catch (ClassNotFoundException e) {
-            throw new WiringException(e);
+            throw new InterceptorCreationException(e);
         }
         return types;
     }
@@ -167,9 +175,11 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
      * @param definition the physical operation definition
      * @param loader     the  contribution classloader
      * @return a collection of loaded parameter types
-     * @throws WiringException if an error occurs loading the parameter types
+     * @throws InterceptorCreationException
+     *          if an error occurs loading the parameter types
      */
-    private List<Class<?>> loadTargetOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader) throws WiringException {
+    private List<Class<?>> loadTargetOutputTypes(PhysicalOperationDefinition definition, ClassLoader loader)
+            throws InterceptorCreationException {
         List<Class<?>> types = new ArrayList<Class<?>>();
         try {
             Class<?> outParam = ParameterTypeHelper.loadTargetOutputType(definition, loader);
@@ -178,7 +188,7 @@ public class TransformerInterceptorFactoryImpl implements TransformerInterceptor
             //  Set<Class<?>> faults = ParameterTypeHelper.loadFaultTypes(definition, loader);
             //  types.addAll(faults);
         } catch (ClassNotFoundException e) {
-            throw new WiringException(e);
+            throw new InterceptorCreationException(e);
         }
         return types;
     }

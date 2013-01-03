@@ -47,6 +47,13 @@ import org.fabric3.model.type.contract.DataType;
 public interface TransformerFactory {
 
     /**
+     * Returns a value for ordering transformers. Higher values signify less weight;
+     *
+     * @return an ascending value where 0 is first
+     */
+    int getOrder();
+
+    /**
      * Returns true if the factory creates transformers that can convert from the source to target data types.
      *
      * @param source the source datatype
@@ -56,7 +63,7 @@ public interface TransformerFactory {
     boolean canTransform(DataType<?> source, DataType<?> target);
 
     /**
-     * Creates a transformer capable of converting from the source to target data types. 
+     * Creates a transformer capable of converting from the source to target data types.
      *
      * @param source   the source data type
      * @param target   the target data type

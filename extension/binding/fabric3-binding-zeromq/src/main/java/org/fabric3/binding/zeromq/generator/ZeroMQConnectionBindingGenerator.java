@@ -57,6 +57,7 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer, LogicalBinding<ZeroMQBindingDefinition> binding)
             throws GenerationException {
         URI uri = consumer.getUri();
+
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
         setChannelName(binding, metadata);
         return new ZeroMQConnectionSourceDefinition(uri, metadata);

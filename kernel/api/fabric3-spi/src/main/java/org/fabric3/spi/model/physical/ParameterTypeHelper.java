@@ -151,7 +151,7 @@ public class ParameterTypeHelper {
      * @return the class
      * @throws ClassNotFoundException if an error occurs loading the class
      */
-    private static Class<?> loadClass(String name, ClassLoader loader) throws ClassNotFoundException {
+    public static Class<?> loadClass(String name, ClassLoader loader) throws ClassNotFoundException {
         Class<?> clazz;
         clazz = ParamTypes.PRIMITIVES_TYPES.get(name);
         if (clazz == null) {

@@ -50,7 +50,6 @@ import java.util.Map;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.fabric.builder.transform.TransformerInterceptorFactory;
 import org.fabric3.fabric.wire.InvocationChainImpl;
 import org.fabric3.fabric.wire.WireImpl;
 import org.fabric3.model.type.contract.DataType;
@@ -60,6 +59,8 @@ import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.builder.interceptor.InterceptorBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.wire.InterceptorCreationException;
+import org.fabric3.spi.wire.TransformerInterceptorFactory;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
@@ -226,8 +227,12 @@ public class ConnectorImpl implements Connector {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
             List<DataType<?>> sourceTypes = sourceDefinition.getPhysicalDataTypes();
             List<DataType<?>> targetTypes = targetDefinition.getPhysicalDataTypes();
-            Interceptor interceptor = transformerFactory.createInterceptor(operation, sourceTypes, targetTypes, targetLoader, sourceLoader);
-            chain.addInterceptor(interceptor);
+            try {
+                Interceptor interceptor = transformerFactory.createInterceptor(operation, sourceTypes, targetTypes, targetLoader, sourceLoader);
+                chain.addInterceptor(interceptor);
+            } catch (InterceptorCreationException e) {
+                throw new WiringException(e);
+            }
         }
     }
 

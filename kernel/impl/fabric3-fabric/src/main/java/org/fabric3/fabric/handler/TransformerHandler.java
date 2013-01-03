@@ -35,40 +35,48 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.builder.transform;
+package org.fabric3.fabric.handler;
 
-import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.fabric.interceptor.TransformerInterceptor;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
-import org.fabric3.spi.wire.Interceptor;
 
 /**
- *
+ * Converts the event to a target format by delegating to a transformer.
  */
-public class TransformerInterceptorTestCase extends TestCase {
+public class TransformerHandler implements EventStreamHandler {
+    private Transformer<Object, Object> transformer;
+    private ClassLoader loader;
+    private EventStreamHandler next;
 
-    @SuppressWarnings({"unchecked"})
-    public void testInvoke() throws Exception {
-        ClassLoader loader = getClass().getClassLoader();
-        MessageImpl message = new MessageImpl();
-        message.setBody(new Object[]{"test"});
-
-        Transformer<Object, Object> in = EasyMock.createMock(Transformer.class);
-        Transformer<Object, Object> out = EasyMock.createMock(Transformer.class);
-        EasyMock.expect(in.transform(EasyMock.notNull(), EasyMock.eq(loader))).andReturn("in");
-        EasyMock.expect(out.transform(EasyMock.notNull(), EasyMock.eq(loader))).andReturn("out");
-        Interceptor next = EasyMock.createMock(Interceptor.class);
-        EasyMock.expect(next.invoke(EasyMock.isA(Message.class))).andReturn(message);
-        EasyMock.replay(in, out, next);
-
-        TransformerInterceptor interceptor = new TransformerInterceptor(in, out, loader, loader);
-        interceptor.setNext(next);
-        interceptor.invoke(message);
-
-        EasyMock.verify(in, out, next);
+    /**
+     * Constructor.
+     *
+     * @param transformer the transformer
+     * @param loader    the event type classloader
+     */
+    public TransformerHandler(Transformer<Object, Object> transformer, ClassLoader loader) {
+        this.transformer = transformer;
+        this.loader = loader;
     }
+
+    public void handle(Object event) {
+        try {
+            Object o = transformer.transform(event, loader);
+            next.handle(o);
+        } catch (TransformationException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    public void setNext(EventStreamHandler next) {
+        this.next = next;
+    }
+
+    public EventStreamHandler getNext() {
+        return next;
+    }
+
 }

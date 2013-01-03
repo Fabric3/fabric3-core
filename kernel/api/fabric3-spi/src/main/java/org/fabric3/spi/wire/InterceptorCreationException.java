@@ -35,17 +35,21 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.builder.transform;
+package org.fabric3.spi.wire;
 
-import org.fabric3.spi.builder.WiringException;
+import org.fabric3.host.Fabric3Exception;
 
 /**
- * Thrown when a transformer cannot be found for converting from an operation parameter type to another.
+ * Thrown when a transformer interceptor cannot be created.
  */
-public class NoTransformerException extends WiringException {
+public class InterceptorCreationException extends Fabric3Exception {
     private static final long serialVersionUID = -3119130836236306468L;
 
-    public NoTransformerException(String message) {
+    public InterceptorCreationException(Throwable cause) {
+        super(cause);
+    }
+
+    public InterceptorCreationException(String message) {
         super(message);
     }
 }

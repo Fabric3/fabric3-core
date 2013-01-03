@@ -59,5 +59,13 @@
         <property name="certPassword" source="$systemConfig/f3:security/f3:cert.password"/>
     </component>
 
+    <component name="TransformerInterceptorFactory">
+        <f3:implementation.system class="org.fabric3.fabric.interceptor.TransformerInterceptorFactoryImpl"/>
+    </component>
+
+    <component name="TransformerHandlerFactory">
+        <f3:implementation.system class="org.fabric3.fabric.handler.TransformerHandlerFactoryImpl"/>
+    </component>
+
 
 </composite>

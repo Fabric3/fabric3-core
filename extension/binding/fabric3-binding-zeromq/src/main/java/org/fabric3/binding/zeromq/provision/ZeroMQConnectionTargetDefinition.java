@@ -42,6 +42,12 @@ public class ZeroMQConnectionTargetDefinition extends PhysicalConnectionTargetDe
     private static final long serialVersionUID = -3528383965698203784L;
     private ZeroMQMetadata metadata;
 
+    /**
+     * Constructor for a channel connection.
+     *
+     * @param uri      the channel URI
+     * @param metadata the ZeroMQ metadata to configure the underlying socket
+     */
     public ZeroMQConnectionTargetDefinition(URI uri, ZeroMQMetadata metadata) {
         this.metadata = metadata;
         setTargetUri(uri);
@@ -50,4 +56,5 @@ public class ZeroMQConnectionTargetDefinition extends PhysicalConnectionTargetDe
     public ZeroMQMetadata getMetadata() {
         return metadata;
     }
+
 }

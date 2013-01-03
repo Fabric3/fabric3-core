@@ -35,14 +35,12 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.builder.transform;
+package org.fabric3.spi.wire;
 
 import java.util.List;
 
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.wire.Interceptor;
 
 
 /**
@@ -53,7 +51,7 @@ public interface TransformerInterceptorFactory {
     /**
      * Creates a transforming interceptor for a service operation. The interceptor converts input parameters from a source to a target type and ouput
      * parameters from a target to a source type. The source and target types are selected from the list of supported source and target types based on
-     * order of preference (the source and target types are sorted in descending order) and the availability of a tranformer.
+     * order of preference (the source and target types are sorted in descending order) and the availability of a transformer.
      *
      * @param operation    the operation to create the interceptor for
      * @param sources      the source types in descending order of preference
@@ -61,13 +59,13 @@ public interface TransformerInterceptorFactory {
      * @param targetLoader the target service contribution classloader
      * @param sourceLoader the source component contribution classloader
      * @return the transforming interceptor
-     * @throws WiringException if there is an error creating the interceptor such a transformer not being available for any of the source-target type
-     *                         combinations
+     * @throws InterceptorCreationException if there is an error creating the interceptor such a transformer not being available for any of the
+     *                                      source-target type combinations
      */
     Interceptor createInterceptor(PhysicalOperationDefinition operation,
                                   List<DataType<?>> sources,
                                   List<DataType<?>> targets,
                                   ClassLoader targetLoader,
-                                  ClassLoader sourceLoader) throws WiringException;
+                                  ClassLoader sourceLoader) throws InterceptorCreationException;
 
 }

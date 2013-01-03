@@ -80,7 +80,6 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
                                                  List<LogicalOperation> operations,
                                                  EffectivePolicy policy) throws GenerationException {
         validateServiceContract(contract);
-
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
 
         if (binding.isCallback()) {
@@ -161,6 +160,7 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
         for (Operation operation : contract.getOperations()) {
             if (first) {
                 oneway = operation.getIntents().contains(ONEWAY);
+                first = false;
             } else {
                 boolean oneWayIntent = operation.getIntents().contains(ONEWAY);
                 if ((!oneway && oneWayIntent) || (oneway && !oneWayIntent)) {

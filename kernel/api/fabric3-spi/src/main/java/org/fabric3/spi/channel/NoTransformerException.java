@@ -35,40 +35,15 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.builder.transform;
-
-import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
-
-import org.fabric3.fabric.interceptor.TransformerInterceptor;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
-import org.fabric3.spi.transform.Transformer;
-import org.fabric3.spi.wire.Interceptor;
+package org.fabric3.spi.channel;
 
 /**
- *
+ * Thrown when a transformer cannot be found.
  */
-public class TransformerInterceptorTestCase extends TestCase {
+public class NoTransformerException extends HandlerCreationException {
+    private static final long serialVersionUID = -3119130836236306468L;
 
-    @SuppressWarnings({"unchecked"})
-    public void testInvoke() throws Exception {
-        ClassLoader loader = getClass().getClassLoader();
-        MessageImpl message = new MessageImpl();
-        message.setBody(new Object[]{"test"});
-
-        Transformer<Object, Object> in = EasyMock.createMock(Transformer.class);
-        Transformer<Object, Object> out = EasyMock.createMock(Transformer.class);
-        EasyMock.expect(in.transform(EasyMock.notNull(), EasyMock.eq(loader))).andReturn("in");
-        EasyMock.expect(out.transform(EasyMock.notNull(), EasyMock.eq(loader))).andReturn("out");
-        Interceptor next = EasyMock.createMock(Interceptor.class);
-        EasyMock.expect(next.invoke(EasyMock.isA(Message.class))).andReturn(message);
-        EasyMock.replay(in, out, next);
-
-        TransformerInterceptor interceptor = new TransformerInterceptor(in, out, loader, loader);
-        interceptor.setNext(next);
-        interceptor.invoke(message);
-
-        EasyMock.verify(in, out, next);
+    public NoTransformerException(String message) {
+        super(message);
     }
 }

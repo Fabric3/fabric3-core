@@ -54,9 +54,9 @@ import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.federation.AddressAnnouncement;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
 import org.fabric3.binding.zeromq.runtime.interceptor.OneWayInterceptor;
-import org.fabric3.binding.zeromq.runtime.interceptor.ReferenceMarshallingInterceptor;
 import org.fabric3.binding.zeromq.runtime.interceptor.RequestReplyInterceptor;
-import org.fabric3.binding.zeromq.runtime.interceptor.ServiceMarshallingInterceptor;
+import org.fabric3.binding.zeromq.runtime.interceptor.UnwrappingInterceptor;
+import org.fabric3.binding.zeromq.runtime.interceptor.WrappingInterceptor;
 import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
 import org.fabric3.binding.zeromq.runtime.message.DelegatingOneWaySender;
 import org.fabric3.binding.zeromq.runtime.message.DynamicOneWaySender;
@@ -69,14 +69,20 @@ import org.fabric3.binding.zeromq.runtime.message.Receiver;
 import org.fabric3.binding.zeromq.runtime.message.RequestReplySender;
 import org.fabric3.binding.zeromq.runtime.message.Sender;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
+import org.fabric3.spi.wire.InterceptorCreationException;
+import org.fabric3.spi.wire.TransformerInterceptorFactory;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.model.physical.ParameterTypeHelper;
+import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 
@@ -85,6 +91,10 @@ import org.fabric3.spi.wire.InvocationChain;
  */
 @Service(ZeroMQWireBroker.class)
 public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySender, Fabric3EventListener<RuntimeStop> {
+    private static final DataType BYTE_TYPE = new JavaClass<byte[]>(byte[].class);
+    private static final DataType EMPTY_TYPE = new JavaClass<Void>(Void.class);
+    List<DataType<?>> TRANSPORT_TYPES;   // the transport type is a byte array
+
     private static final String ZMQ = "zmq";
 
     private ContextManager manager;
@@ -96,6 +106,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     private ExecutorService executorService;
     private MessagingMonitor monitor;
     private long pollTimeout = 10000000;
+    private TransformerInterceptorFactory interceptorFactory;
     private String host;
 
     private Map<String, SenderHolder> senders = new HashMap<String, SenderHolder>();
@@ -107,6 +118,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
                                 @Reference ExecutorService executorService,
                                 @Reference ZeroMQManagementService managementService,
                                 @Reference EventService eventService,
+                                @Reference TransformerInterceptorFactory interceptorFactory,
                                 @Reference HostInfo info,
                                 @Monitor MessagingMonitor monitor) throws UnknownHostException {
         this.manager = manager;
@@ -115,10 +127,12 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         this.executorService = executorService;
         this.managementService = managementService;
         this.eventService = eventService;
+        this.interceptorFactory = interceptorFactory;
         this.info = info;
         this.monitor = monitor;
         this.host = InetAddress.getLocalHost().getHostAddress();
-
+        TRANSPORT_TYPES = new ArrayList<DataType<?>>();
+        TRANSPORT_TYPES.add(BYTE_TYPE);
     }
 
     /**
@@ -162,8 +176,15 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         }
         for (int i = 0, chainsSize = chains.size(); i < chainsSize; i++) {
             InvocationChain chain = chains.get(i);
-            ReferenceMarshallingInterceptor serializingInterceptor = new ReferenceMarshallingInterceptor(loader);
-            chain.addInterceptor(serializingInterceptor);
+            try {
+                PhysicalOperationDefinition physicalOperation = chain.getPhysicalOperation();
+                List<DataType<?>> sourceTypes = createTypes(physicalOperation, loader);
+                Interceptor interceptor = interceptorFactory.createInterceptor(physicalOperation, sourceTypes, TRANSPORT_TYPES, loader, loader);
+                chain.addInterceptor(interceptor);
+                chain.addInterceptor(new UnwrappingInterceptor());
+            } catch (InterceptorCreationException e) {
+                throw new BrokerException(e);
+            }
             Interceptor interceptor = createInterceptor(holder, i);
             chain.addInterceptor(interceptor);
         }
@@ -189,7 +210,8 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         }
     }
 
-    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws BrokerException {
+    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader)
+            throws BrokerException {
         if (receivers.containsKey(uri.toString())) {
             throw new BrokerException("Receiver already defined for " + uri);
         }
@@ -201,10 +223,8 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             String runtimeName = info.getRuntimeName();
             SocketAddress address = new SocketAddress(runtimeName, "tcp", host, port);
 
-            for (InvocationChain chain : chains) {
-                ServiceMarshallingInterceptor interceptor = new ServiceMarshallingInterceptor(loader);
-                chain.addInterceptor(interceptor);
-            }
+            addTransformer(chains, loader);
+
             boolean oneWay = isOneWay(chains, uri);
             Receiver receiver;
             if (oneWay) {
@@ -221,7 +241,8 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             String id = createReceiverId(uri);
             managementService.registerReceiver(id, receiver);
             monitor.onProvisionEndpoint(id);
-        } catch (PortAllocationException e) {
+        } catch (PortAllocationException
+                e) {
             throw new BrokerException("Error allocating port for " + uri, e);
         }
     }
@@ -303,15 +324,12 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
 
     private SenderHolder createSender(String endpointId, boolean oneWay, ZeroMQMetadata metadata) {
         List<SocketAddress> addresses = addressCache.getActiveAddresses(endpointId);
-
         Sender sender;
         if (oneWay) {
             sender = new NonReliableOneWaySender(endpointId, manager, addresses, pollTimeout, metadata, monitor);
         } else {
             sender = new NonReliableRequestReplySender(endpointId, manager, addresses, pollTimeout, metadata, monitor);
         }
-
-
         SenderHolder holder = new SenderHolder(sender);
         sender.start();
 
@@ -335,6 +353,40 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         }
         return chains.get(0).getPhysicalOperation().isOneWay();
     }
+
+    private void addTransformer(List<InvocationChain> chains, ClassLoader loader) throws BrokerException {
+        for (InvocationChain chain : chains) {
+            try {
+                PhysicalOperationDefinition physicalOperation = chain.getPhysicalOperation();
+                List<DataType<?>> targetTypes = createTypes(physicalOperation, loader);
+                Interceptor interceptor = interceptorFactory.createInterceptor(physicalOperation, TRANSPORT_TYPES, targetTypes, loader, loader);
+                chain.addInterceptor(new WrappingInterceptor());
+                chain.addInterceptor(interceptor);
+            } catch (InterceptorCreationException e) {
+                throw new BrokerException(e);
+            }
+        }
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private List<DataType<?>> createTypes(PhysicalOperationDefinition physicalOperation, ClassLoader loader) throws BrokerException {
+        try {
+            List<DataType<?>> dataTypes = new ArrayList<DataType<?>>();
+            if (physicalOperation.getSourceParameterTypes().isEmpty()) {
+                // no params
+                dataTypes.add(EMPTY_TYPE);
+            } else {
+                List<Class<?>> types = ParameterTypeHelper.loadSourceInParameterTypes(physicalOperation, loader);
+                for (Class<?> type : types) {
+                    dataTypes.add(new JavaClass((type)));
+                }
+            }
+            return dataTypes;
+        } catch (ClassNotFoundException e) {
+            throw new BrokerException("Error transforming parameter", e);
+        }
+    }
+
 
     private Interceptor createInterceptor(SenderHolder holder, int i) {
         Sender sender = holder.getSender();

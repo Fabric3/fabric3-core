@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.builder.transform;
+package org.fabric3.fabric.interceptor;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 

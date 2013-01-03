@@ -37,6 +37,10 @@ import org.fabric3.host.Fabric3Exception;
 public class BrokerException extends Fabric3Exception {
     private static final long serialVersionUID = 4442369221828416074L;
 
+    public BrokerException(Throwable cause) {
+        super(cause);
+    }
+
     public BrokerException(String message) {
         super(message);
     }

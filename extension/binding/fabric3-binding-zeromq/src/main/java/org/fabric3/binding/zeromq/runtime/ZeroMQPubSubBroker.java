@@ -47,7 +47,7 @@ public interface ZeroMQPubSubBroker {
      * @param subscriberId the unique subscription id
      * @param metadata     the ZeroMQ metadata to configure the underlying socket
      * @param connection   the consumer connection to dispatch received message to
-     * @param loader       the classloader for deserializing messages, typically the consumer implementation contribution classloader
+     * @param loader       the classloader for deserializing events, typically the consumer implementation contribution classloader
      * @throws BrokerException if an error occurs creating the subscription
      */
     void subscribe(URI subscriberId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) throws BrokerException;
@@ -65,11 +65,12 @@ public interface ZeroMQPubSubBroker {
      * Connects the channel connection to the publisher for the given channel.
      *
      * @param connectionId the unique id for the connection
-     * @param connection   the producer that dispatches messages to the publisher
      * @param metadata     the ZeroMQ metadata to configure the underlying socket
+     * @param connection   the producer that dispatches messages to the publisher
+     * @param loader       the classloader for the event types being sent
      * @throws BrokerException if an error occurs removing the subscription
      */
-    void connect(String connectionId, ChannelConnection connection, ZeroMQMetadata metadata) throws BrokerException;
+    void connect(String connectionId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) throws BrokerException;
 
     /**
      * Releases a publisher for a channel.

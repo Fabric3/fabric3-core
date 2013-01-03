@@ -52,7 +52,7 @@ import org.fabric3.spi.wire.InvocationChain;
  * <p/>
  * Since ZeroMQ requires the creating socket thread to receive messages, a polling thread is used for reading messages from the ZeroMQ socket. The
  * receiver listens for address updates (e.g. a sender coming online or going away). Since ZeroMQ does not implement disconnect semantics on a socket,
- * if an update is received the original socket will be closed and a new one created to connect to the update set of addresses.
+ * if an update is received the original socket will be closed and a new one created to connect to the updated set of addresses.
  */
 @Management
 public class NonReliableOneWayReceiver extends AbstractReceiver implements Thread.UncaughtExceptionHandler {

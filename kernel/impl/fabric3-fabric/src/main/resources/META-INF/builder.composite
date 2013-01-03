@@ -37,10 +37,6 @@
         <f3:implementation.system class="org.fabric3.fabric.builder.classloader.ClassLoaderWireBuilderImpl"/>
     </component>
 
-    <component name="TransformerInterceptorFactory">
-        <f3:implementation.system class="org.fabric3.fabric.builder.transform.TransformerInterceptorFactoryImpl"/>
-    </component>
-
     <component name="ChannelSourceAttacher" f3:key="org.fabric3.fabric.model.physical.ChannelSourceDefinition">
         <f3:implementation.system class="org.fabric3.fabric.builder.channel.ChannelSourceAttacher"/>
     </component>

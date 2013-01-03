@@ -52,6 +52,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
+import org.fabric3.spi.wire.TransformerInterceptorFactory;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
@@ -85,6 +86,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
     private ZMQ.Context context;
     private ZeroMQWireBrokerImpl broker;
     private PortAllocator allocator;
+    private TransformerInterceptorFactory interceptorFactory;
     private HostInfo info;
     private ZeroMQManagementService managementService;
     private ZeroMQMetadata metadata;
@@ -102,14 +104,23 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         EasyMock.expect(allocator.allocate("wire", "zmq")).andReturn(port);
         allocator.release("wire");
 
-        EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info, managementService);
+        Interceptor transformInterceptor = EasyMock.createMock(Interceptor.class);
+
+        EasyMock.expect(interceptorFactory.createInterceptor(EasyMock.isA(PhysicalOperationDefinition.class),
+                                                             EasyMock.isA(List.class),
+                                                             EasyMock.isA(List.class),
+                                                             EasyMock.isA(ClassLoader.class),
+                                                             EasyMock.isA(ClassLoader.class))).andReturn(transformInterceptor);
+
+        EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info, managementService, interceptorFactory);
 
         PhysicalOperationDefinition definition = new PhysicalOperationDefinition();
         definition.setOneWay(true);
 
         Interceptor interceptor = EasyMock.createMock(Interceptor.class);
         InvocationChain chain = EasyMock.createMock(InvocationChain.class);
-        EasyMock.expect(chain.getPhysicalOperation()).andReturn(definition);
+        EasyMock.expect(chain.getPhysicalOperation()).andReturn(definition).atLeastOnce();
+        chain.addInterceptor(EasyMock.isA(Interceptor.class));
         chain.addInterceptor(EasyMock.isA(Interceptor.class));
 
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(interceptor).atLeastOnce();
@@ -120,7 +131,17 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         broker.connectToReceiver(URI.create("wire"), chains, metadata, getClass().getClassLoader());
         broker.releaseReceiver(URI.create("wire"));
 
-        EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain, interceptor, port, managementService);
+        EasyMock.verify(manager,
+                        addressCache,
+                        executorService,
+                        monitor,
+                        allocator,
+                        info,
+                        chain,
+                        interceptor,
+                        port,
+                        managementService,
+                        interceptorFactory);
     }
 
     public void testConnectToSenderRelease() throws Exception {
@@ -129,14 +150,22 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         addressCache.subscribe(EasyMock.eq("wire"), EasyMock.isA(OneWaySender.class));
         EasyMock.expectLastCall();
 
+        Interceptor transformInterceptor = EasyMock.createMock(Interceptor.class);
+
+        EasyMock.expect(interceptorFactory.createInterceptor(EasyMock.isA(PhysicalOperationDefinition.class),
+                                                             EasyMock.isA(List.class),
+                                                             EasyMock.isA(List.class),
+                                                             EasyMock.isA(ClassLoader.class),
+                                                             EasyMock.isA(ClassLoader.class))).andReturn(transformInterceptor);
+
         EasyMock.replay(context);
-        EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info, managementService);
+        EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info, managementService, interceptorFactory);
 
         PhysicalOperationDefinition definition = new PhysicalOperationDefinition();
         definition.setOneWay(true);
 
         InvocationChain chain = EasyMock.createMock(InvocationChain.class);
-        EasyMock.expect(chain.getPhysicalOperation()).andReturn(definition);
+        EasyMock.expect(chain.getPhysicalOperation()).andReturn(definition).atLeastOnce();
         chain.addInterceptor(EasyMock.isA(Interceptor.class));
         EasyMock.expectLastCall().atLeastOnce();
 
@@ -147,7 +176,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         broker.releaseSender("id", URI.create("wire"));
 
         JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
-        EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain, managementService);
+        EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain, managementService, interceptorFactory);
     }
 
     @Override
@@ -164,12 +193,22 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
 
         info = EasyMock.createMock(HostInfo.class);
 
+        interceptorFactory = EasyMock.createMock(TransformerInterceptorFactory.class);
+
         monitor = EasyMock.createNiceMock(MessagingMonitor.class);
 
         managementService = EasyMock.createNiceMock(ZeroMQManagementService.class);
 
         EventService eventService = EasyMock.createNiceMock(EventService.class);
-        broker = new ZeroMQWireBrokerImpl(manager, addressCache, allocator, executorService, managementService, eventService, info, monitor);
+        broker = new ZeroMQWireBrokerImpl(manager,
+                                          addressCache,
+                                          allocator,
+                                          executorService,
+                                          managementService,
+                                          eventService,
+                                          interceptorFactory,
+                                          info,
+                                          monitor);
 
         metadata = new ZeroMQMetadata();
 

@@ -56,7 +56,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.w3c.dom.Document;
 
-import org.fabric3.fabric.builder.transform.TransformerInterceptorFactory;
+import org.fabric3.spi.wire.TransformerInterceptorFactory;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.builder.component.TargetWireAttacher;

@@ -37,6 +37,7 @@ import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
@@ -44,9 +45,11 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
  */
 public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<ZeroMQConnectionTargetDefinition> {
     private ZeroMQPubSubBroker broker;
+    private ClassLoaderRegistry registry;
 
-    public ZeroMQConnectionTargetAttacher(@Reference ZeroMQPubSubBroker broker) {
+    public ZeroMQConnectionTargetAttacher(@Reference ZeroMQPubSubBroker broker, @Reference ClassLoaderRegistry registry) {
         this.broker = broker;
+        this.registry = registry;
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, ZeroMQConnectionTargetDefinition target, ChannelConnection connection)
@@ -54,7 +57,8 @@ public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<
         try {
             ZeroMQMetadata metadata = target.getMetadata();
             String connectionId = source.getUri().toString();
-            broker.connect(connectionId, connection, metadata);
+            ClassLoader loader = registry.getClassLoader(target.getClassLoaderId());
+            broker.connect(connectionId, metadata, connection, loader);
         } catch (BrokerException e) {
             throw new ConnectionAttachException(e);
         }
