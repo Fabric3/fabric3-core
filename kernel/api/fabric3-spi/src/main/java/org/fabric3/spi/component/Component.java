@@ -50,8 +50,6 @@ import org.fabric3.host.monitor.Monitorable;
 
 /**
  * The runtime instantiation of an SCA component
- *
- * @version $$Rev$$ $$Date$$
  */
 public interface Component extends Monitorable {
 
