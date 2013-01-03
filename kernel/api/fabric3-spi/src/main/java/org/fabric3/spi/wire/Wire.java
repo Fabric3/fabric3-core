@@ -47,8 +47,6 @@ import java.util.List;
 
 /**
  * Wires connect references and services via a collection of invocation chains. An invocation chain corresponds to a service operation.
- *
- * @version $$Rev$$ $$Date$$
  */
 public interface Wire {
     /**
