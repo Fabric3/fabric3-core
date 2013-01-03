@@ -41,9 +41,10 @@ package org.fabric3.spi.host;
 import java.util.Set;
 
 /**
- * Responsible for allocating ports for use by a binding transport or other extension. A runtime can be configured with a range of ports, which serves
- * as a pool for transports to obtain on open port using {@link #allocate(String, String)}. If the runtime is not configured with a port range,
- * services requiring sockets should use #{link #reserve} to reserve a port.
+ * Responsible for allocating ports for use by a binding transport or other extension.
+ * <p/>
+ * A runtime can be configured with a range of ports, which serves as a pool for transports to obtain an open port using {@link #allocate(String,
+ * String)}. If the runtime is not configured with a port range, services requiring sockets should use #{link #reserve} to reserve a port.
  */
 public interface PortAllocator {
 
