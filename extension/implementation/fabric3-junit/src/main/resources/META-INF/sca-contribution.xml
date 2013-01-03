@@ -7,7 +7,7 @@ Fabric3 is licensed under modified terms of the GNU General
 Public License. See the accompanying license file for details.
 
 
-    $Rev$ $Date$
+
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
@@ -18,6 +18,7 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.implementation.java.provision" version="1.9.7"/>
     <import.java package="org.fabric3.implementation.java.introspection" version="1.9.7"/>
     <import.java package="org.fabric3.implementation.java.runtime" version="1.9.7"/>
+    <import.java package="org.fabric3.implementation.java.generator" version="1.9.7"/>
     <import.java package="org.fabric3.test.spi" version="1.9.7"/>
     <deployable composite="f3:JUnitExtension"/>
 </contribution>
