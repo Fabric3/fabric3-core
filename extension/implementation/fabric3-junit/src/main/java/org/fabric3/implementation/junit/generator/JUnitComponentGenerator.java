@@ -42,7 +42,10 @@ import java.net.URI;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
+import org.fabric3.implementation.java.generator.JavaGenerationHelper;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
+import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
+import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
@@ -75,10 +78,12 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  */
 @EagerInit
 public class JUnitComponentGenerator implements ComponentGenerator<LogicalComponent<JUnitImplementation>> {
-    private final GenerationHelper helper;
+    private GenerationHelper helper;
+    private JavaGenerationHelper javaHelper;
 
-    public JUnitComponentGenerator(@Reference GenerationHelper helper) {
+    public JUnitComponentGenerator(@Reference GenerationHelper helper, @Reference JavaGenerationHelper javaHelper) {
         this.helper = helper;
+        this.javaHelper = javaHelper;
     }
 
     public PhysicalComponentDefinition generate(LogicalComponent<JUnitImplementation> component) throws GenerationException {
@@ -132,13 +137,18 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
         throw new UnsupportedOperationException();
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) {
-        throw new UnsupportedOperationException();
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException {
+        JavaConnectionSourceDefinition definition = new JavaConnectionSourceDefinition();
+        javaHelper.generateConnectionSource(definition, producer);
+        return definition;
     }
 
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {
-        throw new UnsupportedOperationException();
+        JavaConnectionTargetDefinition definition = new JavaConnectionTargetDefinition();
+        javaHelper.generateConnectionTarget(definition, consumer);
+        return definition;
     }
+
 
     public PhysicalSourceDefinition generateResourceSource(LogicalResourceReference<?> resourceReference) throws GenerationException {
 
