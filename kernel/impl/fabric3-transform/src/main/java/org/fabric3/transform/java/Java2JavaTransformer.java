@@ -35,44 +35,20 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.databinding.json.transform;
+package org.fabric3.transform.java;
 
-import java.io.InputStream;
-import java.util.List;
+import java.io.Serializable;
 
-import org.codehaus.jackson.jaxrs.Annotations;
-import org.codehaus.jackson.jaxrs.MapperConfigurator;
-import org.codehaus.jackson.map.ObjectMapper;
-
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.json.JsonType;
-import org.fabric3.spi.transform.TransformerFactory;
+import org.fabric3.spi.transform.TransformationException;
 
 /**
- * Creates Transformers capable of marshalling serialized XML Strings received as an input stream to Java types using JSON.
+ * Transforms data from one classloader to another using Java serialization.
  */
-public class Stream2ObjectJsonTransformerFactory implements TransformerFactory {
-    private final static Annotations[] DEFAULT_ANNOTATIONS = {Annotations.JACKSON, Annotations.JAXB};
-    private MapperConfigurator configurator;
+public class Java2JavaTransformer extends AbstractSerializingTransformer<Serializable, Serializable> {
 
-    public Stream2ObjectJsonTransformerFactory() {
-        configurator = new MapperConfigurator(null, DEFAULT_ANNOTATIONS);
-    }
-
-    public int getOrder() {
-        return 0;
-    }
-
-    public boolean canTransform(DataType<?> source, DataType<?> target) {
-        return source instanceof JsonType && InputStream.class.isAssignableFrom(source.getPhysical()) && target instanceof JavaType;
-    }
-
-    public Stream2ObjectJsonTransformer create(DataType<?> source, DataType<?> target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) {
-        JavaType type = (JavaType) target;
-        ObjectMapper mapper = configurator.getDefaultMapper();
-        Class clazz = type.getPhysical();
-        return new Stream2ObjectJsonTransformer(clazz, mapper);
+    public Serializable transform(Serializable source, ClassLoader loader) throws TransformationException {
+        byte[] bytes = serialize(source);
+        return deserialize(bytes, loader);
     }
 
 

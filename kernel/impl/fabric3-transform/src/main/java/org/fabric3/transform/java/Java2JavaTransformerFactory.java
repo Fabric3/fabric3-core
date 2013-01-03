@@ -35,45 +35,29 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.databinding.json.transform;
+package org.fabric3.transform.java;
 
-import java.io.InputStream;
 import java.util.List;
-
-import org.codehaus.jackson.jaxrs.Annotations;
-import org.codehaus.jackson.jaxrs.MapperConfigurator;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.model.type.json.JsonType;
+import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;
 
 /**
- * Creates Transformers capable of marshalling serialized XML Strings received as an input stream to Java types using JSON.
+ * Factory for a transformer that passes Java types from one classloader to another using Java serialization.
  */
-public class Stream2ObjectJsonTransformerFactory implements TransformerFactory {
-    private final static Annotations[] DEFAULT_ANNOTATIONS = {Annotations.JACKSON, Annotations.JAXB};
-    private MapperConfigurator configurator;
-
-    public Stream2ObjectJsonTransformerFactory() {
-        configurator = new MapperConfigurator(null, DEFAULT_ANNOTATIONS);
-    }
+public class Java2JavaTransformerFactory implements TransformerFactory {
 
     public int getOrder() {
-        return 0;
+        return 10;
     }
 
     public boolean canTransform(DataType<?> source, DataType<?> target) {
-        return source instanceof JsonType && InputStream.class.isAssignableFrom(source.getPhysical()) && target instanceof JavaType;
+        return source instanceof JavaType && target instanceof JavaType && source.getPhysical().getName().equals(target.getPhysical().getName());
     }
 
-    public Stream2ObjectJsonTransformer create(DataType<?> source, DataType<?> target, List<Class<?>> sourceTypes, List<Class<?>> targetTypes) {
-        JavaType type = (JavaType) target;
-        ObjectMapper mapper = configurator.getDefaultMapper();
-        Class clazz = type.getPhysical();
-        return new Stream2ObjectJsonTransformer(clazz, mapper);
+    public Transformer<?, ?> create(DataType<?> source, DataType<?> target, List<Class<?>> inTypes, List<Class<?>> outTypes) {
+        return new Java2JavaTransformer();
     }
-
-
 }

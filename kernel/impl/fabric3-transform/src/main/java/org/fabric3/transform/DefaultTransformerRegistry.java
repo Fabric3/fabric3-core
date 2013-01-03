@@ -38,6 +38,8 @@
 package org.fabric3.transform;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +57,12 @@ import org.fabric3.spi.transform.TransformerRegistry;
  * Default TransformerRegistry implementation.
  */
 public class DefaultTransformerRegistry implements TransformerRegistry {
+    private static final Comparator<TransformerFactory> COMPARATOR = new Comparator<TransformerFactory>() {
+        public int compare(TransformerFactory first, TransformerFactory second) {
+            return first.getOrder() - second.getOrder();
+        }
+    };
+
     // cache of single type transformers
     private Map<Key, SingleTypeTransformer<?, ?>> transformers = new HashMap<Key, SingleTypeTransformer<?, ?>>();
 
@@ -71,7 +79,9 @@ public class DefaultTransformerRegistry implements TransformerRegistry {
 
     @Reference(required = false)
     public void setFactories(List<TransformerFactory> factories) {
-        this.factories = factories;
+        List<TransformerFactory> sorted = new ArrayList<TransformerFactory>(factories);
+        Collections.sort(sorted, COMPARATOR);
+        this.factories = sorted;
     }
 
     public Transformer<?, ?> getTransformer(DataType<?> source, DataType<?> target, List<Class<?>> inTypes, List<Class<?>> outTypes)

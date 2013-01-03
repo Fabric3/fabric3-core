@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.transform.java2java;
+package org.fabric3.transform.java;
 
 import java.util.List;
 
@@ -45,15 +45,19 @@ import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerFactory;
 
 /**
- * Factory for SerializableTransformer.
+ * Factory for transformers that deserialize Java types.
  */
-public class Java2JavaTransformerFactory implements TransformerFactory {
+public class Bytes2JavaTransformerFactory implements TransformerFactory {
+
+    public int getOrder() {
+        return 10;
+    }
 
     public boolean canTransform(DataType<?> source, DataType<?> target) {
-        return source instanceof JavaType && target instanceof JavaType;
+        return byte[].class.equals(source.getPhysical()) && target instanceof JavaType;
     }
 
     public Transformer<?, ?> create(DataType<?> source, DataType<?> target, List<Class<?>> inTypes, List<Class<?>> outTypes) {
-        return new Java2JavaTransformer();
+        return new Bytes2JavaTransformer();
     }
 }

@@ -67,6 +67,10 @@ public class DefaultTransformerRegistryTestCase extends TestCase {
 
     private class MockFactory implements TransformerFactory {
 
+        public int getOrder() {
+            return 0;
+        }
+
         public boolean canTransform(DataType<?> source, DataType<?> target) {
             return true;
         }

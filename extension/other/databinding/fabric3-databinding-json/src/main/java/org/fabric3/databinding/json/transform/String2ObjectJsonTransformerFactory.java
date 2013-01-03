@@ -59,6 +59,10 @@ public class String2ObjectJsonTransformerFactory implements TransformerFactory {
         configurator = new MapperConfigurator(null, DEFAULT_ANNOTATIONS);
     }
 
+    public int getOrder() {
+        return 0;
+    }
+
     public boolean canTransform(DataType<?> source, DataType<?> target) {
         return source instanceof JsonType && String.class.equals(source.getPhysical()) && target instanceof JavaType;
     }

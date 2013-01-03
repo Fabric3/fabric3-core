@@ -68,6 +68,10 @@ public class JAXB2DocumentTransformerFactory implements TransformerFactory {
         this.mapper = mapper;
     }
 
+    public int getOrder() {
+        return 0;
+    }
+
     public boolean canTransform(DataType<?> source, DataType<?> target) {
         return target.getPhysical().equals(Document.class) && source instanceof JavaType;
     }

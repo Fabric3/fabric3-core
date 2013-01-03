@@ -64,6 +64,10 @@ public class String2JAXBTransformerFactory implements TransformerFactory {
         this.contextFactory = contextFactory;
     }
 
+    public int getOrder() {
+        return 0;
+    }
+
     public boolean canTransform(DataType<?> source, DataType<?> target) {
         return source instanceof XSDType && String.class.equals(source.getPhysical()) && target instanceof JavaType;
     }

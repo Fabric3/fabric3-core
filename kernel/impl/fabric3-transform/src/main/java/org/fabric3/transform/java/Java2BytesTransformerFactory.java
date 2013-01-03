@@ -35,26 +35,29 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.transform.java2java;
+package org.fabric3.transform.java;
 
-import java.io.Serializable;
+import java.util.List;
 
-import junit.framework.TestCase;
+import org.fabric3.model.type.contract.DataType;
+import org.fabric3.spi.model.type.java.JavaType;
+import org.fabric3.spi.transform.Transformer;
+import org.fabric3.spi.transform.TransformerFactory;
 
 /**
- *
+ * Factory for transformers that serializes Java types.
  */
-public class SerializableTransformerTestCase extends TestCase {
-    private Java2JavaTransformer transformer = new Java2JavaTransformer();
+public class Java2BytesTransformerFactory implements TransformerFactory {
 
-    public void testTransform() throws Exception {
-        Foo foo = new Foo();
-        ClassLoader loader = getClass().getClassLoader();
-        Object ret = transformer.transform(foo, loader);
-        assertTrue(ret instanceof Foo);
+    public int getOrder() {
+        return 10;
     }
 
-    private static class Foo implements Serializable {
-        private static final long serialVersionUID = -4552015224133581697L;
+    public boolean canTransform(DataType<?> source, DataType<?> target) {
+        return source instanceof JavaType && byte[].class.equals(target.getPhysical());
+    }
+
+    public Transformer<?, ?> create(DataType<?> source, DataType<?> target, List<Class<?>> inTypes, List<Class<?>> outTypes) {
+        return new Java2BytesTransformer();
     }
 }

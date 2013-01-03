@@ -100,7 +100,19 @@ Public License. See the accompanying license file for details.
     </component>
 
     <component name="Java2JavaTransformerFactory">
-        <f3:implementation.system class="org.fabric3.transform.java2java.Java2JavaTransformerFactory"/>
+        <f3:implementation.system class="org.fabric3.transform.java.Java2JavaTransformerFactory"/>
+    </component>
+
+    <component name="Java2BytesTransformerFactory">
+        <f3:implementation.system class="org.fabric3.transform.java.Java2BytesTransformerFactory"/>
+    </component>
+
+    <component name="Bytes2JavaTransformerFactory">
+        <f3:implementation.system class="org.fabric3.transform.java.Bytes2JavaTransformerFactory"/>
+    </component>
+
+    <component name="ByteArrayToByteArrayTransformer">
+        <f3:implementation.system class="org.fabric3.transform.binary.ByteArrayToByteArrayTransformer"/>
     </component>
 
 </composite>

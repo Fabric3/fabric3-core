@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.transform.java2java;
+package org.fabric3.transform.java;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,16 +49,11 @@ import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 
 /**
- * Transforms data using serialization from one classloader to another.
+ * Base case for transforming data using Java serialization.
  */
-public class Java2JavaTransformer implements Transformer<Serializable, Serializable> {
+public abstract class AbstractSerializingTransformer<S, T> implements Transformer<S, T> {
 
-    public Serializable transform(Serializable source, ClassLoader loader) throws TransformationException {
-        byte[] bytes = serialize(source);
-        return deserialize(bytes, loader);
-    }
-
-    private byte[] serialize(Object o) throws TransformationException {
+    protected byte[] serialize(Object o) throws TransformationException {
         if (o == null) {
             throw new TransformationException("Attempt to serialize a null object");
         }
@@ -85,7 +80,7 @@ public class Java2JavaTransformer implements Transformer<Serializable, Serializa
         }
     }
 
-    private Serializable deserialize(byte[] bytes, ClassLoader loader) throws TransformationException {
+    protected Serializable deserialize(byte[] bytes, ClassLoader loader) throws TransformationException {
         ByteArrayInputStream bis = null;
         ObjectInputStream stream = null;
         try {

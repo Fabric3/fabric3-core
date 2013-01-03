@@ -65,6 +65,10 @@ public class Node2JAXBTransformerFactory implements TransformerFactory {
         this.contextFactory = contextFactory;
     }
 
+    public int getOrder() {
+        return 0;
+    }
+
     public boolean canTransform(DataType<?> source, DataType<?> target) {
         return Node.class.isAssignableFrom(source.getPhysical()) && target instanceof JavaType;
     }

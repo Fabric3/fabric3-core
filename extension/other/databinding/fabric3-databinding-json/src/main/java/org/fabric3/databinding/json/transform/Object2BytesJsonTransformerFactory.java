@@ -59,6 +59,10 @@ public class Object2BytesJsonTransformerFactory implements TransformerFactory {
         configurator = new MapperConfigurator(null, DEFAULT_ANNOTATIONS);
     }
 
+    public int getOrder() {
+        return 0;
+    }
+
     public boolean canTransform(DataType<?> source, DataType<?> target) {
         return target instanceof JsonType && byte[].class.equals(target.getPhysical()) && source instanceof JavaType;
     }
