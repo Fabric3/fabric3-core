@@ -129,7 +129,8 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
             if (service == null) {
                 throw new GenerationException("Target service not found on component " + targetUri + ": " + tokens[1]);
             }
-            targetUri = service.getUri();
+            // get the leaf service as the target may be a promotion
+            targetUri = service.getLeafService().getUri();
         } else {
             targetUri = URI.create(parent.toString() + "/" + bindingTarget);
             if (targetUri.getFragment() == null) {
@@ -141,7 +142,9 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
                     throw new GenerationException("Target component must have exactly one service if the service is not specified in the target URI");
                 }
                 Collection<LogicalService> services = component.getServices();
-                targetUri = services.iterator().next().getUri();
+                LogicalService service = services.iterator().next();
+                // get the leaf service as the target may be a promotion
+                targetUri = service.getLeafService().getUri();
             } else {
                 URI defragmented = UriHelper.getDefragmentedName(targetUri);
                 LogicalComponent component = composite.getComponent(defragmented);
