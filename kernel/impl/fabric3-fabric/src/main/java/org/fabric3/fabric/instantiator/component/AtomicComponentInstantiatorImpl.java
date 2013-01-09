@@ -172,7 +172,15 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
                 logicalConsumer.addIntents(componentConsumer.getIntents());
                 // TODO refactor this: URIs should be resolved to channels by a separate service that also handles promotion
                 for (URI uri : componentConsumer.getSources()) {
-                    logicalConsumer.addSource(URI.create(component.getParent().getUri().toString() + "/" + uri.toString()));
+                    if (uri.isAbsolute()) {
+                        LogicalComponent<?> domain = component.getParent();
+                        while (domain.getParent() != null) {
+                            domain = domain.getParent();
+                        }
+                        logicalConsumer.addSource(URI.create(domain.getUri().toString() + "/" + uri.getAuthority()));
+                    } else {
+                        logicalConsumer.addSource(URI.create(component.getParent().getUri().toString() + "/" + uri.toString()));
+                    }
                 }
             }
             component.addConsumer(logicalConsumer);
@@ -191,7 +199,15 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
                 logicalProducer.addIntents(componentProducer.getIntents());
                 // TODO refactor this: URIs should be resolved to channels by a separate service that also handles promotion
                 for (URI uri : componentProducer.getTargets()) {
-                    logicalProducer.addTarget(URI.create(component.getParent().getUri().toString() + "/" + uri.toString()));
+                    if (uri.isAbsolute()) {
+                        LogicalComponent<?> domain = component.getParent();
+                        while (domain.getParent() != null) {
+                            domain = domain.getParent();
+                        }
+                        logicalProducer.addTarget(URI.create(domain.getUri().toString() + "/" + uri.getAuthority()));
+                    } else {
+                        logicalProducer.addTarget(URI.create(component.getParent().getUri().toString() + "/" + uri.toString()));
+                    }
                 }
             }
             component.addProducer(logicalProducer);

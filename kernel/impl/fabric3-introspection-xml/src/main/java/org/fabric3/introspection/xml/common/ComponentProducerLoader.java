@@ -110,6 +110,10 @@ public class ComponentProducerLoader extends AbstractExtensibleTypeLoader<Compon
             while (tokenizer.hasMoreTokens()) {
                 String token = tokenizer.nextToken();
                 try {
+                    if (token.startsWith("\\\\")) {
+                        // a domain level channel
+                        token = "domain://" + token.substring(2);
+                    }
                     URI target = new URI(token);
                     targets.add(target);
                 } catch (URISyntaxException e) {
