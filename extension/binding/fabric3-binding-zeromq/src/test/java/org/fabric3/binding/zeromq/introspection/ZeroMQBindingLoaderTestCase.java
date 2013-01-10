@@ -45,6 +45,7 @@ package org.fabric3.binding.zeromq.introspection;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.List;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -52,6 +53,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 
+import org.fabric3.binding.zeromq.common.SocketAddressDefinition;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -60,7 +62,7 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 
 public class ZeroMQBindingLoaderTestCase extends TestCase {
     private static final String BINDING_CONFIG =
-            "<binding.zeromq name='zmq' host='host' high.water='1' multicast.rate='2' multicast.recovery='3' send.buffer='4' receive.buffer='5'/>";
+            "<binding.zeromq name='zmq' addresses='localhost:8080 localhost:8181' high.water='1' multicast.rate='2' multicast.recovery='3' send.buffer='4' receive.buffer='5'/>";
 
     private XMLInputFactory xmlFactory;
     private ZeroMQBindingLoader loader;
@@ -73,7 +75,13 @@ public class ZeroMQBindingLoaderTestCase extends TestCase {
 
         assertEquals("zmq", definition.getName());
         ZeroMQMetadata metadata = definition.getZeroMQMetadata();
-        assertEquals("host", metadata.getHost());
+        List<SocketAddressDefinition> addresses = metadata.getSocketAddresses();
+        assertEquals(2, addresses.size());
+        assertEquals(8080, addresses.get(0).getPort());
+        assertEquals("localhost", addresses.get(0).getHost());
+        assertEquals(8181, addresses.get(1).getPort());
+        assertEquals("localhost", addresses.get(1).getHost());
+
         assertEquals(1, metadata.getHighWater());
         assertEquals(2, metadata.getMulticastRate());
         assertEquals(3, metadata.getMulticastRecovery());
