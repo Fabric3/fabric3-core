@@ -39,6 +39,8 @@ package org.fabric3.binding.zeromq.introspection;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -46,6 +48,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
+import org.fabric3.binding.zeromq.common.SocketAddressDefinition;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -67,7 +70,7 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
                       "requires",
                       "policySets",
                       "target",
-                      "host",
+                      "addresses",
                       "name",
                       "high.water",
                       "multicast.rate",
@@ -96,7 +99,7 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
             }
         }
 
-        String host = reader.getAttributeValue(null, "host");
+        String addresses = reader.getAttributeValue(null, "addresses");
         long highWater = parseLong("high.water", reader, context);
         long multicastRate = parseLong("multicast.rate", reader, context);
         long multicastRecovery = parseLong("multicast.recovery", reader, context);
@@ -104,7 +107,27 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
         long receiveBuffer = parseLong("receive.buffer", reader, context);
         String wireFormat = reader.getAttributeValue(null, "wireFormat");
 
-        metadata.setHost(host);
+        if (addresses != null) {
+            List<SocketAddressDefinition> addressDefinitions = new ArrayList<SocketAddressDefinition>();
+            String[] addressStrings = addresses.split("\\s+");
+            for (String entry : addressStrings) {
+                String[] tokens = entry.split(":");
+                if (tokens.length != 2) {
+                    context.addError(new InvalidValue("Invalid address: " + entry, startLocation, definition));
+                } else {
+                    try {
+                        String host = tokens[0];
+                        int port = Integer.parseInt(tokens[1]);
+                        addressDefinitions.add(new SocketAddressDefinition(host, port));
+                    } catch (NumberFormatException e) {
+                        context.addError(new InvalidValue("Invalid port: " + e.getMessage(), startLocation, definition));
+                    }
+                }
+            }
+            metadata.setSocketAddresses(addressDefinitions);
+        }
+
+
         metadata.setHighWater(highWater);
         metadata.setMulticastRate(multicastRate);
         metadata.setMulticastRecovery(multicastRecovery);

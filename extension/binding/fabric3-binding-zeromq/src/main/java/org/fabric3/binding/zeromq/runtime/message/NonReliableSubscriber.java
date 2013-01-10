@@ -85,7 +85,7 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
      *
      * @param id          the unique subscriber id, typically the consumer URI.
      * @param manager     the ZeroMQ context manager
-     * @param addresses   the addresses the subscriber must connect to
+     * @param addresses   the publisher addresses the subscriber must connect to
      * @param head        the head handler for dispatching events
      * @param metadata    subscriber metadata
      * @param pollTimeout the timeout for polling operations in milliseconds

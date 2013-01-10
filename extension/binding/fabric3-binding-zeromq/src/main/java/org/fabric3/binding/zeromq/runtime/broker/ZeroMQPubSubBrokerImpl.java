@@ -45,6 +45,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.binding.zeromq.common.SocketAddressDefinition;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.BrokerException;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
@@ -96,7 +97,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     private EventService eventService;
     private HostInfo info;
     private MessagingMonitor monitor;
-    private String host;
+    private String hostAddress;
 
     private long pollTimeout = 10000;  // default to 10 seconds
 
@@ -121,7 +122,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         this.eventService = eventService;
         this.info = info;
         this.monitor = monitor;
-        this.host = InetAddress.getLocalHost().getHostAddress();
+        this.hostAddress = InetAddress.getLocalHost().getHostAddress();
     }
 
     /**
@@ -141,7 +142,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
      */
     @Property(required = false)
     public void setHost(String host) {
-        this.host = host;
+        this.hostAddress = host;
     }
 
     @Init
@@ -153,12 +154,37 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         String channelName = metadata.getChannelName();
         Subscriber subscriber = subscribers.get(channelName);
         if (subscriber == null) {
+            String id = subscriberId.toString();
             EventStreamHandler head = createSubscriberHandlers(connection, loader);
-            List<SocketAddress> addresses = addressCache.getActiveAddresses(channelName);
-            subscriber = new NonReliableSubscriber(subscriberId.toString(), manager, addresses, head, metadata, pollTimeout, monitor);
+            List<SocketAddress> addresses;
+
+            boolean refresh;
+            if (metadata.getSocketAddresses() != null) {
+                // socket addresses to connect to are explicitly configured in the binding definition
+                refresh = false;
+                addresses = new ArrayList<SocketAddress>();
+                for (SocketAddressDefinition addressDefinition : metadata.getSocketAddresses()) {
+                    Port port = new SpecifiedPort(addressDefinition.getPort());
+                    String host = addressDefinition.getHost();
+                    if ("localhost".equals(host)) {
+                        host = hostAddress;
+                    }
+                    SocketAddress socketAddress = new SocketAddress("synthetic", "tcp", host, port);
+                    addresses.add(socketAddress);
+                }
+            } else {
+                // publisher addresses to connect to are not specified in the binding, retrieve them from the federation layer
+                refresh = true;
+                addresses = addressCache.getActiveAddresses(channelName);
+            }
+            subscriber = new NonReliableSubscriber(id, manager, addresses, head, metadata, pollTimeout, monitor);
             subscriber.addConnection(subscriberId, connection);
             subscriber.start();
-            addressCache.subscribe(channelName, subscriber);
+            if (refresh) {
+                // don't subscribe for updates if the sockets are explicitly configured
+                addressCache.subscribe(channelName, subscriber);
+            }
+
             subscribers.put(channelName, subscriber);
             managementService.register(channelName, subscriberId, subscriber);
         } else {
@@ -189,10 +215,28 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         PublisherHolder holder = publishers.get(channelName);
         if (holder == null) {
             try {
-                Port port = allocator.allocate(channelName, ZMQ);
                 String runtimeName = info.getRuntimeName();
-
-                SocketAddress address = new SocketAddress(runtimeName, "tcp", host, port);
+                SocketAddress address;
+                List<SocketAddressDefinition> addresses = metadata.getSocketAddresses();
+                if (addresses != null) {
+                    // socket address to bind on is explicitly configured in the binding definition
+                    if (addresses.size() != 1) {
+                        // sanity check
+                        throw new BrokerException("Invalid number of socket addresses: " + addresses.size());
+                    }
+                    SocketAddressDefinition addressDefinition = addresses.get(0);
+                    int portDefinition = addressDefinition.getPort();
+                    Port port = allocator.reserve(channelName, ZMQ, portDefinition);
+                    String host = addressDefinition.getHost();
+                    if ("localhost".equals(host)) {
+                        host = hostAddress;
+                    }
+                    address = new SocketAddress(runtimeName, "tcp", host, port);
+                } else {
+                    // socket address to bind on is not configured in the binding definition - allocate one
+                    Port port = allocator.allocate(channelName, ZMQ);
+                    address = new SocketAddress(runtimeName, "tcp", hostAddress, port);
+                }
 
                 Publisher publisher = new NonReliablePublisher(manager, address, metadata, pollTimeout, monitor);
                 attachConnection(connection, publisher, loader);

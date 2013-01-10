@@ -30,15 +30,17 @@
  */
 package org.fabric3.binding.zeromq.common;
 
-import org.fabric3.model.type.ModelObject;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Holds ZeroMQ binding metadata.
  */
-public class ZeroMQMetadata extends ModelObject {
+public class ZeroMQMetadata implements Serializable {
     private static final long serialVersionUID = 6236084212498002778L;
 
-    private String host;
+    private List<SocketAddressDefinition> socketAddresses;
+
     private String channelName;
     private long highWater = -1;
     private long multicastRate = -1;
@@ -47,12 +49,22 @@ public class ZeroMQMetadata extends ModelObject {
     private long receiveBuffer = -1;
     private String wireFormat;
 
-    public String getHost() {
-        return host;
+    /**
+     * Returns the list of hosts to connect or bind to or null if not explicitly set.
+     *
+     * @return the list of hosts or null
+     */
+    public List<SocketAddressDefinition> getSocketAddresses() {
+        return socketAddresses;
     }
 
-    public void setHost(String host) {
-        this.host = host;
+    /**
+     * Sets the list of hosts to connect or bind to.
+     *
+     * @param socketAddresses the list of hosts
+     */
+    public void setSocketAddresses(List<SocketAddressDefinition> socketAddresses) {
+        this.socketAddresses = socketAddresses;
     }
 
     /**
