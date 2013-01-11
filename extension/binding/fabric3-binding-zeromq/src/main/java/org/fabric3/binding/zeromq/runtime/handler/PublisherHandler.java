@@ -46,10 +46,15 @@ public class PublisherHandler implements EventStreamHandler {
     }
 
     public void handle(Object event) {
-        if (!(event instanceof byte[])) {
+        if ((event instanceof byte[])) {
+            // single frame message
+            publisher.publish((byte[]) event);
+        } else if (event instanceof byte[][]) {
+            // multi-frame message
+            publisher.publish((byte[][]) event);
+        } else {
             throw new ServiceRuntimeException("Event must be serialized: " + event);
         }
-        publisher.publish((byte[]) event);
     }
 
     public void setNext(EventStreamHandler next) {

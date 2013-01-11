@@ -217,8 +217,26 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
                     reconnect();
                     long val = poller.poll(pollTimeout);
                     if (val > 0) {
+                        byte[][] frames = null;
                         byte[] payload = socket.recv(0);
-                        handler.handle(payload);
+                        int index = 1;
+                        while (socket.hasReceiveMore()) {
+                            if (frames == null) {
+                                frames = new byte[2][];
+                                frames[0] = payload;
+                            } else {
+                                byte[][] newArray = new byte[frames.length + 1][];
+                                System.arraycopy(frames, 0, newArray, 0, frames.length);
+                                frames = newArray;
+                            }
+                            frames[index] = socket.recv(0);
+                            index++;
+                        }
+                        if (frames == null) {
+                            handler.handle(payload);
+                        } else {
+                            handler.handle(frames);
+                        }
                         messagesProcessed.incrementAndGet();
                     }
                 }

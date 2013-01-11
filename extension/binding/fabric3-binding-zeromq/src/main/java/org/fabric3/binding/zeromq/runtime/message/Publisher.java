@@ -47,10 +47,17 @@ public interface Publisher {
     void stop();
 
     /**
-     * Sends the message over the socket.
+     * Sends a single frame message over the socket.
      *
      * @param message the serialized message
      */
     void publish(byte[] message);
+
+    /**
+     * Sends a multi-frame message over the socket.
+     *
+     * @param message the serialized message
+     */
+    void publish(byte[][] message);
 
 }

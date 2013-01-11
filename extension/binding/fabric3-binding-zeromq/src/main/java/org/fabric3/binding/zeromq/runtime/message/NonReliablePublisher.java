@@ -66,7 +66,7 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
     private Socket socket;
     private Dispatcher dispatcher;
 
-    private LinkedBlockingQueue<byte[]> queue;
+    private LinkedBlockingQueue<Object> queue;
 
     public NonReliablePublisher(ContextManager manager, SocketAddress address, ZeroMQMetadata metadata, long pollTimeout, MessagingMonitor monitor) {
         this.manager = manager;
@@ -74,7 +74,7 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
         this.pollTimeout = pollTimeout;
         this.metadata = metadata;
         this.monitor = monitor;
-        this.queue = new LinkedBlockingQueue<byte[]>();
+        this.queue = new LinkedBlockingQueue<Object>();
     }
 
     @ManagementOperation(type = OperationType.POST)
@@ -102,6 +102,14 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
     }
 
     public void publish(byte[] message) {
+        try {
+            queue.put(message);
+        } catch (InterruptedException e) {
+            Thread.interrupted();
+        }
+    }
+
+    public void publish(byte[][] message) {
         try {
             queue.put(message);
         } catch (InterruptedException e) {
@@ -139,15 +147,30 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
             while (active.get()) {
                 try {
 
-                    byte[] value = queue.poll(pollTimeout, TimeUnit.MILLISECONDS);
+                    Object value = queue.poll(pollTimeout, TimeUnit.MILLISECONDS);
                     if (value == null) {
                         continue;
                     }
-                    List<byte[]> drained = new ArrayList<byte[]>();
+                    List<Object> drained = new ArrayList<Object>();
                     drained.add(value);
                     queue.drainTo(drained);
-                    for (byte[] bytes : drained) {
-                        socket.send(bytes, 0);
+                    for (Object object : drained) {
+                        if (object instanceof byte[]) {
+                            // single frame message
+                            socket.send((byte[]) object, 0);
+                        } else if (object instanceof byte[][]) {
+                            // multi-frame message - send each frame
+                            byte[][] byteArray = (byte[][]) object;
+                            int length = byteArray.length;
+                            for (int i = 0; i < length - 1; i++) {
+                                byte[] bytes = byteArray[i];
+                                socket.send(bytes, ZMQ.SNDMORE);
+                            }
+                            socket.send(byteArray[length - 1], 0);
+                        } else {
+                            // programming error
+                            monitor.error("Unknown object type:" + object.getClass().getName());
+                        }
                     }
                     messagesProcessed.incrementAndGet();
                 } catch (RuntimeException e) {

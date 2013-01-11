@@ -85,6 +85,7 @@ import org.fabric3.spi.model.type.java.JavaClass;
 @Service(ZeroMQPubSubBroker.class)
 public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventListener<RuntimeStop> {
     private static final DataType<?> BYTES = new JavaClass<byte[]>(byte[].class);
+    private static final DataType<?> TWO_DIMENSIONAL_BYTES = new JavaClass<byte[][]>(byte[][].class);
 
     private static final String ZMQ = "zmq";
 
@@ -305,7 +306,15 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         for (EventStream stream : connection.getEventStreams()) {
             try {
                 DataType<?> dataType = getEventType(stream, loader);
-                EventStreamHandler transformer = handlerFactory.createHandler(dataType, BYTES, loader);
+                EventStreamHandler transformer;
+                if (dataType.getPhysical().equals(byte[][].class)) {
+                    // multi-frame data
+                    transformer = handlerFactory.createHandler(dataType, TWO_DIMENSIONAL_BYTES, loader);
+                } else {
+                    // single frame data
+                    transformer = handlerFactory.createHandler(dataType, BYTES, loader);
+                }
+
                 stream.addHandler(new UnwrappingHandler());
                 stream.addHandler(transformer);
             } catch (ClassNotFoundException e) {
@@ -320,7 +329,14 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     private EventStreamHandler createSubscriberHandlers(ChannelConnection connection, ClassLoader loader) throws BrokerException {
         try {
             DataType<?> dataType = getEventTypeForConnection(connection, loader);
-            EventStreamHandler head = handlerFactory.createHandler(BYTES, dataType, loader);
+            EventStreamHandler head;
+            if (dataType.getPhysical().equals(byte[][].class)) {
+                // multi-frame data
+                head = handlerFactory.createHandler(TWO_DIMENSIONAL_BYTES, dataType, loader);
+            } else {
+                // single frame data
+                head = handlerFactory.createHandler(BYTES, dataType, loader);
+            }
             WrappingHandler wrappingHandler = new WrappingHandler();
             AsyncFanOutHandler fanOutHandler = new AsyncFanOutHandler(executorService);
             wrappingHandler.setNext(fanOutHandler);

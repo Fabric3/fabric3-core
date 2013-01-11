@@ -105,6 +105,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
                 return "test".getBytes();
             }
         });
+        EasyMock.expect(socket.hasReceiveMore()).andReturn(false).atLeastOnce();
 
         AsyncFanOutHandler head = EasyMock.createMock(AsyncFanOutHandler.class);
         head.handle(EasyMock.isA(Object.class));
@@ -309,6 +310,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
                 return "test".getBytes();
             }
         });
+        EasyMock.expect(socket.hasReceiveMore()).andReturn(false).atLeastOnce();
         socket.close();
         // must be anytimes because release is called on the runner thread, which may not execute before the mock verify()
         EasyMock.expectLastCall().anyTimes();
