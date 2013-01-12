@@ -22,6 +22,7 @@ Public License. See the accompanying license file for details.
         <property name="stallThreshold" source="$systemConfig//f3:thread.pool/@stallThreshold"/>
         <property name="checkStalledThreads" source="$systemConfig//f3:thread.pool/@checkStalledThreads"/>
         <property name="stallCheckPeriod" source="$systemConfig//f3:thread.pool/@stallCheckPeriod"/>
+        <property name="statisticsOff" source="$systemConfig//f3:thread.pool/@statistics.off"/>
     </component>
 
 </composite>

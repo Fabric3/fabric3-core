@@ -85,12 +85,15 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     private StalledThreadMonitor stalledMonitor;
     private ExecutorMonitor monitor;
 
+    private boolean statisticsOff;
+
     // queue of in-flight work
-    private ConcurrentLinkedQueue<RunnableWrapper> inFlight = new ConcurrentLinkedQueue<RunnableWrapper>();
+    private ConcurrentLinkedQueue<Runnable> inFlight = new ConcurrentLinkedQueue<Runnable>();
 
     // statistics
     private AtomicLong totalExecutionTime = new AtomicLong();
     private AtomicLong completedWorkCount = new AtomicLong();
+
 
     /**
      * Sets the number of threads always available to service the executor queue.
@@ -186,6 +189,11 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
         this.checkStalledThreads = checkStalledThreads;
     }
 
+    @Property(required = false)
+    public void setStatisticsOff(boolean statisticsOff) {
+        this.statisticsOff = statisticsOff;
+    }
+
     @ManagementOperation(description = "The time a thread can be processing work before it is considered stalled in milliseconds")
     public int getStallThreshold() {
         return stallThreshold;
@@ -245,11 +253,13 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
 
     @ManagementOperation(description = "Returns the longest elapsed time for a currently running work request in milliseconds")
     public long getLongestRunning() {
-        RunnableWrapper runnable = inFlight.peek();
-        if (runnable == null) {
+        Runnable runnable = inFlight.peek();
+        if (runnable == null || !(runnable instanceof RunnableWrapper)) {
+            // no work or statistics turned off
             return -1;
         }
-        return System.currentTimeMillis() - runnable.start;
+        RunnableWrapper wrapper = (RunnableWrapper) runnable;
+        return System.currentTimeMillis() - wrapper.start;
     }
 
     @ManagementOperation
@@ -277,7 +287,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
         delegate = new ThreadPoolExecutor(coreSize, maximumSize, Long.MAX_VALUE, TimeUnit.SECONDS, queue, factory);
         delegate.setKeepAliveTime(keepAliveTime, TimeUnit.MILLISECONDS);
         delegate.allowCoreThreadTimeOut(allowCoreThreadTimeOut);
-        if (checkStalledThreads) {
+        if (checkStalledThreads && !statisticsOff) {
             stalledMonitor = new StalledThreadMonitor();
             delegate.execute(stalledMonitor);
         }
@@ -292,8 +302,12 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     }
 
     public void execute(Runnable runnable) {
-        Runnable wrapper = new RunnableWrapper(runnable);
-        delegate.execute(wrapper);
+        if (statisticsOff) {
+            delegate.execute(runnable);
+        } else {
+            Runnable wrapper = new RunnableWrapper(runnable);
+            delegate.execute(wrapper);
+        }
     }
 
     public void shutdown() {
@@ -385,10 +399,14 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
                     continue;
                 }
                 // iterator never throws ConcurrentModificationException and can therefore be used to safely traverse the in-flight work queue
-                for (RunnableWrapper runnable : inFlight) {
-                    long elapsed = System.currentTimeMillis() - runnable.start;
+                for (Runnable runnable : inFlight) {
+                    if (!(runnable instanceof RunnableWrapper)) {
+                        continue;
+                    }
+                    RunnableWrapper wrapper = (RunnableWrapper) runnable;
+                    long elapsed = System.currentTimeMillis() - wrapper.start;
                     if (elapsed >= stallThreshold) {
-                        Thread thread = runnable.currentThread;
+                        Thread thread = wrapper.currentThread;
                         if (thread != null) {
                             StackTraceElement[] trace = thread.getStackTrace();
                             StringBuilder builder = new StringBuilder();
