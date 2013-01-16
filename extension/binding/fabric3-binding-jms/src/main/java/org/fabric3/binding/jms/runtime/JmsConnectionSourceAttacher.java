@@ -52,6 +52,8 @@ import javax.jms.JMSException;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.binding.jms.runtime.channel.EventStreamListener;
+import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
 import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
 import org.fabric3.binding.jms.runtime.container.MessageContainerManager;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
@@ -60,7 +62,7 @@ import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
-import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
@@ -71,9 +73,9 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
 import static org.fabric3.binding.jms.spi.common.CacheLevel.ADMINISTERED_OBJECTS;
 import static org.fabric3.binding.jms.spi.common.CacheLevel.CONNECTION;
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_ADMINISTERED_OBJECTS;
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
+import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_ADMINISTERED_OBJECTS;
+import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_CONNECTION;
+import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_NONE;
 
 /**
  * Attaches a consumer to a JMS destination.

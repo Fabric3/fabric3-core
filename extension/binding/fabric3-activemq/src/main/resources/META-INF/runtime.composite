@@ -33,18 +33,20 @@
         <property name="maxPort" source="$systemConfig//f3:jms/f3:activemq/@max.port"/>
     </component>
 
-    <component name="ConnectionFactoryInstantiator">
-        <f3:implementation.system class="org.fabric3.binding.activemq.factory.ConnectionFactoryInstantiator"/>
-        <property name="connectionFactories" source="$systemConfig//f3:jms/f3:connection.factories"/>
+    <component name="BrokerHelper">
+        <f3:implementation.system class="org.fabric3.binding.activemq.provider.BrokerHelperImpl"/>
     </component>
 
-    <component name="ConnectionFactoryTemplateRegistry">
-        <f3:implementation.system class="org.fabric3.binding.activemq.factory.ConnectionFactoryTemplateRegistryImpl"/>
-        <property name="connectionFactoryTemplates" source="$systemConfig//f3:jms/f3:connection.factory.templates"/>
+    <component name="ActiveMQConnectionFactoryCreator" f3:key="org.fabric3.binding.activemq.provider.ActiveMQConnectionFactoryConfiguration">
+        <f3:implementation.system class="org.fabric3.binding.activemq.provider.ActiveMQConnectionFactoryCreator"/>
     </component>
 
-    <component name="ActiveMQConnectionFactoryCreator">
-        <f3:implementation.system class="org.fabric3.binding.activemq.factory.ActiveMQConnectionFactoryCreator"/>
+    <component name="ActiveMQConnectionFactoryConfigurationParser" f3:key="connection.factory.activemq">
+        <f3:implementation.system class="org.fabric3.binding.activemq.provider.ActiveMQConnectionFactoryConfigurationParser"/>
+    </component>
+
+    <component name="ActiveMQDefaultConnectionFactoryBuilder" f3:key="activemq">
+        <f3:implementation.system class="org.fabric3.binding.activemq.provider.ActiveMQDefaultConnectionFactoryBuilder"/>
     </component>
 
 </composite>

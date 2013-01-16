@@ -54,7 +54,7 @@ import javax.jms.TopicConnection;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
-import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 
 /**
  * Implementation that attempts to always create the destination.

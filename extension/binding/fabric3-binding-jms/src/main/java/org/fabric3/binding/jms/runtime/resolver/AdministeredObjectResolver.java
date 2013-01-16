@@ -42,7 +42,7 @@ import javax.jms.Destination;
 
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
-import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 
 /**
  * Resolves administered objects, specifically connection factories and destinations. Different strategies may be used for resolution as defined by

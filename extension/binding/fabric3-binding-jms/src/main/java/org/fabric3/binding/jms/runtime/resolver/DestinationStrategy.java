@@ -47,7 +47,7 @@ import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
-import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 
 /**
  * Strategy for looking up destinations.

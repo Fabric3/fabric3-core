@@ -65,7 +65,7 @@ import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.transport.Transport;
 import org.fabric3.spi.util.UriHelper;
 
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
+import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_CONNECTION;
 
 /**
  *

@@ -50,33 +50,31 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
-import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryCreator;
-import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryResolver;
+import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
+import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryTemplateRegistry;
+import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
+import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryResolver;
+import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 
 /**
- * Implementation that attempts to resolve a connection by searching the {@link }ConnectionFactoryManager}, {@link ProviderConnectionFactoryResolver},
+ * Implementation that attempts to resolve a connection by searching the {@link }ConnectionFactoryManager}, {@link ConnectionFactoryResolver},
  * JNDI and then, if not found, creating it.
  */
 public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private AlwaysConnectionFactoryStrategy always;
     private ConnectionFactoryManager manager;
-    private List<ProviderConnectionFactoryResolver> resolvers;
+    private List<ConnectionFactoryResolver> resolvers;
 
-    public IfNotExistConnectionFactoryStrategy(@Reference ConnectionFactoryManager manager) {
-        this.always = new AlwaysConnectionFactoryStrategy(manager);
+    public IfNotExistConnectionFactoryStrategy(@Reference ConnectionFactoryTemplateRegistry registry,
+                                               @Reference ConnectionFactoryCreatorRegistry creatorRegistry,
+                                               @Reference ConnectionFactoryManager manager) {
+        this.always = new AlwaysConnectionFactoryStrategy(registry, creatorRegistry, manager);
         this.manager = manager;
     }
 
     @Reference(required = false)
-    public void setResolvers(List<ProviderConnectionFactoryResolver> resolvers) {
+    public void setResolvers(List<ConnectionFactoryResolver> resolvers) {
         this.resolvers = resolvers;
-    }
-
-    @Reference(required = false)
-    public void setCreator(ProviderConnectionFactoryCreator creator) {
-        always.setCreator(creator);
     }
 
     public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition)
@@ -88,7 +86,7 @@ public class IfNotExistConnectionFactoryStrategy implements ConnectionFactoryStr
             if (factory != null) {
                 return factory;
             }
-            for (ProviderConnectionFactoryResolver resolver : resolvers) {
+            for (ConnectionFactoryResolver resolver : resolvers) {
                 factory = resolver.resolve(definition);
                 if (factory != null) {
                     return factory;

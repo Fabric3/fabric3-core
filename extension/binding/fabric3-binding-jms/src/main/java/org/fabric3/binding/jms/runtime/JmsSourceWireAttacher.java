@@ -44,9 +44,9 @@
 package org.fabric3.binding.jms.runtime;
 
 import static org.fabric3.binding.jms.spi.common.CacheLevel.ADMINISTERED_OBJECTS;
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_ADMINISTERED_OBJECTS;
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_CONNECTION;
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.CACHE_NONE;
+import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_ADMINISTERED_OBJECTS;
+import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_CONNECTION;
+import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_NONE;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -60,9 +60,13 @@ import javax.jms.Queue;
 import javax.jms.Topic;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
 import org.fabric3.binding.jms.runtime.container.ContainerConfiguration;
 import org.fabric3.binding.jms.runtime.container.MessageContainerManager;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
+import org.fabric3.binding.jms.runtime.wire.InvocationChainHolder;
+import org.fabric3.binding.jms.runtime.wire.ServiceListener;
+import org.fabric3.binding.jms.runtime.wire.WireHolder;
 import org.fabric3.binding.jms.spi.common.CacheLevel;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.CorrelationScheme;
@@ -71,9 +75,8 @@ import org.fabric3.binding.jms.spi.common.DestinationType;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
-import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
-import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.builder.WiringException;
@@ -131,9 +134,7 @@ public class JmsSourceWireAttacher implements SourceWireAttacher<JmsSourceDefini
             
             List<BindingHandler<Message>> handlers = createHandlers(source);
             ServiceListener listener = new ServiceListener(wireHolder, responseDestination, responseFactory, trxType, loader, xmlFactory, handlers, monitor);
-            listener.setBindingHandlerRegistry(handlerRegistry);
-            listener.setBindingName(source.getMetadata().getDestination().getName());
-            
+
             configuration.setDestination(requestDestination);
             configuration.setFactory(requestFactory);
             configuration.setMessageListener(listener);

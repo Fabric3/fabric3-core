@@ -50,11 +50,11 @@ import java.util.List;
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.TransactionType;
-import org.fabric3.binding.jms.spi.runtime.JmsConstants;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
-import static org.fabric3.binding.jms.spi.runtime.JmsConstants.DEFAULT_XA_CONNECTION_FACTORY;
+import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_CONNECTION_FACTORY;
+import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_XA_CONNECTION_FACTORY;
 
 /**
  * Contains helper functions used during generation.
@@ -97,7 +97,7 @@ public class JmsGeneratorHelper {
             if (TransactionType.GLOBAL == trxType) {
                 factory.setTemplateName(DEFAULT_XA_CONNECTION_FACTORY);
             } else {
-                factory.setTemplateName(JmsConstants.DEFAULT_CONNECTION_FACTORY);
+                factory.setTemplateName(DEFAULT_CONNECTION_FACTORY);
             }
         } else if (factory.getTemplateName() != null) {
             factory.setName(specifier);

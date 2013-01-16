@@ -40,8 +40,8 @@ package org.fabric3.runtime.weblogic.jms.runtime;
 import java.util.Map;
 import javax.jms.ConnectionFactory;
 
-import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
+import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
+import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
 
 /**
  * Responsible for managing WebLogic connection factories. Since WLS manages enlistment with the transaction mananger transparently, this

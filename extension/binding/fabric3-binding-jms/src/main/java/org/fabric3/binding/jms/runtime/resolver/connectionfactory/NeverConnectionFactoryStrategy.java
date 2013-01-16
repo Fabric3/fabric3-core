@@ -51,17 +51,17 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.FactoryRegistrationException;
-import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
-import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryResolver;
+import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
+import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
+import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryResolver;
+import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 
 /**
  * Implementation that attempts to resolve a connection by searching the ConnectionFactoryManager, provider resolvers, and then JNDI.
  */
 public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy {
     private ConnectionFactoryManager manager;
-    private List<ProviderConnectionFactoryResolver> resolvers;
+    private List<ConnectionFactoryResolver> resolvers;
 
 
     public NeverConnectionFactoryStrategy(@Reference ConnectionFactoryManager manager) {
@@ -69,7 +69,7 @@ public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy
     }
 
     @Reference(required = false)
-    public void setResolvers(List<ProviderConnectionFactoryResolver> resolvers) {
+    public void setResolvers(List<ConnectionFactoryResolver> resolvers) {
         this.resolvers = resolvers;
     }
 
@@ -82,7 +82,7 @@ public class NeverConnectionFactoryStrategy implements ConnectionFactoryStrategy
                 return factory;
             }
 
-            for (ProviderConnectionFactoryResolver resolver : resolvers) {
+            for (ConnectionFactoryResolver resolver : resolvers) {
                 factory = resolver.resolve(definition);
                 if (factory != null) {
                     break;

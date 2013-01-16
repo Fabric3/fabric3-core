@@ -57,54 +57,71 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
-import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryCreator;
+import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
+import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
+import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
+import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryTemplateRegistry;
+import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
+import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
+import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 
 /**
  * Implementation that always attempts to create a connection factory.
  */
 public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrategy {
+    private ConnectionFactoryCreatorRegistry creatorRegistry;
+    private ConnectionFactoryTemplateRegistry registry;
     private ConnectionFactoryManager manager;
-    private ProviderConnectionFactoryCreator creator;
     private Set<String> created = new HashSet<String>();
 
-    public AlwaysConnectionFactoryStrategy(@Reference ConnectionFactoryManager manager) {
+    public AlwaysConnectionFactoryStrategy(@Reference ConnectionFactoryTemplateRegistry registry,
+                                           @Reference ConnectionFactoryCreatorRegistry creatorRegistry,
+                                           @Reference ConnectionFactoryManager manager) {
+        this.registry = registry;
+        this.creatorRegistry = creatorRegistry;
         this.manager = manager;
     }
 
-    @Reference(required = false)
-    public void setCreator(ProviderConnectionFactoryCreator creator) {
-        this.creator = creator;
-    }
-
     public ConnectionFactory getConnectionFactory(ConnectionFactoryDefinition definition) throws JmsResolutionException {
-
-        Map<String, String> props = definition.getProperties();
-        String className = props.get("class");
-        ConnectionFactory factory;
-        String name = definition.getName();
-        String templateName = definition.getTemplateName();
-        if (className == null) {
-            if (creator == null) {
-                throw new JmsResolutionException("A connection factory class was not specified for: " + name);
+        try {
+            Map<String, String> props = definition.getProperties();
+            String className = props.get("class");
+            ConnectionFactory factory;
+            String name = definition.getName();
+            String templateName = definition.getTemplateName();
+            if (className == null) {
+                if (creatorRegistry == null) {
+                    throw new JmsResolutionException("A connection factory class was not specified for: " + name);
+                }
+                ConnectionFactoryConfiguration configuration = registry.getTemplate(templateName);
+                if (configuration == null) {
+                    throw new JmsResolutionException("Connection Factory template not found: " + templateName);
+                }
+                factory = creatorRegistry.create(configuration);
+            } else {
+                factory = instantiate(className, props);
             }
-            factory = creator.create(templateName);
-        } else {
-            factory = instantiate(className, props);
+            created.add(name);
+            return manager.register(name, factory);
+        } catch (ConnectionFactoryCreationException e) {
+            throw new JmsResolutionException(e);
+        } catch (FactoryRegistrationException e) {
+            throw new JmsResolutionException(e);
         }
-        created.add(name);
-        return manager.register(name, factory);
     }
 
     public void release(ConnectionFactoryDefinition definition) throws JmsResolutionException {
-        String name = definition.getName();
-        if (created.remove(name)) {
-            ConnectionFactory factory = manager.unregister(name);
-            if (factory == null) {
-                throw new JmsResolutionException("Connection factory not found: " + name);
+        try {
+            String name = definition.getName();
+            if (created.remove(name)) {
+                ConnectionFactory factory = manager.unregister(name);
+                if (factory == null) {
+                    throw new JmsResolutionException("Connection factory not found: " + name);
+                }
+                creatorRegistry.release(factory);
             }
-            creator.release(factory);
+        } catch (FactoryRegistrationException e) {
+            throw new JmsResolutionException(e);
         }
     }
 

@@ -47,7 +47,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.CreateOption;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
-import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 
 /**
  *

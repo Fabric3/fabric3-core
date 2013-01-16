@@ -59,42 +59,34 @@ public class Fabric3ManagementContext extends ManagementContext {
         super.getMBeanServer();
     }
 
-    @Override
     public void start() throws IOException {
         // override default behavior
     }
 
-    @Override
     public void stop() throws IOException {
         // override default behavior
     }
 
-    @Override
     public MBeanServer getMBeanServer() {
         return mBeanServer;
     }
 
-    @Override
     public boolean isCreateMBeanServer() {
         return false;
     }
 
-    @Override
     public boolean isFindTigerMbeanServer() {
         return false;
     }
 
-    @Override
     protected MBeanServer findMBeanServer() {
         return mBeanServer;
     }
 
-    @Override
     protected MBeanServer createMBeanServer() throws MalformedObjectNameException, IOException {
         return mBeanServer;
     }
 
-    @Override
     public ObjectInstance registerMBean(Object bean, ObjectName name) throws Exception {
         if (bean instanceof AnnotatedMBean) {
             Object impl = ((AnnotatedMBean) bean).getImplementation();

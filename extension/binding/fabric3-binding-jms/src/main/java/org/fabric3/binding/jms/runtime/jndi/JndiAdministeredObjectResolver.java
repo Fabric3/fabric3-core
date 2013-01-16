@@ -45,16 +45,17 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.DestinationDefinition;
-import org.fabric3.binding.jms.spi.runtime.ConnectionFactoryManager;
-import org.fabric3.binding.jms.spi.runtime.JmsResolutionException;
-import org.fabric3.binding.jms.spi.runtime.ProviderConnectionFactoryResolver;
-import org.fabric3.binding.jms.spi.runtime.ProviderDestinationResolver;
+import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
+import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
+import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
+import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryResolver;
 import org.fabric3.jndi.spi.JndiContextManager;
 
 /**
  * Resolves administered objects against JNDI contexts managed by the runtime {@link JndiContextManager}.
  */
-public class JndiAdministeredObjectResolver implements ProviderConnectionFactoryResolver, ProviderDestinationResolver {
+public class JndiAdministeredObjectResolver implements ConnectionFactoryResolver, DestinationResolver {
     private JndiContextManager contextManager;
     private ConnectionFactoryManager factoryManager;
 
@@ -72,6 +73,8 @@ public class JndiAdministeredObjectResolver implements ProviderConnectionFactory
             }
             return factoryManager.register(name, factory);
         } catch (NamingException e) {
+            throw new JmsResolutionException(e);
+        } catch (FactoryRegistrationException e) {
             throw new JmsResolutionException(e);
         }
     }

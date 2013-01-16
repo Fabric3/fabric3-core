@@ -55,7 +55,6 @@ import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.binding.activemq.factory.InvalidConfigurationException;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
@@ -121,7 +120,7 @@ public class BrokerEngine {
     }
 
     @Property(required = false)
-    public void setBrokerConfig(XMLStreamReader reader) throws InvalidConfigurationException, XMLStreamException {
+    public void setBrokerConfig(XMLStreamReader reader) throws InvalidBrokerConfigurationException, XMLStreamException {
         BrokerParser parser = new BrokerParser();
         brokerConfiguration = parser.parse(reader);
     }
