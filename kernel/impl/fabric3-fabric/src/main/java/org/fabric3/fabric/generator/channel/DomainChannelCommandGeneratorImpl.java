@@ -51,7 +51,6 @@ import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.spi.channel.ChannelIntents;
-import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -59,6 +58,7 @@ import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  *
@@ -114,9 +114,12 @@ public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGe
         if (!channel.getBindings().isEmpty()) {
             // generate binding information
             LogicalBinding<?> binding = channel.getBinding();
-            ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
-            PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding);
-            definition.setBindingDefinition(bindingDefinition);
+            if (!(binding.getDefinition() instanceof SCABinding)) {
+                // avoid generating SCABinding
+                ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
+                PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding);
+                definition.setBindingDefinition(bindingDefinition);
+            }
         }
 
         definitions.add(definition);

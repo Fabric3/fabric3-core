@@ -47,6 +47,7 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * An instantiated channel in the domain.
@@ -155,7 +156,15 @@ public class LogicalChannel extends Bindable {
      * @return true if the channel is configured with a binding
      */
     public boolean isBound() {
-        return !getBindings().isEmpty();
+        if (getBindings().isEmpty()) {
+            return false;
+        }
+        for (LogicalBinding<?> binding : getBindings()) {
+            if (!(binding.getDefinition() instanceof SCABinding)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
