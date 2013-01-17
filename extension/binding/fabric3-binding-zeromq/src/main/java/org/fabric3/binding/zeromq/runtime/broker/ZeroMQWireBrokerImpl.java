@@ -344,7 +344,28 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     }
 
     private SenderHolder createSender(String endpointId, boolean oneWay, ZeroMQMetadata metadata) {
-        List<SocketAddress> addresses = addressCache.getActiveAddresses(endpointId);
+        List<SocketAddress> addresses = new ArrayList<SocketAddress>();
+        boolean refresh;
+        if (metadata.getSocketAddresses() != null) {
+            // service addresses to connect to are explicitly configured in the binding definition
+            refresh = false;
+
+            for (SocketAddressDefinition addressDefinition : metadata.getSocketAddresses()) {
+                Port port = new SpecifiedPort(addressDefinition.getPort());
+                String specifiedHost = addressDefinition.getHost();
+                if ("localhost".equals(specifiedHost)) {
+                    specifiedHost = hostAddress;
+                }
+                SocketAddress socketAddress = new SocketAddress("synthetic", "tcp", specifiedHost, port);
+                addresses.add(socketAddress);
+            }
+
+        } else {
+            // services addresses to connect to are not specified in the binding, retrieve them from the federation layer
+            refresh = true;
+            addresses = addressCache.getActiveAddresses(endpointId);
+        }
+
         Sender sender;
         if (oneWay) {
             sender = new NonReliableOneWaySender(endpointId, manager, addresses, pollTimeout, metadata, monitor);
@@ -354,7 +375,10 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         SenderHolder holder = new SenderHolder(sender);
         sender.start();
 
-        addressCache.subscribe(endpointId, sender);
+        if (refresh) {
+            // don't subscribe for updates if the sockets are explicitly configured
+            addressCache.subscribe(endpointId, sender);
+        }
 
         senders.put(endpointId, holder);
         return holder;

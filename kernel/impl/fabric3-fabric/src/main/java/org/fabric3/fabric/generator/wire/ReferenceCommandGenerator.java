@@ -56,6 +56,7 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.type.binding.SCABinding;
 
 /**
  * Generates a command to bind or attach a wire to a reference.
@@ -104,6 +105,10 @@ public class ReferenceCommandGenerator implements CommandGenerator {
         boolean reinjection = isBoundReinjection(reference, incremental);
 
         for (LogicalBinding<?> logicalBinding : reference.getBindings()) {
+            if (logicalBinding.getDefinition() instanceof SCABinding) {
+                // skip SCA binding
+                continue;
+            }
             generateBinding(component, logicalBinding, command, incremental, reinjection, false);
         }
         if (reference.getServiceContract().getCallbackContract() != null) {
@@ -114,7 +119,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
                     // if the reference is explicitly bound, it must have one callback binding
                     String uri = reference.getUri().toString();
                     throw new UnsupportedOperationException("The runtime requires exactly one callback binding to be " +
-                            "specified on reference: " + uri);
+                                                                    "specified on reference: " + uri);
                 }
                 LogicalBinding<?> callbackBinding = callbackBindings.get(0);
                 generateBinding(component, callbackBinding, command, incremental, reinjection, true);

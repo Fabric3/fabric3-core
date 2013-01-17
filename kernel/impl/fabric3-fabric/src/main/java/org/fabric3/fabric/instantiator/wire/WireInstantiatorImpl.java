@@ -159,6 +159,10 @@ public class WireInstantiatorImpl implements WireInstantiator {
             // resolve the reference targets and create logical wires
             for (SCABinding binding : scaBindings) {
                 Target target = binding.getTarget();
+                if (target == null) {
+                    // SCA binding with no target specified, don't wire
+                    continue;
+                }
                 String bindingName = binding.getName();
                 LogicalWire wire = createWire(target, reference, bindingName, parent, context);
                 if (wire == null) {

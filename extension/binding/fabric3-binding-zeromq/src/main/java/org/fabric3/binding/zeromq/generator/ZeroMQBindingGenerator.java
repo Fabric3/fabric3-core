@@ -109,11 +109,23 @@ public class ZeroMQBindingGenerator implements BindingGenerator<ZeroMQBindingDef
         return new ZeroMQTargetDefinition(targetUri, metadata);
     }
 
+    /**
+     * Parses the target URI. May return null if the target is not set and addresses are explicitly configured.
+     *
+     * @param binding the binding
+     * @return the URI or null
+     * @throws GenerationException if there is a parsing error
+     */
     private URI parseTargetUri(LogicalBinding<ZeroMQBindingDefinition> binding) throws GenerationException {
+        URI bindingTargetUri = binding.getDefinition().getTargetUri();
+        if (bindingTargetUri == null) {
+            // create a synthetic name
+            return URI.create("f3synthetic://" + binding.getParent().getUri() + "/" + binding.getDefinition().getName());
+        }
         LogicalCompositeComponent composite = binding.getParent().getParent().getParent();
         URI parent = composite.getUri();
 
-        String bindingTarget = binding.getDefinition().getTargetUri().toString();
+        String bindingTarget = bindingTargetUri.toString();
         URI targetUri;
         if (bindingTarget.contains("/")) {
             String[] tokens = bindingTarget.split("/");

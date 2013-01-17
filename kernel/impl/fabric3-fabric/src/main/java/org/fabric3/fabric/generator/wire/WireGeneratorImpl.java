@@ -174,6 +174,11 @@ public class WireGeneratorImpl implements WireGenerator {
         // generate the metadata used to attach the physical wire to the source component
         ComponentGenerator sourceGenerator = getGenerator(component);
         PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
+
+        // use the binding name as the source key
+        String key = binding.getDefinition().getName();
+        sourceDefinition.setKey(key);
+
         sourceDefinition.setClassLoaderId(component.getDefinition().getContributionUri());
 
         // generate the metadata used to attach the physical wire to the target transport

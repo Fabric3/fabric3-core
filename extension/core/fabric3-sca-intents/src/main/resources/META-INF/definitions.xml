@@ -68,6 +68,8 @@ Public License. See the accompanying license file for details.
 
     <bindingType name="f3:binding.local" mayProvide="sca:confidentiality sca:integrity sca:atLeastOnce sca:atMostOnce sca:exactlyOnce sca:ordered"/>
 
+    <bindingType name="sca:binding.sca" mayProvide="sca:oneWay sca:confidentiality sca:integrity sca:atLeastOnce sca:atMostOnce sca:exactlyOnce sca:ordered"/>
+
     <!-- Reliable messaging related intents -->
     <intent name="atLeastOnce" constrains="sca:binding" intentType="interaction">
         <description>
