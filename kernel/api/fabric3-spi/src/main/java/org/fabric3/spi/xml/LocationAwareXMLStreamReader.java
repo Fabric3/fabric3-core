@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.contribution.processor;
+package org.fabric3.spi.xml;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;

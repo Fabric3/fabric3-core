@@ -59,6 +59,7 @@ import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;
 import org.fabric3.spi.contribution.xml.XmlResourceElementLoaderRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.xml.LocationAwareXMLStreamReader;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**

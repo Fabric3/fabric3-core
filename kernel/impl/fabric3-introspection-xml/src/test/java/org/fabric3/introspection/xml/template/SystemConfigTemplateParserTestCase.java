@@ -65,11 +65,13 @@ public class SystemConfigTemplateParserTestCase extends TestCase {
 
 
     public void testLoad() throws Exception {
-        XMLStreamReader reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
+        ByteArrayInputStream stream = new ByteArrayInputStream(XML.getBytes());
+        XMLStreamReader reader = factory.newInputFactoryInstance().createXMLStreamReader(stream);
         reader.nextTag();
 
-        EasyMock.expect(loaderRegistry.load(EasyMock.eq(reader), EasyMock.eq(ModelObject.class), EasyMock.isA(IntrospectionContext.class))).andReturn(
-                null);
+        EasyMock.expect(loaderRegistry.load(EasyMock.isA(XMLStreamReader.class),
+                                            EasyMock.eq(ModelObject.class),
+                                            EasyMock.isA(IntrospectionContext.class))).andReturn(null);
 
         EasyMock.replay(loaderRegistry, monitor);
 

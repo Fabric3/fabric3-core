@@ -37,6 +37,9 @@ public class ConnectionFactoryCreatorRegistryImpl implements ConnectionFactoryCr
 
     public void release(ConnectionFactory factory) {
         ConnectionFactoryCreator creator = factories.remove(factory);
+        if (creator == null) {
+            return;
+        }
         creator.release(factory);
     }
 }

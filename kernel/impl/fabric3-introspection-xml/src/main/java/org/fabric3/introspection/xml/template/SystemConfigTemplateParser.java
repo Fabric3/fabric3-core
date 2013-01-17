@@ -57,6 +57,7 @@ import org.fabric3.spi.event.ExtensionsInitialized;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.fabric3.spi.xml.LocationAwareXMLStreamReader;
 
 /**
  * Parses template entries specified in the system configuration.
@@ -79,7 +80,7 @@ public class SystemConfigTemplateParser implements Fabric3EventListener<Extensio
 
     @Property(required = false)
     public void setTemplateConfig(XMLStreamReader reader) {
-        this.reader = reader;
+        this.reader = new LocationAwareXMLStreamReader(reader, "System Configuration");
     }
 
     @Init
