@@ -45,6 +45,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.binding.zeromq.common.SocketAddressDefinition;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.BrokerException;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
@@ -76,15 +77,15 @@ import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.spi.wire.InterceptorCreationException;
-import org.fabric3.spi.wire.TransformerInterceptorFactory;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.wire.InterceptorCreationException;
 import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.wire.TransformerInterceptorFactory;
 
 /**
  *
@@ -108,6 +109,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     private long pollTimeout = 10000000;
     private TransformerInterceptorFactory interceptorFactory;
     private String host;
+    private String hostAddress;
 
     private Map<String, SenderHolder> senders = new HashMap<String, SenderHolder>();
     private Map<String, Receiver> receivers = new HashMap<String, Receiver>();
@@ -133,6 +135,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         this.host = InetAddress.getLocalHost().getHostAddress();
         TRANSPORT_TYPES = new ArrayList<DataType<?>>();
         TRANSPORT_TYPES.add(BYTE_TYPE);
+        this.hostAddress = InetAddress.getLocalHost().getHostAddress();
     }
 
     /**
@@ -218,10 +221,28 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         try {
             String endpointId = uri.toString();
 
-            Port port = allocator.allocate(endpointId, ZMQ);
-
             String runtimeName = info.getRuntimeName();
-            SocketAddress address = new SocketAddress(runtimeName, "tcp", host, port);
+            SocketAddress address;
+
+            if (metadata.getSocketAddresses() != null && !metadata.getSocketAddresses().isEmpty()) {
+                // bind using specified address and port
+                if (metadata.getSocketAddresses().size() != 1) {
+                    throw new BrokerException("Only one socket address can be specified");
+                }
+                SocketAddressDefinition addressDefinition = metadata.getSocketAddresses().get(0);
+                String specifiedHost = addressDefinition.getHost();
+                if ("localhost".equals(specifiedHost)) {
+                    specifiedHost = hostAddress;
+                }
+                int portNumber = addressDefinition.getPort();
+                Port port = allocator.reserve(endpointId, ZMQ, portNumber);
+                address = new SocketAddress(runtimeName, "tcp", specifiedHost, port);
+            } else {
+                // bind to a randomly allocated port
+                Port port = allocator.allocate(endpointId, ZMQ);
+                address = new SocketAddress(runtimeName, "tcp", host, port);
+            }
+
 
             addTransformer(chains, loader);
 

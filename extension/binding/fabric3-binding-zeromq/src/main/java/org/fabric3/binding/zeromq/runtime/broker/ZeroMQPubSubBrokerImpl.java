@@ -166,11 +166,11 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 addresses = new ArrayList<SocketAddress>();
                 for (SocketAddressDefinition addressDefinition : metadata.getSocketAddresses()) {
                     Port port = new SpecifiedPort(addressDefinition.getPort());
-                    String host = addressDefinition.getHost();
-                    if ("localhost".equals(host)) {
-                        host = hostAddress;
+                    String specifiedHost = addressDefinition.getHost();
+                    if ("localhost".equals(specifiedHost)) {
+                        specifiedHost = hostAddress;
                     }
-                    SocketAddress socketAddress = new SocketAddress("synthetic", "tcp", host, port);
+                    SocketAddress socketAddress = new SocketAddress("synthetic", "tcp", specifiedHost, port);
                     addresses.add(socketAddress);
                 }
             } else {
@@ -219,7 +219,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 String runtimeName = info.getRuntimeName();
                 SocketAddress address;
                 List<SocketAddressDefinition> addresses = metadata.getSocketAddresses();
-                if (addresses != null) {
+                if (addresses != null && !addresses.isEmpty()) {
                     // socket address to bind on is explicitly configured in the binding definition
                     if (addresses.size() != 1) {
                         // sanity check
@@ -228,11 +228,11 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                     SocketAddressDefinition addressDefinition = addresses.get(0);
                     int portDefinition = addressDefinition.getPort();
                     Port port = allocator.reserve(channelName, ZMQ, portDefinition);
-                    String host = addressDefinition.getHost();
-                    if ("localhost".equals(host)) {
-                        host = hostAddress;
+                    String specifiedHost = addressDefinition.getHost();
+                    if ("localhost".equals(specifiedHost)) {
+                        specifiedHost = hostAddress;
                     }
-                    address = new SocketAddress(runtimeName, "tcp", host, port);
+                    address = new SocketAddress(runtimeName, "tcp", specifiedHost, port);
                 } else {
                     // socket address to bind on is not configured in the binding definition - allocate one
                     Port port = allocator.allocate(channelName, ZMQ);
