@@ -138,10 +138,17 @@ public class ConfigurationBuilder {
                 templateRegistry.registerTemplate(xaConfig);
             }
 
-            ConnectionFactory factory = creatorRegistry.create(localConfig);
-            manager.register(DEFAULT_CONNECTION_FACTORY, factory);
-            ConnectionFactory xaFactory = creatorRegistry.create(xaConfig);
-            manager.register(DEFAULT_XA_CONNECTION_FACTORY, xaFactory);
+            if (manager.get(DEFAULT_CONNECTION_FACTORY) == null) {
+                // default connection factory was not configured, create one
+                ConnectionFactory factory = creatorRegistry.create(localConfig);
+                manager.register(DEFAULT_CONNECTION_FACTORY, factory);
+            }
+
+            if (manager.get(DEFAULT_XA_CONNECTION_FACTORY) == null) {
+                // default XA connection factory was not configured, create one
+                ConnectionFactory xaFactory = creatorRegistry.create(xaConfig);
+                manager.register(DEFAULT_XA_CONNECTION_FACTORY, xaFactory);
+            }
         }
 
     }
