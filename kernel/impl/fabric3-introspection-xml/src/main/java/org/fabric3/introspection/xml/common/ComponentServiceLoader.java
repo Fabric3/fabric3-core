@@ -150,7 +150,12 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
                 } else if (type == null) {
                     // error loading, the element, ignore as an error will have been reported
                     LoaderUtil.skipToEndElement(reader);
-                    break;
+                    // check if the last element before the end service tag was at fault, in which case return to avoid reading past the service tag
+                    if (reader.getEventType() == XMLStreamConstants.END_ELEMENT && reader.getName().getLocalPart().equals("service")) {
+                        return definition;
+                    } else {
+                        break;
+                    }
                 } else {
                     context.addError(new UnrecognizedElement(reader, location, definition));
                     continue;
