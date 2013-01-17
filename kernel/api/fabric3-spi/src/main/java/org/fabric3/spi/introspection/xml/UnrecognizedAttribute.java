@@ -66,9 +66,15 @@ public class UnrecognizedAttribute extends XmlValidationFailure {
     }
 
     public String getMessage() {
-        StringBuffer b = new StringBuffer("The attribute ").append(name).append(" specified in ").append(getResourceURI()).append(
-                " at ").append(getLine()).append(",").append(getColumn()).append(" was not recognized.");
-        return b.toString();
+        if (getLine() == -1) {
+            StringBuffer b =
+                    new StringBuffer("The attribute ").append(name).append(" specified in ").append(getResourceURI()).append(" was not recognized.");
+            return b.toString();
+        } else {
+            StringBuffer b = new StringBuffer("The attribute ").append(name).append(" specified in ").append(getResourceURI()).append(
+                    " at ").append(getLine()).append(",").append(getColumn()).append(" was not recognized.");
+            return b.toString();
+        }
     }
 
     public String getShortMessage() {
