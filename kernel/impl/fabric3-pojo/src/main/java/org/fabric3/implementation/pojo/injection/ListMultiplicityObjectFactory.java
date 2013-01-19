@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.pojo.injection;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -51,7 +52,7 @@ public class ListMultiplicityObjectFactory implements MultiplicityObjectFactory<
     private boolean cleared = true;
 
     public List<Object> getInstance() throws ObjectCreationException {
-        List<Object> list = new CopyOnWriteArrayList<Object>();
+        List<Object> list = new ArrayList<Object>();
         for (ObjectFactory<?> factory : factories) {
             list.add(factory.getInstance());
         }

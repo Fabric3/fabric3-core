@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.pojo.injection;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -51,7 +52,7 @@ public class SetMultiplicityObjectFactory implements MultiplicityObjectFactory<S
     private boolean cleared = true;
 
     public Set<Object> getInstance() throws ObjectCreationException {
-        Set<Object> set = new CopyOnWriteArraySet<Object>();
+        Set<Object> set = new HashSet<Object>();
         for (ObjectFactory<?> factory : factories) {
             set.add(factory.getInstance());
         }

@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.pojo.injection;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -53,7 +54,7 @@ public class MapMultiplicityObjectFactory implements MultiplicityObjectFactory<M
     private boolean cleared = true;
 
     public Map<Object, Object> getInstance() throws ObjectCreationException {
-        Map<Object, Object> map = new ConcurrentHashMap<Object, Object>();
+        Map<Object, Object> map = new HashMap<Object, Object>();
         for (Map.Entry<Object, ObjectFactory<?>> entry : factories.entrySet()) {
             map.put(entry.getKey(), entry.getValue().getInstance());
         }
