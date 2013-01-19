@@ -300,7 +300,8 @@ public class WireGeneratorImpl implements WireGenerator {
         ComponentGenerator sourceGenerator = getGenerator(source);
         PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
         sourceDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
-        String key = target.getDefinition().getKey();
+
+        String key = getKey(target);
         sourceDefinition.setKey(key);
 
         // generate the metadata used to attach the physical wire to the target component
@@ -367,7 +368,12 @@ public class WireGeneratorImpl implements WireGenerator {
         ComponentGenerator sourceGenerator = getGenerator(reference.getParent());
         PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
         sourceDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
+
         String key = source.getDefinition().getKey();
+        if (key == null) {
+            // check if the key was specified in the component type
+            key = getKey(source);
+        }
         sourceDefinition.setKey(key);
 
         LogicalBinding<BD> serviceBinding = wire.getTargetBinding();
@@ -487,7 +493,8 @@ public class WireGeneratorImpl implements WireGenerator {
             String name = contract.getInterfaceName();
             URI uri = source.getUri();
             throw new CallbackServiceNotFoundException("Callback service not found: "
-                    + name + " on component: " + uri + " originating from reference :" + referenceName, name);
+                                                               + name + " on component: " + uri + " originating from reference :" + referenceName,
+                                                       name);
         }
         return URI.create(source.getUri().toString() + "#" + candidate.getDefinition().getName());
     }
@@ -503,6 +510,25 @@ public class WireGeneratorImpl implements WireGenerator {
         }
         return true;
     }
+
+    /**
+     * Returns the key specified on the component definition, component type, or null
+     *
+     * @param component the component
+     * @return the key or null
+     */
+    private String getKey(LogicalComponent component) {
+        String key = component.getDefinition().getKey();
+        if (key == null) {
+            // check if the key was specified in the component type
+            Implementation implementation = component.getDefinition().getImplementation();
+            if (implementation != null && implementation.getComponentType() != null) {
+                key = implementation.getComponentType().getKey();
+            }
+        }
+        return key;
+    }
+
 
     @SuppressWarnings("unchecked")
     private <C extends LogicalComponent<?>> ComponentGenerator<C> getGenerator(C component) throws GeneratorNotFoundException {

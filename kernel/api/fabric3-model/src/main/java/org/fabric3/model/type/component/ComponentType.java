@@ -57,6 +57,8 @@ import org.fabric3.model.type.CapabilityAware;
 public class ComponentType extends AbstractPolicyAware<Implementation> implements CapabilityAware {
     private static final long serialVersionUID = 5302580019263119837L;
 
+    private String key;
+
     private Map<String, AbstractService> services = new HashMap<String, AbstractService>();
     private Map<String, ConsumerDefinition> consumers = new HashMap<String, ConsumerDefinition>();
     private Map<String, ReferenceDefinition> references = new HashMap<String, ReferenceDefinition>();
@@ -64,6 +66,24 @@ public class ComponentType extends AbstractPolicyAware<Implementation> implement
     private Map<String, Property> properties = new HashMap<String, Property>();
     private Map<String, ResourceReferenceDefinition> resourceReferences = new HashMap<String, ResourceReferenceDefinition>();
     private Set<String> requiredCapabilities = new HashSet<String>();
+
+    /**
+     * Returns the key value for map-based wires or null.
+     *
+     * @return the key value for map-based wires or null
+     */
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * Sets the key value for map-based wires.
+     *
+     * @param key the key value
+     */
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     /**
      * Returns the services provided by the implementation keyed by name.

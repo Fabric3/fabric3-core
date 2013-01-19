@@ -77,7 +77,7 @@
         <f3:implementation.system class="org.fabric3.introspection.java.annotation.OASISServiceProcessor"/>
     </component>
 
-   <!--Fabric3 Annotations -->
+    <!--Fabric3 Annotations -->
 
     <component name="DomainProcessor" f3:key="org.fabric3.api.annotation.scope.Domain">
         <f3:implementation.system class="org.fabric3.introspection.java.annotation.DomainProcessor"/>
@@ -117,6 +117,10 @@
 
     <component name="ManagementOperationProcessor" f3:key="org.fabric3.api.annotation.management.ManagementOperation">
         <f3:implementation.system class="org.fabric3.introspection.java.annotation.ManagementOperationProcessor"/>
+    </component>
+
+    <component name="KeyProcessor" f3:key="org.fabric3.api.annotation.wire.Key">
+        <f3:implementation.system class="org.fabric3.introspection.java.annotation.KeyProcessor"/>
     </component>
 
 </composite>

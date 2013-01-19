@@ -196,7 +196,7 @@ public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor 
                     String metadataName = metadataAnnotClass.getName();
                     String annotationName = annotClass.getName();
                     InvalidAnnotation error =
-                            new InvalidAnnotation("Value for " + metadataName + " must be String or String[]:  " + annotationName, annotClass);
+                            new InvalidAnnotation("Value for " + metadataName + " must be String or String[] on " + annotationName, annotClass);
                     context.addError(error);
                 }
             }

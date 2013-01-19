@@ -65,7 +65,7 @@ public class InvalidAnnotation extends JavaValidationFailure {
 
     public String getMessage() {
         if (e == null) {
-            return message;
+            return message + " : " + getClass();
         }
         return message + ".\n" + e;
     }

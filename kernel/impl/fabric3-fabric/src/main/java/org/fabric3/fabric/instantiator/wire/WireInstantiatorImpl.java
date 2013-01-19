@@ -387,7 +387,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
             return;
         }
         LogicalComponent<?> parent = service.getParent();
-        if (parent.getDefinition().getKey() == null) {
+        if (parent.getDefinition().getKey() == null && parent.getDefinition().getComponentType().getKey() == null) {
             KeyNotFound error = new KeyNotFound(reference);
             context.addError(error);
         }

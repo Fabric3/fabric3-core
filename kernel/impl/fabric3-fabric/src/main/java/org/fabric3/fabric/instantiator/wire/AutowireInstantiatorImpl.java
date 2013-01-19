@@ -51,7 +51,6 @@ import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.Target;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
@@ -260,6 +259,8 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
      *         the target does not specify a key
      */
     private boolean validKey(LogicalReference logicalReference, LogicalComponent<?> target) {
-        return !logicalReference.getDefinition().isKeyed() || target.getDefinition().getKey() != null;
+        return !logicalReference.getDefinition().isKeyed()
+                || target.getDefinition().getKey() != null
+                || target.getDefinition().getComponentType().getKey() != null;
     }
 }

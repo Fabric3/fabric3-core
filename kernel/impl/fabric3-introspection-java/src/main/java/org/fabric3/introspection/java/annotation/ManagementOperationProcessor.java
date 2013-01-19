@@ -76,7 +76,7 @@ public class ManagementOperationProcessor extends AbstractAnnotationProcessor<Ma
         if (info == null) {
             // there was no management annotation on the type - record an error
             Class<?> clazz = method.getDeclaringClass();
-            context.addError(new InvalidAnnotation("Implementation is missing @" + Management.class.getSimpleName() + ": " + clazz, clazz));
+            context.addError(new InvalidAnnotation("Implementation is missing @" + Management.class.getSimpleName(), clazz));
             return;
         }
         String description = annotation.description();
