@@ -37,56 +37,25 @@
 */
 package org.fabric3.introspection.java.annotation;
 
-import junit.framework.TestCase;
-
-import org.fabric3.api.annotation.wire.Key;
-import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.api.annotation.wire.Order;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- *
+ * Processes the {@link Order} annotation on component implementation classes.
  */
-public class KeyProcessorTestCase extends TestCase {
-    private KeyProcessor processor;
-    private InjectingComponentType type;
-    private DefaultIntrospectionContext context;
+public class OrderProcessor extends AbstractAnnotationProcessor<Order> {
 
-    public void testParseKey() throws Exception {
-        KeyAnnotated annotated = new KeyAnnotated();
-        Key annotation = annotated.getClass().getAnnotation(Key.class);
-
-
-        processor.visitType(annotation, annotated.getClass(), type, context);
-
-        assertEquals("test", type.getKey());
+    public OrderProcessor() {
+        super(Order.class);
     }
 
-    public void testInvalidKey() throws Exception {
-        InvalidAnnotated annotated = new InvalidAnnotated();
-        Key annotation = annotated.getClass().getAnnotation(Key.class);
-
-        processor.visitType(annotation, annotated.getClass(), type, context);
-
-        assertTrue(context.hasErrors());
-        assertTrue(context.getErrors().get(0) instanceof InvalidAnnotation);
+    public void visitType(Order annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
+        if (annotation.value() == Integer.MIN_VALUE) {
+            context.addError(new InvalidAnnotation("A value must be specified for @Order", type));
+            return;
+        }
+        componentType.setOrder(annotation.value());
     }
-
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        processor = new KeyProcessor();
-        type = new InjectingComponentType();
-        context = new DefaultIntrospectionContext();
-    }
-
-    @Key("test")
-    private static class KeyAnnotated {
-
-    }
-
-    @Key()
-    private static class InvalidAnnotated {
-
-    }
-
 }

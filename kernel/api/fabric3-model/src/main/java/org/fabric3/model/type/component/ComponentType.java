@@ -58,6 +58,7 @@ public class ComponentType extends AbstractPolicyAware<Implementation> implement
     private static final long serialVersionUID = 5302580019263119837L;
 
     private String key;
+    private int order = Integer.MIN_VALUE;
 
     private Map<String, AbstractService> services = new HashMap<String, AbstractService>();
     private Map<String, ConsumerDefinition> consumers = new HashMap<String, ConsumerDefinition>();
@@ -83,6 +84,24 @@ public class ComponentType extends AbstractPolicyAware<Implementation> implement
      */
     public void setKey(String key) {
         this.key = key;
+    }
+
+    /**
+     * Returns the order for collection- and array-based wires or {@link Integer#MIN_VALUE} if not specified.
+     *
+     * @return the order for collection- and array-based wires or {@link Integer#MIN_VALUE} if not specified
+     */
+    public int getOrder() {
+        return order;
+    }
+
+    /**
+     * Sets the order for collection- and array-based wires.
+     *
+     * @param order the order
+     */
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     /**

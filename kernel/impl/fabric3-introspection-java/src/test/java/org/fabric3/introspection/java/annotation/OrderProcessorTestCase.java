@@ -39,31 +39,31 @@ package org.fabric3.introspection.java.annotation;
 
 import junit.framework.TestCase;
 
-import org.fabric3.api.annotation.wire.Key;
+import org.fabric3.api.annotation.wire.Order;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  *
  */
-public class KeyProcessorTestCase extends TestCase {
-    private KeyProcessor processor;
+public class OrderProcessorTestCase extends TestCase {
+    private OrderProcessor processor;
     private InjectingComponentType type;
     private DefaultIntrospectionContext context;
 
-    public void testParseKey() throws Exception {
-        KeyAnnotated annotated = new KeyAnnotated();
-        Key annotation = annotated.getClass().getAnnotation(Key.class);
+    public void testParseOrder() throws Exception {
+        OrderAnnotated annotated = new OrderAnnotated();
+        Order annotation = annotated.getClass().getAnnotation(Order.class);
 
 
         processor.visitType(annotation, annotated.getClass(), type, context);
 
-        assertEquals("test", type.getKey());
+        assertEquals(1, type.getOrder());
     }
 
     public void testInvalidKey() throws Exception {
         InvalidAnnotated annotated = new InvalidAnnotated();
-        Key annotation = annotated.getClass().getAnnotation(Key.class);
+        Order annotation = annotated.getClass().getAnnotation(Order.class);
 
         processor.visitType(annotation, annotated.getClass(), type, context);
 
@@ -74,19 +74,18 @@ public class KeyProcessorTestCase extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        processor = new KeyProcessor();
+        processor = new OrderProcessor();
         type = new InjectingComponentType();
         context = new DefaultIntrospectionContext();
     }
 
-    @Key("test")
-    private static class KeyAnnotated {
+    @Order(1)
+    private static class OrderAnnotated {
 
     }
 
-    @Key()
+    @Order()
     private static class InvalidAnnotated {
 
     }
-
 }

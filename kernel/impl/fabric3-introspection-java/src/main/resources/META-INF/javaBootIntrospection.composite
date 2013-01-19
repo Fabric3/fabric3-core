@@ -123,4 +123,8 @@
         <f3:implementation.system class="org.fabric3.introspection.java.annotation.KeyProcessor"/>
     </component>
 
+    <component name="OrderProcessor" f3:key="org.fabric3.api.annotation.wire.Order">
+        <f3:implementation.system class="org.fabric3.introspection.java.annotation.OrderProcessor"/>
+    </component>
+
 </composite>
