@@ -37,12 +37,12 @@
 */
 package org.fabric3.implementation.pojo.injection;
 
-import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
@@ -61,17 +61,17 @@ public class SetMultiplicityObjectFactoryTestCase extends TestCase {
         EasyMock.replay(mockFactory1, mockFactory2, mockFactory3);
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory1, null);
+        factory.addObjectFactory(mockFactory1, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory2, null);
+        factory.addObjectFactory(mockFactory2, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
         Set<Object> set = factory.getInstance();
         assertEquals(1, set.size());
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory3, null);
+        factory.addObjectFactory(mockFactory3, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
         set = factory.getInstance();
         assertEquals(1, set.size());
@@ -85,7 +85,7 @@ public class SetMultiplicityObjectFactoryTestCase extends TestCase {
         EasyMock.replay(mockFactory);
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory, "baz");
+        factory.addObjectFactory(mockFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
 
         factory.startUpdate();

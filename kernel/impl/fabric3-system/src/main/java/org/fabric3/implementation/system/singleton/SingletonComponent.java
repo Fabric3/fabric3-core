@@ -73,6 +73,7 @@ import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.objectfactory.SingletonObjectFactory;
@@ -200,11 +201,11 @@ public class SingletonComponent implements ScopedComponent {
      *
      * @param injectable    the InjectableAttribute describing the site to reinject
      * @param objectFactory the object factory responsible for supplying a value to reinject
-     * @param key           the key for reference maps
+     * @param attributes    the injection attributes
      */
-    public void addObjectFactory(Injectable injectable, ObjectFactory objectFactory, Object key) {
+    public void addObjectFactory(Injectable injectable, ObjectFactory objectFactory, InjectionAttributes attributes) {
         if (InjectableType.REFERENCE == injectable.getType()) {
-            setFactory(injectable, objectFactory, key);
+            setFactory(injectable, objectFactory, attributes);
         } else {
             // the factory corresponds to a property or context, which will override previous values if reinjected
             reinjectionMappings.put(objectFactory, injectable);
@@ -262,41 +263,41 @@ public class SingletonComponent implements ScopedComponent {
         }
     }
 
-    private void setFactory(Injectable injectable, ObjectFactory objectFactory, Object key) {
+    private void setFactory(Injectable injectable, ObjectFactory objectFactory, InjectionAttributes attributes) {
         ObjectFactory<?> factory = findFactory(injectable);
         if (factory == null) {
             Class<?> type = getMemberType(injectable);
             if (Map.class.equals(type)) {
                 MapMultiplicityObjectFactory mapFactory = new MapMultiplicityObjectFactory();
                 mapFactory.startUpdate();
-                mapFactory.addObjectFactory(objectFactory, key);
+                mapFactory.addObjectFactory(objectFactory, attributes);
                 reinjectionMappings.put(mapFactory, injectable);
             } else if (Set.class.equals(type)) {
                 SetMultiplicityObjectFactory setFactory = new SetMultiplicityObjectFactory();
                 setFactory.startUpdate();
-                setFactory.addObjectFactory(objectFactory, null);
+                setFactory.addObjectFactory(objectFactory, attributes);
                 reinjectionMappings.put(setFactory, injectable);
             } else if (List.class.equals(type)) {
                 ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
                 listFactory.startUpdate();
-                listFactory.addObjectFactory(objectFactory, null);
+                listFactory.addObjectFactory(objectFactory, attributes);
                 reinjectionMappings.put(listFactory, injectable);
             } else if (Collection.class.equals(type)) {
                 ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
                 listFactory.startUpdate();
-                listFactory.addObjectFactory(objectFactory, null);
+                listFactory.addObjectFactory(objectFactory, attributes);
                 reinjectionMappings.put(listFactory, injectable);
             } else if (type.isArray()) {
                 ArrayMultiplicityObjectFactory arrayFactory = new ArrayMultiplicityObjectFactory(type.getComponentType());
                 arrayFactory.startUpdate();
-                arrayFactory.addObjectFactory(objectFactory, null);
+                arrayFactory.addObjectFactory(objectFactory, attributes);
                 reinjectionMappings.put(arrayFactory, injectable);
             } else {
                 reinjectionMappings.put(objectFactory, injectable);
             }
         } else if (factory instanceof MultiplicityObjectFactory) {
             MultiplicityObjectFactory<?> multiplicityObjectFactory = (MultiplicityObjectFactory<?>) factory;
-            multiplicityObjectFactory.addObjectFactory(objectFactory, null);
+            multiplicityObjectFactory.addObjectFactory(objectFactory, attributes);
         } else {
             //update or overwrite  the factory
             reinjectionMappings.put(objectFactory, injectable);

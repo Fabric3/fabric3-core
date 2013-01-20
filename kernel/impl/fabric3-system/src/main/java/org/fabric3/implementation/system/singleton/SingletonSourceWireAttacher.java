@@ -53,6 +53,7 @@ import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.UriHelper;
 import org.fabric3.spi.wire.Wire;
@@ -90,6 +91,8 @@ public class SingletonSourceWireAttacher implements SourceWireAttacher<Singleton
         // Add the object factory for the target to be reinjected.
         // The Injectable identifies the injection site (a field or method) on the singleton instance.
         String key = source.getKey();
-        sourceComponent.addObjectFactory(injectable, objectFactory, key);
+        int order = source.getOrder();
+        InjectionAttributes attributes = new InjectionAttributes(key, order);
+        sourceComponent.addObjectFactory(injectable, objectFactory, attributes);
     }
 }

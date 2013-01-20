@@ -48,14 +48,11 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
-
-import static org.easymock.EasyMock.expect;
 
 /**
  *

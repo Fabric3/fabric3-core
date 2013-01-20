@@ -68,6 +68,7 @@ import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
@@ -156,12 +157,12 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
     }
 
     public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory) {
-        setObjectFactory(injectable, objectFactory, null);
+        setObjectFactory(injectable, objectFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
     }
 
-    public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, Object key) {
+    public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
         if (InjectableType.REFERENCE == injectable.getType() || InjectableType.CALLBACK == injectable.getType()) {
-            setUpdateableFactory(injectable, objectFactory, key);
+            setUpdateableFactory(injectable, objectFactory, attributes);
         } else {
             // the factory corresponds to a property or context, which will override previous values if reinjected
             factories.put(injectable, objectFactory);
@@ -316,7 +317,7 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
         return injectors;
     }
 
-    private void setUpdateableFactory(Injectable injectable, ObjectFactory<?> objectFactory, Object key) {
+    private void setUpdateableFactory(Injectable injectable, ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
         // determine if object factory is present. if so, must be updated.
         ObjectFactory<?> factory = factories.get(injectable);
         if (factory == null) {
@@ -325,27 +326,27 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
             if (Map.class.equals(type)) {
                 MapMultiplicityObjectFactory mapFactory = new MapMultiplicityObjectFactory();
                 mapFactory.startUpdate();
-                mapFactory.addObjectFactory(objectFactory, key);
+                mapFactory.addObjectFactory(objectFactory, attributes);
                 factories.put(injectable, mapFactory);
             } else if (Set.class.equals(type)) {
                 SetMultiplicityObjectFactory setFactory = new SetMultiplicityObjectFactory();
                 setFactory.startUpdate();
-                setFactory.addObjectFactory(objectFactory, key);
+                setFactory.addObjectFactory(objectFactory, attributes);
                 factories.put(injectable, setFactory);
             } else if (List.class.equals(type)) {
                 ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
                 listFactory.startUpdate();
-                listFactory.addObjectFactory(objectFactory, key);
+                listFactory.addObjectFactory(objectFactory, attributes);
                 factories.put(injectable, listFactory);
             } else if (Collection.class.equals(type)) {
                 ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
                 listFactory.startUpdate();
-                listFactory.addObjectFactory(objectFactory, key);
+                listFactory.addObjectFactory(objectFactory, attributes);
                 factories.put(injectable, listFactory);
             } else if (type.isArray()) {
                 ArrayMultiplicityObjectFactory arrayFactory = new ArrayMultiplicityObjectFactory(type.getComponentType());
                 arrayFactory.startUpdate();
-                arrayFactory.addObjectFactory(objectFactory, key);
+                arrayFactory.addObjectFactory(objectFactory, attributes);
                 factories.put(injectable, arrayFactory);
             } else {
                 // not a collection type, add the factory
@@ -353,7 +354,7 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
             }
         } else if (factory instanceof MultiplicityObjectFactory) {
             MultiplicityObjectFactory<?> multiplicityObjectFactory = (MultiplicityObjectFactory<?>) factory;
-            multiplicityObjectFactory.addObjectFactory(objectFactory, key);
+            multiplicityObjectFactory.addObjectFactory(objectFactory, attributes);
         } else {
             // overwrite the existing factory with a new one
             factories.put(injectable, objectFactory);

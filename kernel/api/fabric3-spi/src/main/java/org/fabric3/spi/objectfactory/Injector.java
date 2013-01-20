@@ -61,9 +61,9 @@ public interface Injector<T> {
      * Adds or updates the injector with an ObjectFactory used to inject the pre-configured value.
      *
      * @param objectFactory the ObjectFactory
-     * @param key           an ObjectFactory key. The key corresponds to the key used in Map-based wiring.
+     * @param attributes    the injection attributes
      */
-    void setObjectFactory(ObjectFactory<?> objectFactory, Object key);
+    void setObjectFactory(ObjectFactory<?> objectFactory, InjectionAttributes attributes);
 
     /**
      * Clears the currently set ObjectFactory. Used when a multiplicity reference is reinjected.

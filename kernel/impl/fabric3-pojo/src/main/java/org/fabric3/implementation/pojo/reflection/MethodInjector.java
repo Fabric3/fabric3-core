@@ -47,6 +47,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
@@ -92,10 +93,10 @@ public class MethodInjector implements Injector<Object> {
         }
     }
 
-    public void setObjectFactory(ObjectFactory<?> objectFactory, Object key) {
+    public void setObjectFactory(ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
 
         if (this.objectFactory instanceof MultiplicityObjectFactory<?>) {
-            ((MultiplicityObjectFactory<?>) this.objectFactory).addObjectFactory(objectFactory, key);
+            ((MultiplicityObjectFactory<?>) this.objectFactory).addObjectFactory(objectFactory, attributes);
         } else {
             this.objectFactory = objectFactory;
         }

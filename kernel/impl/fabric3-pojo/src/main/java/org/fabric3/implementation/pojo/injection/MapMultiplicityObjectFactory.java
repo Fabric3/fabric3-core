@@ -40,6 +40,7 @@ package org.fabric3.implementation.pojo.injection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
@@ -60,15 +61,18 @@ public class MapMultiplicityObjectFactory implements MultiplicityObjectFactory<M
         return map;
     }
 
-    public void addObjectFactory(ObjectFactory<?> objectFactory, Object key) {
-        if (key == null) {
+    public void addObjectFactory(ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
+        if (attributes == null) {
+            throw new IllegalArgumentException("Attributes was null");
+        }
+        if (attributes.getKey() == null) {
             // programming error as null keys are checked during wire resolution
-            throw new IllegalArgumentException("Key was null");
+            throw new IllegalArgumentException("Attributes was null");
         }
         if (state != FactoryState.UPDATING) {
             throw new IllegalStateException("Factory not in updating state. The method startUpdate() must be called first.");
         }
-        temporaryFactories.put(key, objectFactory);
+        temporaryFactories.put(attributes.getKey(), objectFactory);
     }
 
     public void clear() {

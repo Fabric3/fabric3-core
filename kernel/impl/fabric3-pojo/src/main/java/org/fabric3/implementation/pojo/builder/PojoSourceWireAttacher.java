@@ -74,7 +74,7 @@ public abstract class PojoSourceWireAttacher {
     }
 
     /**
-     * Creates a key for a map-style reference.
+     * Returns a key for a map-style reference or null if there is no key associated with the reference.
      *
      * @param sourceDefinition the source metadata
      * @param targetDefinition the target metadata
@@ -83,12 +83,10 @@ public abstract class PojoSourceWireAttacher {
      */
     @SuppressWarnings("unchecked")
     protected Object getKey(PojoSourceDefinition sourceDefinition, PhysicalTargetDefinition targetDefinition) throws KeyInstantiationException {
-
         if (!sourceDefinition.isKeyed()) {
-            throw new AssertionError("Attempt to read a key for a non-keyed reference");
+            return null;
         }
-
-        String value = sourceDefinition.getKey();
+        String key = sourceDefinition.getKey();
 
         // The target classloader must be used since the key class may not be visible to the source classloader, for example, when subclasses are
         // used a keys
@@ -103,14 +101,14 @@ public abstract class PojoSourceWireAttacher {
         }
         if (String.class.equals(keyType)) {
             // short-circuit the transformation and return the string
-            return value;
+            return key;
         } else if (Enum.class.isAssignableFrom(keyType)) {
             // enum, instantiate it directly
             Class<Enum> enumClass = (Class<Enum>) keyType;
-            return Enum.valueOf(enumClass, value);
+            return Enum.valueOf(enumClass, key);
         }
         DataType<?> targetType = new JavaClass(keyType);
-        return createKey(targetType, value, targetClassLoader);
+        return createKey(targetType, key, targetClassLoader);
 
     }
 

@@ -60,6 +60,7 @@ import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.spi.util.UriHelper;
@@ -120,9 +121,11 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
             try {
                 ObjectFactory<?> factory = proxyService.createObjectFactory(type, wire, callbackUri);
 
-                if (source.isKeyed()) {
+                if (source.isKeyed() || source.isOrdered()) {
                     Object key = getKey(source, target);
-                    component.setObjectFactory(injectable, factory, key);
+                    int order = source.getOrder();
+                    InjectionAttributes attributes = new InjectionAttributes(key, order);
+                    component.setObjectFactory(injectable, factory, attributes);
                 } else {
                     component.setObjectFactory(injectable, factory);
                 }
@@ -147,9 +150,11 @@ public class SystemSourceWireAttacher extends PojoSourceWireAttacher implements 
         URI sourceId = UriHelper.getDefragmentedName(source.getUri());
         SystemComponent component = (SystemComponent) manager.getComponent(sourceId);
         Injectable injectable = source.getInjectable();
-        if (source.isKeyed()) {
+        if (source.isKeyed() || source.isOrdered()) {
             Object key = getKey(source, target);
-            component.setObjectFactory(injectable, factory, key);
+            int order = source.getOrder();
+            InjectionAttributes attributes = new InjectionAttributes(key, order);
+            component.setObjectFactory(injectable, factory, attributes);
         } else {
             component.setObjectFactory(injectable, factory);
         }

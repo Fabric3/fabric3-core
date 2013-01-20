@@ -45,6 +45,7 @@ package org.fabric3.implementation.pojo.injection;
 
 import java.util.Collection;
 
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
@@ -60,7 +61,7 @@ public abstract class AbstractCollectionMultiplicityObjectFactory<T extends Coll
         state = FactoryState.UPDATED;
     }
 
-    public void addObjectFactory(ObjectFactory<?> objectFactory, Object key) {
+    public void addObjectFactory(ObjectFactory<?> objectFactory, InjectionAttributes injectionAttributes) {
         if (state != FactoryState.UPDATING) {
             throw new IllegalStateException("Factory not in updating state. The method startUpdate() must be called first.");
         }

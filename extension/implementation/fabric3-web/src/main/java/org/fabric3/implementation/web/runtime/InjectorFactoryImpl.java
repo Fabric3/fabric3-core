@@ -49,6 +49,7 @@ import org.fabric3.implementation.web.provision.WebContextInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
@@ -114,13 +115,15 @@ public class InjectorFactoryImpl implements InjectorFactory {
     }
 
     private Injector<?> createInjector(String referenceName, ObjectFactory<?> factory, WebContextInjectionSite site) {
+        // use reference name as the key
+        InjectionAttributes attributes = new InjectionAttributes(referenceName, Integer.MIN_VALUE);
         if (site.getContextType() == WebContextInjectionSite.ContextType.SERVLET_CONTEXT) {
             Injector<?> injector = new ServletContextInjector();
-            injector.setObjectFactory(factory, referenceName);
+            injector.setObjectFactory(factory, attributes);
             return injector;
         } else {
             Injector<?> injector = new HttpSessionInjector();
-            injector.setObjectFactory(factory, referenceName);
+            injector.setObjectFactory(factory, attributes);
             return injector;
         }
     }

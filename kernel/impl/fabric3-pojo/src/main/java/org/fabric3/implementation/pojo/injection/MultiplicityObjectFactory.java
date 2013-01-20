@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.pojo.injection;
 
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
@@ -46,8 +47,8 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  * Implementations should implement {@link ObjectFactory#getInstance()} in a lock-free manner. The semantics of this contract require that update
  * operations are synchronized. That is, access to {@link #clear()}, {@link #startUpdate()} ()}, and {@link #endUpdate()} can only be made from a
  * single thread from the time {@link #startUpdate()} is called to when {@link #endUpdate()} is invoked. This means that implementations can cache
- * changes made via {@link #addObjectFactory(ObjectFactory, Object)} and  apply them atomically when {@link #endUpdate()} is called. During an update
- * sequence, {@link #getInstance()} can continue to return instances using the non-updated backing collection in a lock-free manner.
+ * changes made via {@link #addObjectFactory(ObjectFactory, InjectionAttributes)} and  apply them atomically when {@link #endUpdate()} is called.
+ * During an update sequence, {@link #getInstance()} can continue to return instances using the non-updated backing collection in a lock-free manner.
  *
  * @param <T> the instance type
  */
@@ -57,9 +58,9 @@ public interface MultiplicityObjectFactory<T> extends ObjectFactory<T> {
      * Adds a constituent object factory.
      *
      * @param objectFactory Constituent object factory
-     * @param key           the target key
+     * @param attributes    the injection attributes
      */
-    void addObjectFactory(ObjectFactory<?> objectFactory, Object key);
+    void addObjectFactory(ObjectFactory<?> objectFactory, InjectionAttributes attributes);
 
     /**
      * Clears the contents of the object factory

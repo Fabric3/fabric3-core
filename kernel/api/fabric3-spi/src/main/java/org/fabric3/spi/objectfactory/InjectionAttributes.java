@@ -35,14 +35,15 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.pojo.injection;
+package org.fabric3.spi.objectfactory;
 
 /**
  * Attributes of a wire used during injection.
  */
 public class InjectionAttributes {
-    private String key;
-    private int Order;
+    public static final InjectionAttributes EMPTY_ATTRIBUTES = new InjectionAttributes();
+    private Object key;
+    private int order = Integer.MIN_VALUE;
 
     /**
      * Constructor.
@@ -51,16 +52,19 @@ public class InjectionAttributes {
      * @param order the order for ordered (e.g. List or array)-based references; may be null if not defined or the reference being injected is not
      *              order-sensitive.
      */
-    public InjectionAttributes(String key, int order) {
+    public InjectionAttributes(Object key, int order) {
         this.key = key;
-        Order = order;
+        this.order = order;
     }
 
-    public String getKey() {
+    private InjectionAttributes() {
+    }
+
+    public Object getKey() {
         return key;
     }
 
     public int getOrder() {
-        return Order;
+        return order;
     }
 }

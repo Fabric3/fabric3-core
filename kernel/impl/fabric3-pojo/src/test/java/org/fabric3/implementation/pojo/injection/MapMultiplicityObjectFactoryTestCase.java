@@ -42,6 +42,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
@@ -56,17 +57,20 @@ public class MapMultiplicityObjectFactoryTestCase extends TestCase {
         EasyMock.replay(mockFactory);
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory, "baz");
+        InjectionAttributes attributes = new InjectionAttributes("baz", Integer.MIN_VALUE);
+        factory.addObjectFactory(mockFactory, attributes);
         factory.endUpdate();
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory, "foo");
+        attributes = new InjectionAttributes("foo", Integer.MIN_VALUE);
+        factory.addObjectFactory(mockFactory, attributes);
         factory.endUpdate();
         Map<Object, Object> map = factory.getInstance();
         assertEquals(1, map.size());
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory, "bar");
+        attributes = new InjectionAttributes("bar", Integer.MIN_VALUE);
+        factory.addObjectFactory(mockFactory, attributes);
         factory.endUpdate();
         map = factory.getInstance();
         assertEquals(1, map.size());
@@ -80,7 +84,8 @@ public class MapMultiplicityObjectFactoryTestCase extends TestCase {
         EasyMock.replay(mockFactory);
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory, "baz");
+        InjectionAttributes attributes = new InjectionAttributes("baz", Integer.MIN_VALUE);
+        factory.addObjectFactory(mockFactory, attributes);
         factory.endUpdate();
 
         factory.startUpdate();

@@ -46,6 +46,7 @@ package org.fabric3.implementation.pojo.instancefactory;
 import java.lang.reflect.Type;
 
 import org.fabric3.spi.model.type.java.Injectable;
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
@@ -98,9 +99,9 @@ public interface ImplementationManagerFactory {
      *
      * @param injectable    the injection site
      * @param objectFactory the object factory
-     * @param key           the key for Map-based injection sites
+     * @param attributes    the injection attributes
      */
-    void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, Object key);
+    void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, InjectionAttributes attributes);
 
     /**
      * Removes an object factory for an injection site.

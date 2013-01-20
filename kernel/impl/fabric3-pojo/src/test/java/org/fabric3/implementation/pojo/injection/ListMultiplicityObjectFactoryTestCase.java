@@ -37,12 +37,12 @@
 */
 package org.fabric3.implementation.pojo.injection;
 
-import java.lang.reflect.Array;
 import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
@@ -58,17 +58,17 @@ public class ListMultiplicityObjectFactoryTestCase extends TestCase {
 
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory, null);
+        factory.addObjectFactory(mockFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory, null);
+        factory.addObjectFactory(mockFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
         List<Object> list = factory.getInstance();
         assertEquals(1, list.size());
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory, null);
+        factory.addObjectFactory(mockFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
         list = factory.getInstance();
         assertEquals(1, list.size());
@@ -82,7 +82,7 @@ public class ListMultiplicityObjectFactoryTestCase extends TestCase {
         EasyMock.replay(mockFactory);
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory, "baz");
+        factory.addObjectFactory(mockFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
 
         factory.startUpdate();

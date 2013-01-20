@@ -50,7 +50,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * Represents the source side of a wire.
@@ -164,6 +163,15 @@ public abstract class PhysicalSourceDefinition implements Serializable {
      */
     public int getOrder() {
         return order;
+    }
+
+    /**
+     * Returns true if the wire is ordered.
+     *
+     * @return true if the wire is ordered
+     */
+    public boolean isOrdered() {
+        return order != Integer.MIN_VALUE;
     }
 
     /**

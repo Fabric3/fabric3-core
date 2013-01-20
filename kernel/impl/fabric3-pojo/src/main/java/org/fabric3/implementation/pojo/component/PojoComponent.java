@@ -60,6 +60,7 @@ import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.type.java.Injectable;
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
@@ -185,7 +186,7 @@ public abstract class PojoComponent implements ScopedComponent {
      * @param objectFactory the object factory
      */
     public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory) {
-        setObjectFactory(injectable, objectFactory, null);
+        setObjectFactory(injectable, objectFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
     }
 
     /**
@@ -193,10 +194,10 @@ public abstract class PojoComponent implements ScopedComponent {
      *
      * @param injectable    the injectable identifying the component reference, property or context artifact the object factory creates instances for
      * @param objectFactory the object factory
-     * @param key           key value for a Map reference
+     * @param attributes    the injection attributes
      */
-    public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, Object key) {
-        factory.setObjectFactory(injectable, objectFactory, key);
+    public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
+        factory.setObjectFactory(injectable, objectFactory, attributes);
         List<Object> instances = scopeContainer.getActiveInstances(this);
         String name = injectable.getName();
         for (Object instance : instances) {

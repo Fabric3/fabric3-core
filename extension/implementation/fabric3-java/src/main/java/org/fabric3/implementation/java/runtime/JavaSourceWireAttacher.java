@@ -57,6 +57,7 @@ import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.spi.util.UriHelper;
@@ -120,9 +121,11 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
         JavaComponent sourceComponent = (JavaComponent) manager.getComponent(sourceId);
         Injectable injectable = sourceDefinition.getInjectable();
 
-        if (sourceDefinition.isKeyed()) {
+        if (sourceDefinition.isKeyed() || sourceDefinition.isOrdered()) {
             Object key = getKey(sourceDefinition, targetDefinition);
-            sourceComponent.setObjectFactory(injectable, factory, key);
+            int order = sourceDefinition.getOrder();
+            InjectionAttributes attributes = new InjectionAttributes(key, order);
+            sourceComponent.setObjectFactory(injectable, factory, attributes);
         } else {
             sourceComponent.setObjectFactory(injectable, factory);
         }
@@ -142,9 +145,11 @@ public class JavaSourceWireAttacher extends PojoSourceWireAttacher implements So
 
         try {
             ObjectFactory<?> factory = proxyService.createObjectFactory(type, wire, callbackUri);
-            if (sourceDefinition.isKeyed()) {
+            if (sourceDefinition.isKeyed() || sourceDefinition.isOrdered()) {
                 Object key = getKey(sourceDefinition, targetDefinition);
-                source.setObjectFactory(injectable, factory, key);
+                int order = sourceDefinition.getOrder();
+                InjectionAttributes attributes = new InjectionAttributes(key, order);
+                source.setObjectFactory(injectable, factory, attributes);
             } else {
                 source.setObjectFactory(injectable, factory);
             }

@@ -42,6 +42,7 @@ import java.lang.reflect.Array;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
@@ -56,17 +57,17 @@ public class ArrayMultiplicityObjectFactoryTestCase extends TestCase {
         EasyMock.replay(mockFactory);
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory, null);
+        factory.addObjectFactory(mockFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory, null);
+        factory.addObjectFactory(mockFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
         Object instance = factory.getInstance();
         assertEquals(1, Array.getLength(instance));
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory, null);
+        factory.addObjectFactory(mockFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
         instance = factory.getInstance();
         assertEquals(1, Array.getLength(instance));
@@ -80,7 +81,7 @@ public class ArrayMultiplicityObjectFactoryTestCase extends TestCase {
         EasyMock.replay(mockFactory);
 
         factory.startUpdate();
-        factory.addObjectFactory(mockFactory, "baz");
+        factory.addObjectFactory(mockFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
 
         factory.startUpdate();

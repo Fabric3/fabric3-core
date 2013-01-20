@@ -40,6 +40,7 @@ package org.fabric3.implementation.web.runtime;
 import javax.servlet.ServletContext;
 
 import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
+import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
@@ -55,9 +56,9 @@ public class ServletContextInjector implements Injector<ServletContext> {
         context.setAttribute(key, objectFactory.getInstance());
     }
 
-    public void setObjectFactory(ObjectFactory<?> objectFactory, Object key) {
+    public void setObjectFactory(ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
         this.objectFactory = objectFactory;
-        this.key = key.toString();
+        this.key = attributes.getKey().toString();
     }
 
     public void clearObjectFactory() {
