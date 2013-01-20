@@ -58,6 +58,7 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
     private String name;
     private I implementation;
     private String key;
+    private int order = Integer.MIN_VALUE;
     private URI contributionUri;
     private Autowire autowire = Autowire.INHERITED;
 
@@ -319,6 +320,24 @@ public class ComponentDefinition<I extends Implementation<?>> extends AbstractPo
      */
     public void setKey(String key) {
         this.key = key;
+    }
+
+    /**
+     * Returns the order for collection- and array-based wires or {@link Integer#MIN_VALUE} if not specified.
+     *
+     * @return the order for collection- and array-based wires or {@link Integer#MIN_VALUE} if not specified
+     */
+    public int getOrder() {
+        return order;
+    }
+
+    /**
+     * Sets the order for collection- and array-based wires.
+     *
+     * @param order the order
+     */
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     /**

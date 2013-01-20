@@ -48,6 +48,7 @@ import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -304,6 +305,9 @@ public class WireGeneratorImpl implements WireGenerator {
         String key = getKey(target);
         sourceDefinition.setKey(key);
 
+        int order = getOrder(target);
+        sourceDefinition.setOrder(order);
+
         // generate the metadata used to attach the physical wire to the target component
         ComponentGenerator targetGenerator = getGenerator(target);
         PhysicalTargetDefinition targetDefinition = targetGenerator.generateTarget(service, targetPolicy);
@@ -369,12 +373,11 @@ public class WireGeneratorImpl implements WireGenerator {
         PhysicalSourceDefinition sourceDefinition = sourceGenerator.generateSource(reference, sourcePolicy);
         sourceDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
 
-        String key = source.getDefinition().getKey();
-        if (key == null) {
-            // check if the key was specified in the component type
-            key = getKey(source);
-        }
+        String key = getKey(source);
         sourceDefinition.setKey(key);
+
+        int order = getOrder(source);
+        sourceDefinition.setOrder(order);
 
         LogicalBinding<BD> serviceBinding = wire.getTargetBinding();
         BindingGenerator<BD> targetGenerator = getGenerator(serviceBinding);
@@ -529,6 +532,23 @@ public class WireGeneratorImpl implements WireGenerator {
         return key;
     }
 
+    /**
+     * Returns the key specified on the component definition, component type, or {@link Integer#MIN_VALUE}
+     *
+     * @param component the component
+     * @return the key or null
+     */
+    private int getOrder(LogicalComponent component) {
+        int order = component.getDefinition().getOrder();
+        if (order == Integer.MIN_VALUE) {
+            ComponentDefinition<?> definition = component.getDefinition();
+            Implementation<?> implementation = definition.getImplementation();
+            if (implementation != null && implementation.getComponentType() != null) {
+                order = implementation.getComponentType().getOrder();
+            }
+        }
+        return order;
+    }
 
     @SuppressWarnings("unchecked")
     private <C extends LogicalComponent<?>> ComponentGenerator<C> getGenerator(C component) throws GeneratorNotFoundException {

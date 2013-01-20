@@ -122,7 +122,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     @Constructor
     public ComponentLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper, @Reference ContractMatcher contractMatcher) {
         super(registry);
-        addAttributes("name", "autowire", "requires", "policySets", "key");
+        addAttributes("name", "autowire", "requires", "policySets", "key", "order");
         this.loaderHelper = loaderHelper;
         this.contractMatcher = contractMatcher;
     }
@@ -146,6 +146,9 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
         String key = loaderHelper.loadKey(reader);
 
         ComponentDefinition<Implementation<?>> definition = new ComponentDefinition<Implementation<?>>(name);
+
+        int order = parserOrder(reader, definition, startLocation, context);
+
         if (roundTrip) {
             definition.enableRoundTrip();
             if (autowireStr != null) {
@@ -154,10 +157,14 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             if (key != null) {
                 definition.attributeSpecified("key");
             }
+            if (order != Integer.MIN_VALUE) {
+                definition.attributeSpecified("order");
+            }
         }
         definition.setContributionUri(context.getContributionUri());
         definition.setAutowire(autowire);
         definition.setKey(key);
+        definition.setOrder(order);
 
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 
@@ -561,6 +568,23 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
             InvalidValue failure = new InvalidValue("Multiple targets configured on reference " + name + ", which takes a single target", location);
             context.addError(failure);
         }
+    }
+
+    private int parserOrder(XMLStreamReader reader,
+                             ComponentDefinition<Implementation<?>> definition,
+                             Location startLocation,
+                             IntrospectionContext context) {
+        String orderStr = reader.getAttributeValue(null, "order");
+        int order = Integer.MIN_VALUE;
+        if (orderStr != null) {
+            try {
+            order = Integer.parseInt(orderStr);
+            }catch (NumberFormatException e) {
+                InvalidValue failure = new InvalidValue("Invalid order value", startLocation, definition);
+                context.addError(failure);
+            }
+        }
+        return order;
     }
 
     private void validateRequiredProperties(ComponentDefinition<?> definition,
