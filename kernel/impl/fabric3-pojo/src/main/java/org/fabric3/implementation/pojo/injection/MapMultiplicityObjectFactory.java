@@ -39,19 +39,18 @@ package org.fabric3.implementation.pojo.injection;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * A map based object factory.
+ * Returns a <code>Map</code> containing object instances.
  */
 public class MapMultiplicityObjectFactory implements MultiplicityObjectFactory<Map<?, ?>> {
+    private Map<Object, ObjectFactory<?>> factories = new HashMap<Object, ObjectFactory<?>>();
+    private Map<Object, ObjectFactory<?>> temporaryFactories;
 
-    // Object factories
-    private Map<Object, ObjectFactory<?>> factories = new ConcurrentHashMap<Object, ObjectFactory<?>>();
-    private boolean cleared = true;
+    private FactoryState state = FactoryState.UPDATED;
 
     public Map<Object, Object> getInstance() throws ObjectCreationException {
         Map<Object, Object> map = new HashMap<Object, Object>();
@@ -66,23 +65,29 @@ public class MapMultiplicityObjectFactory implements MultiplicityObjectFactory<M
             // programming error as null keys are checked during wire resolution
             throw new IllegalArgumentException("Key was null");
         }
-        if (!cleared) {
-            clear();
+        if (state != FactoryState.UPDATING) {
+            throw new IllegalStateException("Factory not in updating state. The method startUpdate() must be called first.");
         }
-        factories.put(key, objectFactory);
+        temporaryFactories.put(key, objectFactory);
     }
 
     public void clear() {
         factories.clear();
-        cleared = true;
     }
 
     public void startUpdate() {
-        cleared = false;
+        state = FactoryState.UPDATING;
+        temporaryFactories = new HashMap<Object, ObjectFactory<?>>();
     }
 
     public void endUpdate() {
-        cleared = true;
+        if (temporaryFactories != null && !temporaryFactories.isEmpty()) {
+            // The isEmpty() check ensures only updates are applied since startUpdate()/endUpdate() can be called if there are no changes present.
+            // Otherwise, if no updates are made, existing factories will be overwritten by the empty collection.
+            factories = temporaryFactories;
+            temporaryFactories = null;
+        }
+        state = FactoryState.UPDATED;
     }
 
 

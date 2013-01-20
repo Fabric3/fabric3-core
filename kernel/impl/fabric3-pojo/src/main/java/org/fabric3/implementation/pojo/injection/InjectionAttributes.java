@@ -37,63 +37,30 @@
 */
 package org.fabric3.implementation.pojo.injection;
 
-import java.lang.reflect.Array;
-import java.util.List;
-
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
-
-import org.fabric3.spi.objectfactory.ObjectFactory;
-
 /**
- *
+ * Attributes of a wire used during injection.
  */
-public class ListMultiplicityObjectFactoryTestCase extends TestCase {
-    private ListMultiplicityObjectFactory factory = new ListMultiplicityObjectFactory();
+public class InjectionAttributes {
+    private String key;
+    private int Order;
 
-    public void testReinjection() throws Exception {
-        ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
-        EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(2);
-        EasyMock.replay(mockFactory);
-
-
-        factory.startUpdate();
-        factory.addObjectFactory(mockFactory, null);
-        factory.endUpdate();
-
-        factory.startUpdate();
-        factory.addObjectFactory(mockFactory, null);
-        factory.endUpdate();
-        List<Object> list = factory.getInstance();
-        assertEquals(1, list.size());
-
-        factory.startUpdate();
-        factory.addObjectFactory(mockFactory, null);
-        factory.endUpdate();
-        list = factory.getInstance();
-        assertEquals(1, list.size());
-
-        EasyMock.verify(mockFactory);
+    /**
+     * Constructor.
+     *
+     * @param key   the key or Map-based references or null
+     * @param order the order for ordered (e.g. List or array)-based references; may be null if not defined or the reference being injected is not
+     *              order-sensitive.
+     */
+    public InjectionAttributes(String key, int order) {
+        this.key = key;
+        Order = order;
     }
 
-    public void testNoUpdates() throws Exception {
-        ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
-        EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(1);
-        EasyMock.replay(mockFactory);
-
-        factory.startUpdate();
-        factory.addObjectFactory(mockFactory, "baz");
-        factory.endUpdate();
-
-        factory.startUpdate();
-        // no update
-        factory.endUpdate();
-
-        List<Object> instance = factory.getInstance();
-        assertEquals(1, instance.size());
-
-        EasyMock.verify(mockFactory);
+    public String getKey() {
+        return key;
     }
 
-
+    public int getOrder() {
+        return Order;
+    }
 }

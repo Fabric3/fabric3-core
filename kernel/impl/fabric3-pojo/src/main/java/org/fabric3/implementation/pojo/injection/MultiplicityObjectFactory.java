@@ -40,7 +40,15 @@ package org.fabric3.implementation.pojo.injection;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Common interface for all multiplicity object factories.
+ * Implementations use a backing collection of {@link ObjectFactory} instances that create a collection of instances for injection on a component,
+ * e.g. a multiplicity reference.
+ * <p/>
+ * Implementations should implement {@link ObjectFactory#getInstance()} in a lock-free manner. The semantics of this contract require that update
+ * operations are synchronized. That is, access to {@link #clear()}, {@link #startUpdate()} ()}, and {@link #endUpdate()} can only be made from a
+ * single thread from the time {@link #startUpdate()} is called to when {@link #endUpdate()} is invoked. This means that implementations can cache
+ * changes made via {@link #addObjectFactory(ObjectFactory, Object)} and  apply them atomically when {@link #endUpdate()} is called. During an update
+ * sequence, {@link #getInstance()} can continue to return instances using the non-updated backing collection in a lock-free manner.
+ *
  * @param <T> the instance type
  */
 public interface MultiplicityObjectFactory<T> extends ObjectFactory<T> {
@@ -59,12 +67,12 @@ public interface MultiplicityObjectFactory<T> extends ObjectFactory<T> {
     void clear();
 
     /**
-     * Used to signal the start of an atomic update to the object factory.
+     * Used to put the factory in the update state.
      */
     void startUpdate();
 
     /**
-     * Used to signal when an atomic update is complete.
+     * Used to signal when an update is complete. Note that updates may not have taken place.
      */
     void endUpdate();
 

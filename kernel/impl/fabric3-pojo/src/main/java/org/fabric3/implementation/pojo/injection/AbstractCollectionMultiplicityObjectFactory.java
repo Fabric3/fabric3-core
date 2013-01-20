@@ -34,66 +34,58 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
 package org.fabric3.implementation.pojo.injection;
 
-import java.lang.reflect.Array;
-import java.util.List;
-
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import java.util.Collection;
 
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- *
+ * Abstract factory for implementations that return a collection of objects.
  */
-public class ListMultiplicityObjectFactoryTestCase extends TestCase {
-    private ListMultiplicityObjectFactory factory = new ListMultiplicityObjectFactory();
+public abstract class AbstractCollectionMultiplicityObjectFactory<T extends Collection<ObjectFactory<?>>> implements MultiplicityObjectFactory<Object> {
+    protected T factories;
+    private T temporaryFactories;
+    private FactoryState state;
 
-    public void testReinjection() throws Exception {
-        ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
-        EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(2);
-        EasyMock.replay(mockFactory);
-
-
-        factory.startUpdate();
-        factory.addObjectFactory(mockFactory, null);
-        factory.endUpdate();
-
-        factory.startUpdate();
-        factory.addObjectFactory(mockFactory, null);
-        factory.endUpdate();
-        List<Object> list = factory.getInstance();
-        assertEquals(1, list.size());
-
-        factory.startUpdate();
-        factory.addObjectFactory(mockFactory, null);
-        factory.endUpdate();
-        list = factory.getInstance();
-        assertEquals(1, list.size());
-
-        EasyMock.verify(mockFactory);
+    public AbstractCollectionMultiplicityObjectFactory() {
+        this.factories = createCollection();
+        state = FactoryState.UPDATED;
     }
 
-    public void testNoUpdates() throws Exception {
-        ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
-        EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(1);
-        EasyMock.replay(mockFactory);
-
-        factory.startUpdate();
-        factory.addObjectFactory(mockFactory, "baz");
-        factory.endUpdate();
-
-        factory.startUpdate();
-        // no update
-        factory.endUpdate();
-
-        List<Object> instance = factory.getInstance();
-        assertEquals(1, instance.size());
-
-        EasyMock.verify(mockFactory);
+    public void addObjectFactory(ObjectFactory<?> objectFactory, Object key) {
+        if (state != FactoryState.UPDATING) {
+            throw new IllegalStateException("Factory not in updating state. The method startUpdate() must be called first.");
+        }
+        temporaryFactories.add(objectFactory);
     }
 
+    public void clear() {
+        factories.clear();
+    }
+
+    public void startUpdate() {
+        state = FactoryState.UPDATING;
+        temporaryFactories = createCollection();
+    }
+
+    public void endUpdate() {
+        if (temporaryFactories != null && !temporaryFactories.isEmpty()) {
+            // The isEmpty() check ensures only updates are applied since startUpdate()/endUpdate() can be called if there are no changes present.
+            // Otherwise, if no updates are made, existing factories will be overwritten by the empty collection.
+            factories = temporaryFactories;
+            temporaryFactories = null;
+        }
+        state = FactoryState.UPDATED;
+    }
+
+    protected abstract T createCollection();
 
 }

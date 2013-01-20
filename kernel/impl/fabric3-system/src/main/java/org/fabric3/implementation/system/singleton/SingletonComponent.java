@@ -268,22 +268,27 @@ public class SingletonComponent implements ScopedComponent {
             Class<?> type = getMemberType(injectable);
             if (Map.class.equals(type)) {
                 MapMultiplicityObjectFactory mapFactory = new MapMultiplicityObjectFactory();
+                mapFactory.startUpdate();
                 mapFactory.addObjectFactory(objectFactory, key);
                 reinjectionMappings.put(mapFactory, injectable);
             } else if (Set.class.equals(type)) {
                 SetMultiplicityObjectFactory setFactory = new SetMultiplicityObjectFactory();
+                setFactory.startUpdate();
                 setFactory.addObjectFactory(objectFactory, null);
                 reinjectionMappings.put(setFactory, injectable);
             } else if (List.class.equals(type)) {
                 ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
+                listFactory.startUpdate();
                 listFactory.addObjectFactory(objectFactory, null);
                 reinjectionMappings.put(listFactory, injectable);
             } else if (Collection.class.equals(type)) {
                 ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
+                listFactory.startUpdate();
                 listFactory.addObjectFactory(objectFactory, null);
                 reinjectionMappings.put(listFactory, injectable);
             } else if (type.isArray()) {
                 ArrayMultiplicityObjectFactory arrayFactory = new ArrayMultiplicityObjectFactory(type.getComponentType());
+                arrayFactory.startUpdate();
                 arrayFactory.addObjectFactory(objectFactory, null);
                 reinjectionMappings.put(arrayFactory, injectable);
             } else {

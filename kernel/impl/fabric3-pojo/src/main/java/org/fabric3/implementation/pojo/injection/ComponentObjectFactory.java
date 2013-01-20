@@ -51,10 +51,10 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- *
+ * Delegates to an {@link AtomicComponent} to create an instance.
  */
 public class ComponentObjectFactory implements ObjectFactory<Object> {
-    private final AtomicComponent component;
+    private AtomicComponent component;
 
     public ComponentObjectFactory(AtomicComponent component) {
         this.component = component;

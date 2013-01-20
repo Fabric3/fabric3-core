@@ -48,14 +48,16 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  *
  */
 public class MapMultiplicityObjectFactoryTestCase extends TestCase {
+    private MapMultiplicityObjectFactory factory = new MapMultiplicityObjectFactory();
 
     public void testReinjection() throws Exception {
         ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
         EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(2);
         EasyMock.replay(mockFactory);
 
-        MapMultiplicityObjectFactory factory = new MapMultiplicityObjectFactory();
+        factory.startUpdate();
         factory.addObjectFactory(mockFactory, "baz");
+        factory.endUpdate();
 
         factory.startUpdate();
         factory.addObjectFactory(mockFactory, "foo");
@@ -72,5 +74,22 @@ public class MapMultiplicityObjectFactoryTestCase extends TestCase {
         EasyMock.verify(mockFactory);
     }
 
+    public void testNoUpdates() throws Exception {
+        ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
+        EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(1);
+        EasyMock.replay(mockFactory);
 
+        factory.startUpdate();
+        factory.addObjectFactory(mockFactory, "baz");
+        factory.endUpdate();
+
+        factory.startUpdate();
+        // no update
+        factory.endUpdate();
+
+        Map<Object, Object> map = factory.getInstance();
+        assertEquals(1, map.size());
+
+        EasyMock.verify(mockFactory);
+    }
 }

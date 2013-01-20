@@ -320,35 +320,42 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
         // determine if object factory is present. if so, must be updated.
         ObjectFactory<?> factory = factories.get(injectable);
         if (factory == null) {
+            // factory not present, add it first checking ot see if it is a collection type and, if so, wrapping it in a collection-based factory
             Class<?> type = getMemberType(injectable);
             if (Map.class.equals(type)) {
                 MapMultiplicityObjectFactory mapFactory = new MapMultiplicityObjectFactory();
+                mapFactory.startUpdate();
                 mapFactory.addObjectFactory(objectFactory, key);
                 factories.put(injectable, mapFactory);
             } else if (Set.class.equals(type)) {
                 SetMultiplicityObjectFactory setFactory = new SetMultiplicityObjectFactory();
+                setFactory.startUpdate();
                 setFactory.addObjectFactory(objectFactory, key);
                 factories.put(injectable, setFactory);
             } else if (List.class.equals(type)) {
                 ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
+                listFactory.startUpdate();
                 listFactory.addObjectFactory(objectFactory, key);
                 factories.put(injectable, listFactory);
             } else if (Collection.class.equals(type)) {
                 ListMultiplicityObjectFactory listFactory = new ListMultiplicityObjectFactory();
+                listFactory.startUpdate();
                 listFactory.addObjectFactory(objectFactory, key);
                 factories.put(injectable, listFactory);
             } else if (type.isArray()) {
                 ArrayMultiplicityObjectFactory arrayFactory = new ArrayMultiplicityObjectFactory(type.getComponentType());
+                arrayFactory.startUpdate();
                 arrayFactory.addObjectFactory(objectFactory, key);
                 factories.put(injectable, arrayFactory);
             } else {
+                // not a collection type, add the factory
                 factories.put(injectable, objectFactory);
             }
         } else if (factory instanceof MultiplicityObjectFactory) {
             MultiplicityObjectFactory<?> multiplicityObjectFactory = (MultiplicityObjectFactory<?>) factory;
             multiplicityObjectFactory.addObjectFactory(objectFactory, key);
         } else {
-            //update or overwrite  the factory
+            // overwrite the existing factory with a new one
             factories.put(injectable, objectFactory);
         }
     }

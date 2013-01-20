@@ -48,15 +48,17 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  *
  */
 public class ArrayMultiplicityObjectFactoryTestCase extends TestCase {
+    private ArrayMultiplicityObjectFactory factory = new ArrayMultiplicityObjectFactory(Object.class);
 
     public void testReinjection() throws Exception {
         ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
         EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(2);
         EasyMock.replay(mockFactory);
 
-        ArrayMultiplicityObjectFactory factory = new ArrayMultiplicityObjectFactory(Object.class);
+        factory.startUpdate();
         factory.addObjectFactory(mockFactory, null);
-        
+        factory.endUpdate();
+
         factory.startUpdate();
         factory.addObjectFactory(mockFactory, null);
         factory.endUpdate();
@@ -72,5 +74,22 @@ public class ArrayMultiplicityObjectFactoryTestCase extends TestCase {
         EasyMock.verify(mockFactory);
     }
 
+    public void testNoUpdates() throws Exception {
+        ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
+        EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(1);
+        EasyMock.replay(mockFactory);
 
+        factory.startUpdate();
+        factory.addObjectFactory(mockFactory, "baz");
+        factory.endUpdate();
+
+        factory.startUpdate();
+        // no update
+        factory.endUpdate();
+
+        Object instance = factory.getInstance();
+        assertEquals(1, Array.getLength(instance));
+
+        EasyMock.verify(mockFactory);
+    }
 }

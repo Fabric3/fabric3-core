@@ -39,17 +39,14 @@ package org.fabric3.implementation.pojo.injection;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Creates a list of objects from a collection of ObjectFactory instances.
+ * Returns a <code>List</code> of object instances.
  */
-public class ListMultiplicityObjectFactory implements MultiplicityObjectFactory<List<?>> {
-    private List<ObjectFactory<?>> factories = new CopyOnWriteArrayList<ObjectFactory<?>>();
-    private boolean cleared = true;
+public class ListMultiplicityObjectFactory extends AbstractCollectionMultiplicityObjectFactory<List<ObjectFactory<?>>> {
 
     public List<Object> getInstance() throws ObjectCreationException {
         List<Object> list = new ArrayList<Object>();
@@ -59,24 +56,7 @@ public class ListMultiplicityObjectFactory implements MultiplicityObjectFactory<
         return list;
     }
 
-    public void addObjectFactory(ObjectFactory<?> objectFactory, Object key) {
-        if (!cleared) {
-            clear();
-        }
-        factories.add(objectFactory);
+    protected List<ObjectFactory<?>> createCollection() {
+        return new ArrayList<ObjectFactory<?>>();
     }
-
-    public void clear() {
-        factories.clear();
-        cleared = true;
-    }
-
-    public void startUpdate() {
-        cleared = false;
-    }
-
-    public void endUpdate() {
-        cleared = true;
-    }
-
 }

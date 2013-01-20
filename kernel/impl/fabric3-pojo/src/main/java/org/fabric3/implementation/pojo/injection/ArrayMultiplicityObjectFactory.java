@@ -51,16 +51,12 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Resolves targets configured in a multiplicity by delegating to object factories and returning an <code>Array</code> containing object instances
+ * Returns an <code>Array</code> of object instances.
  */
-public class ArrayMultiplicityObjectFactory implements MultiplicityObjectFactory<Object> {
-    private List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
+public class ArrayMultiplicityObjectFactory extends AbstractCollectionMultiplicityObjectFactory<List<ObjectFactory<?>>> {
     private Class interfaceType;
-    private boolean cleared = true;
 
     public ArrayMultiplicityObjectFactory(Class interfaceType) {
-        assert interfaceType != null : "Interface type was null";
-        assert factories != null : "Object factories were null";
         this.interfaceType = interfaceType;
     }
 
@@ -72,23 +68,7 @@ public class ArrayMultiplicityObjectFactory implements MultiplicityObjectFactory
         return array;
     }
 
-    public void addObjectFactory(ObjectFactory<?> objectFactory, Object key) {
-        if (!cleared) {
-            clear();
-        }
-        factories.add(objectFactory);
-    }
-
-    public void clear() {
-        factories.clear();
-        cleared = true;
-    }
-
-    public void startUpdate() {
-        cleared = false;
-    }
-
-    public void endUpdate() {
-        cleared = true;
+    protected List<ObjectFactory<?>> createCollection() {
+        return new ArrayList<ObjectFactory<?>>();
     }
 }

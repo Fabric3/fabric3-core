@@ -39,17 +39,14 @@ package org.fabric3.implementation.pojo.injection;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * A set based object factory.
+ * Returns a <code>Set</code> of object instances.
  */
-public class SetMultiplicityObjectFactory implements MultiplicityObjectFactory<Set<?>> {
-    private Set<ObjectFactory<?>> factories = new CopyOnWriteArraySet<ObjectFactory<?>>();
-    private boolean cleared = true;
+public class SetMultiplicityObjectFactory extends AbstractCollectionMultiplicityObjectFactory<Set<ObjectFactory<?>>> {
 
     public Set<Object> getInstance() throws ObjectCreationException {
         Set<Object> set = new HashSet<Object>();
@@ -59,24 +56,9 @@ public class SetMultiplicityObjectFactory implements MultiplicityObjectFactory<S
         return set;
     }
 
-    public void addObjectFactory(ObjectFactory<?> objectFactory, Object key) {
-        if (!cleared) {
-            clear();
-        }
-        factories.add(objectFactory);
-    }
 
-    public void clear() {
-        factories.clear();
-        cleared = true;
-    }
-
-    public void startUpdate() {
-        cleared = false;
-    }
-
-    public void endUpdate() {
-        cleared = true;
+    protected Set<ObjectFactory<?>> createCollection() {
+        return new HashSet<ObjectFactory<?>>();
     }
 
 

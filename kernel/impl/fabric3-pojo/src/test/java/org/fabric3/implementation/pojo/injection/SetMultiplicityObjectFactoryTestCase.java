@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.pojo.injection;
 
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -48,6 +49,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  *
  */
 public class SetMultiplicityObjectFactoryTestCase extends TestCase {
+    private SetMultiplicityObjectFactory factory = new SetMultiplicityObjectFactory();
 
     public void testReinjection() throws Exception {
         ObjectFactory<?> mockFactory1 = EasyMock.createMock(ObjectFactory.class);
@@ -58,8 +60,9 @@ public class SetMultiplicityObjectFactoryTestCase extends TestCase {
 
         EasyMock.replay(mockFactory1, mockFactory2, mockFactory3);
 
-        SetMultiplicityObjectFactory factory = new SetMultiplicityObjectFactory();
+        factory.startUpdate();
         factory.addObjectFactory(mockFactory1, null);
+        factory.endUpdate();
 
         factory.startUpdate();
         factory.addObjectFactory(mockFactory2, null);
@@ -76,5 +79,23 @@ public class SetMultiplicityObjectFactoryTestCase extends TestCase {
         EasyMock.verify(mockFactory1, mockFactory2, mockFactory3);
     }
 
+    public void testNoUpdates() throws Exception {
+        ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
+        EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(1);
+        EasyMock.replay(mockFactory);
+
+        factory.startUpdate();
+        factory.addObjectFactory(mockFactory, "baz");
+        factory.endUpdate();
+
+        factory.startUpdate();
+        // no update
+        factory.endUpdate();
+
+        Set<Object> instance = factory.getInstance();
+        assertEquals(1, instance.size());
+
+        EasyMock.verify(mockFactory);
+    }
 
 }
