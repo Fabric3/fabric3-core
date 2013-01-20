@@ -43,7 +43,13 @@
  */
 package org.fabric3.implementation.pojo.injection;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectFactory;
@@ -52,12 +58,14 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  * Abstract factory for implementations that return a collection of objects.
  */
 public abstract class AbstractCollectionMultiplicityObjectFactory<T extends Collection<ObjectFactory<?>>> implements MultiplicityObjectFactory<Object> {
-    protected T factories;
-    private T temporaryFactories;
+    private static final InjectionComparator COMPARATOR = new InjectionComparator();
+
+    protected List<ObjectFactory<?>> factories;
+    private LinkedHashMap<ObjectFactory<?>, InjectionAttributes> temporaryFactories;
     private FactoryState state;
 
     public AbstractCollectionMultiplicityObjectFactory() {
-        this.factories = createCollection();
+        this.factories = new ArrayList<ObjectFactory<?>>();
         state = FactoryState.UPDATED;
     }
 
@@ -65,7 +73,7 @@ public abstract class AbstractCollectionMultiplicityObjectFactory<T extends Coll
         if (state != FactoryState.UPDATING) {
             throw new IllegalStateException("Factory not in updating state. The method startUpdate() must be called first.");
         }
-        temporaryFactories.add(objectFactory);
+        temporaryFactories.put(objectFactory, injectionAttributes);
     }
 
     public void clear() {
@@ -74,19 +82,40 @@ public abstract class AbstractCollectionMultiplicityObjectFactory<T extends Coll
 
     public void startUpdate() {
         state = FactoryState.UPDATING;
-        temporaryFactories = createCollection();
+        temporaryFactories = new LinkedHashMap<ObjectFactory<?>, InjectionAttributes>();
     }
 
     public void endUpdate() {
         if (temporaryFactories != null && !temporaryFactories.isEmpty()) {
             // The isEmpty() check ensures only updates are applied since startUpdate()/endUpdate() can be called if there are no changes present.
             // Otherwise, if no updates are made, existing factories will be overwritten by the empty collection.
-            factories = temporaryFactories;
+            factories = sortTemporaryFactories(temporaryFactories);
             temporaryFactories = null;
         }
         state = FactoryState.UPDATED;
     }
 
-    protected abstract T createCollection();
+    /**
+     * Sorts the factories by {@link InjectionAttributes#getOrder()}.
+     *
+     * @param factories the factories
+     * @return the sorted factories
+     */
+    private List<ObjectFactory<?>> sortTemporaryFactories(LinkedHashMap<ObjectFactory<?>, InjectionAttributes> factories) {
+        List<Map.Entry<ObjectFactory<?>, InjectionAttributes>> entries =
+                new ArrayList<Map.Entry<ObjectFactory<?>, InjectionAttributes>>(factories.entrySet());
+        Collections.sort(entries, COMPARATOR);
+        List<ObjectFactory<?>> sorted = new ArrayList<ObjectFactory<?>>();
+        for (Map.Entry<ObjectFactory<?>, InjectionAttributes> entry : entries) {
+            sorted.add(entry.getKey());
+        }
+        return sorted;
+    }
+
+    private static class InjectionComparator implements Comparator<Map.Entry<ObjectFactory<?>, InjectionAttributes>> {
+        public int compare(Map.Entry<ObjectFactory<?>, InjectionAttributes> first, Map.Entry<ObjectFactory<?>, InjectionAttributes> second) {
+            return first.getValue().getOrder() - second.getValue().getOrder();
+        }
+    }
 
 }

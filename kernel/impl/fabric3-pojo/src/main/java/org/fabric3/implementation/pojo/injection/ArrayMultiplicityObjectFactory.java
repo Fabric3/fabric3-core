@@ -68,7 +68,4 @@ public class ArrayMultiplicityObjectFactory extends AbstractCollectionMultiplici
         return array;
     }
 
-    protected List<ObjectFactory<?>> createCollection() {
-        return new ArrayList<ObjectFactory<?>>();
-    }
 }

@@ -38,6 +38,7 @@
 package org.fabric3.implementation.pojo.injection;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -49,17 +50,11 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 public class SetMultiplicityObjectFactory extends AbstractCollectionMultiplicityObjectFactory<Set<ObjectFactory<?>>> {
 
     public Set<Object> getInstance() throws ObjectCreationException {
-        Set<Object> set = new HashSet<Object>();
+        Set<Object> set = new LinkedHashSet<Object>();
         for (ObjectFactory<?> factory : factories) {
             set.add(factory.getInstance());
         }
         return set;
     }
-
-
-    protected Set<ObjectFactory<?>> createCollection() {
-        return new HashSet<ObjectFactory<?>>();
-    }
-
 
 }

@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.pojo.injection;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -77,6 +78,34 @@ public class SetMultiplicityObjectFactoryTestCase extends TestCase {
         assertEquals(1, set.size());
 
         EasyMock.verify(mockFactory1, mockFactory2, mockFactory3);
+    }
+
+    public void testSort() throws Exception {
+        ObjectFactory<?> mockFactory1 = EasyMock.createMock(ObjectFactory.class);
+        Object object1 = new Object();
+        EasyMock.expect(mockFactory1.getInstance()).andReturn(object1).times(1);
+        InjectionAttributes attributes1 = new InjectionAttributes(null, 2);
+
+        ObjectFactory<?> mockFactory2 = EasyMock.createMock(ObjectFactory.class);
+        Object object2 = new Object();
+        EasyMock.expect(mockFactory2.getInstance()).andReturn(object2).times(1);
+        InjectionAttributes attributes2 = new InjectionAttributes(null, 0);
+
+
+        EasyMock.replay(mockFactory1, mockFactory2);
+
+        factory.startUpdate();
+        factory.addObjectFactory(mockFactory2, attributes2);
+        factory.addObjectFactory(mockFactory1, attributes1);
+        factory.endUpdate();
+
+        Set<Object> set = factory.getInstance();
+
+        Iterator<Object> iterator = set.iterator();
+        assertSame(object2, iterator.next());
+        assertSame(object1, iterator.next());
+
+        EasyMock.verify(mockFactory1, mockFactory2);
     }
 
     public void testNoUpdates() throws Exception {

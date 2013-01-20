@@ -75,6 +75,33 @@ public class ArrayMultiplicityObjectFactoryTestCase extends TestCase {
         EasyMock.verify(mockFactory);
     }
 
+    public void testSort() throws Exception {
+        ObjectFactory<?> mockFactory1 = EasyMock.createMock(ObjectFactory.class);
+        Object object1 = new Object();
+        EasyMock.expect(mockFactory1.getInstance()).andReturn(object1).times(1);
+        InjectionAttributes attributes1 = new InjectionAttributes(null, 2);
+
+        ObjectFactory<?> mockFactory2 = EasyMock.createMock(ObjectFactory.class);
+        Object object2 = new Object();
+        EasyMock.expect(mockFactory2.getInstance()).andReturn(object2).times(1);
+        InjectionAttributes attributes2 = new InjectionAttributes(null, 0);
+
+
+        EasyMock.replay(mockFactory1, mockFactory2);
+
+        factory.startUpdate();
+        factory.addObjectFactory(mockFactory2, attributes2);
+        factory.addObjectFactory(mockFactory1, attributes1);
+        factory.endUpdate();
+
+        Object[] array = (Object[]) factory.getInstance();
+
+        assertSame(object2, array[0]);
+        assertSame(object1, array[1]);
+
+        EasyMock.verify(mockFactory1, mockFactory2);
+    }
+
     public void testNoUpdates() throws Exception {
         ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
         EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(1);

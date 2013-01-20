@@ -61,7 +61,7 @@ public abstract class PhysicalSourceDefinition implements Serializable {
     private URI classLoaderId;
     private boolean optimizable;
     private String key;
-    private int order;
+    private int order = Integer.MIN_VALUE;
     protected List<DataType<?>> physicalDataTypes = new ArrayList<DataType<?>>();
 
     public PhysicalSourceDefinition() {

@@ -55,8 +55,4 @@ public class ListMultiplicityObjectFactory extends AbstractCollectionMultiplicit
         }
         return list;
     }
-
-    protected List<ObjectFactory<?>> createCollection() {
-        return new ArrayList<ObjectFactory<?>>();
-    }
 }
