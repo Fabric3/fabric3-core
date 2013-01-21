@@ -50,8 +50,6 @@ import org.fabric3.spi.host.ServletHost;
 
 /**
  * Implementations provide a Jetty transport service to the runtime.
- *
- * @version $$Rev$$ $$Date$$
  */
 public interface JettyService extends ServletHost {
 

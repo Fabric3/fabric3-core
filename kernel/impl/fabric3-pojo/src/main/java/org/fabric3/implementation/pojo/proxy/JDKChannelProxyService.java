@@ -61,8 +61,6 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * The default ChannelProxyService that uses JDK dynamic proxies.
- *
- * @version $$Rev$$ $$Date$$
  */
 public class JDKChannelProxyService implements ChannelProxyService {
     private ClassLoaderRegistry classLoaderRegistry;

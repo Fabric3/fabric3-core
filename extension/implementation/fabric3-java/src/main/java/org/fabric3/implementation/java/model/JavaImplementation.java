@@ -46,8 +46,6 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
  * Represents a Java component implementation type.
- *
- * @version $$Rev$$ $$Date$$
  */
 public class JavaImplementation extends Implementation<InjectingComponentType> {
     public static final QName IMPLEMENTATION_JAVA = new QName(Constants.SCA_NS, "implementation.java");

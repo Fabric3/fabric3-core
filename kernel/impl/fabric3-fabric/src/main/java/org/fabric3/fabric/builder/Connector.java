@@ -48,8 +48,6 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 
 /**
  * Creates wires between two components and between a component and a binding. Also handles disconnecting wires.
- *
- * @version $$Rev$$ $$Date$$
  */
 public interface Connector {
 

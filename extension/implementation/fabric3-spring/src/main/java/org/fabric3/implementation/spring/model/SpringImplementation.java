@@ -45,8 +45,6 @@ import org.fabric3.model.type.component.Implementation;
 
 /**
  * A Spring component implementation type.
- *
- * @version $$Rev$$ $$Date$$
  */
 public class SpringImplementation extends Implementation<SpringComponentType> {
     private static final long serialVersionUID = -6701786225245805039L;

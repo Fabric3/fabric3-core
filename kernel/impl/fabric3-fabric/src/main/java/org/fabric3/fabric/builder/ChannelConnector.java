@@ -48,8 +48,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
  * Establishes (and removes) event channel connections.
- *
- * @version $$Rev$$ $$Date$$
  */
 public interface ChannelConnector {
 

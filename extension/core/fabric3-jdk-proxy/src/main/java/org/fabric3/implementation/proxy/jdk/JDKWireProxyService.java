@@ -64,8 +64,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * The default WireProxyService implementation that uses JDK dynamic proxies.
- *
- * @version $$Rev$$ $$Date$$
  */
 public class JDKWireProxyService implements WireProxyService {
     private ClassLoaderRegistry classLoaderRegistry;

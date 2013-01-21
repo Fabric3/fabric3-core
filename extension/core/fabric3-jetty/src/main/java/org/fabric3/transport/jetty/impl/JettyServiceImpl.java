@@ -98,8 +98,6 @@ import org.fabric3.transport.jetty.management.ManagedStatisticsHandler;
 
 /**
  * Implements an HTTP transport service using Jetty.
- *
- * @version $$Rev$$ $$Date$$
  */
 @EagerInit
 @Service(names = {JettyService.class, Transport.class})

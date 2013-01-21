@@ -51,8 +51,6 @@ import org.fabric3.spi.wire.Interceptor;
 
 /**
  * Adds non-blocking behavior to an invocation chain
- *
- * @version $$Rev$$ $$Date$$
  */
 public class NonBlockingInterceptor implements Interceptor {
     private static final Message RESPONSE = new ImmutableMessage();

@@ -47,8 +47,6 @@ import org.fabric3.model.type.component.Scope;
 
 /**
  * Manages {@link ScopeContainer}s in the runtime
- *
- * @version $$Rev$$ $$Date$$
  */
 public interface ScopeRegistry {
 

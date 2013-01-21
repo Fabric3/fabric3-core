@@ -47,8 +47,6 @@ import org.fabric3.host.Fabric3Exception;
 
 /**
  * Denotes an error creating a proxy
- *
- * @version $$Rev$$ $$Date$$
  */
 public class ProxyCreationException extends Fabric3Exception {
     private static final long serialVersionUID = 2141262852616522838L;

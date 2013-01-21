@@ -80,8 +80,6 @@ import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 
 /**
  * Wraps an object intended to serve as a system component provided to the Fabric3 runtime by the host environment.
- *
- * @version $$Rev$$ $$Date$$
  */
 public class SingletonComponent implements ScopedComponent {
     private final URI uri;

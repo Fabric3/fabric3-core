@@ -56,7 +56,7 @@ import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.invocation.WorkContext;
 
 /**
- * @version $$Rev$$ $$Date$$
+ *
  */
 public class DomainScopeContainerTestCase extends TestCase {
     private DomainScopeContainer scopeContainer;

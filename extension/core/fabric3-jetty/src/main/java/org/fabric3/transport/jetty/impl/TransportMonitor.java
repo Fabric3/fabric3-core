@@ -50,8 +50,6 @@ import org.fabric3.api.annotation.monitor.Warning;
 
 /**
  * The monitoring interfaces used by the Jetty system service
- *
- * @version $$Rev$$ $$Date$$
  */
 public interface TransportMonitor {
 

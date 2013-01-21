@@ -73,8 +73,6 @@ import org.fabric3.spi.wire.Wire;
 
 /**
  * The default connector implementation.
- *
- * @version $$Rev$$ $$Date$$
  */
 public class ConnectorImpl implements Connector {
     private Map<Class<? extends PhysicalInterceptorDefinition>, InterceptorBuilder<?>> interceptorBuilders;
