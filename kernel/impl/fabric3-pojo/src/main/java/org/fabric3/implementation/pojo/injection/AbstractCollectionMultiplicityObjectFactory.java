@@ -60,7 +60,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 public abstract class AbstractCollectionMultiplicityObjectFactory<T extends Collection<ObjectFactory<?>>> implements MultiplicityObjectFactory<Object> {
     private static final InjectionComparator COMPARATOR = new InjectionComparator();
 
-    protected List<ObjectFactory<?>> factories;
+    protected volatile List<ObjectFactory<?>> factories;
     private LinkedHashMap<ObjectFactory<?>, InjectionAttributes> temporaryFactories;
     private FactoryState state;
 
