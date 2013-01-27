@@ -37,6 +37,20 @@
 */
 package org.fabric3.runtime.maven.contribution;
 
+import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
+import org.fabric3.host.util.FileHelper;
+import org.fabric3.spi.contribution.*;
+import org.fabric3.spi.contribution.archive.Action;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.Loader;
+import org.fabric3.spi.introspection.xml.LoaderException;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,35 +58,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.host.contribution.InstallException;
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
-import org.fabric3.host.util.FileHelper;
-import org.fabric3.spi.contribution.ContentTypeResolutionException;
-import org.fabric3.spi.contribution.ContentTypeResolver;
-import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.ContributionManifest;
-import org.fabric3.spi.contribution.ContributionProcessor;
-import org.fabric3.spi.contribution.ProcessorRegistry;
-import org.fabric3.spi.contribution.Resource;
-import org.fabric3.spi.contribution.ResourceState;
-import org.fabric3.spi.contribution.archive.Action;
-import org.fabric3.spi.introspection.DefaultIntrospectionContext;
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.xml.Loader;
-import org.fabric3.spi.introspection.xml.LoaderException;
-
 /**
  * Processes a Maven module directory.
  */
 @EagerInit
 public class ModuleContributionProcessor implements ContributionProcessor {
     private static final String MAVEN_CONTENT_TYPE = "application/vnd.fabric3.maven-project";
-
     private ProcessorRegistry registry;
     private ContentTypeResolver contentTypeResolver;
     private Loader loader;
@@ -110,31 +101,37 @@ public class ModuleContributionProcessor implements ContributionProcessor {
     }
 
     public void processManifest(Contribution contribution, final IntrospectionContext context) throws InstallException {
-        ContributionManifest manifest;
+        URL sourceUrl = contribution.getLocation();
+        ClassLoader cl = getClass().getClassLoader();
+        URI uri = contribution.getUri();
+        IntrospectionContext childContext = new DefaultIntrospectionContext(uri, cl);
+
+        ContributionManifest manifest = null;
         try {
-            URL sourceUrl = contribution.getLocation();
             URL manifestUrl = new URL(sourceUrl.toExternalForm() + "/classes/META-INF/sca-contribution.xml");
-            ClassLoader cl = getClass().getClassLoader();
-            URI uri = contribution.getUri();
-            IntrospectionContext childContext = new DefaultIntrospectionContext(uri, cl);
-            Source source = new UrlSource(manifestUrl);
-            manifest = loader.load(source, ContributionManifest.class, childContext);
-            if (childContext.hasErrors()) {
-                context.addErrors(childContext.getErrors());
-            }
-            if (childContext.hasWarnings()) {
-                context.addWarnings(childContext.getWarnings());
-            }
-            contribution.setManifest(manifest);
-        } catch (LoaderException e) {
-            if (e.getCause() instanceof FileNotFoundException) {
-                // ignore no manifest found
-            } else {
-                throw new InstallException(e);
-            }
+            manifest = loadManifest(manifestUrl, childContext);
         } catch (MalformedURLException e) {
             // ignore no manifest found
         }
+        if (manifest == null) {
+            // try test classes
+            try {
+                URL manifestUrl = new URL(sourceUrl.toExternalForm() + "/test-classes/META-INF/sca-contribution.xml");
+                manifest = loadManifest(manifestUrl, childContext);
+            } catch (MalformedURLException e) {
+                // ignore no manifest found
+            }
+        }
+        if (manifest != null) {
+            contribution.setManifest(manifest);
+        }
+        if (childContext.hasErrors()) {
+            context.addErrors(childContext.getErrors());
+        }
+        if (childContext.hasWarnings()) {
+            context.addWarnings(childContext.getWarnings());
+        }
+
 
     }
 
@@ -153,6 +150,28 @@ public class ModuleContributionProcessor implements ContributionProcessor {
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassloader);
         }
+    }
+
+    /**
+     * Attempts to load a manifest, returning null if one is not found at the given location.
+     *
+     * @param manifestUrl  the manifest location
+     * @param childContext the current context
+     * @return the manifest or null if not found
+     * @throws InstallException if there is an error loading the manifest
+     */
+    private ContributionManifest loadManifest(URL manifestUrl, IntrospectionContext childContext) throws InstallException {
+        try {
+            Source source = new UrlSource(manifestUrl);
+            return loader.load(source, ContributionManifest.class, childContext);
+        } catch (LoaderException e) {
+            if (e.getCause() instanceof FileNotFoundException) {
+                // ignore no manifest found
+            } else {
+                throw new InstallException(e);
+            }
+        }
+        return null;
     }
 
     private void iterateArtifacts(Contribution contribution, final IntrospectionContext context, Action action) throws InstallException {
