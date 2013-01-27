@@ -37,26 +37,26 @@
 */
 package org.fabric3.threadpool;
 
-import java.util.List;
-import java.util.concurrent.AbstractExecutorService;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.spi.threadpool.ExecutionContext;
 import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 import org.fabric3.spi.threadpool.LongRunnable;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+
+import java.util.List;
+import java.util.concurrent.AbstractExecutorService;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Processes work using a delegate {@link ThreadPoolExecutor}. This executor records processing statistics as well as monitors for stalled threads.
@@ -67,9 +67,9 @@ import org.fabric3.spi.threadpool.LongRunnable;
  */
 @EagerInit
 @Management(name = "RuntimeThreadPoolExecutor",
-            path = "/runtime/threadpool",
-            group = "kernel",
-            description = "Manages the runtime thread pool")
+        path = "/runtime/threadpool",
+        group = "kernel",
+        description = "Manages the runtime thread pool")
 public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     private int coreSize = 20;
     private long keepAliveTime = 60000;
@@ -79,6 +79,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     private int stallThreshold = 600000;
     private boolean checkStalledThreads = true;
     private long stallCheckPeriod = 60000;
+    private RejectedExecutionHandler rejectedExecutionHandler = new ThreadPoolExecutor.CallerRunsPolicy();
 
     private ThreadPoolExecutor delegate;
     private LinkedBlockingQueue<Runnable> queue;
@@ -93,7 +94,6 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     // statistics
     private AtomicLong totalExecutionTime = new AtomicLong();
     private AtomicLong completedWorkCount = new AtomicLong();
-
 
     /**
      * Sets the number of threads always available to service the executor queue.
@@ -139,6 +139,19 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     @Property(required = false)
     public void setStallCheckPeriod(long period) {
         this.stallCheckPeriod = period;
+    }
+
+    @Property(required = false)
+    public void setRejectedExecutionHandler(String handler) {
+        if ("abort".equals(handler)) {
+            this.rejectedExecutionHandler = new ThreadPoolExecutor.AbortPolicy();
+        } else if ("discard".equals(handler)) {
+            this.rejectedExecutionHandler = new ThreadPoolExecutor.DiscardPolicy();
+        } else if ("discard.oldest".equals(handler)) {
+            this.rejectedExecutionHandler = new ThreadPoolExecutor.DiscardOldestPolicy();
+        } else if (!"caller.runs".equals(handler)) {
+            monitor.error("Invalid rejected execution handler configuration - setting to caller.runs: " + handler);
+        }
     }
 
     /**
@@ -291,6 +304,9 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
             stalledMonitor = new StalledThreadMonitor();
             delegate.execute(stalledMonitor);
         }
+
+        // set rejection strategy
+        delegate.setRejectedExecutionHandler(rejectedExecutionHandler);
     }
 
     @Destroy

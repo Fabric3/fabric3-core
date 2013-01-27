@@ -45,6 +45,9 @@ import org.fabric3.api.annotation.monitor.Warning;
  */
 public interface ExecutorMonitor {
 
+    @Severe
+    void error(String message);
+
     @Severe("The following exception was raised")
     void threadError(Throwable t);
 

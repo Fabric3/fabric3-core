@@ -1,10 +1,10 @@
 package org.fabric3.threadpool;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.RejectedExecutionException;
-
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  *
@@ -44,6 +44,7 @@ public class RuntimeThreadPoolExecutorTestCase extends TestCase {
         executor.setQueueSize(1);
         executor.setCoreSize(1);
         executor.setMaximumSize(1);
+        executor.setRejectedExecutionHandler("abort");
         executor.init();
         CountDownLatch latch1 = new CountDownLatch(1);
         CountDownLatch latch2 = new CountDownLatch(0);
