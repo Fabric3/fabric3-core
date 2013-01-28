@@ -15,6 +15,7 @@ public class RuntimeThreadPoolExecutorTestCase extends TestCase {
     private ExecutorMonitor monitor;
 
     public void testExecutionTimes() throws Exception {
+        executor.setStatisticsOff(false);
         executor.init();
         assertEquals(0.0, executor.getMeanExecutionTime());
         CountDownLatch latch = new CountDownLatch(1);
@@ -32,6 +33,7 @@ public class RuntimeThreadPoolExecutorTestCase extends TestCase {
         EasyMock.replay(monitor);
         executor.setStallCheckPeriod(100);
         executor.setStallThreshold(200);
+        executor.setStatisticsOff(false);
         executor.init();
         CountDownLatch latch = new CountDownLatch(1);
         executor.execute(new MockStalledWork(latch));
@@ -52,6 +54,7 @@ public class RuntimeThreadPoolExecutorTestCase extends TestCase {
         executor.execute(new MockStalledWork(latch1));
         try {
             executor.execute(new MockStalledWork(latch2));
+            executor.execute(new MockStalledWork(latch2));
             fail();
         } catch (RejectedExecutionException e) {
             // expected
@@ -60,6 +63,7 @@ public class RuntimeThreadPoolExecutorTestCase extends TestCase {
     }
 
     public void testLongestRunning() throws Exception {
+        executor.setStatisticsOff(false);
         executor.init();
         CountDownLatch latch1 = new CountDownLatch(1);
         executor.execute(new MockStalledWork(latch1));

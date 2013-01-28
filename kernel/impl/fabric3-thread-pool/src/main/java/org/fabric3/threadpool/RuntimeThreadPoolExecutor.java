@@ -86,7 +86,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     private StalledThreadMonitor stalledMonitor;
     private ExecutorMonitor monitor;
 
-    private boolean statisticsOff;
+    private boolean statisticsOff = true;
 
     // queue of in-flight work
     private ConcurrentLinkedQueue<Runnable> inFlight = new ConcurrentLinkedQueue<Runnable>();
