@@ -64,8 +64,6 @@ import org.fabric3.spi.model.type.java.Signature;
 
 /**
  * Builds a reflection-based instance factory provider.
- *
- * @version $Date$ $Revision$
  */
 @EagerInit
 public class ReflectiveImplementationManagerFactoryBuilder implements ImplementationManagerFactoryBuilder {

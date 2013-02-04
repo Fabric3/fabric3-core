@@ -43,15 +43,7 @@
  */
 package org.fabric3.implementation.pojo.instancefactory;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-
 import junit.framework.TestCase;
-
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.pojo.reflection.ReflectiveImplementationManagerFactoryBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -63,8 +55,15 @@ import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.fabric3.spi.model.type.java.Signature;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+
 /**
- * @version $Date$ $Revision$
+ *
  */
 public class ReflectiveImplementationManagerFactoryBuilderTestCase extends TestCase {
     private ReflectiveImplementationManagerFactoryBuilder builder = new ReflectiveImplementationManagerFactoryBuilder(new MockClassLoaderRegistry());
