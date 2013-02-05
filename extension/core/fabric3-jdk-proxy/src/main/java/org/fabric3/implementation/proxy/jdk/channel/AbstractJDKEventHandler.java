@@ -41,41 +41,31 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.proxy;
+package org.fabric3.implementation.proxy.jdk.channel;
 
-import org.fabric3.implementation.pojo.builder.ChannelProxyService;
-import org.fabric3.implementation.pojo.builder.ProxyCreationException;
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+
+import org.fabric3.spi.component.InstanceInvocationException;
 
 /**
- * Creates a proxy for a channel connection that implements a specified interface with a single method.
+ *
  */
-public class OptimizedChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
-    private Class<T> interfaze;
-    private ChannelProxyService proxyService;
-    private EventStream stream;
+public abstract class AbstractJDKEventHandler implements InvocationHandler {
 
-    /**
-     * Constructor.
-     *
-     * @param interfaze    the interface the proxy implements
-     * @param proxyService the proxy creation service
-     * @param stream       the stream
-     */
-    public OptimizedChannelConnectionObjectFactory(Class<T> interfaze, ChannelProxyService proxyService, EventStream stream) {
-        this.interfaze = interfaze;
-        this.proxyService = proxyService;
-        this.stream = stream;
-    }
-
-
-    public T getInstance() throws ObjectCreationException {
-        try {
-            return interfaze.cast(proxyService.createProxy(interfaze, stream));
-        } catch (ProxyCreationException e) {
-            throw new ObjectCreationException(e);
+    protected Object handleProxyMethod(Method method) throws InstanceInvocationException {
+        if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
+            return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
+        } else if (method.getDeclaringClass().equals(Object.class)
+                && "equals".equals(method.getName())) {
+            // TODO implement
+            throw new UnsupportedOperationException();
+        } else if (Object.class.equals(method.getDeclaringClass())
+                && "hashCode".equals(method.getName())) {
+            return hashCode();
+            // TODO better hash algorithm
         }
+        String op = method.getName();
+        throw new InstanceInvocationException("Operation not configured: " + op);
     }
 }

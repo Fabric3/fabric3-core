@@ -41,25 +41,41 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.proxy;
+package org.fabric3.implementation.proxy.jdk.channel;
 
+import org.fabric3.implementation.pojo.builder.ChannelProxyService;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
+import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Thrown when an event stream cannot be mapped to a method on an interface
+ * Creates a proxy for a channel connection that implements a specified interface with a single method.
  */
-public class NoMethodForEventStreamException extends ProxyCreationException {
-    private static final long serialVersionUID = -5203755690182265124L;
+public class OptimizedChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
+    private Class<T> interfaze;
+    private ChannelProxyService proxyService;
+    private EventStream stream;
 
-    public NoMethodForEventStreamException(String message) {
-        super(message);
+    /**
+     * Constructor.
+     *
+     * @param interfaze    the interface the proxy implements
+     * @param proxyService the proxy creation service
+     * @param stream       the stream
+     */
+    public OptimizedChannelConnectionObjectFactory(Class<T> interfaze, ChannelProxyService proxyService, EventStream stream) {
+        this.interfaze = interfaze;
+        this.proxyService = proxyService;
+        this.stream = stream;
     }
 
-    public NoMethodForEventStreamException(String message, Throwable cause) {
-        super(message, cause);
-    }
 
-    public NoMethodForEventStreamException(Throwable cause) {
-        super(cause);
+    public T getInstance() throws ObjectCreationException {
+        try {
+            return interfaze.cast(proxyService.createProxy(interfaze, stream));
+        } catch (ProxyCreationException e) {
+            throw new ObjectCreationException(e);
+        }
     }
 }

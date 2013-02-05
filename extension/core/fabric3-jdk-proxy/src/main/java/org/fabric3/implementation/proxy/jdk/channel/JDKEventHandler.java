@@ -41,45 +41,35 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.proxy;
+package org.fabric3.implementation.proxy.jdk.channel;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.implementation.pojo.builder.ChannelProxyService;
-import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Creates a proxy for a channel connection that implements a specified interface.
+ * Dispatches from a proxy to an {@link EventStream}.
  */
-public class ChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
-    private Class<T> interfaze;
-    private ChannelProxyService proxyService;
-    // the cache of proxy interface method to operation mappings
-    private Map<Method, EventStream> mappings;
+public final class JDKEventHandler extends AbstractJDKEventHandler {
+    private Map<Method, EventStream> streams;
 
     /**
      * Constructor.
      *
-     * @param interfaze    the interface the proxy implements
-     * @param proxyService the proxy creation service
-     * @param mappings     proxy method to channel handler mappings
+     * @param streams the method to channel handler mappings
      */
-    public ChannelConnectionObjectFactory(Class<T> interfaze, ChannelProxyService proxyService, Map<Method, EventStream> mappings) {
-        this.interfaze = interfaze;
-        this.proxyService = proxyService;
-        this.mappings = mappings;
+    public JDKEventHandler(Map<Method, EventStream> streams) {
+        this.streams = streams;
     }
 
-
-    public T getInstance() throws ObjectCreationException {
-        try {
-            return interfaze.cast(proxyService.createProxy(interfaze, mappings));
-        } catch (ProxyCreationException e) {
-            throw new ObjectCreationException(e);
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        EventStream stream = streams.get(method);
+        if (stream == null) {
+            return handleProxyMethod(method);
         }
+        stream.getHeadHandler().handle(args);
+        return null;
     }
+
 }

@@ -41,31 +41,30 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.proxy;
+package org.fabric3.implementation.proxy.jdk.channel;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.fabric3.spi.component.InstanceInvocationException;
+import org.fabric3.spi.channel.EventStream;
 
 /**
- *
+ * Dispatches from a proxy to a single {@link EventStream}.
  */
-public abstract class AbstractJDKEventHandler implements InvocationHandler {
+public final class OptimizedJDKEventHandler extends AbstractJDKEventHandler {
+    private EventStream stream;
 
-    protected Object handleProxyMethod(Method method) throws InstanceInvocationException {
-        if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
-            return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
-        } else if (method.getDeclaringClass().equals(Object.class)
-                && "equals".equals(method.getName())) {
-            // TODO implement
-            throw new UnsupportedOperationException();
-        } else if (Object.class.equals(method.getDeclaringClass())
-                && "hashCode".equals(method.getName())) {
-            return hashCode();
-            // TODO better hash algorithm
-        }
-        String op = method.getName();
-        throw new InstanceInvocationException("Operation not configured: " + op);
+    public OptimizedJDKEventHandler(EventStream stream) {
+        this.stream = stream;
     }
+
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (args == null || Object.class.equals(method.getDeclaringClass())) {
+            // events have at least one arg
+            handleProxyMethod(method);
+            return null;
+        }
+        stream.getHeadHandler().handle(args);
+        return null;
+    }
+
 }

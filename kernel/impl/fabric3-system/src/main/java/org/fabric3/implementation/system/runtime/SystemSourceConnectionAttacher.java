@@ -37,11 +37,6 @@
 */
 package org.fabric3.implementation.system.runtime;
 
-import java.net.URI;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.implementation.pojo.builder.ChannelProxyService;
 import org.fabric3.implementation.pojo.builder.ProxyCreationException;
 import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
@@ -54,6 +49,11 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.UriHelper;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
+
+import java.net.URI;
+import java.util.List;
 
 /**
  * Attaches and detaches a {@link ChannelConnection} from a System component producer.
@@ -64,16 +64,22 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
     private ChannelProxyService proxyService;
     private ClassLoaderRegistry classLoaderRegistry;
 
-    public SystemSourceConnectionAttacher(@Reference ComponentManager manager,
-                                          @Reference ChannelProxyService proxyService,
-                                          @Reference ClassLoaderRegistry classLoaderRegistry) {
+    // loaded after bootstrap
+    @Reference(required = false)
+    public void setProxyService(List<ChannelProxyService> proxyServices) {
+        proxyService = !proxyServices.isEmpty() ? proxyServices.get(0) : null;
+    }
+
+    public SystemSourceConnectionAttacher(@Reference ComponentManager manager, @Reference ClassLoaderRegistry classLoaderRegistry) {
         this.manager = manager;
-        this.proxyService = proxyService;
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public void attach(SystemConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
+        if (proxyService == null) {
+            throw new ConnectionAttachException("Channel proxy service not found");
+        }
         URI sourceUri = source.getUri();
         URI sourceName = UriHelper.getDefragmentedName(sourceUri);
         SystemComponent component = (SystemComponent) manager.getComponent(sourceName);
@@ -102,6 +108,5 @@ public class SystemSourceConnectionAttacher implements SourceConnectionAttacher<
         Injectable injectable = source.getInjectable();
         component.removeObjectFactory(injectable);
     }
-
 
 }
