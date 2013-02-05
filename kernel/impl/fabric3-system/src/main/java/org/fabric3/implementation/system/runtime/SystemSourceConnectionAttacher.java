@@ -37,8 +37,8 @@
 */
 package org.fabric3.implementation.system.runtime;
 
-import org.fabric3.implementation.pojo.builder.ChannelProxyService;
-import org.fabric3.implementation.pojo.builder.ProxyCreationException;
+import org.fabric3.implementation.pojo.spi.ChannelProxyService;
+import org.fabric3.implementation.pojo.spi.ProxyCreationException;
 import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;

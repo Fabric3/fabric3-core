@@ -44,8 +44,8 @@ import java.util.List;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.pojo.builder.ProxyCreationException;
-import org.fabric3.implementation.pojo.builder.WireProxyService;
+import org.fabric3.implementation.pojo.spi.ProxyCreationException;
+import org.fabric3.implementation.pojo.spi.WireProxyService;
 import org.fabric3.implementation.spring.provision.SpringSourceDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.spi.builder.WiringException;

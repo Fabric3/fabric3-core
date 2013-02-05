@@ -46,8 +46,8 @@ package org.fabric3.implementation.proxy.jdk.channel;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.implementation.pojo.builder.ChannelProxyService;
-import org.fabric3.implementation.pojo.builder.ProxyCreationException;
+import org.fabric3.implementation.pojo.spi.ChannelProxyService;
+import org.fabric3.implementation.pojo.spi.ProxyCreationException;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;

@@ -41,17 +41,16 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.builder;
-
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.Map;
-
-import org.oasisopen.sca.ServiceReference;
+package org.fabric3.implementation.pojo.spi;
 
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
+import org.oasisopen.sca.ServiceReference;
+
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.Map;
 
 /**
  * Creates proxies that implement Java interfaces and invocation handlers for fronting wires.

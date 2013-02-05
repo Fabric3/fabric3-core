@@ -41,28 +41,51 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.builder;
+package org.fabric3.implementation.pojo.spi;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+
+import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
- * Denotes an error creating a proxy
+ * Creates proxies fronting event channel connections.
  */
-public class ProxyCreationException extends Fabric3Exception {
-    private static final long serialVersionUID = 2141262852616522838L;
 
-    public ProxyCreationException() {
-    }
+public interface ChannelProxyService {
 
-    public ProxyCreationException(String message) {
-        super(message);
-    }
+    /**
+     * Creates a proxy factory.
+     *
+     * @param interfaze  the interface the proxy implements
+     * @param connection the channel connection to proxy
+     * @param <T>        the interface type
+     * @return the object factory
+     * @throws ProxyCreationException if there is an error creating the factory
+     */
+    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException;
 
-    public ProxyCreationException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    /**
+     * Creates a proxy.
+     *
+     * @param interfaze the interface the proxy implements
+     * @param mappings  mappings from interface method to event streams contained in a channel connection
+     * @param <T>       the interface type
+     * @return the proxy
+     * @throws ProxyCreationException if there is an error creating the proxy
+     */
+    <T> T createProxy(Class<T> interfaze, Map<Method, EventStream> mappings) throws ProxyCreationException;
 
-    public ProxyCreationException(Throwable cause) {
-        super(cause);
-    }
+    /**
+     * Creates an optimized proxy for an interface containing a single method which dispatches to an event stream.
+     *
+     * @param interfaze the interface the proxy implements
+     * @param stream    the event stream
+     * @param <T>       the interface type
+     * @return the proxy
+     * @throws ProxyCreationException if there is an error creating the proxy
+     */
+    <T> T createProxy(Class<T> interfaze, EventStream stream) throws ProxyCreationException;
 }

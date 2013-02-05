@@ -43,7 +43,7 @@
  */
 package org.fabric3.implementation.proxy.jdk.wire;
 
-import org.fabric3.implementation.pojo.builder.ProxyCreationException;
+import org.fabric3.implementation.pojo.spi.ProxyCreationException;
 import org.fabric3.model.type.contract.Operation;
 
 /**
