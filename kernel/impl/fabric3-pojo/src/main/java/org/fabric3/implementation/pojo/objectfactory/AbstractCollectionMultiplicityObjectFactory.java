@@ -41,7 +41,10 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.injection;
+package org.fabric3.implementation.pojo.objectfactory;
+
+import org.fabric3.spi.objectfactory.InjectionAttributes;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,9 +53,6 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.fabric3.spi.objectfactory.InjectionAttributes;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Abstract factory for implementations that return a collection of objects.

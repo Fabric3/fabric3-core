@@ -58,11 +58,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.implementation.pojo.injection.ArrayMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.injection.ListMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.injection.MapMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.injection.SetMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.ArrayMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.ListMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.MapMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactory;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitException;
 import org.fabric3.spi.component.InstanceLifecycleException;

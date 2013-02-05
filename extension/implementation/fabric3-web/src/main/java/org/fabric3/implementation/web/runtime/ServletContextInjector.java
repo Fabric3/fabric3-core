@@ -39,7 +39,7 @@ package org.fabric3.implementation.web.runtime;
 
 import javax.servlet.ServletContext;
 
-import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
 import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;

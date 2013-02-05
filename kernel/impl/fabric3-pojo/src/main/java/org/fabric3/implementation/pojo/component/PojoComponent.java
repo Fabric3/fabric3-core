@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.implementation.pojo.injection.ComponentObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.ComponentObjectFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.spi.component.ComponentException;

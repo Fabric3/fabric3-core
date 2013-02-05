@@ -35,27 +35,29 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.pojo.injection;
+package org.fabric3.implementation.pojo.objectfactory;
 
-import java.lang.reflect.Array;
+import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.implementation.pojo.objectfactory.ListMultiplicityObjectFactory;
 import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  *
  */
-public class ArrayMultiplicityObjectFactoryTestCase extends TestCase {
-    private ArrayMultiplicityObjectFactory factory = new ArrayMultiplicityObjectFactory(Object.class);
+public class ListMultiplicityObjectFactoryTestCase extends TestCase {
+    private ListMultiplicityObjectFactory factory = new ListMultiplicityObjectFactory();
 
     public void testReinjection() throws Exception {
         ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
         EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(2);
         EasyMock.replay(mockFactory);
 
+
         factory.startUpdate();
         factory.addObjectFactory(mockFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
@@ -63,14 +65,14 @@ public class ArrayMultiplicityObjectFactoryTestCase extends TestCase {
         factory.startUpdate();
         factory.addObjectFactory(mockFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
-        Object instance = factory.getInstance();
-        assertEquals(1, Array.getLength(instance));
+        List<Object> list = factory.getInstance();
+        assertEquals(1, list.size());
 
         factory.startUpdate();
         factory.addObjectFactory(mockFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
-        instance = factory.getInstance();
-        assertEquals(1, Array.getLength(instance));
+        list = factory.getInstance();
+        assertEquals(1, list.size());
 
         EasyMock.verify(mockFactory);
     }
@@ -94,10 +96,10 @@ public class ArrayMultiplicityObjectFactoryTestCase extends TestCase {
         factory.addObjectFactory(mockFactory1, attributes1);
         factory.endUpdate();
 
-        Object[] array = (Object[]) factory.getInstance();
+        List<Object> list = factory.getInstance();
 
-        assertSame(object2, array[0]);
-        assertSame(object1, array[1]);
+        assertSame(object2, list.get(0));
+        assertSame(object1, list.get(1));
 
         EasyMock.verify(mockFactory1, mockFactory2);
     }
@@ -115,9 +117,11 @@ public class ArrayMultiplicityObjectFactoryTestCase extends TestCase {
         // no update
         factory.endUpdate();
 
-        Object instance = factory.getInstance();
-        assertEquals(1, Array.getLength(instance));
+        List<Object> instance = factory.getInstance();
+        assertEquals(1, instance.size());
 
         EasyMock.verify(mockFactory);
     }
+
+
 }

@@ -43,11 +43,11 @@
  */
 package org.fabric3.implementation.pojo.reflection;
 
-import org.fabric3.implementation.pojo.injection.ArrayMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.injection.ListMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.injection.MapMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.injection.SetMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.ArrayMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.ListMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.MapMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerImpl;

@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.pojo.injection;
+package org.fabric3.implementation.pojo.objectfactory;
 
 import java.util.HashMap;
 import java.util.Map;

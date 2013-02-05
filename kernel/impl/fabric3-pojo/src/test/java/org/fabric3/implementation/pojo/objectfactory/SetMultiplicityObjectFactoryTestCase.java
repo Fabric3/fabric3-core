@@ -35,47 +35,78 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.pojo.injection;
+package org.fabric3.implementation.pojo.objectfactory;
 
-import java.util.Map;
+import java.util.Iterator;
+import java.util.Set;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactory;
 import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  *
  */
-public class MapMultiplicityObjectFactoryTestCase extends TestCase {
-    private MapMultiplicityObjectFactory factory = new MapMultiplicityObjectFactory();
+public class SetMultiplicityObjectFactoryTestCase extends TestCase {
+    private SetMultiplicityObjectFactory factory = new SetMultiplicityObjectFactory();
 
     public void testReinjection() throws Exception {
-        ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
-        EasyMock.expect(mockFactory.getInstance()).andReturn(new Object()).times(2);
-        EasyMock.replay(mockFactory);
+        ObjectFactory<?> mockFactory1 = EasyMock.createMock(ObjectFactory.class);
+        ObjectFactory<?> mockFactory2 = EasyMock.createMock(ObjectFactory.class);
+        EasyMock.expect(mockFactory2.getInstance()).andReturn(new Object());
+        ObjectFactory<?> mockFactory3 = EasyMock.createMock(ObjectFactory.class);
+        EasyMock.expect(mockFactory3.getInstance()).andReturn(new Object());
+
+        EasyMock.replay(mockFactory1, mockFactory2, mockFactory3);
 
         factory.startUpdate();
-        InjectionAttributes attributes = new InjectionAttributes("baz", Integer.MIN_VALUE);
-        factory.addObjectFactory(mockFactory, attributes);
+        factory.addObjectFactory(mockFactory1, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
 
         factory.startUpdate();
-        attributes = new InjectionAttributes("foo", Integer.MIN_VALUE);
-        factory.addObjectFactory(mockFactory, attributes);
+        factory.addObjectFactory(mockFactory2, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
-        Map<Object, Object> map = factory.getInstance();
-        assertEquals(1, map.size());
+        Set<Object> set = factory.getInstance();
+        assertEquals(1, set.size());
 
         factory.startUpdate();
-        attributes = new InjectionAttributes("bar", Integer.MIN_VALUE);
-        factory.addObjectFactory(mockFactory, attributes);
+        factory.addObjectFactory(mockFactory3, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
-        map = factory.getInstance();
-        assertEquals(1, map.size());
+        set = factory.getInstance();
+        assertEquals(1, set.size());
 
-        EasyMock.verify(mockFactory);
+        EasyMock.verify(mockFactory1, mockFactory2, mockFactory3);
+    }
+
+    public void testSort() throws Exception {
+        ObjectFactory<?> mockFactory1 = EasyMock.createMock(ObjectFactory.class);
+        Object object1 = new Object();
+        EasyMock.expect(mockFactory1.getInstance()).andReturn(object1).times(1);
+        InjectionAttributes attributes1 = new InjectionAttributes(null, 2);
+
+        ObjectFactory<?> mockFactory2 = EasyMock.createMock(ObjectFactory.class);
+        Object object2 = new Object();
+        EasyMock.expect(mockFactory2.getInstance()).andReturn(object2).times(1);
+        InjectionAttributes attributes2 = new InjectionAttributes(null, 0);
+
+
+        EasyMock.replay(mockFactory1, mockFactory2);
+
+        factory.startUpdate();
+        factory.addObjectFactory(mockFactory2, attributes2);
+        factory.addObjectFactory(mockFactory1, attributes1);
+        factory.endUpdate();
+
+        Set<Object> set = factory.getInstance();
+
+        Iterator<Object> iterator = set.iterator();
+        assertSame(object2, iterator.next());
+        assertSame(object1, iterator.next());
+
+        EasyMock.verify(mockFactory1, mockFactory2);
     }
 
     public void testNoUpdates() throws Exception {
@@ -84,17 +115,17 @@ public class MapMultiplicityObjectFactoryTestCase extends TestCase {
         EasyMock.replay(mockFactory);
 
         factory.startUpdate();
-        InjectionAttributes attributes = new InjectionAttributes("baz", Integer.MIN_VALUE);
-        factory.addObjectFactory(mockFactory, attributes);
+        factory.addObjectFactory(mockFactory, InjectionAttributes.EMPTY_ATTRIBUTES);
         factory.endUpdate();
 
         factory.startUpdate();
         // no update
         factory.endUpdate();
 
-        Map<Object, Object> map = factory.getInstance();
-        assertEquals(1, map.size());
+        Set<Object> instance = factory.getInstance();
+        assertEquals(1, instance.size());
 
         EasyMock.verify(mockFactory);
     }
+
 }

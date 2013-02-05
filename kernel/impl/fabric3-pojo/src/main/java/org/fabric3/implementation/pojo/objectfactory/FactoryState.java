@@ -1,4 +1,4 @@
-package org.fabric3.implementation.pojo.injection;
+package org.fabric3.implementation.pojo.objectfactory;
 
 /**
  * Defines the states a {@link MultiplicityObjectFactory} can be in.

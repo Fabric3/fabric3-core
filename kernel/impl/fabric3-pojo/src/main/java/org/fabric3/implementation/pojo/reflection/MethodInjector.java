@@ -43,14 +43,14 @@
  */
 package org.fabric3.implementation.pojo.reflection;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
 import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Injects a value created by an {@link ObjectFactory} using a given method.

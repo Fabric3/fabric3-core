@@ -41,31 +41,30 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.injection;
+package org.fabric3.implementation.pojo.objectfactory;
 
-import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
-/**
- * Delegates to an {@link AtomicComponent} to create an instance.
- */
-public class ComponentObjectFactory implements ObjectFactory<Object> {
-    private AtomicComponent component;
+import java.lang.reflect.Array;
+import java.util.List;
 
-    public ComponentObjectFactory(AtomicComponent component) {
-        this.component = component;
+/**
+ * Returns an <code>Array</code> of object instances.
+ */
+public class ArrayMultiplicityObjectFactory extends AbstractCollectionMultiplicityObjectFactory<List<ObjectFactory<?>>> {
+    private Class interfaceType;
+
+    public ArrayMultiplicityObjectFactory(Class interfaceType) {
+        this.interfaceType = interfaceType;
     }
 
     public Object getInstance() throws ObjectCreationException {
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
-        try {
-            return component.getInstance(workContext);
-        } catch (InstanceLifecycleException e) {
-            throw new ObjectCreationException(e);
+        Object array = Array.newInstance(interfaceType, factories.size());
+        for (int i = 0; i < factories.size(); i++) {
+            Array.set(array, i, factories.get(i).getInstance());
         }
+        return array;
     }
+
 }
