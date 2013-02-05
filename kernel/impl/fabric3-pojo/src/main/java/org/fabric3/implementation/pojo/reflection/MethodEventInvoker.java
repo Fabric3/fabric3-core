@@ -43,6 +43,9 @@
  */
 package org.fabric3.implementation.pojo.reflection;
 
+import org.fabric3.implementation.pojo.spi.invocation.EventInvoker;
+import org.fabric3.implementation.pojo.spi.invocation.ObjectCallbackException;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 

@@ -51,6 +51,7 @@ import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactor
 import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerImpl;
+import org.fabric3.implementation.pojo.spi.invocation.EventInvoker;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
