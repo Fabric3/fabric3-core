@@ -54,8 +54,8 @@ import java.util.Map;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.pojo.spi.ProxyCreationException;
-import org.fabric3.implementation.pojo.spi.WireProxyService;
+import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
+import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;

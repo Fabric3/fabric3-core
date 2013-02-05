@@ -43,8 +43,8 @@
  */
 package org.fabric3.implementation.proxy.jdk.channel;
 
-import org.fabric3.implementation.pojo.spi.ChannelProxyService;
-import org.fabric3.implementation.pojo.spi.ProxyCreationException;
+import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
+import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;

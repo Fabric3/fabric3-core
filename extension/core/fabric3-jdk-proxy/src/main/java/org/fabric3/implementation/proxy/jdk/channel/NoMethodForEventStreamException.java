@@ -43,7 +43,7 @@
  */
 package org.fabric3.implementation.proxy.jdk.channel;
 
-import org.fabric3.implementation.pojo.spi.ProxyCreationException;
+import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 
 /**
  * Thrown when an event stream cannot be mapped to a method on an interface
