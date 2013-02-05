@@ -17,7 +17,7 @@
            autowire="true">
 
     <component name="JDKWireProxyService">
-        <f3:implementation.system class="org.fabric3.implementation.proxy.jdk.JDKWireProxyService"/>
+        <f3:implementation.system class="org.fabric3.implementation.proxy.jdk.wire.JDKWireProxyService"/>
     </component>
 
     <component name="JDKChannelProxyService">

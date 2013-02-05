@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.proxy.jdk;
+package org.fabric3.implementation.proxy.jdk.wire;
 
 import java.lang.reflect.Method;
 import java.util.Map;

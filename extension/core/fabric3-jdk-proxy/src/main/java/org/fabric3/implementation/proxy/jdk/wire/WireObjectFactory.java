@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.proxy.jdk;
+package org.fabric3.implementation.proxy.jdk.wire;
 
 import java.lang.reflect.Method;
 import java.util.Map;

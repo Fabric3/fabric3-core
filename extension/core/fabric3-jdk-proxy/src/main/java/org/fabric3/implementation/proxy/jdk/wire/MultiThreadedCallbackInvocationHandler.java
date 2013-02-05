@@ -35,38 +35,48 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.proxy.jdk;
+package org.fabric3.implementation.proxy.jdk.wire;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
- * Responsible for dispatching to a callback service from a component implementation instance that is not composite scope. Since only one client can
- * invoke the instance this proxy is injected on at a time, there can only be one callback target, even if the proxy is injected on an instance
- * variable. Consequently, the proxy does not need to map the callback target based on the forward request.
+ * Responsible for dispatching to a callback service from multi-threaded component instances such as composite scope components. Since callback
+ * proxies for multi-threaded components may dispatch to multiple callback services, this implementation must determine the correct target service
+ * based on the current CallFrame. For example, if clients A and A' implementing the same callback interface C invoke B, the callback proxy
+ * representing C must correctly dispatch back to A and A'. This is done by recording the callback URI in the current CallFrame as the forward invoke
+ * is made.
  */
-public class StatefulCallbackInvocationHandler<T> extends AbstractCallbackInvocationHandler<T> {
-    private Map<Method, InvocationChain> chains;
+public class MultiThreadedCallbackInvocationHandler<T> extends AbstractCallbackInvocationHandler<T> {
+    private Map<String, Map<Method, InvocationChain>> mappings;
 
     /**
-     * Constructor.
+     * Constructor. In multi-threaded instances such as composite scoped components, multiple forward invocations may be received simultaneously. As a
+     * result, since callback proxies stored in instance variables may represent multiple clients, they must map the correct one for the request being
+     * processed on the current thread. The mappings parameter keys a callback URI representing the client to the set of invocation chains for the
+     * callback service.
      *
-     * @param interfaze      the callback service interface implemented by the proxy
-     * @param chains         the invocation chain mappings for the callback wire
+     * @param interfaze the callback service interface implemented by the proxy
+     * @param mappings  the callback URI to invocation chain mappings
      */
-    public StatefulCallbackInvocationHandler(Class<T> interfaze, Map<Method, InvocationChain> chains) {
+    public MultiThreadedCallbackInvocationHandler(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) {
         super(interfaze);
-        this.chains = chains;
+        this.mappings = mappings;
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        CallFrame frame = workContext.peekCallFrame();
+        String callbackUri = frame.getCallbackUri();
+        Map<Method, InvocationChain> chains = mappings.get(callbackUri);
         // find the invocation chain for the invoked operation
         InvocationChain chain = chains.get(method);
+        // find the invocation chain for the invoked operation
         if (chain == null) {
             return handleProxyMethod(method);
         }

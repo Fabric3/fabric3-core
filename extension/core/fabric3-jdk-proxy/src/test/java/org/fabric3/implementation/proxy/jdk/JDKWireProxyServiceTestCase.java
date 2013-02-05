@@ -24,6 +24,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.implementation.proxy.jdk.wire.JDKInvocationHandler;
+import org.fabric3.implementation.proxy.jdk.wire.JDKWireProxyService;
 import org.oasisopen.sca.ServiceReference;
 
 import org.fabric3.spi.wire.InvocationChain;
