@@ -41,18 +41,49 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.spi.invocation;
+package org.fabric3.implementation.pojo.reflection;
+
+import org.fabric3.implementation.pojo.spi.invocation.LifecycleInvoker;
+import org.fabric3.implementation.pojo.spi.invocation.ObjectCallbackException;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
- * Performs an invocation on an instance.
+ * Performs an invocation on a method of a given instance
  */
-public interface EventInvoker {
+public class MethodLifecycleInvoker implements LifecycleInvoker {
+    private final Method method;
 
     /**
-     * Performs the invocation on a given instance.
+     * Instantiates an invoker for the given method
      *
-     * @param instance the instance to invoke
-     * @throws ObjectCallbackException if the invocation causes an error
+     * @param method the method to invoke on
      */
-    void invokeEvent(Object instance) throws ObjectCallbackException;
+    public MethodLifecycleInvoker(Method method) {
+        assert method != null;
+        this.method = method;
+        this.method.setAccessible(true);
+    }
+
+    public void invoke(Object instance) throws ObjectCallbackException {
+        try {
+            method.invoke(instance);
+        } catch (IllegalArgumentException e) {
+            String signature = getSignature();
+            throw new ObjectCallbackException("Invalid arguments provided when invoking method: " + signature, e.getCause());
+        } catch (IllegalAccessException e) {
+            String signature = getSignature();
+            throw new ObjectCallbackException("Method is not accessible: " + signature);
+        } catch (InvocationTargetException e) {
+            String signature = getSignature();
+            throw new ObjectCallbackException("Exception thrown when invoking method: " + signature, e.getCause());
+        }
+    }
+
+    private String getSignature() {
+        String name = method.getName();
+        return method.getDeclaringClass().getName() + "." + name + "()";
+    }
+
 }

@@ -51,7 +51,7 @@ import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactor
 import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerImpl;
-import org.fabric3.implementation.pojo.spi.invocation.EventInvoker;
+import org.fabric3.implementation.pojo.spi.invocation.LifecycleInvoker;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
@@ -89,8 +89,8 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
     private final Constructor<?> constructor;
     private final List<Injectable> cdiSources;
     private final Map<InjectionSite, Injectable> postConstruction;
-    private final EventInvoker initInvoker;
-    private final EventInvoker destroyInvoker;
+    private final LifecycleInvoker initInvoker;
+    private final LifecycleInvoker destroyInvoker;
     private final Map<Injectable, ObjectFactory<?>> factories = new HashMap<Injectable, ObjectFactory<?>>();
     private final ClassLoader cl;
     private final boolean reinjectable;
@@ -108,8 +108,8 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
         this.constructor = constructor;
         this.cdiSources = cdiSources;
         this.postConstruction = postConstruction;
-        this.initInvoker = initMethod == null ? null : new MethodEventInvoker(initMethod);
-        this.destroyInvoker = destroyMethod == null ? null : new MethodEventInvoker(destroyMethod);
+        this.initInvoker = initMethod == null ? null : new MethodLifecycleInvoker(initMethod);
+        this.destroyInvoker = destroyMethod == null ? null : new MethodLifecycleInvoker(destroyMethod);
         this.reinjectable = reinjectable;
         this.cl = cl;
 

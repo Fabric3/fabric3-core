@@ -43,7 +43,7 @@
  */
 package org.fabric3.implementation.pojo.manager;
 
-import org.fabric3.implementation.pojo.spi.invocation.EventInvoker;
+import org.fabric3.implementation.pojo.spi.invocation.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.invocation.ObjectCallbackException;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitException;
@@ -67,8 +67,8 @@ public class ImplementationManagerImpl implements ImplementationManager {
     private final ObjectFactory<?> constructor;
     private Injectable[] injectables;
     private final Injector<Object>[] injectors;
-    private final EventInvoker initInvoker;
-    private final EventInvoker destroyInvoker;
+    private final LifecycleInvoker initInvoker;
+    private final LifecycleInvoker destroyInvoker;
     private final ClassLoader cl;
     private final boolean reinjectable;
     private Set<Injector<Object>> updatedInjectors;
@@ -77,8 +77,8 @@ public class ImplementationManagerImpl implements ImplementationManager {
                                      ObjectFactory<?> constructor,
                                      Injectable[] injectables,
                                      Injector<Object>[] injectors,
-                                     EventInvoker initInvoker,
-                                     EventInvoker destroyInvoker,
+                                     LifecycleInvoker initInvoker,
+                                     LifecycleInvoker destroyInvoker,
                                      boolean reinjectable,
                                      ClassLoader cl) {
         this.componentUri = componentUri;
@@ -122,7 +122,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
             try {
                 Thread.currentThread().setContextClassLoader(cl);
                 WorkContextTunnel.setThreadWorkContext(context);
-                initInvoker.invokeEvent(instance);
+                initInvoker.invoke(instance);
             } catch (ObjectCallbackException e) {
                 throw new InstanceInitException("Error initializing instance for: " + componentUri, e);
             } finally {
@@ -140,7 +140,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
                 try {
                     Thread.currentThread().setContextClassLoader(cl);
                     WorkContextTunnel.setThreadWorkContext(context);
-                    destroyInvoker.invokeEvent(instance);
+                    destroyInvoker.invoke(instance);
                 } finally {
                     Thread.currentThread().setContextClassLoader(oldCl);
                     WorkContextTunnel.setThreadWorkContext(oldWorkContext);

@@ -41,49 +41,18 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.reflection;
-
-import org.fabric3.implementation.pojo.spi.invocation.EventInvoker;
-import org.fabric3.implementation.pojo.spi.invocation.ObjectCallbackException;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+package org.fabric3.implementation.pojo.spi.invocation;
 
 /**
- * Performs an invocation on a method of a given instance
+ * Performs a lifecycle invocation on an instance.
  */
-public class MethodEventInvoker implements EventInvoker {
-    private final Method method;
+public interface LifecycleInvoker {
 
     /**
-     * Instantiates an invoker for the given method
+     * Performs the invocation on a given instance.
      *
-     * @param method the method to invoke on
+     * @param instance the instance to invoke
+     * @throws ObjectCallbackException if the invocation causes an error
      */
-    public MethodEventInvoker(Method method) {
-        assert method != null;
-        this.method = method;
-        this.method.setAccessible(true);
-    }
-
-    public void invokeEvent(Object instance) throws ObjectCallbackException {
-        try {
-            method.invoke(instance);
-        } catch (IllegalArgumentException e) {
-            String signature = getSignature();
-            throw new ObjectCallbackException("Invalid arguments provided when invoking method: " + signature, e.getCause());
-        } catch (IllegalAccessException e) {
-            String signature = getSignature();
-            throw new ObjectCallbackException("Method is not accessible: " + signature);
-        } catch (InvocationTargetException e) {
-            String signature = getSignature();
-            throw new ObjectCallbackException("Exception thrown when invoking method: " + signature, e.getCause());
-        }
-    }
-
-    private String getSignature() {
-        String name = method.getName();
-        return method.getDeclaringClass().getName() + "." + name + "()";
-    }
-
+    void invoke(Object instance) throws ObjectCallbackException;
 }

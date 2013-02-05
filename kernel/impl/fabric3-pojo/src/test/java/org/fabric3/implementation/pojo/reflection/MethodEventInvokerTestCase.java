@@ -55,9 +55,9 @@ public class MethodEventInvokerTestCase extends TestCase {
     private Method exceptionMethod;
 
     public void testException() {
-        MethodEventInvoker injector = new MethodEventInvoker(exceptionMethod);
+        MethodLifecycleInvoker injector = new MethodLifecycleInvoker(exceptionMethod);
         try {
-            injector.invokeEvent(new Foo());
+            injector.invoke(new Foo());
             fail();
         } catch (ObjectCallbackException e) {
             // expected
