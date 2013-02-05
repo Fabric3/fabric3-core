@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.spi.invocation;
+package org.fabric3.implementation.pojo.spi.manager;
 
 import org.fabric3.host.Fabric3Exception;
 
