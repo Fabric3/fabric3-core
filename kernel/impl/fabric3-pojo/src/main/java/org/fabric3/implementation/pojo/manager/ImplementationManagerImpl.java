@@ -41,13 +41,10 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.reflection;
+package org.fabric3.implementation.pojo.manager;
 
-import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.fabric3.implementation.pojo.manager.ImplementationManager;
+import org.fabric3.implementation.pojo.reflection.EventInvoker;
+import org.fabric3.implementation.pojo.reflection.ObjectCallbackException;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitException;
 import org.fabric3.spi.component.InstanceLifecycleException;
@@ -58,10 +55,14 @@ import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  */
-public class ReflectiveImplementationManager implements ImplementationManager {
+public class ImplementationManagerImpl implements ImplementationManager {
     private URI componentUri;
     private final ObjectFactory<?> constructor;
     private Injectable[] injectables;
@@ -72,14 +73,14 @@ public class ReflectiveImplementationManager implements ImplementationManager {
     private final boolean reinjectable;
     private Set<Injector<Object>> updatedInjectors;
 
-    public ReflectiveImplementationManager(URI componentUri,
-                                           ObjectFactory<?> constructor,
-                                           Injectable[] injectables,
-                                           Injector<Object>[] injectors,
-                                           EventInvoker initInvoker,
-                                           EventInvoker destroyInvoker,
-                                           boolean reinjectable,
-                                           ClassLoader cl) {
+    public ImplementationManagerImpl(URI componentUri,
+                                     ObjectFactory<?> constructor,
+                                     Injectable[] injectables,
+                                     Injector<Object>[] injectors,
+                                     EventInvoker initInvoker,
+                                     EventInvoker destroyInvoker,
+                                     boolean reinjectable,
+                                     ClassLoader cl) {
         this.componentUri = componentUri;
         this.constructor = constructor;
         this.injectables = injectables;
@@ -93,7 +94,6 @@ public class ReflectiveImplementationManager implements ImplementationManager {
         } else {
             this.updatedInjectors = null;
         }
-
     }
 
     public Object newInstance(WorkContext workContext) throws ObjectCreationException {
@@ -115,7 +115,6 @@ public class ReflectiveImplementationManager implements ImplementationManager {
         }
     }
 
-
     public void start(Object instance, WorkContext context) throws InstanceInitException {
         if (initInvoker != null) {
             ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
@@ -132,7 +131,6 @@ public class ReflectiveImplementationManager implements ImplementationManager {
             }
         }
     }
-
 
     public void stop(Object instance, WorkContext context) throws InstanceDestructionException {
         WorkContext oldWorkContext = WorkContextTunnel.getThreadWorkContext();

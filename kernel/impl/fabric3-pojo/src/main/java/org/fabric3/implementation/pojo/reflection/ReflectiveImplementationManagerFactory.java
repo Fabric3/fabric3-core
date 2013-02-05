@@ -43,6 +43,24 @@
  */
 package org.fabric3.implementation.pojo.reflection;
 
+import org.fabric3.implementation.pojo.injection.ArrayMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.injection.ListMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.injection.MapMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.injection.SetMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.manager.ImplementationManager;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerImpl;
+import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
+import org.fabric3.spi.model.type.java.FieldInjectionSite;
+import org.fabric3.spi.model.type.java.Injectable;
+import org.fabric3.spi.model.type.java.InjectableType;
+import org.fabric3.spi.model.type.java.InjectionSite;
+import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.fabric3.spi.objectfactory.InjectionAttributes;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -54,23 +72,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.fabric3.implementation.pojo.injection.ArrayMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.injection.ListMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.injection.MapMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.injection.MultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.injection.SetMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.manager.ImplementationManager;
-import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
-import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
-import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.spi.model.type.java.Injectable;
-import org.fabric3.spi.model.type.java.InjectableType;
-import org.fabric3.spi.model.type.java.InjectionSite;
-import org.fabric3.spi.model.type.java.MethodInjectionSite;
-import org.fabric3.spi.objectfactory.InjectionAttributes;
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  *
@@ -121,7 +122,7 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
         Injectable[] attributes = mappings.keySet().toArray(new Injectable[mappings.size()]);
         Injector<Object>[] injectors = mappings.values().toArray(new Injector[mappings.size()]);
 
-        return new ReflectiveImplementationManager(componentUri, factory, attributes, injectors, initInvoker, destroyInvoker, reinjectable, cl);
+        return new ImplementationManagerImpl(componentUri, factory, attributes, injectors, initInvoker, destroyInvoker, reinjectable, cl);
     }
 
     public Class<?> getImplementationClass() {
