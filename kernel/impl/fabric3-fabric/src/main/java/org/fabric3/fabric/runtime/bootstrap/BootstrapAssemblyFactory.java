@@ -37,27 +37,15 @@
 */
 package org.fabric3.fabric.runtime.bootstrap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.fabric3.contribution.generator.JavaContributionWireGenerator;
 import org.fabric3.contribution.generator.LocationContributionWireGenerator;
 import org.fabric3.contribution.wire.JavaContributionWire;
 import org.fabric3.contribution.wire.LocationContributionWire;
-import org.fabric3.fabric.builder.ChannelConnector;
-import org.fabric3.fabric.builder.ChannelConnectorImpl;
 import org.fabric3.fabric.builder.Connector;
 import org.fabric3.fabric.builder.ConnectorImpl;
-import org.fabric3.fabric.builder.channel.ChannelSourceAttacher;
-import org.fabric3.fabric.builder.channel.ChannelTargetAttacher;
-import org.fabric3.fabric.builder.channel.TypeEventFilterBuilder;
 import org.fabric3.fabric.channel.ReplicationMonitor;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.collector.CollectorImpl;
-import org.fabric3.fabric.command.AttachChannelConnectionCommand;
 import org.fabric3.fabric.command.AttachWireCommand;
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.fabric.command.BuildComponentCommand;
@@ -71,7 +59,6 @@ import org.fabric3.fabric.domain.ContributionHelper;
 import org.fabric3.fabric.domain.ContributionHelperImpl;
 import org.fabric3.fabric.domain.LocalDeployer;
 import org.fabric3.fabric.domain.RuntimeDomain;
-import org.fabric3.fabric.executor.AttachChannelConnectionCommandExecutor;
 import org.fabric3.fabric.executor.AttachWireCommandExecutor;
 import org.fabric3.fabric.executor.BuildChannelsCommandExecutor;
 import org.fabric3.fabric.executor.BuildComponentCommandExecutor;
@@ -129,9 +116,6 @@ import org.fabric3.fabric.instantiator.promotion.PromotionNormalizerImpl;
 import org.fabric3.fabric.instantiator.promotion.PromotionResolutionServiceImpl;
 import org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl;
 import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
-import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
-import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
-import org.fabric3.fabric.model.physical.TypeEventFilterDefinition;
 import org.fabric3.fabric.xml.XMLFactoryImpl;
 import org.fabric3.host.Names;
 import org.fabric3.host.domain.Domain;
@@ -141,7 +125,6 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.implementation.pojo.builder.ArrayBuilder;
 import org.fabric3.implementation.pojo.builder.ArrayBuilderImpl;
-import org.fabric3.implementation.pojo.builder.ChannelProxyService;
 import org.fabric3.implementation.pojo.builder.CollectionBuilder;
 import org.fabric3.implementation.pojo.builder.CollectionBuilderImpl;
 import org.fabric3.implementation.pojo.builder.MapBuilder;
@@ -151,19 +134,14 @@ import org.fabric3.implementation.pojo.builder.ObjectBuilderImpl;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl;
 import org.fabric3.implementation.pojo.generator.GenerationHelperImpl;
-import org.fabric3.implementation.pojo.proxy.JDKChannelProxyService;
 import org.fabric3.implementation.pojo.reflection.ReflectiveImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.system.generator.SystemComponentGenerator;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
-import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
-import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
 import org.fabric3.implementation.system.provision.SystemSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemTargetDefinition;
 import org.fabric3.implementation.system.runtime.SystemComponentBuilder;
-import org.fabric3.implementation.system.runtime.SystemSourceConnectionAttacher;
 import org.fabric3.implementation.system.runtime.SystemSourceWireAttacher;
-import org.fabric3.implementation.system.runtime.SystemTargetConnectionAttacher;
 import org.fabric3.implementation.system.runtime.SystemTargetWireAttacher;
 import org.fabric3.implementation.system.singleton.SingletonComponentGenerator;
 import org.fabric3.implementation.system.singleton.SingletonImplementation;
@@ -176,11 +154,8 @@ import org.fabric3.monitor.generator.MonitorResourceReferenceGenerator;
 import org.fabric3.monitor.model.MonitorResourceReference;
 import org.fabric3.monitor.provision.MonitorTargetDefinition;
 import org.fabric3.monitor.runtime.MonitorWireAttacher;
-import org.fabric3.spi.builder.channel.EventFilterBuilder;
 import org.fabric3.spi.builder.component.ComponentBuilder;
-import org.fabric3.spi.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
-import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -200,9 +175,6 @@ import org.fabric3.spi.generator.policy.PolicyResolver;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.management.ManagementService;
-import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.transform.SingleTypeTransformer;
@@ -217,6 +189,12 @@ import org.fabric3.transform.property.Property2StringTransformer;
 import org.fabric3.transform.string2java.String2ClassTransformer;
 import org.fabric3.transform.string2java.String2IntegerTransformer;
 import org.fabric3.transform.string2java.String2QNameTransformer;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 
@@ -329,9 +307,6 @@ public class BootstrapAssemblyFactory {
             throw new AssertionError(e);
         }
 
-        ChannelConnector channelConnector = createChannelConnector(componentManager, channelManager, classLoaderRegistry);
-        commandRegistry.register(AttachChannelConnectionCommand.class, new AttachChannelConnectionCommandExecutor(commandRegistry, channelConnector));
-
         return commandRegistry;
     }
 
@@ -403,43 +378,6 @@ public class BootstrapAssemblyFactory {
         connector.setSourceAttachers(sourceAttachers);
         connector.setTargetAttachers(targetAttachers);
         return connector;
-    }
-
-    private static ChannelConnector createChannelConnector(ComponentManager componentManager,
-                                                           ChannelManager channelManager,
-                                                           ClassLoaderRegistry classLoaderRegistry) {
-        Map<Class<? extends PhysicalConnectionSourceDefinition>,
-                SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>> sourceConnectionAttachers =
-                new HashMap<Class<? extends PhysicalConnectionSourceDefinition>,
-                        SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>>();
-        Map<Class<? extends PhysicalConnectionTargetDefinition>,
-                TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>> targetConnectionAttachers =
-                new HashMap<Class<? extends PhysicalConnectionTargetDefinition>,
-                        TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>>();
-
-        Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>> filterBuilders =
-                new HashMap<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>>();
-
-        ChannelSourceAttacher channelSourceAttacher = new ChannelSourceAttacher(channelManager);
-
-        ChannelProxyService proxyService = new JDKChannelProxyService(classLoaderRegistry);
-
-        sourceConnectionAttachers.put(ChannelSourceDefinition.class, channelSourceAttacher);
-        SystemSourceConnectionAttacher systemSourceAttacher = new SystemSourceConnectionAttacher(componentManager, proxyService, classLoaderRegistry);
-        sourceConnectionAttachers.put(SystemConnectionSourceDefinition.class, systemSourceAttacher);
-        ChannelTargetAttacher channelTargetAttacher = new ChannelTargetAttacher(channelManager);
-        targetConnectionAttachers.put(ChannelTargetDefinition.class, channelTargetAttacher);
-        SystemTargetConnectionAttacher systemTargetAttacher = new SystemTargetConnectionAttacher(componentManager, classLoaderRegistry);
-        targetConnectionAttachers.put(SystemConnectionTargetDefinition.class, systemTargetAttacher);
-
-        TypeEventFilterBuilder filterBuilder = new TypeEventFilterBuilder();
-        filterBuilders.put(TypeEventFilterDefinition.class, filterBuilder);
-
-        ChannelConnectorImpl channelConnector = new ChannelConnectorImpl();
-        channelConnector.setSourceAttachers(sourceConnectionAttachers);
-        channelConnector.setTargetAttachers(targetConnectionAttachers);
-        channelConnector.setFilterBuilders(filterBuilders);
-        return channelConnector;
     }
 
     private static Generator createGenerator(MetaDataStore metaDataStore, PolicyResolver resolver, ContractMatcher matcher) {

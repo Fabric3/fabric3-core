@@ -34,6 +34,13 @@
         <f3:implementation.system class="org.fabric3.implementation.system.runtime.SystemTargetWireAttacher"/>
     </component>
 
+    <component name="SystemSourceConnectionAttacher" f3:key="org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition">
+        <f3:implementation.system class="org.fabric3.implementation.system.runtime.SystemSourceConnectionAttacher"/>
+    </component>
+
+    <component name="SystemTargetConnectionAttacher" f3:key="org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition">
+        <f3:implementation.system class="org.fabric3.implementation.system.runtime.SystemTargetConnectionAttacher"/>
+    </component>
 
     <component name="SystemImplementationProcessor" f3:key="f3:implementation.system">
         <f3:implementation.system class="org.fabric3.implementation.system.introspection.SystemImplementationProcessorImpl"/>
