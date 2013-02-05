@@ -41,26 +41,18 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.spi.manager;
-
-import org.fabric3.host.Fabric3Exception;
+package org.fabric3.implementation.pojo.spi.instance;
 
 /**
- * Denotes an error when invoking on an object
+ * Performs a lifecycle invocation on an instance.
  */
-public class ObjectCallbackException extends Fabric3Exception {
-    private static final long serialVersionUID = -2828664920912394309L;
+public interface LifecycleInvoker {
 
-    public ObjectCallbackException(String message) {
-        super(message);
-    }
-
-    public ObjectCallbackException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ObjectCallbackException(Throwable cause) {
-        super(cause);
-    }
-
+    /**
+     * Performs the invocation on a given instance.
+     *
+     * @param instance the instance to invoke
+     * @throws ObjectCallbackException if the invocation causes an error
+     */
+    void invoke(Object instance) throws ObjectCallbackException;
 }

@@ -43,8 +43,8 @@
  */
 package org.fabric3.implementation.pojo.manager;
 
-import org.fabric3.implementation.pojo.spi.manager.LifecycleInvoker;
-import org.fabric3.implementation.pojo.spi.manager.ObjectCallbackException;
+import org.fabric3.implementation.pojo.spi.instance.LifecycleInvoker;
+import org.fabric3.implementation.pojo.spi.instance.ObjectCallbackException;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitException;
 import org.fabric3.spi.component.InstanceLifecycleException;
