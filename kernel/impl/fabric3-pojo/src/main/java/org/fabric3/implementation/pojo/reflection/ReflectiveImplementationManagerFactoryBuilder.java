@@ -53,8 +53,8 @@ import java.util.Map;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.pojo.instancefactory.ImplementationBuildException;
-import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactoryBuilder;
+import org.fabric3.implementation.pojo.manager.ImplementationBuildException;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;

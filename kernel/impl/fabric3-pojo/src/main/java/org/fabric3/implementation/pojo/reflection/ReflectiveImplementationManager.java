@@ -47,7 +47,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.fabric3.implementation.pojo.instancefactory.ImplementationManager;
+import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitException;
 import org.fabric3.spi.component.InstanceLifecycleException;

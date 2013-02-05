@@ -51,8 +51,8 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
-import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
-import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactoryBuilder;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
 import org.fabric3.model.type.component.Scope;

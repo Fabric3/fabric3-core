@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.instancefactory;
+package org.fabric3.implementation.pojo.manager;
 
 import junit.framework.TestCase;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;

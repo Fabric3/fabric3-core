@@ -52,7 +52,7 @@ import org.w3c.dom.Document;
 import org.fabric3.implementation.pojo.component.PojoComponentContext;
 import org.fabric3.implementation.pojo.component.PojoRequestContext;
 import org.fabric3.implementation.pojo.component.PojoComponent;
-import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.builder.BuilderException;

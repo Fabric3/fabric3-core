@@ -46,7 +46,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.implementation.java.runtime.JavaComponent;
-import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ComponentException;

@@ -57,7 +57,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.implementation.pojo.instancefactory.ImplementationManager;
+import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;

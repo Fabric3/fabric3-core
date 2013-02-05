@@ -40,7 +40,7 @@ package org.fabric3.implementation.timer.runtime;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.implementation.pojo.instancefactory.ImplementationManagerFactory;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.invocation.WorkContext;

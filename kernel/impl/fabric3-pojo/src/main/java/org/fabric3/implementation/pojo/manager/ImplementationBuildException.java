@@ -41,23 +41,22 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.instancefactory;
+package org.fabric3.implementation.pojo.manager;
 
-import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
+import org.fabric3.spi.builder.BuilderException;
 
 /**
- * Creates instance factory providers.
+ * The builder exception for IF provider.
  */
-public interface ImplementationManagerFactoryBuilder {
+public class ImplementationBuildException extends BuilderException {
+    private static final long serialVersionUID = -2582100608101918880L;
 
-    /**
-     * Builds an instance factory provider from a definition.
-     *
-     * @param managerDefinition the definition that describes the provider
-     * @param classLoader       the classloader to use to load any implementation classes
-     * @return a provider built from the supplied definition
-     * @throws ImplementationBuildException
-     *          if there was a problem with the definition
-     */
-    ImplementationManagerFactory build(ImplementationManagerDefinition managerDefinition, ClassLoader classLoader) throws ImplementationBuildException;
+    public ImplementationBuildException(String message, String identifier) {
+        super(message, identifier);
+    }
+
+    public ImplementationBuildException(Throwable cause) {
+        super(cause);
+    }
+
 }
