@@ -37,6 +37,12 @@
 */
 package org.fabric3.fabric.runtime.bootstrap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.fabric3.contribution.generator.JavaContributionWireGenerator;
 import org.fabric3.contribution.generator.LocationContributionWireGenerator;
 import org.fabric3.contribution.wire.JavaContributionWire;
@@ -134,7 +140,10 @@ import org.fabric3.implementation.pojo.builder.ObjectBuilderImpl;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilderImpl;
 import org.fabric3.implementation.pojo.generator.GenerationHelperImpl;
-import org.fabric3.implementation.pojo.reflection.ReflectiveImplementationManagerFactoryBuilder;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilderImpl;
+import org.fabric3.implementation.pojo.reflection.JDKReflectionFactoryExtension;
+import org.fabric3.implementation.pojo.reflection.ReflectionFactoryImpl;
+import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.system.generator.SystemComponentGenerator;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
@@ -189,13 +198,6 @@ import org.fabric3.transform.property.Property2StringTransformer;
 import org.fabric3.transform.string2java.String2ClassTransformer;
 import org.fabric3.transform.string2java.String2IntegerTransformer;
 import org.fabric3.transform.string2java.String2QNameTransformer;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 
 /**
@@ -217,12 +219,8 @@ public class BootstrapAssemblyFactory {
                                       ManagementService managementService,
                                       HostInfo info) throws InitializationException {
 
-        CommandExecutorRegistry commandRegistry = createCommandExecutorRegistry(monitorService,
-                                                                                classLoaderRegistry,
-                                                                                scopeRegistry,
-                                                                                componentManager,
-                                                                                channelManager,
-                                                                                managementService);
+        CommandExecutorRegistry commandRegistry
+                = createCommandExecutorRegistry(monitorService, classLoaderRegistry, scopeRegistry, componentManager, channelManager, managementService);
         DeployerMonitor monitor;
         try {
             monitor = monitorService.createMonitor(DeployerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
@@ -244,15 +242,8 @@ public class BootstrapAssemblyFactory {
         Collector collector = new CollectorImpl();
         ContributionHelper contributionHelper = new ContributionHelperImpl(metaDataStore, info);
 
-        return new RuntimeDomain(metaDataStore,
-                                 generator,
-                                 logicalModelInstantiator,
-                                 policyAttacher,
-                                 logicalComponentManager,
-                                 deployer,
-                                 collector,
-                                 contributionHelper,
-                                 info);
+        return new RuntimeDomain(metaDataStore, generator, logicalModelInstantiator, policyAttacher, logicalComponentManager, deployer, collector,
+                                 contributionHelper, info);
     }
 
     private static LogicalModelInstantiator createLogicalModelGenerator(ContractMatcher matcher) {
@@ -266,17 +257,10 @@ public class BootstrapAssemblyFactory {
         WireInstantiator wireInstantiator = new WireInstantiatorImpl(matcher);
         ChannelInstantiator channelInstantiator = new ChannelInstantiatorImpl();
 
-        CompositeComponentInstantiator compositeInstantiator = new CompositeComponentInstantiatorImpl(atomicInstantiator,
-                                                                                                      wireInstantiator,
-                                                                                                      channelInstantiator);
-        return new LogicalModelInstantiatorImpl(compositeInstantiator,
-                                                atomicInstantiator,
-                                                wireInstantiator,
-                                                autowireInstantiator,
-                                                channelInstantiator,
-                                                promotionNormalizer,
-                                                autowireNormalizer,
-                                                promotionResolutionService);
+        CompositeComponentInstantiator compositeInstantiator
+                = new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator, channelInstantiator);
+        return new LogicalModelInstantiatorImpl(compositeInstantiator, atomicInstantiator, wireInstantiator, autowireInstantiator, channelInstantiator,
+                                                promotionNormalizer, autowireNormalizer, promotionResolutionService);
     }
 
     private static CommandExecutorRegistry createCommandExecutorRegistry(MonitorProxyService monitorService,
@@ -294,8 +278,8 @@ public class BootstrapAssemblyFactory {
         try {
             ContextMonitor contextMonitor = monitorService.createMonitor(ContextMonitor.class, Names.RUNTIME_MONITOR_CHANNEL_URI);
             commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry, contextMonitor));
-            BuildComponentCommandExecutor executor =
-                    createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry, managementService);
+            BuildComponentCommandExecutor executor
+                    = createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry, managementService);
             commandRegistry.register(BuildComponentCommand.class, executor);
             commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
             commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
@@ -323,18 +307,16 @@ public class BootstrapAssemblyFactory {
         MapBuilder mapBuilder = new MapBuilderImpl(transformerRegistry);
         ObjectBuilder objectBuilder = new ObjectBuilderImpl(transformerRegistry);
 
-        PropertyObjectFactoryBuilder propertyBuilder =
-                new PropertyObjectFactoryBuilderImpl(arrayBuilder, collectionBuilder, mapBuilder, objectBuilder);
+        PropertyObjectFactoryBuilder propertyBuilder = new PropertyObjectFactoryBuilderImpl(arrayBuilder, collectionBuilder, mapBuilder, objectBuilder);
 
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
 
-        ReflectiveImplementationManagerFactoryBuilder factoryBuilder = new ReflectiveImplementationManagerFactoryBuilder(classLoaderRegistry);
-        SystemComponentBuilder builder = new SystemComponentBuilder(scopeRegistry,
-                                                                    factoryBuilder,
-                                                                    classLoaderRegistry,
-                                                                    propertyBuilder,
-                                                                    managementService,
-                                                                    helper);
+        JDKReflectionFactoryExtension reflectionFactoryExtension = new JDKReflectionFactoryExtension();
+        ReflectionFactory reflectionFactory = new ReflectionFactoryImpl(reflectionFactoryExtension);
+
+        ImplementationManagerFactoryBuilderImpl factoryBuilder = new ImplementationManagerFactoryBuilderImpl(reflectionFactory, classLoaderRegistry);
+        SystemComponentBuilder builder
+                = new SystemComponentBuilder(scopeRegistry, factoryBuilder, classLoaderRegistry, propertyBuilder, managementService, helper);
 
         builders.put(SystemComponentDefinition.class, builder);
         BuildComponentCommandExecutor executor = new BuildComponentCommandExecutor(componentManager);
@@ -362,14 +344,14 @@ public class BootstrapAssemblyFactory {
                                              DefaultTransformerRegistry transformerRegistry,
                                              ClassLoaderRegistry classLoaderRegistry,
                                              MonitorProxyService monitorService) {
-        Map<Class<? extends PhysicalSourceDefinition>, SourceWireAttacher<? extends PhysicalSourceDefinition>> sourceAttachers =
-                new ConcurrentHashMap<Class<? extends PhysicalSourceDefinition>, SourceWireAttacher<? extends PhysicalSourceDefinition>>();
+        Map<Class<? extends PhysicalSourceDefinition>, SourceWireAttacher<? extends PhysicalSourceDefinition>> sourceAttachers
+                = new ConcurrentHashMap<Class<? extends PhysicalSourceDefinition>, SourceWireAttacher<? extends PhysicalSourceDefinition>>();
         SystemSourceWireAttacher wireAttacher = new SystemSourceWireAttacher(componentManager, transformerRegistry, classLoaderRegistry);
         sourceAttachers.put(SystemSourceDefinition.class, wireAttacher);
         sourceAttachers.put(SingletonSourceDefinition.class, new SingletonSourceWireAttacher(componentManager));
 
-        Map<Class<? extends PhysicalTargetDefinition>, TargetWireAttacher<? extends PhysicalTargetDefinition>> targetAttachers =
-                new ConcurrentHashMap<Class<? extends PhysicalTargetDefinition>, TargetWireAttacher<? extends PhysicalTargetDefinition>>();
+        Map<Class<? extends PhysicalTargetDefinition>, TargetWireAttacher<? extends PhysicalTargetDefinition>> targetAttachers
+                = new ConcurrentHashMap<Class<? extends PhysicalTargetDefinition>, TargetWireAttacher<? extends PhysicalTargetDefinition>>();
         targetAttachers.put(SingletonTargetDefinition.class, new SingletonTargetWireAttacher(componentManager));
         targetAttachers.put(SystemTargetDefinition.class, new SystemTargetWireAttacher(componentManager, classLoaderRegistry));
         targetAttachers.put(MonitorTargetDefinition.class, new MonitorWireAttacher(monitorService, componentManager, classLoaderRegistry));
@@ -409,17 +391,15 @@ public class BootstrapAssemblyFactory {
     private static ClassLoaderCommandGenerator createClassLoaderGenerator() {
         ClassLoaderWireGenerator<?> javaGenerator = new JavaContributionWireGenerator();
         ClassLoaderWireGenerator<?> locationGenerator = new LocationContributionWireGenerator();
-        Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators =
-                new HashMap<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>>();
+        Map<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>> generators
+                = new HashMap<Class<? extends ContributionWire<?, ?>>, ClassLoaderWireGenerator<?>>();
         generators.put(JavaContributionWire.class, javaGenerator);
         generators.put(LocationContributionWire.class, locationGenerator);
 
         return new ClassLoaderCommandGeneratorImpl(generators);
     }
 
-    private static List<CommandGenerator> createCommandGenerators(PolicyResolver resolver,
-                                                                  ContractMatcher matcher,
-                                                                  GeneratorRegistry generatorRegistry) {
+    private static List<CommandGenerator> createCommandGenerators(PolicyResolver resolver, ContractMatcher matcher, GeneratorRegistry generatorRegistry) {
 
         List<CommandGenerator> commandGenerators = new ArrayList<CommandGenerator>();
 

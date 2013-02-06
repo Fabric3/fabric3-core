@@ -41,11 +41,19 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.reflection;
+package org.fabric3.implementation.pojo.manager;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
-import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
+import org.easymock.EasyMock;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
+import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
@@ -55,18 +63,11 @@ import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.fabric3.spi.model.type.java.Signature;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-
 /**
  *
  */
-public class ReflectiveImplementationManagerFactoryBuilderTestCase extends TestCase {
-    private ReflectiveImplementationManagerFactoryBuilder builder = new ReflectiveImplementationManagerFactoryBuilder(new MockClassLoaderRegistry());
+public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
+    private ImplementationManagerFactoryBuilderImpl builder;
     private ImplementationManagerDefinition definition;
     private Constructor<Foo> constructor;
     private ClassLoader cl;
@@ -113,9 +114,12 @@ public class ReflectiveImplementationManagerFactoryBuilderTestCase extends TestC
         assertEquals(Bar.class, clazz);
     }
 
-
     protected void setUp() throws Exception {
         super.setUp();
+
+        ReflectionFactory reflectionFactory = EasyMock.createNiceMock(ReflectionFactory.class);
+        MockClassLoaderRegistry classLoaderRegistry = new MockClassLoaderRegistry();
+        builder = new ImplementationManagerFactoryBuilderImpl(reflectionFactory, classLoaderRegistry);
         cl = getClass().getClassLoader();
         constructor = Foo.class.getConstructor(String.class, Long.class);
 
@@ -180,5 +184,6 @@ public class ReflectiveImplementationManagerFactoryBuilderTestCase extends TestC
         public List<URI> resolveParentUris(ClassLoader cl) {
             return null;
         }
+
     }
 }

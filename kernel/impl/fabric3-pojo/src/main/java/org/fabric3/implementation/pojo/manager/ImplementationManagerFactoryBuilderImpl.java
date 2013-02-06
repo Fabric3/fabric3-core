@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.reflection;
+package org.fabric3.implementation.pojo.manager;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -50,32 +50,31 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.implementation.pojo.manager.ImplementationBuildException;
-import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
+import org.fabric3.implementation.pojo.reflection.ReflectiveImplementationManagerFactory;
+import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.Signature;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Builds a reflection-based instance factory provider.
+ * Builds an {@link ImplementationManagerFactoryBuilder}.
  */
 @EagerInit
-public class ReflectiveImplementationManagerFactoryBuilder implements ImplementationManagerFactoryBuilder {
+public class ImplementationManagerFactoryBuilderImpl implements ImplementationManagerFactoryBuilder {
+    private ReflectionFactory reflectionFactory;
     private ClassLoaderRegistry classLoaderRegistry;
 
-    public ReflectiveImplementationManagerFactoryBuilder(@Reference ClassLoaderRegistry classLoaderRegistry) {
+    public ImplementationManagerFactoryBuilderImpl(@Reference ReflectionFactory reflectionFactory, @Reference ClassLoaderRegistry classLoaderRegistry) {
+        this.reflectionFactory = reflectionFactory;
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public ReflectiveImplementationManagerFactory build(ImplementationManagerDefinition definition, ClassLoader cl)
-            throws ImplementationBuildException {
-
+    public ReflectiveImplementationManagerFactory build(ImplementationManagerDefinition definition, ClassLoader cl) throws ImplementationBuildException {
         try {
             URI componentUri = definition.getComponentUri();
             String className = definition.getImplementationClass();
@@ -104,14 +103,7 @@ public class ReflectiveImplementationManagerFactoryBuilder implements Implementa
             List<Injectable> construction = Arrays.asList(cdiSources);
             boolean reinjectable = definition.isReinjectable();
 
-            return new ReflectiveImplementationManagerFactory(componentUri,
-                                                              ctr,
-                                                              construction,
-                                                              postConstruction,
-                                                              initMethod,
-                                                              destroyMethod,
-                                                              reinjectable,
-                                                              cl);
+            return new ReflectiveImplementationManagerFactory(componentUri, ctr, construction, postConstruction, initMethod, destroyMethod, reinjectable, cl);
         } catch (ClassNotFoundException ex) {
             throw new ImplementationBuildException(ex);
         } catch (NoSuchMethodException ex) {
@@ -128,6 +120,5 @@ public class ReflectiveImplementationManagerFactoryBuilder implements Implementa
         ctr.setAccessible(true);
         return ctr;
     }
-
 
 }

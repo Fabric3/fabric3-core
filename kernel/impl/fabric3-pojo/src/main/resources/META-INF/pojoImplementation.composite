@@ -17,8 +17,8 @@
            name="PojoComposite"
            autowire="true">
 
-    <component name="ReflectiveImplementationManagerFactoryBuilder" f3:key="org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition">
-        <f3:implementation.system class="org.fabric3.implementation.pojo.reflection.ReflectiveImplementationManagerFactoryBuilder"/>
+    <component name="ImplementationManagerFactoryBuilderImpl" f3:key="org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition">
+        <f3:implementation.system class="org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilderImpl"/>
     </component>
 
     <component name="ReflectionFactory">
