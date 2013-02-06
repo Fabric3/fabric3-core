@@ -35,52 +35,46 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.pojo.reflection;
+package org.fabric3.implementation.pojo.spi.reflection;
 
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import junit.framework.TestCase;
-import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
-
 /**
- *
+ * Delegates to a {@link ReflectionFactoryExtension} to create {@link LifecycleInvoker}s, {@link Injector}s, and {@link ObjectFactory}s for instantiating and
+ * manipulating component implementation instances.
  */
-public class MethodEventInvokerTestCase extends TestCase {
-    private Method exceptionMethod;
+public interface ReflectionFactory {
 
-    public void testException() {
-        MethodLifecycleInvoker injector = new MethodLifecycleInvoker(exceptionMethod);
-        try {
-            injector.invoke(new Foo());
-            fail();
-        } catch (ObjectCallbackException e) {
-            // expected
-        }
-    }
+    /**
+     * Creates an object factory that is used to instantiate instances.
+     *
+     * @param constructor        the constructor to instantiate with
+     * @param parameterFactories object factories which return constructor parameters
+     * @return the object factory
+     */
+    <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories);
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        exceptionMethod = MethodEventInvokerTestCase.Foo.class.getDeclaredMethod("exception");
+    /**
+     * Creates an injector for a field or method.
+     *
+     * @param member           the field or method
+     * @param parameterFactory the factory that returns an instance to be injected
+     * @return the injector
+     */
+    Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory);
 
-    }
+    /**
+     * Creates an invoker that is used to issue a method callback on an implementation instance.
+     *
+     * @param method the callback method
+     * @return the invoker
+     */
+    LifecycleInvoker createInvoker(Method method);
 
-    private class Foo {
-
-        public void foo() {
-        }
-
-        private void hidden() {
-        }
-
-        public void exception() {
-            throw new RuntimeException();
-        }
-
-    }
 }

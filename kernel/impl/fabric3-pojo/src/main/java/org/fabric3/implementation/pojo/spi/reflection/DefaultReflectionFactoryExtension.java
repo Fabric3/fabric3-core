@@ -34,53 +34,12 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.pojo.reflection;
-
-import java.lang.reflect.Method;
-
-import junit.framework.TestCase;
-import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
+package org.fabric3.implementation.pojo.spi.reflection;
 
 /**
- *
+ * Marker for the default runtime {@link ReflectionFactoryExtension}.
  */
-public class MethodEventInvokerTestCase extends TestCase {
-    private Method exceptionMethod;
+public interface DefaultReflectionFactoryExtension extends ReflectionFactoryExtension {
 
-    public void testException() {
-        MethodLifecycleInvoker injector = new MethodLifecycleInvoker(exceptionMethod);
-        try {
-            injector.invoke(new Foo());
-            fail();
-        } catch (ObjectCallbackException e) {
-            // expected
-        }
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-        exceptionMethod = MethodEventInvokerTestCase.Foo.class.getDeclaredMethod("exception");
-
-    }
-
-    private class Foo {
-
-        public void foo() {
-        }
-
-        private void hidden() {
-        }
-
-        public void exception() {
-            throw new RuntimeException();
-        }
-
-    }
 }

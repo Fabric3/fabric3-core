@@ -43,8 +43,8 @@
  */
 package org.fabric3.implementation.pojo.reflection;
 
-import org.fabric3.implementation.pojo.spi.instance.LifecycleInvoker;
-import org.fabric3.implementation.pojo.spi.instance.ObjectCallbackException;
+import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

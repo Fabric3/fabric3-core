@@ -35,52 +35,39 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
 package org.fabric3.implementation.pojo.reflection;
 
+import org.fabric3.implementation.pojo.spi.reflection.DefaultReflectionFactoryExtension;
+import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import junit.framework.TestCase;
-import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
-
 /**
- *
+ * The default runtime reflection factory extension that uses JDK reflection.
  */
-public class MethodEventInvokerTestCase extends TestCase {
-    private Method exceptionMethod;
+public class JDKReflectionFactoryExtension implements DefaultReflectionFactoryExtension {
 
-    public void testException() {
-        MethodLifecycleInvoker injector = new MethodLifecycleInvoker(exceptionMethod);
-        try {
-            injector.invoke(new Foo());
-            fail();
-        } catch (ObjectCallbackException e) {
-            // expected
+    public <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories) {
+        return new ReflectiveObjectFactory<T>(constructor, parameterFactories);
+    }
+
+    public Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory) {
+        if (member instanceof Field) {
+            return new FieldInjector((Field) member, parameterFactory);
+        } else if (member instanceof Method) {
+            return new MethodInjector((Method) member, parameterFactory);
+        } else {
+            throw new AssertionError("Unsupported type: " + member);
         }
     }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        exceptionMethod = MethodEventInvokerTestCase.Foo.class.getDeclaredMethod("exception");
-
-    }
-
-    private class Foo {
-
-        public void foo() {
-        }
-
-        private void hidden() {
-        }
-
-        public void exception() {
-            throw new RuntimeException();
-        }
-
+    public LifecycleInvoker createInvoker(Method method) {
+        return new MethodLifecycleInvoker(method);
     }
 }

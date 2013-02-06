@@ -21,6 +21,14 @@
         <f3:implementation.system class="org.fabric3.implementation.pojo.reflection.ReflectiveImplementationManagerFactoryBuilder"/>
     </component>
 
+    <component name="ReflectionFactory">
+        <f3:implementation.system class="org.fabric3.implementation.pojo.reflection.ReflectionFactoryImpl"/>
+    </component>
+
+    <component name="JDKReflectionFactoryExtension">
+        <f3:implementation.system class="org.fabric3.implementation.pojo.reflection.JDKReflectionFactoryExtension"/>
+    </component>
+
     <component name="GenerationHelper">
         <f3:implementation.system class="org.fabric3.implementation.pojo.generator.GenerationHelperImpl"/>
     </component>

@@ -35,24 +35,51 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.pojo.spi.instance;
+package org.fabric3.implementation.pojo.reflection;
+
+import org.fabric3.implementation.pojo.spi.reflection.DefaultReflectionFactoryExtension;
+import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
+import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactoryExtension;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.oasisopen.sca.annotation.Reference;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
- * Performs a lifecycle invocation on an instance.
+ *
  */
-public interface LifecycleInvoker {
+public class ReflectionFactoryImpl implements ReflectionFactory {
+    private ReflectionFactoryExtension extension;
 
-    /**
-     * Performs the invocation on a given instance.
-     *
-     * @param instance the instance to invoke
-     * @throws ObjectCallbackException if the invocation causes an error
-     */
-    void invoke(Object instance) throws ObjectCallbackException;
+    @Reference(required = false)
+    public void setExtensions(List<ReflectionFactoryExtension> extensions) {
+        for (ReflectionFactoryExtension entry : extensions) {
+            if (!(entry instanceof DefaultReflectionFactoryExtension)) {
+                extension = entry;
+                return;
+            }
+        }
+    }
+
+    public ReflectionFactoryImpl(@Reference DefaultReflectionFactoryExtension extension) {
+        this.extension = extension;
+    }
+
+    public <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories) {
+        return extension.createInstantiator(constructor, parameterFactories);
+    }
+
+    public Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory) {
+        return extension.createInjector(member, parameterFactory);
+    }
+
+    public LifecycleInvoker createInvoker(Method method) {
+        return extension.createInvoker(method);
+    }
 }

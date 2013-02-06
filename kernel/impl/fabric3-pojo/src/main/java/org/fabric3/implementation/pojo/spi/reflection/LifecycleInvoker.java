@@ -41,46 +41,18 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.reflection;
-
-import java.lang.reflect.Method;
-
-import junit.framework.TestCase;
-import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
+package org.fabric3.implementation.pojo.spi.reflection;
 
 /**
- *
+ * Performs a lifecycle invocation on an instance.
  */
-public class MethodEventInvokerTestCase extends TestCase {
-    private Method exceptionMethod;
+public interface LifecycleInvoker {
 
-    public void testException() {
-        MethodLifecycleInvoker injector = new MethodLifecycleInvoker(exceptionMethod);
-        try {
-            injector.invoke(new Foo());
-            fail();
-        } catch (ObjectCallbackException e) {
-            // expected
-        }
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-        exceptionMethod = MethodEventInvokerTestCase.Foo.class.getDeclaredMethod("exception");
-
-    }
-
-    private class Foo {
-
-        public void foo() {
-        }
-
-        private void hidden() {
-        }
-
-        public void exception() {
-            throw new RuntimeException();
-        }
-
-    }
+    /**
+     * Performs the invocation on a given instance.
+     *
+     * @param instance the instance to invoke
+     * @throws ObjectCallbackException if the invocation causes an error
+     */
+    void invoke(Object instance) throws ObjectCallbackException;
 }

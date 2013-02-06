@@ -35,32 +35,45 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.pojo.spi.instance;
+package org.fabric3.implementation.pojo.spi.reflection;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 
 /**
- * Denotes an error when invoking on an object
+ * Creates {@link org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker}s, {@link org.fabric3.spi.objectfactory.Injector}s, and {@link org.fabric3.spi.objectfactory.ObjectFactory}s for instantiating and manipulating component implementation instances.
  */
-public class ObjectCallbackException extends Fabric3Exception {
-    private static final long serialVersionUID = -2828664920912394309L;
+public interface ReflectionFactoryExtension {
 
-    public ObjectCallbackException(String message) {
-        super(message);
-    }
+    /**
+     * Creates an object factory that is used to instantiate instances.
+     *
+     * @param constructor        the constructor to instantiate with
+     * @param parameterFactories object factories which return constructor parameters
+     * @return the object factory
+     */
+    <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories);
 
-    public ObjectCallbackException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    /**
+     * Creates an injector for a field or method.
+     *
+     * @param member           the field or method
+     * @param parameterFactory the factory that returns an instance to be injected
+     * @return the injector
+     */
+    Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory);
 
-    public ObjectCallbackException(Throwable cause) {
-        super(cause);
-    }
+    /**
+     * Creates an invoker that is used to issue a method callback on an implementation instance.
+     *
+     * @param method the callback method
+     * @return the invoker
+     */
+    LifecycleInvoker createInvoker(Method method);
 
 }

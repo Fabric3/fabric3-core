@@ -41,46 +41,26 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.reflection;
+package org.fabric3.implementation.pojo.spi.reflection;
 
-import java.lang.reflect.Method;
-
-import junit.framework.TestCase;
-import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
+import org.fabric3.host.Fabric3Exception;
 
 /**
- *
+ * Denotes an error when invoking on an object
  */
-public class MethodEventInvokerTestCase extends TestCase {
-    private Method exceptionMethod;
+public class ObjectCallbackException extends Fabric3Exception {
+    private static final long serialVersionUID = -2828664920912394309L;
 
-    public void testException() {
-        MethodLifecycleInvoker injector = new MethodLifecycleInvoker(exceptionMethod);
-        try {
-            injector.invoke(new Foo());
-            fail();
-        } catch (ObjectCallbackException e) {
-            // expected
-        }
+    public ObjectCallbackException(String message) {
+        super(message);
     }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        exceptionMethod = MethodEventInvokerTestCase.Foo.class.getDeclaredMethod("exception");
-
+    public ObjectCallbackException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    private class Foo {
-
-        public void foo() {
-        }
-
-        private void hidden() {
-        }
-
-        public void exception() {
-            throw new RuntimeException();
-        }
-
+    public ObjectCallbackException(Throwable cause) {
+        super(cause);
     }
+
 }
