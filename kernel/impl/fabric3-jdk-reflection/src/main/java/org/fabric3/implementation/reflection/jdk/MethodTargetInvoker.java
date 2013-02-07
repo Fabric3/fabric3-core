@@ -35,44 +35,36 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
  */
 package org.fabric3.implementation.reflection.jdk;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.fabric3.implementation.pojo.spi.reflection.DefaultReflectionFactoryExtension;
-import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * The default runtime reflection factory extension that uses JDK reflection.
+ * Performs an invocation on a method of a given target instance
  */
-public class JDKReflectionFactoryExtension implements DefaultReflectionFactoryExtension {
+public class MethodTargetInvoker implements TargetInvoker {
+    private final Method method;
 
-    public <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories) {
-        return new ReflectiveObjectFactory<T>(constructor, parameterFactories);
+    /**
+     * Instantiates an invoker for the given method.
+     *
+     * @param method the method to invoke on
+     */
+    public MethodTargetInvoker(Method method) {
+        this.method = method;
+        this.method.setAccessible(true);
     }
 
-    public Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory) {
-        if (member instanceof Field) {
-            return new FieldInjector((Field) member, parameterFactory);
-        } else if (member instanceof Method) {
-            return new MethodInjector((Method) member, parameterFactory);
-        } else {
-            throw new AssertionError("Unsupported type: " + member);
-        }
-    }
-
-    public LifecycleInvoker createLifecycleInvoker(Method method) {
-        return new MethodLifecycleInvoker(method);
-    }
-
-    public TargetInvoker createTargetInvoker(Method method) {
-        return new MethodTargetInvoker(method);
+    public Object invoke(Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        return method.invoke(obj, args);
     }
 }

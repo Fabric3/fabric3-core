@@ -44,8 +44,8 @@
 package org.fabric3.implementation.pojo.component;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
+import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceLifecycleException;
@@ -59,30 +59,30 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
  * Responsible for dispatching an invocation to a Java-based component implementation instance.
  */
 public class InvokerInterceptor implements Interceptor {
-    private Method operation;
+    private TargetInvoker invoker;
     private AtomicComponent component;
     private ClassLoader targetTCCLClassLoader;
 
     /**
      * Creates a new interceptor instance.
      *
-     * @param operation the method to invoke on the target instance
+     * @param invoker   the target invoker
      * @param component the target component
      */
-    public InvokerInterceptor(Method operation, AtomicComponent component) {
-        this.operation = operation;
+    public InvokerInterceptor(TargetInvoker invoker, AtomicComponent component) {
+        this.invoker = invoker;
         this.component = component;
     }
 
     /**
      * Creates a new interceptor instance that sets the TCCL to the given classloader before dispatching an invocation.
      *
-     * @param operation             the method to invoke on the target instance
+     * @param invoker               the target invoker
      * @param component             the target component
      * @param targetTCCLClassLoader the classloader to set the TCCL to before dispatching.
      */
-    public InvokerInterceptor(Method operation, AtomicComponent component, ClassLoader targetTCCLClassLoader) {
-        this.operation = operation;
+    public InvokerInterceptor(TargetInvoker invoker, AtomicComponent component, ClassLoader targetTCCLClassLoader) {
+        this.invoker = invoker;
         this.component = component;
         this.targetTCCLClassLoader = targetTCCLClassLoader;
     }
@@ -116,8 +116,7 @@ public class InvokerInterceptor implements Interceptor {
     }
 
     /**
-     * Performs the invocation on the target component instance. If a target classloader is configured for the interceptor, it will be set as the
-     * TCCL.
+     * Performs the invocation on the target component instance. If a target classloader is configured for the interceptor, it will be set as the TCCL.
      *
      * @param msg         the messaging containing the invocation data
      * @param workContext the current work context
@@ -129,12 +128,12 @@ public class InvokerInterceptor implements Interceptor {
         try {
             Object body = msg.getBody();
             if (targetTCCLClassLoader == null) {
-                msg.setBody(operation.invoke(instance, (Object[]) body));
+                msg.setBody(invoker.invoke(instance, (Object[]) body));
             } else {
                 ClassLoader old = Thread.currentThread().getContextClassLoader();
                 try {
                     Thread.currentThread().setContextClassLoader(targetTCCLClassLoader);
-                    msg.setBody(operation.invoke(instance, (Object[]) body));
+                    msg.setBody(invoker.invoke(instance, (Object[]) body));
                 } finally {
                     Thread.currentThread().setContextClassLoader(old);
                 }

@@ -47,6 +47,7 @@ import org.fabric3.implementation.pojo.spi.reflection.DefaultReflectionFactoryEx
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactoryExtension;
+import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.Reference;
@@ -81,5 +82,9 @@ public class ReflectionFactoryImpl implements ReflectionFactory {
 
     public LifecycleInvoker createLifecycleInvoker(Method method) {
         return extension.createLifecycleInvoker(method);
+    }
+
+    public TargetInvoker createTargetInvoker(Method method) {
+        return extension.createTargetInvoker(method);
     }
 }

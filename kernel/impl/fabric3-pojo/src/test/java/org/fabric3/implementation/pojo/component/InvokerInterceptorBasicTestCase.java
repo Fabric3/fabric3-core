@@ -43,12 +43,13 @@
  */
 package org.fabric3.implementation.pojo.component;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 import org.easymock.IMocksControl;
 import org.easymock.classextension.EasyMock;
-
+import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceLifecycleException;
@@ -57,12 +58,12 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.InvocationRuntimeException;
 
 public class InvokerInterceptorBasicTestCase extends TestCase {
-    private Method echoMethod;
-    private Method arrayMethod;
-    private Method nullParamMethod;
-    private Method primitiveMethod;
-    private Method checkedMethod;
-    private Method runtimeMethod;
+    private TargetInvoker echoTargetInvoker;
+    private TargetInvoker arrayTargetInvoker;
+    private TargetInvoker nullParamTargetInvoker;
+    private TargetInvoker primitiveTargetInvoker;
+    private TargetInvoker checkedTargetInvoker;
+    private TargetInvoker runtimeTargetInvoker;
 
     private IMocksControl control;
     private WorkContext workContext;
@@ -74,7 +75,7 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
         String value = "foo";
         mockCall(new Object[]{value}, value);
         control.replay();
-        InvokerInterceptor invoker = new InvokerInterceptor(echoMethod, component);
+        InvokerInterceptor invoker = new InvokerInterceptor(echoTargetInvoker, component);
         Message ret = invoker.invoke(message);
         assertSame(ret, message);
         control.verify();
@@ -84,7 +85,7 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
         Integer value = 1;
         mockCall(new Object[]{value}, value);
         control.replay();
-        InvokerInterceptor invoker = new InvokerInterceptor(primitiveMethod, component);
+        InvokerInterceptor invoker = new InvokerInterceptor(primitiveTargetInvoker, component);
         Message ret = invoker.invoke(message);
         assertSame(ret, message);
         control.verify();
@@ -94,7 +95,7 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
         String[] value = new String[]{"foo", "bar"};
         mockCall(new Object[]{value}, value);
         control.replay();
-        InvokerInterceptor invoker = new InvokerInterceptor(arrayMethod, component);
+        InvokerInterceptor invoker = new InvokerInterceptor(arrayTargetInvoker, component);
         Message ret = invoker.invoke(message);
         assertSame(ret, message);
         control.verify();
@@ -103,7 +104,7 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
     public void testEmptyInvoke() throws Throwable {
         mockCall(new Object[]{}, "foo");
         control.replay();
-        InvokerInterceptor invoker = new InvokerInterceptor(nullParamMethod, component);
+        InvokerInterceptor invoker = new InvokerInterceptor(nullParamTargetInvoker, component);
         Message ret = invoker.invoke(message);
         assertSame(ret, message);
         control.verify();
@@ -112,7 +113,7 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
     public void testNullInvoke() throws Throwable {
         mockCall(null, "foo");
         control.replay();
-        InvokerInterceptor invoker = new InvokerInterceptor(nullParamMethod, component);
+        InvokerInterceptor invoker = new InvokerInterceptor(nullParamTargetInvoker, component);
         Message ret = invoker.invoke(message);
         assertSame(ret, message);
         control.verify();
@@ -121,7 +122,7 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
     public void testInvokeCheckedException() throws Throwable {
         mockFaultCall(null, TestException.class);
         control.replay();
-        InvokerInterceptor invoker = new InvokerInterceptor(checkedMethod, component);
+        InvokerInterceptor invoker = new InvokerInterceptor(checkedTargetInvoker, component);
         Message ret = invoker.invoke(message);
         assertSame(ret, message);
         control.verify();
@@ -130,7 +131,7 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
     public void testInvokeRuntimeException() throws Throwable {
         mockFaultCall(null, TestRuntimeException.class);
         control.replay();
-        InvokerInterceptor invoker = new InvokerInterceptor(runtimeMethod, component);
+        InvokerInterceptor invoker = new InvokerInterceptor(runtimeTargetInvoker, component);
         Message ret = invoker.invoke(message);
         assertSame(ret, message);
         control.verify();
@@ -146,7 +147,7 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
         }
         control.replay();
         try {
-            InvokerInterceptor invoker = new InvokerInterceptor(echoMethod, component);
+            InvokerInterceptor invoker = new InvokerInterceptor(echoTargetInvoker, component);
             invoker.invoke(message);
             fail();
         } catch (InvocationRuntimeException e) {
@@ -174,15 +175,15 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         instance = new TestBean();
-        echoMethod = TestBean.class.getDeclaredMethod("echo", String.class);
-        arrayMethod = TestBean.class.getDeclaredMethod("arrayEcho", String[].class);
-        nullParamMethod = TestBean.class.getDeclaredMethod("nullParam");
-        primitiveMethod = TestBean.class.getDeclaredMethod("primitiveEcho", Integer.TYPE);
-        checkedMethod = TestBean.class.getDeclaredMethod("checkedException");
-        runtimeMethod = TestBean.class.getDeclaredMethod("runtimeException");
-        assertNotNull(echoMethod);
-        assertNotNull(checkedMethod);
-        assertNotNull(runtimeMethod);
+        echoTargetInvoker = new MockInvoker(TestBean.class.getDeclaredMethod("echo", String.class));
+        arrayTargetInvoker = new MockInvoker(TestBean.class.getDeclaredMethod("arrayEcho", String[].class));
+        nullParamTargetInvoker = new MockInvoker(TestBean.class.getDeclaredMethod("nullParam"));
+        primitiveTargetInvoker = new MockInvoker(TestBean.class.getDeclaredMethod("primitiveEcho", Integer.TYPE));
+        checkedTargetInvoker = new MockInvoker(TestBean.class.getDeclaredMethod("checkedException"));
+        runtimeTargetInvoker = new MockInvoker(TestBean.class.getDeclaredMethod("runtimeException"));
+        assertNotNull(echoTargetInvoker);
+        assertNotNull(checkedTargetInvoker);
+        assertNotNull(runtimeTargetInvoker);
 
         control = EasyMock.createStrictControl();
         workContext = control.createMock(WorkContext.class);
@@ -228,5 +229,17 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
 
     public static class TestRuntimeException extends RuntimeException {
         private static final long serialVersionUID = 4645804600571852557L;
+    }
+
+    private class MockInvoker implements TargetInvoker {
+        private Method method;
+
+        private MockInvoker(Method targetInvoker) {
+            method = targetInvoker;
+        }
+
+        public Object invoke(Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+            return method.invoke(obj, args);
+        }
     }
 }

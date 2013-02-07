@@ -56,7 +56,7 @@ public class MethodLifecycleInvoker implements LifecycleInvoker {
     private final Method method;
 
     /**
-     * Instantiates an invoker for the given method
+     * Instantiates an invoker for the given method.
      *
      * @param method the method to invoke on
      */

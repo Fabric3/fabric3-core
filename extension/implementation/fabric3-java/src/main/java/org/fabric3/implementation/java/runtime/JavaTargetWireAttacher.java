@@ -40,6 +40,8 @@ package org.fabric3.implementation.java.runtime;
 import java.lang.reflect.Method;
 import java.net.URI;
 
+import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
+import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
@@ -65,10 +67,14 @@ import org.fabric3.spi.wire.Wire;
 public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefinition> {
 
     private final ComponentManager manager;
+    private ReflectionFactory reflectionFactory;
     private final ClassLoaderRegistry classLoaderRegistry;
 
-    public JavaTargetWireAttacher(@Reference ComponentManager manager, @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public JavaTargetWireAttacher(@Reference ComponentManager manager,
+                                  @Reference ReflectionFactory reflectionFactory,
+                                  @Reference ClassLoaderRegistry classLoaderRegistry) {
         this.manager = manager;
+        this.reflectionFactory = reflectionFactory;
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
@@ -87,16 +93,17 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefi
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
             Method method = MethodUtils.findMethod(sourceDefinition, targetDefinition, operation, implementationClass, loader, classLoaderRegistry);
+            TargetInvoker invoker = reflectionFactory.createTargetInvoker(method);
             InvokerInterceptor interceptor;
             if (sourceDefinition instanceof PojoSourceDefinition &&
                     targetDefinition.getClassLoaderId().equals(sourceDefinition.getClassLoaderId())) {
                 // if the source is Java and target classloaders are equal, do not set the TCCL
-                interceptor = new InvokerInterceptor(method, target);
+                interceptor = new InvokerInterceptor(invoker, target);
             } else {
                 // If the source and target classloaders are not equal, configure the interceptor to set the TCCL to the target classloader
                 // when dispatching to a target instance. This guarantees when application code executes, it does so with the TCCL set to the
                 // target component's classloader.
-                interceptor = new InvokerInterceptor(method, target, loader);
+                interceptor = new InvokerInterceptor(invoker, target, loader);
             }
             chain.addInterceptor(interceptor);
         }

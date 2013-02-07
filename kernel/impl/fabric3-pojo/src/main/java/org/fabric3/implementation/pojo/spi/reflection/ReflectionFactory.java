@@ -77,4 +77,12 @@ public interface ReflectionFactory {
      */
     LifecycleInvoker createLifecycleInvoker(Method method);
 
+    /**
+     * Creates a target invoker for the given method.
+     *
+     * @param method the method
+     * @return the invoker
+     */
+    TargetInvoker createTargetInvoker(Method method);
+
 }
