@@ -51,7 +51,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.implementation.pojo.reflection.ReflectiveImplementationManagerFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
@@ -74,7 +73,7 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
-    public ReflectiveImplementationManagerFactory build(ImplementationManagerDefinition definition, ClassLoader cl) throws ImplementationBuildException {
+    public ImplementationManagerFactoryImpl build(ImplementationManagerDefinition definition, ClassLoader cl) throws ImplementationBuildException {
         try {
             URI componentUri = definition.getComponentUri();
             String className = definition.getImplementationClass();
@@ -103,7 +102,15 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
             List<Injectable> construction = Arrays.asList(cdiSources);
             boolean reinjectable = definition.isReinjectable();
 
-            return new ReflectiveImplementationManagerFactory(componentUri, ctr, construction, postConstruction, initMethod, destroyMethod, reinjectable, cl);
+            return new ImplementationManagerFactoryImpl(componentUri,
+                                                        ctr,
+                                                        construction,
+                                                        postConstruction,
+                                                        initMethod,
+                                                        destroyMethod,
+                                                        reinjectable,
+                                                        cl,
+                                                        reflectionFactory);
         } catch (ClassNotFoundException ex) {
             throw new ImplementationBuildException(ex);
         } catch (NoSuchMethodException ex) {

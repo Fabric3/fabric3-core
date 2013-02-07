@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.reflection;
+package org.fabric3.implementation.pojo.manager;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -56,8 +56,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.implementation.pojo.manager.ImplementationManager;
+import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
@@ -72,19 +71,20 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 /**
  *
  */
-public class ReflectiveImplementationManagerFactoryTestCase extends TestCase {
+public class ImplementationManagerFactoryImplTestCase extends TestCase {
     private Constructor<?> argConstructor;
     private List<Injectable> ctrNames;
     private Map<InjectionSite, Injectable> sites;
     private ObjectFactory intFactory;
     private ObjectFactory stringFactory;
-    private ReflectiveImplementationManagerFactory provider;
+    private ImplementationManagerFactoryImpl provider;
     private Field intField;
     private Field stringField;
     private Method intSetter;
     private Method stringSetter;
     private Injectable intProperty = new Injectable(InjectableType.PROPERTY, "int");
     private Injectable stringProperty = new Injectable(InjectableType.PROPERTY, "string");
+    private ReflectionFactory reflectionFactory;
 
     public void testNoConstructorArgs() {
         List<Injectable> sources = Collections.emptyList();
@@ -95,14 +95,17 @@ public class ReflectiveImplementationManagerFactoryTestCase extends TestCase {
     public void testConstructorArgs() {
         ctrNames.add(intProperty);
         ctrNames.add(stringProperty);
-        provider = new ReflectiveImplementationManagerFactory(URI.create("TestComponent"),
+        ClassLoader classLoader = Foo.class.getClassLoader();
+        EasyMock.replay(reflectionFactory);
+        provider = new ImplementationManagerFactoryImpl(URI.create("TestComponent"),
                                                               argConstructor,
                                                               ctrNames,
                                                               sites,
                                                               null,
                                                               null,
                                                               false,
-                                                              Foo.class.getClassLoader());
+                                                              classLoader,
+                                                              reflectionFactory);
         provider.setObjectFactory(intProperty, intFactory);
         provider.setObjectFactory(stringProperty, stringFactory);
         ObjectFactory<?>[] args = provider.getConstructorParameterFactories(ctrNames);
@@ -114,45 +117,47 @@ public class ReflectiveImplementationManagerFactoryTestCase extends TestCase {
     public void testFieldInjectors() throws ObjectCreationException {
         sites.put(new FieldInjectionSite(intField), intProperty);
         sites.put(new FieldInjectionSite(stringField), stringProperty);
-        Collection<Injector<Object>> injectors = provider.createInjectorMappings().values();
+
+        Injector mockInjector = EasyMock.createMock(Injector.class);
+        EasyMock.expect(reflectionFactory.createInjector(EasyMock.isA(Field.class),EasyMock.isA(ObjectFactory.class))).andReturn(mockInjector).times(2);
+        EasyMock.replay(reflectionFactory);
+
+        Collection<Injector<?>> injectors = provider.createInjectorMappings().values();
         assertEquals(2, injectors.size());
 
-        Foo foo = new Foo();
-        for (Injector<Object> injector : injectors) {
-            assertTrue(injector instanceof FieldInjector);
-            injector.inject(foo);
-        }
-        EasyMock.verify(intFactory, stringFactory);
-        assertEquals(34, foo.intField);
-        assertEquals("Hello", foo.stringField);
+        EasyMock.verify(intFactory, stringFactory, reflectionFactory);
     }
 
     public void testMethodInjectors() throws ObjectCreationException {
         sites.put(new MethodInjectionSite(intSetter, 0), intProperty);
         sites.put(new MethodInjectionSite(stringSetter, 0), stringProperty);
-        Collection<Injector<Object>> injectors = provider.createInjectorMappings().values();
+
+        Injector mockInjector = EasyMock.createMock(Injector.class);
+        EasyMock.expect(reflectionFactory.createInjector(EasyMock.isA(Method.class),EasyMock.isA(ObjectFactory.class))).andReturn(mockInjector).times(2);
+        EasyMock.replay(reflectionFactory);
+
+        Collection<Injector<?>> injectors = provider.createInjectorMappings().values();
         assertEquals(2, injectors.size());
 
-        Foo foo = new Foo();
-        for (Injector<Object> injector : injectors) {
-            assertTrue(injector instanceof MethodInjector);
-            injector.inject(foo);
-        }
-        EasyMock.verify(intFactory, stringFactory);
-        assertEquals(34, foo.intField);
-        assertEquals("Hello", foo.stringField);
+        EasyMock.verify(intFactory, stringFactory, reflectionFactory);
     }
 
     public void testFactory() throws ObjectCreationException, InstanceLifecycleException {
         sites.put(new MethodInjectionSite(intSetter, 0), intProperty);
         sites.put(new MethodInjectionSite(stringSetter, 0), stringProperty);
+
+        ObjectFactory<?> mockFactory = EasyMock.createMock(ObjectFactory.class);
+        EasyMock.expect(reflectionFactory.createInstantiator(EasyMock.isA(Constructor.class), EasyMock.isA(ObjectFactory[].class))).andReturn(mockFactory);
+        Injector mockInjector = EasyMock.createMock(Injector.class);
+        EasyMock.expect(reflectionFactory.createInjector(EasyMock.isA(Method.class),EasyMock.isA(ObjectFactory.class))).andReturn(mockInjector).times(2);
+        EasyMock.replay(reflectionFactory);
+
         ImplementationManager implementationManager = provider.createManager();
         WorkContext workContext = new WorkContext();
         Foo foo = (Foo) implementationManager.newInstance(workContext);
         implementationManager.start(foo, workContext);
-        EasyMock.verify(intFactory, stringFactory);
-        assertEquals(34, foo.intField);
-        assertEquals("Hello", foo.stringField);
+
+        EasyMock.verify(intFactory, stringFactory, reflectionFactory);
     }
 
     @SuppressWarnings("unchecked")
@@ -166,18 +171,21 @@ public class ReflectiveImplementationManagerFactoryTestCase extends TestCase {
         stringSetter = Foo.class.getMethod("setStringField", String.class);
         ctrNames = new ArrayList<Injectable>();
         sites = new HashMap<InjectionSite, Injectable>();
-        provider = new ReflectiveImplementationManagerFactory(URI.create("TestComponent"),
+        ClassLoader classLoader = Foo.class.getClassLoader();
+        intFactory = EasyMock.createMock(ObjectFactory.class);
+        stringFactory = EasyMock.createMock(ObjectFactory.class);
+        reflectionFactory = EasyMock.createMock(ReflectionFactory.class);
+
+        provider = new ImplementationManagerFactoryImpl(URI.create("TestComponent"),
                                                               noArgConstructor,
                                                               ctrNames,
                                                               sites,
                                                               null,
                                                               null,
                                                               false,
-                                                              Foo.class.getClassLoader());
-        intFactory = EasyMock.createMock(ObjectFactory.class);
-        stringFactory = EasyMock.createMock(ObjectFactory.class);
-        EasyMock.expect(intFactory.getInstance()).andReturn(34);
-        EasyMock.expect(stringFactory.getInstance()).andReturn("Hello");
+                                                              classLoader,
+                                                              reflectionFactory);
+
         EasyMock.replay(intFactory, stringFactory);
 
         provider.setObjectFactory(intProperty, intFactory);

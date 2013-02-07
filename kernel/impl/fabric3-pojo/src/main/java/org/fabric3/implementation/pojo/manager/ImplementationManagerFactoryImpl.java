@@ -41,26 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.reflection;
-
-import org.fabric3.implementation.pojo.objectfactory.ArrayMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.objectfactory.ListMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.objectfactory.MapMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.manager.ImplementationManager;
-import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
-import org.fabric3.implementation.pojo.manager.ImplementationManagerImpl;
-import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
-import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
-import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.spi.model.type.java.Injectable;
-import org.fabric3.spi.model.type.java.InjectableType;
-import org.fabric3.spi.model.type.java.InjectionSite;
-import org.fabric3.spi.model.type.java.MethodInjectionSite;
-import org.fabric3.spi.objectfactory.InjectionAttributes;
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+package org.fabric3.implementation.pojo.manager;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -74,10 +55,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.fabric3.implementation.pojo.objectfactory.ArrayMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.ListMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.MapMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactory;
+import org.fabric3.implementation.pojo.reflection.MethodLifecycleInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
+import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
+import org.fabric3.spi.model.type.java.FieldInjectionSite;
+import org.fabric3.spi.model.type.java.Injectable;
+import org.fabric3.spi.model.type.java.InjectableType;
+import org.fabric3.spi.model.type.java.InjectionSite;
+import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.fabric3.spi.objectfactory.InjectionAttributes;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+
 /**
  *
  */
-public class ReflectiveImplementationManagerFactory implements ImplementationManagerFactory {
+public class ImplementationManagerFactoryImpl implements ImplementationManagerFactory {
     private static final ObjectFactory<?> NULL_FACTORY = new ObjectFactory<Object>() {
         public Object getInstance() {
             return null;
@@ -91,19 +90,23 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
     private final Map<InjectionSite, Injectable> postConstruction;
     private final LifecycleInvoker initInvoker;
     private final LifecycleInvoker destroyInvoker;
-    private final Map<Injectable, ObjectFactory<?>> factories = new HashMap<Injectable, ObjectFactory<?>>();
-    private final ClassLoader cl;
     private final boolean reinjectable;
+    private final ClassLoader cl;
+    private ReflectionFactory reflectionFactory;
 
-    public ReflectiveImplementationManagerFactory(URI componentUri,
-                                                  Constructor<?> constructor,
-                                                  List<Injectable> cdiSources,
-                                                  Map<InjectionSite, Injectable> postConstruction,
-                                                  Method initMethod,
-                                                  Method destroyMethod,
-                                                  boolean reinjectable,
-                                                  ClassLoader cl) {
+    private final Map<Injectable, ObjectFactory<?>> factories;
+
+    public ImplementationManagerFactoryImpl(URI componentUri,
+                                            Constructor<?> constructor,
+                                            List<Injectable> cdiSources,
+                                            Map<InjectionSite, Injectable> postConstruction,
+                                            Method initMethod,
+                                            Method destroyMethod,
+                                            boolean reinjectable,
+                                            ClassLoader cl,
+                                            ReflectionFactory reflectionFactory) {
         this.componentUri = componentUri;
+        this.reflectionFactory = reflectionFactory;
         this.implementationClass = constructor.getDeclaringClass();
         this.constructor = constructor;
         this.cdiSources = cdiSources;
@@ -112,13 +115,14 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
         this.destroyInvoker = destroyMethod == null ? null : new MethodLifecycleInvoker(destroyMethod);
         this.reinjectable = reinjectable;
         this.cl = cl;
+        factories = new HashMap<Injectable, ObjectFactory<?>>();
 
     }
 
     @SuppressWarnings({"unchecked"})
     public ImplementationManager createManager() {
-        ObjectFactory<?> factory = new ReflectiveObjectFactory(constructor, getConstructorParameterFactories(cdiSources));
-        Map<Injectable, Injector<Object>> mappings = createInjectorMappings();
+        ObjectFactory<?> factory = reflectionFactory.createInstantiator(constructor, getConstructorParameterFactories(cdiSources));
+        Map<Injectable, Injector<?>> mappings = createInjectorMappings();
 
         Injectable[] attributes = mappings.keySet().toArray(new Injectable[mappings.size()]);
         Injector<Object>[] injectors = mappings.values().toArray(new Injector[mappings.size()]);
@@ -164,7 +168,7 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
 
     public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
         if (InjectableType.REFERENCE == injectable.getType() || InjectableType.CALLBACK == injectable.getType()) {
-            setUpdateableFactory(injectable, objectFactory, attributes);
+            setUpdatableFactory(injectable, objectFactory, attributes);
         } else {
             // the factory corresponds to a property or context, which will override previous values if reinjected
             factories.put(injectable, objectFactory);
@@ -276,13 +280,13 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
     }
 
     /**
-     * Returns a map of injectors for all post-construction (i.e. field and method) sites. The injectors inject reference proxies, properties,
-     * callback proxies, and context objects on an instance when it is initialized.
+     * Returns a map of injectors for all post-construction (i.e. field and method) sites. The injectors inject reference proxies, properties, callback proxies,
+     * and context objects on an instance when it is initialized.
      *
      * @return a map of injectors keyed by InjectableAttribute.
      */
-    protected Map<Injectable, Injector<Object>> createInjectorMappings() {
-        Map<Injectable, Injector<Object>> injectors = new LinkedHashMap<Injectable, Injector<Object>>(postConstruction.size());
+    protected Map<Injectable, Injector<?>> createInjectorMappings() {
+        Map<Injectable, Injector<?>> injectors = new LinkedHashMap<Injectable, Injector<?>>(postConstruction.size());
         for (Map.Entry<InjectionSite, Injectable> entry : postConstruction.entrySet()) {
             InjectionSite site = entry.getKey();
             Injectable attribute = entry.getValue();
@@ -299,7 +303,8 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
                     try {
                         FieldInjectionSite fieldSite = (FieldInjectionSite) site;
                         Field field = getField(fieldSite.getName());
-                        injectors.put(attribute, new FieldInjector(field, factory));
+                        Injector<?> injector = reflectionFactory.createInjector(field, factory);
+                        injectors.put(attribute, injector);
                     } catch (NoSuchFieldException e) {
                         throw new AssertionError(e);
                     }
@@ -307,7 +312,8 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
                     try {
                         MethodInjectionSite methodSite = (MethodInjectionSite) site;
                         Method method = methodSite.getSignature().getMethod(implementationClass);
-                        injectors.put(attribute, new MethodInjector(method, factory));
+                        Injector<?> injector = reflectionFactory.createInjector(method, factory);
+                        injectors.put(attribute, injector);
                     } catch (ClassNotFoundException e) {
                         throw new AssertionError(e);
                     } catch (NoSuchMethodException e) {
@@ -319,7 +325,7 @@ public class ReflectiveImplementationManagerFactory implements ImplementationMan
         return injectors;
     }
 
-    private void setUpdateableFactory(Injectable injectable, ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
+    private void setUpdatableFactory(Injectable injectable, ObjectFactory<?> objectFactory, InjectionAttributes attributes) {
         // determine if object factory is present. if so, must be updated.
         ObjectFactory<?> factory = factories.get(injectable);
         if (factory == null) {
