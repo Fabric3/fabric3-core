@@ -43,8 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.implementation.pojo.reflection.FieldInjector;
-import org.fabric3.implementation.pojo.reflection.MethodInjector;
+import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.web.provision.WebContextInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.InjectionSite;
@@ -52,11 +51,17 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default implementation of the InjectorFactory.
  */
 public class InjectorFactoryImpl implements InjectorFactory {
+    private ReflectionFactory reflectionFactory;
+
+    public InjectorFactoryImpl(@Reference ReflectionFactory reflectionFactory) {
+        this.reflectionFactory = reflectionFactory;
+    }
 
     public void createInjectorMappings(Map<String, List<Injector<?>>> injectors,
                                        Map<String, Map<String, InjectionSite>> siteMappings,
@@ -95,7 +100,8 @@ public class InjectorFactoryImpl implements InjectorFactory {
     private Injector<?> createInjector(ObjectFactory<?> factory, String artifactName, MethodInjectionSite site, ClassLoader classLoader)
             throws InjectionCreationException {
         try {
-            return new MethodInjector(getMethod(site, artifactName, classLoader), factory);
+            Method method = getMethod(site, artifactName, classLoader);
+            return reflectionFactory.createInjector(method, factory);
         } catch (ClassNotFoundException e) {
             throw new InjectionCreationException(e);
         } catch (NoSuchMethodException e) {
@@ -106,7 +112,8 @@ public class InjectorFactoryImpl implements InjectorFactory {
     private Injector<?> createInjector(ObjectFactory<?> factory, String artifactName, FieldInjectionSite site, ClassLoader classLoader)
             throws InjectionCreationException {
         try {
-            return new FieldInjector(getField(site, artifactName, classLoader), factory);
+            Field field = getField(site, artifactName, classLoader);
+            return reflectionFactory.createInjector(field, factory);
         } catch (NoSuchFieldException e) {
             throw new InjectionCreationException(e);
         } catch (ClassNotFoundException e) {
