@@ -53,6 +53,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
+import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
@@ -118,6 +119,10 @@ public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
         super.setUp();
 
         ReflectionFactory reflectionFactory = EasyMock.createNiceMock(ReflectionFactory.class);
+        LifecycleInvoker invoker = EasyMock.createMock(LifecycleInvoker.class);
+        EasyMock.expect(reflectionFactory.createLifecycleInvoker(EasyMock.isA(Method.class))).andReturn(invoker);
+        EasyMock.replay(reflectionFactory);
+
         MockClassLoaderRegistry classLoaderRegistry = new MockClassLoaderRegistry();
         builder = new ImplementationManagerFactoryBuilderImpl(reflectionFactory, classLoaderRegistry);
         cl = getClass().getClassLoader();

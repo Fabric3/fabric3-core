@@ -35,39 +35,29 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
  */
-package org.fabric3.implementation.pojo.reflection;
+package org.fabric3.implementation.reflection.jdk;
 
-import org.fabric3.implementation.pojo.spi.reflection.DefaultReflectionFactoryExtension;
-import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
- * The default runtime reflection factory extension that uses JDK reflection.
+ *
  */
-public class JDKReflectionFactoryExtension implements DefaultReflectionFactoryExtension {
+public class NullPrimitiveException extends ObjectCreationException {
+    private static final long serialVersionUID = 4043316381690250609L;
+    private final int param;
 
-    public <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories) {
-        return new ReflectiveObjectFactory<T>(constructor, parameterFactories);
+    public NullPrimitiveException(String identifier, int param) {
+        super(null, identifier);
+        this.param = param;
     }
 
-    public Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory) {
-        if (member instanceof Field) {
-            return new FieldInjector((Field) member, parameterFactory);
-        } else if (member instanceof Method) {
-            return new MethodInjector((Method) member, parameterFactory);
-        } else {
-            throw new AssertionError("Unsupported type: " + member);
-        }
-    }
-
-    public LifecycleInvoker createInvoker(Method method) {
-        return new MethodLifecycleInvoker(method);
+    public String getMessage() {
+        return "Cannot assign null value to primitive for parameter " + param + " of " + getIdentifier();
     }
 }

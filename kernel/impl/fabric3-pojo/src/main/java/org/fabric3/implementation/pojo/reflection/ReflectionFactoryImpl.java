@@ -38,6 +38,11 @@
  */
 package org.fabric3.implementation.pojo.reflection;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.util.List;
+
 import org.fabric3.implementation.pojo.spi.reflection.DefaultReflectionFactoryExtension;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
@@ -45,11 +50,6 @@ import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactoryExtension
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.Reference;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.util.List;
 
 /**
  *
@@ -79,7 +79,7 @@ public class ReflectionFactoryImpl implements ReflectionFactory {
         return extension.createInjector(member, parameterFactory);
     }
 
-    public LifecycleInvoker createInvoker(Method method) {
-        return extension.createInvoker(method);
+    public LifecycleInvoker createLifecycleInvoker(Method method) {
+        return extension.createLifecycleInvoker(method);
     }
 }

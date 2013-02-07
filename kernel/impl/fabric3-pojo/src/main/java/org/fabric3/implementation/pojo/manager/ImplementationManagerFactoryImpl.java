@@ -60,7 +60,6 @@ import org.fabric3.implementation.pojo.objectfactory.ListMultiplicityObjectFacto
 import org.fabric3.implementation.pojo.objectfactory.MapMultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
 import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactory;
-import org.fabric3.implementation.pojo.reflection.MethodLifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
@@ -100,8 +99,8 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
                                             Constructor<?> constructor,
                                             List<Injectable> cdiSources,
                                             Map<InjectionSite, Injectable> postConstruction,
-                                            Method initMethod,
-                                            Method destroyMethod,
+                                            LifecycleInvoker initInvoker,
+                                            LifecycleInvoker destroyInvoker,
                                             boolean reinjectable,
                                             ClassLoader cl,
                                             ReflectionFactory reflectionFactory) {
@@ -111,8 +110,8 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
         this.constructor = constructor;
         this.cdiSources = cdiSources;
         this.postConstruction = postConstruction;
-        this.initInvoker = initMethod == null ? null : new MethodLifecycleInvoker(initMethod);
-        this.destroyInvoker = destroyMethod == null ? null : new MethodLifecycleInvoker(destroyMethod);
+        this.initInvoker = initInvoker;
+        this.destroyInvoker = destroyInvoker;
         this.reinjectable = reinjectable;
         this.cl = cl;
         factories = new HashMap<Injectable, ObjectFactory<?>>();

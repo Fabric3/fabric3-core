@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
+import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
@@ -95,8 +96,8 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
                 }
             }
 
-            Method initMethod = getMethod(implClass, definition.getInitMethod());
-            Method destroyMethod = getMethod(implClass, definition.getDestroyMethod());
+            LifecycleInvoker initInvoker = getInitInvoker(definition, implClass);
+            LifecycleInvoker destroyInvoker = getDestroyInvoker(definition, implClass);
 
             Map<InjectionSite, Injectable> postConstruction = definition.getPostConstruction();
             List<Injectable> construction = Arrays.asList(cdiSources);
@@ -106,8 +107,8 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
                                                         ctr,
                                                         construction,
                                                         postConstruction,
-                                                        initMethod,
-                                                        destroyMethod,
+                                                        initInvoker,
+                                                        destroyInvoker,
                                                         reinjectable,
                                                         cl,
                                                         reflectionFactory);
@@ -116,6 +117,26 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
         } catch (NoSuchMethodException ex) {
             throw new ImplementationBuildException(ex);
         }
+    }
+
+    private LifecycleInvoker getInitInvoker(ImplementationManagerDefinition definition, Class<?> implClass)
+            throws NoSuchMethodException, ClassNotFoundException {
+        LifecycleInvoker initInvoker = null;
+        Method initMethod = getMethod(implClass, definition.getInitMethod());
+        if (initMethod != null) {
+            initInvoker = reflectionFactory.createLifecycleInvoker(initMethod);
+        }
+        return initInvoker;
+    }
+
+    private LifecycleInvoker getDestroyInvoker(ImplementationManagerDefinition definition, Class<?> implClass)
+            throws NoSuchMethodException, ClassNotFoundException {
+        LifecycleInvoker destroyInvoker = null;
+        Method destroyMethod = getMethod(implClass, definition.getDestroyMethod());
+        if (destroyMethod != null) {
+            destroyInvoker = reflectionFactory.createLifecycleInvoker(destroyMethod);
+        }
+        return destroyInvoker;
     }
 
     private Method getMethod(Class<?> implClass, Signature signature) throws NoSuchMethodException, ClassNotFoundException {

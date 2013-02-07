@@ -38,12 +38,12 @@
  */
 package org.fabric3.implementation.pojo.spi.reflection;
 
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
  * Delegates to a {@link ReflectionFactoryExtension} to create {@link LifecycleInvoker}s, {@link Injector}s, and {@link ObjectFactory}s for instantiating and
@@ -70,11 +70,11 @@ public interface ReflectionFactory {
     Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory);
 
     /**
-     * Creates an invoker that is used to issue a method callback on an implementation instance.
+     * Creates a lifecycle invoker that is used to issue a method callback on an implementation instance.
      *
      * @param method the callback method
      * @return the invoker
      */
-    LifecycleInvoker createInvoker(Method method);
+    LifecycleInvoker createLifecycleInvoker(Method method);
 
 }

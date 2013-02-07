@@ -41,84 +41,45 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.reflection;
+package org.fabric3.implementation.reflection.jdk;
 
 import java.lang.reflect.Method;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
-
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
 
 /**
  *
  */
-public class MethodInjectorTestCase extends TestCase {
-    private Method fooMethod;
+public class MethodEventInvokerTestCase extends TestCase {
     private Method exceptionMethod;
-    private ObjectFactory objectFactory;
 
-    public void testIllegalArgument() throws Exception {
-        EasyMock.expect(objectFactory.getInstance()).andReturn(new Object());
-        EasyMock.replay(objectFactory);
-        MethodInjector injector = new MethodInjector(fooMethod, objectFactory);
+    public void testException() {
+        MethodLifecycleInvoker injector = new MethodLifecycleInvoker(exceptionMethod);
         try {
-            injector.inject(new Foo());
-            fail();
-        } catch (ObjectCreationException e) {
+            injector.invoke(new Foo());
+            Assert.fail();
+        } catch (ObjectCallbackException e) {
             // expected
         }
     }
-
-    public void testException() throws Exception {
-        EasyMock.expect(objectFactory.getInstance()).andReturn("foo");
-        EasyMock.replay(objectFactory);
-        MethodInjector injector = new MethodInjector(exceptionMethod, objectFactory);
-        try {
-            injector.inject(new Foo());
-            fail();
-        } catch (ObjectCreationException e) {
-            // expected
-        }
-    }
-
-    public void testReinjectionOfNullValue() throws Exception {
-        EasyMock.replay(objectFactory);
-        MethodInjector injector = new MethodInjector(fooMethod, objectFactory);
-        try {
-            injector.clearObjectFactory();
-            Foo foo = new Foo();
-            injector.inject(foo);
-            assertNull(foo.getFoo());
-        } catch (ObjectCreationException e) {
-            // expected
-        }
-    }
-
 
     protected void setUp() throws Exception {
         super.setUp();
-        fooMethod = Foo.class.getMethod("setFoo", String.class);
-        exceptionMethod = Foo.class.getDeclaredMethod("exception", String.class);
-        objectFactory = EasyMock.createMock(ObjectFactory.class);
+        exceptionMethod = MethodEventInvokerTestCase.Foo.class.getDeclaredMethod("exception");
+
     }
 
     private class Foo {
-        private String foo = "default";
 
-        public String getFoo() {
-            return foo;
+        public void foo() {
         }
 
-        public void setFoo(String foo) {
-            this.foo = foo;
+        private void hidden() {
         }
 
-        private void hidden(String bar) {
-        }
-
-        public void exception(String bar) {
+        public void exception() {
             throw new RuntimeException();
         }
 

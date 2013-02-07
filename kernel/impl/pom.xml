@@ -41,5 +41,6 @@
 		<module>fabric3-transform</module>
 		<module>fabric3-contribution</module>
 		<module>fabric3-util</module>
-	</modules>
+        <module>fabric3-jdk-reflection</module>
+    </modules>
 </project>

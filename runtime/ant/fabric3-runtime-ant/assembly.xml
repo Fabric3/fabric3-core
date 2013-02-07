@@ -67,6 +67,7 @@
                 <include>org.codehaus.fabric3:fabric3-spi</include>
                 <include>org.codehaus.fabric3:fabric3-util</include>
                 <include>org.codehaus.fabric3:fabric3-pojo</include>
+                <include>org.codehaus.fabric3:fabric3-jdk-reflection</include>
                 <include>org.codehaus.fabric3:fabric3-transform</include>
                 <include>org.codehaus.fabric3:fabric3-introspection-xml</include>
                 <include>org.codehaus.fabric3:fabric3-policy</include>

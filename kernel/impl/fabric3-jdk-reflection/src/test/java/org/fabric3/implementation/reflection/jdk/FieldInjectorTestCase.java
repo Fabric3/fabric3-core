@@ -41,13 +41,13 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.pojo.reflection;
+package org.fabric3.implementation.reflection.jdk;
 
 import java.lang.reflect.Field;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
@@ -67,7 +67,7 @@ public class FieldInjectorTestCase extends TestCase {
 
         FieldInjector injector = new FieldInjector(protectedField, objectFactory);
         injector.inject(foo);
-        assertEquals(value, foo.hidden);
+        Assert.assertEquals(value, foo.hidden);
     }
 
     public void testReinjectionOfNullValue() throws Exception {
@@ -76,7 +76,7 @@ public class FieldInjectorTestCase extends TestCase {
         FieldInjector injector = new FieldInjector(fooField, objectFactory);
         injector.clearObjectFactory();
         injector.inject(foo);
-        assertNull(foo.foo);
+        Assert.assertNull(foo.foo);
     }
 
 

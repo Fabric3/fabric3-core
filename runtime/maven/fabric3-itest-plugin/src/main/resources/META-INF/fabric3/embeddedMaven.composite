@@ -33,6 +33,8 @@
 
     <include name="PojoComposite" scdlResource="META-INF/pojoImplementation.composite"/>
 
+    <include name="JDKReflectionComposite" scdlResource="META-INF/jdkReflection.composite"/>
+
     <include name="SystemImplementationComposite" scdlResource="META-INF/systemImplementation.composite"/>
 
     <include name="SingletonImplementationComposite" scdlResource="META-INF/singletonImplementation.composite"/>
