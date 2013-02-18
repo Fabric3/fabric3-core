@@ -46,7 +46,6 @@ package org.fabric3.implementation.proxy.jdk.channel;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -57,7 +56,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  */
 public class ChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;
-    private ChannelProxyService proxyService;
+    private JDKChannelProxyService proxyService;
     // the cache of proxy interface method to operation mappings
     private Map<Method, EventStream> mappings;
 
@@ -68,7 +67,7 @@ public class ChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
      * @param proxyService the proxy creation service
      * @param mappings     proxy method to channel handler mappings
      */
-    public ChannelConnectionObjectFactory(Class<T> interfaze, ChannelProxyService proxyService, Map<Method, EventStream> mappings) {
+    public ChannelConnectionObjectFactory(Class<T> interfaze, JDKChannelProxyService proxyService, Map<Method, EventStream> mappings) {
         this.interfaze = interfaze;
         this.proxyService = proxyService;
         this.mappings = mappings;

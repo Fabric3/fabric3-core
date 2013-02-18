@@ -41,25 +41,23 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.reflection.jdk;
+package org.fabric3.implementation.pojo.spi.reflection;
 
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
  *
  */
-public class IncompatibleArgumentException extends ObjectCreationException {
-    private static final long serialVersionUID = 7837357233260840672L;
+public class NullPrimitiveException extends ObjectCreationException {
+    private static final long serialVersionUID = 4043316381690250609L;
     private final int param;
-    private final String type;
 
-    public IncompatibleArgumentException(String identifier, int param, String type) {
+    public NullPrimitiveException(String identifier, int param) {
         super(null, identifier);
         this.param = param;
-        this.type = type;
     }
 
     public String getMessage() {
-        return "Unable to assign parameter of type " + type + " to parameter " + param + " of " + getIdentifier();
+        return "Cannot assign null value to primitive for parameter " + param + " of " + getIdentifier();
     }
 }

@@ -21,7 +21,7 @@
     </component>
 
     <component name="JDKChannelProxyService">
-        <f3:implementation.system class="org.fabric3.implementation.proxy.jdk.channel.JDKChannelProxyService"/>
+        <f3:implementation.system class="org.fabric3.implementation.proxy.jdk.channel.JDKChannelProxyServiceImpl"/>
     </component>
 
 

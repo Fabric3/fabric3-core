@@ -43,87 +43,37 @@
  */
 package org.fabric3.implementation.proxy.jdk.channel;
 
-import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.oasisopen.sca.annotation.Reference;
-
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
+import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
+import org.fabric3.spi.channel.EventStream;
+
 /**
- * The default ChannelProxyService that uses JDK dynamic proxies.
+ * Creates channel proxies using JDK proxies.
  */
-public class JDKChannelProxyService implements ChannelProxyService {
-    private ClassLoaderRegistry classLoaderRegistry;
-
-    public JDKChannelProxyService(@Reference ClassLoaderRegistry classLoaderRegistry) {
-        this.classLoaderRegistry = classLoaderRegistry;
-    }
-
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException {
-        if (connection.getEventStreams().size() == 1) {
-            return new OptimizedChannelConnectionObjectFactory<T>(interfaze, this, connection.getEventStreams().get(0));
-        } else {
-            Map<Method, EventStream> mappings = createInterfaceToStreamMapping(interfaze, connection);
-            return new ChannelConnectionObjectFactory<T>(interfaze, this, mappings);
-        }
-    }
-
-    public <T> T createProxy(Class<T> interfaze, Map<Method, EventStream> mappings) throws ProxyCreationException {
-        ClassLoader loader = interfaze.getClassLoader();
-        JDKEventHandler handler = new JDKEventHandler(mappings);
-        return interfaze.cast(Proxy.newProxyInstance(loader, new Class[]{interfaze}, handler));
-    }
-
-    public <T> T createProxy(Class<T> interfaze, EventStream stream) throws ProxyCreationException {
-        ClassLoader loader = interfaze.getClassLoader();
-        OptimizedJDKEventHandler handler = new OptimizedJDKEventHandler(stream);
-        return interfaze.cast(Proxy.newProxyInstance(loader, new Class[]{interfaze}, handler));
-    }
-
-    private Map<Method, EventStream> createInterfaceToStreamMapping(Class<?> interfaze, ChannelConnection connection) throws ProxyCreationException {
-        List<EventStream> streams = connection.getEventStreams();
-        Map<Method, EventStream> mappings = new HashMap<Method, EventStream>(streams.size());
-        for (EventStream stream : streams) {
-            PhysicalEventStreamDefinition definition = stream.getDefinition();
-            try {
-                Method method = findMethod(interfaze, definition);
-                mappings.put(method, stream);
-            } catch (NoSuchMethodException e) {
-                throw new NoMethodForEventStreamException(definition.getName());
-            } catch (ClassNotFoundException e) {
-                throw new ProxyCreationException(e);
-            }
-        }
-        return mappings;
-    }
+public interface JDKChannelProxyService extends ChannelProxyService {
+    /**
+     * Creates a proxy.
+     *
+     * @param interfaze the interface the proxy implements
+     * @param mappings  mappings from interface method to event streams contained in a channel connection
+     * @param <T>       the interface type
+     * @return the proxy
+     * @throws ProxyCreationException if there is an error creating the proxy
+     */
+    <T> T createProxy(Class<T> interfaze, Map<Method, EventStream> mappings) throws ProxyCreationException;
 
     /**
-     * Returns the matching method from the class for a given operation.
+     * Creates an optimized proxy for an interface containing a single method which dispatches to an event stream.
      *
-     * @param clazz      the class to introspect
-     * @param definition the event stream to match
-     * @return a matching method
-     * @throws NoSuchMethodException  if a matching method is not found
-     * @throws ClassNotFoundException if a parameter type specified in the operation is not found
+     * @param interfaze the interface the proxy implements
+     * @param stream    the event stream
+     * @param <T>       the interface type
+     * @return the proxy
+     * @throws ProxyCreationException if there is an error creating the proxy
      */
-    private Method findMethod(Class<?> clazz, PhysicalEventStreamDefinition definition) throws NoSuchMethodException, ClassNotFoundException {
-        String name = definition.getName();
-        List<String> eventTypes = definition.getEventTypes();
-        Class<?>[] types = new Class<?>[eventTypes.size()];
-        for (int i = 0; i < eventTypes.size(); i++) {
-            types[i] = classLoaderRegistry.loadClass(clazz.getClassLoader(), eventTypes.get(i));
-        }
-        return clazz.getMethod(name, types);
-    }
-
+    <T> T createProxy(Class<T> interfaze, EventStream stream) throws ProxyCreationException;
 
 }

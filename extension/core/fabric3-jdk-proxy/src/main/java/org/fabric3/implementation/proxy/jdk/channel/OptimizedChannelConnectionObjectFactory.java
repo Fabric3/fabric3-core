@@ -43,7 +43,6 @@
  */
 package org.fabric3.implementation.proxy.jdk.channel;
 
-import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -54,7 +53,7 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
  */
 public class OptimizedChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;
-    private ChannelProxyService proxyService;
+    private JDKChannelProxyService proxyService;
     private EventStream stream;
 
     /**
@@ -64,12 +63,11 @@ public class OptimizedChannelConnectionObjectFactory<T> implements ObjectFactory
      * @param proxyService the proxy creation service
      * @param stream       the stream
      */
-    public OptimizedChannelConnectionObjectFactory(Class<T> interfaze, ChannelProxyService proxyService, EventStream stream) {
+    public OptimizedChannelConnectionObjectFactory(Class<T> interfaze, JDKChannelProxyService proxyService, EventStream stream) {
         this.interfaze = interfaze;
         this.proxyService = proxyService;
         this.stream = stream;
     }
-
 
     public T getInstance() throws ObjectCreationException {
         try {

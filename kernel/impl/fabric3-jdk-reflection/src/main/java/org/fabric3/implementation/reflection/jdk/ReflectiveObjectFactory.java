@@ -46,6 +46,8 @@ package org.fabric3.implementation.reflection.jdk;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import org.fabric3.implementation.pojo.spi.reflection.IncompatibleArgumentException;
+import org.fabric3.implementation.pojo.spi.reflection.NullPrimitiveException;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
