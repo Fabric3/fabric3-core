@@ -43,132 +43,46 @@
  */
 package org.fabric3.implementation.proxy.jdk.wire;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import org.oasisopen.sca.ServiceReference;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
 
 /**
- * The default WireProxyService implementation that uses JDK dynamic proxies.
+ * Creates JDK-based wire proxies.
  */
-public class JDKWireProxyService implements WireProxyService {
-    private ClassLoaderRegistry classLoaderRegistry;
-
-    public JDKWireProxyService(@Reference ClassLoaderRegistry classLoaderRegistry) {
-        this.classLoaderRegistry = classLoaderRegistry;
-    }
-
-    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ProxyCreationException {
-        Map<Method, InvocationChain> mappings = createInterfaceToWireMapping(interfaze, wire);
-        return new WireObjectFactory<T>(interfaze, callbackUri, this, mappings);
-    }
-
-    public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws ProxyCreationException {
-        Map<Method, InvocationChain> operationMappings = createInterfaceToWireMapping(interfaze, wire);
-        Map<String, Map<Method, InvocationChain>> mappings = new HashMap<String, Map<Method, InvocationChain>>();
-        mappings.put(callbackUri.toString(), operationMappings);
-        return new CallbackWireObjectFactory<T>(interfaze, multiThreaded, this, mappings);
-    }
-
-    public <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory,
-                                                            Class<T> interfaze,
-                                                            boolean multiThreaded,
-                                                            URI callbackUri,
-                                                            Wire wire) throws ProxyCreationException {
-        if (!(factory instanceof CallbackWireObjectFactory)) {
-            // a placeholder object factory (i.e. created when the callback is not wired) needs to be replaced 
-            return createCallbackObjectFactory(interfaze, multiThreaded, callbackUri, wire);
-        }
-        CallbackWireObjectFactory<?> callbackFactory = (CallbackWireObjectFactory) factory;
-        Map<Method, InvocationChain> operationMappings = createInterfaceToWireMapping(interfaze, wire);
-        callbackFactory.updateMappings(callbackUri.toString(), operationMappings);
-        return callbackFactory;
-    }
-
-    public <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws ProxyCreationException {
-        JDKInvocationHandler<T> handler;
-        handler = new JDKInvocationHandler<T>(interfaze, callbackUri, mappings);
-        return handler.getService();
-    }
-
-    public <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings)
-            throws ProxyCreationException {
-        ClassLoader cl = interfaze.getClassLoader();
-        MultiThreadedCallbackInvocationHandler<T> handler = new MultiThreadedCallbackInvocationHandler<T>(interfaze, mappings);
-        return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
-    }
-
-    public <T> T createCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping) {
-        ClassLoader cl = interfaze.getClassLoader();
-        StatefulCallbackInvocationHandler<T> handler = new StatefulCallbackInvocationHandler<T>(interfaze, mapping);
-        return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
-    }
-
-    @SuppressWarnings("unchecked")
-    public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
-        InvocationHandler handler = Proxy.getInvocationHandler(target);
-        if (handler instanceof JDKInvocationHandler) {
-            JDKInvocationHandler<B> jdkHandler = (JDKInvocationHandler<B>) handler;
-            return (R) jdkHandler.getServiceReference();
-        } else if (handler instanceof MultiThreadedCallbackInvocationHandler) {
-            // TODO return a CallbackReference
-            throw new UnsupportedOperationException();
-        } else {
-            throw new IllegalArgumentException("Not a Fabric3 SCA proxy");
-        }
-    }
-
-    private Map<Method, InvocationChain> createInterfaceToWireMapping(Class<?> interfaze, Wire wire) throws NoMethodForOperationException {
-
-        List<InvocationChain> invocationChains = wire.getInvocationChains();
-
-        Map<Method, InvocationChain> chains = new HashMap<Method, InvocationChain>(invocationChains.size());
-        for (InvocationChain chain : invocationChains) {
-            PhysicalOperationDefinition operation = chain.getPhysicalOperation();
-            try {
-                Method method = findMethod(interfaze, operation);
-                chains.put(method, chain);
-            } catch (NoSuchMethodException e) {
-                throw new NoMethodForOperationException(operation.getName());
-            } catch (ClassNotFoundException e) {
-                throw new NoMethodForOperationException(e);
-            }
-        }
-        return chains;
-    }
+public interface JDKWireProxyService extends WireProxyService {
 
     /**
-     * Returns the matching method from the class for a given operation.
+     * Creates a Java proxy for the given wire.
      *
-     * @param clazz     the class to introspect
-     * @param operation the operation to match
-     * @return a matching method
-     * @throws NoSuchMethodException  if a matching method is not found
-     * @throws ClassNotFoundException if a parameter type specified in the operation is not found
+     * @param interfaze   the interface the proxy implements
+     * @param callbackUri the callback URI fr the wire fronted by the proxy or null if the wire is unidirectional
+     * @param mappings    the method to invocation chain mappings
+     * @return the proxy
+     * @throws ProxyCreationException if there was a problem creating the proxy
      */
-    private Method findMethod(Class<?> clazz, PhysicalOperationDefinition operation) throws NoSuchMethodException, ClassNotFoundException {
-        String name = operation.getName();
-        List<String> params = operation.getSourceParameterTypes();
-        Class<?>[] types = new Class<?>[params.size()];
-        for (int i = 0; i < params.size(); i++) {
-            types[i] = classLoaderRegistry.loadClass(clazz.getClassLoader(), params.get(i));
-        }
-        return clazz.getMethod(name, types);
-    }
+    <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws ProxyCreationException;
+
+    /**
+     * Creates a Java proxy for the callback invocations chains.
+     *
+     * @param interfaze the interface the proxy should implement
+     * @param mappings  the invocation chain mappings keyed by target URI @return the proxy
+     * @return the proxy instance
+     * @throws ProxyCreationException if an error is encountered during proxy generation
+     */
+    <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ProxyCreationException;
+
+    /**
+     * Creates a callback proxy that always returns to the same target service
+     *
+     * @param interfaze the service interface
+     * @param mapping   the invocation chain mapping for the callback service
+     * @return the proxy instance
+     */
+    <T> T createCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping);
 
 }

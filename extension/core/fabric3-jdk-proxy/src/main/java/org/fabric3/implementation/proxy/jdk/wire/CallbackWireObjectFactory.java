@@ -41,7 +41,6 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
-import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -54,7 +53,7 @@ import org.fabric3.spi.wire.InvocationChain;
 public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;
     private boolean multiThreaded;
-    private WireProxyService proxyService;
+    private JDKWireProxyService proxyService;
     private Map<String, Map<Method, InvocationChain>> mappings;
 
     /**
@@ -67,7 +66,7 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
      */
     public CallbackWireObjectFactory(Class<T> interfaze,
                                      boolean multiThreaded,
-                                     WireProxyService proxyService,
+                                     JDKWireProxyService proxyService,
                                      Map<String, Map<Method, InvocationChain>> mappings) {
         this.interfaze = interfaze;
         this.multiThreaded = multiThreaded;
@@ -90,7 +89,6 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
             return interfaze.cast(proxyService.createCallbackProxy(interfaze, mapping));
         }
     }
-
 
     public void updateMappings(String callbackUri, Map<Method, InvocationChain> chains) {
         mappings.put(callbackUri, chains);

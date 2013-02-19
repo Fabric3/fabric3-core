@@ -43,14 +43,11 @@
  */
 package org.fabric3.implementation.pojo.spi.proxy;
 
+import java.net.URI;
+
 import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 import org.oasisopen.sca.ServiceReference;
-
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.Map;
 
 /**
  * Creates proxies that implement Java interfaces and invocation handlers for fronting wires.
@@ -78,8 +75,7 @@ public interface WireProxyService {
      * @return an ObjectFactory that will create proxies
      * @throws ProxyCreationException if there was a problem creating the proxy
      */
-    <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
-            throws ProxyCreationException;
+    <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire) throws ProxyCreationException;
 
     /**
      * Updates an ObjectFactory with an additional callback wire. This is used when multiple clients are wired to a target bidirectional service.
@@ -92,42 +88,8 @@ public interface WireProxyService {
      * @return an ObjectFactory that will create proxies
      * @throws ProxyCreationException if there was a problem creating the proxy
      */
-    <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory,
-                                                     Class<T> interfaze,
-                                                     boolean multiThreaded,
-                                                     URI callbackUri,
-                                                     Wire wire) throws ProxyCreationException;
-
-
-    /**
-     * Creates a Java proxy for the given wire.
-     *
-     * @param interfaze   the interface the proxy implements
-     * @param callbackUri the callback URI fr the wire fronted by the proxy or null if the wire is unidirectional
-     * @param mappings    the method to invocation chain mappings
-     * @return the proxy
-     * @throws ProxyCreationException if there was a problem creating the proxy
-     */
-    <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws ProxyCreationException;
-
-    /**
-     * Creates a Java proxy for the callback invocations chains.
-     *
-     * @param interfaze the interface the proxy should implement
-     * @param mappings  the invocation chain mappings keyed by target URI @return the proxy
-     * @return the proxy instance
-     * @throws ProxyCreationException if an error is encountered during proxy generation
-     */
-    <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ProxyCreationException;
-
-    /**
-     * Creates a callback proxy that always returns to the same target service
-     *
-     * @param interfaze the service interface
-     * @param mapping   the invocation chain mapping for the callback service
-     * @return the proxy instance
-     */
-    <T> T createCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping);
+    <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
+            throws ProxyCreationException;
 
     /**
      * Cast a proxy to a ServiceReference.

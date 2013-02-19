@@ -25,7 +25,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.implementation.proxy.jdk.wire.JDKInvocationHandler;
-import org.fabric3.implementation.proxy.jdk.wire.JDKWireProxyService;
+import org.fabric3.implementation.proxy.jdk.wire.JDKWireProxyServiceImpl;
 import org.oasisopen.sca.ServiceReference;
 
 import org.fabric3.spi.wire.InvocationChain;
@@ -34,7 +34,7 @@ import org.fabric3.spi.wire.InvocationChain;
  *
  */
 public class JDKWireProxyServiceTestCase extends TestCase {
-    private JDKWireProxyService proxyService;
+    private JDKWireProxyServiceImpl proxyService;
 
     public void testCastProxyToServiceReference() throws Exception {
         Map<Method, InvocationChain> mapping = Collections.emptyMap();
@@ -62,7 +62,7 @@ public class JDKWireProxyServiceTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        proxyService = new JDKWireProxyService(null);
+        proxyService = new JDKWireProxyServiceImpl(null);
     }
 
     public interface Foo {
