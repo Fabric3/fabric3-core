@@ -60,6 +60,8 @@ public class ChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
     // the cache of proxy interface method to operation mappings
     private Map<Method, EventStream> mappings;
 
+    private T proxy;
+
     /**
      * Constructor.
      *
@@ -73,12 +75,15 @@ public class ChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
         this.mappings = mappings;
     }
 
-
     public T getInstance() throws ObjectCreationException {
-        try {
-            return interfaze.cast(proxyService.createProxy(interfaze, mappings));
-        } catch (ProxyCreationException e) {
-            throw new ObjectCreationException(e);
+        // as an optimization, only create one proxy since they are stateless
+        if (proxy == null) {
+            try {
+                proxy = interfaze.cast(proxyService.createProxy(interfaze, mappings));
+            } catch (ProxyCreationException e) {
+                throw new ObjectCreationException(e);
+            }
         }
+        return proxy;
     }
 }

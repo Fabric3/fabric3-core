@@ -56,6 +56,8 @@ public class OptimizedChannelConnectionObjectFactory<T> implements ObjectFactory
     private JDKChannelProxyService proxyService;
     private EventStream stream;
 
+    private T proxy;
+
     /**
      * Constructor.
      *
@@ -70,10 +72,14 @@ public class OptimizedChannelConnectionObjectFactory<T> implements ObjectFactory
     }
 
     public T getInstance() throws ObjectCreationException {
-        try {
-            return interfaze.cast(proxyService.createProxy(interfaze, stream));
-        } catch (ProxyCreationException e) {
-            throw new ObjectCreationException(e);
+        // as an optimization, only create one proxy since they are stateless
+        if (proxy == null) {
+            try {
+                proxy = interfaze.cast(proxyService.createProxy(interfaze, stream));
+            } catch (ProxyCreationException e) {
+                throw new ObjectCreationException(e);
+            }
         }
+        return proxy;
     }
 }
