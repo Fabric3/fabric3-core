@@ -227,6 +227,9 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         URI targetUri = binding.getDefinition().getTargetUri();
 
         if (targetUri != null) {
+            if (!targetUri.isAbsolute()) {
+                throw new GenerationException("Web service binding URI must be absolute on reference: " + binding.getParent().getUri());
+            }
             try {
                 targetUrl = targetUri.toURL();
             } catch (MalformedURLException e) {
@@ -430,11 +433,12 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
     private ServiceEndpointDefinition synthesizeEndpointFromWsdlInterface(LogicalBinding<WsBindingDefinition> binding, AbstractService abstractService)
             throws EndpointResolutionException {
-        URI targetUri;WsdlServiceContract wsdlContract = (WsdlServiceContract) abstractService.getServiceContract();
+        URI targetUri;
+        WsdlServiceContract wsdlContract = (WsdlServiceContract) abstractService.getServiceContract();
         Definition wsdl = wsdlContract.getDefinition();
         QName portType = wsdlContract.getPortType().getQName();
-        QName serviceName = new QName(portType.getNamespaceURI(),portType.getLocalPart()+"Service");
-        QName portName = new QName(portType.getNamespaceURI(),portType.getLocalPart()+"Port");
+        QName serviceName = new QName(portType.getNamespaceURI(), portType.getLocalPart() + "Service");
+        QName portName = new QName(portType.getNamespaceURI(), portType.getLocalPart() + "Port");
         Bindable service = binding.getParent();
         targetUri = URI.create(service.getUri().getFragment());
         String serializedWsdl = endpointResolver.serializeWsdl(wsdl);
