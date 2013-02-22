@@ -35,42 +35,17 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.ws.metro.generator;
+package org.fabric3.wsdl.contribution;
 
 import javax.xml.namespace.QName;
 
+import org.fabric3.spi.contribution.manifest.QNameSymbol;
+
 /**
- * A parsed WSDL element expression.
+ * A key to a WSDL service.
  */
-public class WsdlElement {
-    public enum Type {
-        PORT, SERVICE
-    }
-
-    private QName serviceName;
-    private QName portName;
-    private Type type;
-
-    public WsdlElement(QName serviceName, QName portName) {
-        this.serviceName = serviceName;
-        this.portName = portName;
-        this.type = Type.PORT;
-    }
-
-    public WsdlElement(QName serviceName) {
-        this.serviceName = serviceName;
-        this.type = Type.SERVICE;
-    }
-
-    public QName getServiceName() {
-        return serviceName;
-    }
-
-    public QName getPortName() {
-        return portName;
-    }
-
-    public Type getType() {
-        return type;
+public class ServiceSymbol extends QNameSymbol {
+    public ServiceSymbol(QName qName) {
+        super(qName);
     }
 }

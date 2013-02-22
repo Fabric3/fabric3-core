@@ -37,8 +37,8 @@
 */
 package org.fabric3.binding.ws.metro.generator.resolver;
 
-import java.net.URI;
 import javax.wsdl.Definition;
+import java.net.URI;
 
 import org.fabric3.binding.ws.metro.generator.WsdlElement;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
@@ -53,7 +53,7 @@ import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 public interface EndpointResolver {
 
     /**
-     * Resolves service-side endpoint information against a parsed WSDLdocument.
+     * Resolves service-side endpoint information against a parsed WSDL document.
      *
      * @param wsdlElement the parsed WSDL element expression
      * @param wsdl        the parsed WSL
@@ -63,7 +63,7 @@ public interface EndpointResolver {
     ServiceEndpointDefinition resolveServiceEndpoint(WsdlElement wsdlElement, Definition wsdl) throws EndpointResolutionException;
 
     /**
-     * Resolves service-side endpoint information against a parsed WSDLdocument, overriding the target URI specified in the WSDL.
+     * Resolves service-side endpoint information against a parsed WSDL document, overriding the target URI specified in the WSDL.
      *
      * @param wsdlElement the parsed WSDL element expression
      * @param wsdl        the parsed WSL
@@ -75,7 +75,7 @@ public interface EndpointResolver {
 
 
     /**
-     * Resolves reference-side endpoint information against a parsed WSDLdocument.
+     * Resolves reference-side endpoint information against a parsed WSDL document.
      *
      * @param wsdlElement the parsed WSDL element expression
      * @param wsdl        the parsed WSL
@@ -83,5 +83,15 @@ public interface EndpointResolver {
      * @throws EndpointResolutionException if an error performing resolution is encountered
      */
     ReferenceEndpointDefinition resolveReferenceEndpoint(WsdlElement wsdlElement, Definition wsdl) throws EndpointResolutionException;
+
+
+    /**
+     * Serializes the contents of a parsed WSDL as a string.
+     *
+     * @param wsdl the WSDL
+     * @return the serialized WSDL
+     * @throws EndpointResolutionException if an error occurs reading the URL
+     */
+    public String serializeWsdl(Definition wsdl) throws EndpointResolutionException;
 
 }

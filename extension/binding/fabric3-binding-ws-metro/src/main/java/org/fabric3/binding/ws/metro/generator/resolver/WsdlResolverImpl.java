@@ -37,24 +37,25 @@
 */
 package org.fabric3.binding.ws.metro.generator.resolver;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.WSDLException;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
+import javax.wsdl.Service;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.wsdl.contribution.PortSymbol;
+import org.fabric3.wsdl.contribution.ServiceSymbol;
 import org.fabric3.wsdl.contribution.WsdlSymbol;
 import org.fabric3.wsdl.factory.Wsdl4JFactory;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Resolves parsed WSDLs against an external location or those visible to the current contribution installed in the domain.
@@ -111,6 +112,26 @@ public class WsdlResolverImpl implements WsdlResolver {
             }
         }
         throw new WsdlResolutionException("WSDL for port not found: " + portName);
+    }
+
+    public Definition resolveWsdlByServiceName(URI contributionUri, QName serviceName) throws WsdlResolutionException {
+        ServiceSymbol symbol = new ServiceSymbol(serviceName);
+        ResourceElement<ServiceSymbol, Service> resourceElement;
+        try {
+            resourceElement = store.find(contributionUri, Service.class, symbol);
+        } catch (StoreException e) {
+            throw new WsdlResolutionException("Error resolving service: " + serviceName, e);
+        }
+        if (resourceElement == null) {
+            throw new WsdlResolutionException("WSDL service not found: " + serviceName);
+        }
+        Resource resource = resourceElement.getResource();
+        for (ResourceElement<?, ?> element : resource.getResourceElements()) {
+            if (element.getSymbol() instanceof WsdlSymbol) {
+                return (Definition) element.getValue();
+            }
+        }
+        throw new WsdlResolutionException("WSDL for service not found: " + serviceName);
     }
 
 }

@@ -38,9 +38,9 @@
 
 package org.fabric3.binding.ws.metro.provision;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.net.URI;
-import javax.xml.namespace.QName;
 
 /**
  * Encapsulates endpoint information for the service side of an invocation chain.
@@ -50,6 +50,22 @@ public class ServiceEndpointDefinition implements Serializable {
     private QName serviceName;
     private QName portName;
     private URI servicePath;
+    private String wsdl;
+
+    /**
+     * Constructor.
+     *
+     * @param serviceName the qualified service name
+     * @param portName    the qualified port name
+     * @param servicePath the service path relative to the runtime base HTTP address
+     * @param wsdl        the serialized WSDL this endpoint definition is derived from
+     */
+    public ServiceEndpointDefinition(QName serviceName, QName portName, URI servicePath, String wsdl) {
+        this.serviceName = serviceName;
+        this.portName = portName;
+        this.servicePath = servicePath;
+        this.wsdl = wsdl;
+    }
 
     /**
      * Constructor.
@@ -59,9 +75,7 @@ public class ServiceEndpointDefinition implements Serializable {
      * @param servicePath the service path relative to the runtime base HTTP address
      */
     public ServiceEndpointDefinition(QName serviceName, QName portName, URI servicePath) {
-        this.serviceName = serviceName;
-        this.portName = portName;
-        this.servicePath = servicePath;
+        this(serviceName, portName, servicePath, null);
     }
 
     /**
@@ -91,5 +105,13 @@ public class ServiceEndpointDefinition implements Serializable {
         return servicePath;
     }
 
-
+    /**
+     * Returns a serialized WSDL specified using wsdlElement or wsdlLocation, or null if one is not specified. This WSDL may be overriden by a generated one if
+     * policy is specified on the service. Otherwise, it should be used to create JAX-WS reference proxies.
+     *
+     * @return the serialized WSDL or null
+     */
+    public String getWsdl() {
+        return wsdl;
+    }
 }

@@ -37,14 +37,6 @@
 */
 package org.fabric3.binding.ws.metro.runtime.core;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -55,6 +47,14 @@ import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.handler.Handler;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 import com.sun.xml.ws.api.WSService;
 import com.sun.xml.ws.api.model.wsdl.WSDLModel;
@@ -64,19 +64,18 @@ import com.sun.xml.ws.resources.ClientMessages;
 import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
 import com.sun.xml.ws.wsdl.parser.RuntimeWSDLParser;
 import com.sun.xml.wss.SecurityEnvironment;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
- * Creates a service proxy that can be shared among invocation chains of a wire. The proxy must be lazily created as opposed to during wire attachment
- * as as the service WSDL is accessed from the endpoint address, which may not be provisioned at that time.
+ * Creates a service proxy that can be shared among invocation chains of a wire. The proxy must be lazily created as opposed to during wire attachment as as the
+ * service WSDL is accessed from the endpoint address, which may not be provisioned at that time.
  */
 public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory<Object> {
     private static final QName DEFINITIONS = new QName("http://schemas.xmlsoap.org/wsdl/", "definitions");
@@ -146,8 +145,8 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
     }
 
     /**
-     * Lazily creates the service proxy. Proxy creation is done during the first invocation as the target service may not be available when the client
-     * that the proxy is to be injected into is instantiated. The proxy is later cached for subsequent invocations.
+     * Lazily creates the service proxy. Proxy creation is done during the first invocation as the target service may not be available when the client that the
+     * proxy is to be injected into is instantiated. The proxy is later cached for subsequent invocations.
      *
      * @return the web service proxy
      * @throws ObjectCreationException if there was an error creating the proxy
@@ -190,7 +189,14 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
             // use the kernel scheduler for dispatching
             service.setExecutor(executorService);
             service.getPorts();
-            BindingProvider port = (BindingProvider) service.getPort(portName, seiClass, features);
+
+            BindingProvider port;
+            if (portName == null) {
+                // happens if WSDL service specified without a port name
+                portName = service.getPorts().next();
+            }
+            port = (BindingProvider) service.getPort(portName, seiClass, features);
+
             configureConnection(port);
             configureSecurity(port);
             configureHandlers(port);
@@ -205,27 +211,26 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
     }
 
     /**
-     * This is a a bit of a hack. JAX-WS and WCF (.NET) have different default service naming conventions when mapping from implementation artifacts
-     * (Java and C#/VB, etc. classes). In SCA, a reference configured with the web services binding often only specifies the target portType name as
-     * only the port interface is provided (i.e. the Java interface for the reference). When creating a proxy, Metro requires the service name for the
-     * portType to be specified. Since WCF uses different defaulting rules, it is not possible to calculate the service name according to JAX-WS
-     * rules. When the JAX-WS API is used directly, this is not a problem as the service proxy is created by using a generated service client class
-     * marked with the <code>WebServiceClient</code> annotation which explicitly declares the service name. However, in SCA, the portType interface is
-     * provided, not the generated service client class.
+     * This is a a bit of a hack. JAX-WS and WCF (.NET) have different default service naming conventions when mapping from implementation artifacts (Java and
+     * C#/VB, etc. classes). In SCA, a reference configured with the web services binding often only specifies the target portType name as only the port
+     * interface is provided (i.e. the Java interface for the reference). When creating a proxy, Metro requires the service name for the portType to be
+     * specified. Since WCF uses different defaulting rules, it is not possible to calculate the service name according to JAX-WS rules. When the JAX-WS API is
+     * used directly, this is not a problem as the service proxy is created by using a generated service client class marked with the
+     * <code>WebServiceClient</code> annotation which explicitly declares the service name. However, in SCA, the portType interface is provided, not the
+     * generated service client class.
      * <p/>
-     * Rather than requiring users to explicitly declare the service in this case, the target WSDL is introspected for a service name. This will only
-     * be done if: the original service name is not valid (i.e. the web service exception triggering this procedure resulted from an invalid service
-     * name during proxy generation); and if the original provided service name is only a default and may be overriden. Also note this procedure will
-     * only return a service name if the target WSDL contains only one service which uses the portType (otherwise it would be impossible to select the
-     * correct service). Barring this, a user would need to explicitly declare the service name via a JAX-WS annotation or the wsdlElement attribute
-     * on binding.ws.
+     * Rather than requiring users to explicitly declare the service in this case, the target WSDL is introspected for a service name. This will only be done
+     * if: the original service name is not valid (i.e. the web service exception triggering this procedure resulted from an invalid service name during proxy
+     * generation); and if the original provided service name is only a default and may be overriden. Also note this procedure will only return a service name
+     * if the target WSDL contains only one service which uses the portType (otherwise it would be impossible to select the correct service). Barring this, a
+     * user would need to explicitly declare the service name via a JAX-WS annotation or the wsdlElement attribute on binding.ws.
      *
      * @param e      the WebServiceException  triggering this operation
      * @param params any initialization parameters to use when attempting to create a proxy using an introspected service name
      * @return the Service instance for creating a proxy
      * @throws ObjectCreationException if a service name could not be introspected
-     * @throws WebServiceException     if the original WebServiceException  was not the result of an invalid operation or if there was an error
-     *                                 creating the Service instance
+     * @throws WebServiceException     if the original WebServiceException  was not the result of an invalid operation or if there was an error creating the
+     *                                 Service instance
      */
     private Service getWsdlServiceName(WebServiceException e, WSService.InitParams params) throws ObjectCreationException, WebServiceException {
         Service service;
@@ -252,7 +257,7 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
             }
             if (found.size() > 1) {
                 throw new ObjectCreationException("Cannot determine the default service name as multiple ports using portType " + portTypeName +
-                                                          " were found in the WSDL document: " + wsdlLocation);
+                                                  " were found in the WSDL document: " + wsdlLocation);
             } else if (found.isEmpty()) {
                 throw new ObjectCreationException("No default service for portType" + portTypeName + " found in WSDL: " + wsdlLocation);
             } else {
@@ -306,8 +311,8 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
         }
         throw new ObjectCreationException(
                 "The web service endpoint " + endpointUrl + " does not expose a valid WSDL at a known metadata location, e.g. <service url>?wsdl. " +
-                        "Check to make sure the endpoint address is correct. If it is, please specify a valid location using the @WebService " +
-                        "annotation on the reference interface.");
+                "Check to make sure the endpoint address is correct. If it is, please specify a valid location using the @WebService " +
+                "annotation on the reference interface.");
     }
 
     /**

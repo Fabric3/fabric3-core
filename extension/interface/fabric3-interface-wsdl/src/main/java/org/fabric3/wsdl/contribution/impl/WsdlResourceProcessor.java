@@ -37,13 +37,6 @@
 */
 package org.fabric3.wsdl.contribution.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
@@ -57,18 +50,18 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaException;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
-import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.stream.Source;
@@ -81,13 +74,19 @@ import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.wsdl.contribution.PortSymbol;
 import org.fabric3.wsdl.contribution.PortTypeSymbol;
+import org.fabric3.wsdl.contribution.ServiceSymbol;
 import org.fabric3.wsdl.contribution.WsdlResourceProcessorExtension;
 import org.fabric3.wsdl.contribution.WsdlServiceContractSymbol;
 import org.fabric3.wsdl.contribution.WsdlSymbol;
 import org.fabric3.wsdl.factory.Wsdl4JFactory;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 import org.fabric3.wsdl.processor.WsdlContractProcessor;
-
+import org.oasisopen.sca.Constants;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 /**
@@ -207,10 +206,13 @@ public class WsdlResourceProcessor implements ResourceProcessor {
 
         Map<String, Service> services = definition.getServices();
         for (Service service : services.values()) {
+            ServiceSymbol serviceSymbol = new ServiceSymbol(service.getQName());
+            ResourceElement<ServiceSymbol, Service> serviceElement = new ResourceElement<ServiceSymbol, Service>(serviceSymbol, service);
+            resource.addResourceElement(serviceElement);
             Map<String, Port> ports = service.getPorts();
             for (Port port : ports.values()) {
-                QName name = new QName(definition.getTargetNamespace(), port.getName());
-                PortSymbol portSymbol = new PortSymbol(name);
+                QName portName = new QName(definition.getTargetNamespace(), port.getName());
+                PortSymbol portSymbol = new PortSymbol(portName);
                 ResourceElement<PortSymbol, Port> portElement = new ResourceElement<PortSymbol, Port>(portSymbol, port);
                 resource.addResourceElement(portElement);
             }
@@ -229,7 +231,7 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         // introspect port type service contracts
         for (Object object : definition.getPortTypes().values()) {
             PortType portType = (PortType) object;
-            WsdlServiceContract contract = processor.introspect(portType, wsdlQName, schemaCollection, context);
+            WsdlServiceContract contract = processor.introspect(portType, definition, schemaCollection, context);
             QName name = portType.getQName();
             WsdlServiceContractSymbol symbol = new WsdlServiceContractSymbol(name);
             ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract> element =

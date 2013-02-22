@@ -38,6 +38,8 @@
 
 package org.fabric3.binding.ws.metro.generator;
 
+import javax.jws.WebMethod;
+import javax.xml.namespace.QName;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -45,11 +47,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.jws.WebMethod;
-import javax.xml.namespace.QName;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
@@ -57,12 +54,14 @@ import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.definitions.PolicySet;
-import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
+import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 import org.fabric3.spi.util.UriHelper;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  *
@@ -85,19 +84,23 @@ public class GenerationHelper {
         }
         String namespace = UriHelper.getDefragmentedNameAsString(uri);
         String fragment = uri.getFragment();
-        if (!fragment.startsWith("wsdl.port(")) {
-            // TODO support wsdl.service
+        if (fragment.startsWith("wsdl.port(")) {
+            String name = fragment.substring(10, fragment.length() - 1); // wsdl.port(servicename/portname)
+            String[] tokens = name.split("/");
+            if (tokens.length != 2) {
+                throw new WsdlElementParseException("Invalid wsdlElement expression: " + fragment);
+            }
+            QName serviceName = new QName(namespace, tokens[0]);
+            QName portName = new QName(namespace, tokens[1]);
+
+            return new WsdlElement(serviceName, portName);
+        } else if (fragment.startsWith("wsdl.service(")) {
+            String name = fragment.substring(13, fragment.length() - 1);
+            QName serviceName = new QName(namespace, name);
+            return new WsdlElement(serviceName);
+        } else {
             throw new WsdlElementParseException("Expression not supported: " + fragment);
         }
-        String name = fragment.substring(10, fragment.length() - 1); // wsdl.port(servicename/portname)
-        String[] tokens = name.split("/");
-        if (tokens.length != 2) {
-            throw new WsdlElementParseException("Invalid wsdlElement expression: " + fragment);
-        }
-        QName serviceName = new QName(namespace, tokens[0]);
-        QName portName = new QName(namespace, tokens[1]);
-
-        return new WsdlElement(serviceName, portName);
     }
 
     /**
@@ -212,7 +215,6 @@ public class GenerationHelper {
         return configuration;
     }
 
-
     public static List<PhysicalBindingHandlerDefinition> generateBindingHandlers(URI domainUri, WsBindingDefinition definition) {
         List<PhysicalBindingHandlerDefinition> handlers = new ArrayList<PhysicalBindingHandlerDefinition>();
         for (BindingHandlerDefinition handlerDefinition : definition.getHandlers()) {
@@ -223,10 +225,9 @@ public class GenerationHelper {
         return handlers;
     }
 
-
     /**
-     * Returns the WSDL name for an operation following JAX-WS rules. Namely, if present the <code>@WebMethod.operationName()</code> attribute value
-     * is used, otherwise the default operation name is returned.
+     * Returns the WSDL name for an operation following JAX-WS rules. Namely, if present the <code>@WebMethod.operationName()</code> attribute value is used,
+     * otherwise the default operation name is returned.
      *
      * @param operation    the operation definition
      * @param serviceClass the implementation class

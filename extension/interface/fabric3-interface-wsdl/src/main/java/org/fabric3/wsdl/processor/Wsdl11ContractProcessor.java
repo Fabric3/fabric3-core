@@ -43,6 +43,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.wsdl.Definition;
 import javax.wsdl.Fault;
 import javax.wsdl.Input;
 import javax.wsdl.Message;
@@ -72,14 +73,14 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
  */
 public class Wsdl11ContractProcessor implements WsdlContractProcessor {
 
-    public WsdlServiceContract introspect(PortType portType, QName wsdlQName, XmlSchemaCollection collection, IntrospectionContext context) {
+    public WsdlServiceContract introspect(PortType portType, Definition definition, XmlSchemaCollection collection, IntrospectionContext context) {
         List<Operation> operations = new LinkedList<Operation>();
         for (Object object : portType.getOperations()) {
             javax.wsdl.Operation wsdlOperation = (javax.wsdl.Operation) object;
             Operation operation = createOperation(wsdlOperation, collection, portType, context);
             operations.add(operation);
         }
-        WsdlServiceContract contract = new WsdlServiceContract(portType, wsdlQName);
+        WsdlServiceContract contract = new WsdlServiceContract(portType, definition);
         contract.setOperations(operations);
         return contract;
     }

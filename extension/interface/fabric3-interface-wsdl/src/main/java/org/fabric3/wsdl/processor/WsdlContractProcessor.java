@@ -37,11 +37,10 @@
 */
 package org.fabric3.wsdl.processor;
 
+import javax.wsdl.Definition;
 import javax.wsdl.PortType;
-import javax.xml.namespace.QName;
 
 import org.apache.ws.commons.schema.XmlSchemaCollection;
-
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.wsdl.model.WsdlServiceContract;
 
@@ -54,11 +53,11 @@ public interface WsdlContractProcessor {
      * Creates a WsdlServiceContract by introspecting the WSDL 1.1 port type.
      *
      * @param portType         the WSDL 1.1 port type
-     * @param wsdlQName        the qualified name of the WSDL document containing the port type
+     * @param definition       the WSDL document containing the port type
      * @param schemaCollection the schemas contained in or referenced by the WSDL containing the port type
      * @param context          the context to report errors against
      * @return the list of operations.
      */
-    WsdlServiceContract introspect(PortType portType, QName wsdlQName, XmlSchemaCollection schemaCollection, IntrospectionContext context);
+    WsdlServiceContract introspect(PortType portType, Definition definition, XmlSchemaCollection schemaCollection, IntrospectionContext context);
 
 }

@@ -60,16 +60,16 @@ import org.fabric3.wsdl.model.WsdlServiceContract;
  */
 public class Wsdl11ContractProcessorTestCase extends TestCase {
     private static final QName STOCK_QUOTE_PORT_TYPE = new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");
-    private static final QName STOCK_QUOTE_WSDL = new QName("http://example.com/stockquote.wsdl", "Wsdl");
     private WsdlContractProcessor processor;
     private PortType portType;
     private XmlSchemaCollection schemaCollection;
+    private Definition definition;
 
     @SuppressWarnings({"unchecked"})
     public void testIntrospect() throws Exception {
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
 
-        WsdlServiceContract contract = processor.introspect(portType, STOCK_QUOTE_WSDL, schemaCollection, context);
+        WsdlServiceContract contract = processor.introspect(portType, definition, schemaCollection, context);
 
         assertEquals(1, contract.getOperations().size());
         Operation operation = contract.getOperations().get(0);
@@ -95,7 +95,7 @@ public class Wsdl11ContractProcessorTestCase extends TestCase {
         WSDLReader reader = factory.newWSDLReader();
         reader.setFeature("javax.wsdl.verbose", false);
         reader.setExtensionRegistry(factory.newPopulatedExtensionRegistry());
-        Definition definition = reader.readWSDL(getClass().getResource("example_1_1.wsdl").toURI().toString());
+        definition = reader.readWSDL(getClass().getResource("example_1_1.wsdl").toURI().toString());
         portType = definition.getPortType(STOCK_QUOTE_PORT_TYPE);
 
         schemaCollection = parseSchema(definition);

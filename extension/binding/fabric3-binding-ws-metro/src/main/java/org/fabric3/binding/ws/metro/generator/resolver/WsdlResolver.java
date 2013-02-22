@@ -37,10 +37,10 @@
 */
 package org.fabric3.binding.ws.metro.generator.resolver;
 
-import java.net.URI;
-import java.net.URL;
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
+import java.net.URI;
+import java.net.URL;
 
 /**
  * Resolves parsed WSDLs against an external location or those visible to a contribution installed in the domain.
@@ -76,4 +76,13 @@ public interface WsdlResolver {
      */
     Definition resolveWsdlByPortName(URI contributionUri, QName portName) throws WsdlResolutionException;
 
+    /**
+     * Resolve the WSDL against the WSDLs installed in the domain for the given contribution by service name.
+     *
+     * @param contributionUri the contribution URI
+     * @param serviceName     the WSDL service name
+     * @return the parsed WSDL
+     * @throws WsdlResolutionException if a resolution error occurs
+     */
+    Definition resolveWsdlByServiceName(URI contributionUri, QName serviceName) throws WsdlResolutionException;
 }

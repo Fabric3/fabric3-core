@@ -37,10 +37,11 @@
  */
 package org.fabric3.wsdl.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.wsdl.Definition;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.fabric3.model.type.contract.ServiceContract;
 
@@ -51,23 +52,21 @@ public class WsdlServiceContract extends ServiceContract {
     private static final long serialVersionUID = 8084985972954894699L;
     private Map<QName, Object> extensionElements = new HashMap<QName, Object>();
     private PortType portType;
-    private QName wsdlQName;
+    private Definition definition;
 
-    public WsdlServiceContract(PortType portType, QName wsdlQName) {
+    public WsdlServiceContract(PortType portType, Definition definition) {
         this.portType = portType;
-        this.wsdlQName = wsdlQName;
+        this.definition = definition;
     }
 
     public String getQualifiedInterfaceName() {
         return portType.getQName().toString();
     }
 
-    @Override
     public boolean isRemotable() {
         return true;
     }
 
-    @Override
     public void setRemotable(boolean remotable) {
         if (!remotable) {
             throw new IllegalArgumentException("WSDL interfaces are always remotable");
@@ -89,7 +88,16 @@ public class WsdlServiceContract extends ServiceContract {
      * @return the qualified WSDL name
      */
     public QName getWsdlQName() {
-        return wsdlQName;
+        return definition.getQName();
+    }
+
+    /**
+     * Returns the containing WSDL.
+     *
+     * @return the containing WSDL
+     */
+    public Definition getDefinition() {
+        return definition;
     }
 
     /**
@@ -128,7 +136,7 @@ public class WsdlServiceContract extends ServiceContract {
      * @return a copy of the current instance.
      */
     public WsdlServiceContract copy() {
-        WsdlServiceContract copy = new WsdlServiceContract(portType, wsdlQName);
+        WsdlServiceContract copy = new WsdlServiceContract(portType, definition);
         copy.setCallbackContract(callbackContract);
         copy.setIntents(getIntents());
         copy.setInterfaceName(interfaceName);

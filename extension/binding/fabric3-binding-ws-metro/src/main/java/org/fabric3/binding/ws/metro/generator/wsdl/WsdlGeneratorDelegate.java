@@ -38,13 +38,6 @@
 
 package org.fabric3.binding.ws.metro.generator.wsdl;
 
-import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
 import javax.wsdl.xml.WSDLWriter;
@@ -55,10 +48,13 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import org.fabric3.binding.ws.metro.generator.GenerationHelper;
 import org.fabric3.binding.ws.metro.generator.MetroGeneratorDelegate;
@@ -87,6 +83,9 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.wsdl.factory.Wsdl4JFactory;
 import org.fabric3.wsdl.model.WsdlServiceContract;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Generates source and target definitions for an endpoint defined by a WSDL-based service contract.
@@ -137,6 +136,9 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
             String wsdlElementString = binding.getDefinition().getWsdlElement();
             if (wsdlElementString != null) {
                 WsdlElement wsdlElement = GenerationHelper.parseWsdlElement(wsdlElementString);
+                if (wsdlElement.getType() == WsdlElement.Type.SERVICE) {
+                    throw new GenerationException("Services cannot specify a wsdl.service in the web service binding: " + binding.getParent().getUri());
+                }
                 endpointDefinition = endpointResolver.resolveServiceEndpoint(wsdlElement, wsdl, targetUri);
             } else {
                 // A port type is used. Synthesize concrete WSDL for the port type.
@@ -198,9 +200,8 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
         return new MetroWsdlSourceDefinition(endpointDefinition, serializedWsdl, intentNames, handlers);
     }
 
-    public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding,
-                                                WsdlServiceContract contract,
-                                                EffectivePolicy policy) throws GenerationException {
+    public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, WsdlServiceContract contract, EffectivePolicy policy)
+            throws GenerationException {
         URL targetUrl = null;
         URI targetUri = binding.getDefinition().getTargetUri();
 
@@ -309,14 +310,8 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
         // obtain connection information
         ConnectionConfiguration connectionConfiguration = GenerationHelper.createConnectionConfiguration(definition);
 
-        return new MetroWsdlTargetDefinition(endpointDefinition,
-                                             serializedWsdl,
-                                             intentNames,
-                                             securityConfiguration,
-                                             connectionConfiguration,
-                                             handlers);
+        return new MetroWsdlTargetDefinition(endpointDefinition, serializedWsdl, intentNames, securityConfiguration, connectionConfiguration, handlers);
     }
-
 
     /**
      * Returns the WSDL location if one is defined in the binding configuration or null.
