@@ -30,6 +30,11 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.wsdl.WsdlSynthesizerImpl"/>
     </component>
 
+    <component name="WsdlEndpointValidator">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.validator.WsdlEndpointValidatorImpl"/>
+        <property name="enabled" source="$systemConfig/f3:sca/@wsdl.validation"/>
+    </component>
+
     <component name="TargetUrlResolver">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.resolver.TargetUrlResolverImpl"/>
     </component>

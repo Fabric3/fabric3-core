@@ -38,8 +38,8 @@
 
 package org.fabric3.wsdl.contract;
 
-import java.util.List;
 import javax.xml.namespace.QName;
+import java.util.List;
 
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
@@ -105,8 +105,7 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
                         }
                     }
                     if (reportErrors) {
-                        return new MatchResult("Input types at position " + i + " do not match on operation " + name
-                                + ". Types were " + inputType.getXsdType() + " and " + candidateInputType.getXsdType());
+                        return new MatchResult("Input types at position " + i + " do not match on operation " + name);
                     } else {
                         return NO_MATCH;
                     }

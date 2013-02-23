@@ -76,6 +76,7 @@ import org.fabric3.binding.ws.metro.generator.resolver.EndpointResolutionExcepti
 import org.fabric3.binding.ws.metro.generator.resolver.EndpointResolver;
 import org.fabric3.binding.ws.metro.generator.resolver.TargetUrlResolver;
 import org.fabric3.binding.ws.metro.generator.resolver.WsdlResolver;
+import org.fabric3.binding.ws.metro.generator.validator.WsdlEndpointValidator;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.MetroJavaSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.MetroJavaTargetDefinition;
@@ -120,6 +121,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
     private ClassLoaderRegistry classLoaderRegistry;
     private ClassLoaderUpdater classLoaderUpdater;
     private TargetUrlResolver targetUrlResolver;
+    private WsdlEndpointValidator endpointValidator;
     private HostInfo info;
     private DocumentBuilder documentBuilder;
     private TransformerFactory transformerFactory;
@@ -134,6 +136,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
                                  @Reference ClassLoaderUpdater classLoaderUpdater,
                                  @Reference TargetUrlResolver targetUrlResolver,
+                                 @Reference WsdlEndpointValidator endpointValidator,
                                  @Reference HostInfo info) throws ParserConfigurationException {
         this.wsdlResolver = wsdlResolver;
         this.endpointResolver = endpointResolver;
@@ -145,6 +148,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         this.classLoaderRegistry = classLoaderRegistry;
         this.classLoaderUpdater = classLoaderUpdater;
         this.targetUrlResolver = targetUrlResolver;
+        this.endpointValidator = endpointValidator;
         this.info = info;
         documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         transformerFactory = TransformerFactory.newInstance();
@@ -423,6 +427,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                 URI contributionUri = binding.getParent().getParent().getDefinition().getContributionUri();
                 Definition wsdl = wsdlResolver.resolveWsdlByPortName(contributionUri, wsdlElement.getPortName());
                 endpointDefinition = endpointResolver.resolveServiceEndpoint(wsdlElement, wsdl);
+                endpointValidator.validate(contributionUri, binding, endpointDefinition);
             } else {
                 Definition wsdl = wsdlResolver.parseWsdl(wsdlLocation);
                 endpointDefinition = endpointResolver.resolveServiceEndpoint(wsdlElement, wsdl);

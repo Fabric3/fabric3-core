@@ -1,0 +1,63 @@
+package org.fabric3.binding.ws.metro.generator.validator;
+
+import javax.wsdl.Port;
+import javax.xml.namespace.QName;
+import java.net.URI;
+
+import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
+import org.fabric3.binding.ws.model.WsBindingDefinition;
+import org.fabric3.host.contribution.StoreException;
+import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.spi.contract.ContractMatcher;
+import org.fabric3.spi.contract.MatchResult;
+import org.fabric3.spi.contribution.MetaDataStore;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.wsdl.contribution.PortSymbol;
+import org.fabric3.wsdl.contribution.WsdlServiceContractSymbol;
+import org.fabric3.wsdl.model.WsdlServiceContract;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+
+/**
+ *
+ */
+public class WsdlEndpointValidatorImpl implements WsdlEndpointValidator {
+    private MetaDataStore store;
+    private ContractMatcher matcher;
+    private boolean enabled;  // default is not enabled
+
+    public WsdlEndpointValidatorImpl(@Reference MetaDataStore store, @Reference ContractMatcher matcher) {
+        this.store = store;
+        this.matcher = matcher;
+    }
+
+    @Property(required = false)
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void validate(URI contributionUri, LogicalBinding<WsBindingDefinition> binding, ServiceEndpointDefinition endpointDefinition)
+            throws EndpointValidationException {
+        if (!enabled) {
+            return;
+        }
+        try {
+            ServiceContract otherContract = binding.getParent().getServiceContract();
+
+            DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+            PortSymbol portSymbol = new PortSymbol(endpointDefinition.getPortName());
+            QName name = store.resolve(contributionUri, Port.class, portSymbol, context).getValue().getBinding().getPortType().getQName();
+
+            WsdlServiceContractSymbol contractSymbol = new WsdlServiceContractSymbol(name);
+            WsdlServiceContract contract = store.resolve(contributionUri, WsdlServiceContract.class, contractSymbol, context).getValue();
+
+            MatchResult result = matcher.isAssignableFrom(contract, otherContract, true);
+            if (!result.isAssignable()) {
+                throw new EndpointValidationException(result.getError());
+            }
+        } catch (StoreException e) {
+            throw new EndpointValidationException(e);
+        }
+    }
+}
