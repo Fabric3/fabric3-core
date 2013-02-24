@@ -119,13 +119,21 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
             switch (reader.next()) {
                 case START_ELEMENT:
                     Object elementValue = registry.load(reader, Object.class, context);
+                    Location startAttribute = reader.getLocation();
                     if (elementValue instanceof BindingHandlerDefinition) {
                         binding.addHandler((BindingHandlerDefinition) elementValue);
                     } else if (elementValue instanceof Map) {
                         binding.setConfiguration((Map<String, String>) elementValue);
                     } else if (elementValue instanceof EndpointReference) {
                         EndpointReference endpointReference = (EndpointReference) elementValue;
-                        binding.setTargetUri(endpointReference.getAddress());
+                        if (targetUri != null) {
+                            InvalidValue error = new InvalidValue("Cannot specify both a target URI and endpoint reference on a web services binding",
+                                                     startAttribute,
+                                                     binding);
+                            context.addError(error);
+                        } else {
+                            binding.setTargetUri(endpointReference.getAddress());
+                        }
                     }
                     break;
                 case END_ELEMENT:
