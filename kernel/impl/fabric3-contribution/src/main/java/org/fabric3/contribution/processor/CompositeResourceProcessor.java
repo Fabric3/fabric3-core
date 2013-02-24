@@ -37,18 +37,15 @@
 */
 package org.fabric3.contribution.processor;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.stream.Source;
@@ -67,19 +64,19 @@ import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.xml.XMLFactory;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Introspects a composite file in a contribution and produces a Composite type. This implementation assumes the CCL has all necessary artifacts to
- * perform introspection on its classpath.
+ * Introspects a composite file in a contribution and produces a Composite type. This implementation assumes the CCL has all necessary artifacts to perform
+ * introspection on its classpath.
  */
 @EagerInit
 public class CompositeResourceProcessor implements ResourceProcessor {
     private Loader loader;
     private final XMLInputFactory xmlFactory;
 
-    public CompositeResourceProcessor(@Reference ProcessorRegistry processorRegistry,
-                                      @Reference Loader loader,
-                                      @Reference XMLFactory xmlFactory) {
+    public CompositeResourceProcessor(@Reference ProcessorRegistry processorRegistry, @Reference Loader loader, @Reference XMLFactory xmlFactory) {
         processorRegistry.register(this);
         this.loader = loader;
         this.xmlFactory = xmlFactory.newInputFactoryInstance();
@@ -98,6 +95,10 @@ public class CompositeResourceProcessor implements ResourceProcessor {
             reader = xmlFactory.createXMLStreamReader(stream);
             reader.nextTag();
             Location startLocation = reader.getLocation();
+            if (!"composite".equals(reader.getName().getLocalPart())) {
+                // not a composite root element
+                return;
+            }
             String name = reader.getAttributeValue(null, "name");
             if (name == null) {
                 context.addError(new MissingAttribute("Composite name not specified", startLocation));
@@ -145,6 +146,12 @@ public class CompositeResourceProcessor implements ResourceProcessor {
         } catch (LoaderException e) {
             throw new InstallException(e);
         }
+        if (composite == null) {
+            // composite could not be parsed
+            InvalidXmlArtifact error = new InvalidXmlArtifact("Invalid composite: " + location, null);
+            context.addError(error);
+            return;
+        }
         boolean found = false;
         for (ResourceElement element : resource.getResourceElements()) {
             if (element.getSymbol().getKey().equals(composite.getName())) {
@@ -168,10 +175,7 @@ public class CompositeResourceProcessor implements ResourceProcessor {
 
     }
 
-    private void validateUnique(Resource resource,
-                                ResourceElement<QNameSymbol, Composite> element,
-                                XMLStreamReader reader,
-                                IntrospectionContext context) {
+    private void validateUnique(Resource resource, ResourceElement<QNameSymbol, Composite> element, XMLStreamReader reader, IntrospectionContext context) {
         Contribution contribution = resource.getContribution();
         for (Resource entry : contribution.getResources()) {
             if (resource.getContentType().equals(entry.getContentType())) {
@@ -188,6 +192,5 @@ public class CompositeResourceProcessor implements ResourceProcessor {
             }
         }
     }
-
 
 }
