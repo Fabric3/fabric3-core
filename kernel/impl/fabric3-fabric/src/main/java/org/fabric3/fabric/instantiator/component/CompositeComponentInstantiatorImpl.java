@@ -159,8 +159,8 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
                 logicalService.addBinding(logicalBinding);
             }
 
-            List<BindingDefinition> callbackBindings = service.getCallbackBindings();
-            for (BindingDefinition binding : callbackBindings) {
+            List<BindingDefinition> serviceCallbackBindings = service.getCallbackBindings();
+            for (BindingDefinition binding : serviceCallbackBindings) {
                 LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalService);
                 logicalService.addCallbackBinding(logicalBinding);
             }
@@ -178,6 +178,14 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
                         bindings.add(logicalBinding);
                     }
                     logicalService.overrideBindings(bindings);
+
+                    List<LogicalBinding<?>> callbackBindings = new ArrayList<LogicalBinding<?>>();
+                    for (BindingDefinition callbackBinding : componentService.getCallbackBindings()) {
+                        LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(callbackBinding, logicalService);
+                        callbackBindings.add(logicalBinding);
+                    }
+                    logicalService.overrideCallbackBindings(callbackBindings);
+
                 }
                 logicalService.addIntents(componentService.getIntents());
             }

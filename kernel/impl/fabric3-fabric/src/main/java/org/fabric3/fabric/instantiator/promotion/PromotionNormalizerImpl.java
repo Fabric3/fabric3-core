@@ -37,16 +37,13 @@
 */
 package org.fabric3.fabric.instantiator.promotion;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
@@ -65,6 +62,8 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.util.UriHelper;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default implementation of the PromotionNormalizer.
@@ -148,6 +147,7 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
         LogicalService leafService = services.getLast();
         LogicalComponent<?> leafComponent = leafService.getParent();
         List<LogicalBinding<?>> bindings = new ArrayList<LogicalBinding<?>>();
+        List<LogicalBinding<?>> callbackBindings = new ArrayList<LogicalBinding<?>>();
         Set<QName> intents = new HashSet<QName>();
         Set<QName> policySets = new HashSet<QName>();
 
@@ -155,9 +155,12 @@ public class PromotionNormalizerImpl implements PromotionNormalizer {
             // TODO determine if bindings should be overriden - for now, override
             if (service.getBindings().isEmpty()) {
                 service.overrideBindings(bindings);
+                service.overrideCallbackBindings(callbackBindings);
             } else {
                 bindings = new ArrayList<LogicalBinding<?>>();
                 bindings.addAll(service.getBindings());
+                callbackBindings = new ArrayList<LogicalBinding<?>>();
+                callbackBindings.addAll(service.getCallbackBindings());
             }
             if (service.getIntents().isEmpty()) {
                 service.addIntents(intents);
