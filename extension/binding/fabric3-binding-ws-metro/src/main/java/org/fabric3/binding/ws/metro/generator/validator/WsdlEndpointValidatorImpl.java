@@ -83,7 +83,7 @@ public class WsdlEndpointValidatorImpl implements WsdlEndpointValidator {
             WsdlServiceContractSymbol contractSymbol = new WsdlServiceContractSymbol(portTypeName);
             WsdlServiceContract contract = store.resolve(contributionUri, WsdlServiceContract.class, contractSymbol, context).getValue();
 
-            MatchResult result = matcher.isAssignableFrom(contract, otherContract, true);
+            MatchResult result = matcher.isAssignableFrom(otherContract, contract, true);
             if (!result.isAssignable()) {
                 throw new EndpointValidationException(result.getError());
             }

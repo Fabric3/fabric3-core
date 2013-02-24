@@ -43,17 +43,16 @@
  */
 package org.fabric3.binding.ws.model;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
 
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
+import org.oasisopen.sca.Constants;
 
 /**
  * Logical binding definition for web services.
@@ -114,8 +113,8 @@ public class WsBindingDefinition extends BindingDefinition {
     }
 
     /**
-     * Returns the applicable binding handlers for this definition. Note that order is significant: at runtime, the handlers should be engaged in the
-     * order they appear in this list.
+     * Returns the applicable binding handlers for this definition. Note that order is significant: at runtime, the handlers should be engaged in the order they
+     * appear in this list.
      *
      * @return the applicable binding handlers for this definition.
      */
@@ -148,5 +147,14 @@ public class WsBindingDefinition extends BindingDefinition {
      */
     public void setConfiguration(Map<String, String> configuration) {
         this.configuration = configuration;
+    }
+
+    /**
+     * Overrides the target URI.
+     *
+     * @param targetUri the target URI
+     */
+    public void setTargetUri(URI targetUri) {
+        this.targetUri = targetUri;
     }
 }

@@ -43,10 +43,10 @@
  */
 package org.fabric3.model.type.component;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.AbstractPolicyAware;
 import org.fabric3.model.type.CapabilityAware;
@@ -57,9 +57,9 @@ import org.fabric3.model.type.CapabilityAware;
 public abstract class BindingDefinition extends AbstractPolicyAware<BindableDefinition> implements CapabilityAware {
     private static final long serialVersionUID = 8780407747984243865L;
 
-    private URI targetUri;
-    private QName type;
-    private String name;
+    protected URI targetUri;
+    protected QName type;
+    protected String name;
 
     private Set<String> requiredCapabilities = new HashSet<String>();
 

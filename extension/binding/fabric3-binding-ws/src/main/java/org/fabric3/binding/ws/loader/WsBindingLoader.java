@@ -43,17 +43,15 @@
  */
 package org.fabric3.binding.ws.loader;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Map;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.binding.ws.model.EndpointReference;
 import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
@@ -61,7 +59,8 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
-
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
@@ -112,6 +111,9 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
                     binding.addHandler((BindingHandlerDefinition) elementValue);
                 } else if (elementValue instanceof Map) {
                     binding.setConfiguration((Map<String, String>) elementValue);
+                } else if (elementValue instanceof EndpointReference) {
+                    EndpointReference endpointReference = (EndpointReference) elementValue;
+                    binding.setTargetUri(endpointReference.getAddress());
                 }
                 break;
             case END_ELEMENT:
