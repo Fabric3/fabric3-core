@@ -97,7 +97,11 @@ public class GenerationHelper {
         } else if (fragment.startsWith("wsdl.service(")) {
             String name = fragment.substring(13, fragment.length() - 1);
             QName serviceName = new QName(namespace, name);
-            return new WsdlElement(serviceName);
+            return new WsdlElement(serviceName, WsdlElement.Type.SERVICE);
+        } else if (fragment.startsWith("wsdl.binding(")) {
+            String name = fragment.substring(13, fragment.length() - 1);
+            QName bindingName = new QName(namespace, name);
+            return new WsdlElement(bindingName, WsdlElement.Type.BINDING);
         } else {
             throw new WsdlElementParseException("Expression not supported: " + fragment);
         }

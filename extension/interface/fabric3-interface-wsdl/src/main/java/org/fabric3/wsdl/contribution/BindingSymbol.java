@@ -35,38 +35,17 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.ws.metro.generator.validator;
+package org.fabric3.wsdl.contribution;
 
 import javax.xml.namespace.QName;
-import java.net.URI;
 
-import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
-import org.fabric3.binding.ws.model.WsBindingDefinition;
-import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.contribution.manifest.QNameSymbol;
 
 /**
- * Validates WSDL endpoint configuration.
+ * A key to a WSDL binding.
  */
-public interface WsdlEndpointValidator {
-
-    /**
-     * Validates the endpoint configuration using the binding and endpoint definition.
-     *
-     * @param contributionUri    the contribution the validation applies to
-     * @param binding            the binding defining the endpoint
-     * @param endpointDefinition the generate endpoint definition
-     * @throws EndpointValidationException if the definition is invalid
-     */
-    void validate(URI contributionUri, LogicalBinding<WsBindingDefinition> binding, ServiceEndpointDefinition endpointDefinition)
-            throws EndpointValidationException;
-
-    /**
-     * Validates the endpoint configuration using the SCA binding and WSDL binding definitions.
-     *
-     * @param contributionUri the contribution the validation applies to
-     * @param binding         the binding defining the endpoint
-     * @throws EndpointValidationException if the definition is invalid
-     */
-    public void validateBinding(URI contributionUri, LogicalBinding<WsBindingDefinition> binding, QName wsdlBinding) throws EndpointValidationException;
-
+public class BindingSymbol extends QNameSymbol {
+    public BindingSymbol(QName qName) {
+        super(qName);
+    }
 }

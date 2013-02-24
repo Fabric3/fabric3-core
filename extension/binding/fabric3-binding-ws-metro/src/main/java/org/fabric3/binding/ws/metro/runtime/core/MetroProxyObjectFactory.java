@@ -188,7 +188,6 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
             }
             // use the kernel scheduler for dispatching
             service.setExecutor(executorService);
-            service.getPorts();
 
             BindingProvider port;
             if (portName == null) {

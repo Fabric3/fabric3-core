@@ -85,4 +85,14 @@ public interface WsdlResolver {
      * @throws WsdlResolutionException if a resolution error occurs
      */
     Definition resolveWsdlByServiceName(URI contributionUri, QName serviceName) throws WsdlResolutionException;
+
+    /**
+     * Resolve the WSDL against the WSDLs installed in the domain for the given contribution by binding name.
+     *
+     * @param contributionUri the contribution URI
+     * @param bindingName     the WSDL binding name
+     * @return the parsed WSDL
+     * @throws WsdlResolutionException if a resolution error occurs
+     */
+    Definition resolveWsdlByBindingName(URI contributionUri, QName bindingName) throws WsdlResolutionException;
 }

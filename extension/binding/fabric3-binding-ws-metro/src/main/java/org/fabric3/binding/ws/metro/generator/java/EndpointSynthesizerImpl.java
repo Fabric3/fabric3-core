@@ -37,10 +37,10 @@
 */
 package org.fabric3.binding.ws.metro.generator.java;
 
-import java.net.URI;
-import java.net.URL;
 import javax.jws.WebService;
 import javax.xml.namespace.QName;
+import java.net.URI;
+import java.net.URL;
 
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
@@ -54,9 +54,18 @@ public class EndpointSynthesizerImpl implements EndpointSynthesizer {
     public ReferenceEndpointDefinition synthesizeReferenceEndpoint(JavaServiceContract contract, Class<?> serviceClass, URL url) {
         WebService annotation = serviceClass.getAnnotation(WebService.class);
         if (annotation != null) {
-            return createDefinition(annotation, serviceClass, url);
+            return createDefinition(annotation, serviceClass, url, null);
         } else {
-            return createDefaultDefinition(serviceClass, url);
+            return createDefaultDefinition(serviceClass, url, null);
+        }
+    }
+
+    public ReferenceEndpointDefinition synthesizeReferenceEndpoint(JavaServiceContract contract, Class<?> serviceClass, QName portTypeName, URL url) {
+        WebService annotation = serviceClass.getAnnotation(WebService.class);
+        if (annotation != null) {
+            return createDefinition(annotation, serviceClass, url, portTypeName);
+        } else {
+            return createDefaultDefinition(serviceClass, url, portTypeName);
         }
     }
 
@@ -76,15 +85,19 @@ public class EndpointSynthesizerImpl implements EndpointSynthesizer {
      * @param annotation   the annotation
      * @param serviceClass the service class
      * @param url          the target endpoint URL
+     * @param portTypeQName the port type name or null if one should be generated
      * @return the ServiceEndpointDefinition
      */
-    private ReferenceEndpointDefinition createDefinition(WebService annotation, Class<?> serviceClass, URL url) {
+    private ReferenceEndpointDefinition createDefinition(WebService annotation, Class<?> serviceClass, URL url, QName portTypeQName) {
         String namespace = getNamespace(annotation, serviceClass);
         ServiceNameResult result = getServiceName(annotation, serviceClass, namespace);
         QName serviceQName = result.getServiceName();
         boolean defaultService = result.isDefaultServiceName();
-        QName portQName = getPortName(annotation, serviceClass, namespace);
-        QName portTypeQName = getPortTypeName(annotation, serviceClass, namespace);
+        QName portQName = null;   // don't generate a port name unless a port type name is also generated BWS_2012
+        if (portTypeQName == null) {
+            portTypeQName = getPortTypeName(annotation, serviceClass, namespace);
+            portQName = getPortName(annotation, serviceClass, namespace);
+        }
         return new ReferenceEndpointDefinition(serviceQName, defaultService, portQName, portTypeQName, url);
     }
 
@@ -93,15 +106,19 @@ public class EndpointSynthesizerImpl implements EndpointSynthesizer {
      *
      * @param serviceClass the service class
      * @param url          the target endpoint URL
+     * @param portTypeQName the port type name or null if one should be generated
      * @return the ServiceEndpointDefinition
      */
-    private ReferenceEndpointDefinition createDefaultDefinition(Class<?> serviceClass, URL url) {
+    private ReferenceEndpointDefinition createDefaultDefinition(Class<?> serviceClass, URL url, QName portTypeQName) {
         String packageName = serviceClass.getPackage().getName();
         String className = serviceClass.getSimpleName();
         String namespace = deriveNamespace(packageName);
         QName serviceQName = new QName(namespace, className + "Service");
-        QName portQName = new QName(namespace, className + "Port");
-        QName portTypeQName = new QName(namespace, className);
+        QName portQName = null;   // don't generate a port name unless a port type name is also generated BWS_2012
+        if (portTypeQName == null) {
+            portTypeQName = new QName(namespace, className);
+            portQName = new QName(namespace, className + "Port");
+        }
         return new ReferenceEndpointDefinition(serviceQName, true, portQName, portTypeQName, url);
     }
 

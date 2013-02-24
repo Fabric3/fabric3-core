@@ -37,6 +37,7 @@
 */
 package org.fabric3.wsdl.contribution.impl;
 
+import javax.wsdl.Binding;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
@@ -54,6 +55,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -72,6 +74,7 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.ResourceProcessor;
 import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.wsdl.contribution.BindingSymbol;
 import org.fabric3.wsdl.contribution.PortSymbol;
 import org.fabric3.wsdl.contribution.PortTypeSymbol;
 import org.fabric3.wsdl.contribution.ServiceSymbol;
@@ -238,6 +241,15 @@ public class WsdlResourceProcessor implements ResourceProcessor {
                     new ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract>(symbol, contract);
             resource.addResourceElement(element);
         }
+
+        // introspect bindings
+        Collection<Binding> bindings = definition.getBindings().values();
+        for (Binding binding : bindings) {
+            BindingSymbol bindingSymbol = new BindingSymbol(binding.getQName());
+            ResourceElement<BindingSymbol, Binding> serviceElement = new ResourceElement<BindingSymbol, Binding>(bindingSymbol, binding);
+            resource.addResourceElement(serviceElement);
+        }
+
 
         // callback processor extensions
         for (WsdlResourceProcessorExtension extension : extensions) {

@@ -1,6 +1,8 @@
 package org.fabric3.binding.ws.metro.generator.validator;
 
+import javax.wsdl.Binding;
 import javax.wsdl.Port;
+import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
@@ -13,6 +15,7 @@ import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.wsdl.contribution.BindingSymbol;
 import org.fabric3.wsdl.contribution.PortSymbol;
 import org.fabric3.wsdl.contribution.WsdlServiceContractSymbol;
 import org.fabric3.wsdl.model.WsdlServiceContract;
@@ -23,6 +26,8 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class WsdlEndpointValidatorImpl implements WsdlEndpointValidator {
+    private static final String SOAP_HTTP_TRANSPORT = "http://schemas.xmlsoap.org/soap/http";
+
     private MetaDataStore store;
     private ContractMatcher matcher;
     private boolean enabled;  // default is not enabled
@@ -59,5 +64,44 @@ public class WsdlEndpointValidatorImpl implements WsdlEndpointValidator {
         } catch (StoreException e) {
             throw new EndpointValidationException(e);
         }
+    }
+
+    public void validateBinding(URI contributionUri, LogicalBinding<WsBindingDefinition> binding, QName bindingName) throws EndpointValidationException {
+        if (!enabled) {
+            return;
+        }
+        try {
+
+            // validate contracts
+            ServiceContract otherContract = binding.getParent().getServiceContract();
+
+            DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+            BindingSymbol bindingSymbol = new BindingSymbol(bindingName);
+            Binding wsdlBinding = store.resolve(contributionUri, Binding.class, bindingSymbol, context).getValue();
+            QName portTypeName = wsdlBinding.getPortType().getQName();
+
+            WsdlServiceContractSymbol contractSymbol = new WsdlServiceContractSymbol(portTypeName);
+            WsdlServiceContract contract = store.resolve(contributionUri, WsdlServiceContract.class, contractSymbol, context).getValue();
+
+            MatchResult result = matcher.isAssignableFrom(contract, otherContract, true);
+            if (!result.isAssignable()) {
+                throw new EndpointValidationException(result.getError());
+            }
+
+            // validate binding type
+            for (Object element : wsdlBinding.getExtensibilityElements()) {
+                if (element instanceof SOAPBinding) {
+                    SOAPBinding soapBinding = (SOAPBinding) element;
+                    if (!SOAP_HTTP_TRANSPORT.equals(soapBinding.getTransportURI())) {
+                        throw new EndpointValidationException("Invalid SOAP binding transport specified for: " + binding.getParent().getUri());
+                    }
+                }
+            }
+
+
+        } catch (StoreException e) {
+            throw new EndpointValidationException(e);
+        }
+
     }
 }

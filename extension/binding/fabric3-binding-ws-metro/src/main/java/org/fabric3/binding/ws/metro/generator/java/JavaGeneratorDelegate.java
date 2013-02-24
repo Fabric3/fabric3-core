@@ -39,6 +39,7 @@
 package org.fabric3.binding.ws.metro.generator.java;
 
 import javax.jws.WebService;
+import javax.wsdl.Binding;
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -419,15 +420,21 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                 }
             }
             WsdlElement wsdlElement = GenerationHelper.parseWsdlElement(wsdlElementString);
-            if (wsdlElement.getType() == WsdlElement.Type.SERVICE) {
+            if (WsdlElement.Type.SERVICE == wsdlElement.getType()) {
                 throw new GenerationException("Services cannot specify a wsdl.service in the web service binding: " + binding.getParent().getUri());
             }
 
             if (wsdlLocation == null) {
                 URI contributionUri = binding.getParent().getParent().getDefinition().getContributionUri();
-                Definition wsdl = wsdlResolver.resolveWsdlByPortName(contributionUri, wsdlElement.getPortName());
-                endpointDefinition = endpointResolver.resolveServiceEndpoint(wsdlElement, wsdl);
-                endpointValidator.validate(contributionUri, binding, endpointDefinition);
+                if (WsdlElement.Type.BINDING == wsdlElement.getType()) {
+                    // binding element, validate and then generate from class
+                    endpointValidator.validateBinding(contributionUri, binding, wsdlElement.getBindingName());
+                    return synthesizeEndpointFromClass(binding, contract, serviceClass);
+                } else {
+                    Definition wsdl = wsdlResolver.resolveWsdlByPortName(contributionUri, wsdlElement.getPortName());
+                    endpointDefinition = endpointResolver.resolveServiceEndpoint(wsdlElement, wsdl);
+                    endpointValidator.validate(contributionUri, binding, endpointDefinition);
+                }
             } else {
                 Definition wsdl = wsdlResolver.parseWsdl(wsdlLocation);
                 endpointDefinition = endpointResolver.resolveServiceEndpoint(wsdlElement, wsdl);
@@ -509,25 +516,36 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         WsBindingDefinition definition = binding.getDefinition();
         ReferenceEndpointDefinition endpointDefinition;
 
+        URI contributionUri = getContributionUri(binding);
+
         if (targetUrl != null) {
-            endpointDefinition = synthesizer.synthesizeReferenceEndpoint(contract, serviceClass, targetUrl);
+            if (definition.getWsdlElement() != null) {
+                // wsdl binding specified, use that port type
+                WsdlElement wsdlElement = GenerationHelper.parseWsdlElement(definition.getWsdlElement());
+                if (WsdlElement.Type.BINDING != wsdlElement.getType()) {
+                    throw new GenerationException("Cannot specify a target URI and non-binding wsdlElement: " + binding.getParent().getUri());
+                }
+                QName bindingName = wsdlElement.getBindingName();
+                Definition wsdl = wsdlResolver.resolveWsdlByBindingName(contributionUri, bindingName);
+                Binding wsdlBinding = wsdl.getBinding(bindingName);
+                QName portTypeName = wsdlBinding.getPortType().getQName();
+                endpointDefinition = synthesizer.synthesizeReferenceEndpoint(contract, serviceClass, portTypeName, targetUrl);
+                endpointValidator.validateBinding(contributionUri, binding, bindingName);
+            } else {
+                endpointDefinition = synthesizer.synthesizeReferenceEndpoint(contract, serviceClass, targetUrl);
+            }
         } else {
             // no target uri specified, introspect from wsdlElement
             WsdlElement wsdlElement = GenerationHelper.parseWsdlElement(definition.getWsdlElement());
             if (wsdlLocation == null) {
                 // if the WSDL location is not specified, resolve against the contribution imports
-                LogicalComponent<?> current = binding.getParent().getParent();
-
-                while (current.getParent().getParent() != null) {  // component deployed directly to the domain
-                    current = current.getParent();
-                }
-                URI contributionUri = current.getDefinition().getContributionUri();
-
                 Definition wsdl;
-                if (wsdlElement.getType() == WsdlElement.Type.PORT) {
+                if (WsdlElement.Type.PORT == wsdlElement.getType()) {
                     wsdl = wsdlResolver.resolveWsdlByPortName(contributionUri, wsdlElement.getPortName());
-                } else {
+                } else if (WsdlElement.Type.SERVICE == wsdlElement.getType()) {
                     wsdl = wsdlResolver.resolveWsdlByServiceName(contributionUri, wsdlElement.getServiceName());
+                } else {
+                    wsdl = wsdlResolver.resolveWsdlByBindingName(contributionUri, wsdlElement.getBindingName());
                 }
                 endpointDefinition = endpointResolver.resolveReferenceEndpoint(wsdlElement, wsdl);
             } else {
@@ -538,6 +556,15 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
         }
         return endpointDefinition;
+    }
+
+    private URI getContributionUri(LogicalBinding<WsBindingDefinition> binding) {
+        LogicalComponent<?> current = binding.getParent().getParent();
+
+        while (current.getParent().getParent() != null) {  // component deployed directly to the domain
+            current = current.getParent();
+        }
+        return current.getDefinition().getContributionUri();
     }
 
 }

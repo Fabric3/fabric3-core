@@ -44,11 +44,13 @@ import javax.xml.namespace.QName;
  */
 public class WsdlElement {
     public enum Type {
-        PORT, SERVICE
+        PORT, SERVICE, BINDING
     }
 
     private QName serviceName;
     private QName portName;
+    private QName bindingName;
+
     private Type type;
 
     public WsdlElement(QName serviceName, QName portName) {
@@ -57,9 +59,15 @@ public class WsdlElement {
         this.type = Type.PORT;
     }
 
-    public WsdlElement(QName serviceName) {
-        this.serviceName = serviceName;
-        this.type = Type.SERVICE;
+    public WsdlElement(QName name, Type type) {
+        if (Type.SERVICE == type) {
+            this.serviceName = name;
+        } else if (Type.BINDING == type) {
+            this.bindingName = name;
+        } else {
+            throw new IllegalArgumentException("Must by a service or binding name");
+        }
+        this.type = type;
     }
 
     public QName getServiceName() {
@@ -68,6 +76,10 @@ public class WsdlElement {
 
     public QName getPortName() {
         return portName;
+    }
+
+    public QName getBindingName() {
+        return bindingName;
     }
 
     public Type getType() {
