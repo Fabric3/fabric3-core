@@ -76,6 +76,7 @@ import org.fabric3.binding.ws.metro.generator.policy.WsdlPolicyAttacher;
 import org.fabric3.binding.ws.metro.generator.resolver.EndpointResolutionException;
 import org.fabric3.binding.ws.metro.generator.resolver.EndpointResolver;
 import org.fabric3.binding.ws.metro.generator.resolver.TargetUrlResolver;
+import org.fabric3.binding.ws.metro.generator.resolver.WsdlResolutionException;
 import org.fabric3.binding.ws.metro.generator.resolver.WsdlResolver;
 import org.fabric3.binding.ws.metro.generator.validator.WsdlEndpointValidator;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
@@ -526,7 +527,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                     throw new GenerationException("Cannot specify a target URI and non-binding wsdlElement: " + binding.getParent().getUri());
                 }
                 QName bindingName = wsdlElement.getBindingName();
-                Definition wsdl = wsdlResolver.resolveWsdlByBindingName(contributionUri, bindingName);
+                Definition wsdl = resolveWsdl(wsdlLocation, contributionUri, bindingName);
                 Binding wsdlBinding = wsdl.getBinding(bindingName);
                 QName portTypeName = wsdlBinding.getPortType().getQName();
                 endpointDefinition = synthesizer.synthesizeReferenceEndpoint(contract, serviceClass, portTypeName, targetUrl);
@@ -540,13 +541,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             if (wsdlLocation == null) {
                 // if the WSDL location is not specified, resolve against the contribution imports
                 Definition wsdl;
-                if (WsdlElement.Type.PORT == wsdlElement.getType()) {
-                    wsdl = wsdlResolver.resolveWsdlByPortName(contributionUri, wsdlElement.getPortName());
-                } else if (WsdlElement.Type.SERVICE == wsdlElement.getType()) {
-                    wsdl = wsdlResolver.resolveWsdlByServiceName(contributionUri, wsdlElement.getServiceName());
-                } else {
-                    wsdl = wsdlResolver.resolveWsdlByBindingName(contributionUri, wsdlElement.getBindingName());
-                }
+                wsdl = resolveWsdl(contributionUri, wsdlElement);
                 endpointDefinition = endpointResolver.resolveReferenceEndpoint(wsdlElement, wsdl);
             } else {
                 // a specific WSDL location is specified
@@ -556,6 +551,28 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
         }
         return endpointDefinition;
+    }
+
+    private Definition resolveWsdl(URI contributionUri, WsdlElement wsdlElement) throws WsdlResolutionException {
+        Definition wsdl;
+        if (WsdlElement.Type.PORT == wsdlElement.getType()) {
+            wsdl = wsdlResolver.resolveWsdlByPortName(contributionUri, wsdlElement.getPortName());
+        } else if (WsdlElement.Type.SERVICE == wsdlElement.getType()) {
+            wsdl = wsdlResolver.resolveWsdlByServiceName(contributionUri, wsdlElement.getServiceName());
+        } else {
+            wsdl = wsdlResolver.resolveWsdlByBindingName(contributionUri, wsdlElement.getBindingName());
+        }
+        return wsdl;
+    }
+
+    private Definition resolveWsdl(URL wsdlLocation, URI contributionUri, QName bindingName) throws WsdlResolutionException {
+        Definition wsdl;
+        if (wsdlLocation != null) {
+            wsdl = wsdlResolver.parseWsdl(wsdlLocation);
+        } else {
+            wsdl = wsdlResolver.resolveWsdlByBindingName(contributionUri, bindingName);
+        }
+        return wsdl;
     }
 
     private URI getContributionUri(LogicalBinding<WsBindingDefinition> binding) {
