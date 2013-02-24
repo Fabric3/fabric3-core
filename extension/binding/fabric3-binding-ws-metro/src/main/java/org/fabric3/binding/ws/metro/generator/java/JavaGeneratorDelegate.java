@@ -231,12 +231,12 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
     public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract, EffectivePolicy policy)
             throws GenerationException {
         URL targetUrl = null;
-        URI targetUri = binding.getDefinition().getTargetUri();
+        WsBindingDefinition definition = binding.getDefinition();
+        URI targetUri = definition.getTargetUri();
 
         if (binding.isCallback() && targetUri != null) {
             throw new GenerationException("A web services callback binding cannot be used with a binding URI on a service: " + binding.getParent().getUri());
         }
-
 
         if (targetUri != null) {
             if (!targetUri.isAbsolute()) {
@@ -247,6 +247,8 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             } catch (MalformedURLException e) {
                 throw new GenerationException(e);
             }
+        } else if (definition.getWsdlElement() == null && definition.getWsdlLocation() == null) {
+            throw new GenerationException("A web service binding URI must be specified: " + binding.getParent().getUri());
         }
 
         return generateTarget(binding, targetUrl, contract, policy);
