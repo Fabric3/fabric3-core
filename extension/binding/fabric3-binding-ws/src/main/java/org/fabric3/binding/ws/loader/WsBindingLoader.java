@@ -58,6 +58,7 @@ import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
+import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -69,7 +70,9 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  */
 @EagerInit
 public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefinition> {
-    private static final String WSDL_NS = "http://www.w3.org/2004/08/wsdl-instance";
+    private static final String WSDL_NS = "http://www.w3.org/ns/wsdl-instance";
+    private static final String WSDL_2004_NS = "http://www.w3.org/2004/08/wsdl-instance";
+
     private final LoaderHelper loaderHelper;
     private final LoaderRegistry registry;
 
@@ -87,9 +90,13 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
 
     @SuppressWarnings({"unchecked"})
     public WsBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-
+        Location location = reader.getLocation();
         String wsdlElement = reader.getAttributeValue(null, "wsdlElement");
         String wsdlLocation = reader.getAttributeValue(WSDL_NS, "wsdlLocation");
+        if (wsdlLocation == null) {
+            wsdlLocation = reader.getAttributeValue(WSDL_2004_NS, "wsdlLocation");
+        }
+
         int retries = parseRetries(reader, context);
 
         String bindingName = reader.getAttributeValue(null, "name");
@@ -102,29 +109,34 @@ public class WsBindingLoader extends AbstractValidatingTypeLoader<WsBindingDefin
 
         validateAttributes(reader, context, binding);
 
+        if (wsdlLocation != null && wsdlElement == null) {
+            MissingAttribute error = new MissingAttribute("A wsdlLocation was specified but not a wsdlElement", location, binding);
+            context.addError(error);
+        }
+
         //Load optional sub elements config parameters
         while (true) {
             switch (reader.next()) {
-            case START_ELEMENT:
-                Object elementValue = registry.load(reader, Object.class, context);
-                if (elementValue instanceof BindingHandlerDefinition) {
-                    binding.addHandler((BindingHandlerDefinition) elementValue);
-                } else if (elementValue instanceof Map) {
-                    binding.setConfiguration((Map<String, String>) elementValue);
-                } else if (elementValue instanceof EndpointReference) {
-                    EndpointReference endpointReference = (EndpointReference) elementValue;
-                    binding.setTargetUri(endpointReference.getAddress());
-                }
-                break;
-            case END_ELEMENT:
-                String name = reader.getName().getLocalPart();
-                if ("binding.ws".equals(name)) {
+                case START_ELEMENT:
+                    Object elementValue = registry.load(reader, Object.class, context);
+                    if (elementValue instanceof BindingHandlerDefinition) {
+                        binding.addHandler((BindingHandlerDefinition) elementValue);
+                    } else if (elementValue instanceof Map) {
+                        binding.setConfiguration((Map<String, String>) elementValue);
+                    } else if (elementValue instanceof EndpointReference) {
+                        EndpointReference endpointReference = (EndpointReference) elementValue;
+                        binding.setTargetUri(endpointReference.getAddress());
+                    }
+                    break;
+                case END_ELEMENT:
+                    String name = reader.getName().getLocalPart();
+                    if ("binding.ws".equals(name)) {
+                        return binding;
+                    }
+                    break;
+                case XMLStreamConstants.END_DOCUMENT:
+                    // avoid infinite loop if end element not present
                     return binding;
-                }
-                break;
-            case XMLStreamConstants.END_DOCUMENT:
-                // avoid infinite loop if end element not present
-                return binding;
             }
         }
     }
