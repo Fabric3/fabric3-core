@@ -37,19 +37,18 @@
  */
 package org.fabric3.binding.ws.metro.runtime.policy;
 
-import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.soap.AddressingFeature;
 import javax.xml.ws.soap.MTOMFeature;
 import javax.xml.ws.soap.SOAPBinding;
+import java.lang.reflect.Field;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.sun.xml.ws.binding.SOAPBindingImpl;
 import com.sun.xml.ws.developer.BindingTypeFeature;
 import com.sun.xml.ws.developer.JAXWSProperties;
-
 import org.fabric3.binding.ws.metro.util.MayProvideIntents;
 
 /**
@@ -89,6 +88,10 @@ public class DefaultFeatureResolver implements FeatureResolver {
         if (requestedIntents.contains(MayProvideIntents.SOAP1_1)) {
             features.add(createBindingFeature(SOAPBinding.SOAP11HTTP_BINDING));
         } else if (requestedIntents.contains(MayProvideIntents.SOAP1_2)) {
+            features.add(createBindingFeature(SOAPBindingImpl.SOAP12HTTP_BINDING));
+        } else if (requestedIntents.contains(MayProvideIntents.SOAPV1_1)) {
+            features.add(createBindingFeature(SOAPBinding.SOAP11HTTP_BINDING));
+        } else if (requestedIntents.contains(MayProvideIntents.SOAPV1_2)) {
             features.add(createBindingFeature(SOAPBindingImpl.SOAP12HTTP_BINDING));
         } else if (requestedIntents.contains(MayProvideIntents.X_SOAP1_2)) {
             features.add(createBindingFeature(SOAPBindingImpl.X_SOAP12HTTP_BINDING));

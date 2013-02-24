@@ -13,7 +13,9 @@ Public License. See the accompanying license file for details.
 
     <bindingType name="binding.ws" mayProvide="f3:messageOptimization
                                                 sca:SOAP.1_1
+                                                sca:SOAP.v1_1
                                                 sca:SOAP.1_2
+                                                sca:SOAP.v1_2
                                                 f3:xsoap12
                                                 f3:metroRest
                                                 f3:schemaValidation

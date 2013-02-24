@@ -174,8 +174,10 @@ Public License. See the accompanying license file for details.
         <description>
             Specifies that the SOAP messaging model is used for delivering messages.
         </description>
-        <qualifier name="1_1" default="true"/>
+        <qualifier name="1_1"/>
         <qualifier name="1_2"/>
+        <qualifier name="v1_1" default="true"/>
+        <qualifier name="v1_2"/>
     </intent>
 
     <intent name="JMS" constrains="sca:binding" intentType="interaction">
