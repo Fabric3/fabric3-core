@@ -549,9 +549,9 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             WsdlElement wsdlElement = GenerationHelper.parseWsdlElement(definition.getWsdlElement());
             if (wsdlLocation == null) {
                 // if the WSDL location is not specified, resolve against the contribution imports
-                Definition wsdl;
-                wsdl = resolveWsdl(contributionUri, wsdlElement);
+                Definition wsdl = resolveWsdl(contributionUri, wsdlElement);
                 endpointDefinition = endpointResolver.resolveReferenceEndpoint(wsdlElement, wsdl);
+                endpointValidator.validate(contributionUri, binding, endpointDefinition);
             } else {
                 // a specific WSDL location is specified
                 Definition wsdl = wsdlResolver.parseWsdl(wsdlLocation);

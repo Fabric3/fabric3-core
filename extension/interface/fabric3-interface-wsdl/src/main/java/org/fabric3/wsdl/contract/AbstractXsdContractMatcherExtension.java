@@ -52,14 +52,21 @@ import org.fabric3.spi.model.type.xsd.XSDType;
 /**
  * An abstract ContractMatcher that uses XML Schema to match contracts specified with different type systems.
  */
-public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContract, T extends ServiceContract>
-        implements ContractMatcherExtension<S, T> {
+public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContract, T extends ServiceContract> implements ContractMatcherExtension<S, T> {
     private static final MatchResult MATCH = new MatchResult(true);
     private static final MatchResult NO_MATCH = new MatchResult(false);
 
     protected MatchResult matchContract(ServiceContract source, ServiceContract target, boolean reportErrors) {
         if (source == target) {
             return MATCH;
+        }
+        if ((source.getCallbackContract() == null && target.getCallbackContract() != null) || (source.getCallbackContract() != null
+                                                                                               && target.getCallbackContract() == null)) {
+            if (reportErrors) {
+                return new MatchResult("Callback contracts do not match");
+            } else {
+                return NO_MATCH;
+            }
         }
         for (Operation operation : source.getOperations()) {
             MatchResult match = matchOperation(operation, target.getOperations(), reportErrors);
@@ -132,8 +139,8 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
                     }
                 }
                 if (reportErrors) {
-                    return new MatchResult("Output types do not match on operation " + name
-                            + ". Types were " + outputType.getXsdType() + " and " + candidateOutputType.getXsdType());
+                    return new MatchResult("Output types do not match on operation " + name + ". Types were " + outputType.getXsdType() + " and "
+                                           + candidateOutputType.getXsdType());
                 } else {
                     return NO_MATCH;
                 }
@@ -141,15 +148,15 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
             matched = true;
             // check fault types
             // FIXME handle web faults
-//            List<DataType<?>> faultTypes = operation.getFaultTypes();
-//            List<DataType<?>> candidateFaultTypes = candidate.getFaultTypes();
-//            for (int i = 0; i < faultTypes.size(); i++) {
-//                DataType<?> faultType = faultTypes.get(i);
-//                DataType<?> candidateFaultType = candidateFaultTypes.get(i);
-//                if (faultType.getXsdType() == null || !faultType.getXsdType().equals(candidateFaultType.getXsdType())) {
-//                    return false;
-//                }
-//            }
+            //            List<DataType<?>> faultTypes = operation.getFaultTypes();
+            //            List<DataType<?>> candidateFaultTypes = candidate.getFaultTypes();
+            //            for (int i = 0; i < faultTypes.size(); i++) {
+            //                DataType<?> faultType = faultTypes.get(i);
+            //                DataType<?> candidateFaultType = candidateFaultTypes.get(i);
+            //                if (faultType.getXsdType() == null || !faultType.getXsdType().equals(candidateFaultType.getXsdType())) {
+            //                    return false;
+            //                }
+            //            }
         }
         if (matched) {
             return MATCH;
@@ -163,8 +170,8 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
     }
 
     /**
-     * Attempts to match a XSD sequence against another type. This is triggered by JAXB when a sequence containing a single simple type is mapped to a
-     * single Java type as in:
+     * Attempts to match a XSD sequence against another type. This is triggered by JAXB when a sequence containing a single simple type is mapped to a single
+     * Java type as in:
      * <p/>
      * <pre>
      * &lt;xs:complexType name="chair_kind"&gt;
@@ -187,7 +194,7 @@ public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContr
                 // sequence type matches
                 return true;
             }
-            if (type.getXsdType().getNamespaceURI().equals("http://util.java/") && type.getXsdType().getLocalPart().equals("list")){
+            if (type.getXsdType().getNamespaceURI().equals("http://util.java/") && type.getXsdType().getLocalPart().equals("list")) {
                 return true;
             }
         }

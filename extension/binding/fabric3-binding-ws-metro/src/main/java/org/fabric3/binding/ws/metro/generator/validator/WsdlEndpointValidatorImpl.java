@@ -6,7 +6,7 @@ import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
+import org.fabric3.binding.ws.metro.provision.AbstractEndpointDefinition;
 import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -42,7 +42,7 @@ public class WsdlEndpointValidatorImpl implements WsdlEndpointValidator {
         this.enabled = enabled;
     }
 
-    public void validate(URI contributionUri, LogicalBinding<WsBindingDefinition> binding, ServiceEndpointDefinition endpointDefinition)
+    public void validate(URI contributionUri, LogicalBinding<WsBindingDefinition> binding, AbstractEndpointDefinition endpointDefinition)
             throws EndpointValidationException {
         if (!enabled) {
             return;
@@ -97,7 +97,6 @@ public class WsdlEndpointValidatorImpl implements WsdlEndpointValidator {
                     }
                 }
             }
-
 
         } catch (StoreException e) {
             throw new EndpointValidationException(e);

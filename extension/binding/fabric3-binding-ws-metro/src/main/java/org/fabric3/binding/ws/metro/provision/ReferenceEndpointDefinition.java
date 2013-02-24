@@ -37,21 +37,18 @@
 */
 package org.fabric3.binding.ws.metro.provision;
 
-import java.io.Serializable;
-import java.net.URL;
 import javax.xml.namespace.QName;
+import java.net.URL;
 
 /**
  * Encapsulates endpoint information for the reference side of an invocation chain.
  */
-public class ReferenceEndpointDefinition implements Serializable {
+public class ReferenceEndpointDefinition extends AbstractEndpointDefinition {
     private static final long serialVersionUID = -7422624061436929193L;
-    private QName serviceName;
-    private QName portName;
+
     private boolean defaultServiceName;
     private QName portTypeName;
     private URL url;
-    private String wsdl;
 
     /**
      * Constructor.
@@ -63,52 +60,31 @@ public class ReferenceEndpointDefinition implements Serializable {
      * @param url                the endpoint URL
      */
     public ReferenceEndpointDefinition(QName serviceName, boolean defaultServiceName, QName portName, QName portTypeName, URL url) {
-        this.serviceName = serviceName;
+        super(serviceName, portName, null);
         this.defaultServiceName = defaultServiceName;
-        this.portName = portName;
         this.portTypeName = portTypeName;
         this.url = url;
     }
 
     public ReferenceEndpointDefinition(QName serviceName, boolean defaultServiceName, QName portName, QName portTypeName, URL url, String wsdl) {
-        this.serviceName = serviceName;
+        super(serviceName, portName, wsdl);
         this.defaultServiceName = defaultServiceName;
-        this.portName = portName;
         this.portTypeName = portTypeName;
         this.url = url;
-        this.wsdl = wsdl;
     }
 
     /**
-     * Returns the qualified service name.
-     *
-     * @return the qualified service name
-     */
-    public QName getServiceName() {
-        return serviceName;
-    }
-
-    /**
-     * Returns true if the service name is a default and may be overriden by introspecting WSDL. If a service name is not specified using the
-     * <code>WebService.serviceName</code> annotation attribute, it is calculated according to JAX-WS mapping rules. However, web services stacks such
-     * as WCF (.NET) adopt different defaulting schemes. To accommodate this, during reference proxy creation, the Fabric3 runtime will introspect the
-     * target WSDL to determine the actual service name if the default name is not valid. The actual name will be determined by mapping the portType
-     * name to a service defined in the WSDL. Note this can only be done if the WSDL contains exactly one service that uses the portType. Otherwise, a
-     * serviceName will need to be explicitly specified using the <code>WebService</code> annotation or wsdlElement attribute of binding.ws.
+     * Returns true if the service name is a default and may be overridden by introspecting WSDL. If a service name is not specified using the
+     * <code>WebService.serviceName</code> annotation attribute, it is calculated according to JAX-WS mapping rules. However, web services stacks such as WCF
+     * (.NET) adopt different defaulting schemes. To accommodate this, during reference proxy creation, the Fabric3 runtime will introspect the target WSDL to
+     * determine the actual service name if the default name is not valid. The actual name will be determined by mapping the portType name to a service defined
+     * in the WSDL. Note this can only be done if the WSDL contains exactly one service that uses the portType. Otherwise, a serviceName will need to be
+     * explicitly specified using the <code>WebService</code> annotation or wsdlElement attribute of binding.ws.
      *
      * @return true if the service name is a default and may be overriden by introspecting WSDL
      */
     public boolean isDefaultServiceName() {
         return defaultServiceName;
-    }
-
-    /**
-     * Returns the qualified port name.
-     *
-     * @return the qualified port name
-     */
-    public QName getPortName() {
-        return portName;
     }
 
     /**
@@ -129,13 +105,4 @@ public class ReferenceEndpointDefinition implements Serializable {
         return url;
     }
 
-    /**
-     * Returns a serialized WSDL specified using wsdlElement or wsdlLocation, or null if one is not specified. This WSDL may be overriden by a
-     * generated one if policy is specified on the reference. Otherwise, it should be used to create JAX-WS reference proxies.
-     *
-     * @return the serialized WSDL or null
-     */
-    public String getWsdl() {
-        return wsdl;
-    }
 }

@@ -35,38 +35,57 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.ws.metro.generator.validator;
+package org.fabric3.binding.ws.metro.provision;
 
 import javax.xml.namespace.QName;
-import java.net.URI;
-
-import org.fabric3.binding.ws.metro.provision.AbstractEndpointDefinition;
-import org.fabric3.binding.ws.model.WsBindingDefinition;
-import org.fabric3.spi.model.instance.LogicalBinding;
+import java.io.Serializable;
 
 /**
- * Validates WSDL endpoint configuration.
+ * Encapsulates endpoint information for the reference side of an invocation chain.
  */
-public interface WsdlEndpointValidator {
+public abstract class AbstractEndpointDefinition implements Serializable {
+    private static final long serialVersionUID = -8322624061436929156L;
+    private QName serviceName;
+    private QName portName;
+    private String wsdl;
 
     /**
-     * Validates the endpoint configuration using the binding and endpoint definition.
+     * Constructor.
      *
-     * @param contributionUri    the contribution the validation applies to
-     * @param binding            the binding defining the endpoint
-     * @param endpointDefinition the generate endpoint definition
-     * @throws EndpointValidationException if the definition is invalid
+     * @param serviceName the qualified name of the target service
+     * @param portName    the port name
+     * @param wsdl        the serialized wsdl
      */
-    void validate(URI contributionUri, LogicalBinding<WsBindingDefinition> binding, AbstractEndpointDefinition endpointDefinition)
-            throws EndpointValidationException;
+    public AbstractEndpointDefinition(QName serviceName, QName portName, String wsdl) {
+        this.serviceName = serviceName;
+        this.portName = portName;
+    }
 
     /**
-     * Validates the endpoint configuration using the SCA binding and WSDL binding definitions.
+     * Returns the qualified service name.
      *
-     * @param contributionUri the contribution the validation applies to
-     * @param binding         the binding defining the endpoint
-     * @throws EndpointValidationException if the definition is invalid
+     * @return the qualified service name
      */
-    public void validateBinding(URI contributionUri, LogicalBinding<WsBindingDefinition> binding, QName wsdlBinding) throws EndpointValidationException;
+    public QName getServiceName() {
+        return serviceName;
+    }
 
+    /**
+     * Returns the qualified port name.
+     *
+     * @return the qualified port name
+     */
+    public QName getPortName() {
+        return portName;
+    }
+
+    /**
+     * Returns a serialized WSDL specified using wsdlElement or wsdlLocation, or null if one is not specified. This WSDL may be overriden by a generated one if
+     * policy is specified on the reference. Otherwise, it should be used to create JAX-WS reference proxies.
+     *
+     * @return the serialized WSDL or null
+     */
+    public String getWsdl() {
+        return wsdl;
+    }
 }

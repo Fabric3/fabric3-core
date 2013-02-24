@@ -93,8 +93,8 @@ import org.w3c.dom.Element;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 /**
- * Indexes and processes a WSDL document, referenced schemas, and introspected service contracts deriving from port types in a contribution. This
- * implementation uses the WSDL4J to represent the document.
+ * Indexes and processes a WSDL document, referenced schemas, and introspected service contracts deriving from port types in a contribution. This implementation
+ * uses the WSDL4J to represent the document.
  */
 @EagerInit
 public class WsdlResourceProcessor implements ResourceProcessor {
@@ -158,32 +158,21 @@ public class WsdlResourceProcessor implements ResourceProcessor {
     }
 
     public void process(Resource resource, IntrospectionContext context) throws InstallException {
+        Definition definition = resolveLocalWsdl(resource);
         // Process callbacks here (as opposed to eagerly in #index(..) since the SCA callback attribute may reference a portType in another document.
         // Processing at this point guarantees the callback portType will be indexed and referenceable.
         for (ResourceElement<?, ?> element : resource.getResourceElements()) {
             if (element.getSymbol() instanceof WsdlServiceContractSymbol) {
                 WsdlServiceContract contract = (WsdlServiceContract) element.getValue();
                 PortType portType = contract.getPortType();
-                QName callbackPortType = (QName) portType.getExtensionAttribute(CALLBACK_ATTRIBUTE);
-                if (callbackPortType != null) {
-                    WsdlServiceContractSymbol symbol = new WsdlServiceContractSymbol(callbackPortType);
-                    URI contributionUri = context.getContributionUri();
-                    ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract> resolved;
-                    try {
-                        resolved = store.resolve(contributionUri, WsdlServiceContract.class, symbol, context);
-                    } catch (StoreException e) {
-                        CallbackContractLoadError error = new CallbackContractLoadError("Error resolving callback port type:" + callbackPortType, e);
-                        context.addError(error);
-                        continue;
+                QName callbackPortTypeName = (QName) portType.getExtensionAttribute(CALLBACK_ATTRIBUTE);
+                if (callbackPortTypeName != null) {
+                    PortType callbackPortType = definition.getPortType(callbackPortTypeName);
+                    if (callbackPortType != null) {
+                        resolveLocalCallbackContract(callbackPortTypeName, contract, resource, context);
+                    } else {
+                        resolveExternalCallbackContract(callbackPortTypeName, contract, context);
                     }
-                    if (resolved == null) {
-                        PortTypeNotFound error = new PortTypeNotFound("Callback port type not found: " + callbackPortType);
-                        context.addError(error);
-                        continue;
-
-                    }
-                    WsdlServiceContract callbackContract = resolved.getValue();
-                    contract.setCallbackContract(callbackContract);
                 }
             }
         }
@@ -237,8 +226,8 @@ public class WsdlResourceProcessor implements ResourceProcessor {
             WsdlServiceContract contract = processor.introspect(portType, definition, schemaCollection, context);
             QName name = portType.getQName();
             WsdlServiceContractSymbol symbol = new WsdlServiceContractSymbol(name);
-            ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract> element =
-                    new ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract>(symbol, contract);
+            ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract> element
+                    = new ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract>(symbol, contract);
             resource.addResourceElement(element);
         }
 
@@ -249,7 +238,6 @@ public class WsdlResourceProcessor implements ResourceProcessor {
             ResourceElement<BindingSymbol, Binding> serviceElement = new ResourceElement<BindingSymbol, Binding>(bindingSymbol, binding);
             resource.addResourceElement(serviceElement);
         }
-
 
         // callback processor extensions
         for (WsdlResourceProcessorExtension extension : extensions) {
@@ -351,7 +339,6 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         definition.setTypes(types);
     }
 
-
     /**
      * Parses the contents of schema entries and imported documents using Apache Commons XmlSchema.
      *
@@ -396,5 +383,58 @@ public class WsdlResourceProcessor implements ResourceProcessor {
         return new RelativeUrlResolver(collection, classLoaderResolver);
     }
 
+    private Definition resolveLocalWsdl(Resource resource) {
+        Definition definition = null;
+        for (ResourceElement<?, ?> element : resource.getResourceElements()) {
+            if (element.getSymbol() instanceof WsdlSymbol) {
+                definition = (Definition) element.getValue();
+                break;
+            }
+        }
+        if (definition == null) {
+            // should not happen
+            throw new AssertionError("WSDL document not found");
+        }
+        return definition;
+    }
+
+    private void resolveExternalCallbackContract(QName callbackPortTypeName, WsdlServiceContract contract, IntrospectionContext context) {
+
+        WsdlServiceContractSymbol symbol = new WsdlServiceContractSymbol(callbackPortTypeName);
+        URI contributionUri = context.getContributionUri();
+        ResourceElement<WsdlServiceContractSymbol, WsdlServiceContract> resolved;
+        try {
+            resolved = store.resolve(contributionUri, WsdlServiceContract.class, symbol, context);
+        } catch (StoreException e) {
+            CallbackContractLoadError error = new CallbackContractLoadError("Error resolving callback port type:" + callbackPortTypeName, e);
+            context.addError(error);
+            return;
+        }
+        if (resolved == null) {
+            PortTypeNotFound error = new PortTypeNotFound("Callback port type not found: " + callbackPortTypeName);
+            context.addError(error);
+            return;
+
+        }
+        WsdlServiceContract callbackContract = resolved.getValue();
+        contract.setCallbackContract(callbackContract);
+    }
+
+    private void resolveLocalCallbackContract(QName callbackPortTypeName, WsdlServiceContract contract, Resource resource, IntrospectionContext context) {
+
+        WsdlServiceContractSymbol symbol = new WsdlServiceContractSymbol(callbackPortTypeName);
+
+        for (ResourceElement<?, ?> resourceElement : resource.getResourceElements()) {
+            if (resourceElement.getSymbol().equals(symbol)) {
+                WsdlServiceContract callbackContract = (WsdlServiceContract) resourceElement.getValue();
+                contract.setCallbackContract(callbackContract);
+                break;
+            }
+        }
+        if (contract.getCallbackContract() == null) {
+            PortTypeNotFound error = new PortTypeNotFound("Callback port type not found: " + callbackPortTypeName);
+            context.addError(error);
+        }
+    }
 
 }

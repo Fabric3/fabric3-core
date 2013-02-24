@@ -39,18 +39,14 @@
 package org.fabric3.binding.ws.metro.provision;
 
 import javax.xml.namespace.QName;
-import java.io.Serializable;
 import java.net.URI;
 
 /**
  * Encapsulates endpoint information for the service side of an invocation chain.
  */
-public class ServiceEndpointDefinition implements Serializable {
+public class ServiceEndpointDefinition extends AbstractEndpointDefinition {
     private static final long serialVersionUID = 3242092002688340187L;
-    private QName serviceName;
-    private QName portName;
     private URI servicePath;
-    private String wsdl;
 
     /**
      * Constructor.
@@ -61,10 +57,8 @@ public class ServiceEndpointDefinition implements Serializable {
      * @param wsdl        the serialized WSDL this endpoint definition is derived from
      */
     public ServiceEndpointDefinition(QName serviceName, QName portName, URI servicePath, String wsdl) {
-        this.serviceName = serviceName;
-        this.portName = portName;
+        super(serviceName, portName, wsdl);
         this.servicePath = servicePath;
-        this.wsdl = wsdl;
     }
 
     /**
@@ -79,24 +73,6 @@ public class ServiceEndpointDefinition implements Serializable {
     }
 
     /**
-     * Returns the qualified service name.
-     *
-     * @return the qualified service name
-     */
-    public QName getServiceName() {
-        return serviceName;
-    }
-
-    /**
-     * Returns the qualified port name.
-     *
-     * @return the qualified port name
-     */
-    public QName getPortName() {
-        return portName;
-    }
-
-    /**
      * Returns the service path relative to the runtme base HTTP address.
      *
      * @return the service path relative to the runtme base HTTP address
@@ -105,13 +81,4 @@ public class ServiceEndpointDefinition implements Serializable {
         return servicePath;
     }
 
-    /**
-     * Returns a serialized WSDL specified using wsdlElement or wsdlLocation, or null if one is not specified. This WSDL may be overriden by a generated one if
-     * policy is specified on the service. Otherwise, it should be used to create JAX-WS reference proxies.
-     *
-     * @return the serialized WSDL or null
-     */
-    public String getWsdl() {
-        return wsdl;
-    }
 }
