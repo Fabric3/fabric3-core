@@ -98,7 +98,7 @@ public class EndpointResolverImpl implements EndpointResolver {
         URL url = getAddress(port);
         QName portTypeName = port.getBinding().getPortType().getQName();
         String serializedWsdl = serializeWsdl(wsdl);
-        return new ReferenceEndpointDefinition(serviceName, false, portName, portTypeName, url, serializedWsdl);
+        return new ReferenceEndpointDefinition(serviceName, true, portName, portTypeName, url, serializedWsdl);
     }
 
     public String serializeWsdl(Definition wsdl) throws EndpointResolutionException {
