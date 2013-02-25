@@ -37,8 +37,8 @@
  */
 package org.fabric3.binding.ws.metro.util;
 
-import java.util.List;
 import javax.xml.namespace.QName;
+import java.util.List;
 
 import com.sun.xml.ws.api.BindingID;
 import com.sun.xml.ws.developer.JAXWSProperties;
@@ -57,8 +57,8 @@ public class DefaultBindingIdResolver implements BindingIdResolver {
     public BindingID resolveBindingId(List<QName> requestedIntents) {
 
         BindingID bindingID = BindingID.SOAP11_HTTP;
-        if (requestedIntents.contains(MayProvideIntents.SOAP1_2)) {
-            bindingID = BindingID.SOAP12_HTTP;
+        if (requestedIntents.contains(MayProvideIntents.SOAP1_2) || requestedIntents.contains(MayProvideIntents.SOAPV1_2)) {
+            bindingID = BindingID.X_SOAP12_HTTP;
         } else if (requestedIntents.contains(MayProvideIntents.X_SOAP1_2)) {
             bindingID = BindingID.X_SOAP12_HTTP;
         } else if (requestedIntents.contains(MayProvideIntents.REST)) {

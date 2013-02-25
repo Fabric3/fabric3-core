@@ -194,8 +194,19 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
                 // happens if WSDL service specified without a port name
                 portName = service.getPorts().next();
             }
-            port = (BindingProvider) service.getPort(portName, seiClass, features);
 
+            try {
+                port = (BindingProvider) service.getPort(portName, seiClass, features);
+            } catch (WebServiceException e) {
+                if (e.getMessage().contains("not a valid port")) {
+                    // can happen if port names do not follow JAX-WS Java--> WSDL mapping conventions
+                    portName = service.getPorts().next();
+                    port = (BindingProvider) service.getPort(portName, seiClass, features);
+                } else {
+                    throw e;
+                }
+
+            }
             configureConnection(port);
             configureSecurity(port);
             configureHandlers(port);

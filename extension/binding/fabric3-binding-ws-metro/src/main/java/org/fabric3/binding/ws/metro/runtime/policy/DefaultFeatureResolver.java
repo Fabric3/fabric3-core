@@ -88,11 +88,11 @@ public class DefaultFeatureResolver implements FeatureResolver {
         if (requestedIntents.contains(MayProvideIntents.SOAP1_1)) {
             features.add(createBindingFeature(SOAPBinding.SOAP11HTTP_BINDING));
         } else if (requestedIntents.contains(MayProvideIntents.SOAP1_2)) {
-            features.add(createBindingFeature(SOAPBindingImpl.SOAP12HTTP_BINDING));
+            features.add(createBindingFeature(SOAPBindingImpl.X_SOAP12HTTP_BINDING));
         } else if (requestedIntents.contains(MayProvideIntents.SOAPV1_1)) {
             features.add(createBindingFeature(SOAPBinding.SOAP11HTTP_BINDING));
         } else if (requestedIntents.contains(MayProvideIntents.SOAPV1_2)) {
-            features.add(createBindingFeature(SOAPBindingImpl.SOAP12HTTP_BINDING));
+            features.add(createBindingFeature(SOAPBindingImpl.X_SOAP12HTTP_BINDING));
         } else if (requestedIntents.contains(MayProvideIntents.X_SOAP1_2)) {
             features.add(createBindingFeature(SOAPBindingImpl.X_SOAP12HTTP_BINDING));
         } else if (requestedIntents.contains(MayProvideIntents.REST)) {
