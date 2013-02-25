@@ -12,6 +12,7 @@ Public License. See the accompanying license file for details.
              targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912">
 
     <bindingType name="binding.ws" mayProvide="f3:messageOptimization
+                                                sca:SOAP
                                                 sca:SOAP.1_1
                                                 sca:SOAP.v1_1
                                                 sca:SOAP.1_2
