@@ -40,8 +40,11 @@ package org.fabric3.binding.ws.metro.generator.java;
 
 import javax.jws.WebService;
 import javax.wsdl.Binding;
+import javax.wsdl.BindingInput;
+import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
 import javax.wsdl.extensions.soap.SOAPBinding;
+import javax.wsdl.extensions.soap.SOAPBody;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -559,6 +562,18 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                     if (element instanceof SOAPBinding) {
                         rpcLit = "rpc".equalsIgnoreCase(((SOAPBinding) element).getStyle());
                         break;
+                    }
+                }
+                List<BindingOperation> operations = wsdlBinding.getBindingOperations();
+                for (BindingOperation operation : operations) {
+                    BindingInput input = operation.getBindingInput();
+                    for (Object element : input.getExtensibilityElements()) {
+                        if (element instanceof SOAPBody) {
+                            SOAPBody body = (SOAPBody) element;
+                            if ("encoded".equals(body.getUse())) {
+                                throw new GenerationException("RPC encoded not supported: " + binding.getParent().getUri());
+                            }
+                        }
                     }
                 }
 
