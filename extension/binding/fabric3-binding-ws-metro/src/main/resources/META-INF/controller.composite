@@ -43,6 +43,10 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceGeneratorImpl"/>
     </component>
 
+    <component name="InterfaceFromWsdlGenerator">
+        <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceFromWsdlGeneratorImpl"/>
+    </component>
+
     <component name="JavaWsdlGenerator">
         <f3:implementation.system class="org.fabric3.binding.ws.metro.generator.java.wsdl.JavaWsdlGeneratorImpl"/>
     </component>

@@ -37,15 +37,28 @@
 */
 package org.fabric3.binding.ws.metro.generator.java.codegen;
 
-import javax.jws.Oneway;
 import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebResult;
 import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+import javax.wsdl.Binding;
+import javax.wsdl.BindingOperation;
+import javax.wsdl.Definition;
+import javax.wsdl.Operation;
+import javax.wsdl.Part;
+import javax.wsdl.Port;
+import javax.wsdl.PortType;
+import javax.wsdl.extensions.soap.SOAPOperation;
+import javax.xml.namespace.QName;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.SecureClassLoader;
+import java.util.Collection;
+import java.util.List;
 
+import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.util.ClassDefiner;
-import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 import org.objectweb.asm.AnnotationVisitor;
@@ -55,33 +68,24 @@ import org.objectweb.asm.Opcodes;
 import static org.fabric3.binding.ws.metro.generator.java.codegen.GeneratorHelper.getSignature;
 
 /**
- * Default implementation of InterfaceGenerator that uses ASM to generate a subclass of the original type with JAX-WS annotations.
+ *
  */
-@Service(InterfaceGenerator.class)
-public class InterfaceGeneratorImpl implements InterfaceGenerator, Opcodes {
+@Service(InterfaceFromWsdlGenerator.class)
+public class InterfaceFromWsdlGeneratorImpl implements InterfaceFromWsdlGenerator, Opcodes {
     private static final String SUFFIX = "F3Subtype";
 
     private ClassDefiner definer;
 
-    public InterfaceGeneratorImpl(@Reference ClassDefiner definer) {
+    public InterfaceFromWsdlGeneratorImpl(@Reference ClassDefiner definer) {
         this.definer = definer;
     }
 
     public boolean doGeneration(Class<?> clazz) {
-        if (!clazz.isAnnotationPresent(WebService.class)) {
-            // @WebService is required by Metro
-            return true;
-        }
-        for (Method method : clazz.getMethods()) {
-            if (method.isAnnotationPresent(OneWay.class)) {
-                return true;
-            }
-        }
-        return false;
+        return !clazz.isAnnotationPresent(WebService.class);
     }
 
-    public GeneratedInterface generate(Class interfaze, String targetNamespace, String wsdlLocation, String serviceName, String portName)
-            throws InterfaceGenerationException {
+    public GeneratedInterface generateRPCLit(Class interfaze, ReferenceEndpointDefinition endpointDefinition) throws InterfaceGenerationException {
+
         if (!(interfaze.getClassLoader() instanceof SecureClassLoader)) {
             throw new InterfaceGenerationException("Classloader for " + interfaze.getName() + " must be a SecureClassLoader");
         }
@@ -90,7 +94,7 @@ public class InterfaceGeneratorImpl implements InterfaceGenerator, Opcodes {
         String internalName = name.replace('.', '/');
         String generatedInternalName = internalName + SUFFIX;
         ClassWriter cw = new ClassWriter(0);
-        byte[] bytes = generate(cw, generatedInternalName, interfaze, targetNamespace, wsdlLocation, serviceName, portName);
+        byte[] bytes = generate(cw, generatedInternalName, interfaze, endpointDefinition);
         String generatedName = name + SUFFIX;
 
         try {
@@ -101,66 +105,102 @@ public class InterfaceGeneratorImpl implements InterfaceGenerator, Opcodes {
         } catch (InvocationTargetException e) {
             throw new InterfaceGenerationException(e);
         }
+
     }
 
-   private byte[] generate(ClassWriter cw,
-                            String className,
-                            Class<?> clazz,
-                            String targetNamespace,
-                            String wsdlLocation,
-                            String serviceName,
-                            String portName) {
+    private byte[] generate(ClassWriter cw, String className, Class<?> clazz, ReferenceEndpointDefinition endpointDefinition) {
         String[] interfaces = {clazz.getName().replace('.', '/')};
         cw.visit(V1_5, ACC_INTERFACE | ACC_PUBLIC, className, null, "java/lang/Object", interfaces);
-
+        endpointDefinition.getPortTypeName();
+        Definition definition = endpointDefinition.getDefinition();
         if (!clazz.isAnnotationPresent(WebService.class)) {
             // add @WebService if it is not present
             AnnotationVisitor av = cw.visitAnnotation(getSignature(WebService.class), true);
             // Set the port type name attribute to the original class name. This corresponds to Java-to-WSDL mappings as defined in
             // the JAX-WS specification (section 3.11)
-            av.visit("name", clazz.getSimpleName());
-            if (targetNamespace != null) {
-                av.visit("targetNamespace", targetNamespace);
-            }
-            if (wsdlLocation != null) {
-                av.visit("wsdlLocation", wsdlLocation);
-            }
-            if (serviceName != null) {
-                av.visit("serviceName", serviceName);
-            }
-            if (portName != null) {
-                av.visit("portName", portName);
-            }
+            av.visit("targetNamespace", definition.getTargetNamespace());
+
+            javax.wsdl.Service service = (javax.wsdl.Service) definition.getServices().values().iterator().next();
+            av.visit("serviceName", service.getQName().getLocalPart());
+            Port port = (Port) service.getPorts().values().iterator().next();
+            av.visit("portName", port.getName());
             av.visitEnd();
+
+            av = cw.visitAnnotation(getSignature(SOAPBinding.class), true);
+            av.visitEnum("style", getSignature(SOAPBinding.Style.class), "RPC");
+            av.visitEnd();
+
         }
         Method[] methods = clazz.getMethods();
         for (Method m : methods) {
-            generateMethod(cw, m);
+            generateMethod(cw, m, definition, endpointDefinition);
         }
         cw.visitEnd();
         return cw.toByteArray();
     }
 
-    private void generateMethod(ClassWriter cw, Method m) {
+    private void generateMethod(ClassWriter cw, Method m, Definition definition, ReferenceEndpointDefinition endpointDefinition) {
         MethodVisitor mv;
+
+        QName portTypeName = endpointDefinition.getPortTypeName();
+        Binding binding = null;
+        Collection<Binding> bindings = definition.getBindings().values();
+        for (Binding entry : bindings) {
+            if (entry.getPortType().getQName().equals(portTypeName)) {
+                binding = entry;
+                break;
+            }
+        }
+
+        if (binding == null) {
+            throw new AssertionError();
+        }
+
+        BindingOperation bindingOperation = null;
+        List<BindingOperation> bindingOperations = binding.getBindingOperations();
+        for (BindingOperation operation : bindingOperations) {
+            if (operation.getName().equals(m.getName())) {
+                bindingOperation = operation;
+                break;
+            }
+        }
+
+        SOAPOperation soapOperation = null;
+        for (Object element : bindingOperation.getExtensibilityElements()) {
+            if (element instanceof SOAPOperation) {
+                soapOperation = (SOAPOperation) element;
+            }
+        }
+        String action = soapOperation.getSoapActionURI();
+
         String signature = getSignature(m);
         mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, m.getName(), signature, null, null);
 
-        if (!m.isAnnotationPresent(WebMethod.class)) {
-            // add @WebMethod if it is not present
-            AnnotationVisitor av = mv.visitAnnotation(getSignature(WebMethod.class), true);
-            av.visitEnd();
-        }
-        if (!m.isAnnotationPresent(Oneway.class)) {
-            if (m.isAnnotationPresent(OneWay.class)) {
-                // add the JAX-WS one-way equivalent
-                AnnotationVisitor oneWay = mv.visitAnnotation(getSignature(Oneway.class), true);
-                oneWay.visitEnd();
+        AnnotationVisitor av = mv.visitAnnotation(getSignature(WebMethod.class), true);
+        av.visit("action", action);
+        av.visitEnd();
+
+        PortType portType = definition.getPortType(portTypeName);
+        List<Operation> portTypeOperations = portType.getOperations();
+        Operation portTypeOperation = null;
+        for (Operation entry : portTypeOperations) {
+            if (entry.getName().equals(m.getName())) {
+                portTypeOperation = entry;
             }
         }
+        av = mv.visitAnnotation(getSignature(WebResult.class), true);
+        av.visit("name", portTypeOperation.getOutput().getMessage().getQName().getLocalPart());
+        Collection<Part> parts = portTypeOperation.getOutput().getMessage().getParts().values();
+        av.visit("partName", parts.iterator().next().getName());
+        av.visitEnd();
+
+        av = mv.visitParameterAnnotation(0, getSignature(WebParam.class), true);
+        parts = portTypeOperation.getInput().getMessage().getParts().values();
+        String partName = parts.iterator().next().getName();
+        av.visit("name", partName);
+        av.visit("partName", partName);
+        av.visitEnd();
         mv.visitEnd();
     }
-
-
 
 }

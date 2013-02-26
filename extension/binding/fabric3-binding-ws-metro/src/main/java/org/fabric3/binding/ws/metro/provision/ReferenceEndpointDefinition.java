@@ -37,6 +37,7 @@
 */
 package org.fabric3.binding.ws.metro.provision;
 
+import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
 import java.net.URL;
 
@@ -49,6 +50,8 @@ public class ReferenceEndpointDefinition extends AbstractEndpointDefinition {
     private boolean defaultServiceName;
     private QName portTypeName;
     private URL url;
+    private boolean rpcLit;
+    private transient Definition definition;
 
     /**
      * Constructor.
@@ -105,4 +108,29 @@ public class ReferenceEndpointDefinition extends AbstractEndpointDefinition {
         return url;
     }
 
+    /**
+     * Sets if this endpoint uses RPC/Lit.
+     *
+     * @param rpcLit true if this endpoint uses RPC/Lit
+     */
+    public void setRpcLit(boolean rpcLit) {
+        this.rpcLit = rpcLit;
+    }
+
+    /**
+     * True if this endpoint uses RPC/Lit.
+     *
+     * @return true if this endpoint uses RPC/Lit
+     */
+    public boolean isRpcLit() {
+        return rpcLit;
+    }
+
+    public Definition getDefinition() {
+        return definition;
+    }
+
+    public void setDefinition(Definition definition) {
+        this.definition = definition;
+    }
 }

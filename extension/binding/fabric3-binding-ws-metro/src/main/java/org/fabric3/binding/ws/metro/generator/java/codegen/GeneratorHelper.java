@@ -35,58 +35,53 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.ws.metro.provision;
+package org.fabric3.binding.ws.metro.generator.java.codegen;
 
-import javax.xml.namespace.QName;
-import java.io.Serializable;
+import java.lang.reflect.Method;
 
 /**
- * Encapsulates endpoint information for the reference side of an invocation chain.
+ *
  */
-public abstract class AbstractEndpointDefinition implements Serializable {
-    private static final long serialVersionUID = -8322624061436929156L;
-    private QName serviceName;
-    private QName portName;
-    private String wsdl;
+public abstract class GeneratorHelper {
 
-    /**
-     * Constructor.
-     *
-     * @param serviceName the qualified name of the target service
-     * @param portName    the port name
-     * @param wsdl        the serialized wsdl
-     */
-    public AbstractEndpointDefinition(QName serviceName, QName portName, String wsdl) {
-        this.serviceName = serviceName;
-        this.portName = portName;
-        this.wsdl = wsdl;
+    public static String getSignature(Method m) {
+        StringBuilder sb = new StringBuilder("(");
+        Class[] parameters = m.getParameterTypes();
+        for (Class parameter : parameters) {
+            sb.append(getSignature(parameter));
+        }
+        sb.append(')');
+        sb.append(getSignature(m.getReturnType()));
+        return sb.toString();
     }
 
-    /**
-     * Returns the qualified service name.
-     *
-     * @return the qualified service name
-     */
-    public QName getServiceName() {
-        return serviceName;
+    public static String getSignature(Class clazz) {
+        if (clazz == Void.TYPE) {
+            return "V";
+        }
+        if (clazz == Byte.TYPE) {
+            return "B";
+        } else if (clazz == Character.TYPE) {
+            return "C";
+        } else if (clazz == Double.TYPE) {
+            return "D";
+        } else if (clazz == Float.TYPE) {
+            return "F";
+        } else if (clazz == Integer.TYPE) {
+            return "I";
+        } else if (clazz == Long.TYPE) {
+            return "J";
+        } else if (clazz == Short.TYPE) {
+            return "S";
+        } else if (clazz == Boolean.TYPE) {
+            return "Z";
+        } else if (!clazz.getName().startsWith("[")) {
+            // object
+            return "L" + clazz.getName().replace('.', '/') + ";";
+        } else {
+            // array
+            return clazz.getName().replace('.', '/');
+        }
     }
 
-    /**
-     * Returns the qualified port name.
-     *
-     * @return the qualified port name
-     */
-    public QName getPortName() {
-        return portName;
-    }
-
-    /**
-     * Returns a serialized WSDL specified using wsdlElement or wsdlLocation, or null if one is not specified. This WSDL may be overriden by a generated one if
-     * policy is specified on the reference. Otherwise, it should be used to create JAX-WS reference proxies.
-     *
-     * @return the serialized WSDL or null
-     */
-    public String getWsdl() {
-        return wsdl;
-    }
 }

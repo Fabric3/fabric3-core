@@ -41,6 +41,7 @@ package org.fabric3.binding.ws.metro.generator.java;
 import javax.jws.WebService;
 import javax.wsdl.Binding;
 import javax.wsdl.Definition;
+import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -69,6 +70,7 @@ import org.fabric3.binding.ws.metro.generator.MetroGeneratorDelegate;
 import org.fabric3.binding.ws.metro.generator.PolicyExpressionMapping;
 import org.fabric3.binding.ws.metro.generator.WsdlElement;
 import org.fabric3.binding.ws.metro.generator.java.codegen.GeneratedInterface;
+import org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceFromWsdlGenerator;
 import org.fabric3.binding.ws.metro.generator.java.codegen.InterfaceGenerator;
 import org.fabric3.binding.ws.metro.generator.java.wsdl.GeneratedArtifacts;
 import org.fabric3.binding.ws.metro.generator.java.wsdl.JavaWsdlGenerator;
@@ -118,6 +120,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
     private EndpointSynthesizer synthesizer;
     private JavaWsdlGenerator wsdlGenerator;
     private InterfaceGenerator interfaceGenerator;
+    private InterfaceFromWsdlGenerator interfaceFromWsdlGenerator;
     private BindingIdResolver bindingIdResolver;
     private WsdlPolicyAttacher policyAttacher;
     private ClassLoaderRegistry classLoaderRegistry;
@@ -133,6 +136,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                                  @Reference EndpointSynthesizer synthesizer,
                                  @Reference JavaWsdlGenerator wsdlGenerator,
                                  @Reference InterfaceGenerator interfaceGenerator,
+                                 @Reference InterfaceFromWsdlGenerator interfaceFromWsdlGenerator,
                                  @Reference BindingIdResolver bindingIdResolver,
                                  @Reference WsdlPolicyAttacher policyAttacher,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
@@ -145,6 +149,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         this.synthesizer = synthesizer;
         this.wsdlGenerator = wsdlGenerator;
         this.interfaceGenerator = interfaceGenerator;
+        this.interfaceFromWsdlGenerator = interfaceFromWsdlGenerator;
         this.bindingIdResolver = bindingIdResolver;
         this.policyAttacher = policyAttacher;
         this.classLoaderRegistry = classLoaderRegistry;
@@ -304,11 +309,19 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             Thread.currentThread().setContextClassLoader(serviceClass.getClassLoader());
 
             if (interfaceGenerator.doGeneration(serviceClass)) {
-                // if the service interface is not annotated, generate an implementing class that is
-                GeneratedInterface generatedInterface = interfaceGenerator.generate(serviceClass, null, null, null, null);
-                generatedBytes = generatedInterface.getBytes();
-                serviceClass = generatedInterface.getGeneratedClass();
-                interfaze = serviceClass.getName();
+                if (endpointDefinition.isRpcLit()) {
+                    // BWS_4007
+                    GeneratedInterface generatedInterface = interfaceFromWsdlGenerator.generateRPCLit(serviceClass, endpointDefinition);
+                    generatedBytes = generatedInterface.getBytes();
+                    serviceClass = generatedInterface.getGeneratedClass();
+                    interfaze = serviceClass.getName();
+                } else {
+                    // if the service interface is not annotated, generate an implementing class that is
+                    GeneratedInterface generatedInterface = interfaceGenerator.generate(serviceClass, null, null, null, null);
+                    generatedBytes = generatedInterface.getBytes();
+                    serviceClass = generatedInterface.getGeneratedClass();
+                    interfaze = serviceClass.getName();
+                }
             }
             if (!policyExpressions.isEmpty() || !mappings.isEmpty()) {
                 // if policy is configured for the endpoint, generate a WSDL with the policy attachments
@@ -528,6 +541,9 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
         URI contributionUri = getContributionUri(binding);
 
+        boolean rpcLit = false;
+
+        Definition wsdl = null;
         if (targetUrl != null) {
             if (definition.getWsdlElement() != null) {
                 // wsdl binding specified, use that port type
@@ -536,8 +552,16 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
                     throw new GenerationException("Cannot specify a target URI and non-binding wsdlElement: " + binding.getParent().getUri());
                 }
                 QName bindingName = wsdlElement.getBindingName();
-                Definition wsdl = resolveWsdl(wsdlLocation, contributionUri, bindingName);
+                wsdl = resolveWsdl(wsdlLocation, contributionUri, bindingName);
+
                 Binding wsdlBinding = wsdl.getBinding(bindingName);
+                for (Object element : wsdlBinding.getExtensibilityElements()) {
+                    if (element instanceof SOAPBinding) {
+                        rpcLit = "rpc".equalsIgnoreCase(((SOAPBinding) element).getStyle());
+                        break;
+                    }
+                }
+
                 QName portTypeName = wsdlBinding.getPortType().getQName();
                 endpointDefinition = synthesizer.synthesizeReferenceEndpoint(contract, serviceClass, portTypeName, targetUrl);
                 endpointValidator.validateBinding(contributionUri, binding, bindingName);
@@ -549,16 +573,18 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             WsdlElement wsdlElement = GenerationHelper.parseWsdlElement(definition.getWsdlElement());
             if (wsdlLocation == null) {
                 // if the WSDL location is not specified, resolve against the contribution imports
-                Definition wsdl = resolveWsdl(contributionUri, wsdlElement);
+                wsdl = resolveWsdl(contributionUri, wsdlElement);
                 endpointDefinition = endpointResolver.resolveReferenceEndpoint(wsdlElement, wsdl);
                 endpointValidator.validate(contributionUri, binding, endpointDefinition);
             } else {
                 // a specific WSDL location is specified
-                Definition wsdl = wsdlResolver.parseWsdl(wsdlLocation);
+                wsdl = wsdlResolver.parseWsdl(wsdlLocation);
                 endpointDefinition = endpointResolver.resolveReferenceEndpoint(wsdlElement, wsdl);
             }
 
         }
+        endpointDefinition.setRpcLit(rpcLit);
+        endpointDefinition.setDefinition(wsdl);
         return endpointDefinition;
     }
 

@@ -72,4 +72,5 @@ public interface InterfaceGenerator {
      */
     GeneratedInterface generate(Class interfaze, String targetNamespace, String wsdlLocation, String serviceName, String portName)
             throws InterfaceGenerationException;
+
 }

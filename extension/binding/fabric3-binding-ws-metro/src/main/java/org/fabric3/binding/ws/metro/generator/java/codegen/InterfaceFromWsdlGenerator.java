@@ -35,58 +35,38 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.ws.metro.provision;
+package org.fabric3.binding.ws.metro.generator.java.codegen;
 
-import javax.xml.namespace.QName;
-import java.io.Serializable;
+import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 
 /**
- * Encapsulates endpoint information for the reference side of an invocation chain.
+ * Generates an interface with JAX-WS annotations from a WSDL. This allows classes with non-annotated interfaces to be used with Metro, which requires
+ * interfaces that define service endpoints to be annotated.
  */
-public abstract class AbstractEndpointDefinition implements Serializable {
-    private static final long serialVersionUID = -8322624061436929156L;
-    private QName serviceName;
-    private QName portName;
-    private String wsdl;
+public interface InterfaceFromWsdlGenerator {
 
     /**
-     * Constructor.
+     * Determines if a service interface or class needs to be enhanced with JAX-WS annotations. Enhancement via bytecode generation will need to be done if:
+     * <pre>
+     * <ul>
+     * <li> The class does not contain a <code>WebService</code> annotation
+     * <li> The class contains a method marked with the <code>org.oasisopen.sca.annotation.OneWay</code> annotation
+     * </ul>
+     * </pre>
      *
-     * @param serviceName the qualified name of the target service
-     * @param portName    the port name
-     * @param wsdl        the serialized wsdl
+     * @param clazz the class to check
+     * @return true if the class needs to be enhanced
      */
-    public AbstractEndpointDefinition(QName serviceName, QName portName, String wsdl) {
-        this.serviceName = serviceName;
-        this.portName = portName;
-        this.wsdl = wsdl;
-    }
+    public boolean doGeneration(Class<?> clazz);
 
     /**
-     * Returns the qualified service name.
+     * Generates the annotated interface from a WSDL definition
      *
-     * @return the qualified service name
+     * @param interfaze          the source interface
+     * @param endpointDefinition the endpoint definition.
+     * @return the generated interface result
+     * @throws InterfaceGenerationException if an error generating the exception occurs
      */
-    public QName getServiceName() {
-        return serviceName;
-    }
+    GeneratedInterface generateRPCLit(Class interfaze, ReferenceEndpointDefinition endpointDefinition) throws InterfaceGenerationException;
 
-    /**
-     * Returns the qualified port name.
-     *
-     * @return the qualified port name
-     */
-    public QName getPortName() {
-        return portName;
-    }
-
-    /**
-     * Returns a serialized WSDL specified using wsdlElement or wsdlLocation, or null if one is not specified. This WSDL may be overriden by a generated one if
-     * policy is specified on the reference. Otherwise, it should be used to create JAX-WS reference proxies.
-     *
-     * @return the serialized WSDL or null
-     */
-    public String getWsdl() {
-        return wsdl;
-    }
 }
