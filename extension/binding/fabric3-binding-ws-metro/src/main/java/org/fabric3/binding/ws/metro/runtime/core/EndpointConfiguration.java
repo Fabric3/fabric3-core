@@ -37,12 +37,12 @@
 */
 package org.fabric3.binding.ws.metro.runtime.core;
 
-import java.net.URL;
-import java.util.List;
 import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.handler.Handler;
+import java.net.URI;
+import java.net.URL;
+import java.util.List;
 
 import com.sun.xml.ws.api.BindingID;
 import com.sun.xml.ws.api.server.Invoker;
@@ -51,6 +51,7 @@ import com.sun.xml.ws.api.server.Invoker;
  * Configuration for provisioning a service as a web service endpoint.
  */
 public class EndpointConfiguration {
+    private URI serviceUri;
     private Class<?> seiClass;
     private QName serviceName;
     private QName portName;
@@ -66,6 +67,7 @@ public class EndpointConfiguration {
     /**
      * Constructor that takes a WSDL document at a given URL. If the URL is null, a WSDL will be generated from the service endpoint interface.
      *
+     * @param serviceUri       the structural service URI
      * @param seiClass         service endpoint interface.
      * @param serviceName      service name
      * @param portName         port name
@@ -78,7 +80,8 @@ public class EndpointConfiguration {
      * @param generatedSchemas the handles to schemas (XSDs) imported by the WSDL or null if none exist
      * @param handlers         the binding handlers, may be null
      */
-    public EndpointConfiguration(Class<?> seiClass,
+    public EndpointConfiguration(URI serviceUri,
+                                 Class<?> seiClass,
                                  QName serviceName,
                                  QName portName,
                                  String servicePath,
@@ -89,6 +92,7 @@ public class EndpointConfiguration {
                                  URL generatedWsdl,
                                  List<URL> generatedSchemas,
                                  List<Handler> handlers) {
+        this.serviceUri = serviceUri;
         this.seiClass = seiClass;
         this.serviceName = serviceName;
         this.portName = portName;
@@ -144,5 +148,9 @@ public class EndpointConfiguration {
 
     public List<Handler> getHandlers() {
         return handlers;
+    }
+
+    public URI getServiceUri() {
+        return serviceUri;
     }
 }

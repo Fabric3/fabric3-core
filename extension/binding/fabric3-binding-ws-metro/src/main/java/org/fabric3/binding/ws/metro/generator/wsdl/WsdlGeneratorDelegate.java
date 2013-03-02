@@ -197,7 +197,8 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
             Thread.currentThread().setContextClassLoader(old);
         }
 
-        return new MetroWsdlSourceDefinition(endpointDefinition, serializedWsdl, intentNames, handlers);
+        URI serviceUri = binding.getParent().getUri();
+        return new MetroWsdlSourceDefinition(serviceUri, endpointDefinition, serializedWsdl, intentNames, binding.isCallback(), handlers);
     }
 
     public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, WsdlServiceContract contract, EffectivePolicy policy)
@@ -310,7 +311,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
         // obtain connection information
         ConnectionConfiguration connectionConfiguration = GenerationHelper.createConnectionConfiguration(definition);
 
-        return new MetroWsdlTargetDefinition(endpointDefinition, serializedWsdl, intentNames, securityConfiguration, connectionConfiguration, handlers);
+        return new MetroWsdlTargetDefinition(endpointDefinition, serializedWsdl, intentNames, securityConfiguration, connectionConfiguration, false, handlers);
     }
 
     /**

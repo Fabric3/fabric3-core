@@ -37,11 +37,11 @@
  */
 package org.fabric3.binding.ws.metro.provision;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 
@@ -50,6 +50,7 @@ import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
  */
 public class MetroJavaSourceDefinition extends MetroSourceDefinition {
     private static final long serialVersionUID = 2898989563911925959L;
+
     private String interfaze;
     private byte[] generatedInterface;
     private URI classLoaderUri;
@@ -60,6 +61,7 @@ public class MetroJavaSourceDefinition extends MetroSourceDefinition {
     /**
      * Constructor.
      *
+     * @param serviceUri         the structural service URI
      * @param endpointDefinition endpoint metadata
      * @param interfaze          the service contract (SEI) name.
      * @param generatedInterface the generated SEI bytes or null if no interface needed to be generated
@@ -68,9 +70,11 @@ public class MetroJavaSourceDefinition extends MetroSourceDefinition {
      * @param schemas            the schemas imported by the generated WSDL or null
      * @param providedIntents    intents configured at the endpoint level that are provided natively by the Metro
      * @param wsdlLocation       optional URL to the WSDL location
+     * @param bidirectional      true if the wire this definition is associated with is bidirectional, i.e. has a callback
      * @param handlers           optional binding handlers
      */
-    public MetroJavaSourceDefinition(ServiceEndpointDefinition endpointDefinition,
+    public MetroJavaSourceDefinition(URI serviceUri,
+                                     ServiceEndpointDefinition endpointDefinition,
                                      String interfaze,
                                      byte[] generatedInterface,
                                      URI classLoaderUri,
@@ -78,8 +82,9 @@ public class MetroJavaSourceDefinition extends MetroSourceDefinition {
                                      Map<String, String> schemas,
                                      List<QName> providedIntents,
                                      URL wsdlLocation,
+                                     boolean bidirectional,
                                      List<PhysicalBindingHandlerDefinition> handlers) {
-        super(endpointDefinition, wsdl, providedIntents, handlers);
+        super(serviceUri, endpointDefinition, wsdl, providedIntents, bidirectional, handlers);
         this.interfaze = interfaze;
         this.generatedInterface = generatedInterface;
         this.classLoaderUri = classLoaderUri;

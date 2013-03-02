@@ -37,9 +37,9 @@
  */
 package org.fabric3.binding.ws.metro.provision;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
@@ -65,15 +65,17 @@ public class MetroWsdlTargetDefinition extends MetroTargetDefinition {
      * @param intents                 intents configured at the endpoint level that are provided natively by the Metro
      * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the HTTP configuration or null if defaults should be used
-     * @param handlers           optional binding handlers
+     * @param bidirectional           true if the wire this definition is associated with is bidirectional, i.e. has a callback
+     * @param handlers                optional binding handlers
      */
     public MetroWsdlTargetDefinition(ReferenceEndpointDefinition endpointDefinition,
                                      String wsdl,
                                      List<QName> intents,
                                      SecurityConfiguration securityConfiguration,
                                      ConnectionConfiguration connectionConfiguration,
+                                     boolean bidirectional,
                                      List<PhysicalBindingHandlerDefinition> handlers) {
-        super(endpointDefinition, wsdl, intents, securityConfiguration, connectionConfiguration, handlers);
+        super(endpointDefinition, wsdl, intents, securityConfiguration, connectionConfiguration, bidirectional, handlers);
         this.wsdl = wsdl;
     }
 

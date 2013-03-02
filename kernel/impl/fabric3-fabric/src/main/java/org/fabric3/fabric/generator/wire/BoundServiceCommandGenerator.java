@@ -44,16 +44,17 @@
 package org.fabric3.fabric.generator.wire;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
-
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
+import java.util.Map;
 
 import org.fabric3.fabric.command.AttachWireCommand;
 import org.fabric3.fabric.command.ConnectionCommand;
 import org.fabric3.fabric.command.DetachWireCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.spi.binding.generator.CallbackBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -62,6 +63,8 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.type.binding.SCABinding;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Generates commands to attach/detach the source end of physical wires to their transports for components being deployed or undeployed.
@@ -70,6 +73,8 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
     private final WireGenerator wireGenerator;
     private final int order;
 
+    private Map<Class<?>, CallbackBindingGenerator> generators = Collections.emptyMap();
+
     public BoundServiceCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
         this.wireGenerator = wireGenerator;
         this.order = order;
@@ -77,6 +82,11 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
 
     public int getOrder() {
         return order;
+    }
+
+    @Reference(required = false)
+    public void setCallbackBindingGenerators(Map<Class<?>, CallbackBindingGenerator> generators) {
+        this.generators = generators;
     }
 
     public ConnectionCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
@@ -116,6 +126,12 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
             URI callbackUri = null;
             if (callbackContract != null) {
                 List<LogicalBinding<?>> callbackBindings = service.getCallbackBindings();
+
+                if (callbackBindings.isEmpty()) {
+                    // generate callback bindings as some transports do not require an explicit callback binding configuration on the reference
+                    generateCallbackBindings(service);
+                }
+
                 if (callbackBindings.size() != 1) {
                     String uri = service.getUri().toString();
                     throw new UnsupportedOperationException("The runtime requires exactly one callback binding to be specified on service: " + uri);
@@ -163,5 +179,22 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
         }
     }
 
+
+    private void generateCallbackBindings(LogicalService service) throws GenerationException {
+        for (LogicalBinding<?> logicalBinding : service.getBindings()) {
+            if (logicalBinding.getDefinition() instanceof SCABinding) {
+                // skip SCA binding
+                continue;
+            }
+            CallbackBindingGenerator generator = generators.get(logicalBinding.getDefinition().getClass());
+            if (generator == null) {
+                throw new GenerationException("Callback generator not found for:" + logicalBinding.getDefinition().getType());
+            }
+            BindingDefinition definition = generator.generateReferenceCallback(logicalBinding);
+            definition.setParent(service.getDefinition());
+            LogicalBinding<?> logicalCallback = new LogicalBinding(definition, service);
+            service.addCallbackBinding(logicalCallback);
+        }
+    }
 
 }

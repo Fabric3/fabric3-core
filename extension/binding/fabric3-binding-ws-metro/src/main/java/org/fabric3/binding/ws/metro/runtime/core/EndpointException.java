@@ -48,4 +48,8 @@ public class EndpointException extends Fabric3Exception {
     public EndpointException(String message) {
         super(message);
     }
+
+    public EndpointException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

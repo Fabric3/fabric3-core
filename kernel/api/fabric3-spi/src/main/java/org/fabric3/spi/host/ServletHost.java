@@ -44,6 +44,7 @@
 package org.fabric3.spi.host;
 
 import javax.servlet.Servlet;
+import java.net.URL;
 
 /**
  * Interface implemented by host environments that allow Servlets to be registered.
@@ -74,6 +75,20 @@ public interface ServletHost {
     int getHttpsPort();
 
     /**
+     * Returns the base HTTP url of the servlet container.
+     *
+     * @return the base HTTP url of the servlet container.
+     */
+    URL getBaseHttpUrl();
+
+    /**
+     * Returns the base HTTP url of the servlet container.
+     *
+     * @return the base HTTP url of the servlet container.
+     */
+    URL getBaseHttpsUrl();
+
+    /**
      * True if HTTPS is enabled.
      *
      * @return true if HTTPS is enabled
@@ -81,8 +96,8 @@ public interface ServletHost {
     boolean isHttpsEnabled();
 
     /**
-     * Register a mapping for an instance of a Servlet. This requests that the servlet container direct all requests to the designated mapping to the
-     * supplied Servlet instance.
+     * Register a mapping for an instance of a Servlet. This requests that the servlet container direct all requests to the designated mapping to the supplied
+     * Servlet instance.
      *
      * @param mapping the uri-mapping for the Servlet
      * @param servlet the Servlet that should be invoked

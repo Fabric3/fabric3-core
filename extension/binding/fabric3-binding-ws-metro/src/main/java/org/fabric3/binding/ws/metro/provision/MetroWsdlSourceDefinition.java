@@ -37,8 +37,9 @@
  */
 package org.fabric3.binding.ws.metro.provision;
 
-import java.util.List;
 import javax.xml.namespace.QName;
+import java.net.URI;
+import java.util.List;
 
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalDataTypes;
@@ -52,16 +53,20 @@ public class MetroWsdlSourceDefinition extends MetroSourceDefinition {
     /**
      * Constructor.
      *
+     * @param serviceUri         the structural service URI
      * @param endpointDefinition endpoint metadata
      * @param wsdl               the WSDL document as a string
      * @param intents            intents configured at the endpoint level that are provided natively by the Metro
+     * @param bidirectional           true if the wire this definition is associated with is bidirectional, i.e. has a callback
      * @param handlers           optional binding handlers
      */
-    public MetroWsdlSourceDefinition(ServiceEndpointDefinition endpointDefinition,
+    public MetroWsdlSourceDefinition(URI serviceUri,
+                                     ServiceEndpointDefinition endpointDefinition,
                                      String wsdl,
                                      List<QName> intents,
+                                     boolean bidirectional,
                                      List<PhysicalBindingHandlerDefinition> handlers) {
-        super(endpointDefinition, wsdl, intents, handlers);
+        super(serviceUri, endpointDefinition, wsdl, intents, bidirectional, handlers);
         physicalDataTypes.clear();
         physicalDataTypes.add(PhysicalDataTypes.DOM);
     }

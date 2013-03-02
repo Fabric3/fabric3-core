@@ -94,6 +94,7 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
     private XMLInputFactory xmlInputFactory;
     private Object proxy;
     private URL endpointUrl;
+    private CallbackAddressResolver addressResolver;
 
     /**
      * Constructor.
@@ -108,6 +109,7 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
      * @param handlers                messages handlers or null
      * @param executorService         the executor service used for dispatching invocations
      * @param securityEnvironment     the Metro host runtime security SPI implementation
+     * @param addressResolver         the callback address resolver or null if the target is not a callback service
      * @param xmlInputFactory         the StAX XML factory to use for WSDL parsing
      */
     public MetroProxyObjectFactory(ReferenceEndpointDefinition endpointDefinition,
@@ -120,8 +122,10 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
                                    List<Handler> handlers,
                                    ExecutorService executorService,
                                    SecurityEnvironment securityEnvironment,
+                                   CallbackAddressResolver addressResolver,
                                    XMLInputFactory xmlInputFactory) {
         super(securityConfiguration, connectionConfiguration, handlers);
+        this.addressResolver = addressResolver;
         this.serviceName = endpointDefinition.getServiceName();
         this.serviceNameDefault = endpointDefinition.isDefaultServiceName();
         this.portTypeName = endpointDefinition.getPortTypeName();
@@ -152,6 +156,11 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
      * @throws ObjectCreationException if there was an error creating the proxy
      */
     private Object createProxy() throws ObjectCreationException {
+        if (addressResolver != null) {
+            // if this is a callback, use the address resolver to dynamically resolve the endpoint address from the request context
+            endpointUrl = addressResolver.resolveUrl();
+        }
+
         if (wsdlLocation == null) {
             wsdlLocation = calculateDefaultWsdlLocation();
         }

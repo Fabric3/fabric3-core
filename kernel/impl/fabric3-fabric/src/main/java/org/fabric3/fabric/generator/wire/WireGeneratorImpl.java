@@ -37,12 +37,10 @@
 */
 package org.fabric3.fabric.generator.wire;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
@@ -73,6 +71,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.type.binding.SCABinding;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default implementation of WireGenerator.
@@ -152,6 +151,7 @@ public class WireGeneratorImpl implements WireGenerator {
         // generate the metadata used to attach the physical callback wire to the target transport
         BindingGenerator<T> bindingGenerator = getGenerator(binding);
         PhysicalTargetDefinition targetDefinition = bindingGenerator.generateTarget(binding, callbackContract, operations, targetPolicy);
+        targetDefinition.setCallback(true);
         targetDefinition.setClassLoaderId(binding.getParent().getParent().getDefinition().getContributionUri());
 
         // generate the metadata for interceptors that are attached to wire invocation chains, e.g. policy implemented by an interceptor

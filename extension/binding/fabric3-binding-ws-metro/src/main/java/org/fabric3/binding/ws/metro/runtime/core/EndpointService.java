@@ -37,6 +37,9 @@
 */
 package org.fabric3.binding.ws.metro.runtime.core;
 
+import java.net.URI;
+import java.net.URL;
+
 /**
  * Activates and de-activates web service endpoints.
  */
@@ -57,4 +60,13 @@ public interface EndpointService {
      * @throws EndpointException if there is an error unregistering the endpoint
      */
     void unregisterService(String path) throws EndpointException;
+
+    /**
+     * Returns the endpoint URL for the service.
+     *
+     * @param serviceUri the service structural URI
+     * @return the endpoint URL
+     */
+    URL getEndpointUrl(URI serviceUri);
+
 }

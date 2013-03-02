@@ -35,48 +35,24 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.test;
+package org.fabric3.binding.ws.generator;
 
-import java.net.URI;
-
+import org.fabric3.binding.ws.model.WsBindingDefinition;
+import org.fabric3.spi.binding.generator.CallbackBindingGenerator;
+import org.fabric3.spi.model.instance.LogicalBinding;
 import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.TargetWireAttacher;
-import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.wire.Interceptor;
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
 
 /**
  *
  */
 @EagerInit
-public class TestBindingTargetWireAttacher implements TargetWireAttacher<TestBindingTargetDefinition> {
-    private final BindingChannel channel;
+public class WsCallbackBindingGenerator implements CallbackBindingGenerator<WsBindingDefinition> {
 
-    public TestBindingTargetWireAttacher(@Reference BindingChannel channel) {
-        this.channel = channel;
+    public WsBindingDefinition generateServiceCallback(LogicalBinding<WsBindingDefinition> forwardBinding) {
+        throw new UnsupportedOperationException();
     }
 
-    public void attach(PhysicalSourceDefinition source, TestBindingTargetDefinition target, Wire wire) throws WiringException {
-        for (InvocationChain chain : wire.getInvocationChains()) {
-            URI destination = target.getUri();
-            PhysicalOperationDefinition operation = chain.getPhysicalOperation();
-            String name = operation.getName();
-            Interceptor interceptor = new TestBindingInterceptor(channel, destination, name);
-            chain.addInterceptor(interceptor);
-        }
-    }
-
-    public void detach(PhysicalSourceDefinition source, TestBindingTargetDefinition target) throws WiringException {
-        //        throw new AssertionError();
-    }
-
-    public ObjectFactory<?> createObjectFactory(TestBindingTargetDefinition target) throws WiringException {
-        throw new AssertionError();
+    public WsBindingDefinition generateReferenceCallback(LogicalBinding<WsBindingDefinition> forwardBinding) {
+        return new WsBindingDefinition();
     }
 }

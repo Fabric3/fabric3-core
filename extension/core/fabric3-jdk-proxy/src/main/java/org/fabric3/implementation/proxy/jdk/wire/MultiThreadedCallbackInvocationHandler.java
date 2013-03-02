@@ -46,20 +46,19 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
- * Responsible for dispatching to a callback service from multi-threaded component instances such as composite scope components. Since callback
- * proxies for multi-threaded components may dispatch to multiple callback services, this implementation must determine the correct target service
- * based on the current CallFrame. For example, if clients A and A' implementing the same callback interface C invoke B, the callback proxy
- * representing C must correctly dispatch back to A and A'. This is done by recording the callback URI in the current CallFrame as the forward invoke
- * is made.
+ * Responsible for dispatching to a callback service from multi-threaded component instances such as composite scope components. Since callback proxies for
+ * multi-threaded components may dispatch to multiple callback services, this implementation must determine the correct target service based on the current
+ * CallFrame. For example, if clients A and A' implementing the same callback interface C invoke B, the callback proxy representing C must correctly dispatch
+ * back to A and A'. This is done by recording the callback URI in the current CallFrame as the forward invoke is made.
  */
 public class MultiThreadedCallbackInvocationHandler<T> extends AbstractCallbackInvocationHandler<T> {
     private Map<String, Map<Method, InvocationChain>> mappings;
+    private Map<Method, InvocationChain> singleMapping;
 
     /**
-     * Constructor. In multi-threaded instances such as composite scoped components, multiple forward invocations may be received simultaneously. As a
-     * result, since callback proxies stored in instance variables may represent multiple clients, they must map the correct one for the request being
-     * processed on the current thread. The mappings parameter keys a callback URI representing the client to the set of invocation chains for the
-     * callback service.
+     * Constructor. In multi-threaded instances such as composite scoped components, multiple forward invocations may be received simultaneously. As a result,
+     * since callback proxies stored in instance variables may represent multiple clients, they must map the correct one for the request being processed on the
+     * current thread. The mappings parameter keys a callback URI representing the client to the set of invocation chains for the callback service.
      *
      * @param interfaze the callback service interface implemented by the proxy
      * @param mappings  the callback URI to invocation chain mappings
@@ -67,13 +66,18 @@ public class MultiThreadedCallbackInvocationHandler<T> extends AbstractCallbackI
     public MultiThreadedCallbackInvocationHandler(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) {
         super(interfaze);
         this.mappings = mappings;
+        if (mappings.size() == 1) {
+            singleMapping = mappings.values().iterator().next();
+        }
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
         CallFrame frame = workContext.peekCallFrame();
         String callbackUri = frame.getCallbackUri();
-        Map<Method, InvocationChain> chains = mappings.get(callbackUri);
+
+        Map<Method, InvocationChain> chains = (singleMapping != null) ? singleMapping : mappings.get(callbackUri);
+
         // find the invocation chain for the invoked operation
         InvocationChain chain = chains.get(method);
         // find the invocation chain for the invoked operation

@@ -61,8 +61,8 @@ public class WsBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -2097314069798596206L;
     public static final QName BINDING_QNAME = new QName(Constants.SCA_NS, "binding.ws");
 
-    private final String wsdlLocation;
-    private final String wsdlElement;
+    private String wsdlLocation;
+    private String wsdlElement;
     private Map<String, String> configuration;
     private int retries;
     private List<BindingHandlerDefinition> handlers;
@@ -83,6 +83,13 @@ public class WsBindingDefinition extends BindingDefinition {
         this.retries = retries;
         this.handlers = new ArrayList<BindingHandlerDefinition>();
         this.configuration = Collections.emptyMap();
+    }
+
+    /**
+     * Constructor for callback bindings.
+     */
+    public WsBindingDefinition() {
+        this(null, null, null, null, 0);
     }
 
     /**

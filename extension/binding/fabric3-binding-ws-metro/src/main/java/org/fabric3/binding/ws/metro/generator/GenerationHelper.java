@@ -84,7 +84,7 @@ public class GenerationHelper {
         }
         String namespace = UriHelper.getDefragmentedNameAsString(uri);
         String fragment = uri.getFragment();
-        if (fragment.startsWith("wsdl.port(")) {
+        if (fragment != null && fragment.startsWith("wsdl.port(")) {
             String name = fragment.substring(10, fragment.length() - 1); // wsdl.port(servicename/portname)
             String[] tokens = name.split("/");
             if (tokens.length != 2) {
@@ -94,11 +94,11 @@ public class GenerationHelper {
             QName portName = new QName(namespace, tokens[1]);
 
             return new WsdlElement(serviceName, portName);
-        } else if (fragment.startsWith("wsdl.service(")) {
+        } else if (fragment != null && fragment.startsWith("wsdl.service(")) {
             String name = fragment.substring(13, fragment.length() - 1);
             QName serviceName = new QName(namespace, name);
             return new WsdlElement(serviceName, WsdlElement.Type.SERVICE);
-        } else if (fragment.startsWith("wsdl.binding(")) {
+        } else if (fragment != null && fragment.startsWith("wsdl.binding(")) {
             String name = fragment.substring(13, fragment.length() - 1);
             QName bindingName = new QName(namespace, name);
             return new WsdlElement(bindingName, WsdlElement.Type.BINDING);

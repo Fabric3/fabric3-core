@@ -37,6 +37,10 @@
  */
 package org.fabric3.binding.ws.metro.runtime.wire;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.handler.Handler;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -47,19 +51,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.ws.WebServiceFeature;
-import javax.xml.ws.handler.Handler;
 
 import com.sun.xml.wss.SecurityEnvironment;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.MetroJavaTargetDefinition;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
+import org.fabric3.binding.ws.metro.runtime.core.CallbackAddressResolver;
+import org.fabric3.binding.ws.metro.runtime.core.CallbackAddressResolverImpl;
+import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.InterceptorMonitor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroJavaTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.core.MetroProxyObjectFactory;
@@ -74,11 +75,14 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 import org.fabric3.spi.xml.XMLFactory;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches an interceptor for invoking a web service endpoint based on a Java interface contract to a wire.
  */
 public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher<MetroJavaTargetDefinition> {
+
+    public static final CallbackAddressResolverImpl ADDRESS_RESOLVER = new CallbackAddressResolverImpl();
 
     private ClassLoaderRegistry registry;
     private FeatureResolver resolver;
@@ -89,9 +93,9 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
     private XMLInputFactory xmlInputFactory;
     private InterceptorMonitor monitor;
 
-
     public MetroJavaTargetWireAttacher(@Reference ClassLoaderRegistry registry,
                                        @Reference FeatureResolver resolver,
+                                       @Reference EndpointService endpointService,
                                        @Reference WireAttacherHelper wireAttacherHelper,
                                        @Reference ArtifactCache artifactCache,
                                        @Reference SecurityEnvironment securityEnvironment,
@@ -99,7 +103,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                                        @Reference XMLFactory xmlFactory,
                                        @Reference BindingHandlerRegistry handlerRegistry,
                                        @Monitor InterceptorMonitor monitor) {
-        super(handlerRegistry);
+        super(handlerRegistry, endpointService);
         this.registry = registry;
         this.resolver = resolver;
         this.wireAttacherHelper = wireAttacherHelper;
@@ -151,6 +155,9 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
 
                 List<Handler> handlers = createHandlers(target);
 
+                // if the target service is a callback, add the resolver
+                CallbackAddressResolver addressResolver = target.isCallback() ? ADDRESS_RESOLVER : null;
+
                 ObjectFactory<?> proxyFactory = new MetroProxyObjectFactory(endpointDefinition,
                                                                             wsdlLocation,
                                                                             generatedWsdl,
@@ -161,9 +168,10 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
                                                                             handlers,
                                                                             executorService,
                                                                             securityEnvironment,
+                                                                            addressResolver,
                                                                             xmlInputFactory);
-                attachInterceptors(seiClass, target, wire, proxyFactory);
 
+                attachInterceptors(seiClass, target, wire, proxyFactory);
             } finally {
                 Thread.currentThread().setContextClassLoader(old);
             }
@@ -210,6 +218,5 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
             chain.addInterceptor(targetInterceptor);
         }
     }
-
 
 }

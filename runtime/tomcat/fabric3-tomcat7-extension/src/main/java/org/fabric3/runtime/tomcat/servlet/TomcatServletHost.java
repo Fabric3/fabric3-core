@@ -40,6 +40,11 @@ package org.fabric3.runtime.tomcat.servlet;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
+
 import org.apache.catalina.Container;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
@@ -63,7 +68,6 @@ public class TomcatServletHost implements ServletHost {
     private String servicePath = "";      // context path for bound services; defaults to the root context
     private int defaultHttpsPort = -1;
     private Fabric3DispatchingServlet dispatchingServlet;
-
 
     public TomcatServletHost(@Reference ConnectorService connectorService) {
         this.connectorService = connectorService;
@@ -120,6 +124,37 @@ public class TomcatServletHost implements ServletHost {
 
     public boolean isHttpsEnabled() {
         return defaultHttpsPort != -1;
+    }
+
+    public URL getBaseHttpUrl() {
+        // TODO support returning a host bound to a different address
+        if (connectorService != null) {
+            try {
+                String host = InetAddress.getLocalHost().getHostAddress();
+                return new URL("http://" + host + ":" + getHttpPort());
+            } catch (UnknownHostException e) {
+                throw new IllegalStateException(e);
+            } catch (MalformedURLException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+        return null;
+    }
+
+    public URL getBaseHttpsUrl() {
+        // TODO support returning a host bound to a different address
+        if (connectorService != null) {
+            try {
+                String host = InetAddress.getLocalHost().getHostAddress();
+                return new URL("https://" + host + ":" + getHttpPort());
+            } catch (UnknownHostException e) {
+                throw new IllegalStateException(e);
+            } catch (MalformedURLException e) {
+                throw new IllegalStateException(e);
+            }
+
+        }
+        return null;
     }
 
     public void registerMapping(String mapping, Servlet servlet) {

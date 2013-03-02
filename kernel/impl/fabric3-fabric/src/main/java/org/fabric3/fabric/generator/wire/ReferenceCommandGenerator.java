@@ -37,16 +37,17 @@
 */
 package org.fabric3.fabric.generator.wire;
 
+import java.util.Collections;
 import java.util.List;
-
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
+import java.util.Map;
 
 import org.fabric3.fabric.command.AttachWireCommand;
 import org.fabric3.fabric.command.ConnectionCommand;
 import org.fabric3.fabric.command.DetachWireCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
+import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Multiplicity;
+import org.fabric3.spi.binding.generator.CallbackBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -57,12 +58,16 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.type.binding.SCABinding;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Generates a command to bind or attach a wire to a reference.
  */
 public class ReferenceCommandGenerator implements CommandGenerator {
     private WireGenerator wireGenerator;
+    private Map<Class<?>, CallbackBindingGenerator> generators = Collections.emptyMap();
+
     private int order;
 
     /**
@@ -74,6 +79,11 @@ public class ReferenceCommandGenerator implements CommandGenerator {
     public ReferenceCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
         this.wireGenerator = wireGenerator;
         this.order = order;
+    }
+
+    @Reference(required = false)
+    public void setCallbackBindingGenerators(Map<Class<?>, CallbackBindingGenerator> generators) {
+        this.generators = generators;
     }
 
     public int getOrder() {
@@ -115,11 +125,14 @@ public class ReferenceCommandGenerator implements CommandGenerator {
             boolean bindings = reference.isConcreteBound();
             if (bindings) {
                 List<LogicalBinding<?>> callbackBindings = reference.getCallbackBindings();
+                if (callbackBindings.isEmpty()) {
+                    // generate callback bindings as some transports do not require an explicit callback binding configuration on the reference
+                    generateCallbackBindings(reference);
+                }
                 if (callbackBindings.size() != 1) {
                     // if the reference is explicitly bound, it must have one callback binding
                     String uri = reference.getUri().toString();
-                    throw new UnsupportedOperationException("The runtime requires exactly one callback binding to be " +
-                                                                    "specified on reference: " + uri);
+                    throw new UnsupportedOperationException("The runtime requires exactly one callback binding to be specified on reference: " + uri);
                 }
                 LogicalBinding<?> callbackBinding = callbackBindings.get(0);
                 generateBinding(component, callbackBinding, command, incremental, reinjection, true);
@@ -178,7 +191,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
                 detachCommand.setPhysicalWireDefinition(pwd);
                 command.add(detachCommand);
             } else if ((reinjection && targetComponent.getState() == LogicalState.NEW) || !incremental || wire.getState() == LogicalState.NEW
-                    || targetComponent.getState() == LogicalState.NEW) {
+                       || targetComponent.getState() == LogicalState.NEW) {
                 PhysicalWireDefinition pwd = wireGenerator.generateWire(wire);
                 AttachWireCommand attachCommand = new AttachWireCommand();
                 attachCommand.setPhysicalWireDefinition(pwd);
@@ -202,16 +215,32 @@ public class ReferenceCommandGenerator implements CommandGenerator {
 
     }
 
+    @SuppressWarnings("unchecked")
+    private void generateCallbackBindings(LogicalReference reference) throws GenerationException {
+        for (LogicalBinding<?> logicalBinding : reference.getBindings()) {
+            if (logicalBinding.getDefinition() instanceof SCABinding) {
+                // skip SCA binding
+                continue;
+            }
+            CallbackBindingGenerator generator = generators.get(logicalBinding.getDefinition().getClass());
+            if (generator == null) {
+                throw new GenerationException("Callback generator not found for:" + logicalBinding.getDefinition().getType());
+            }
+            BindingDefinition definition = generator.generateReferenceCallback(logicalBinding);
+            definition.setParent(reference.getDefinition());
+            LogicalBinding<?> logicalCallback = new LogicalBinding(definition, reference);
+            reference.addCallbackBinding(logicalCallback);
+        }
+    }
+
     private boolean isWireReinjection(LogicalReference logicalReference, boolean incremental) {
         Multiplicity multiplicity = logicalReference.getDefinition().getMultiplicity();
         if (incremental && multiplicity == Multiplicity.ZERO_N || multiplicity == Multiplicity.ONE_N) {
             for (LogicalWire wire : logicalReference.getWires()) {
                 LogicalComponent<?> targetComponent = wire.getTarget().getLeafComponent();
                 // check the source and target sides since a target may have been added or removed
-                if (wire.getState() == LogicalState.NEW
-                        || wire.getState() == LogicalState.MARKED
-                        || targetComponent.getState() == LogicalState.NEW
-                        || targetComponent.getState() == LogicalState.MARKED) {
+                if (wire.getState() == LogicalState.NEW || wire.getState() == LogicalState.MARKED || targetComponent.getState() == LogicalState.NEW
+                    || targetComponent.getState() == LogicalState.MARKED) {
                     return true;
                 }
             }
@@ -230,6 +259,5 @@ public class ReferenceCommandGenerator implements CommandGenerator {
         }
         return false;
     }
-
 
 }

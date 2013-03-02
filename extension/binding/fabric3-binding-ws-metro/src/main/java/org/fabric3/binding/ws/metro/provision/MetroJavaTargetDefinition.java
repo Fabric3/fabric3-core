@@ -37,11 +37,11 @@
  */
 package org.fabric3.binding.ws.metro.provision;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 
@@ -65,14 +65,15 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
      * @param interfaze               the service contract (SEI) name
      * @param generatedInterface      the generated SEI bytes or null if generation is not needed
      * @param classLoaderUri          the SEI classloader URI
-     * @param wsdl                    the generated WSDL or null if the WSDL can be derived from the SEI or is not explicitly specified via
-     *                                wsdlElement or wsdlLocation
+     * @param wsdl                    the generated WSDL or null if the WSDL can be derived from the SEI or is not explicitly specified via wsdlElement or
+     *                                wsdlLocation
      * @param schemas                 the generated schemas or null
      * @param wsdlLocation            optional URL to the WSDL location
      * @param intents                 intents configured at the endpoint level that are provided natively by the Metro
      * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the HTTP configuration or null if defaults should be used
      * @param retries                 the number of retries to attempt in the event the service is unavailable when an invocation is made
+     * @param bidirectional           true if the wire this definition is associated with is bidirectional, i.e. has a callback
      * @param handlers                optional binding handlers
      */
     public MetroJavaTargetDefinition(ReferenceEndpointDefinition endpointDefinition,
@@ -86,8 +87,9 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
                                      SecurityConfiguration securityConfiguration,
                                      ConnectionConfiguration connectionConfiguration,
                                      int retries,
+                                     boolean bidirectional,
                                      List<PhysicalBindingHandlerDefinition> handlers) {
-        super(endpointDefinition, wsdl, intents, securityConfiguration, connectionConfiguration, handlers);
+        super(endpointDefinition, wsdl, intents, securityConfiguration, connectionConfiguration, bidirectional, handlers);
         this.generatedInterface = generatedInterface;
         this.classLoaderUri = classLoaderUri;
         this.schemas = schemas;
@@ -140,7 +142,6 @@ public class MetroJavaTargetDefinition extends MetroTargetDefinition {
     public URI getSEIClassLoaderUri() {
         return classLoaderUri;
     }
-
 
     /**
      * The number of retries in the event the target service is unavailable during an invocation.

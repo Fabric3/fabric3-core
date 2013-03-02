@@ -37,12 +37,15 @@
  */
 package org.fabric3.binding.ws.metro.runtime.wire;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.Handler;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.fabric3.binding.ws.metro.provision.MetroTargetDefinition;
+import org.fabric3.binding.ws.metro.runtime.core.CallbackTargetAddressHandler;
+import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
+import org.fabric3.binding.ws.metro.runtime.core.ReferenceCallbackAddressHandler;
 import org.fabric3.binding.ws.metro.runtime.core.SOAPMessageHandlerAdapter;
 import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
@@ -55,16 +58,27 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
  */
 public abstract class AbstractMetroTargetWireAttacher<T extends PhysicalTargetDefinition> implements TargetWireAttacher<T> {
     private BindingHandlerRegistry handlerRegistry;
+    private EndpointService endpointService;
 
-    public AbstractMetroTargetWireAttacher(BindingHandlerRegistry handlerRegistry) {
+    public AbstractMetroTargetWireAttacher(BindingHandlerRegistry handlerRegistry, EndpointService endpointService) {
         this.handlerRegistry = handlerRegistry;
+        this.endpointService = endpointService;
     }
 
     protected List<Handler> createHandlers(MetroTargetDefinition target) {
-        if (target.getHandlers().isEmpty()) {
+        if (target.getHandlers().isEmpty() && !target.isBidirectional() && !target.isCallback()) {
             return null;
         }
         List<Handler> handlers = new ArrayList<Handler>();
+
+        if (target.isBidirectional()) {
+            ReferenceCallbackAddressHandler callbackHandler = new ReferenceCallbackAddressHandler(target.getCallbackUri(), endpointService);
+            handlers.add(callbackHandler);
+        }  else if (target.isCallback()) {
+            CallbackTargetAddressHandler handler = new CallbackTargetAddressHandler();
+            handlers.add(handler);
+        }
+
         for (PhysicalBindingHandlerDefinition handlerDefinition : target.getHandlers()) {
             BindingHandler<SOAPMessage> handler = handlerRegistry.createHandler(SOAPMessage.class, handlerDefinition);
             SOAPMessageHandlerAdapter adaptor = new SOAPMessageHandlerAdapter(handler);
@@ -72,6 +86,5 @@ public abstract class AbstractMetroTargetWireAttacher<T extends PhysicalTargetDe
         }
         return handlers;
     }
-
 
 }

@@ -37,6 +37,9 @@
  */
 package org.fabric3.binding.ws.metro.runtime.wire;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.handler.Handler;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URL;
@@ -44,13 +47,8 @@ import java.security.SecureClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
-import javax.xml.ws.WebServiceFeature;
-import javax.xml.ws.handler.Handler;
 
 import com.sun.xml.ws.api.BindingID;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.binding.ws.metro.provision.MetroJavaSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointConfiguration;
@@ -67,6 +65,7 @@ import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Source wire attacher that provisions Java-based web service endpoints.
@@ -140,8 +139,11 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
 
                 List<Handler> handlers = createHandlers(source);
 
+                URI serviceUri = source.getServiceUri();
+
                 JaxbInvoker invoker = new JaxbInvoker(invocationChains);
-                EndpointConfiguration configuration = new EndpointConfiguration(seiClass,
+                EndpointConfiguration configuration = new EndpointConfiguration(serviceUri,
+                                                                                seiClass,
                                                                                 serviceName,
                                                                                 portName,
                                                                                 path,

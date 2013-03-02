@@ -37,15 +37,19 @@
 */
 package org.fabric3.binding.ws.metro.runtime.core;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import com.sun.xml.wss.SecurityEnvironment;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ws.metro.MetroBindingMonitor;
 import org.fabric3.spi.host.ServletHost;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -55,7 +59,7 @@ public class EndpointServiceImpl implements EndpointService {
     private ExecutorService executorService;
     private ServletHost servletHost;
     private MetroBindingMonitor monitor;
-
+    private Map<URI, URL> endpointUrls;
     private MetroServlet metroServlet;
 
     public EndpointServiceImpl(@Reference SecurityEnvironment securityEnvironment,
@@ -66,6 +70,7 @@ public class EndpointServiceImpl implements EndpointService {
         this.executorService = executorService;
         this.monitor = monitor;
         this.servletHost = servletHost;
+        endpointUrls = new HashMap<URI, URL>();
     }
 
     @Init
@@ -76,20 +81,44 @@ public class EndpointServiceImpl implements EndpointService {
     public void registerService(EndpointConfiguration configuration) throws EndpointException {
         String servicePath = configuration.getServicePath();
         if (servletHost.isMappingRegistered(servicePath)) {
-            // wire reprovisioned
+            // wire re-provisioned
             unregisterService(servicePath);
         }
         servletHost.registerMapping(servicePath, metroServlet);
         // register <endpoint-url/mex> address for serving WS-MEX requests
         servletHost.registerMapping(servicePath + "/mex", metroServlet);
         metroServlet.registerService(configuration);
-        monitor.endpointProvisioned(servicePath);
+
+        try {
+            URL endpointUrl = new URL(servletHost.getBaseHttpUrl().toString() + servicePath);
+            endpointUrls.put(configuration.getServiceUri(), endpointUrl);
+            monitor.endpointProvisioned(servicePath);
+        } catch (MalformedURLException e) {
+            throw new EndpointException("Error registering service: " + servicePath, e);
+        }
     }
 
-    public void unregisterService(String path) {
-        servletHost.unregisterMapping(path);
-        servletHost.unregisterMapping(path + "/mex");
-        metroServlet.unregisterService(path);
-        monitor.endpointRemoved(path);
+    public void unregisterService(String servicePath) throws EndpointException {
+        try {
+            servletHost.unregisterMapping(servicePath);
+            servletHost.unregisterMapping(servicePath + "/mex");
+            metroServlet.unregisterService(servicePath);
+
+            URL endpointUrl = new URL(servletHost.getBaseHttpUrl().toString() +  servicePath);
+            for (Map.Entry<URI, URL> entry : endpointUrls.entrySet()) {
+                if (entry.getValue().equals(endpointUrl)){
+                    endpointUrls.remove(entry.getKey());
+                    break;
+                }
+            }
+
+            monitor.endpointRemoved(servicePath);
+        } catch (MalformedURLException e) {
+            throw new EndpointException("Error registering service: " + servicePath, e);
+        }
+    }
+
+    public URL getEndpointUrl(URI serviceUri) {
+        return endpointUrls.get(serviceUri);
     }
 }

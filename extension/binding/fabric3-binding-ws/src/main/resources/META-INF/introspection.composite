@@ -15,13 +15,16 @@ Public License. See the accompanying license file for details.
            targetNamespace="urn:fabric3.org"
            name="introspection">
 
-    <!-- Ws Binding Loader -->
     <component name="WsBindingLoader" f3:key="sca:binding.ws">
         <f3:implementation.system class="org.fabric3.binding.ws.loader.WsBindingLoader"/>
     </component>
 
     <component name="WsaLoader" f3:key="wsa:EndpointReference">
         <f3:implementation.system class="org.fabric3.binding.ws.loader.WsaLoader"/>
+    </component>
+
+    <component name="WsCallbackBindingGenerator" f3:key="org.fabric3.binding.ws.model.WsBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.ws.generator.WsCallbackBindingGenerator"/>
     </component>
 
 </composite>

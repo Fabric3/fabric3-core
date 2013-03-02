@@ -37,23 +37,22 @@
  */
 package org.fabric3.binding.ws.metro.runtime.wire;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.handler.Handler;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import javax.xml.namespace.QName;
-import javax.xml.ws.WebServiceFeature;
-import javax.xml.ws.handler.Handler;
 
 import com.sun.xml.wss.SecurityEnvironment;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.MetroWsdlTargetDefinition;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
+import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.MetroDispatchObjectFactory;
 import org.fabric3.binding.ws.metro.runtime.core.MetroDispatchTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
@@ -65,6 +64,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches an interceptor for invoking a web service endpoint based on a WSDL contract to a wire.
@@ -76,11 +76,12 @@ public class MetroWsdlTargetWireAttacher extends AbstractMetroTargetWireAttacher
     private ArtifactCache cache;
 
     public MetroWsdlTargetWireAttacher(@Reference FeatureResolver resolver,
+                                       @Reference EndpointService endpointService,
                                        @Reference SecurityEnvironment securityEnvironment,
                                        @Reference ExecutorService executorService,
                                        @Reference BindingHandlerRegistry handlerRegistry,
                                        @Reference ArtifactCache cache) {
-        super(handlerRegistry);
+        super(handlerRegistry, endpointService);
         this.resolver = resolver;
         this.securityEnvironment = securityEnvironment;
         this.executorService = executorService;
@@ -103,21 +104,13 @@ public class MetroWsdlTargetWireAttacher extends AbstractMetroTargetWireAttacher
             throw new WiringException(e);
         }
 
-
         SecurityConfiguration securityConfiguration = target.getSecurityConfiguration();
         ConnectionConfiguration connectionConfiguration = target.getConnectionConfiguration();
         List<Handler> handlers = createHandlers(target);
 
-        MetroDispatchObjectFactory proxyFactory = new MetroDispatchObjectFactory(endpointDefinition,
-                                                                                 wsdlLocation,
-                                                                                 null,
-                                                                                 securityConfiguration,
-                                                                                 connectionConfiguration,
-                                                                                 handlers,
-                                                                                 features,
-                                                                                 executorService,
-                                                                                 securityEnvironment);
-
+        MetroDispatchObjectFactory proxyFactory
+                = new MetroDispatchObjectFactory(endpointDefinition, wsdlLocation, null, securityConfiguration, connectionConfiguration, handlers, features,
+                                                 executorService, securityEnvironment);
 
         for (InvocationChain chain : wire.getInvocationChains()) {
             boolean oneWay = chain.getPhysicalOperation().isOneWay();

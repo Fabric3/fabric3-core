@@ -37,13 +37,6 @@
 */
 package org.fabric3.runtime.weblogic.servlet;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -53,15 +46,23 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.fabric3.runtime.weblogic.api.Constants;
 import org.fabric3.runtime.weblogic.api.ServletRequestDispatcher;
 import org.fabric3.spi.host.ServletHost;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * A <code>ServletHost</code> implementation that forwards requests to registered servlets
@@ -112,6 +113,30 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
 
     public boolean isHttpsEnabled() {
         return true;
+    }
+
+    public URL getBaseHttpUrl() {
+        try {
+            // TODO return host from JNDI
+            String host = InetAddress.getLocalHost().getHostAddress();
+            return new URL("http://" + host + ":" + getHttpPort());
+        } catch (UnknownHostException e) {
+            throw new IllegalStateException(e);
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public URL getBaseHttpsUrl() {
+        try {
+            // TODO return host from JNDI
+            String host = InetAddress.getLocalHost().getHostAddress();
+            return new URL("https://" + host + ":" + getHttpPort());
+        } catch (UnknownHostException e) {
+            throw new IllegalStateException(e);
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public void init(ServletConfig config) throws ServletException {
@@ -179,6 +204,5 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
         writer.print("Resource not found");
         writer.close();
     }
-
 
 }

@@ -37,8 +37,9 @@
  */
 package org.fabric3.binding.ws.metro.provision;
 
-import java.util.List;
 import javax.xml.namespace.QName;
+import java.net.URI;
+import java.util.List;
 
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
@@ -48,26 +49,35 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
  */
 public abstract class MetroSourceDefinition extends PhysicalSourceDefinition {
     private static final long serialVersionUID = -7874049193479847748L;
+
+    private URI serviceUri;
     private List<QName> intents;
     private String wsdl;
     private ServiceEndpointDefinition endpointDefinition;
+    private boolean bidirectional;
     private List<PhysicalBindingHandlerDefinition> handlers;
 
     /**
      * Constructor.
      *
+     * @param serviceUri         the structural service URI
      * @param endpointDefinition endpoint metadata
-     * @param intents            intents configured at the endpoint level that are provided natively by the Metro
      * @param wsdl               the WSDL. May be null, in which case the WSDL will be introspected when the endpoint is provisioned.
+     * @param intents            intents configured at the endpoint level that are provided natively by the Metro
+     * @param bidirectional           true if the wire this definition is associated with is bidirectional, i.e. has a callback
      * @param handlers           optional binding handlers
      */
-    public MetroSourceDefinition(ServiceEndpointDefinition endpointDefinition,
+    public MetroSourceDefinition(URI serviceUri,
+                                 ServiceEndpointDefinition endpointDefinition,
                                  String wsdl,
                                  List<QName> intents,
+                                 boolean bidirectional,
                                  List<PhysicalBindingHandlerDefinition> handlers) {
+        this.serviceUri = serviceUri;
         this.endpointDefinition = endpointDefinition;
         this.wsdl = wsdl;
         this.intents = intents;
+        this.bidirectional = bidirectional;
         this.handlers = handlers;
     }
 
@@ -100,5 +110,23 @@ public abstract class MetroSourceDefinition extends PhysicalSourceDefinition {
      */
     public List<PhysicalBindingHandlerDefinition> getHandlers() {
         return handlers;
+    }
+
+    /**
+     * The structural service URI.
+     *
+     * @return the structural service URI
+     */
+    public URI getServiceUri() {
+        return serviceUri;
+    }
+
+    /**
+     * True if this wire is bidirectional.
+     *
+     * @return true if this wire is bidirectional
+     */
+    public boolean isBidirectional() {
+        return bidirectional;
     }
 }

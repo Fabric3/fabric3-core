@@ -55,6 +55,7 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
     private boolean multiThreaded;
     private JDKWireProxyService proxyService;
     private Map<String, Map<Method, InvocationChain>> mappings;
+    private Map<Method, InvocationChain> singleMapping;
 
     /**
      * Constructor.
@@ -72,6 +73,9 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
         this.multiThreaded = multiThreaded;
         this.proxyService = proxyService;
         this.mappings = mappings;
+        if (mappings.size() == 1) {
+            singleMapping = mappings.values().iterator().next();
+        }
     }
 
     public T getInstance() throws ObjectCreationException {
@@ -84,14 +88,18 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
         } else {
             CallFrame frame = WorkContextTunnel.getThreadWorkContext().peekCallFrame();
             String callbackUri = frame.getCallbackUri();
-            Map<Method, InvocationChain> mapping = mappings.get(callbackUri);
-            assert mapping != null;
+            Map<Method, InvocationChain> mapping = (singleMapping != null) ? singleMapping : mappings.get(callbackUri);
             return interfaze.cast(proxyService.createCallbackProxy(interfaze, mapping));
         }
     }
 
     public void updateMappings(String callbackUri, Map<Method, InvocationChain> chains) {
         mappings.put(callbackUri, chains);
+        if (mappings.size() == 1) {
+            singleMapping = mappings.values().iterator().next();
+        } else {
+            singleMapping = null;
+        }
     }
 
 }

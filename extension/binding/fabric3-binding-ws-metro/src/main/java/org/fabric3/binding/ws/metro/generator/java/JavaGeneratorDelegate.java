@@ -60,6 +60,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -95,7 +96,10 @@ import org.fabric3.binding.ws.metro.util.BindingIdResolver;
 import org.fabric3.binding.ws.metro.util.ClassLoaderUpdater;
 import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.model.type.component.AbstractReference;
 import org.fabric3.model.type.component.AbstractService;
+import org.fabric3.model.type.component.BindableDefinition;
+import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -105,6 +109,7 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.wsdl.model.WsdlServiceContract;
@@ -118,6 +123,7 @@ import org.xml.sax.SAXException;
  */
 public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaServiceContract> {
     private static final String REPLACEABLE_ADDRESS = "REPLACE_WITH_ACTUAL_URL";
+
     private WsdlResolver wsdlResolver;
     private EndpointResolver endpointResolver;
     private EndpointSynthesizer synthesizer;
@@ -229,11 +235,40 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             if (serviceClass.getClassLoader() instanceof MultiParentClassLoader) {
                 classLoaderUri = ((MultiParentClassLoader) serviceClass.getClassLoader()).getName();
             }
-            return new MetroJavaSourceDefinition(endpointDefinition, interfaze, generatedBytes, classLoaderUri, wsdl, schemas, intentNames, wsdlLocation,
+            URI serviceUri = null;
+            if (binding.isCallback()) {
+                LogicalComponent<?> component = binding.getParent().getParent();
+                for (LogicalService service : component.getServices()) {
+                    if (service.getServiceContract().getQualifiedInterfaceName().equals(contract.getQualifiedInterfaceName())) {
+                        try {
+                            serviceUri = new URI(component.getUri() + "#" + service.getDefinition().getName());
+                        } catch (URISyntaxException e) {
+                            throw new GenerationException(e);
+                        }
+                        break;
+                    }
+                }
+            } else {
+                serviceUri = binding.getParent().getUri();
+            }
+
+            boolean bidirectional = contract.getCallbackContract() != null && !binding.isCallback();
+
+            return new MetroJavaSourceDefinition(serviceUri,
+                                                 endpointDefinition,
+                                                 interfaze,
+                                                 generatedBytes,
+                                                 classLoaderUri,
+                                                 wsdl,
+                                                 schemas,
+                                                 intentNames,
+                                                 wsdlLocation,
+                                                 bidirectional,
                                                  handlers);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
+        //        }
     }
 
     public MetroTargetDefinition generateTarget(LogicalBinding<WsBindingDefinition> binding, JavaServiceContract contract, EffectivePolicy policy)
@@ -247,7 +282,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         }
 
         if (targetUri != null) {
-            if (!targetUri.isAbsolute()) {
+            if (!targetUri.isAbsolute() && !binding.isCallback()) {
                 throw new GenerationException("Web service binding URI must be absolute on reference: " + binding.getParent().getUri());
             }
             try {
@@ -255,7 +290,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             } catch (MalformedURLException e) {
                 throw new GenerationException(e);
             }
-        } else if (definition.getWsdlElement() == null && definition.getWsdlLocation() == null) {
+        } else if (definition.getWsdlElement() == null && definition.getWsdlLocation() == null && !binding.isCallback()) {
             throw new GenerationException("A web service binding URI must be specified: " + binding.getParent().getUri());
         }
 
@@ -357,9 +392,26 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             classLoaderUri = ((MultiParentClassLoader) serviceClass.getClassLoader()).getName();
         }
 
+        boolean bidirectional = contract.getCallbackContract() != null && !binding.isCallback();
+
         int retries = definition.getRetries();
-        return new MetroJavaTargetDefinition(endpointDefinition, interfaze, generatedBytes, classLoaderUri, wsdl, schemas, wsdlLocation, intentNames,
-                                             securityConfiguration, connectionConfiguration, retries, handlers);
+        MetroJavaTargetDefinition targetDefinition = new MetroJavaTargetDefinition(endpointDefinition,
+                                                                                   interfaze,
+                                                                                   generatedBytes,
+                                                                                   classLoaderUri,
+                                                                                   wsdl,
+                                                                                   schemas,
+                                                                                   wsdlLocation,
+                                                                                   intentNames,
+                                                                                   securityConfiguration,
+                                                                                   connectionConfiguration,
+                                                                                   retries,
+                                                                                   bidirectional,
+                                                                                   handlers);
+        if (binding.isCallback()) {
+            targetDefinition.setUri(binding.getParent().getUri());
+        }
+        return targetDefinition;
     }
 
     /**
@@ -437,9 +489,10 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             String wsdlElementString = binding.getDefinition().getWsdlElement();
             if (wsdlElementString == null) {
                 // check if interface.wsdl is used
-                AbstractService abstractService = (AbstractService) binding.getDefinition().getParent();
-                if (abstractService.getServiceContract() instanceof WsdlServiceContract) {
-                    return synthesizeEndpointFromWsdlInterface(binding, abstractService);
+                BindableDefinition parent = binding.getDefinition().getParent();
+                ServiceContract serviceContract = getServiceContract(parent);
+                if (serviceContract instanceof WsdlServiceContract) {
+                    return synthesizeEndpointFromWsdlInterface(binding, (WsdlServiceContract) serviceContract);
                 } else {
                     // the WSDL element is not specified, default to the service name
                     return synthesizeEndpointFromClass(binding, contract, serviceClass);
@@ -469,10 +522,9 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         return endpointDefinition;
     }
 
-    private ServiceEndpointDefinition synthesizeEndpointFromWsdlInterface(LogicalBinding<WsBindingDefinition> binding, AbstractService abstractService)
+    private ServiceEndpointDefinition synthesizeEndpointFromWsdlInterface(LogicalBinding<WsBindingDefinition> binding, WsdlServiceContract wsdlContract)
             throws EndpointResolutionException {
         URI targetUri;
-        WsdlServiceContract wsdlContract = (WsdlServiceContract) abstractService.getServiceContract();
         Definition wsdl = wsdlContract.getDefinition();
         QName portType = wsdlContract.getPortType().getQName();
         QName serviceName = new QName(portType.getNamespaceURI(), portType.getLocalPart() + "Service");
@@ -547,6 +599,11 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         boolean rpcLit = false;
 
         Definition wsdl = null;
+
+        if (binding.isCallback()) {
+            targetUrl = ReferenceEndpointDefinition.DYNAMIC_URL;
+        }
+
         if (targetUrl != null) {
             if (definition.getWsdlElement() != null) {
                 // wsdl binding specified, use that port type
@@ -632,6 +689,18 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             current = current.getParent();
         }
         return current.getDefinition().getContributionUri();
+    }
+
+    private ServiceContract getServiceContract(BindableDefinition parent) throws GenerationException {
+        ServiceContract serviceContract = null;
+        if (parent instanceof AbstractService) {
+            serviceContract = ((AbstractService) parent).getServiceContract();
+        } else if (parent instanceof AbstractReference) {
+            serviceContract = ((AbstractReference) parent).getServiceContract();
+        } else {
+            throw new GenerationException("Unsupported bindable type: " + parent);
+        }
+        return serviceContract;
     }
 
 }

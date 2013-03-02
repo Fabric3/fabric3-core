@@ -39,6 +39,7 @@ package org.fabric3.binding.ws.metro.provision;
 
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -46,6 +47,16 @@ import java.net.URL;
  */
 public class ReferenceEndpointDefinition extends AbstractEndpointDefinition {
     private static final long serialVersionUID = -7422624061436929193L;
+
+    public static URL DYNAMIC_URL;
+
+    static {
+        try {
+            DYNAMIC_URL = new URL("http://dynamic");
+        } catch (MalformedURLException e) {
+            DYNAMIC_URL = null;
+        }
+    }
 
     private boolean defaultServiceName;
     private QName portTypeName;

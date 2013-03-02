@@ -37,8 +37,8 @@
  */
 package org.fabric3.binding.ws.metro.provision;
 
-import java.util.List;
 import javax.xml.namespace.QName;
+import java.util.List;
 
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
@@ -55,6 +55,7 @@ public abstract class MetroTargetDefinition extends PhysicalTargetDefinition {
     private ConnectionConfiguration connectionConfiguration;
     private String wsdl;
     private List<PhysicalBindingHandlerDefinition> handlers;
+    private boolean bidirectional;
 
     /**
      * Constructor.
@@ -64,6 +65,7 @@ public abstract class MetroTargetDefinition extends PhysicalTargetDefinition {
      * @param intents                 intents configured at the endpoint level that are provided natively by the Metro
      * @param securityConfiguration   the security configuration or null if security is not configured
      * @param connectionConfiguration the HTTP configuration or null if defaults should be used
+     * @param bidirectional           true if the wire this definition is associated with is bidirectional, i.e. has a callback
      * @param handlers                optional binding handlers
      */
     public MetroTargetDefinition(ReferenceEndpointDefinition endpointDefinition,
@@ -71,12 +73,14 @@ public abstract class MetroTargetDefinition extends PhysicalTargetDefinition {
                                  List<QName> intents,
                                  SecurityConfiguration securityConfiguration,
                                  ConnectionConfiguration connectionConfiguration,
+                                 boolean bidirectional,
                                  List<PhysicalBindingHandlerDefinition> handlers) {
         this.endpointDefinition = endpointDefinition;
         this.wsdl = wsdl;
         this.intents = intents;
         this.securityConfiguration = securityConfiguration;
         this.connectionConfiguration = connectionConfiguration;
+        this.bidirectional = bidirectional;
         this.handlers = handlers;
     }
 
@@ -89,6 +93,11 @@ public abstract class MetroTargetDefinition extends PhysicalTargetDefinition {
         return endpointDefinition;
     }
 
+    /**
+     * Returns the serialized WSDL for the target service.
+     *
+     * @return the serialized WSDL for the target service
+     */
     public String getWsdl() {
         return wsdl;
     }
@@ -118,6 +127,15 @@ public abstract class MetroTargetDefinition extends PhysicalTargetDefinition {
      */
     public ConnectionConfiguration getConnectionConfiguration() {
         return connectionConfiguration;
+    }
+
+    /**
+     * True if this wire is bidirectional.
+     *
+     * @return true if this wire is bidirectional
+     */
+    public boolean isBidirectional() {
+        return bidirectional;
     }
 
     /**

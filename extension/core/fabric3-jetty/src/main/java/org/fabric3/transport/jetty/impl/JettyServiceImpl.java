@@ -43,16 +43,18 @@
  */
 package org.fabric3.transport.jetty.impl;
 
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -69,14 +71,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlet.ServletMapping;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.federation.FederationConstants;
@@ -95,6 +89,13 @@ import org.fabric3.transport.jetty.management.ManagedHashSessionManager;
 import org.fabric3.transport.jetty.management.ManagedServletHandler;
 import org.fabric3.transport.jetty.management.ManagedServletHolder;
 import org.fabric3.transport.jetty.management.ManagedStatisticsHandler;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Implements an HTTP transport service using Jetty.
@@ -148,7 +149,6 @@ public class JettyServiceImpl implements JettyService, Transport {
     private boolean logServer;
     private boolean logDispatch;
 
-
     private boolean sendServerVersion;
     private boolean debug;
     private Server server;
@@ -160,7 +160,6 @@ public class JettyServiceImpl implements JettyService, Transport {
     private ManagedStatisticsHandler statisticsHandler;
     private ManagedHashSessionManager sessionManager;
     private ServletContextHandler contextHandler;
-
 
     static {
         // replace the static Jetty logger
@@ -381,6 +380,42 @@ public class JettyServiceImpl implements JettyService, Transport {
 
     public String getHostType() {
         return "Jetty";
+    }
+
+    public URL getBaseHttpUrl() {
+        if (httpConnector != null) {
+            try {
+                String host = httpConnector.getHost();
+                if (host == null) {
+                    host = InetAddress.getLocalHost().getHostAddress();
+                }
+                return new URL("http://" + host + ":" + getHttpPort());
+            } catch (UnknownHostException e) {
+                throw new IllegalStateException(e);
+            } catch (MalformedURLException e) {
+                throw new IllegalStateException(e);
+            }
+
+        }
+        return null;
+    }
+
+    public URL getBaseHttpsUrl() {
+        if (sslConnector != null) {
+            try {
+                String host = sslConnector.getHost();
+                if (host == null) {
+                    host = InetAddress.getLocalHost().getHostAddress();
+                }
+                return new URL("https://" + host + ":" + getHttpPort());
+            } catch (UnknownHostException e) {
+                throw new IllegalStateException(e);
+            } catch (MalformedURLException e) {
+                throw new IllegalStateException(e);
+            }
+
+        }
+        return null;
     }
 
     public void suspend() {
@@ -654,7 +689,6 @@ public class JettyServiceImpl implements JettyService, Transport {
         sessionHandler.setHandler(servletHandler);
         contextHandler.setHandler(sessionHandler);
 
-
         try {
             statisticsHandler.start();
             statisticsHandler.startStatisticsCollection();
@@ -727,8 +761,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     /**
-     * Wrapper to signal Jetty selector and acceptor work is long-running to avoid stall detection on indefinite channel select() and accept()
-     * operations.
+     * Wrapper to signal Jetty selector and acceptor work is long-running to avoid stall detection on indefinite channel select() and accept() operations.
      */
     private class JettyRunnable implements LongRunnable {
         private Runnable runnable;

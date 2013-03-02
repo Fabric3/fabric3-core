@@ -37,17 +37,15 @@
  */
 package org.fabric3.binding.ws.metro.runtime.wire;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.handler.Handler;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
-import javax.xml.namespace.QName;
-import javax.xml.ws.WebServiceFeature;
-import javax.xml.ws.handler.Handler;
 
 import com.sun.xml.ws.api.BindingID;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.binding.ws.metro.provision.MetroWsdlSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.DocumentInvoker;
@@ -64,6 +62,7 @@ import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Source wire attacher that provisions WSDL-based web service endpoints.
@@ -110,8 +109,12 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
 
             List<Handler> handlers = createHandlers(source);
 
+            URI serviceUri = source.getServiceUri();
+
             DocumentInvoker invoker = new DocumentInvoker(invocationChains);
-            EndpointConfiguration configuration = new EndpointConfiguration(F3Provider.class,
+
+            EndpointConfiguration configuration = new EndpointConfiguration(serviceUri,
+                                                                            F3Provider.class,
                                                                             serviceName,
                                                                             portName,
                                                                             path,
