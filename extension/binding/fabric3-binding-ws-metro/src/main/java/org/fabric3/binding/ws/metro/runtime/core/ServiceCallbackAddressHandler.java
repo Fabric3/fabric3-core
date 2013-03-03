@@ -42,10 +42,13 @@ import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
+import javax.xml.ws.ProtocolException;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
@@ -59,12 +62,12 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class ServiceCallbackAddressHandler implements SOAPHandler<SOAPMessageContext> {
     private static final String WSA = "http://www.w3.org/2005/08/addressing";
+    private static final QName WSA_REFERENCE_PARAMETERS = new QName(WSA, "ReferenceParameters");
     private static final QName WSA_ADDRESS = new QName(WSA, "Address");
-    private static final QName WSA_ACTION = new QName(WSA, "Action");
-    private static final QName WSA_RELATES_TO = new QName(WSA, "RelatesTo");
-    private static final QName WSA_TO = new QName(WSA, "To");
     private static final QName WSA_REPLY_TO = new QName(WSA, "ReplyTo");
     private static final QName WSA_FROM = new QName(WSA, "From");
+    private static final String WSA_ANONYMOUS = "http://www.w3.org/2005/08/addressing/anonymous";
+    public static final QName WSA_MESSAGE_ID = new QName("http://www.w3.org/2005/08/addressing", "MessageID");
 
     public ServiceCallbackAddressHandler() {
     }
@@ -73,6 +76,7 @@ public class ServiceCallbackAddressHandler implements SOAPHandler<SOAPMessageCon
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public boolean handleMessage(SOAPMessageContext soapContext) {
         SOAPMessage soapMessage = soapContext.getMessage();
         if (soapMessage == null) {
@@ -92,24 +96,24 @@ public class ServiceCallbackAddressHandler implements SOAPHandler<SOAPMessageCon
             if (soapHeader == null) {
                 return true;
             }
-//            workContext.setHeader(CallbackConstants.ENDPOINT_ADDRESS, "http://localhost:9081/JAXWS/Service5Callback");
-            //            handleWsaToHeader(soapHeader, soapContext, workContext);
-            //            handleWsaRelatesToHeader(soapHeader, soapContext, workContext);
-            //            handleWsaActionHeader(soapHeader, soapContext, workContext);
-            //handleScaPropsHeader(soapHeader, soapContext, workContext);
-
             Iterator<SOAPElement> fromHeaders = (Iterator<SOAPElement>) soapHeader.getChildElements(WSA_FROM);
             if (fromHeaders.hasNext()) {
                 SOAPElement fromElement = fromHeaders.next();
                 setReturnAddress(fromElement, workContext);
-                return true;
+                setReferenceParameters(fromElement, workContext);
             }
 
             Iterator<SOAPElement> replyToHeaders = (Iterator<SOAPElement>) soapHeader.getChildElements(WSA_REPLY_TO);
             if (replyToHeaders.hasNext()) {
                 SOAPElement replyToElement = replyToHeaders.next();
                 setReturnAddress(replyToElement, workContext);
-                return true;
+            }
+
+            Iterator<SOAPElement> messageIdHeaders = soapHeader.getChildElements(WSA_MESSAGE_ID);
+            if (messageIdHeaders.hasNext()) {
+                SOAPElement messageIdHeader = messageIdHeaders.next();
+                String messageId = messageIdHeader.getFirstChild().getNodeValue();
+                workContext.setHeader(CallbackConstants.MESSAGE_ID, messageId);
             }
 
         } catch (SOAPException e) {
@@ -127,10 +131,20 @@ public class ServiceCallbackAddressHandler implements SOAPHandler<SOAPMessageCon
         // no-op
     }
 
+    /**
+     * Sets the callback endpoint address specified by the WSA header in the current work context.
+     *
+     * @param element     the WSA header
+     * @param workContext the current work context
+     */
+    @SuppressWarnings("unchecked")
     private void setReturnAddress(SOAPElement element, WorkContext workContext) {
         Iterator<SOAPElement> addresses = (Iterator<SOAPElement>) element.getChildElements(WSA_ADDRESS);
         if (addresses.hasNext()) {
             String address = addresses.next().getValue();
+            if (WSA_ANONYMOUS.equals(address)) {
+                throw new ProtocolException("Invalid Callback Address: " + WSA_ANONYMOUS);
+            }
             if (address != null) {
                 workContext.setHeader(CallbackConstants.ENDPOINT_ADDRESS, address);
             }
@@ -138,68 +152,32 @@ public class ServiceCallbackAddressHandler implements SOAPHandler<SOAPMessageCon
 
     }
 
-    private boolean handleWsaToHeader(SOAPHeader soapHeader, SOAPMessageContext context, WorkContext workContext) {
-        Iterator<SOAPElement> toHeaders = (Iterator<SOAPElement>) soapHeader.getChildElements(WSA_TO);
-        if (toHeaders.hasNext()) {
-            SOAPElement toElement = toHeaders.next();
-            String address = toElement.getValue();
-            if (address != null) {
-         //       workContext.setHeader(CallbackConstants.ENDPOINT_ADDRESS, address);
-                //                workContext.setHeader();
-                //                context.put(TO_ADDRESS_KEY, address);
-                //                context.setScope(TO_ADDRESS_KEY, MessageContext.Scope.APPLICATION);
-            }
-            return true;
+    /**
+     * Per the SCA spec, sets WSA reference parameters in the current work context so they can be returned as part of a callback message.
+     *
+     * @param fromElement the WSA from element
+     * @param workContext the current work context
+     */
+    @SuppressWarnings("unchecked")
+    private void setReferenceParameters(SOAPElement fromElement, WorkContext workContext) {
+        // handle reference parameters
+        Iterator<SOAPElement> referenceParameters = fromElement.getChildElements(WSA_REFERENCE_PARAMETERS);
+        if (!referenceParameters.hasNext()) {
+            return;
         }
-        return false;
-    }
-
-    private boolean handleWsaRelatesToHeader(SOAPHeader soapHeader, SOAPMessageContext context, WorkContext workContext) {
-        Iterator<SOAPElement> relatesHeaders = (Iterator<SOAPElement>) soapHeader.getChildElements(WSA_RELATES_TO);
-        if (relatesHeaders.hasNext()) {
-            SOAPElement relatesElement = relatesHeaders.next();
-            String relationshipType = relatesElement.getAttribute("RelationshipType");
-            String relateID = relatesElement.getValue();
-            if (relateID != null) {
-                System.out.println("wsa:RelatesTo ID found: " + relateID);
-                //                context.put(RELATES_KEY, relateID);
-                //                context.setScope(RELATES_KEY, MessageContext.Scope.APPLICATION);
-                //                context.put(RELATES_TYPE_KEY, relationshipType);
-                //                context.setScope(RELATES_TYPE_KEY, MessageContext.Scope.APPLICATION);
-            }
-            return true;
+        SOAPElement referenceParameter = referenceParameters.next();
+        Iterator<SOAPElement> values = referenceParameter.getChildElements();
+        if (!values.hasNext()) {
+            return;
         }
-        return false;
-    }
-
-    private boolean handleWsaActionHeader(SOAPHeader soapHeader, SOAPMessageContext context, WorkContext workContext) {
-        Iterator<SOAPElement> actionHeaders = (Iterator<SOAPElement>) soapHeader.getChildElements(WSA_ACTION);
-        if (actionHeaders.hasNext()) {
-            SOAPElement actionElement = actionHeaders.next();
-            String address = actionElement.getValue();
-            if (address != null) {
-                System.out.println("wsa:Action value found: " + address);
-                //                context.put(ACTION_KEY, address);
-                //                context.setScope(ACTION_KEY, MessageContext.Scope.APPLICATION);
-            }
-            return true;
+        Map<QName, String> parameters = new HashMap<QName, String>();
+        while (values.hasNext()) {
+            SOAPElement element = values.next();
+            QName name = element.getElementQName();
+            String value = element.getValue();
+            parameters.put(name, value);
         }
-        return false;
-
+        workContext.setHeader(CallbackConstants.REFERENCE_PARAMETERS, parameters);
     }
-
-    //    private boolean handleScaPropsHeader(SOAPHeader soapHeader, SOAPMessageContext context, WorkContext workContext) {
-    //        Iterator<SOAPElement> scaPropsHeaders = (Iterator<SOAPElement>) soapHeader.getChildElements(new QName(XMLNS_TEST, SCA_PROPS));
-    //        if (scaPropsHeaders.hasNext()) {
-    //            SOAPElement scaPropsElement = scaPropsHeaders.next();
-    //            String address = scaPropsElement.getValue();
-    //            if (address != null) {
-    //                System.out.println("test:SCAProps value found: " + address);
-    //            }
-    //            return true;
-    //        }
-    //        return false;
-    //
-    //    }
 
 }

@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.binding.ws.metro.provision.MetroTargetDefinition;
-import org.fabric3.binding.ws.metro.runtime.core.CallbackTargetAddressHandler;
+import org.fabric3.binding.ws.metro.runtime.core.CallbackTargetHandler;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.ReferenceCallbackAddressHandler;
 import org.fabric3.binding.ws.metro.runtime.core.SOAPMessageHandlerAdapter;
@@ -75,7 +75,7 @@ public abstract class AbstractMetroTargetWireAttacher<T extends PhysicalTargetDe
             ReferenceCallbackAddressHandler callbackHandler = new ReferenceCallbackAddressHandler(target.getCallbackUri(), endpointService);
             handlers.add(callbackHandler);
         }  else if (target.isCallback()) {
-            CallbackTargetAddressHandler handler = new CallbackTargetAddressHandler();
+            CallbackTargetHandler handler = new CallbackTargetHandler();
             handlers.add(handler);
         }
 

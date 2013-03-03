@@ -10,4 +10,13 @@ public interface CallbackConstants {
      */
     String ENDPOINT_ADDRESS = "f3.callback.address";
 
+    /**
+     * Defines the message id key when placed in a work context header.
+     */
+    String MESSAGE_ID = "f3.message.id";
+
+    /**
+     * Defines the reference parameters key when placed in a work context header.
+     */
+    String REFERENCE_PARAMETERS = "f3.reference.parameters";
 }
