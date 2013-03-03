@@ -3,6 +3,7 @@ package org.fabric3.binding.ws.metro.generator.validator;
 import javax.wsdl.Binding;
 import javax.wsdl.Port;
 import javax.wsdl.extensions.soap.SOAPBinding;
+import javax.wsdl.extensions.soap12.SOAP12Binding;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
@@ -19,6 +20,7 @@ import org.fabric3.wsdl.contribution.BindingSymbol;
 import org.fabric3.wsdl.contribution.PortSymbol;
 import org.fabric3.wsdl.contribution.WsdlServiceContractSymbol;
 import org.fabric3.wsdl.model.WsdlServiceContract;
+import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -94,6 +96,10 @@ public class WsdlEndpointValidatorImpl implements WsdlEndpointValidator {
                     SOAPBinding soapBinding = (SOAPBinding) element;
                     if (!SOAP_HTTP_TRANSPORT.equals(soapBinding.getTransportURI())) {
                         throw new EndpointValidationException("Invalid SOAP binding transport specified for: " + binding.getParent().getUri());
+                    }
+                } else if (element instanceof SOAP12Binding) {
+                    if (binding.getIntents().contains(new QName(Constants.SCA_NS, "SOAP.v1_1"))) {
+                        throw new EndpointValidationException("Invalid intents configuration: SOAP 1.1 and SOAP 1.2 specified");
                     }
                 }
             }
