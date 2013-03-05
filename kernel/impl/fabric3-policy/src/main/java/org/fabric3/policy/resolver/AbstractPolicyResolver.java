@@ -359,13 +359,13 @@ public class AbstractPolicyResolver {
     }
 
     /**
-     * Resolves profile intents.
+     * Resolves intents, including expanding profile intents.
      *
      * @param intentNames the intent names to resolve
      * @return the expanded intents
      * @throws PolicyResolutionException if an exception is encountered resolving the intents
      */
-    protected Set<Intent> resolveProfileIntents(Set<QName> intentNames) throws PolicyResolutionException {
+    protected Set<Intent> resolveIntents(Set<QName> intentNames) throws PolicyResolutionException {
         Set<Intent> requiredIntents = new LinkedHashSet<Intent>();
         for (QName intentName : intentNames) {
             Intent intent = policyRegistry.getDefinition(intentName, Intent.class);

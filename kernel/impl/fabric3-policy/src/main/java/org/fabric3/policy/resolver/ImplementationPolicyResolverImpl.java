@@ -173,7 +173,7 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
         intentNames.addAll(aggregateIntents(logicalComponent));
 
         // Expand all the profile intents
-        Set<Intent> requiredIntents = resolveProfileIntents(intentNames);
+        Set<Intent> requiredIntents = resolveIntents(intentNames);
 
         // Remove intents not applicable to the artifact
         filterInvalidIntents(Intent.IMPLEMENTATION, requiredIntents);

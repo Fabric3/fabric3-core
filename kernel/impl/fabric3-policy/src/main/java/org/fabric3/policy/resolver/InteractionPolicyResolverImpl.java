@@ -174,7 +174,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
 
     private Set<Intent> expandAndFilterIntents(Set<QName> intentNames) throws PolicyResolutionException {
         // Expand all the profile intents
-        Set<Intent> requiredIntents = resolveProfileIntents(intentNames);
+        Set<Intent> requiredIntents = resolveIntents(intentNames);
         // Remove intents not applicable to the artifact
         filterInvalidIntents(Intent.BINDING, requiredIntents);
         filterMutuallyExclusiveIntents(requiredIntents);
