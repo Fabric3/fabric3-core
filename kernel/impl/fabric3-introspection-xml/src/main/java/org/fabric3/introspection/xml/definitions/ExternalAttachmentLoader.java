@@ -37,42 +37,61 @@
 */
 package org.fabric3.introspection.xml.definitions;
 
-import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.net.URI;
+import java.util.Set;
 
-import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.model.type.definitions.Intent;
-import org.fabric3.model.type.definitions.IntentType;
-import org.fabric3.model.type.definitions.Qualifier;
+import org.fabric3.model.type.definitions.ExternalAttachment;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
-import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
-
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Loader for the externalAttachment element.
  */
-public class ExternalAttachmentLoader implements TypeLoader<Object> {
+@EagerInit
+public class ExternalAttachmentLoader extends AbstractValidatingTypeLoader<ExternalAttachment> {
 
-    public Object load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        // TODO implement
-        LoaderUtil.skipToEndElement(reader);
-        return null;
+    private final LoaderHelper helper;
+
+    public ExternalAttachmentLoader(@Reference LoaderHelper helper) {
+        this.helper = helper;
+        addAttributes("intents", "policySets", "attachTo");
     }
 
+    public ExternalAttachment load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
+        Location startLocation = reader.getLocation();
+
+        try {
+            Set<QName> intents = helper.parseListOfQNames(reader, "intents");
+            Set<QName> policySets = helper.parseListOfQNames(reader, "policySets");
+            String attachTo = reader.getAttributeValue(null, "attachTo");
+            if (attachTo == null) {
+                context.addError(new MissingAttribute("Attribute attachTo must be specified", startLocation));
+                attachTo = "";
+            }
+            ExternalAttachment attachment = new ExternalAttachment(attachTo, policySets, intents);
+            validateAttributes(reader, context, attachment);
+            LoaderUtil.skipToEndElement(reader);
+            return attachment;
+        } catch (InvalidPrefixException e) {
+            String prefix = e.getPrefix();
+            URI uri = context.getContributionUri();
+            InvalidQNamePrefix failure = new InvalidQNamePrefix(
+                    "The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri + " is invalid", startLocation);
+            context.addError(failure);
+        }
+        return null;
+
+    }
 
 }

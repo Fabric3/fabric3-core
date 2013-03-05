@@ -41,6 +41,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +49,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.model.type.definitions.BindingType;
+import org.fabric3.model.type.definitions.ExternalAttachment;
 import org.fabric3.model.type.definitions.ImplementationType;
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.IntentMap;
@@ -142,6 +144,9 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
                 } else if (value instanceof ImplementationType) {
                     ImplementationType implementationType = (ImplementationType) value;
                     activate(implementationType);
+                } else if (value instanceof ExternalAttachment) {
+                    ExternalAttachment externalAttachment = (ExternalAttachment) value;
+                    activate(externalAttachment);
                 }
             }
         }
@@ -185,6 +190,8 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
             getSubCache(BindingType.class).remove(definition.getName());
         } else if (definition instanceof ImplementationType) {
             getSubCache(ImplementationType.class).remove(definition.getName());
+        } else if (definition instanceof ExternalAttachment) {
+            getSubCache(ExternalAttachment.class).remove(definition.getName());
         }
     }
 
@@ -222,6 +229,12 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
             throw new PolicyActivationException("Duplicate implementation type found:" + name);
         }
         subCache.put(name, implementationType);
+    }
+
+    private void activate(ExternalAttachment externalAttachment) {
+        Map<QName, ExternalAttachment> subCache = getSubCache(ExternalAttachment.class);
+        QName name = externalAttachment.getName();
+        subCache.put(name, externalAttachment);
     }
 
     private void validateIntents(Set<Intent> intents) throws PolicyActivationException {
@@ -291,7 +304,12 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
 
     @SuppressWarnings("unchecked")
     private <D extends AbstractPolicyDefinition> Map<QName, D> getSubCache(Class<D> definitionClass) {
-        return (Map<QName, D>) cache.get(definitionClass);
+        Map<QName, D> map = (Map<QName, D>) cache.get(definitionClass);
+        if (map == null) {
+            map = new HashMap<QName, D>();
+            cache.put(definitionClass, map);
+        }
+        return map;
     }
 
 }

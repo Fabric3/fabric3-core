@@ -37,23 +37,20 @@
 */
 package org.fabric3.introspection.xml.definitions;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
-import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.model.type.definitions.BindingType;
+import org.fabric3.model.type.definitions.ExternalAttachment;
 import org.fabric3.model.type.definitions.ImplementationType;
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.IntentType;
@@ -69,7 +66,9 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.oasisopen.sca.Constants.SCA_NS;
@@ -113,55 +112,64 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
         context.setTargetNamespace(targetNamespace);
         while (true) {
             switch (reader.next()) {
-            case START_ELEMENT:
-                Location location = reader.getLocation();
-                QName qname = reader.getName();
-                AbstractPolicyDefinition definition = null;
-                if (INTENT.equals(qname)) {
-                    definition = loaderRegistry.load(reader, Intent.class, context);
-                } else if (POLICY_SET.equals(qname)) {
-                    definition = loaderRegistry.load(reader, PolicySet.class, context);
-                } else if (BINDING_TYPE.equals(qname)) {
-                    definition = loaderRegistry.load(reader, BindingType.class, context);
-                } else if (IMPLEMENTATION_TYPE.equals(qname)) {
-                    definition = loaderRegistry.load(reader, ImplementationType.class, context);
-                } else if (EXTERNAL_ATTACHMENT.equals(qname)) {
-                    // TODO implement
-                } else {
-                    UnrecognizedElement failure = new UnrecognizedElement(reader, location);
-                    context.addError(failure);
-                }
-                if (definition != null) {
-                    if (definitions.contains(definition)) {
-                        QName name = definition.getName();
-                        DuplicatePolicyDefinition error = new DuplicatePolicyDefinition("Duplicate policy definition: " + name, location);
-                        context.addError(error);
+                case START_ELEMENT:
+                    Location location = reader.getLocation();
+                    QName qname = reader.getName();
+                    AbstractPolicyDefinition definition = null;
+                    if (INTENT.equals(qname)) {
+                        definition = loaderRegistry.load(reader, Intent.class, context);
+                    } else if (POLICY_SET.equals(qname)) {
+                        definition = loaderRegistry.load(reader, PolicySet.class, context);
+                    } else if (BINDING_TYPE.equals(qname)) {
+                        definition = loaderRegistry.load(reader, BindingType.class, context);
+                    } else if (IMPLEMENTATION_TYPE.equals(qname)) {
+                        definition = loaderRegistry.load(reader, ImplementationType.class, context);
+                    } else if (EXTERNAL_ATTACHMENT.equals(qname)) {
+                        definition = loaderRegistry.load(reader, ExternalAttachment.class, context);
+                    } else {
+                        UnrecognizedElement failure = new UnrecognizedElement(reader, location);
+                        context.addError(failure);
                     }
-                    definitions.add(definition);
-                }
-                break;
-            case END_ELEMENT:
-                // update indexed elements with the loaded definitions
-                for (AbstractPolicyDefinition candidate : definitions) {
-                    boolean found = false;
-                    for (ResourceElement element : resource.getResourceElements()) {
-                        Symbol candidateSymbol = new QNameSymbol(candidate.getName());
-                        if (element.getSymbol().equals(candidateSymbol)) {
-                            //noinspection unchecked
+                    if (definition != null) {
+                        if (definitions.contains(definition)) {
+                            QName name = definition.getName();
+                            DuplicatePolicyDefinition error = new DuplicatePolicyDefinition("Duplicate policy definition: " + name, location);
+                            context.addError(error);
+                        }
+                        definitions.add(definition);
+                    }
+                    break;
+                case END_ELEMENT:
+                    // update indexed elements with the loaded definitions
+                    for (AbstractPolicyDefinition candidate : definitions) {
+                        if (candidate instanceof ExternalAttachment) {
+                            // External attachments must be added here and not during indexing since they have synthetic names
+                            QNameSymbol symbol = new QNameSymbol(candidate.getName());
+                            ResourceElement<QNameSymbol, AbstractPolicyDefinition> element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(symbol);
                             element.setValue(candidate);
-                            found = true;
+                            resource.addResourceElement(element);
+
+                            continue;
+                        }
+                        boolean found = false;
+                        for (ResourceElement element : resource.getResourceElements()) {
+                            Symbol candidateSymbol = new QNameSymbol(candidate.getName());
+                            if (element.getSymbol().equals(candidateSymbol)) {
+                                //noinspection unchecked
+                                element.setValue(candidate);
+                                found = true;
+                            }
+                        }
+                        if (!found) {
+                            String id = candidate.toString();
+                            throw new AssertionError("Definition not found: " + id);
+                        }
+                        if (candidate instanceof Intent) {
+                            expandQualifiers((Intent) candidate, resource);
                         }
                     }
-                    if (!found) {
-                        String id = candidate.toString();
-                        throw new AssertionError("Definition not found: " + id);
-                    }
-                    if (candidate instanceof Intent) {
-                        expandQualifiers((Intent) candidate, resource);
-                    }
-                }
-                context.setTargetNamespace(oldNamespace);
-                return;
+                    context.setTargetNamespace(oldNamespace);
+                    return;
             }
         }
 
@@ -192,14 +200,7 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
                     excludes.add(new QName(ns, localPart + "." + entry.getName()));
                 }
             }
-            Intent qualified = new Intent(qualifierName,
-                                          constrains,
-                                          requires,
-                                          Collections.<Qualifier>emptySet(),
-                                          false,
-                                          excludes,
-                                          intentType,
-                                          isDefault);
+            Intent qualified = new Intent(qualifierName, constrains, requires, Collections.<Qualifier>emptySet(), false, excludes, intentType, isDefault);
             QNameSymbol symbol = new QNameSymbol(qualifierName);
             ResourceElement<QNameSymbol, AbstractPolicyDefinition> element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(symbol);
             element.setValue(qualified);
@@ -217,6 +218,5 @@ public class DefinitionsLoader implements XmlResourceElementLoader {
             }
         }
     }
-
 
 }

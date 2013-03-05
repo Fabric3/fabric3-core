@@ -42,6 +42,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.fabric3.model.type.definitions.ExternalAttachment;
+import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.policy.infoset.PolicyEvaluationException;
 import org.fabric3.policy.infoset.PolicyEvaluator;
@@ -71,26 +73,34 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
     }
 
     public void attachPolicies(LogicalComponent<?> component, boolean incremental) throws PolicyEvaluationException {
+        Collection<ExternalAttachment> externalAttachments = policyRegistry.getAllDefinitions(ExternalAttachment.class);
+        if (!externalAttachments.isEmpty()) {
+
+            for (ExternalAttachment externalAttachment : externalAttachments) {
+                for (QName name : externalAttachment.getPolicySets()) {
+                    PolicySet policySet = policyRegistry.getDefinition(name, PolicySet.class);
+                    if (policySet == null) {
+                        throw new PolicyEvaluationException("Policy set referenced in external attachment not found: " + name);
+                    }
+                    attachPolicy(component, policySet, externalAttachment.getAttachTo(), incremental);
+                }
+                for (QName name : externalAttachment.getIntents()) {
+                    Intent intent = policyRegistry.getDefinition(name, Intent.class);
+                    if (intent == null) {
+                        throw new PolicyEvaluationException("Intent referenced in external attachment not found: " + name);
+                    }
+                    //intentMap.put(intent, externalAttachment.getAttachTo());
+                }
+            }
+
+        }
         Set<PolicySet> policySets = policyRegistry.getExternalAttachmentPolicies();
         attachPolicies(policySets, component, incremental);
     }
 
     public void attachPolicies(Set<PolicySet> policySets, LogicalComponent<?> component, boolean incremental) throws PolicyEvaluationException {
         for (PolicySet policySet : policySets) {
-            Collection<LogicalScaArtifact<?>> results = policyEvaluator.evaluate(policySet.getAttachTo(), component);
-
-            for (Iterator<LogicalScaArtifact<?>> iterator = results.iterator(); iterator.hasNext(); ) {
-                LogicalScaArtifact<?> result = iterator.next();
-                String appliesTo = policySet.getAppliesTo();
-                if (appliesTo != null && !policyEvaluator.doesApply(appliesTo, result)) {
-                    iterator.remove();
-                }
-            }
-
-            // attach policy sets
-            for (LogicalScaArtifact<?> result : results) {
-                attach(policySet.getName(), result, incremental);
-            }
+            attachPolicy(component, policySet, policySet.getAttachTo(), incremental);
         }
     }
 
@@ -231,6 +241,23 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
             binding.setState(LogicalState.NEW);
         } else {
             throw new PolicyEvaluationException("Invalid policy attachment type: " + target.getClass());
+        }
+    }
+
+    private void attachPolicy(LogicalComponent<?> component, PolicySet policySet, String attachTo, boolean incremental) throws PolicyEvaluationException {
+        Collection<LogicalScaArtifact<?>> results = policyEvaluator.evaluate(attachTo, component);
+
+        for (Iterator<LogicalScaArtifact<?>> iterator = results.iterator(); iterator.hasNext(); ) {
+            LogicalScaArtifact<?> result = iterator.next();
+            String appliesTo = policySet.getAppliesTo();
+            if (appliesTo != null && !policyEvaluator.doesApply(appliesTo, result)) {
+                iterator.remove();
+            }
+        }
+
+        // attach policy sets
+        for (LogicalScaArtifact<?> result : results) {
+            attach(policySet.getName(), result, incremental);
         }
     }
 
