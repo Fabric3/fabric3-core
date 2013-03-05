@@ -69,7 +69,6 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
         super(policyRegistry, lcm, policyEvaluator);
     }
 
-
     public IntentPair resolveIntents(LogicalComponent<?> component, LogicalOperation operation) throws PolicyResolutionException {
         Implementation<?> implementation = component.getDefinition().getImplementation();
         QName type = implementation.getType();
@@ -125,16 +124,38 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
             // short-circuit intent resolution
             return Collections.emptySet();
         }
-        Set<PolicySet> policies = resolvePolicies(requiredIntents, component);
-        if (!requiredIntents.isEmpty()) {
-            throw new PolicyResolutionException("Unable to resolve all intents", requiredIntents);
-        }
+        Set<PolicySet> policies;
+        if (!policySets.isEmpty()) {
+            // resolve intents against specified policy sets
+            policies = new LinkedHashSet<PolicySet>();
+            for (QName name : policySets) {
+                PolicySet policySet = policyRegistry.getDefinition(name, PolicySet.class);
+                policies.add(policySet);
+            }
+            for (Intent intent : requiredIntents) {
+                boolean resolved = false;
+                for (PolicySet policy : policies) {
+                    if (policy.doesProvide(intent.getName())) {
+                        resolved = true;
+                        break;
+                    }
+                }
+                if (!resolved) {
+                    throw new PolicyResolutionException("Intent not satisfied: " + intent.getName());
+                }
+            }
+        } else {
+            policies = resolvePolicies(requiredIntents, component);
+            if (!requiredIntents.isEmpty()) {
+                throw new PolicyResolutionException("Unable to resolve all intents", requiredIntents);
+            }
 
-        for (QName name : policySets) {
-            PolicySet policySet = policyRegistry.getDefinition(name, PolicySet.class);
-            policies.add(policySet);
-        }
+            for (QName name : policySets) {
+                PolicySet policySet = policyRegistry.getDefinition(name, PolicySet.class);
+                policies.add(policySet);
+            }
 
+        }
         return policies;
 
     }
@@ -157,7 +178,7 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
         // Remove intents not applicable to the artifact
         filterInvalidIntents(Intent.IMPLEMENTATION, requiredIntents);
         filterMutuallyExclusiveIntents(requiredIntents);
-        
+
         return requiredIntents;
 
     }
@@ -179,6 +200,5 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
         policySetNames.addAll(logicalComponent.getPolicySets());
         return policySetNames;
     }
-
 
 }
