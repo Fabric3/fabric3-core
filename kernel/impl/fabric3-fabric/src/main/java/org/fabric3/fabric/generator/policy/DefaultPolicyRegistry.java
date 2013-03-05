@@ -37,6 +37,7 @@
 */
 package org.fabric3.fabric.generator.policy;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,9 +45,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.model.type.definitions.BindingType;
@@ -62,6 +60,7 @@ import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.generator.policy.PolicyActivationException;
 import org.fabric3.spi.generator.policy.PolicyRegistry;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default implementation of the policy registry.
@@ -69,8 +68,8 @@ import org.fabric3.spi.generator.policy.PolicyRegistry;
 public class DefaultPolicyRegistry implements PolicyRegistry {
 
     private MetaDataStore metaDataStore;
-    private Map<Class<? extends AbstractPolicyDefinition>, Map<QName, ? extends AbstractPolicyDefinition>> cache =
-            new ConcurrentHashMap<Class<? extends AbstractPolicyDefinition>, Map<QName, ? extends AbstractPolicyDefinition>>();
+    private Map<Class<? extends AbstractPolicyDefinition>, Map<QName, ? extends AbstractPolicyDefinition>> cache
+            = new ConcurrentHashMap<Class<? extends AbstractPolicyDefinition>, Map<QName, ? extends AbstractPolicyDefinition>>();
 
     /**
      * Initializes the cache.
@@ -109,7 +108,13 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
         if (subCache == null) {
             return Collections.emptySet();
         }
-        return new HashSet<D>(subCache.values());
+        Set<D> set = new HashSet<D>();
+        for (D value : subCache.values()) {
+            if (names.contains(value.getName())) {
+                set.add(value);
+            }
+        }
+        return set;
     }
 
     public Set<PolicySet> activateDefinitions(URI uri) throws PolicyActivationException {
@@ -258,8 +263,9 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
                     }
                     if (!found) {
                         QName name = policySet.getName();
-                        throw new PolicyActivationException("Intent map that provides " + intentMap.getProvides() + " in policy set " + name
-                                + " does not specify the qualifier " + qualifierName);
+                        throw new PolicyActivationException(
+                                "Intent map that provides " + intentMap.getProvides() + " in policy set " + name + " does not specify the qualifier "
+                                + qualifierName);
                     }
                 }
             }
@@ -274,15 +280,14 @@ public class DefaultPolicyRegistry implements PolicyRegistry {
                     for (QName provided : referencedPolicySet.getProvidedIntents()) {
                         if (!policySet.doesProvide(provided)) {
                             QName name = policySet.getName();
-                            throw new PolicyActivationException("Referenced policy set " + referenceName + " from " + name + " provides an intent "
-                                    + provided + " that is not provided by the parent policy set");
+                            throw new PolicyActivationException("Referenced policy set " + referenceName + " from " + name + " provides an intent " + provided
+                                                                + " that is not provided by the parent policy set");
                         }
                     }
                 }
             }
         }
     }
-
 
     @SuppressWarnings("unchecked")
     private <D extends AbstractPolicyDefinition> Map<QName, D> getSubCache(Class<D> definitionClass) {

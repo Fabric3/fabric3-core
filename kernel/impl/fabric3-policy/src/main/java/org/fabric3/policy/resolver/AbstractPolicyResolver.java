@@ -142,15 +142,24 @@ public class AbstractPolicyResolver {
     }
 
     protected void filterMutuallyExclusiveIntents(Set<Intent> intents) {
-        Set<QName> excludedIntents = new HashSet<QName>();
-        for (Iterator<Intent> iterator = intents.iterator(); iterator.hasNext(); ) {
-            Intent intent = iterator.next();
-            if (excludedIntents.contains(intent.getName())) {
-                iterator.remove();
-            } else if (!intent.getExcludes().isEmpty()) {
-                excludedIntents.addAll(intent.getExcludes());
-            }
+        if (intents.isEmpty()) {
+            return;
+        }
+        Set<Intent> removed = new HashSet<Intent>();
 
+        for (Intent current : intents) {
+            if (removed.contains(current)) {
+                continue;
+            }
+            for (Intent intent : intents) {
+                if (current.getExcludes().contains(intent.getName()) || intent.getExcludes().contains(current.getName())) {
+
+                    removed.add(intent);
+                }
+            }
+        }
+        for (Intent intent : removed) {
+            intents.remove(intent);
         }
     }
 
@@ -213,7 +222,7 @@ public class AbstractPolicyResolver {
                 // Special case - at the domain level the top level composite is removed during deployment. Its intents (defined in the component type) need
                 // to be added to the hierarchy. This is achieved by walking the definitions.
                 ComponentDefinition<?> componentDefinition = parent.getDefinition();
-                ComponentType type =  componentDefinition.getParent();
+                ComponentType type = componentDefinition.getParent();
                 processIntents(type.getIntents(), aggregatedIntents);
             }
 
@@ -266,7 +275,7 @@ public class AbstractPolicyResolver {
                 // Special case - at the domain level the top level composite is removed during deployment. Its intents (defined in the component type) need
                 // to be added to the hierarchy. This is achieved by walking the definitions.
                 ComponentDefinition<?> componentDefinition = parent.getDefinition();
-                ComponentType type =  componentDefinition.getParent();
+                ComponentType type = componentDefinition.getParent();
                 processIntents(type.getIntents(), aggregatedIntents);
             }
 
