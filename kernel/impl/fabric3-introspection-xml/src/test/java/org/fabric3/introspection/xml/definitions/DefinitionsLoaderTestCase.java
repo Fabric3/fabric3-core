@@ -37,18 +37,17 @@
 */
 package org.fabric3.introspection.xml.definitions;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
-
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.stream.Source;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
@@ -87,7 +86,6 @@ public class DefinitionsLoaderTestCase extends TestCase {
     private DefinitionsLoader loader;
     private Resource resource;
     private XMLStreamReader reader;
-
 
     @SuppressWarnings({"unchecked"})
     public void testLoad() throws Exception {
@@ -252,6 +250,10 @@ public class DefinitionsLoaderTestCase extends TestCase {
         }
 
         public void unregisterLoader(QName element) {
+        }
+
+        public boolean isRegistered(QName element) {
+            return false;
         }
 
         @SuppressWarnings("unchecked")

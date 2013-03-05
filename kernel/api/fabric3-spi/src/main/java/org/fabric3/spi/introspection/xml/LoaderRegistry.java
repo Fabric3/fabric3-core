@@ -46,8 +46,8 @@ package org.fabric3.spi.introspection.xml;
 import javax.xml.namespace.QName;
 
 /**
- * Registry for XML loaders that can parse a StAX input stream and return model objects. Loaders will typically be contributed to the runtime by any
- * extension that needs to handle extension specific information contained in an XML file.
+ * Registry for XML loaders that can parse a StAX input stream and return model objects. Loaders will typically be contributed to the runtime by any extension
+ * that needs to handle extension specific information contained in an XML file.
  */
 public interface LoaderRegistry extends Loader {
     /**
@@ -60,10 +60,18 @@ public interface LoaderRegistry extends Loader {
     void registerLoader(QName element, TypeLoader<?> loader) throws IllegalStateException;
 
     /**
-     * Unregister the loader for the supplied element. This will typically be called by a loader as it is being destroyed. This method simply returns
-     * if no loader is registered for that element.
+     * Unregister the loader for the supplied element. This will typically be called by a loader as it is being destroyed. This method simply returns if no
+     * loader is registered for that element.
      *
      * @param element the element whose loader should be unregistered
      */
     void unregisterLoader(QName element);
+
+    /**
+     * Returns true if the element is registered.
+     *
+     * @param element the element
+     * @return  true if the element is registered
+     */
+    boolean isRegistered(QName element);
 }

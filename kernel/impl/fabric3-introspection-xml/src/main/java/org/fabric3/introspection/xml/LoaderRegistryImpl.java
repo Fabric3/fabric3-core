@@ -43,19 +43,16 @@
  */
 package org.fabric3.introspection.xml;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.stream.Source;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -64,6 +61,8 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.xml.XMLFactory;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * The default implementation of a loader registry
@@ -92,6 +91,10 @@ public class LoaderRegistryImpl implements LoaderRegistry {
 
     public void unregisterLoader(QName element) {
         loaders.remove(element);
+    }
+
+    public boolean isRegistered(QName element) {
+        return mappedLoaders.containsKey(element) || loaders.containsKey(element);
     }
 
     public <O> O load(XMLStreamReader reader, Class<O> type, IntrospectionContext introspectionContext) throws XMLStreamException {

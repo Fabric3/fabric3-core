@@ -43,16 +43,15 @@
  */
 package org.fabric3.introspection.xml.definitions;
 
-import java.net.URI;
-import java.util.Set;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.net.URI;
+import java.util.Set;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.definitions.ImplementationType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
@@ -60,27 +59,59 @@ import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
+import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
+import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.oasisopen.sca.Constants;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Loader for definitions.
  */
 @EagerInit
 public class ImplementationTypeLoader extends AbstractValidatingTypeLoader<ImplementationType> {
+    private static final QName QNAME = new QName(Constants.SCA_NS, "implementationType");
+
+    private LoaderRegistry registry;
     private LoaderHelper helper;
 
-    public ImplementationTypeLoader(@Reference LoaderHelper helper) {
+    public ImplementationTypeLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper helper) {
+        this.registry = registry;
         this.helper = helper;
-        addAttributes("name", "alwaysProvides", "mayProvide");
+        addAttributes("name", "alwaysProvides", "mayProvide", "type");
+    }
+
+    @Init
+    public void init() {
+        registry.registerLoader(QNAME, this);
     }
 
     public ImplementationType load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
         try {
             String name = reader.getAttributeValue(null, "name");
-            QName qName = helper.createQName(name, reader);
-            if (!qName.getLocalPart().startsWith("implementation.")) {
-                InvalidValue error = new InvalidValue("Invalid implementation value", startLocation);
+            if (name == null) {
+                // support old SCA and SCA 1.1 attributes for backward compatibility
+                name = reader.getAttributeValue(null, "type");
+                if (name == null) {
+                    MissingAttribute error = new MissingAttribute("Implementation type name not specified", startLocation);
+                    context.addError(error);
+                    return null;
+                }
+            }
+
+            NamespaceContext namespaceContext = reader.getNamespaceContext();
+            QName qName = LoaderUtil.getQName(name, context.getTargetNamespace(), namespaceContext);
+
+            if (!Namespaces.F3.equals(qName.getNamespaceURI()) && !registry.isRegistered(qName)) {
+                // do not check F3 namespaces as definitions files may be contributed during bootstrap when the F3 implementation loaders have not yet been
+                // registered
+                InvalidValue error = new InvalidValue("Unknown implementation type: " + qName, startLocation);
+                context.addError(error);
+            } else if (!qName.getLocalPart().startsWith("implementation.")) {
+                InvalidValue error = new InvalidValue("Invalid implementation value: " + qName, startLocation);
                 context.addError(error);
             }
             Set<QName> alwaysProvides = helper.parseListOfQNames(reader, "alwaysProvides");
@@ -94,9 +125,8 @@ public class ImplementationTypeLoader extends AbstractValidatingTypeLoader<Imple
         } catch (InvalidPrefixException e) {
             String prefix = e.getPrefix();
             URI uri = context.getContributionUri();
-            InvalidQNamePrefix failure =
-                    new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri
-                                                   + " is invalid", startLocation);
+            InvalidQNamePrefix failure = new InvalidQNamePrefix(
+                    "The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri + " is invalid", startLocation);
             context.addError(failure);
 
         }
