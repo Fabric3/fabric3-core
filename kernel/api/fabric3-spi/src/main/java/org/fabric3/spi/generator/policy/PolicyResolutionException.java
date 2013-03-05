@@ -63,9 +63,8 @@ public class PolicyResolutionException extends GenerationException {
         super(cause);
     }
 
-    @Override
     public String getMessage() {
-        return super.getMessage() + ":" + getIdentifier();
+        return super.getMessage();
     }
 
 }
