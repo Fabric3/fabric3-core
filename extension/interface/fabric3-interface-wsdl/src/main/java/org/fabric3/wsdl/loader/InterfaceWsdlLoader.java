@@ -37,15 +37,12 @@
  */
 package org.fabric3.wsdl.loader;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -65,6 +62,8 @@ import org.fabric3.spi.util.UriHelper;
 import org.fabric3.wsdl.contribution.WsdlServiceContractSymbol;
 import org.fabric3.wsdl.contribution.impl.PortTypeNotFound;
 import org.fabric3.wsdl.model.WsdlServiceContract;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Loads interface.wsdl elements in a composite.
@@ -79,7 +78,7 @@ public class InterfaceWsdlLoader extends AbstractValidatingTypeLoader<WsdlServic
         this.store = store;
         this.matcher = matcher;
         this.helper = helper;
-        addAttributes("interface", "callbackInterface", "remotable", "requires");
+        addAttributes("interface", "callbackInterface", "remotable", "requires", "policySets");
     }
 
     public WsdlServiceContract load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -125,10 +124,10 @@ public class InterfaceWsdlLoader extends AbstractValidatingTypeLoader<WsdlServic
             if (originalContract != null) {
                 MatchResult result = matcher.isAssignableFrom(callbackContract, originalContract, true);
                 if (!result.isAssignable()) {
-                    IncompatibleContracts error =
-                            new IncompatibleContracts("The callback contract specified on interface.wsdl is not compatible with" +
-                                                              " the one specified in the WSDL portType: "
-                                                              + result.getError(), startLocation, callbackContract);
+                    IncompatibleContracts error = new IncompatibleContracts("The callback contract specified on interface.wsdl is not compatible with" +
+                                                                            " the one specified in the WSDL portType: " + result.getError(),
+                                                                            startLocation,
+                                                                            callbackContract);
                     context.addError(error);
                 }
             }
@@ -142,8 +141,8 @@ public class InterfaceWsdlLoader extends AbstractValidatingTypeLoader<WsdlServic
             String namespace = UriHelper.getDefragmentedNameAsString(uri);
             String localExpression = uri.getFragment();
             if (localExpression == null || !localExpression.toLowerCase().startsWith("wsdl.porttype(") || !localExpression.endsWith(")")) {
-                InvalidValue error = new InvalidValue("A port type expression must be specified of the form <namespace>#wsdl.portType(portType): "
-                                                              + portType, location);
+                InvalidValue error = new InvalidValue("A port type expression must be specified of the form <namespace>#wsdl.portType(portType): " + portType,
+                                                      location);
                 context.addError(error);
                 return null;
             }
@@ -189,6 +188,5 @@ public class InterfaceWsdlLoader extends AbstractValidatingTypeLoader<WsdlServic
             }
         }
     }
-
 
 }
