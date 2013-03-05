@@ -43,15 +43,12 @@
  */
 package org.fabric3.introspection.xml.definitions;
 
-import java.net.URI;
-import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
+import java.util.Set;
 
 import org.fabric3.model.type.definitions.BindingType;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -60,6 +57,8 @@ import org.fabric3.spi.introspection.xml.InvalidPrefixException;
 import org.fabric3.spi.introspection.xml.InvalidQNamePrefix;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Loader for definitions.
@@ -71,13 +70,17 @@ public class BindingTypeLoader extends AbstractValidatingTypeLoader<BindingType>
 
     public BindingTypeLoader(@Reference LoaderHelper helper) {
         this.helper = helper;
-        addAttributes("name", "alwaysProvides", "mayProvide");
+        addAttributes("name", "type", "alwaysProvides", "mayProvide");
     }
 
     public BindingType load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();
 
         String name = reader.getAttributeValue(null, "name");
+        if (name == null) {
+            // support old SCA and SCA 1.1 attributes for backward compatibility
+            name = reader.getAttributeValue(null, "type");
+        }
         QName qName = LoaderUtil.getQName(name, context.getTargetNamespace(), reader.getNamespaceContext());
 
         Set<QName> alwaysProvides;
@@ -91,13 +94,11 @@ public class BindingTypeLoader extends AbstractValidatingTypeLoader<BindingType>
         } catch (InvalidPrefixException e) {
             String prefix = e.getPrefix();
             URI uri = context.getContributionUri();
-            InvalidQNamePrefix failure =
-                    new InvalidQNamePrefix("The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri + " is invalid",
-                                           startLocation);
+            InvalidQNamePrefix failure = new InvalidQNamePrefix(
+                    "The prefix " + prefix + " specified in the definitions.xml file in contribution " + uri + " is invalid", startLocation);
             context.addError(failure);
         }
         return null;
-
 
     }
 

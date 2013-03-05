@@ -74,7 +74,6 @@ public class DefinitionsIndexer implements XmlIndexer {
     private static final QName IMPLEMENTATION_TYPE = new QName(SCA_NS, "implementationType");
     private XmlIndexerRegistry registry;
 
-
     public DefinitionsIndexer(@Reference XmlIndexerRegistry registry) {
         this.registry = registry;
     }
@@ -94,30 +93,31 @@ public class DefinitionsIndexer implements XmlIndexer {
         while (true) {
             try {
                 switch (reader.next()) {
-                case START_ELEMENT:
-                    Location location = reader.getLocation();
+                    case START_ELEMENT:
+                        Location location = reader.getLocation();
 
-                    QName qname = reader.getName();
-                    if (!INTENT.equals(qname)
-                            && !POLICY_SET.equals(qname)
-                            && !BINDING_TYPE.equals(qname)
-                            && !IMPLEMENTATION_TYPE.equals(qname)) {
-                        continue;
-                    }
-                    String nameAttr = reader.getAttributeValue(null, "name");
-                    if (nameAttr == null) {
-                        context.addError(new MissingAttribute("Definition name not specified", location));
+                        QName qname = reader.getName();
+                        if (!INTENT.equals(qname) && !POLICY_SET.equals(qname) && !BINDING_TYPE.equals(qname) && !IMPLEMENTATION_TYPE.equals(qname)) {
+                            continue;
+                        }
+                        String nameAttr = reader.getAttributeValue(null, "name");
+
+                        if (nameAttr == null) {
+                            // support old SCA and SCA 1.1 attributes for backward compatibility
+                            nameAttr = reader.getAttributeValue(null, "type");
+                            if (nameAttr == null) {
+                                context.addError(new MissingAttribute("Definition name not specified", location));
+                                return;
+                            }
+                        }
+                        NamespaceContext namespaceContext = reader.getNamespaceContext();
+                        QName name = LoaderUtil.getQName(nameAttr, targetNamespace, namespaceContext);
+                        QNameSymbol symbol = new QNameSymbol(name);
+                        ResourceElement<QNameSymbol, AbstractPolicyDefinition> element = new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(symbol);
+                        resource.addResourceElement(element);
+                        break;
+                    case XMLStreamConstants.END_DOCUMENT:
                         return;
-                    }
-                    NamespaceContext namespaceContext = reader.getNamespaceContext();
-                    QName name = LoaderUtil.getQName(nameAttr, targetNamespace, namespaceContext);
-                    QNameSymbol symbol = new QNameSymbol(name);
-                    ResourceElement<QNameSymbol, AbstractPolicyDefinition> element =
-                            new ResourceElement<QNameSymbol, AbstractPolicyDefinition>(symbol);
-                    resource.addResourceElement(element);
-                    break;
-                case XMLStreamConstants.END_DOCUMENT:
-                    return;
                 }
             } catch (XMLStreamException e) {
                 throw new InstallException(e);
