@@ -43,18 +43,19 @@
  */
 package org.fabric3.binding.ws.metro.runtime.core;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Binding;
+import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.handler.Handler;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import com.sun.xml.ws.api.BindingID;
 import com.sun.xml.ws.api.WSBinding;
@@ -70,8 +71,7 @@ import com.sun.xml.ws.transport.http.servlet.WSServletDelegate;
 import com.sun.xml.wss.SecurityEnvironment;
 
 /**
- * Handles incoming HTTP requests and dispatches them to the Metro stack. Extends the Metro servlet and overrides the <code>getDelegate</code>
- * method.
+ * Handles incoming HTTP requests and dispatches them to the Metro stack. Extends the Metro servlet and overrides the <code>getDelegate</code> method.
  */
 public class MetroServlet extends WSServlet {
     private static final long serialVersionUID = -2581439830158433922L;
@@ -111,17 +111,7 @@ public class MetroServlet extends WSServlet {
             container = new F3Container(servletContext, securityEnvironment);
 
             WSBinding binding = BindingImpl.create(BindingID.SOAP12_HTTP);
-            mexEndpoint = WSEndpoint.create(MEXEndpoint.class,
-                                            false,
-                                            null,
-                                            null,
-                                            null,
-                                            container,
-                                            binding,
-                                            null,
-                                            null,
-                                            null,
-                                            true);
+            mexEndpoint = WSEndpoint.create(MEXEndpoint.class, false, null, null, null, container, binding, null, null, null, true);
         } finally {
             Thread.currentThread().setContextClassLoader(classLoader);
         }
@@ -175,17 +165,17 @@ public class MetroServlet extends WSServlet {
             // Fetch the handlers 
             loadHandlers(binding, configuration);
 
-            WSEndpoint<?> wsEndpoint = WSEndpoint.create(seiClass,
-                                                         false,
-                                                         invoker,
-                                                         serviceName,
-                                                         portName,
-                                                         endpointContainer,
-                                                         binding,
-                                                         primaryWsdl,
-                                                         metadata,
-                                                         null,
-                                                         true);
+            WSEndpoint<?> wsEndpoint;
+            try {
+                wsEndpoint = WSEndpoint.create(seiClass, false, invoker, serviceName, portName, endpointContainer, binding, primaryWsdl, metadata, null, true);
+            } catch (WebServiceException e) {
+                if (e.getMessage().contains("Not a primary WSDL")) {
+                    // workaround for WSDLs without service declarations
+                    wsEndpoint = WSEndpoint.create(seiClass, false, invoker, serviceName, portName, endpointContainer, binding, null, metadata, null, true);
+                } else {
+                    throw e;
+                }
+            }
             wsEndpoint.setExecutor(executorService);
 
             ServletAdapter adapter = servletAdapterFactory.createAdapter(servicePath, servicePath, wsEndpoint);
@@ -207,7 +197,7 @@ public class MetroServlet extends WSServlet {
     public synchronized void unregisterService(String path) {
         if (delegate == null) {
             // case where the endpoint is undeployed before it has been activated
-            for (Iterator<EndpointConfiguration> it = configurations.iterator(); it.hasNext();) {
+            for (Iterator<EndpointConfiguration> it = configurations.iterator(); it.hasNext(); ) {
                 EndpointConfiguration configuration = it.next();
                 if (configuration.getServicePath().equals(path)) {
                     it.remove();
