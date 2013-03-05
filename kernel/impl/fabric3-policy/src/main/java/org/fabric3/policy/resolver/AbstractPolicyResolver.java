@@ -127,11 +127,11 @@ public class AbstractPolicyResolver {
                 }
             } else {
                 if (!intent.isQualified()) {
-                    throw new PolicyResolutionException("Unqualified intent without constrained artifact", intentName);
+                    throw new PolicyResolutionException("Unqualified intent without constrained artifact: " + intentName);
                 }
                 Intent qualifiableIntent = policyRegistry.getDefinition(intent.getQualifiable(), Intent.class);
                 if (qualifiableIntent == null) {
-                    throw new PolicyResolutionException("Unknown intent", intent.getQualifiable());
+                    throw new PolicyResolutionException("Unknown intent: " + intent.getQualifiable());
                 }
                 if (!qualifiableIntent.doesConstrain(type)) {
                     it.remove();
@@ -169,12 +169,14 @@ public class AbstractPolicyResolver {
      * @param binding the binding
      * @return the aggregated intents
      */
-    protected Set<QName> aggregateIntents(LogicalBinding<?> binding) {
+    protected Set<QName> aggregateIntents(LogicalBinding<?> binding) throws PolicyResolutionException {
         Bindable parent = binding.getParent();
         Set<QName> aggregatedIntents = new LinkedHashSet<QName>();
 
         // add binding intents
         aggregatedIntents.addAll(binding.getIntents());
+
+        validateIntents(binding);
 
         if (parent instanceof LogicalReference) {
             return aggregateReferenceIntents((LogicalReference) parent, aggregatedIntents);
@@ -187,6 +189,18 @@ public class AbstractPolicyResolver {
             aggregatedIntents.addAll(channel.getIntents());
             return aggregatedIntents;
         }
+    }
+
+    private void validateIntents(LogicalBinding<?> binding) throws PolicyResolutionException {
+        Set<Intent> intents = policyRegistry.getDefinitions(binding.getIntents(), Intent.class);
+        for (Intent current : intents) {
+            for (Intent intent : intents) {
+                if (current.getExcludes().contains(intent.getName())) {
+                    throw new PolicyResolutionException("Mutually exclusive intents specified on binding: " + binding.getParent().getUri());
+                }
+            }
+        }
+
     }
 
     /**
@@ -370,13 +384,13 @@ public class AbstractPolicyResolver {
         for (QName intentName : intentNames) {
             Intent intent = policyRegistry.getDefinition(intentName, Intent.class);
             if (intent == null) {
-                throw new PolicyResolutionException("Unknown intent", intentName);
+                throw new PolicyResolutionException("Unknown intent: " + intentName);
             }
             if (intent.isProfile()) {
                 for (QName requiredIntentName : intent.getRequires()) {
                     Intent requiredIntent = policyRegistry.getDefinition(requiredIntentName, Intent.class);
                     if (requiredIntent == null) {
-                        throw new PolicyResolutionException("Unknown intent", requiredIntentName);
+                        throw new PolicyResolutionException("Unknown intent" + requiredIntentName);
                     }
                     requiredIntents.add(requiredIntent);
 

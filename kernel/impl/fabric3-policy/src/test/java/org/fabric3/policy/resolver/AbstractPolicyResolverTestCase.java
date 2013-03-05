@@ -47,6 +47,7 @@ import junit.framework.TestCase;
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.policy.infoset.PolicyEvaluator;
 import org.fabric3.spi.generator.policy.PolicyRegistry;
+import org.fabric3.spi.generator.policy.PolicyResolutionException;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -139,7 +140,7 @@ public class AbstractPolicyResolverTestCase extends TestCase {
             super(policyRegistry, lcm, policyEvaluator);
         }
 
-        public Set<QName> aggregateIntents(LogicalBinding<?> scaArtifact) {
+        public Set<QName> aggregateIntents(LogicalBinding<?> scaArtifact) throws PolicyResolutionException {
             return super.aggregateIntents(scaArtifact);
         }
 

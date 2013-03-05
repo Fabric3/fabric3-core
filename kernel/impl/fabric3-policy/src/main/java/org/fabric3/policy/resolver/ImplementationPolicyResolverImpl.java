@@ -147,7 +147,7 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
         } else {
             policies = resolvePolicies(requiredIntents, component);
             if (!requiredIntents.isEmpty()) {
-                throw new PolicyResolutionException("Unable to resolve all intents", requiredIntents);
+                throw new IntentResolutionException("Unable to resolve all intents", requiredIntents);
             }
 
             for (QName name : policySets) {

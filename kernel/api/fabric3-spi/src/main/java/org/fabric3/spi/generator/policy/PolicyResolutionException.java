@@ -45,14 +45,7 @@ import org.fabric3.spi.generator.GenerationException;
 public class PolicyResolutionException extends GenerationException {
     private static final long serialVersionUID = 8016179162459803135L;
 
-    /**
-     * Initializes the message and the identifier.
-     *
-     * @param message    Message of the exception.
-     * @param identifier Contextual information.
-     */
-    public PolicyResolutionException(String message, Object identifier) {
-        super(message, identifier.toString());
+    public PolicyResolutionException() {
     }
 
     public PolicyResolutionException(String message) {
@@ -61,10 +54,6 @@ public class PolicyResolutionException extends GenerationException {
 
     public PolicyResolutionException(Throwable cause) {
         super(cause);
-    }
-
-    public String getMessage() {
-        return super.getMessage();
     }
 
 }

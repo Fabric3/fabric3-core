@@ -105,7 +105,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
         }
         Set<PolicySet> policies = resolvePolicies(requiredIntents, binding);
         if (!requiredIntents.isEmpty()) {
-            throw new PolicyResolutionException("Unable to resolve all intents", requiredIntents);
+            throw new IntentResolutionException("Unable to resolve all intents", requiredIntents);
         }
 
         Set<QName> policySets = aggregateBindingPolicySets(binding);
@@ -148,7 +148,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
         // resolve policies against the binding
         Set<PolicySet> policies = resolvePolicies(requiredIntents, artifact);
         if (!requiredIntents.isEmpty()) {
-            throw new PolicyResolutionException("Unable to resolve all intents", requiredIntents);
+            throw new IntentResolutionException("Unable to resolve all intents", requiredIntents);
         }
 
         for (QName name : policySets) {
