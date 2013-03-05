@@ -70,6 +70,7 @@ public class LogicalModelXPath extends BaseXPath {
      */
     public LogicalModelXPath(String xpathExpr) throws JaxenException {
         super(xpathExpr, LogicalModelNavigator.getInstance());
+        validateInfoset(xpathExpr);
         // setup namespaces and functions
         SimpleNamespaceContext nc = new SimpleNamespaceContext();
         nc.addNamespace("sca", Constants.SCA_NS);
@@ -78,6 +79,13 @@ public class LogicalModelXPath extends BaseXPath {
 
         SimpleFunctionContext fc = initFunctionContext();
         setFunctionContext(fc);
+    }
+
+    private void validateInfoset(String xpathExpr) throws JaxenException {
+        if (xpathExpr.contains(":property[")) {
+            throw new JaxenException("Properties are not valid attach to targets: " + xpathExpr);
+        }
+
     }
 
     public Object evaluate(Object node) throws JaxenException {
