@@ -37,12 +37,10 @@
 */
 package org.fabric3.spi.generator.policy;
 
-import java.util.List;
 import java.util.Set;
 
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.model.instance.LogicalComponent;
-
 
 /**
  * Applies policy using external policy attachment.

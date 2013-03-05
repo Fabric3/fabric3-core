@@ -100,20 +100,28 @@ public class PolicyResultImpl implements PolicyResult {
         return metadataMap;
     }
 
-    void addSourceEndpointIntents(Set<Intent> intents) {
-        sourcePolicy.addEndpointIntents(intents);
+    void addSourceAggregatedEndpointIntents(Set<Intent> intents) {
+        sourcePolicy.addAggregatedEndpointIntents(intents);
     }
 
-    void addSourceIntents(LogicalOperation operation, Set<Intent> intents) {
-        sourcePolicy.addIntents(operation, intents);
+    void addSourceProvidedEndpointIntents(Set<Intent> intents) {
+        sourcePolicy.addProvidedEndpointIntents(intents);
     }
 
-    void addTargetEndpointIntents(Set<Intent> intents) {
-        targetPolicy.addEndpointIntents(intents);
+    void addSourceProvidedIntents(LogicalOperation operation, Set<Intent> intents) {
+        sourcePolicy.addProvidedIntents(operation, intents);
     }
 
-    void addTargetIntents(LogicalOperation operation, Set<Intent> intents) {
-        targetPolicy.addIntents(operation, intents);
+    void addTargetAggregatedEndpointIntents(Set<Intent> intents) {
+        targetPolicy.addAggregatedEndpointIntents(intents);
+    }
+
+    void addTargetProvidedEndpointIntents(Set<Intent> intents) {
+        targetPolicy.addProvidedEndpointIntents(intents);
+    }
+
+    void addTargetProvidedIntents(LogicalOperation operation, Set<Intent> intents) {
+        targetPolicy.addProvidedIntents(operation, intents);
     }
 
     void addSourceEndpointPolicySets(Set<PolicySet> policySets) {

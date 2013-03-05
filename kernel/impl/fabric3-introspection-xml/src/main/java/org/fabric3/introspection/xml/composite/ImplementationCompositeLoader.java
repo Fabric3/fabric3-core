@@ -43,16 +43,12 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import java.net.URI;
-import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
+import java.net.URL;
 
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.stream.Source;
@@ -67,9 +63,13 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.ElementLoadFailure;
 import org.fabric3.spi.introspection.xml.LoaderException;
+import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.oasisopen.sca.Constants;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Loader that handles an &lt;implementation.composite&gt; element.
@@ -79,10 +79,12 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
     private static final QName IMPL = new QName(Constants.SCA_NS, "implementation.composite");
 
     private MetaDataStore store;
+    private LoaderHelper loaderHelper;
 
-    public ImplementationCompositeLoader(@Reference LoaderRegistry registry, @Reference MetaDataStore store) {
+    public ImplementationCompositeLoader(@Reference LoaderRegistry registry, @Reference MetaDataStore store, @Reference LoaderHelper loaderHelper) {
         super(registry);
-        addAttributes("name", "scdlResource", "requires");
+        this.loaderHelper = loaderHelper;
+        addAttributes("name", "scdlResource", "requires", "policySets");
         this.store = store;
     }
 
@@ -103,6 +105,9 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
         }
 
         validateAttributes(reader, context, implementation);
+
+        loaderHelper.loadPolicySetsAndIntents(implementation, reader, context);
+
 
         LoaderUtil.skipToEndElement(reader);
         return implementation;

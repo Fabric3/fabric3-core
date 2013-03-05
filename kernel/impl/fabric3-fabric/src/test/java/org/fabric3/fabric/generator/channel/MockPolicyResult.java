@@ -85,7 +85,11 @@ public class MockPolicyResult implements PolicyResult, EffectivePolicy {
         return metadata.get(operation);
     }
 
-    public Set<Intent> getEndpointIntents() {
+    public Set<Intent> getProvidedEndpointIntents() {
+        return Collections.emptySet();
+    }
+
+    public Set<Intent> getAggregatedEndpointIntents() {
         return Collections.emptySet();
     }
 

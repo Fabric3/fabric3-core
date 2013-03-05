@@ -128,7 +128,7 @@ public class TargetUrlResolverImplTestCase extends TestCase {
 
     private EffectivePolicy createPolicy() {
         EffectivePolicy policy = EasyMock.createMock(EffectivePolicy.class);
-        EasyMock.expect(policy.getEndpointIntents()).andReturn(Collections.<Intent>emptySet());
+        EasyMock.expect(policy.getProvidedEndpointIntents()).andReturn(Collections.<Intent>emptySet());
         EasyMock.replay(policy);
         return policy;
     }
@@ -139,7 +139,7 @@ public class TargetUrlResolverImplTestCase extends TestCase {
         Intent intent = new Intent(qname, null, null, null, false, null, null, false);
         intents.add(intent);
         EffectivePolicy policy = EasyMock.createMock(EffectivePolicy.class);
-        EasyMock.expect(policy.getEndpointIntents()).andReturn(intents);
+        EasyMock.expect(policy.getProvidedEndpointIntents()).andReturn(intents);
         EasyMock.replay(policy);
         return policy;
     }

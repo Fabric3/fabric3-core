@@ -83,7 +83,11 @@ public class NullPolicyResult implements PolicyResult, EffectivePolicy {
         return metadata;
     }
 
-    public Set<Intent> getEndpointIntents() {
+    public Set<Intent> getProvidedEndpointIntents() {
+        return Collections.emptySet();
+    }
+
+    public Set<Intent> getAggregatedEndpointIntents() {
         return Collections.emptySet();
     }
 

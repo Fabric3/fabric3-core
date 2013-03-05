@@ -37,11 +37,11 @@
 */
 package org.fabric3.policy;
 
+import javax.xml.namespace.QName;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.contract.Operation;
@@ -50,9 +50,11 @@ import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicyPhase;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.policy.resolver.ImplementationPolicyResolver;
+import org.fabric3.policy.resolver.IntentPair;
 import org.fabric3.policy.resolver.InteractionPolicyResolver;
 import org.fabric3.spi.contract.OperationNotFoundException;
 import org.fabric3.spi.contract.OperationResolver;
+import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.PolicyMetadata;
 import org.fabric3.spi.generator.policy.PolicyResolutionException;
 import org.fabric3.spi.generator.policy.PolicyResolver;
@@ -69,6 +71,7 @@ import org.fabric3.spi.model.type.binding.LocalBindingDefinition;
 import org.fabric3.spi.model.type.binding.RemoteBindingDefinition;
 import org.fabric3.util.closure.Closure;
 import org.fabric3.util.closure.CollectionUtils;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -124,8 +127,8 @@ public class DefaultPolicyResolver implements PolicyResolver {
     }
 
     public PolicyResult resolveCallbackPolicies(LogicalBinding<?> binding) throws PolicyResolutionException {
-        LogicalBinding<RemoteBindingDefinition> remoteBinding =
-                new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE, binding.getParent());
+        LogicalBinding<RemoteBindingDefinition> remoteBinding = new LogicalBinding<RemoteBindingDefinition>(RemoteBindingDefinition.INSTANCE,
+                                                                                                            binding.getParent());
 
         Bindable bindable = binding.getParent();
         if (bindable instanceof LogicalReference) {
@@ -158,8 +161,7 @@ public class DefaultPolicyResolver implements PolicyResolver {
         ServiceContract referenceCallbackContract = reference.getServiceContract().getCallbackContract();
         LogicalService callbackService = targetComponent.getService(referenceCallbackContract.getInterfaceName());
 
-        LogicalBinding<LocalBindingDefinition> sourceBinding =
-                new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, callbackService);
+        LogicalBinding<LocalBindingDefinition> sourceBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, callbackService);
         LogicalBinding<LocalBindingDefinition> targetBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, reference);
         LogicalComponent sourceComponent = service.getLeafComponent();
         return resolvePolicies(service.getCallbackOperations(), sourceBinding, targetBinding, sourceComponent, targetComponent);
@@ -184,8 +186,7 @@ public class DefaultPolicyResolver implements PolicyResolver {
         LogicalService callbackService = target.getService(referenceCallbackContract.getInterfaceName());
         List<LogicalOperation> operations = reference.getCallbackOperations();
 
-        LogicalBinding<LocalBindingDefinition> sourceBinding =
-                new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, callbackService);
+        LogicalBinding<LocalBindingDefinition> sourceBinding = new LogicalBinding<LocalBindingDefinition>(LocalBindingDefinition.INSTANCE, callbackService);
         return resolvePolicies(operations, sourceBinding, referenceBinding, null, target);
     }
 
@@ -196,12 +197,13 @@ public class DefaultPolicyResolver implements PolicyResolver {
         }
 
         // synthesize an operation and binding
-        LogicalOperation operation = new LogicalOperation(DEFINITION, consumer);
-        Set<Intent> targetOperationIntents = interactionResolver.resolveProvidedIntents(operation, LocalBindingDefinition.INSTANCE.getType());
         PolicyResultImpl policyResult = new PolicyResultImpl();
-        policyResult.addTargetIntents(operation, targetOperationIntents);
-        Set<Intent> sourceImplementationIntents = implementationResolver.resolveProvidedIntents(component, operation);
-        policyResult.addSourceIntents(operation, sourceImplementationIntents);
+
+        LogicalOperation operation = new LogicalOperation(DEFINITION, consumer);
+        IntentPair targetOperationIntentPair = interactionResolver.resolveIntents(operation, LocalBindingDefinition.INSTANCE.getType());
+        policyResult.addTargetProvidedIntents(operation, targetOperationIntentPair.getProvidedIntents());
+        IntentPair sourceImplementationIntentPair = implementationResolver.resolveIntents(component, operation);
+        policyResult.addSourceProvidedIntents(operation, sourceImplementationIntentPair.getProvidedIntents());
 
         Set<PolicySet> policies = interactionResolver.resolvePolicySets(operation, consumer, LocalBindingDefinition.INSTANCE.getType());
         policyResult.addTargetPolicySets(operation, CollectionUtils.filter(policies, PROVIDED));
@@ -217,6 +219,8 @@ public class DefaultPolicyResolver implements PolicyResolver {
         // important: use reference side operation as the key
         policyResult.addTargetPolicySets(operation, CollectionUtils.filter(policies, PROVIDED));
         policyResult.addInterceptedPolicySets(operation, CollectionUtils.filter(policies, INTERCEPTION));
+
+        overrideDirectIfExternalAttachedPolicies(policyResult);
 
         return policyResult;
     }
@@ -234,7 +238,102 @@ public class DefaultPolicyResolver implements PolicyResolver {
         for (LogicalOperation operation : operations) {
             resolveOperationPolicies(operation, policyResult, sourceBinding, targetBinding, target);
         }
+
+        overrideDirectIfExternalAttachedPolicies(policyResult);
+
         return policyResult;
+    }
+
+    private void overrideDirectIfExternalAttachedPolicies(PolicyResult policyResult) throws PolicyResolutionException {
+        Set<PolicySet> sets = policyResult.getInterceptedEndpointPolicySets();
+
+        boolean overrode = overrideDirectIfExternalAttachedPolicies(sets);
+
+        for (List<PolicySet> policies : policyResult.getInterceptedPolicySets().values()) {
+            if (overrideDirectIfExternalAttachedPolicies(policies)) {
+                overrode = true;
+            }
+        }
+
+        sets = policyResult.getSourcePolicy().getEndpointPolicySets();
+        if (overrideDirectIfExternalAttachedPolicies(sets)) {
+            overrode = true;
+        }
+
+        for (List<PolicySet> policies : policyResult.getSourcePolicy().getOperationPolicySets().values()) {
+            if (overrideDirectIfExternalAttachedPolicies(policies)) {
+                overrode = true;
+            }
+        }
+
+        sets = policyResult.getTargetPolicy().getEndpointPolicySets();
+        if (overrideDirectIfExternalAttachedPolicies(sets)) {
+            overrode = true;
+        }
+
+        for (List<PolicySet> policies : policyResult.getTargetPolicy().getOperationPolicySets().values()) {
+            if (overrideDirectIfExternalAttachedPolicies(policies)) {
+                overrode = true;
+            }
+        }
+
+        // validate that intents are still satisfied if an external attachment policy set overrode direct attached policy sets
+        if (overrode) {
+            validatePolicy(policyResult.getSourcePolicy());
+            validatePolicy(policyResult.getTargetPolicy());
+        }
+    }
+
+    private void validatePolicy(EffectivePolicy policy) throws PolicyResolutionException {
+        Collection<Intent> aggregatedIntents = policy.getAggregatedEndpointIntents();
+        Collection<Intent> provideIntents = policy.getProvidedEndpointIntents();
+        Collection<PolicySet> sets = policy.getEndpointPolicySets();
+        validatePolicySets(aggregatedIntents, provideIntents, sets);
+
+        aggregatedIntents = policy.getOperationIntents();
+        for (List<PolicySet> operationSets : policy.getOperationPolicySets().values()) {
+            validatePolicySets(aggregatedIntents, provideIntents, operationSets);
+        }
+
+    }
+
+    private void validatePolicySets(Collection<Intent> aggregatedIntents, Collection<Intent> provideIntents, Collection<PolicySet> sets)
+            throws PolicyResolutionException {
+        for (Intent intent : aggregatedIntents) {
+            if (provideIntents.contains(intent)) {
+                // provided natively, ignore
+                continue;
+            }
+            boolean provided = false;
+            for (PolicySet set : sets) {
+                if (set.doesProvide(intent.getName())) {
+                    provided = true;
+                    break;
+                }
+            }
+            if (!provided) {
+                throw new PolicyResolutionException("Intent not satisfied by external attached policies:" + intent.getName());
+            }
+        }
+    }
+
+    private boolean overrideDirectIfExternalAttachedPolicies(Collection<PolicySet> policies) {
+        boolean externalAttachment = false;
+        for (PolicySet policySet : policies) {
+            if (policySet.getAttachTo() != null) {
+                externalAttachment = true;
+                break;
+            }
+        }
+        if (externalAttachment) {
+            for (Iterator<PolicySet> iterator = policies.iterator(); iterator.hasNext(); ) {
+                PolicySet policySet = iterator.next();
+                if (policySet.getAttachTo() == null) {
+                    iterator.remove();
+                }
+            }
+        }
+        return externalAttachment;
     }
 
     /**
@@ -247,11 +346,13 @@ public class DefaultPolicyResolver implements PolicyResolver {
      */
     private void resolveEndpointPolicies(PolicyResultImpl policyResult, LogicalBinding<?> sourceBinding, LogicalBinding<?> targetBinding)
             throws PolicyResolutionException {
-        Set<Intent> sourceEndpointIntents = interactionResolver.resolveProvidedIntents(sourceBinding);
-        policyResult.addSourceEndpointIntents(sourceEndpointIntents);
+        IntentPair sourceEndpointIntentPair = interactionResolver.resolveIntents(sourceBinding);
+        policyResult.addSourceProvidedEndpointIntents(sourceEndpointIntentPair.getProvidedIntents());
+        policyResult.addSourceAggregatedEndpointIntents(sourceEndpointIntentPair.getAggregatedIntents());
 
-        Set<Intent> targetEndpointIntents = interactionResolver.resolveProvidedIntents(targetBinding);
-        policyResult.addTargetEndpointIntents(targetEndpointIntents);
+        IntentPair targetEndpointIntentPair = interactionResolver.resolveIntents(targetBinding);
+        policyResult.addTargetProvidedEndpointIntents(targetEndpointIntentPair.getProvidedIntents());
+        policyResult.addTargetAggregatedEndpointIntents(targetEndpointIntentPair.getAggregatedIntents());
 
         Set<PolicySet> endpointPolicies = interactionResolver.resolvePolicySets(sourceBinding);
         policyResult.addSourceEndpointPolicySets(CollectionUtils.filter(endpointPolicies, PROVIDED));
@@ -278,15 +379,15 @@ public class DefaultPolicyResolver implements PolicyResolver {
                                           LogicalBinding<?> targetBinding,
                                           LogicalComponent<?> target) throws PolicyResolutionException {
         QName sourceType = sourceBinding.getDefinition().getType();
-        Set<Intent> sourceOperationIntents = interactionResolver.resolveProvidedIntents(operation, sourceType);
-        policyResult.addSourceIntents(operation, sourceOperationIntents);
+        IntentPair sourcePair = interactionResolver.resolveIntents(operation, sourceType);
+        policyResult.addSourceProvidedIntents(operation, sourcePair.getProvidedIntents());
 
         QName targetType = targetBinding.getDefinition().getType();
-        Set<Intent> targetOperationIntents = interactionResolver.resolveProvidedIntents(operation, targetType);
-        policyResult.addTargetIntents(operation, targetOperationIntents);
+        IntentPair targetPair = interactionResolver.resolveIntents(operation, targetType);
+        policyResult.addTargetProvidedIntents(operation, targetPair.getProvidedIntents());
         if (target != null) {
-            Set<Intent> sourceImplementationIntents = implementationResolver.resolveProvidedIntents(target, operation);
-            policyResult.addSourceIntents(operation, sourceImplementationIntents);
+            IntentPair sourceImplementationPair = implementationResolver.resolveIntents(target, operation);
+            policyResult.addSourceProvidedIntents(operation, sourceImplementationPair.getProvidedIntents());
         }
 
         Set<PolicySet> policies = interactionResolver.resolvePolicySets(operation, sourceBinding, sourceType);
@@ -314,8 +415,8 @@ public class DefaultPolicyResolver implements PolicyResolver {
     }
 
     /**
-     * Matches operation definitions on the source and target sides of a wire so that policy sets and intents can be determined. Note that if the
-     * source operation belongs to a service, the wire is a callback wire.
+     * Matches operation definitions on the source and target sides of a wire so that policy sets and intents can be determined. Note that if the source
+     * operation belongs to a service, the wire is a callback wire.
      *
      * @param operation the source operation to match against.
      * @param bindable  the target bindable.
@@ -346,7 +447,7 @@ public class DefaultPolicyResolver implements PolicyResolver {
 
     private boolean noPolicy(LogicalComponent<?> component) {
         return component != null && (component.getDefinition().getImplementation().isType(IMPLEMENTATION_SYSTEM)
-                || component.getDefinition().getImplementation().isType(IMPLEMENTATION_SINGLETON));
+                                     || component.getDefinition().getImplementation().isType(IMPLEMENTATION_SINGLETON));
     }
 
 }

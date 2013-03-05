@@ -51,21 +51,28 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 public interface EffectivePolicy {
 
     /**
-     * Returns effective intents configured for an endpoint that are handled natively (provided) by the binding or implementation extension.
+     * Returns intents configured for an endpoint that are handled natively (provided) by the binding or implementation extension.
      *
      * @return the endpoint intents
      */
-    Set<Intent> getEndpointIntents();
+    Set<Intent> getProvidedEndpointIntents();
 
     /**
-     * Returns effective policy sets configured for an endpoint that are handled natively (provided) by the binding or implementation extension.
+     * Returns all intents configured for an endpoint by the binding or implementation extension.
+     *
+     * @return the endpoint intents
+     */
+    Set<Intent> getAggregatedEndpointIntents();
+
+    /**
+     * Returns policy sets configured for an endpoint that are handled natively (provided) by the binding or implementation extension.
      *
      * @return the endpoint policy sets
      */
     Set<PolicySet> getEndpointPolicySets();
 
     /**
-     * Returns effective intents configured for an operation that are handled natively (provided) by the binding or implementation extension.
+     * Returns intents configured for an operation that are handled natively (provided) by the binding or implementation extension.
      *
      * @param operation the operation
      * @return the provided intents
@@ -80,7 +87,7 @@ public interface EffectivePolicy {
     List<Intent> getOperationIntents();
 
     /**
-     * Returns the effective policy sets for the the requested operation.
+     * Returns the policy sets for the the requested operation.
      *
      * @param operation the operation
      * @return the resolved policy sets
@@ -88,7 +95,7 @@ public interface EffectivePolicy {
     List<PolicySet> getPolicySets(LogicalOperation operation);
 
     /**
-     * Returns the effective policy sets for all operations.
+     * Returns the policy sets for all operations.
      *
      * @return Resolved policy sets that are provided mapped to their operation.
      */

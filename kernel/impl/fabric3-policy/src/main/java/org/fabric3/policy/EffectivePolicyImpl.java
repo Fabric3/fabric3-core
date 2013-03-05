@@ -53,14 +53,20 @@ import org.fabric3.spi.model.instance.LogicalOperation;
  *
  */
 public class EffectivePolicyImpl implements EffectivePolicy {
-    private Set<Intent> endpointIntents = new HashSet<Intent>();
+    private Set<Intent> providedEndpointIntents = new HashSet<Intent>();
+    private Set<Intent> aggregatedEndpointIntents = new HashSet<Intent>();
+
     private Set<PolicySet> endpointPolicySets = new HashSet<PolicySet>();
 
-    private Map<LogicalOperation, List<Intent>> intentMap = new HashMap<LogicalOperation, List<Intent>>();
+    private Map<LogicalOperation, List<Intent>> providedIntentMap = new HashMap<LogicalOperation, List<Intent>>();
     private Map<LogicalOperation, List<PolicySet>> policySetMap = new HashMap<LogicalOperation, List<PolicySet>>();
 
-    public Set<Intent> getEndpointIntents() {
-        return endpointIntents;
+    public Set<Intent> getProvidedEndpointIntents() {
+        return providedEndpointIntents;
+    }
+
+    public Set<Intent> getAggregatedEndpointIntents() {
+        return aggregatedEndpointIntents;
     }
 
     public Set<PolicySet> getEndpointPolicySets() {
@@ -69,7 +75,7 @@ public class EffectivePolicyImpl implements EffectivePolicy {
 
     public List<Intent> getOperationIntents() {
         List<Intent> ret = new ArrayList<Intent>();
-        for (LogicalOperation operation : intentMap.keySet()) {
+        for (LogicalOperation operation : providedIntentMap.keySet()) {
             ret.addAll(getIntents(operation));
         }
         return ret;
@@ -80,26 +86,30 @@ public class EffectivePolicyImpl implements EffectivePolicy {
     }
 
     public List<Intent> getIntents(LogicalOperation operation) {
-        return intentMap.get(operation);
+        return providedIntentMap.get(operation);
     }
 
     public List<PolicySet> getPolicySets(LogicalOperation operation) {
         return policySetMap.get(operation);
     }
 
-    void addEndpointIntents(Set<Intent> intents) {
-        endpointIntents.addAll(intents);
+    void addProvidedEndpointIntents(Set<Intent> intents) {
+        providedEndpointIntents.addAll(intents);
+    }
+
+    void addAggregatedEndpointIntents(Set<Intent> intents) {
+        aggregatedEndpointIntents.addAll(intents);
     }
 
     void addEndpointPolicySets(Set<PolicySet> policySets) {
         endpointPolicySets.addAll(policySets);
     }
 
-    void addIntents(LogicalOperation operation, Set<Intent> intents) {
-        if (!intentMap.containsKey(operation)) {
-            intentMap.put(operation, new ArrayList<Intent>());
+    void addProvidedIntents(LogicalOperation operation, Set<Intent> intents) {
+        if (!providedIntentMap.containsKey(operation)) {
+            providedIntentMap.put(operation, new ArrayList<Intent>());
         }
-        intentMap.get(operation).addAll(intents);
+        providedIntentMap.get(operation).addAll(intents);
     }
 
     void addPolicySets(LogicalOperation operation, Set<PolicySet> policySets) {

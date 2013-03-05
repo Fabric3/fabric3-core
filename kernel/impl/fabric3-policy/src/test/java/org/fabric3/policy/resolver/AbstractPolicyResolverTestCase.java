@@ -37,20 +37,19 @@
 */
 package org.fabric3.policy.resolver;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-
 import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.policy.infoset.PolicyEvaluator;
 import org.fabric3.spi.generator.policy.PolicyRegistry;
 import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalScaArtifact;
 
 /**
  */
@@ -140,12 +139,10 @@ public class AbstractPolicyResolverTestCase extends TestCase {
             super(policyRegistry, lcm, policyEvaluator);
         }
 
-        @Override
-        public Set<QName> aggregateIntents(LogicalScaArtifact<?> scaArtifact) {
+        public Set<QName> aggregateIntents(LogicalBinding<?> scaArtifact) {
             return super.aggregateIntents(scaArtifact);
         }
 
-        @Override
         protected void filterMutuallyExclusiveIntents(Set<Intent> intents) {
             super.filterMutuallyExclusiveIntents(intents);
         }

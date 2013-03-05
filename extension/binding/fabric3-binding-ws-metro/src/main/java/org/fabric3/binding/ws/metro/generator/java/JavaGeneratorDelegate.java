@@ -183,7 +183,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
         // handle endpoint-level intents provided by Metro
         List<QName> intentNames = new ArrayList<QName>();
-        Set<Intent> endpointIntents = policy.getEndpointIntents();
+        Set<Intent> endpointIntents = policy.getProvidedEndpointIntents();
         for (Intent intent : endpointIntents) {
             intentNames.add(intent.getName());
         }
@@ -191,7 +191,12 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         // handle endpoint-level policies
         List<Element> policyExpressions = new ArrayList<Element>();
         for (PolicySet policySet : policy.getEndpointPolicySets()) {
-            policyExpressions.add(policySet.getExpression());
+            Element expression = policySet.getExpression();
+            if (expression == null) {
+                // empty policy set
+                continue;
+            }
+            policyExpressions.add(expression);
         }
 
         // Note operation level provided intents are not currently supported. Intents are mapped to JAX-WS features, which are per endpoint.
@@ -316,7 +321,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
 
         String interfaze = contract.getQualifiedInterfaceName();
 
-        Set<Intent> endpointIntents = policy.getEndpointIntents();
+        Set<Intent> endpointIntents = policy.getProvidedEndpointIntents();
         List<QName> intentNames = new ArrayList<QName>();
         for (Intent intent : endpointIntents) {
             intentNames.add(intent.getName());
@@ -325,7 +330,12 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
         // handle endpoint-level policies
         List<Element> policyExpressions = new ArrayList<Element>();
         for (PolicySet policySet : policy.getEndpointPolicySets()) {
-            policyExpressions.add(policySet.getExpression());
+            Element expression = policySet.getExpression();
+            if (expression == null) {
+                // empty policy set
+                continue;
+            }
+            policyExpressions.add(expression);
         }
 
         // Note operation level provided intents are not currently supported. Intents are mapped to JAX-WS features, which are per endpoint.

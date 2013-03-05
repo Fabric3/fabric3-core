@@ -37,13 +37,13 @@
 */
 package org.fabric3.policy.infoset;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.CompositeImplementation;
@@ -55,6 +55,7 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
+import org.fabric3.spi.model.instance.LogicalScaArtifact;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
@@ -97,13 +98,13 @@ public class PolicySetEvaluatorImplTestCase extends TestCase {
     }
 
     public void testEvaluateComponentName() throws Exception {
-        List<?> result = evaluator.evaluate("component[@name='childComposite']", domain);
+        Collection<LogicalScaArtifact<?>> result = evaluator.evaluate("component[@name='childComposite']", domain);
         assertEquals(1, result.size());
-        assertEquals("childComposite", ((LogicalComponent<?>) result.get(0)).getUri().toString());
+        assertEquals("childComposite", ((LogicalComponent<?>) result.iterator().next()).getUri().toString());
     }
 
     public void testEvaluateBindingWithComponentSelection() throws Exception {
-        List<?> results = evaluator.evaluate("//component/binding.mock", domain);
+        Collection<LogicalScaArtifact<?>> results = evaluator.evaluate("//component/binding.mock", domain);
         assertEquals(2, results.size());
         for (Object result : results) {
             assertTrue(result instanceof LogicalBinding);
@@ -111,7 +112,7 @@ public class PolicySetEvaluatorImplTestCase extends TestCase {
     }
 
     public void testEvaluateBinding() throws Exception {
-        List<?> results = evaluator.evaluate("//binding.mock", domain);
+        Collection results = evaluator.evaluate("//binding.mock", domain);
         assertEquals(2, results.size());
         for (Object result : results) {
             assertTrue(result instanceof LogicalBinding);

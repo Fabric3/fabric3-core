@@ -37,11 +37,10 @@
 */
 package org.fabric3.policy;
 
-import java.util.List;
-import java.util.Set;
 import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.policy.infoset.PolicyEvaluationException;
@@ -57,6 +56,7 @@ import org.fabric3.spi.model.instance.LogicalScaArtifact;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -77,7 +77,16 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
 
     public void attachPolicies(Set<PolicySet> policySets, LogicalComponent<?> component, boolean incremental) throws PolicyEvaluationException {
         for (PolicySet policySet : policySets) {
-            List<LogicalScaArtifact<?>> results = policyEvaluator.evaluate(policySet.getAttachTo(), component);
+            Collection<LogicalScaArtifact<?>> results = policyEvaluator.evaluate(policySet.getAttachTo(), component);
+
+            for (Iterator<LogicalScaArtifact<?>> iterator = results.iterator(); iterator.hasNext(); ) {
+                LogicalScaArtifact<?> result = iterator.next();
+                String appliesTo = policySet.getAppliesTo();
+                if (appliesTo != null && !policyEvaluator.doesApply(appliesTo, result)) {
+                    iterator.remove();
+                }
+            }
+
             // attach policy sets
             for (LogicalScaArtifact<?> result : results) {
                 attach(policySet.getName(), result, incremental);
@@ -87,8 +96,17 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
 
     public void detachPolicies(Set<PolicySet> policySets, LogicalComponent<?> component) throws PolicyEvaluationException {
         for (PolicySet policySet : policySets) {
-            List<LogicalScaArtifact<?>> results = policyEvaluator.evaluate(policySet.getAttachTo(), component);
-            // attach policy sets
+            Collection<LogicalScaArtifact<?>> results = policyEvaluator.evaluate(policySet.getAttachTo(), component);
+
+            for (Iterator<LogicalScaArtifact<?>> iterator = results.iterator(); iterator.hasNext(); ) {
+                LogicalScaArtifact<?> result = iterator.next();
+                String appliesTo = policySet.getAppliesTo();
+                if (appliesTo != null && !policyEvaluator.doesApply(appliesTo, result)) {
+                    iterator.remove();
+                }
+            }
+
+            // detach policy sets
             for (LogicalScaArtifact<?> result : results) {
                 detach(policySet.getName(), result);
             }
@@ -279,6 +297,5 @@ public class DefaultPolicyAttacher implements PolicyAttacher {
             binding.setState(LogicalState.NEW);
         }
     }
-
 
 }

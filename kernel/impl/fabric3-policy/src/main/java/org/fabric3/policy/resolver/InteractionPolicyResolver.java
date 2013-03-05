@@ -37,10 +37,9 @@
 */
 package org.fabric3.policy.resolver;
 
-import java.util.Set;
 import javax.xml.namespace.QName;
+import java.util.Set;
 
-import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.generator.policy.PolicyResolutionException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -48,40 +47,40 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalScaArtifact;
 
 /**
- * Resolves interaction intents and policy sets. Resolution is performed for bindings, which aggregates intents and policy sets configured on a
- * binding element and its ancestors (e.g. services, references, and components). Resolution is also performed for operations, which evaluates intents
- * and policies sets explicitly configured at the operation-level.
+ * Resolves interaction intents and policy sets. Resolution is performed for bindings, which aggregates intents and policy sets configured on a binding element
+ * and its ancestors (e.g. services, references, and components). Resolution is also performed for operations, which evaluates intents and policies sets
+ * explicitly configured at the operation-level.
  * <p/>
- * Resolution is performed in two steps to distinguish the effective policy that applies to an entire endpoint and that which applies to an operation.
- * This is necessary to account for protocols that require policy statements to be attached at specific points. For example, web services security,
- * which mandates some policy assertions only be placed on a WSDL binding (endpoint).
+ * Resolution is performed in two steps to distinguish the effective policy that applies to an entire endpoint and that which applies to an operation. This is
+ * necessary to account for protocols that require policy statements to be attached at specific points. For example, web services security, which mandates some
+ * policy assertions only be placed on a WSDL binding (endpoint).
  */
 public interface InteractionPolicyResolver {
 
     /**
-     * Returns the set of intents configured for the binding and its ancestors that are explicitly provided by the binding extension through the
-     * <code>mayProvide</code> attribute.
+     * Returns the set of intents configured for the binding and its ancestors. The returned intent pair contains all intents configured for the binding and
+     * those that are explicitly provided by the binding extension through the <code>mayProvide</code> attribute.
      *
      * @param binding the binding configuration
      * @return the provided intents
      * @throws PolicyResolutionException if there are any unidentified intents
      */
-    Set<Intent> resolveProvidedIntents(LogicalBinding binding) throws PolicyResolutionException;
+    IntentPair resolveIntents(LogicalBinding binding) throws PolicyResolutionException;
 
     /**
-     * Returns the set of intents configured for an operation that are explicitly provided by the binding extension through the
-     * <code>mayProvide</code> attribute.
+     * Returns the set of intents configured for an operation. The returned intent pair contains all intents configured for the binding and that are explicitly
+     * provided by the binding extension through the <code>mayProvide</code> attribute.
      *
      * @param operation   the operation
      * @param bindingType the binding type
      * @return the provided intents
      * @throws PolicyResolutionException if there are any unidentified intents
      */
-    Set<Intent> resolveProvidedIntents(LogicalOperation operation, QName bindingType) throws PolicyResolutionException;
+    IntentPair resolveIntents(LogicalOperation operation, QName bindingType) throws PolicyResolutionException;
 
     /**
-     * Returns the set of policies explicitly declared for the binding and its ancestors, including those that satisfy the intents not provided by the
-     * binding type.
+     * Returns the set of policies explicitly declared for the binding and its ancestors, including those that satisfy the intents not provided by the binding
+     * type.
      *
      * @param binding the binding for which policies are to be resolved
      * @return the resolved policies

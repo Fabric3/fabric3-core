@@ -43,14 +43,15 @@
  */
 package org.fabric3.model.type.component;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.Namespace;
 import org.fabric3.model.type.PolicyAware;
@@ -65,8 +66,9 @@ public class Composite extends ComponentType implements PolicyAware {
     private URI contributionUri;
     private boolean local;
     private Autowire autowire;
-    private Set<QName> intents;
-    private Set<QName> policySets;
+
+    private Set<QName> intents = new LinkedHashSet<QName>();
+    private Set<QName> policySets = new LinkedHashSet<QName>();
 
     private Map<String, ComponentDefinition<? extends Implementation<?>>> components =
             new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();

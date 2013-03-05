@@ -37,9 +37,8 @@
 */
 package org.fabric3.policy.infoset;
 
+import java.util.Collection;
 import java.util.List;
-
-import org.jaxen.JaxenException;
 
 import org.fabric3.policy.xpath.LogicalModelXPath;
 import org.fabric3.spi.model.instance.Bindable;
@@ -47,6 +46,7 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalScaArtifact;
+import org.jaxen.JaxenException;
 
 /**
  *
@@ -54,12 +54,12 @@ import org.fabric3.spi.model.instance.LogicalScaArtifact;
 public class PolicyEvaluatorImpl implements PolicyEvaluator {
 
     @SuppressWarnings({"unchecked"})
-    public List<LogicalScaArtifact<?>> evaluate(String xpathExpression, LogicalComponent<?> component) throws PolicyEvaluationException {
+    public Collection<LogicalScaArtifact<?>> evaluate(String xpathExpression, LogicalComponent<?> component) throws PolicyEvaluationException {
         try {
             LogicalModelXPath xpath = new LogicalModelXPath(xpathExpression);
             Object ret = xpath.evaluate(component);
-            if (ret instanceof List) {
-                return (List<LogicalScaArtifact<?>>) ret;
+            if (ret instanceof Collection) {
+                return (Collection<LogicalScaArtifact<?>>) ret;
             }
             throw new PolicyEvaluationException("Invalid select expression: " + xpathExpression);
         } catch (JaxenException e) {

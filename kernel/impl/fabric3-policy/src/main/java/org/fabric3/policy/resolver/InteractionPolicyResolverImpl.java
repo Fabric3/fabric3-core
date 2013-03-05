@@ -37,13 +37,11 @@
 */
 package org.fabric3.policy.resolver;
 
+import javax.xml.namespace.QName;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.definitions.BindingType;
 import org.fabric3.model.type.definitions.Intent;
@@ -53,9 +51,9 @@ import org.fabric3.spi.generator.policy.PolicyRegistry;
 import org.fabric3.spi.generator.policy.PolicyResolutionException;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalBinding;
-import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalScaArtifact;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -68,15 +66,17 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
         super(policyRegistry, lcm, policyEvaluator);
     }
 
-    public Set<Intent> resolveProvidedIntents(LogicalOperation operation, QName bindingType) throws PolicyResolutionException {
+    public IntentPair resolveIntents(LogicalOperation operation, QName bindingType) throws PolicyResolutionException {
         Set<Intent> requiredIntents = getOperationIntents(operation);
-        return filterProvidedIntents(bindingType, requiredIntents);
+        Set<Intent> providedIntents = filterProvidedIntents(bindingType, requiredIntents);
+        return new IntentPair(requiredIntents, providedIntents);
     }
 
-    public Set<Intent> resolveProvidedIntents(LogicalBinding binding) throws PolicyResolutionException {
+    public IntentPair resolveIntents(LogicalBinding binding) throws PolicyResolutionException {
         Set<Intent> requiredIntents = aggregateBindingIntents(binding);
         QName type = binding.getDefinition().getType();
-        return filterProvidedIntents(type, requiredIntents);
+        Set<Intent> providedIntents = filterProvidedIntents(type, requiredIntents);
+        return new IntentPair(requiredIntents, providedIntents);
     }
 
     public Set<PolicySet> resolvePolicySets(LogicalBinding binding) throws PolicyResolutionException {

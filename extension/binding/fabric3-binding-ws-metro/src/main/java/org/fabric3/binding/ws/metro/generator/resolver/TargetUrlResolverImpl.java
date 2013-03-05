@@ -105,7 +105,7 @@ public class TargetUrlResolverImpl implements TargetUrlResolver {
 
 
     private boolean requiresHttps(EffectivePolicy policy) {
-        for (Intent intent : policy.getEndpointIntents()) {
+        for (Intent intent : policy.getProvidedEndpointIntents()) {
             String localPart = intent.getName().getLocalPart();
             if (localPart.startsWith("authorization") || localPart.equals("integrity") || localPart.startsWith("confidentiality")
                     || localPart.startsWith("mutualAuthentication") || localPart.equals("authentication") || localPart.startsWith("clientAuthentication")

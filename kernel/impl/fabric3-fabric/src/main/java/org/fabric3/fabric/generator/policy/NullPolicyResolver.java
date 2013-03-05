@@ -122,7 +122,11 @@ public class NullPolicyResolver implements PolicyResolver {
     }
 
     private static class NullEffectivePolicy implements EffectivePolicy {
-        public Set<Intent> getEndpointIntents() {
+        public Set<Intent> getProvidedEndpointIntents() {
+            return Collections.emptySet();
+        }
+
+        public Set<Intent> getAggregatedEndpointIntents() {
             return Collections.emptySet();
         }
 

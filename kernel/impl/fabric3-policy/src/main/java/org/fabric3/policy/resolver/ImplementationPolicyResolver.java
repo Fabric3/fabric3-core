@@ -39,32 +39,30 @@ package org.fabric3.policy.resolver;
 
 import java.util.Set;
 
-import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.generator.policy.PolicyResolutionException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 
 /**
- * Resolves implementation intents and policy sets. Resolution is performed by normalizing intents and policy sets for each operation associated with
- * a wire.
+ * Resolves implementation intents and policy sets. Resolution is performed by normalizing intents and policy sets for each operation associated with a wire.
  * <p/>
- * Note this is different than interaction resolution as endpoint- and operation-level policy is not distinguished. Since implementation policies are
- * not visible to clients, they are not handled at the transport level. Hence, the requirement by some transport protocols to distinguish policy
- * assertions is not applicable. Normalizing policy at the operation-level simplifies the resolver service contract and allows one-step resolution.
+ * Note this is different than interaction resolution as endpoint- and operation-level policy is not distinguished. Since implementation policies are not
+ * visible to clients, they are not handled at the transport level. Hence, the requirement by some transport protocols to distinguish policy assertions is not
+ * applicable. Normalizing policy at the operation-level simplifies the resolver service contract and allows one-step resolution.
  */
 public interface ImplementationPolicyResolver {
 
     /**
-     * Returns the set of configured intents provided by the implementation according to the <code>mayProvide</code> attribute of the implementation
-     * type policy definition.
+     * Returns the set of configured intents. The returned intent pair contains all intents configured for the implementation and provided by the implementation
+     * according to the <code>mayProvide</code> attribute of the implementation type policy definition.
      *
      * @param component the logical component for which intents are to be resolved.
      * @param operation the operation for which the provided intents are to be computed.
      * @return Set of intents that need to be explicitly provided by the implementation.
      * @throws PolicyResolutionException If there are any unidentified intents.
      */
-    Set<Intent> resolveProvidedIntents(LogicalComponent<?> component, LogicalOperation operation) throws PolicyResolutionException;
+    IntentPair resolveIntents(LogicalComponent<?> component, LogicalOperation operation) throws PolicyResolutionException;
 
     /**
      * Returns the set of policies explicitly declared for the operation and those that satisfy the intents not provided by the implementation type.
@@ -75,6 +73,5 @@ public interface ImplementationPolicyResolver {
      * @throws PolicyResolutionException If all intents cannot be resolved.
      */
     Set<PolicySet> resolvePolicySets(LogicalComponent<?> component, LogicalOperation operation) throws PolicyResolutionException;
-
 
 }

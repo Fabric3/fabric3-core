@@ -220,7 +220,7 @@ public class LogicalModelNavigator extends DefaultNavigator implements NamedAcce
                 return bindings.iterator();
             } else {
                 // assume it is an operation name
-                
+
             }
         } else if (contextNode instanceof LogicalBinding) {
             LogicalBinding<?> binding = (LogicalBinding<?>) contextNode;
@@ -302,12 +302,14 @@ public class LogicalModelNavigator extends DefaultNavigator implements NamedAcce
     }
 
     public Object getDocumentNode(Object contextNode) {
-        LogicalComponent component = (LogicalComponent) contextNode;
-        while (component.getParent() != null) {
-            // xcv z FIXME need to navigate services and references
-            component = (LogicalComponent) component.getParent();
+        if (contextNode instanceof LogicalScaArtifact) {
+            LogicalScaArtifact<?> artifact = (LogicalScaArtifact<?>) contextNode;
+            while (artifact.getParent() != null) {
+                artifact = artifact.getParent();
+            }
+            return artifact;
         }
-        return component;
+        return contextNode;
     }
 
     public Object getParentNode(Object contextNode) {

@@ -37,6 +37,7 @@
 */
 package org.fabric3.fabric.generator.wire;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,11 +45,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.host.Namespaces;
@@ -66,6 +62,9 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.oasisopen.sca.Constants;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -170,6 +169,10 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         }
         Set<PhysicalInterceptorDefinition> interceptors = new LinkedHashSet<PhysicalInterceptorDefinition>();
         for (PolicySet policy : policies) {
+            if (policy.getExpression() == null) {
+                // empty policy
+                continue;
+            }
             QName expressionName = policy.getExpressionName();
             InterceptorGenerator generator = generatorRegistry.getInterceptorGenerator(expressionName);
             PhysicalInterceptorDefinition pid = generator.generate(policy.getExpression(), metadata, operation);
@@ -183,13 +186,11 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         return interceptors;
     }
 
-
     /**
      * Generates a PhysicalOperationDefinition when the source reference and target service contracts are the same.
      *
      * @param source the logical operation to generate from
-     * @param remote true if the interceptor chain handles remote invocations - i.e. it is for a bound service, bound reference or inter-process
-     *               wire.
+     * @param remote true if the interceptor chain handles remote invocations - i.e. it is for a bound service, bound reference or inter-process wire.
      * @return the PhysicalOperationDefinition
      */
     private PhysicalOperationDefinition generate(LogicalOperation source, boolean remote) {
@@ -233,8 +234,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
      *
      * @param source the source logical operation to generate from
      * @param target the target logical operations to generate from
-     * @param remote true if the interceptor chain handles remote invocations - i.e. it is for a bound service, bound reference or inter-process
-     *               wire.
+     * @param remote true if the interceptor chain handles remote invocations - i.e. it is for a bound service, bound reference or inter-process wire.
      * @return the PhysicalOperationDefinition
      */
     private PhysicalOperationDefinition generate(LogicalOperation source, LogicalOperation target, boolean remote) {
@@ -290,10 +290,8 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
         }
         LogicalAttachPoint logicalAttachPoint = operation.getParent();
         LogicalComponent<?> component = logicalAttachPoint.getParent();
-        return operation.getIntents().contains(ALLOWS_BY_REFERENCE)
-                || logicalAttachPoint.getIntents().contains(ALLOWS_BY_REFERENCE)
-                || component.getIntents().contains(ALLOWS_BY_REFERENCE)
-                || component.getDefinition().getImplementation().getIntents().contains(ALLOWS_BY_REFERENCE)
-                || component.getDefinition().getImplementation().getComponentType().getIntents().contains(ALLOWS_BY_REFERENCE);
+        return operation.getIntents().contains(ALLOWS_BY_REFERENCE) || logicalAttachPoint.getIntents().contains(ALLOWS_BY_REFERENCE)
+               || component.getIntents().contains(ALLOWS_BY_REFERENCE) || component.getDefinition().getImplementation().getIntents().contains(
+                ALLOWS_BY_REFERENCE) || component.getDefinition().getImplementation().getComponentType().getIntents().contains(ALLOWS_BY_REFERENCE);
     }
 }

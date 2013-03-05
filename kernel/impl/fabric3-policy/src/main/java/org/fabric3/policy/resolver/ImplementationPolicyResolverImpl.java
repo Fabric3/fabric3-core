@@ -37,13 +37,11 @@
 */
 package org.fabric3.policy.resolver;
 
+import javax.xml.namespace.QName;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentType;
@@ -58,6 +56,7 @@ import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalScaArtifact;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -71,17 +70,18 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
     }
 
 
-    public Set<Intent> resolveProvidedIntents(LogicalComponent<?> component, LogicalOperation operation) throws PolicyResolutionException {
+    public IntentPair resolveIntents(LogicalComponent<?> component, LogicalOperation operation) throws PolicyResolutionException {
         Implementation<?> implementation = component.getDefinition().getImplementation();
         QName type = implementation.getType();
         ImplementationType implementationType = policyRegistry.getDefinition(type, ImplementationType.class);
 
+        Set<QName> mayProvidedIntents;
         if (implementationType == null) {
             // tolerate not having a registered implementation type definition
-            return Collections.emptySet();
+            mayProvidedIntents = Collections.emptySet();
+        } else {
+            mayProvidedIntents = implementationType.getMayProvide();
         }
-
-        Set<QName> mayProvidedIntents = implementationType.getMayProvide();
 
         Set<Intent> requiredIntents = getRequestedIntents(component, operation);
 
@@ -91,7 +91,7 @@ public class ImplementationPolicyResolverImpl extends AbstractPolicyResolver imp
                 intentsToBeProvided.add(intent);
             }
         }
-        return intentsToBeProvided;
+        return new IntentPair(requiredIntents, intentsToBeProvided);
 
     }
 

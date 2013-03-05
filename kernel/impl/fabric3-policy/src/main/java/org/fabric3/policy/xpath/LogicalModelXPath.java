@@ -43,6 +43,7 @@ import java.util.List;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.Context;
+import org.jaxen.Function;
 import org.jaxen.JaxenException;
 import org.jaxen.SimpleFunctionContext;
 import org.jaxen.SimpleNamespaceContext;
@@ -57,6 +58,10 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 public class LogicalModelXPath extends BaseXPath {
     private static final long serialVersionUID = 7175741342820843731L;
 
+    private static final Function INTENT_REFS = new IntentRefsFunction();
+    private static final Function URI_REF = new UriRefFunction();
+    private static final Function OPERATION_REF = new OperationRefFunction();
+
     /**
      * Constructor.
      *
@@ -70,9 +75,8 @@ public class LogicalModelXPath extends BaseXPath {
         nc.addNamespace("sca", Constants.SCA_NS);
         nc.addNamespace("f3", Namespaces.F3);
         setNamespaceContext(nc);
-        SimpleFunctionContext fc = new SimpleFunctionContext();
-        fc.registerFunction(Constants.SCA_NS, "URIRef", new UriRefFunction());
-        fc.registerFunction(Constants.SCA_NS, "OperationRef", new OperationRefFunction());
+
+        SimpleFunctionContext fc = initFunctionContext();
         setFunctionContext(fc);
     }
 
@@ -108,6 +112,18 @@ public class LogicalModelXPath extends BaseXPath {
             return super.getContext(newList);
         }
         return super.getContext(node);
+    }
+
+    private SimpleFunctionContext initFunctionContext() {
+        // register functions using the SCA and default namespaces
+        SimpleFunctionContext fc = new SimpleFunctionContext();
+        fc.registerFunction(Constants.SCA_NS, "URIRef", URI_REF);
+        fc.registerFunction(null, "URIRef", URI_REF);
+        fc.registerFunction(Constants.SCA_NS, "IntentRefs", INTENT_REFS);
+        fc.registerFunction(null, "IntentRefs", INTENT_REFS);
+        fc.registerFunction(Constants.SCA_NS, "OperationRef", OPERATION_REF);
+        fc.registerFunction(null, "OperationRef", OPERATION_REF);
+        return fc;
     }
 
 }

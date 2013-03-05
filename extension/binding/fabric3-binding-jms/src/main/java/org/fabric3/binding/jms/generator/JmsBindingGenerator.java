@@ -288,7 +288,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
                 }
             }
         }
-        for (Intent intent : policy.getEndpointIntents()) {
+        for (Intent intent : policy.getProvidedEndpointIntents()) {
             QName name = intent.getName();
             if (TRANSACTED_ONEWAY.equals(name)) {
                 return TransactionType.GLOBAL;

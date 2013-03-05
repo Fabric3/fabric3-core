@@ -133,6 +133,10 @@ public class GenerationHelper {
             Operation definition = entry.getKey().getDefinition();
             for (PolicySet policySet : entry.getValue()) {
                 Element expression = policySet.getExpression();
+                if (expression == null) {
+                    // empty policy set, ignore
+                    continue;
+                }
                 Node node = expression.getAttributes().getNamedItemNS(WS_SECURITY_UTILITY_NS, "Id");
                 if (node == null) {
                     URI uri = policySet.getContributionUri();
