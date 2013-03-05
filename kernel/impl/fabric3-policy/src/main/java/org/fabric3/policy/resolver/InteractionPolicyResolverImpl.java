@@ -74,6 +74,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
 
     public IntentPair resolveIntents(LogicalBinding binding) throws PolicyResolutionException {
         Set<Intent> requiredIntents = aggregateBindingIntents(binding);
+
         QName type = binding.getDefinition().getType();
         Set<Intent> providedIntents = filterProvidedIntents(type, requiredIntents);
         return new IntentPair(requiredIntents, providedIntents);
@@ -167,9 +168,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
 
     private Set<Intent> aggregateBindingIntents(LogicalBinding<?> logicalBinding) throws PolicyResolutionException {
         // Aggregate all the intents from the ancestors
-        Set<QName> intentNames = new LinkedHashSet<QName>();
-        intentNames.addAll(logicalBinding.getDefinition().getIntents());
-        intentNames.addAll(aggregateIntents(logicalBinding));
+        Set<QName> intentNames = aggregateIntents(logicalBinding);
         return expandAndFilterIntents(intentNames);
     }
 
