@@ -108,5 +108,9 @@
         <f3:implementation.system class="org.fabric3.introspection.xml.common.ConfigurationLoader"/>
     </component>
 
+    <component name="PolicySetAttachmentLoader">
+        <f3:implementation.system class="org.fabric3.introspection.xml.composite.PolicySetAttachmentLoader"/>
+    </component>
+
 
 </composite>

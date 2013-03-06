@@ -117,7 +117,6 @@ public class AbstractPolicyResolver {
      * @throws PolicyResolutionException if an error is encountered filtering
      */
     protected void filterInvalidIntents(QName type, Set<Intent> requiredIntents) throws PolicyResolutionException {
-
         for (Iterator<Intent> it = requiredIntents.iterator(); it.hasNext(); ) {
             Intent intent = it.next();
             QName intentName = intent.getName();

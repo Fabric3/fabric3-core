@@ -43,10 +43,10 @@
  */
 package org.fabric3.model.type.definitions;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
 
@@ -209,12 +209,18 @@ public final class PolicySet extends AbstractPolicyDefinition {
      * @return True if this policy set provides to the specified intent.
      */
     public boolean doesProvide(QName intent) {
-        return providedIntents.contains(intent);
+        boolean ret = providedIntents.contains(intent);
+        if (ret) {
+            return true;
+        }
+        String localPart = intent.getLocalPart();
+        int index = localPart.indexOf(".");
+        return index > 0 && providedIntents.contains(new QName(intent.getNamespaceURI(), localPart.substring(0, index)));
     }
 
     /**
-     * Returns the policy set expression. The expression is an opaque DOM containing the parsed policy expression, which may be a Fabric3 policy
-     * expression, a WS-Policy expression, or a custom policy language.
+     * Returns the policy set expression. The expression is an opaque DOM containing the parsed policy expression, which may be a Fabric3 policy expression, a
+     * WS-Policy expression, or a custom policy language.
      *
      * @return the policy set expression.
      */
@@ -277,18 +283,36 @@ public final class PolicySet extends AbstractPolicyDefinition {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         PolicySet policySet = (PolicySet) o;
 
-        if (appliesTo != null ? !appliesTo.equals(policySet.appliesTo) : policySet.appliesTo != null) return false;
-        if (attachTo != null ? !attachTo.equals(policySet.attachTo) : policySet.attachTo != null) return false;
-        if (contributionUri != null ? !contributionUri.equals(policySet.contributionUri) : policySet.contributionUri != null) return false;
-        if (expression != null ? !expression.equals(policySet.expression) : policySet.expression != null) return false;
-        if (phase != policySet.phase) return false;
-        if (providedIntents != null ? !providedIntents.equals(policySet.providedIntents) : policySet.providedIntents != null) return false;
+        if (appliesTo != null ? !appliesTo.equals(policySet.appliesTo) : policySet.appliesTo != null) {
+            return false;
+        }
+        if (attachTo != null ? !attachTo.equals(policySet.attachTo) : policySet.attachTo != null) {
+            return false;
+        }
+        if (contributionUri != null ? !contributionUri.equals(policySet.contributionUri) : policySet.contributionUri != null) {
+            return false;
+        }
+        if (expression != null ? !expression.equals(policySet.expression) : policySet.expression != null) {
+            return false;
+        }
+        if (phase != policySet.phase) {
+            return false;
+        }
+        if (providedIntents != null ? !providedIntents.equals(policySet.providedIntents) : policySet.providedIntents != null) {
+            return false;
+        }
 
         return true;
     }

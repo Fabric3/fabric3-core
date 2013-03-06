@@ -4,7 +4,7 @@
              xmlns:f3="urn:fabric3.org"
              targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912">
 
-    <bindingType name="f3:binding.remote" mayProvide="sca:oneWay sca:JMS sca:SOAP sca:SOAP.1_1 sca:SOAP.1_2 sca:SOAP.v1_1 sca:SOAP.v1_2"/>
+    <bindingType name="f3:binding.remote" mayProvide="sca:noListener sca:oneWay sca:JMS sca:SOAP sca:SOAP.1_1 sca:SOAP.1_2 sca:SOAP.v1_1 sca:SOAP.v1_2"/>
 
     <intent name="oneWay" constrains="binding">
         <description>

@@ -168,7 +168,7 @@ public class LogicalModelNavigator extends DefaultNavigator implements NamedAcce
     public Iterator getChildAxisIterator(Object contextNode, String localName, String namespacePrefix, String namespaceURI) {
         if (contextNode instanceof LogicalCompositeComponent) {
             LogicalCompositeComponent composite = (LogicalCompositeComponent) contextNode;
-            if ("component".equals(localName)) {
+            if ("component".equals(localName) || "implementation".equals(localName)) {
                 Collection<LogicalComponent<?>> result = composite.getComponents();
                 if (result == null) {
                     return JaxenConstants.EMPTY_ITERATOR;

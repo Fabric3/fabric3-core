@@ -37,12 +37,6 @@
  */
 package org.fabric3.wsdl.processor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import javax.wsdl.Definition;
 import javax.wsdl.Fault;
 import javax.wsdl.Input;
@@ -51,6 +45,12 @@ import javax.wsdl.Output;
 import javax.wsdl.Part;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
@@ -59,7 +59,6 @@ import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaType;
-
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -94,10 +93,7 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
      * @param context    the introspection context
      * @return the operation model object
      */
-    private Operation createOperation(javax.wsdl.Operation operation,
-                                      XmlSchemaCollection collection,
-                                      PortType portType,
-                                      IntrospectionContext context) {
+    private Operation createOperation(javax.wsdl.Operation operation, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
         Input input = operation.getInput();
         Message message = input.getMessage();
         List<DataType<?>> inputTypes = getInputTypes(message, collection, portType, context);
@@ -149,7 +145,8 @@ public class Wsdl11ContractProcessor implements WsdlContractProcessor {
 
     private DataType<?> getOutputType(Output output, XmlSchemaCollection collection, PortType portType, IntrospectionContext context) {
         if (output == null) {
-            return null;
+            // no output type specified (e.g. one-way operation), use void
+            return new XSDSimpleType(Void.TYPE, new QName("void"));
         }
         Message message = output.getMessage();
         List parts = message.getOrderedParts(null);

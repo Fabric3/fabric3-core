@@ -49,10 +49,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ComponentService;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -62,7 +58,8 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static org.oasisopen.sca.Constants.SCA_NS;
 
@@ -105,7 +102,6 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
             definition.enableRoundTrip();
         }
 
-
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 
         validateAttributes(reader, context, definition);
@@ -114,68 +110,70 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
         while (true) {
             int i = reader.next();
             switch (i) {
-            case XMLStreamConstants.START_ELEMENT:
-                Location location = reader.getLocation();
-                callback = CALLBACK.equals(reader.getName());
-                if (callback) {
-                    reader.nextTag();
-                }
-                QName elementName = reader.getName();
-                ModelObject type = registry.load(reader, ModelObject.class, context);
-
-                if (type instanceof ServiceContract) {
-                    definition.setServiceContract((ServiceContract) type);
-                } else if (type instanceof BindingDefinition) {
-                    BindingDefinition binding = (BindingDefinition) type;
+                case XMLStreamConstants.START_ELEMENT:
+                    Location location = reader.getLocation();
+                    callback = CALLBACK.equals(reader.getName());
                     if (callback) {
-                        if (binding.getName() == null) {
-                            // set the default binding name
-                            BindingHelper.configureName(binding, definition.getCallbackBindings(), location, context);
-                        }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, definition.getCallbackBindings(), location, context);
-                        if (check) {
-                            definition.addCallbackBinding(binding);
-                        }
-
-                    } else {
-                        if (binding.getName() == null) {
-                            // set the default binding name
-                            BindingHelper.configureName(binding, definition.getBindings(), location, context);
-                        }
-                        boolean check = BindingHelper.checkDuplicateNames(binding, definition.getBindings(), location, context);
-                        if (check) {
-                            definition.addBinding(binding);
-                        }
+                        reader.nextTag();
                     }
-                } else if (type == null) {
-                    // error loading, the element, ignore as an error will have been reported
-                    LoaderUtil.skipToEndElement(reader);
-                    // check if the last element before the end service tag was at fault, in which case return to avoid reading past the service tag
-                    if (reader.getEventType() == XMLStreamConstants.END_ELEMENT && reader.getName().getLocalPart().equals("service")) {
-                        return definition;
+                    QName elementName = reader.getName();
+                    Object type = registry.load(reader, Object.class, context);
+
+                    if (type instanceof ServiceContract) {
+                        definition.setServiceContract((ServiceContract) type);
+                    } else if (type instanceof BindingDefinition) {
+                        BindingDefinition binding = (BindingDefinition) type;
+                        if (callback) {
+                            if (binding.getName() == null) {
+                                // set the default binding name
+                                BindingHelper.configureName(binding, definition.getCallbackBindings(), location, context);
+                            }
+                            boolean check = BindingHelper.checkDuplicateNames(binding, definition.getCallbackBindings(), location, context);
+                            if (check) {
+                                definition.addCallbackBinding(binding);
+                            }
+
+                        } else {
+                            if (binding.getName() == null) {
+                                // set the default binding name
+                                BindingHelper.configureName(binding, definition.getBindings(), location, context);
+                            }
+                            boolean check = BindingHelper.checkDuplicateNames(binding, definition.getBindings(), location, context);
+                            if (check) {
+                                definition.addBinding(binding);
+                            }
+                        }
+                    } else if (type instanceof QName) {
+                        // external attachment
+                        definition.getPolicySets().add((QName) type);
+                    } else if (type == null) {
+                        // error loading, the element, ignore as an error will have been reported
+                        LoaderUtil.skipToEndElement(reader);
+                        // check if the last element before the end service tag was at fault, in which case return to avoid reading past the service tag
+                        if (reader.getEventType() == XMLStreamConstants.END_ELEMENT && reader.getName().getLocalPart().equals("service")) {
+                            return definition;
+                        } else {
+                            break;
+                        }
                     } else {
+                        context.addError(new UnrecognizedElement(reader, location, definition));
+                        continue;
+                    }
+                    if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
+                        throw new AssertionError("Loader must position the cursor to the end element");
+                    }
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    if (callback) {
+                        callback = false;
                         break;
                     }
-                } else {
-                    context.addError(new UnrecognizedElement(reader, location, definition));
-                    continue;
-                }
-                if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
-                    throw new AssertionError("Loader must position the cursor to the end element");
-                }
-                break;
-            case XMLStreamConstants.END_ELEMENT:
-                if (callback) {
-                    callback = false;
-                    break;
-                }
-                if (!SERVICE.equals(reader.getName())) {
-                    continue;
-                }
-                return definition;
+                    if (!SERVICE.equals(reader.getName())) {
+                        continue;
+                    }
+                    return definition;
             }
         }
     }
-
 
 }

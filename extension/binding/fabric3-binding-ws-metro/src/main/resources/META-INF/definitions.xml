@@ -21,6 +21,7 @@ Public License. See the accompanying license file for details.
                                                 f3:metroRest
                                                 f3:schemaValidation
                                                 sca:oneWay
+                                                sca:noListener
                                                 sca:atLeastOnce
                                                 sca:atMostOnce
                                                 sca:exactlyOnce"/>

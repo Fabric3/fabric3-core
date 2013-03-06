@@ -41,6 +41,7 @@ import javax.xml.namespace.QName;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.fabric3.model.type.definitions.BindingType;
@@ -50,15 +51,26 @@ import org.fabric3.policy.infoset.PolicyEvaluator;
 import org.fabric3.spi.generator.policy.PolicyRegistry;
 import org.fabric3.spi.generator.policy.PolicyResolutionException;
 import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
+import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalScaArtifact;
+import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
 public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implements InteractionPolicyResolver {
+    private static final QName TRANSACTED_ONEWAY = new QName(Constants.SCA_NS, "transactedOneWay");
+    private static final QName IMMEDIATE_ONEWAY = new QName(Constants.SCA_NS, "immediateOneWay");
+    private static final QName LOCAL_MANAGED_TRANSACTION = new QName(Constants.SCA_NS, "managedTransaction.local");
+    private static final QName NO_MANAGED_TRANSACTION = new QName(Constants.SCA_NS, "noManagedTransaction");
+    private static final QName PROPAGATES_TRANSACTION = new QName(Constants.SCA_NS, "propagatesTransaction");
+    private static final QName ONEWAY = new QName(Constants.SCA_NS, "oneWay");
+    private static final QName ASYNC_INVOCATION = new QName(Constants.SCA_NS, "asyncInvocation");
+    private static final QName NO_LISTENER = new QName(Constants.SCA_NS, "noListener");
 
     public InteractionPolicyResolverImpl(@Reference PolicyRegistry policyRegistry,
                                          @Reference LogicalComponentManager lcm,
@@ -67,7 +79,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
     }
 
     public IntentPair resolveIntents(LogicalOperation operation, QName bindingType) throws PolicyResolutionException {
-        Set<Intent> requiredIntents = getOperationIntents(operation);
+        Set<Intent> requiredIntents = aggregateOperationIntents(operation);
         Set<Intent> providedIntents = filterProvidedIntents(bindingType, requiredIntents);
         return new IntentPair(requiredIntents, providedIntents);
     }
@@ -129,7 +141,7 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
             mayProvidedIntents = bindingType.getMayProvide();
         }
 
-        Set<Intent> requiredIntents = getOperationIntents(operation);
+        Set<Intent> requiredIntents = aggregateOperationIntents(operation);
         Set<Intent> requiredIntentsCopy = new HashSet<Intent>(requiredIntents);
 
         // Remove intents that are provided
@@ -160,25 +172,132 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
 
     }
 
-    private Set<Intent> getOperationIntents(LogicalOperation operation) throws PolicyResolutionException {
+    private Set<Intent> aggregateOperationIntents(LogicalOperation operation) throws PolicyResolutionException {
         Set<QName> intentNames = new LinkedHashSet<QName>();
         intentNames.addAll(operation.getIntents());
-        return expandAndFilterIntents(intentNames);
+        return expandAndFilterIntents(intentNames, operation);
     }
 
-    private Set<Intent> aggregateBindingIntents(LogicalBinding<?> logicalBinding) throws PolicyResolutionException {
+    private Set<Intent> aggregateBindingIntents(LogicalBinding<?> binding) throws PolicyResolutionException {
         // Aggregate all the intents from the ancestors
-        Set<QName> intentNames = aggregateIntents(logicalBinding);
-        return expandAndFilterIntents(intentNames);
+        Set<QName> intentNames = aggregateIntents(binding);
+        return expandAndFilterIntents(intentNames, binding);
     }
 
-    private Set<Intent> expandAndFilterIntents(Set<QName> intentNames) throws PolicyResolutionException {
+    private Set<Intent> expandAndFilterIntents(Set<QName> intentNames, LogicalScaArtifact artifact) throws PolicyResolutionException {
         // Expand all the profile intents
         Set<Intent> requiredIntents = resolveIntents(intentNames);
+
+        validateIntents(requiredIntents, artifact);
         // Remove intents not applicable to the artifact
         filterInvalidIntents(Intent.BINDING, requiredIntents);
         filterMutuallyExclusiveIntents(requiredIntents);
         return requiredIntents;
+    }
+
+    /**
+     * Validates intent combinations per the SCA policy spec where the intents do not specify this in their excludes configuration. This specifically deals with
+     * implementation and messaging transaction policies and results in the hardcoded hack below.
+     *
+     * @param intents  the intents to validate.
+     * @param artifact the artifact to which the intents apply
+     */
+    private void validateIntents(Set<Intent> intents, LogicalScaArtifact artifact) throws PolicyResolutionException {
+        if (intents.isEmpty()) {
+            return;
+        }
+        boolean isTransactedOneWay = false;
+        boolean isImmediateOneWay = false;
+        boolean isNoManagedTransaction = false;
+        boolean isLocalTransaction = false;
+        boolean propagatesTransaction = false;
+        boolean asyncInvocation = false;
+
+        for (Intent intent : intents) {
+            if (!isTransactedOneWay) {
+                if (isTransactedOneWay = TRANSACTED_ONEWAY.equals(intent.getName())) {
+                    continue;
+                }
+            }
+            if (!isImmediateOneWay) {
+                if (isImmediateOneWay = IMMEDIATE_ONEWAY.equals(intent.getName())) {
+                    continue;
+                }
+            }
+            if (!isNoManagedTransaction) {
+                if (isNoManagedTransaction = NO_MANAGED_TRANSACTION.equals(intent.getName())) {
+                    continue;
+                }
+            }
+            if (!isLocalTransaction) {
+                if (isLocalTransaction = LOCAL_MANAGED_TRANSACTION.equals(intent.getName())) {
+                    continue;
+                }
+            }
+            if (!asyncInvocation) {
+                if (asyncInvocation = ASYNC_INVOCATION.equals(intent.getName())) {
+                    continue;
+                }
+            }
+            if (!propagatesTransaction) {
+                if (propagatesTransaction = PROPAGATES_TRANSACTION.equals(intent.getName())) {
+                    continue;
+                }
+            }
+            if (NO_LISTENER.equals(intent.getName())) {
+                if (!(artifact.getParent() instanceof LogicalReference)) {
+                    throw new PolicyResolutionException("The noListener intent can only be specified on a reference");
+                }
+            }
+        }
+        if (isNoManagedTransaction && isTransactedOneWay) {
+            throw new PolicyResolutionException("Cannot specify a one-way interaction on a component that is configured for no transaction context");
+        } else if (isNoManagedTransaction && propagatesTransaction) {
+            throw new PolicyResolutionException("Cannot specify propagates transaction on a component that is configured for no transaction context");
+        } else if (isLocalTransaction && isTransactedOneWay) {
+            throw new PolicyResolutionException("Cannot specify a transacted one-way interaction on a component that is configured for a local transaction");
+        } else if (isLocalTransaction && propagatesTransaction) {
+            throw new PolicyResolutionException("Cannot specify propagates transaction on a component that is configured for a local transaction context");
+        }
+        if (asyncInvocation && propagatesTransaction) {
+            throw new PolicyResolutionException("Cannot specify propagates transaction on an async invocation");
+        }
+        if (isTransactedOneWay) {
+            if (artifact instanceof LogicalBinding) {
+                LogicalBinding<?> binding = (LogicalBinding) artifact;
+                Bindable parent = binding.getParent();
+                List<LogicalOperation> operations = parent.getOperations();
+                for (LogicalOperation operation : operations) {
+                    if (!operation.getIntents().contains(ONEWAY)) {
+                        throw new PolicyResolutionException("Cannot specify transacted one-way for a request-response operation: " + parent.getUri());
+                    }
+                }
+            } else if (artifact instanceof LogicalOperation) {
+                LogicalOperation operation = (LogicalOperation) artifact;
+                if (!operation.getIntents().contains(ONEWAY)) {
+                    throw new PolicyResolutionException(
+                            "Cannot specify transacted one-way for a request-response operation: " + operation.getParent().getUri());
+                }
+            }
+        }
+        if (isImmediateOneWay) {
+            if (artifact instanceof LogicalBinding) {
+                LogicalBinding<?> binding = (LogicalBinding) artifact;
+                Bindable parent = binding.getParent();
+                List<LogicalOperation> operations = parent.getOperations();
+                for (LogicalOperation operation : operations) {
+                    if (!operation.getIntents().contains(ONEWAY)) {
+                        throw new PolicyResolutionException("Cannot specify immediate one-way for a request-response operation: " + parent.getUri());
+                    }
+                }
+            } else if (artifact instanceof LogicalOperation) {
+                LogicalOperation operation = (LogicalOperation) artifact;
+                if (!operation.getIntents().contains(ONEWAY)) {
+                    throw new PolicyResolutionException("Cannot specify immediate one-way for a request-response operation: " + operation.getParent().getUri());
+                }
+            }
+
+        }
     }
 
     private Set<QName> getOperationPolicySets(LogicalOperation operation) {
@@ -190,7 +309,6 @@ public class InteractionPolicyResolverImpl extends AbstractPolicyResolver implem
         }
         return policySetNames;
     }
-
 
     private Set<QName> aggregateBindingPolicySets(LogicalBinding<?> binding) {
         LogicalScaArtifact<?> temp = binding;
