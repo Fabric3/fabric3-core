@@ -48,7 +48,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class DuplicateInclude extends XmlValidationFailure {
 
     public DuplicateInclude(String includeName, Location location, Include include) {
-        super("An included composite with the name" + includeName + "is already specified", location, include);
+        super("An included composite with the name" + includeName + " is already specified", location, include);
     }
 
 }

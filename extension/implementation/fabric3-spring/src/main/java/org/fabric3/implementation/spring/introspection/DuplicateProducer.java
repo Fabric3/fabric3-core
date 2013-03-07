@@ -48,7 +48,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class DuplicateProducer extends XmlValidationFailure {
 
     public DuplicateProducer(String name, Location location, ModelObject modelObject) {
-        super("A producer with the name name" + name + "is already specified", location, modelObject);
+        super("A producer with the name name" + name + " is already specified", location, modelObject);
     }
 
 }

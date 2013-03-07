@@ -48,7 +48,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class DuplicateProperty extends XmlValidationFailure {
 
     public DuplicateProperty(String name, Location location, SpringComponentType type) {
-        super("A property with the name name" + name + "is already specified", location, type);
+        super("A property with the name name" + name + " is already specified", location, type);
     }
 
 }

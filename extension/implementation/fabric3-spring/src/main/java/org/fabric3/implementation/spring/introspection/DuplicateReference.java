@@ -48,7 +48,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class DuplicateReference extends XmlValidationFailure {
 
     public DuplicateReference(String name, Location location, ModelObject modelObject) {
-        super("A reference with the name name" + name + "is already specified", location, modelObject);
+        super("A reference with the name name" + name + " is already specified", location, modelObject);
     }
 
 }

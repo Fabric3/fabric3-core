@@ -48,7 +48,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 public class DuplicateConsumer extends XmlValidationFailure {
 
     public DuplicateConsumer(String name, Location location, SpringComponentType type) {
-        super("A consumer with the name name" + name + "is already specified", location, type);
+        super("A consumer with the name name" + name + " is already specified", location, type);
     }
 
 }
