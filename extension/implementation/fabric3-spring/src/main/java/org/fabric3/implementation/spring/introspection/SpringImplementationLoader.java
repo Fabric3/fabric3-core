@@ -40,9 +40,18 @@ package org.fabric3.implementation.spring.introspection;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
 
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
@@ -51,9 +60,12 @@ import org.fabric3.implementation.spring.model.SpringImplementation;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Loads a Spring component implementation in a composite.
@@ -62,7 +74,6 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 public class SpringImplementationLoader extends AbstractValidatingTypeLoader<SpringImplementation> {
     private SpringImplementationProcessor processor;
     private LoaderHelper loaderHelper;
-
 
     public SpringImplementationLoader(@Reference SpringImplementationProcessor processor, @Reference LoaderHelper loaderHelper) {
         this.processor = processor;
@@ -86,15 +97,111 @@ public class SpringImplementationLoader extends AbstractValidatingTypeLoader<Spr
             return implementation;
         }
         implementation.setLocation(locationAttr);
+
         loaderHelper.loadPolicySetsAndIntents(implementation, reader, context);
 
         LoaderUtil.skipToEndElement(reader);
 
-        Source source = new UrlSource(classLoader.getResource(locationAttr));
+        URL resource = classLoader.getResource(locationAttr);
+
+        if (resource == null) {
+            InvalidValue error = new InvalidValue("Spring resource not found: " + locationAttr, startLocation, implementation);
+            context.addError(error);
+            return implementation;
+        }
+
+        List<String> contextLocations;
+        Source source;
+        if (locationAttr.endsWith(".jar")) {
+            // if the location is a jar file, resolve the app context by introspecting the manifest header
+            try {
+                contextLocations = resolveAppContextLocationInJar(resource);
+                if (contextLocations == null || contextLocations.isEmpty()) {
+                    InvalidValue error = new InvalidValue("Invalid jar: missing an application context", startLocation, implementation);
+                    context.addError(error);
+                    return implementation;
+                }
+                String externalForm = resource.toExternalForm();
+
+                List<Source> sources = new ArrayList<Source>();
+                for (int i = 1; i < contextLocations.size(); i++) {
+                    sources.add(new UrlSource(new URL("jar:" + externalForm + contextLocations.get(i))));
+                }
+                source = new MultiSource(new URL("jar:" + externalForm + contextLocations.get(0)), sources);
+                implementation.setLocationType(SpringImplementation.LocationType.JAR);
+            } catch (IOException e) {
+                InvalidValue error = new InvalidValue("Invalid jar location", startLocation, e, implementation);
+                context.addError(error);
+                return implementation;
+            }
+
+        } else if (new File(resource.getPath()).isDirectory()) {
+            // location is a directory
+            File directory = new File(resource.getPath());
+            File[] files = directory.listFiles(new FileFilter() {
+                public boolean accept(File pathname) {
+                    return (pathname.getName().endsWith(".xml"));
+                }
+            });
+            if (files == null || files.length == 0) {
+                InvalidValue error = new InvalidValue("Invalid file location: no application contexts found", startLocation, implementation);
+                context.addError(error);
+                return implementation;
+            }
+            try {
+                contextLocations = new ArrayList<String>();
+                List<Source> sources = new ArrayList<Source>();
+                for (File file : files) {
+                    contextLocations.add(file.getName());
+                }
+                for (int i = 1; i < files.length; i++) {
+                    sources.add(new UrlSource(files[i].toURI().toURL()));
+                }
+                source = new MultiSource(files[0].toURI().toURL(), sources);
+            } catch (MalformedURLException e) {
+                InvalidValue error = new InvalidValue("Invalid file location:", startLocation, e, implementation);
+                context.addError(error);
+                return implementation;
+            }
+            implementation.setLocationType(SpringImplementation.LocationType.DIRECTORY);
+        } else {
+            // location is a file
+            contextLocations = Collections.singletonList(locationAttr);
+            source = new UrlSource(resource);
+        }
+
+        implementation.setContextLocations(contextLocations);
+
         SpringComponentType type = processor.introspect(source, context);
         implementation.setComponentType(type);
         return implementation;
 
+    }
+
+    private List<String> resolveAppContextLocationInJar(URL resource) throws IOException {
+        String externalForm = resource.toExternalForm();
+
+        try {
+            URL jarUrl = new URL("jar:" + externalForm + "!/META-INF/MANIFEST.MF");
+            InputStream manifestStream = jarUrl.openStream();
+            Manifest jarManifest = new Manifest(manifestStream);
+            String relativeLocation = jarManifest.getMainAttributes().getValue("Spring-Context");
+            if (relativeLocation != null) {
+                return Collections.singletonList("!/" + relativeLocation);
+
+            }
+        } catch (IOException e) {
+            // ignore, no manifest
+        }
+        JarInputStream stream = new JarInputStream(resource.openStream());
+        JarEntry entry;
+        while ((entry = stream.getNextJarEntry()) != null) {
+            if (entry.getName().contains("/spring/") && entry.getName().endsWith(".xml")) {
+                return Collections.singletonList("!/" + entry.getName());
+            }
+
+        }
+        return null;
     }
 
     /**

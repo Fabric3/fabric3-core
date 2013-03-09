@@ -38,17 +38,22 @@
 package org.fabric3.implementation.spring.generator;
 
 import java.net.URI;
-
-import org.oasisopen.sca.annotation.EagerInit;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.fabric3.implementation.spring.model.SpringConsumer;
 import org.fabric3.implementation.spring.model.SpringImplementation;
+import org.fabric3.implementation.spring.model.SpringReferenceDefinition;
 import org.fabric3.implementation.spring.model.SpringService;
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
 import org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinition;
 import org.fabric3.implementation.spring.provision.SpringConnectionTargetDefinition;
 import org.fabric3.implementation.spring.provision.SpringSourceDefinition;
 import org.fabric3.implementation.spring.provision.SpringTargetDefinition;
+import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.EffectivePolicy;
@@ -66,6 +71,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.JavaType;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Generator for Spring components.
@@ -75,9 +81,23 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
 
     public PhysicalComponentDefinition generate(LogicalComponent<SpringImplementation> component) throws GenerationException {
         URI uri = component.getUri();
-        SpringImplementation implementation = component.getDefinition().getImplementation();
-        String location = implementation.getLocation();
-        return new SpringComponentDefinition(uri, location);
+        ComponentDefinition<SpringImplementation> componentDefinition = component.getDefinition();
+        SpringImplementation implementation = componentDefinition.getImplementation();
+
+        // if the app context is in a jar, calculate the base location, otherwise it is null
+        String baseLocation = null;
+        List<String> contextLocations = implementation.getContextLocations();
+        if (SpringImplementation.LocationType.JAR == implementation.getLocationType()
+            || SpringImplementation.LocationType.DIRECTORY == implementation.getLocationType()) {
+            baseLocation = implementation.getLocation();
+        }
+
+        ComponentType type = componentDefinition.getComponentType();
+        Map<String, String> mappings = handleDefaultReferenceMappings(componentDefinition, type);
+
+        SpringComponentDefinition.LocationType locationType = SpringComponentDefinition.LocationType.valueOf(implementation.getLocationType().toString());
+
+        return new SpringComponentDefinition(uri, baseLocation, contextLocations, mappings, locationType);
     }
 
     public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
@@ -136,5 +156,21 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         throw new UnsupportedOperationException();
     }
 
+    private Map<String, String> handleDefaultReferenceMappings(ComponentDefinition<SpringImplementation> componentDefinition, ComponentType type) {
+        Map<String, String> mappings = new HashMap<String, String>();
+        for (ReferenceDefinition reference : type.getReferences().values()) {
+            SpringReferenceDefinition springReference = (SpringReferenceDefinition) reference;
+            String defaultStr = springReference.getDefaultValue();
+            if (defaultStr == null) {
+                continue;
+            }
+            String refName = springReference.getName();
+            if (componentDefinition.getReferences().containsKey(refName)) {
+                continue;
+            }
+            mappings.put(defaultStr, refName);
+        }
+        return mappings;
+    }
 
 }

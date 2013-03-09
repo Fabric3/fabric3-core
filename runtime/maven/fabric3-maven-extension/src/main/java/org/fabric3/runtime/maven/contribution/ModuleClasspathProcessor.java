@@ -38,20 +38,20 @@
 package org.fabric3.runtime.maven.contribution;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.runtime.maven.MavenHostInfo;
+import org.fabric3.spi.contribution.archive.ClasspathProcessor;
+import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
+import org.fabric3.spi.model.os.Library;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.runtime.maven.MavenHostInfo;
-import org.fabric3.spi.model.os.Library;
-import org.fabric3.spi.contribution.archive.ClasspathProcessor;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 
 /**
  * Fabricates a classpath for a Maven module by including the classes and test-classes directories and any module dependencies.
@@ -87,10 +87,28 @@ public class ModuleClasspathProcessor implements ClasspathProcessor {
 
     public List<URL> process(URL url, List<Library> libraries) throws IOException {
         String file = url.getFile();
-        List<URL> urls = new ArrayList<URL>(2);
-        urls.add(new File(file, "classes").toURI().toURL());
-        urls.add(new File(file, "test-classes").toURI().toURL());
+        final List<URL> urls = new ArrayList<URL>(2);
+        File classesDir = new File(file, "classes");
+        urls.add(classesDir.toURI().toURL());
+        File testClassesDir = new File(file, "test-classes");
+        urls.add(testClassesDir.toURI().toURL());
         urls.addAll(hostInfo.getDependencyUrls());
+
+        //add jars in META-INF/lib to classpath
+        File metaInf = new File(classesDir, "META-INF");
+        File metaInfLib = new File(metaInf, "lib");
+
+        if (metaInfLib.exists()) {
+            File[] jars = metaInfLib.listFiles(new FileFilter() {
+                public boolean accept(File pathname) {
+                    return pathname.getName().endsWith(".jar");
+                }
+            });
+            for (File jar : jars) {
+                urls.add(jar.toURI().toURL());
+            }
+
+        }
         return urls;
     }
 }

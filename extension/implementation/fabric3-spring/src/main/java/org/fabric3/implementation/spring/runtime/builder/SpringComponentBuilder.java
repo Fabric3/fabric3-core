@@ -37,15 +37,15 @@
 */
 package org.fabric3.implementation.spring.runtime.builder;
 
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
+import java.util.Map;
 
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
 import org.fabric3.implementation.spring.runtime.component.SCAApplicationContext;
@@ -55,12 +55,15 @@ import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spring.spi.ApplicationContextListener;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Builds a {@link SpringComponent} from a physical definition. Each SpringComponent contains an application context hierarchy.
  * <p/>
- * The parent context contains object factories for creating wire proxies for references configured on the component. In addition, the parent context
- * also contains system components configured to be aliased as Spring beans.
+ * The parent context contains object factories for creating wire proxies for references configured on the component. In addition, the parent context also
+ * contains system components configured to be aliased as Spring beans.
  * <p/>
  * The child context contains beans defined in the configuration file specified by the location attribute of the Spring component.
  */
@@ -96,11 +99,44 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
                 cl.addParent(springClassLoader);
             }
         }
-        URL source = classLoader.getResource(definition.getLocation());
+        List<URL> sources = new ArrayList<URL>();
+        if (SpringComponentDefinition.LocationType.JAR == definition.getLocationType()) {
+            // jar
+            resolveJarSources(definition, classLoader, sources);
+        } else if (SpringComponentDefinition.LocationType.DIRECTORY == definition.getLocationType()) {
+            // directory
+            resolveDirectorySources(definition, classLoader, sources);
+        } else {
+            // file
+            List<String> contextLocations = definition.getContextLocations();
+            for (String location : contextLocations) {
+                sources.add(classLoader.getResource(location));
+            }
+        }
         URI componentUri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
         SCAApplicationContext parent = createParentContext(classLoader);
-        return new SpringComponent(componentUri, deployable, parent, source, classLoader, validating);
+        Map<String, String> alias = definition.getDefaultReferenceMappings();
+        return new SpringComponent(componentUri, deployable, parent, sources, classLoader, validating, alias);
+    }
+
+    private void resolveDirectorySources(SpringComponentDefinition definition, ClassLoader classLoader, List<URL> sources) throws BuilderException {
+        List<String> contextLocations = definition.getContextLocations();
+        for (String location : contextLocations) {
+
+            URL resource = classLoader.getResource(definition.getBaseLocation());
+            if (resource == null) {
+                throw new BuilderException("Resource path not found:" + definition.getBaseLocation());
+            }
+            String path = resource.getPath();
+            File filePath = new File(path);
+            try {
+                URL url = new File(filePath, location).toURI().toURL();
+                sources.add(url);
+            } catch (MalformedURLException e) {
+                throw new BuilderException(e);
+            }
+        }
     }
 
     public void dispose(SpringComponentDefinition definition, SpringComponent component) throws BuilderException {
@@ -129,4 +165,21 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
             Thread.currentThread().setContextClassLoader(old);
         }
     }
+
+    private void resolveJarSources(SpringComponentDefinition definition, ClassLoader classLoader, List<URL> sources) throws BuilderException {
+        try {
+            for (String location : definition.getContextLocations()) {
+                URL resource = classLoader.getResource(definition.getBaseLocation());
+                if (resource == null) {
+                    throw new BuilderException("Resource was null: " + definition.getBaseLocation());
+                }
+                URL url = new URL("jar:" + resource.toExternalForm() + location);
+                sources.add(url);
+
+            }
+        } catch (MalformedURLException e) {
+            throw new BuilderException(e);
+        }
+    }
+
 }

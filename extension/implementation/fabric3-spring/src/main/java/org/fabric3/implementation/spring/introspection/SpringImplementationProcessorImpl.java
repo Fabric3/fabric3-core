@@ -37,21 +37,21 @@
 */
 package org.fabric3.implementation.spring.introspection;
 
-import java.io.IOException;
-import java.io.InputStream;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.Reference;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
 
 import org.fabric3.host.stream.Source;
 import org.fabric3.implementation.spring.model.BeanDefinition;
 import org.fabric3.implementation.spring.model.SpringComponentType;
 import org.fabric3.implementation.spring.model.SpringConsumer;
+import org.fabric3.implementation.spring.model.SpringReferenceDefinition;
 import org.fabric3.implementation.spring.model.SpringService;
 import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.component.ProducerDefinition;
@@ -62,9 +62,12 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
+import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.xml.XMLFactory;
-
+import org.oasisopen.sca.Constants;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Remotable;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
@@ -79,11 +82,18 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
     private static final QName CONSUMER = new QName(Constants.SCA_NS, "consumer");
 
     private JavaContractProcessor contractProcessor;
-    private XMLFactory factory;
+    private final XMLInputFactory xmlInputFactory;
+
+    private boolean strictValidation;
+
+    @org.oasisopen.sca.annotation.Property(required = false)
+    public void setValidate(boolean validation) {
+        strictValidation = validation;
+    }
 
     public SpringImplementationProcessorImpl(@Reference JavaContractProcessor contractProcessor, @Reference XMLFactory factory) {
         this.contractProcessor = contractProcessor;
-        this.factory = factory;
+        xmlInputFactory = factory.newInputFactoryInstance();
     }
 
     public SpringComponentType introspect(Source source, IntrospectionContext context) throws XMLStreamException {
@@ -92,42 +102,23 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
         try {
             SpringComponentType type = new SpringComponentType();
             stream = source.openStream();
-            reader = factory.newInputFactoryInstance().createXMLStreamReader(stream);
-            while (true) {
-                switch (reader.next()) {
-                case START_ELEMENT:
-                    if (BEAN.equals(reader.getName().getLocalPart())) {
-                        if (!processBean(type, reader, context)) {
-                            return type;
-                        }
-                    } else if (SERVICE.equals(reader.getName())) {
-                        if (!processService(type, reader, context)) {
-                            return type;
-                        }
-                    } else if (REFERENCE.equals(reader.getName())) {
-                        if (!processReference(type, reader, context)) {
-                            return type;
-                        }
-                    } else if (PROPERTY.equals(reader.getName())) {
-                        if (!processProperty(type, reader, context)) {
-                            return type;
-                        }
-                    } else if (PRODUCER.equals(reader.getName())) {
-                        if (!processProducer(type, reader, context)) {
-                            return type;
-                        }
-                    } else if (CONSUMER.equals(reader.getName())) {
-                        if (!processConsumer(type, reader, context)) {
-                            return type;
-                        }
-                    }
-                    break;
-                case XMLStreamConstants.END_DOCUMENT:
-                    postProcess(type, context);
-                    return type;
+            reader = xmlInputFactory.createXMLStreamReader(stream);
+            Location start = reader.getLocation();
+
+            processStream(context, reader, type);
+
+            if (source instanceof MultiSource) {
+                // multiple app contexts
+                MultiSource multiSource = (MultiSource) source;
+                for (Source contextSource : multiSource.getSources()) {
+                    stream = contextSource.openStream();
+                    reader = xmlInputFactory.createXMLStreamReader(stream);
+                    processStream(context, reader, type);
                 }
             }
+            validate(type, context, start);
 
+            return type;
         } catch (IOException e) {
             throw new XMLStreamException(e);
         } finally {
@@ -142,6 +133,95 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
                 // ignore
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void processStream(IntrospectionContext context, XMLStreamReader reader, SpringComponentType type) throws XMLStreamException {
+        while (true) {
+            switch (reader.next()) {
+                case START_ELEMENT:
+                    if (BEAN.equals(reader.getName().getLocalPart())) {
+                        if (!processBean(type, reader, context)) {
+                            return;
+                        }
+                    } else if (SERVICE.equals(reader.getName())) {
+                        if (!processService(type, reader, context)) {
+                            return;
+                        }
+                    } else if (REFERENCE.equals(reader.getName())) {
+                        if (!processReference(type, reader, context)) {
+                            return;
+                        }
+                    } else if (PROPERTY.equals(reader.getName())) {
+                        if (!processProperty(type, reader, context)) {
+                            return;
+                        }
+                    } else if (PRODUCER.equals(reader.getName())) {
+                        if (!processProducer(type, reader, context)) {
+                            return;
+                        }
+                    } else if (CONSUMER.equals(reader.getName())) {
+                        if (!processConsumer(type, reader, context)) {
+                            return;
+                        }
+                    } else {
+                        if (reader.getName().getNamespaceURI().equals(Constants.SCA_NS)) {
+                            UnrecognizedElement error = new UnrecognizedElement(reader, reader.getLocation(), type);
+                            context.addError(error);
+                        }
+                    }
+                    break;
+                case XMLStreamConstants.END_DOCUMENT:
+                    postProcess(type, context);
+                    return;
+            }
+        }
+    }
+
+    /**
+     * Performs validation.
+     *
+     * @param type    the component type
+     * @param context the context
+     */
+    private void validate(SpringComponentType type, IntrospectionContext context, Location location) {
+        Collection<ReferenceDefinition> references = type.getReferences().values();
+        for (ReferenceDefinition reference : references) {
+            String defaultStr = ((SpringReferenceDefinition) reference).getDefaultValue();
+            if (defaultStr != null) {
+                if (!type.getBeansById().containsKey(defaultStr) && !type.getBeansByName().containsKey(defaultStr)) {
+                    InvalidValue error = new InvalidValue("Default value '" + defaultStr + "' does not reference a valid bean", location, type);
+                    context.addError(error);
+                }
+            }
+        }
+
+        if (strictValidation) {
+            // SCA spec validation
+            if (type.getSpringServices().isEmpty()) {
+                // if no services defined, check remotables
+                for (BeanDefinition beanDefinition : type.getBeansByName().values()) {
+                    validateBean(type, beanDefinition, context, location);
+                }
+                for (BeanDefinition beanDefinition : type.getBeansById().values()) {
+                    validateBean(type, beanDefinition, context, location);
+                }
+            }
+        }
+    }
+
+    private void validateBean(SpringComponentType type, BeanDefinition beanDefinition, IntrospectionContext context, Location location) {
+        Class<?> clazz = beanDefinition.getBeanClass();
+        int number = 0;
+        for (Class<?> interfaze : clazz.getInterfaces()) {
+            if (interfaze.isAnnotationPresent(Remotable.class)) {
+                number++;
+            }
+        }
+        if (number > 1) {
+            InvalidValue error = new InvalidValue("Bean cannot implement multiple remotable services if no SCA services are defined in the parent" +
+                                                  " application context: " + clazz, location, type);
+            context.addError(error);
         }
     }
 
@@ -266,8 +346,10 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             context.addError(failure);
             return false;
         }
+        String defaultStr = reader.getAttributeValue(null, "default");
+
         ServiceContract contract = contractProcessor.introspect(interfaze, context, type);
-        ReferenceDefinition definition = new ReferenceDefinition(name, contract);
+        ReferenceDefinition definition = new SpringReferenceDefinition(name, contract, defaultStr);
         type.add(definition);
         return true;
     }
@@ -353,7 +435,6 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
         return true;
     }
 
-
     /**
      * Processes an SCA <code>producer</code> element.
      *
@@ -397,7 +478,6 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
         type.add(definition);
         return true;
     }
-
 
     /**
      * Performs heuristic introspection and validation.

@@ -38,6 +38,8 @@
 package org.fabric3.implementation.spring.provision;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 
@@ -47,14 +49,46 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 public class SpringComponentDefinition extends PhysicalComponentDefinition {
     private static final long serialVersionUID = 2215754845063915425L;
 
-    private String location;
+    public enum LocationType {
+        JAR, DIRECTORY, FILE
+    }
 
-    public SpringComponentDefinition(URI uri, String location) {
+    private String baseLocation;
+    private List<String> contextLocations;
+    private Map<String, String> defaultReferenceMappings;
+    private LocationType locationType = LocationType.FILE;
+
+    /**
+     * Constructor.
+     *
+     * @param uri              the component URI
+     * @param baseLocation     the base relative application context location if it is contained in a jar, otherwise null
+     * @param contextLocations the locations of application context files for the component
+     * @param mappings         bean alias mappings derived from the default attribute of SCA reference tags in an application context
+     * @param locationType     the application context location type
+     */
+    public SpringComponentDefinition(URI uri, String baseLocation, List<String> contextLocations, Map<String, String> mappings, LocationType locationType) {
+        this.contextLocations = contextLocations;
+        this.locationType = locationType;
         setComponentUri(uri);
-        this.location = location;
+        this.baseLocation = baseLocation;
+        this.defaultReferenceMappings = mappings;
     }
 
-    public String getLocation() {
-        return location;
+    public String getBaseLocation() {
+        return baseLocation;
     }
+
+    public List<String> getContextLocations() {
+        return contextLocations;
+    }
+
+    public Map<String, String> getDefaultReferenceMappings() {
+        return defaultReferenceMappings;
+    }
+
+    public LocationType getLocationType() {
+        return locationType;
+    }
+
 }

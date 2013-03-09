@@ -37,18 +37,19 @@
 */
 package org.fabric3.implementation.spring.runtime.component;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URL;
-import javax.xml.namespace.QName;
-
-import org.springframework.beans.BeansException;
-import org.springframework.context.support.GenericXmlApplicationContext;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+import java.util.List;
+import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
 /**
  * The runtime representation of a Spring component. A Spring component has an associated application context that manages Spring beans.
@@ -56,13 +57,14 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 public class SpringComponent implements Component {
     private URI uri;
     private QName deployable;
-    private URL source;
+    private List<URL> sources;
     private ClassLoader classLoader;
     private URI classLoaderId;
     private GenericXmlApplicationContext applicationContext;
     private SCAApplicationContext parent;
     private MonitorLevel level = MonitorLevel.INFO;
     private boolean validating;
+    private Map<String, String> alias;
 
     /**
      * Constructor.
@@ -70,17 +72,25 @@ public class SpringComponent implements Component {
      * @param uri         the component URI.
      * @param deployable  the composite the component is deployed with
      * @param parent      the parent application context for resolving wire and event stream proxies
-     * @param source      the location of the application context XML configuration.
+     * @param sources     the location of the application contexts
      * @param classLoader the contribution classloader containing user-defined application classes and resources
      * @param validating  true if application context validation should be done
+     * @param alias       bean aliases derived from the default attribute of an SCA reference tag
      */
-    public SpringComponent(URI uri, QName deployable, SCAApplicationContext parent, URL source, ClassLoader classLoader, boolean validating) {
+    public SpringComponent(URI uri,
+                           QName deployable,
+                           SCAApplicationContext parent,
+                           List<URL> sources,
+                           ClassLoader classLoader,
+                           boolean validating,
+                           Map<String, String> alias) {
         this.uri = uri;
         this.deployable = deployable;
         this.parent = parent;
-        this.source = source;
+        this.sources = sources;
         this.classLoader = classLoader;
         this.validating = validating;
+        this.alias = alias;
     }
 
     public URI getUri() {
@@ -117,6 +127,12 @@ public class SpringComponent implements Component {
             Thread.currentThread().setContextClassLoader(classLoader);
             applicationContext = new GenericXmlApplicationContext();
             applicationContext.setValidating(validating);
+
+            for (Map.Entry<String, String> entry : alias.entrySet()) {
+                // register bean aliases derived from any default reference values
+                applicationContext.registerAlias(entry.getKey(), entry.getValue());
+            }
+
             try {
                 // initialize the parent context
                 parent.refresh();
@@ -125,8 +141,14 @@ public class SpringComponent implements Component {
                 // initialize the context associated with the component
                 applicationContext.setParent(parent);
                 applicationContext.setClassLoader(classLoader);
-                Resource resource = new UrlResource(source);
-                applicationContext.load(resource);
+
+                // load application contexts
+                Resource[] resources = new Resource[sources.size()];
+                for (int i = 0; i < sources.size(); i++) {
+                    URL url = sources.get(i);
+                    resources[i] = new UrlResource(url);
+                }
+                applicationContext.load(resources);
                 applicationContext.refresh();
                 applicationContext.start();
             } catch (BeansException e) {
@@ -155,7 +177,7 @@ public class SpringComponent implements Component {
     public void endUpdate() {
 
     }
-    
+
     public ClassLoader getClassLoader() {
         return classLoader;
     }

@@ -24,6 +24,7 @@ Public License. See the accompanying license file for details.
 
     <component name="SpringImplementationProcessor">
         <f3:implementation.system class="org.fabric3.implementation.spring.introspection.SpringImplementationProcessorImpl"/>
+        <property name="validate" source="$systemConfig//f3:spring/@validate.strict"/>
     </component>
 
     <component name="SpringComponentGenerator" f3:key="org.fabric3.implementation.spring.model.SpringImplementation">

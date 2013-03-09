@@ -38,10 +38,10 @@
 package org.fabric3.implementation.spring.model;
 
 import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
+import java.util.List;
 
 import org.fabric3.model.type.component.Implementation;
+import org.oasisopen.sca.Constants;
 
 /**
  * A Spring component implementation type.
@@ -49,7 +49,15 @@ import org.fabric3.model.type.component.Implementation;
 public class SpringImplementation extends Implementation<SpringComponentType> {
     private static final long serialVersionUID = -6701786225245805039L;
     public static final QName IMPLEMENTATION_SPRING = new QName(Constants.SCA_NS, "implementation.spring");
+
+    public enum LocationType {
+        JAR, DIRECTORY, FILE
+    }
+
     private String location;
+    private List<String> contextLocations;
+
+    private LocationType locationType = LocationType.FILE;
 
     public QName getType() {
         return IMPLEMENTATION_SPRING;
@@ -63,4 +71,20 @@ public class SpringImplementation extends Implementation<SpringComponentType> {
         this.location = location;
     }
 
+    public List<String> getContextLocations() {
+        return contextLocations;
+    }
+
+    public void setContextLocations(List<String> locations) {
+        this.contextLocations = locations;
+    }
+
+
+    public LocationType getLocationType() {
+        return locationType;
+    }
+
+    public void setLocationType(LocationType locationType) {
+        this.locationType = locationType;
+    }
 }

@@ -43,18 +43,14 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.fabric3.host.contribution.ArtifactValidationFailure;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
@@ -89,7 +85,9 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.util.UriHelper;
-
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.fabric3.spi.introspection.xml.CompositeConstants.CHANNEL;
@@ -441,6 +439,9 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
             return;
         }
         Composite included = include.getIncluded();
+        if (included == null) {
+            return;
+        }
         if (type.isLocal() != included.isLocal()) {
             InvalidInclude error = new InvalidInclude("Composite " + type.getName() + " has a local value of " + type.isLocal()
                                                               + " and the included composite " + includeName + " has a value of "
