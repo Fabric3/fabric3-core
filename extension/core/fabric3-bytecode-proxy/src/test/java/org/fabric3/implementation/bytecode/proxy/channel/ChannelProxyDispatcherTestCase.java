@@ -35,32 +35,32 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.pojo.spi.proxy;
+package org.fabric3.implementation.bytecode.proxy.channel;
 
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * Delegates to a {@link ChannelProxyServiceExtension} to create proxy factories for a channel.
+ *
  */
+public class ChannelProxyDispatcherTestCase extends TestCase {
 
-public interface ChannelProxyService {
+    public void testDispatch() throws Exception {
+        EventStreamHandler handler = EasyMock.createMock(EventStreamHandler.class);
+        handler.handle(EasyMock.isA(String.class));
 
-    /**
-     * Creates a proxy factory.
-     *
-     * @param interfaze  the interface the proxy implements
-     * @param connection the channel connection to proxy
-     * @param <T>        the interface type
-     * @return the object factory
-     * @throws ProxyCreationException if there is an error creating the factory
-     */
-    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException;
+        EventStreamHandler[] handlers = {handler};
+
+        EasyMock.replay(handler);
+
+        ChannelProxyDispatcher dispatcher = new ChannelProxyDispatcher();
+        dispatcher.init(handlers);
+
+        dispatcher._f3_invoke(0, "test");
+
+        EasyMock.verify(handler);
+    }
 
 }

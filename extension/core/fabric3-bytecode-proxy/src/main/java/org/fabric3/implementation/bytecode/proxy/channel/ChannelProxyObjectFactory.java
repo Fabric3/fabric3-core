@@ -35,32 +35,47 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.pojo.spi.proxy;
+package org.fabric3.implementation.bytecode.proxy.channel;
 
-import org.fabric3.spi.channel.ChannelConnection;
+import java.lang.reflect.Method;
+import java.net.URI;
+
+import org.fabric3.implementation.bytecode.proxy.common.ProxyException;
+import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
+import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Delegates to a {@link ChannelProxyServiceExtension} to create proxy factories for a channel.
+ * Creates a proxy for a channel.
  */
+public class ChannelProxyObjectFactory<T> implements ObjectFactory<T> {
+    private ProxyFactory proxyFactory;
+    private URI uri;
+    private Class<T> interfaze;
+    private Method[] methods;
+    private EventStreamHandler[] handlers;
 
-public interface ChannelProxyService {
+    private T proxy;
 
-    /**
-     * Creates a proxy factory.
-     *
-     * @param interfaze  the interface the proxy implements
-     * @param connection the channel connection to proxy
-     * @param <T>        the interface type
-     * @return the object factory
-     * @throws ProxyCreationException if there is an error creating the factory
-     */
-    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException;
+    public ChannelProxyObjectFactory(URI uri, Class<T> interfaze, Method[] methods, EventStreamHandler[] handlers, ProxyFactory proxyFactory) {
+        this.uri = uri;
+        this.interfaze = interfaze;
+        this.methods = methods;
+        this.handlers = handlers;
+        this.proxyFactory = proxyFactory;
+    }
 
+    public T getInstance() throws ObjectCreationException {
+        try {
+            if (proxy == null) {
+                proxy = proxyFactory.createProxy(uri, interfaze, methods, ChannelProxyDispatcher.class, false);
+                ((ChannelProxyDispatcher) proxy).init(handlers);
+            }
+            return proxy;
+        } catch (ProxyException e) {
+            throw new ObjectCreationException(e);
+        }
+    }
 }

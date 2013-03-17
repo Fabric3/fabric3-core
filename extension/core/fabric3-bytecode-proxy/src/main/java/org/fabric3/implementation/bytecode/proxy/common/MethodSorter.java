@@ -35,32 +35,35 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.pojo.spi.proxy;
+package org.fabric3.implementation.bytecode.proxy.common;
 
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.fabric3.spi.model.type.java.Signature;
 
 /**
- * Delegates to a {@link ChannelProxyServiceExtension} to create proxy factories for a channel.
+ * Utility for sorting Methods based on a string representation
  */
-
-public interface ChannelProxyService {
+public class MethodSorter {
 
     /**
-     * Creates a proxy factory.
+     * Sorts the given methods by their string representation.
      *
-     * @param interfaze  the interface the proxy implements
-     * @param connection the channel connection to proxy
-     * @param <T>        the interface type
-     * @return the object factory
-     * @throws ProxyCreationException if there is an error creating the factory
+     * @param methods the methods
+     * @return the sorted array of methods
      */
-    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException;
+    public static Method[] sort(Method[] methods) {
+        Map<String, Method> map = new TreeMap<String, Method>();
+        for (Method method : methods) {
+            String signature = new Signature(method).toString();
+            map.put(signature, method);
+        }
+        return map.values().toArray(new Method[map.size()]);
+    }
+
+
 
 }

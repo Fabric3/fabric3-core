@@ -46,14 +46,14 @@ package org.fabric3.implementation.proxy.jdk.channel;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
+import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.spi.channel.EventStream;
 
 /**
  * Creates channel proxies using JDK proxies.
  */
-public interface JDKChannelProxyService extends ChannelProxyService {
+public interface JDKChannelProxyService extends ChannelProxyServiceExtension {
     /**
      * Creates a proxy.
      *

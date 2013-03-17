@@ -50,12 +50,15 @@ import org.fabric3.spi.wire.Wire;
 import org.oasisopen.sca.ServiceReference;
 
 /**
- * Delegates to a {@link WireProxyServiceExtension} to create wire proxies.
+ * Creates proxies that implement Java interfaces and invocation handlers for fronting wires.
  */
 
-public interface WireProxyService {
+public interface WireProxyServiceExtension {
+
+    boolean isDefault();
+
     /**
-     * Creates an ObjectFactory that provides proxies for the forward wire.
+     * Create an ObjectFactory that provides proxies for the forward wire.
      *
      * @param interfaze   the interface the proxy implements
      * @param wire        the wire to proxy @return an ObjectFactory that will create proxies
@@ -66,7 +69,7 @@ public interface WireProxyService {
     <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ProxyCreationException;
 
     /**
-     * Creates an ObjectFactory that provides proxies for the callback wire.
+     * Create an ObjectFactory that provides proxies for the callback wire.
      *
      * @param interfaze     the interface the proxy implements
      * @param multiThreaded if the proxy should be thread-safe

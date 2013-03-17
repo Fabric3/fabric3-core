@@ -35,78 +35,72 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.proxy.jdk.channel;
+package org.fabric3.implementation.bytecode.proxy.channel;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashMap;
+import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
+import org.fabric3.host.Names;
+import org.fabric3.implementation.bytecode.proxy.common.MethodSorter;
+import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
+import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * The default ChannelProxyService that uses JDK dynamic proxies.
+ * Implementation that delegates to a {@link ProxyFactory} to create channel proxies.
  */
-public class JDKChannelProxyServiceImpl implements JDKChannelProxyService {
+public class BytecodeChannelProxyService implements ChannelProxyServiceExtension {
+    private ProxyFactory proxyFactory;
     private ClassLoaderRegistry classLoaderRegistry;
 
-    public JDKChannelProxyServiceImpl(@Reference ClassLoaderRegistry classLoaderRegistry) {
+    public BytecodeChannelProxyService(@Reference ProxyFactory proxyFactory, @Reference ClassLoaderRegistry classLoaderRegistry) {
+        this.proxyFactory = proxyFactory;
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public boolean isDefault() {
-        return true;
+        return false;
     }
 
     public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException {
-        if (connection.getEventStreams().size() == 1) {
-            return new OptimizedChannelConnectionObjectFactory<T>(interfaze, this, connection.getEventStreams().get(0));
-        } else {
-            Map<Method, EventStream> mappings = createInterfaceToStreamMapping(interfaze, connection);
-            return new ChannelConnectionObjectFactory<T>(interfaze, this, mappings);
-        }
-    }
+        URI uri = getClassLoaderUri(interfaze);
 
-    public <T> T createProxy(Class<T> interfaze, Map<Method, EventStream> mappings) throws ProxyCreationException {
-        ClassLoader loader = interfaze.getClassLoader();
-        JDKEventHandler handler = new JDKEventHandler(mappings);
-        return interfaze.cast(Proxy.newProxyInstance(loader, new Class[]{interfaze}, handler));
-    }
+        Method[] methods = MethodSorter.sort(interfaze.getMethods());
+        EventStreamHandler[] handlers = new EventStreamHandler[methods.length];
 
-    public <T> T createProxy(Class<T> interfaze, EventStream stream) throws ProxyCreationException {
-        ClassLoader loader = interfaze.getClassLoader();
-        OptimizedJDKEventHandler handler = new OptimizedJDKEventHandler(stream);
-        return interfaze.cast(Proxy.newProxyInstance(loader, new Class[]{interfaze}, handler));
-    }
-
-    private Map<Method, EventStream> createInterfaceToStreamMapping(Class<?> interfaze, ChannelConnection connection) throws ProxyCreationException {
-        List<EventStream> streams = connection.getEventStreams();
-        Map<Method, EventStream> mappings = new HashMap<Method, EventStream>(streams.size());
-        for (EventStream stream : streams) {
-            PhysicalEventStreamDefinition definition = stream.getDefinition();
-            try {
-                Method method = findMethod(interfaze, definition);
-                mappings.put(method, stream);
-            } catch (NoSuchMethodException e) {
-                throw new NoMethodForEventStreamException(definition.getName());
-            } catch (ClassNotFoundException e) {
-                throw new ProxyCreationException(e);
+        try {
+            for (EventStream eventStream : connection.getEventStreams()) {
+                Method method = findMethod(interfaze, eventStream.getDefinition());
+                for (int i = 0; i < methods.length; i++) {
+                    if (method.equals(methods[i])) {
+                        handlers[i] = eventStream.getHeadHandler();
+                        break;
+                    }
+                }
             }
+            return new ChannelProxyObjectFactory<T>(uri, interfaze, methods, handlers, proxyFactory);
+        } catch (ClassNotFoundException e) {
+            throw new ProxyCreationException(e);
+        } catch (NoSuchMethodException e) {
+            throw new ProxyCreationException(e);
         }
-        return mappings;
+    }
+
+    private <T> URI getClassLoaderUri(Class<T> interfaze) {
+        if (!(interfaze.getClassLoader() instanceof MultiParentClassLoader)) {
+            return Names.BOOT_CONTRIBUTION;
+        }
+        return ((MultiParentClassLoader) interfaze.getClassLoader()).getName();
     }
 
     /**

@@ -41,48 +41,33 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.proxy.jdk.wire;
+package org.fabric3.implementation.pojo.spi.proxy;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-
-import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
-import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Creates JDK-based wire proxies.
+ * Creates proxies fronting event channel connections.
  */
-public interface JDKWireProxyService extends WireProxyServiceExtension {
+
+public interface ChannelProxyServiceExtension {
 
     /**
-     * Creates a Java proxy for the given wire.
+     * Returns true if this extension should be used as the default one for generating proxies.
      *
-     * @param interfaze   the interface the proxy implements
-     * @param callbackUri the callback URI fr the wire fronted by the proxy or null if the wire is unidirectional
-     * @param mappings    the method to invocation chain mappings
-     * @return the proxy
-     * @throws ProxyCreationException if there was a problem creating the proxy
+     * @return true if this extension should be used as the default one for generating proxies
      */
-    <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws ProxyCreationException;
+    boolean isDefault();
 
     /**
-     * Creates a Java proxy for the callback invocations chains.
+     * Creates a proxy factory.
      *
-     * @param interfaze the interface the proxy should implement
-     * @param mappings  the invocation chain mappings keyed by target URI @return the proxy
-     * @return the proxy instance
-     * @throws ProxyCreationException if an error is encountered during proxy generation
+     * @param interfaze  the interface the proxy implements
+     * @param connection the channel connection to proxy
+     * @param <T>        the interface type
+     * @return the object factory
+     * @throws ProxyCreationException if there is an error creating the factory
      */
-    <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ProxyCreationException;
-
-    /**
-     * Creates a callback proxy that always returns to the same target service
-     *
-     * @param interfaze the service interface
-     * @param mapping   the invocation chain mapping for the callback service
-     * @return the proxy instance
-     */
-    <T> T createCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping);
+    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException;
 
 }

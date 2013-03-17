@@ -35,32 +35,22 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.pojo.spi.proxy;
-
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+package org.fabric3.implementation.bytecode.proxy.common;
 
 /**
- * Delegates to a {@link ChannelProxyServiceExtension} to create proxy factories for a channel.
+ * Dispatches from a proxy to a target.
  */
-
-public interface ChannelProxyService {
+public interface ProxyDispatcher {
 
     /**
-     * Creates a proxy factory.
+     * Performs the dispatch by invoking a target associated with the invoked method index.
      *
-     * @param interfaze  the interface the proxy implements
-     * @param connection the channel connection to proxy
-     * @param <T>        the interface type
-     * @return the object factory
-     * @throws ProxyCreationException if there is an error creating the factory
+     * @param index  the method index
+     * @param params invocation parameter(s) or null
+     * @return a return value
+     * @throws Throwable if there is an error during invocation
      */
-    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException;
+    Object _f3_invoke(int index, Object params) throws Throwable;
 
 }

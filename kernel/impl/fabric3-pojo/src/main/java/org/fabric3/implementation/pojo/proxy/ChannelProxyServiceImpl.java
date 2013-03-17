@@ -41,48 +41,48 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.proxy.jdk.wire;
+package org.fabric3.implementation.pojo.proxy;
 
-import java.lang.reflect.Method;
-import java.util.Map;
+import java.util.List;
 
+import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
+import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
-import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Creates JDK-based wire proxies.
+ *
  */
-public interface JDKWireProxyService extends WireProxyServiceExtension {
+public class ChannelProxyServiceImpl implements ChannelProxyService {
+    private ChannelProxyServiceExtension extension;
 
-    /**
-     * Creates a Java proxy for the given wire.
-     *
-     * @param interfaze   the interface the proxy implements
-     * @param callbackUri the callback URI fr the wire fronted by the proxy or null if the wire is unidirectional
-     * @param mappings    the method to invocation chain mappings
-     * @return the proxy
-     * @throws ProxyCreationException if there was a problem creating the proxy
-     */
-    <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws ProxyCreationException;
+    @Reference(required = false)
+    public void setExtensions(List<ChannelProxyServiceExtension> extensions) {
+        if (extensions.isEmpty()) {
+            return;
+        }
+        if (extensions.size() == 1) {
+            extension = extensions.get(0);
+        } else {
+            if (extension != null && !extension.isDefault()) {
+                return;
+            }
+            for (ChannelProxyServiceExtension entry : extensions) {
+                if (!entry.isDefault()) {
+                    extension = entry;
+                    return;
+                }
+            }
 
-    /**
-     * Creates a Java proxy for the callback invocations chains.
-     *
-     * @param interfaze the interface the proxy should implement
-     * @param mappings  the invocation chain mappings keyed by target URI @return the proxy
-     * @return the proxy instance
-     * @throws ProxyCreationException if an error is encountered during proxy generation
-     */
-    <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ProxyCreationException;
+        }
+    }
 
-    /**
-     * Creates a callback proxy that always returns to the same target service
-     *
-     * @param interfaze the service interface
-     * @param mapping   the invocation chain mapping for the callback service
-     * @return the proxy instance
-     */
-    <T> T createCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping);
-
+    public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException {
+        if (extension == null) {
+            throw new ProxyCreationException("Channel proxy service extension not installed");
+        }
+        return extension.createObjectFactory(interfaze, connection);
+    }
 }

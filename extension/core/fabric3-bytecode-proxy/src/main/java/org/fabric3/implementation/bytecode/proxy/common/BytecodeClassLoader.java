@@ -35,32 +35,42 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.pojo.spi.proxy;
+package org.fabric3.implementation.bytecode.proxy.common;
 
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import java.lang.reflect.Method;
+import java.net.URI;
+
+import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
- * Delegates to a {@link ChannelProxyServiceExtension} to create proxy factories for a channel.
+ * Classloader capable of loading generated classes at runtime.
  */
+public class BytecodeClassLoader extends MultiParentClassLoader {
+    private Method method;
 
-public interface ChannelProxyService {
+    public BytecodeClassLoader(URI name, ClassLoader parent) {
+        super(name, parent);
+        try {
+            // Attempt to load the access class in the same loader, which makes protected and default access members accessible.
+            method = ClassLoader.class.getDeclaredMethod("defineClass", new Class[]{String.class, byte[].class, int.class, int.class});
+            method.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            throw new AssertionError(e);
+        }
+    }
 
-    /**
-     * Creates a proxy factory.
-     *
-     * @param interfaze  the interface the proxy implements
-     * @param connection the channel connection to proxy
-     * @param <T>        the interface type
-     * @return the object factory
-     * @throws ProxyCreationException if there is an error creating the factory
-     */
-    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException;
+    public Class<?> defineClass(String name, byte[] bytes) throws ClassFormatError {
+        try {
+            // Attempt to load the class
+            return (Class) method.invoke(getParent(), name, bytes, 0, bytes.length);
+        } catch (Exception ignored) {
+        }
+        return defineClass(name, bytes, 0, bytes.length);
+    }
+
+    protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        return super.loadClass(name, resolve);
+    }
 
 }

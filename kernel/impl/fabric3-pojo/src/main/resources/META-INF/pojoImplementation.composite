@@ -49,4 +49,13 @@
         <f3:implementation.system class="org.fabric3.implementation.pojo.builder.ObjectBuilderImpl"/>
     </component>
 
+    <component name="ChannelProxyService">
+        <f3:implementation.system class="org.fabric3.implementation.pojo.proxy.ChannelProxyServiceImpl"/>
+    </component>
+
+    <component name="WireProxyService">
+        <f3:implementation.system class="org.fabric3.implementation.pojo.proxy.WireProxyServiceImpl"/>
+    </component>
+
+
 </composite>

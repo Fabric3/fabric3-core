@@ -35,119 +35,122 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.proxy.jdk.wire;
+package org.fabric3.implementation.bytecode.proxy.wire;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
+import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
+import org.fabric3.spi.model.type.java.Signature;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * The default WireProxyService implementation that uses JDK dynamic proxies.
+ *
  */
-public class JDKWireProxyServiceImpl implements JDKWireProxyService {
+@EagerInit
+public class BytecodeWireProxyService implements WireProxyServiceExtension {
+    private ProxyFactory proxyFactory;
     private ClassLoaderRegistry classLoaderRegistry;
 
-    public JDKWireProxyServiceImpl(@Reference ClassLoaderRegistry classLoaderRegistry) {
+    public BytecodeWireProxyService(@Reference ProxyFactory proxyFactory, @Reference ClassLoaderRegistry classLoaderRegistry) {
+        this.proxyFactory = proxyFactory;
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public boolean isDefault() {
-        return true;
+        return false;
     }
 
     public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, Wire wire, String callbackUri) throws ProxyCreationException {
-        Map<Method, InvocationChain> mappings = createInterfaceToWireMapping(interfaze, wire);
-        return new WireObjectFactory<T>(interfaze, callbackUri, this, mappings);
+        URI uri = getClassLoaderUri(interfaze);
+
+        List<InvocationChain> list = wire.getInvocationChains();
+        Map<Method, InvocationChain> mappings = resolveMethods(interfaze, list);
+        Method[] methods = mappings.keySet().toArray(new Method[mappings.size()]);
+        InvocationChain[] chains = mappings.values().toArray(new InvocationChain[mappings.size()]);
+
+        return new WireProxyObjectFactory<T>(uri, interfaze, methods, chains, callbackUri, proxyFactory);
     }
 
     public <T> ObjectFactory<T> createCallbackObjectFactory(Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
             throws ProxyCreationException {
-        Map<Method, InvocationChain> operationMappings = createInterfaceToWireMapping(interfaze, wire);
-        Map<String, Map<Method, InvocationChain>> mappings = new HashMap<String, Map<Method, InvocationChain>>();
-        mappings.put(callbackUri.toString(), operationMappings);
-        return new CallbackWireObjectFactory<T>(interfaze, multiThreaded, this, mappings);
+        URI uri = getClassLoaderUri(interfaze);
+
+        List<InvocationChain> list = wire.getInvocationChains();
+        Map<Method, InvocationChain> mappings = resolveMethods(interfaze, list);
+        Method[] methods = mappings.keySet().toArray(new Method[mappings.size()]);
+        InvocationChain[] chains = mappings.values().toArray(new InvocationChain[mappings.size()]);
+
+        String callbackString = callbackUri.toString();
+        return new CallbackWireObjectFactory<T>(uri, interfaze, methods, callbackString, chains, proxyFactory);
     }
 
     public <T> ObjectFactory<?> updateCallbackObjectFactory(ObjectFactory<?> factory, Class<T> interfaze, boolean multiThreaded, URI callbackUri, Wire wire)
             throws ProxyCreationException {
         if (!(factory instanceof CallbackWireObjectFactory)) {
-            // a placeholder object factory (i.e. created when the callback is not wired) needs to be replaced 
-            return createCallbackObjectFactory(interfaze, multiThreaded, callbackUri, wire);
+            throw new AssertionError("Expected object factory of type: " + CallbackWireObjectFactory.class.getName());
         }
-        CallbackWireObjectFactory<?> callbackFactory = (CallbackWireObjectFactory) factory;
-        Map<Method, InvocationChain> operationMappings = createInterfaceToWireMapping(interfaze, wire);
-        callbackFactory.updateMappings(callbackUri.toString(), operationMappings);
+        CallbackWireObjectFactory callbackFactory = (CallbackWireObjectFactory) factory;
+
+        List<InvocationChain> list = wire.getInvocationChains();
+        InvocationChain[] chains = list.toArray(new InvocationChain[list.size()]);
+        callbackFactory.updateMappings(callbackUri.toString(), chains);
         return callbackFactory;
     }
 
-    public <T> T createProxy(Class<T> interfaze, String callbackUri, Map<Method, InvocationChain> mappings) throws ProxyCreationException {
-        JDKInvocationHandler<T> handler;
-        handler = new JDKInvocationHandler<T>(interfaze, callbackUri, mappings);
-        return handler.getService();
-    }
-
-    public <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ProxyCreationException {
-        ClassLoader cl = interfaze.getClassLoader();
-        MultiThreadedCallbackInvocationHandler<T> handler = new MultiThreadedCallbackInvocationHandler<T>(interfaze, mappings);
-        return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
-    }
-
-    public <T> T createCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping) {
-        ClassLoader cl = interfaze.getClassLoader();
-        StatefulCallbackInvocationHandler<T> handler = new StatefulCallbackInvocationHandler<T>(interfaze, mapping);
-        return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
-    }
-
-    @SuppressWarnings("unchecked")
     public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
-        InvocationHandler handler = Proxy.getInvocationHandler(target);
-        if (handler instanceof JDKInvocationHandler) {
-            JDKInvocationHandler<B> jdkHandler = (JDKInvocationHandler<B>) handler;
-            return (R) jdkHandler.getServiceReference();
-        } else if (handler instanceof MultiThreadedCallbackInvocationHandler) {
-            // TODO return a CallbackReference
-            throw new UnsupportedOperationException();
-        } else {
-            throw new IllegalArgumentException("Not a Fabric3 SCA proxy");
-        }
+        throw new UnsupportedOperationException();
     }
 
-    private Map<Method, InvocationChain> createInterfaceToWireMapping(Class<?> interfaze, Wire wire) throws NoMethodForOperationException {
+    private <T> URI getClassLoaderUri(Class<T> interfaze) {
+        ClassLoader classLoader = interfaze.getClassLoader();
+        if (!(classLoader instanceof MultiParentClassLoader)) {
+            throw new AssertionError("Expected " + MultiParentClassLoader.class.getName());
+        }
+        return ((MultiParentClassLoader) classLoader).getName();
+    }
 
-        List<InvocationChain> invocationChains = wire.getInvocationChains();
-
-        Map<Method, InvocationChain> chains = new HashMap<Method, InvocationChain>(invocationChains.size());
-        for (InvocationChain chain : invocationChains) {
+    private Map<Method, InvocationChain> resolveMethods(Class<?> interfaze, List<InvocationChain> chains) throws ProxyCreationException {
+        Map<Method, InvocationChain> chainMappings = new HashMap<Method, InvocationChain>(chains.size());
+        for (InvocationChain chain : chains) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
             try {
                 Method method = findMethod(interfaze, operation);
-                chains.put(method, chain);
+                chainMappings.put(method, chain);
             } catch (NoSuchMethodException e) {
-                throw new NoMethodForOperationException(operation.getName());
+                throw new ProxyCreationException(operation.getName());
             } catch (ClassNotFoundException e) {
-                throw new NoMethodForOperationException(e);
+                throw new ProxyCreationException(e);
             }
         }
-        return chains;
+
+        Map<String, Method> sorted = new TreeMap<String, Method>();
+        for (Method method : chainMappings.keySet()) {
+            String key = new Signature(method).toString();
+            sorted.put(key, method);
+        }
+
+        Map<Method, InvocationChain> result = new LinkedHashMap<Method, InvocationChain>();
+        for (Method method : sorted.values()) {
+            result.put(method, chainMappings.get(method));
+        }
+        return result;
     }
 
     /**
@@ -168,5 +171,4 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
         }
         return clazz.getMethod(name, types);
     }
-
 }

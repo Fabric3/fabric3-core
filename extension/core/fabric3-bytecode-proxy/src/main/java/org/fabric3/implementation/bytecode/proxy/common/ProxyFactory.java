@@ -35,32 +35,32 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.pojo.spi.proxy;
+package org.fabric3.implementation.bytecode.proxy.common;
 
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import java.lang.reflect.Method;
+import java.net.URI;
 
 /**
- * Delegates to a {@link ChannelProxyServiceExtension} to create proxy factories for a channel.
+ * Creates a bytecode generated proxy that dispatches to a target.
+ * <p/>
+ * Bytecode proxies are designed to be more performant than traditional JDK proxies as they dispatch based on a method index.
  */
-
-public interface ChannelProxyService {
+public interface ProxyFactory {
 
     /**
-     * Creates a proxy factory.
+     * Creates a proxy.
      *
-     * @param interfaze  the interface the proxy implements
-     * @param connection the channel connection to proxy
-     * @param <T>        the interface type
-     * @return the object factory
-     * @throws ProxyCreationException if there is an error creating the factory
+     * @param classLoaderKey the key of the classloader the proxy is to be created for
+     * @param interfaze      the proxy interface
+     * @param methods        the sorted list of proxy methods. If multiple proxies are created for a classloader, method order must be the same as proxy
+     *                       bytecode is cached.
+     * @param dispatcher     the dispatcher the proxy extends
+     * @param wrapped        true if parameters should be wrapped in an array as JDK proxy invocations are
+     * @return the proxy instance, which extends the provided dispatcher class
+     * @throws ProxyException if there is an error creating the proxy
      */
-    <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException;
+    <T> T createProxy(URI classLoaderKey, Class<T> interfaze, Method[] methods, Class<? extends ProxyDispatcher> dispatcher, boolean wrapped)
+            throws ProxyException;
 
 }
