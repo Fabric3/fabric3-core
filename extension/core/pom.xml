@@ -33,7 +33,7 @@
 		<module>fabric3-async</module>
 		<module>fabric3-contribution-scanner</module>
 		<module>fabric3-jdk-proxy</module>
-        <!--<module>fabric3-bytecode-proxy</module>-->
+        <module>fabric3-bytecode-proxy</module>
 		<module>fabric3-jetty</module>
 		<module>fabric3-resource</module>
 		<module>fabric3-sca-intents</module>
