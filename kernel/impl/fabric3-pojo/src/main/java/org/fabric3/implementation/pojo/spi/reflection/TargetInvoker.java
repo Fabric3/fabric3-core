@@ -17,6 +17,6 @@ public interface TargetInvoker {
      * @throws IllegalArgumentException  if there is a parameter error
      * @throws InvocationTargetException if the target throws an exception
      */
-    public Object invoke(Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
+    public Object invoke(Object obj, Object args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
 
 }

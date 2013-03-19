@@ -128,12 +128,12 @@ public class InvokerInterceptor implements Interceptor {
         try {
             Object body = msg.getBody();
             if (targetTCCLClassLoader == null) {
-                msg.setBody(invoker.invoke(instance, (Object[]) body));
+                msg.setBody(invoker.invoke(instance, body));
             } else {
                 ClassLoader old = Thread.currentThread().getContextClassLoader();
                 try {
                     Thread.currentThread().setContextClassLoader(targetTCCLClassLoader);
-                    msg.setBody(invoker.invoke(instance, (Object[]) body));
+                    msg.setBody(invoker.invoke(instance, body));
                 } finally {
                     Thread.currentThread().setContextClassLoader(old);
                 }

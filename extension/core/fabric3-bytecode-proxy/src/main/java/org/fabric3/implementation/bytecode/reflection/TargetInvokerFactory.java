@@ -35,36 +35,26 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.reflection.jdk;
+package org.fabric3.implementation.bytecode.reflection;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.fabric3.implementation.bytecode.proxy.common.BytecodeClassLoader;
 import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
 
 /**
- * Performs an invocation on a method of a given target instance
+ * Creates {@link TargetInvoker} instances.
  */
-public class MethodTargetInvoker implements TargetInvoker {
-    private final Method method;
+public interface TargetInvokerFactory {
 
     /**
-     * Instantiates an invoker for the given method.
+     * Creates a target invoker for a method.
      *
-     * @param method the method to invoke on
+     * @param method the method
+     * @param loader the classloader to create the invoker with
+     * @return the invoker
      */
-    public MethodTargetInvoker(Method method) {
-        this.method = method;
-        this.method.setAccessible(true);
-    }
+    TargetInvoker createTargetInvoker(Method method, BytecodeClassLoader loader);
 
-    public Object invoke(Object obj, Object args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        return method.invoke(obj, (Object[]) args);
-    }
 }

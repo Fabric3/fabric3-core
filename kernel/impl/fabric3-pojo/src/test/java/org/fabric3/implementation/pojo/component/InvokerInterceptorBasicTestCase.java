@@ -238,8 +238,8 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
             method = targetInvoker;
         }
 
-        public Object invoke(Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-            return method.invoke(obj, args);
+        public Object invoke(Object obj, Object args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+            return method.invoke(obj, (Object[]) args);
         }
     }
 }
