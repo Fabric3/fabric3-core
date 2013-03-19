@@ -94,6 +94,20 @@ public class TargetInvokerFactoryImplTestCase extends TestCase {
         assertTrue(target.invoked);
     }
 
+    public void testIntPrimitiveInvoke() throws Exception {
+        Method method = PrimitiveTypeTarget.class.getMethod("invoke", Integer.TYPE);
+        TargetInvoker invoker = factory.createTargetInvoker(method, classLoader);
+        PrimitiveTypeTarget target = new PrimitiveTypeTarget();
+        assertEquals(1, invoker.invoke(target, 1));
+    }
+
+    public void testBooleanPrimitiveInvoke() throws Exception {
+        Method method = PrimitiveTypeTarget.class.getMethod("invoke", Boolean.TYPE);
+        TargetInvoker invoker = factory.createTargetInvoker(method, classLoader);
+        PrimitiveTypeTarget target = new PrimitiveTypeTarget();
+        assertTrue((Boolean) invoker.invoke(target, true));
+    }
+
     public void setUp() throws Exception {
         super.setUp();
 
@@ -138,6 +152,21 @@ public class TargetInvokerFactoryImplTestCase extends TestCase {
 
         public void invoke() {
             invoked = true;
+        }
+    }
+
+    public class PrimitiveTypeTarget {
+
+        public boolean invoke() {
+            return true;
+        }
+
+        public boolean invoke(boolean param) {
+            return param;
+        }
+
+        public int invoke(int param) {
+            return param;
         }
     }
 

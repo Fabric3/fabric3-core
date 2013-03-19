@@ -64,7 +64,7 @@ public class InjectorFactoryImpl implements InjectorFactory {
         Class<?> declaringClass = member.getDeclaringClass();
 
         // use the hashcode of the method since more than one invoker may be created per class (if it has multiple methods)
-        int code = Math.abs(member.hashCode());
+        int code = Math.abs(member.toString().hashCode());
         String className = declaringClass.getName() + "_Injector" + code;
 
         // check if the proxy class has already been created

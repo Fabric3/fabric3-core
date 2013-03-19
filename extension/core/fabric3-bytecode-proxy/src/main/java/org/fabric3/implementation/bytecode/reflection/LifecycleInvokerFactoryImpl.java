@@ -63,7 +63,7 @@ public class LifecycleInvokerFactoryImpl implements LifecycleInvokerFactory {
         Class<?> declaringClass = method.getDeclaringClass();
 
         // use the hashcode of the method since more than one invoker may be created per class (if it has multiple methods)
-        int code = Math.abs(method.hashCode());
+        int code = Math.abs(method.toString().hashCode());
         String className = declaringClass.getName() + "_LifecycleInvoker" + code;
 
         // check if the proxy class has already been created
