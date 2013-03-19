@@ -86,6 +86,14 @@ public class TargetInvokerFactoryImplTestCase extends TestCase {
         assertEquals("test", invoker.invoke(target, new Object[]{1d, 1d}));
     }
 
+    public void testNoArgsInvoke() throws Exception {
+        Method method = NoArgsTarget.class.getMethod("invoke");
+        TargetInvoker invoker = factory.createTargetInvoker(method, classLoader);
+        NoArgsTarget target = new NoArgsTarget();
+
+        assertEquals("test", invoker.invoke(target, null));
+    }
+
     public void setUp() throws Exception {
         super.setUp();
 
@@ -123,6 +131,13 @@ public class TargetInvokerFactoryImplTestCase extends TestCase {
 
     public class Foo {
 
+    }
+
+    public class NoArgsTarget {
+
+        public String invoke() {
+            return "test";
+        }
     }
 
 }

@@ -96,8 +96,6 @@ public class TargetInvokerFactoryImpl implements TargetInvokerFactory {
         return BytecodeHelper.instantiate(TargetInvoker.class, className, classLoader, cw);
     }
 
-
-
     private void writeTargetInvoke(Method method, String internalTargetName, ClassWriter cw) {
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "invoke", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null, EXCEPTIONS);
         mv.visitCode();
@@ -111,7 +109,7 @@ public class TargetInvokerFactoryImpl implements TargetInvokerFactory {
             // single argument method, load the parameter passes on to the stack
             mv.visitVarInsn(Opcodes.ALOAD, 2);
             mv.visitTypeInsn(Opcodes.CHECKCAST, Type.getInternalName(method.getParameterTypes()[0]));
-        } else {
+        } else if (method.getParameterTypes().length > 1) {
             // multi-argument method: cast the parameter to an object array and then load each element on the stack to be passed as params
             mv.visitVarInsn(Opcodes.ALOAD, 2);
 
@@ -160,6 +158,5 @@ public class TargetInvokerFactoryImpl implements TargetInvokerFactory {
         mv.visitMaxs(2, 3);
         mv.visitEnd();
     }
-
 
 }

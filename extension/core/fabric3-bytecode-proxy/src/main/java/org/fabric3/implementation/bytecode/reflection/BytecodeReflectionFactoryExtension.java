@@ -86,7 +86,7 @@ public class BytecodeReflectionFactoryExtension implements ReflectionFactoryExte
     }
 
     public <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories) {
-        throw new UnsupportedOperationException();
+        return new ReflectiveObjectFactory(constructor, parameterFactories);
     }
 
     public LifecycleInvoker createLifecycleInvoker(Method method) {

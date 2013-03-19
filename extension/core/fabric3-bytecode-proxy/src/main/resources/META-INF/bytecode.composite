@@ -30,4 +30,20 @@
     </component>
 
 
+    <component name="BytecodeReflectionFactoryExtension">
+        <f3:implementation.system class="org.fabric3.implementation.bytecode.reflection.BytecodeReflectionFactoryExtension"/>
+    </component>
+
+    <component name="TargetInvokerFactory">
+        <f3:implementation.system class="org.fabric3.implementation.bytecode.reflection.TargetInvokerFactoryImpl"/>
+    </component>
+
+    <component name="LifecycleInvokerFactory">
+        <f3:implementation.system class="org.fabric3.implementation.bytecode.reflection.LifecycleInvokerFactoryImpl"/>
+    </component>
+
+    <component name="InjectorFactory">
+        <f3:implementation.system class="org.fabric3.implementation.bytecode.reflection.InjectorFactoryImpl"/>
+    </component>
+
 </composite>
