@@ -49,7 +49,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_SUPER;
-import static org.objectweb.asm.Opcodes.CHECKCAST;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 
@@ -113,30 +112,7 @@ public class TargetInvokerFactoryImpl implements TargetInvokerFactory {
             Class<?> paramType = method.getParameterTypes()[0];
             mv.visitVarInsn(Opcodes.ALOAD, 2);
 
-            if (Integer.TYPE.equals(paramType)) {
-                mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Integer");
-                mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I");
-            } else if (Boolean.TYPE.equals(paramType)) {
-                mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Boolean");
-                mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z");
-            } else if (Double.TYPE.equals(paramType)) {
-                mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Double");
-                mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D");
-            } else if (Float.TYPE.equals(paramType)) {
-                mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Float");
-                mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F");
-            } else if (Short.TYPE.equals(paramType)) {
-                mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Short");
-                mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Short", "shortValue", "(S)Ljava/lang/Short;");
-            } else if (Byte.TYPE.equals(paramType)) {
-                mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Byte");
-                mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "(B)Ljava/lang/Byte;");
-            } else if (Long.TYPE.equals(paramType)) {
-                mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Long");
-                mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Long", "longValue", "(J)Ljava/lang/Long;");
-            } else {
-                mv.visitTypeInsn(Opcodes.CHECKCAST, Type.getInternalName(paramType));
-            }
+            writeParam(paramType, mv);
 
         } else if (method.getParameterTypes().length > 1) {
             // multi-argument method: cast the parameter to an object array and then load each element on the stack to be passed as params
@@ -152,30 +128,7 @@ public class TargetInvokerFactoryImpl implements TargetInvokerFactory {
                 mv.visitInsn(Opcodes.ICONST_0 + pos);
                 mv.visitInsn(Opcodes.AALOAD);
 
-                if (Integer.TYPE.equals(paramType)) {
-                    mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Integer");
-                    mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I");
-                } else if (Boolean.TYPE.equals(paramType)) {
-                    mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Boolean");
-                    mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z");
-                } else if (Double.TYPE.equals(paramType)) {
-                    mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Double");
-                    mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D");
-                } else if (Float.TYPE.equals(paramType)) {
-                    mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Float");
-                    mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F");
-                } else if (Short.TYPE.equals(paramType)) {
-                    mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Short");
-                    mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Short", "shortValue", "(S)Ljava/lang/Short;");
-                } else if (Byte.TYPE.equals(paramType)) {
-                    mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Byte");
-                    mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "(B)Ljava/lang/Byte;");
-                } else if (Long.TYPE.equals(paramType)) {
-                    mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Long");
-                    mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Long", "longValue", "(J)Ljava/lang/Long;");
-                } else {
-                    mv.visitTypeInsn(Opcodes.CHECKCAST, Type.getInternalName(paramType));
-                }
+                writeParam(paramType, mv);
 
                 if (pos < method.getParameterTypes().length - 1) {
                     mv.visitVarInsn(Opcodes.ALOAD, 3);
@@ -191,41 +144,7 @@ public class TargetInvokerFactoryImpl implements TargetInvokerFactory {
         mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, internalTargetName, methodName, methodDescriptor);
 
         Class<?> returnType = method.getReturnType();
-        if (Void.TYPE.equals(returnType)) {
-            mv.visitInsn(Opcodes.ACONST_NULL);
-            mv.visitInsn(Opcodes.ARETURN);
-        } else if (returnType.isPrimitive()) {
-            if (Integer.TYPE.equals(returnType)) {
-                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
-                mv.visitInsn(Opcodes.ARETURN);
-            } else if (Boolean.TYPE.equals(returnType)) {
-                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;");
-                mv.visitInsn(Opcodes.ARETURN);
-
-            } else if (Double.TYPE.equals(returnType)) {
-                mv.visitTypeInsn(CHECKCAST, "java/lang/Double");
-                mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D");
-                mv.visitInsn(Opcodes.DRETURN);
-            } else if (Long.TYPE.equals(returnType)) {
-                mv.visitTypeInsn(CHECKCAST, "java/lang/Long");
-                mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J");
-                mv.visitInsn(Opcodes.LRETURN);
-            } else if (Float.TYPE.equals(returnType)) {
-                mv.visitTypeInsn(CHECKCAST, "java/lang/Float");
-                mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F");
-                mv.visitInsn(Opcodes.FRETURN);
-            } else if (Short.TYPE.equals(returnType)) {
-                mv.visitTypeInsn(CHECKCAST, "java/lang/Short");
-                mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S");
-                mv.visitInsn(Opcodes.IRETURN);
-            } else if (Byte.TYPE.equals(returnType)) {
-                mv.visitTypeInsn(CHECKCAST, "java/lang/Byte");
-                mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B");
-                mv.visitInsn(Opcodes.IRETURN);
-            }
-        } else {
-            mv.visitInsn(Opcodes.ARETURN);
-        }
+        writeReturn(returnType, mv);
 
         Label label2 = new Label();
         mv.visitLabel(label2);
@@ -236,6 +155,65 @@ public class TargetInvokerFactoryImpl implements TargetInvokerFactory {
         mv.visitLocalVariable("arg", "Ljava/lang/Object;", null, label1, label2, 2);
         mv.visitMaxs(2, 3);
         mv.visitEnd();
+    }
+
+    private void writeReturn(Class<?> returnType, MethodVisitor mv) {
+        if (Void.TYPE.equals(returnType)) {
+            mv.visitInsn(Opcodes.ACONST_NULL);
+            mv.visitInsn(Opcodes.ARETURN);
+        } else if (returnType.isPrimitive()) {
+            if (Integer.TYPE.equals(returnType)) {
+                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
+                mv.visitInsn(Opcodes.ARETURN);
+            } else if (Boolean.TYPE.equals(returnType)) {
+                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;");
+                mv.visitInsn(Opcodes.ARETURN);
+            } else if (Double.TYPE.equals(returnType)) {
+                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+                mv.visitInsn(Opcodes.ARETURN);
+            } else if (Long.TYPE.equals(returnType)) {
+                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
+                mv.visitInsn(Opcodes.ARETURN);
+            } else if (Float.TYPE.equals(returnType)) {
+                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;");
+                mv.visitInsn(Opcodes.ARETURN);
+            } else if (Short.TYPE.equals(returnType)) {
+                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;");
+                mv.visitInsn(Opcodes.ARETURN);
+            } else if (Byte.TYPE.equals(returnType)) {
+                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;");
+                mv.visitInsn(Opcodes.ARETURN);
+            }
+        } else {
+            mv.visitInsn(Opcodes.ARETURN);
+        }
+    }
+
+    private void writeParam(Class<?> paramType, MethodVisitor mv) {
+        if (Integer.TYPE.equals(paramType)) {
+            mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Integer");
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I");
+        } else if (Boolean.TYPE.equals(paramType)) {
+            mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Boolean");
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z");
+        } else if (Double.TYPE.equals(paramType)) {
+            mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Double");
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D");
+        } else if (Float.TYPE.equals(paramType)) {
+            mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Float");
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F");
+        } else if (Short.TYPE.equals(paramType)) {
+            mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Short");
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S");
+        } else if (Byte.TYPE.equals(paramType)) {
+            mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Byte");
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B");
+        } else if (Long.TYPE.equals(paramType)) {
+            mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Long");
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J");
+        } else {
+            mv.visitTypeInsn(Opcodes.CHECKCAST, Type.getInternalName(paramType));
+        }
     }
 
 }

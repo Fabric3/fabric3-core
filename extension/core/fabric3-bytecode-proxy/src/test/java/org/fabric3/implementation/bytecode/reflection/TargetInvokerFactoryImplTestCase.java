@@ -108,6 +108,13 @@ public class TargetInvokerFactoryImplTestCase extends TestCase {
         assertTrue((Boolean) invoker.invoke(target, true));
     }
 
+    public void testDoublePrimitiveInvoke() throws Exception {
+        Method method = PrimitiveTypeTarget.class.getMethod("invoke", Double.TYPE);
+        TargetInvoker invoker = factory.createTargetInvoker(method, classLoader);
+        PrimitiveTypeTarget target = new PrimitiveTypeTarget();
+        assertEquals(2d, invoker.invoke(target, 2d));
+    }
+
     public void setUp() throws Exception {
         super.setUp();
 
@@ -166,6 +173,10 @@ public class TargetInvokerFactoryImplTestCase extends TestCase {
         }
 
         public int invoke(int param) {
+            return param;
+        }
+
+        public double invoke(double param) {
             return param;
         }
     }
