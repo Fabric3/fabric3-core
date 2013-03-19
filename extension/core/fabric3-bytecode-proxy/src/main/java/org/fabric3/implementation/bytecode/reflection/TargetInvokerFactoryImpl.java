@@ -49,6 +49,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_SUPER;
+import static org.objectweb.asm.Opcodes.RETURN;
 
 /**
  *
@@ -147,7 +148,17 @@ public class TargetInvokerFactoryImpl implements TargetInvokerFactory {
         String methodDescriptor = Type.getMethodDescriptor(method);
 
         mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, internalTargetName, methodName, methodDescriptor);
-        mv.visitInsn(Opcodes.ARETURN);
+
+        Class<?> returnType = method.getReturnType();
+        if (Void.TYPE.equals(returnType)) {
+            mv.visitInsn(Opcodes.ACONST_NULL);
+            mv.visitInsn(Opcodes.ARETURN);
+        } else if (returnType.isPrimitive()) {
+            // TODO
+        } else {
+            mv.visitInsn(Opcodes.ARETURN);
+        }
+
         Label label2 = new Label();
         mv.visitLabel(label2);
         String descriptor = Type.getDescriptor(TargetInvoker.class);
