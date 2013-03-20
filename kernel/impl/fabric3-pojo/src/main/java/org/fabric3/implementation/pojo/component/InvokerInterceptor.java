@@ -45,7 +45,7 @@ package org.fabric3.implementation.pojo.component;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceLifecycleException;
@@ -59,7 +59,7 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
  * Responsible for dispatching an invocation to a Java-based component implementation instance.
  */
 public class InvokerInterceptor implements Interceptor {
-    private TargetInvoker invoker;
+    private ServiceInvoker invoker;
     private AtomicComponent component;
     private ClassLoader targetTCCLClassLoader;
 
@@ -69,7 +69,7 @@ public class InvokerInterceptor implements Interceptor {
      * @param invoker   the target invoker
      * @param component the target component
      */
-    public InvokerInterceptor(TargetInvoker invoker, AtomicComponent component) {
+    public InvokerInterceptor(ServiceInvoker invoker, AtomicComponent component) {
         this.invoker = invoker;
         this.component = component;
     }
@@ -81,7 +81,7 @@ public class InvokerInterceptor implements Interceptor {
      * @param component             the target component
      * @param targetTCCLClassLoader the classloader to set the TCCL to before dispatching.
      */
-    public InvokerInterceptor(TargetInvoker invoker, AtomicComponent component, ClassLoader targetTCCLClassLoader) {
+    public InvokerInterceptor(ServiceInvoker invoker, AtomicComponent component, ClassLoader targetTCCLClassLoader) {
         this.invoker = invoker;
         this.component = component;
         this.targetTCCLClassLoader = targetTCCLClassLoader;

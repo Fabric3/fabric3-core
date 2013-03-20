@@ -35,37 +35,24 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
 package org.fabric3.implementation.reflection.jdk;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ServiceInvokerFactory;
 
 /**
- * Performs an invocation on a method of a given target instance
+ * The default factory that uses JDK reflection.
  */
-public class MethodTargetInvoker implements TargetInvoker, ConsumerInvoker {
-    private final Method method;
+public class JDKServiceInvokerFactory implements ServiceInvokerFactory {
 
-    /**
-     * Instantiates an invoker for the given method.
-     *
-     * @param method the method to invoke on
-     */
-    public MethodTargetInvoker(Method method) {
-        this.method = method;
-        this.method.setAccessible(true);
+    public boolean isDefault() {
+        return true;
     }
 
-    public Object invoke(Object obj, Object args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        return method.invoke(obj, (Object[]) args);
+    public ServiceInvoker createInvoker(Method method) {
+        return new MethodInvoker(method);
     }
 }

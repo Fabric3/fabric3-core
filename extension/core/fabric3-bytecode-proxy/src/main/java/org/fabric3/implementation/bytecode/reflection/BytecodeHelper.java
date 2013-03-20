@@ -39,7 +39,7 @@
 package org.fabric3.implementation.bytecode.reflection;
 
 import org.fabric3.implementation.bytecode.classloader.BytecodeClassLoader;
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -58,7 +58,7 @@ public class BytecodeHelper {
      * @param cw the class writer
      */
     public static void writeConstructor(ClassWriter cw, Class<?> superType) {
-        String descriptor = Type.getDescriptor(TargetInvoker.class);
+        String descriptor = Type.getDescriptor(ServiceInvoker.class);
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
         mv.visitCode();

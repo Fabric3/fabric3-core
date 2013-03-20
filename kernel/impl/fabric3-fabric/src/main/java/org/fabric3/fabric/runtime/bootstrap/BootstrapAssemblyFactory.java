@@ -147,7 +147,7 @@ import org.fabric3.implementation.reflection.jdk.JDKConsumerInvokerFactory;
 import org.fabric3.implementation.reflection.jdk.JDKInjectorFactory;
 import org.fabric3.implementation.reflection.jdk.JDKInstantiatorFactory;
 import org.fabric3.implementation.reflection.jdk.JDKLifecycleInvokerFactory;
-import org.fabric3.implementation.reflection.jdk.JDKTargetInvokerFactory;
+import org.fabric3.implementation.reflection.jdk.JDKServiceInvokerFactory;
 import org.fabric3.implementation.system.generator.SystemComponentGenerator;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
@@ -339,12 +339,12 @@ public class BootstrapAssemblyFactory {
         JDKInstantiatorFactory instantiatorFactory = new JDKInstantiatorFactory();
         JDKInjectorFactory injectorFactory = new JDKInjectorFactory();
         JDKLifecycleInvokerFactory lifecycleInvokerFactory = new JDKLifecycleInvokerFactory();
-        JDKTargetInvokerFactory targetInvokerFactory = new JDKTargetInvokerFactory();
+        JDKServiceInvokerFactory serviceInvokerFactory = new JDKServiceInvokerFactory();
         JDKConsumerInvokerFactory consumerInvokerFactory = new JDKConsumerInvokerFactory();
         ReflectionFactory reflectionFactory = new ReflectionFactoryImpl(instantiatorFactory,
                                                                         injectorFactory,
                                                                         lifecycleInvokerFactory,
-                                                                        targetInvokerFactory,
+                                                                        serviceInvokerFactory,
                                                                         consumerInvokerFactory);
 
         ImplementationManagerFactoryBuilderImpl factoryBuilder = new ImplementationManagerFactoryBuilderImpl(reflectionFactory, classLoaderRegistry);

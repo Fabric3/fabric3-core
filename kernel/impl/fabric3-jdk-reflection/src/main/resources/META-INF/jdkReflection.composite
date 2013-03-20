@@ -31,8 +31,8 @@
         <f3:implementation.system class="org.fabric3.implementation.reflection.jdk.JDKLifecycleInvokerFactory"/>
     </component>
 
-    <component name="JDKTargetInvokerFactory">
-        <f3:implementation.system class="org.fabric3.implementation.reflection.jdk.JDKTargetInvokerFactory"/>
+    <component name="JDKServiceInvokerFactory">
+        <f3:implementation.system class="org.fabric3.implementation.reflection.jdk.JDKServiceInvokerFactory"/>
     </component>
 
     <component name="JDKConsumerInvokerFactory">

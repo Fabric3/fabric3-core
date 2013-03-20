@@ -41,7 +41,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
@@ -93,7 +93,7 @@ public class JavaTargetWireAttacher implements TargetWireAttacher<JavaTargetDefi
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperationDefinition operation = chain.getPhysicalOperation();
             Method method = MethodUtils.findMethod(sourceDefinition, targetDefinition, operation, implementationClass, loader, classLoaderRegistry);
-            TargetInvoker invoker = reflectionFactory.createTargetInvoker(method);
+            ServiceInvoker invoker = reflectionFactory.createServiceInvoker(method);
             InvokerInterceptor interceptor;
             if (sourceDefinition instanceof PojoSourceDefinition &&
                     targetDefinition.getClassLoaderId().equals(sourceDefinition.getClassLoaderId())) {

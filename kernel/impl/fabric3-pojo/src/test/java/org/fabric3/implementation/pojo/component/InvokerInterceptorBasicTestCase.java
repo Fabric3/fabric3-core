@@ -49,7 +49,7 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 import org.easymock.IMocksControl;
 import org.easymock.classextension.EasyMock;
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceLifecycleException;
@@ -58,12 +58,12 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.InvocationRuntimeException;
 
 public class InvokerInterceptorBasicTestCase extends TestCase {
-    private TargetInvoker echoTargetInvoker;
-    private TargetInvoker arrayTargetInvoker;
-    private TargetInvoker nullParamTargetInvoker;
-    private TargetInvoker primitiveTargetInvoker;
-    private TargetInvoker checkedTargetInvoker;
-    private TargetInvoker runtimeTargetInvoker;
+    private ServiceInvoker echoTargetInvoker;
+    private ServiceInvoker arrayTargetInvoker;
+    private ServiceInvoker nullParamTargetInvoker;
+    private ServiceInvoker primitiveTargetInvoker;
+    private ServiceInvoker checkedTargetInvoker;
+    private ServiceInvoker runtimeTargetInvoker;
 
     private IMocksControl control;
     private WorkContext workContext;
@@ -231,11 +231,11 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
         private static final long serialVersionUID = 4645804600571852557L;
     }
 
-    private class MockInvoker implements TargetInvoker {
+    private class MockInvoker implements ServiceInvoker {
         private Method method;
 
-        private MockInvoker(Method targetInvoker) {
-            method = targetInvoker;
+        private MockInvoker(Method method) {
+            this.method = method;
         }
 
         public Object invoke(Object obj, Object args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {

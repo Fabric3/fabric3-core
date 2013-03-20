@@ -48,7 +48,7 @@ import org.fabric3.host.Names;
 import org.fabric3.implementation.bytecode.classloader.BytecodeClassLoader;
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvokerFactory;
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
 import org.fabric3.spi.builder.classloader.ClassLoaderListener;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
@@ -102,7 +102,7 @@ public class BytecodeConsumerInvokerFactory implements ConsumerInvokerFactory, C
 
         // use the toString() hashcode of the method since more than one invoker may be created per class (if it has multiple methods)
         int code = Math.abs(method.toString().hashCode());
-        String className = declaringClass.getName() + "_TargetInvoker" + code;
+        String className = declaringClass.getName() + "_ServiceInvoker" + code;
 
         try {
             Class<ConsumerInvoker> invokerClass = (Class<ConsumerInvoker>) classLoader.loadClass(className);
@@ -116,7 +116,7 @@ public class BytecodeConsumerInvokerFactory implements ConsumerInvokerFactory, C
         }
 
         String internalTargetName = Type.getInternalName(declaringClass);
-        String internalInvokerName = internalTargetName + "_TargetInvoker" + code;
+        String internalInvokerName = internalTargetName + "_ServiceInvoker" + code;
 
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 
@@ -185,7 +185,7 @@ public class BytecodeConsumerInvokerFactory implements ConsumerInvokerFactory, C
 
         Label label2 = new Label();
         mv.visitLabel(label2);
-        String descriptor = Type.getDescriptor(TargetInvoker.class);
+        String descriptor = Type.getDescriptor(ServiceInvoker.class);
 
         mv.visitLocalVariable("this", descriptor, null, label1, label2, 0);
         mv.visitLocalVariable("instance", "Ljava/lang/Object;", null, label1, label2, 1);

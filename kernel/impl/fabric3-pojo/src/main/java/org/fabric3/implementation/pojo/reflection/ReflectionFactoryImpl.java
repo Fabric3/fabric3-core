@@ -50,8 +50,8 @@ import org.fabric3.implementation.pojo.spi.reflection.InstantiatorFactory;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvokerFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvokerFactory;
+import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ServiceInvokerFactory;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.Reference;
@@ -64,18 +64,18 @@ public class ReflectionFactoryImpl implements ReflectionFactory {
     private InstantiatorFactory instantiatorFactory;
     private InjectorFactory injectorFactory;
     private LifecycleInvokerFactory lifecycleInvokerFactory;
-    private TargetInvokerFactory targetInvokerFactory;
+    private ServiceInvokerFactory serviceInvokerFactory;
     private ConsumerInvokerFactory consumerInvokerFactory;
 
     public ReflectionFactoryImpl(@Reference InstantiatorFactory instantiatorFactory,
                                  @Reference InjectorFactory injectorFactory,
                                  @Reference LifecycleInvokerFactory lifecycleInvokerFactory,
-                                 @Reference TargetInvokerFactory targetInvokerFactory,
+                                 @Reference ServiceInvokerFactory serviceInvokerFactory,
                                  @Reference ConsumerInvokerFactory consumerInvokerFactory) {
         this.instantiatorFactory = instantiatorFactory;
         this.injectorFactory = injectorFactory;
         this.lifecycleInvokerFactory = lifecycleInvokerFactory;
-        this.targetInvokerFactory = targetInvokerFactory;
+        this.serviceInvokerFactory = serviceInvokerFactory;
         this.consumerInvokerFactory = consumerInvokerFactory;
     }
 
@@ -108,10 +108,10 @@ public class ReflectionFactoryImpl implements ReflectionFactory {
     }
 
     @Reference(required = false)
-    public void setTargetInvokerFactories(List<TargetInvokerFactory> factories) {
-        for (TargetInvokerFactory factory : factories) {
-            if (!factory.isDefault() || targetInvokerFactory == null) {
-                targetInvokerFactory = factory;
+    public void setServiceInvokerFactories(List<ServiceInvokerFactory> factories) {
+        for (ServiceInvokerFactory factory : factories) {
+            if (!factory.isDefault() || serviceInvokerFactory == null) {
+                serviceInvokerFactory = factory;
             }
         }
     }
@@ -119,7 +119,7 @@ public class ReflectionFactoryImpl implements ReflectionFactory {
     @Reference(required = false)
     public void setConsumerInvokerFactories(List<ConsumerInvokerFactory> factories) {
         for (ConsumerInvokerFactory factory : factories) {
-            if (!factory.isDefault() || targetInvokerFactory == null) {
+            if (!factory.isDefault() || serviceInvokerFactory == null) {
                 consumerInvokerFactory = factory;
             }
         }
@@ -137,8 +137,8 @@ public class ReflectionFactoryImpl implements ReflectionFactory {
         return lifecycleInvokerFactory.createLifecycleInvoker(method);
     }
 
-    public TargetInvoker createTargetInvoker(Method method) {
-        return targetInvokerFactory.createTargetInvoker(method);
+    public ServiceInvoker createServiceInvoker(Method method) {
+        return serviceInvokerFactory.createInvoker(method);
     }
 
     public ConsumerInvoker createConsumerInvoker(Method method) {

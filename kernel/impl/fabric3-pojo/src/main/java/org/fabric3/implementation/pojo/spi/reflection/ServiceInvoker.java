@@ -5,10 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Invokes an operation on a target service instance.
  */
-public interface TargetInvoker {
+public interface ServiceInvoker {
 
     /**
-     * Invoke the target object.
+     * Invoke the target service instance.
      *
      * @param obj  the target object
      * @param args the parameters

@@ -36,23 +36,28 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.fabric3.implementation.reflection.jdk;
+package org.fabric3.implementation.pojo.spi.reflection;
 
 import java.lang.reflect.Method;
 
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvokerFactory;
-
 /**
- * The default factory that uses JDK reflection.
+ * Creates {@link ServiceInvoker} instances.
  */
-public class JDKTargetInvokerFactory implements TargetInvokerFactory {
+public interface ServiceInvokerFactory {
 
-    public boolean isDefault() {
-        return true;
-    }
+    /**
+     * Returns true if this is the default factory.
+     *
+     * @return true if this is the default factory
+     */
+    boolean isDefault();
 
-    public TargetInvoker createTargetInvoker(Method method) {
-        return new MethodTargetInvoker(method);
-    }
+    /**
+     * Creates a target invoker for the given method.
+     *
+     * @param method the method
+     * @return the invoker
+     */
+    ServiceInvoker createInvoker(Method method);
+
 }
