@@ -36,26 +36,28 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.fabric3.implementation.bytecode.reflection;
+package org.fabric3.implementation.pojo.spi.reflection;
 
-import java.lang.reflect.Member;
-
-import org.fabric3.implementation.bytecode.proxy.common.BytecodeClassLoader;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import java.lang.reflect.Method;
 
 /**
- * Creates {@link BytecodeInjector} instances.
+ * Creates {@link ConsumerInvoker} instances.
  */
-public interface InjectorFactory {
+public interface ConsumerInvokerFactory {
 
     /**
-     * Creates an injector for a method or field.
+     * Returns true if this is the default factory.
      *
-     * @param member           the field or method to inject
-     * @param parameterFactory the object factory that creates parameter instances to be injected
-     * @param classLoader      the classloader to create the injector with
+     * @return true if this is the default factory
+     */
+    boolean isDefault();
+
+    /**
+     * Creates a consumer invoker for the given method.
+     *
+     * @param method the method
      * @return the invoker
      */
-    BytecodeInjector createInjector(Member member, ObjectFactory<?> parameterFactory, BytecodeClassLoader classLoader);
+    ConsumerInvoker createInvoker(Method method);
 
 }

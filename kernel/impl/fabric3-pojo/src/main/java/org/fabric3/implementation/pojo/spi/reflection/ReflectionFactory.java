@@ -46,8 +46,7 @@ import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Delegates to a {@link ReflectionFactoryExtension} to create {@link LifecycleInvoker}s, {@link Injector}s, and {@link ObjectFactory}s for instantiating and
- * manipulating component implementation instances.
+ * Factory responsible for creating instantiators, injectors, and invokers.
  */
 public interface ReflectionFactory {
 
@@ -84,5 +83,13 @@ public interface ReflectionFactory {
      * @return the invoker
      */
     TargetInvoker createTargetInvoker(Method method);
+
+    /**
+     * Creates a consumer invoker for the given method.
+     *
+     * @param method the method
+     * @return the invoker
+     */
+    ConsumerInvoker createConsumerInvoker(Method method);
 
 }

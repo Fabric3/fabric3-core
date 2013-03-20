@@ -38,41 +38,22 @@
  */
 package org.fabric3.implementation.reflection.jdk;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import org.fabric3.implementation.pojo.spi.reflection.DefaultReflectionFactoryExtension;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvokerFactory;
 
 /**
- * The default runtime reflection factory extension that uses JDK reflection.
+ * The default factory that uses JDK reflection.
  */
-public class JDKReflectionFactoryExtension implements DefaultReflectionFactoryExtension {
+public class JDKLifecycleInvokerFactory implements LifecycleInvokerFactory {
 
-    public <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories) {
-        return new ReflectiveObjectFactory<T>(constructor, parameterFactories);
-    }
-
-    public Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory) {
-        if (member instanceof Field) {
-            return new FieldInjector((Field) member, parameterFactory);
-        } else if (member instanceof Method) {
-            return new MethodInjector((Method) member, parameterFactory);
-        } else {
-            throw new AssertionError("Unsupported type: " + member);
-        }
+    public boolean isDefault() {
+        return true;
     }
 
     public LifecycleInvoker createLifecycleInvoker(Method method) {
         return new MethodLifecycleInvoker(method);
     }
 
-    public TargetInvoker createTargetInvoker(Method method) {
-        return new MethodTargetInvoker(method);
-    }
 }

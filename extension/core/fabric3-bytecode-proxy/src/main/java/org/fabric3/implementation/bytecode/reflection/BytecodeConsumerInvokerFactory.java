@@ -38,10 +38,21 @@
  */
 package org.fabric3.implementation.bytecode.reflection;
 
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.fabric3.implementation.bytecode.proxy.common.BytecodeClassLoader;
+import org.fabric3.host.Names;
+import org.fabric3.implementation.bytecode.classloader.BytecodeClassLoader;
+import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvokerFactory;
 import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
+import org.fabric3.spi.builder.classloader.ClassLoaderListener;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.oasisopen.sca.annotation.Reference;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -55,12 +66,38 @@ import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 /**
  *
  */
-public class TargetInvokerFactoryImpl implements TargetInvokerFactory {
-    private static final String[] TARGET_INVOKER_INTERFACES = new String[]{Type.getInternalName(TargetInvoker.class)};
+public class BytecodeConsumerInvokerFactory implements ConsumerInvokerFactory, ClassLoaderListener {
+    private static final String[] TARGET_INVOKER_INTERFACES = new String[]{Type.getInternalName(ConsumerInvoker.class)};
     private static final String[] EXCEPTIONS = new String[]{"java/lang/Exception"};
 
+    private ClassLoaderRegistry classLoaderRegistry;
+
+    private Map<URI, BytecodeClassLoader> classLoaderCache = new HashMap<URI, BytecodeClassLoader>();
+
+    public BytecodeConsumerInvokerFactory(@Reference ClassLoaderRegistry classLoaderRegistry) {
+        this.classLoaderRegistry = classLoaderRegistry;
+    }
+
+    public void onDeploy(ClassLoader classLoader) {
+        // no-ip
+    }
+
+    public void onUndeploy(ClassLoader classLoader) {
+        if (!(classLoader instanceof MultiParentClassLoader)) {
+            return;
+        }
+        // remove cached classloader for the contribution on undeploy
+        classLoaderCache.remove(((MultiParentClassLoader) classLoader).getName());
+    }
+
+    public boolean isDefault() {
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
-    public TargetInvoker createTargetInvoker(Method method, BytecodeClassLoader classLoader) {
+    public ConsumerInvoker createInvoker(Method method) {
+        BytecodeClassLoader classLoader = getClassLoader(method);
+
         Class<?> declaringClass = method.getDeclaringClass();
 
         // use the toString() hashcode of the method since more than one invoker may be created per class (if it has multiple methods)
@@ -68,7 +105,7 @@ public class TargetInvokerFactoryImpl implements TargetInvokerFactory {
         String className = declaringClass.getName() + "_TargetInvoker" + code;
 
         try {
-            Class<TargetInvoker> invokerClass = (Class<TargetInvoker>) classLoader.loadClass(className);
+            Class<ConsumerInvoker> invokerClass = (Class<ConsumerInvoker>) classLoader.loadClass(className);
             return invokerClass.newInstance();
         } catch (ClassNotFoundException e) {
             // ignore
@@ -95,7 +132,7 @@ public class TargetInvokerFactoryImpl implements TargetInvokerFactory {
 
         cw.visitEnd();
 
-        return BytecodeHelper.instantiate(TargetInvoker.class, className, classLoader, cw);
+        return BytecodeHelper.instantiate(ConsumerInvoker.class, className, classLoader, cw);
     }
 
     private void writeTargetInvoke(Method method, String internalTargetName, ClassWriter cw) {
@@ -214,6 +251,31 @@ public class TargetInvokerFactoryImpl implements TargetInvokerFactory {
         } else {
             mv.visitTypeInsn(Opcodes.CHECKCAST, Type.getInternalName(paramType));
         }
+    }
+
+    /**
+     * Returns a classloader for loading the proxy class, creating one if necessary.
+     *
+     * @return the classloader
+     */
+    private BytecodeClassLoader getClassLoader(Member method) {
+
+        URI classLoaderKey;
+        ClassLoader classLoader = method.getDeclaringClass().getClassLoader();
+        if (classLoader instanceof MultiParentClassLoader) {
+            classLoaderKey = ((MultiParentClassLoader) classLoader).getName();
+        } else {
+            classLoaderKey = Names.BOOT_CONTRIBUTION;
+        }
+
+        ClassLoader parent = classLoaderRegistry.getClassLoader(classLoaderKey);
+        BytecodeClassLoader generationClassLoader = classLoaderCache.get(classLoaderKey);
+        if (generationClassLoader == null) {
+            generationClassLoader = new BytecodeClassLoader(classLoaderKey, parent);
+            generationClassLoader.addParent(getClass().getClassLoader()); // SPI classes need to be visible as well
+            classLoaderCache.put(classLoaderKey, generationClassLoader);
+        }
+        return generationClassLoader;
     }
 
 }

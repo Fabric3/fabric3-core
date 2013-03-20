@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.implementation.bytecode.classloader.BytecodeClassLoader;
 import org.fabric3.spi.builder.classloader.ClassLoaderListener;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;

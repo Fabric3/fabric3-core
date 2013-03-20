@@ -35,37 +35,33 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.implementation.reflection.jdk;
+package org.fabric3.implementation.pojo.spi.reflection;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.Member;
 
-import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Performs an invocation on a method of a given target instance
+ * Creates {@link Injector}s for a field or method.
  */
-public class MethodTargetInvoker implements TargetInvoker, ConsumerInvoker {
-    private final Method method;
+public interface InjectorFactory {
 
     /**
-     * Instantiates an invoker for the given method.
+     * Returns true if this is the default factory.
      *
-     * @param method the method to invoke on
+     * @return true if this is the default factory
      */
-    public MethodTargetInvoker(Method method) {
-        this.method = method;
-        this.method.setAccessible(true);
-    }
+    boolean isDefault();
 
-    public Object invoke(Object obj, Object args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        return method.invoke(obj, (Object[]) args);
-    }
+    /**
+     * Creates an injector for a field or method.
+     *
+     * @param member           the field or method
+     * @param parameterFactory the factory that returns an instance to be injected
+     * @return the injector
+     */
+    Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory);
+
 }

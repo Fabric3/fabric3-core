@@ -36,12 +36,9 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.fabric3.implementation.bytecode.reflection;
+package org.fabric3.implementation.pojo.spi.reflection;
 
 import java.lang.reflect.Method;
-
-import org.fabric3.implementation.bytecode.proxy.common.BytecodeClassLoader;
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
 
 /**
  * Creates {@link TargetInvoker} instances.
@@ -49,12 +46,18 @@ import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
 public interface TargetInvokerFactory {
 
     /**
-     * Creates a target invoker for a method.
+     * Returns true if this is the default factory.
+     *
+     * @return true if this is the default factory
+     */
+    boolean isDefault();
+
+    /**
+     * Creates a target invoker for the given method.
      *
      * @param method the method
-     * @param loader the classloader to create the invoker with
      * @return the invoker
      */
-    TargetInvoker createTargetInvoker(Method method, BytecodeClassLoader loader);
+    TargetInvoker createTargetInvoker(Method method);
 
 }

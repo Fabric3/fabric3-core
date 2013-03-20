@@ -44,8 +44,8 @@
 package org.fabric3.implementation.pojo.component;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
+import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceDestructionException;
@@ -58,23 +58,22 @@ import org.fabric3.spi.wire.InvocationRuntimeException;
  * Responsible for dispatching an event to a Java-based component implementation instance.
  */
 public class InvokerEventStreamHandler implements EventStreamHandler {
-    private Method operation;
     private AtomicComponent component;
     private ClassLoader targetTCCLClassLoader;
+    private ConsumerInvoker invoker;
 
     /**
      * Constructor.
      *
-     * @param operation             the method to invoke on the target instance
+     * @param invoker               the consumer invoker
      * @param component             the target component
      * @param targetTCCLClassLoader the classloader to set the TCCL to before dispatching.
      */
-    public InvokerEventStreamHandler(Method operation, AtomicComponent component, ClassLoader targetTCCLClassLoader) {
-        this.operation = operation;
+    public InvokerEventStreamHandler(ConsumerInvoker invoker, AtomicComponent component, ClassLoader targetTCCLClassLoader) {
+        this.invoker = invoker;
         this.component = component;
         this.targetTCCLClassLoader = targetTCCLClassLoader;
     }
-
 
     public void setNext(EventStreamHandler next) {
         throw new IllegalStateException("This handler must be the last one in the handler sequence");
@@ -105,8 +104,7 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
     }
 
     /**
-     * Performs the invocation on the target component instance. If a target classloader is configured for the interceptor, it will be set as the
-     * TCCL.
+     * Performs the invocation on the target component instance. If a target classloader is configured for the interceptor, it will be set as the TCCL.
      *
      * @param event       the event
      * @param workContext the current work context
@@ -116,12 +114,12 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
         WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
             if (targetTCCLClassLoader == null) {
-                operation.invoke(instance, (Object[]) event);
+                invoker.invoke(instance, event);
             } else {
                 ClassLoader old = Thread.currentThread().getContextClassLoader();
                 try {
                     Thread.currentThread().setContextClassLoader(targetTCCLClassLoader);
-                    operation.invoke(instance, (Object[]) event);
+                    invoker.invoke(instance, event);
                 } finally {
                     Thread.currentThread().setContextClassLoader(old);
                 }

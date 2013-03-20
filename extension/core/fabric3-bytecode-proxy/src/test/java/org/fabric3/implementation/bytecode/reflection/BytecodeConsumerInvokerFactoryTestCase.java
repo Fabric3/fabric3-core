@@ -42,19 +42,19 @@ import java.lang.reflect.Method;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.implementation.bytecode.proxy.common.BytecodeClassLoader;
-import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
+import org.easymock.EasyMock;
+import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 
 /**
  *
  */
-public class TargetInvokerFactoryImplTestCase extends TestCase {
-    private TargetInvokerFactoryImpl factory;
-    private BytecodeClassLoader classLoader;
+public class BytecodeConsumerInvokerFactoryTestCase extends TestCase {
+    private BytecodeConsumerInvokerFactory factory;
 
     public void testStringInvoke() throws Exception {
         Method method = StringTarget.class.getMethod("invoke", String.class);
-        TargetInvoker invoker = factory.createTargetInvoker(method, classLoader);
+        ConsumerInvoker invoker = factory.createInvoker(method);
         StringTarget target = new StringTarget();
 
         assertEquals("test", invoker.invoke(target, "test"));
@@ -62,7 +62,7 @@ public class TargetInvokerFactoryImplTestCase extends TestCase {
 
     public void testTypeInvoke() throws Exception {
         Method method = TypeTarget.class.getMethod("invoke", Foo.class);
-        TargetInvoker invoker = factory.createTargetInvoker(method, classLoader);
+        ConsumerInvoker invoker = factory.createInvoker(method);
         TypeTarget target = new TypeTarget();
         Foo foo = new Foo();
 
@@ -71,7 +71,7 @@ public class TargetInvokerFactoryImplTestCase extends TestCase {
 
     public void testMultiTypeInvoke() throws Exception {
         Method method = MultiTypeTarget.class.getMethod("invoke", Foo.class, Foo.class);
-        TargetInvoker invoker = factory.createTargetInvoker(method, classLoader);
+        ConsumerInvoker invoker = factory.createInvoker(method);
         MultiTypeTarget target = new MultiTypeTarget();
         Foo foo = new Foo();
 
@@ -80,7 +80,7 @@ public class TargetInvokerFactoryImplTestCase extends TestCase {
 
     public void testMultiPrimitiveTypeInvoke() throws Exception {
         Method method = MultiPrimitiveTypeTarget.class.getMethod("invoke", Double.TYPE, Double.TYPE);
-        TargetInvoker invoker = factory.createTargetInvoker(method, classLoader);
+        ConsumerInvoker invoker = factory.createInvoker(method);
         MultiPrimitiveTypeTarget target = new MultiPrimitiveTypeTarget();
 
         assertEquals("test", invoker.invoke(target, new Object[]{1d, 1d}));
@@ -88,7 +88,7 @@ public class TargetInvokerFactoryImplTestCase extends TestCase {
 
     public void testNoArgsInvoke() throws Exception {
         Method method = NoArgsTarget.class.getMethod("invoke");
-        TargetInvoker invoker = factory.createTargetInvoker(method, classLoader);
+        ConsumerInvoker invoker = factory.createInvoker(method);
         NoArgsTarget target = new NoArgsTarget();
         invoker.invoke(target, null);
         assertTrue(target.invoked);
@@ -96,21 +96,21 @@ public class TargetInvokerFactoryImplTestCase extends TestCase {
 
     public void testIntPrimitiveInvoke() throws Exception {
         Method method = PrimitiveTypeTarget.class.getMethod("invoke", Integer.TYPE);
-        TargetInvoker invoker = factory.createTargetInvoker(method, classLoader);
+        ConsumerInvoker invoker = factory.createInvoker(method);
         PrimitiveTypeTarget target = new PrimitiveTypeTarget();
         assertEquals(1, invoker.invoke(target, 1));
     }
 
     public void testBooleanPrimitiveInvoke() throws Exception {
         Method method = PrimitiveTypeTarget.class.getMethod("invoke", Boolean.TYPE);
-        TargetInvoker invoker = factory.createTargetInvoker(method, classLoader);
+        ConsumerInvoker invoker = factory.createInvoker(method);
         PrimitiveTypeTarget target = new PrimitiveTypeTarget();
         assertTrue((Boolean) invoker.invoke(target, true));
     }
 
     public void testDoublePrimitiveInvoke() throws Exception {
         Method method = PrimitiveTypeTarget.class.getMethod("invoke", Double.TYPE);
-        TargetInvoker invoker = factory.createTargetInvoker(method, classLoader);
+        ConsumerInvoker invoker = factory.createInvoker(method);
         PrimitiveTypeTarget target = new PrimitiveTypeTarget();
         assertEquals(2d, invoker.invoke(target, 2d));
     }
@@ -118,8 +118,11 @@ public class TargetInvokerFactoryImplTestCase extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
 
-        classLoader = new BytecodeClassLoader(URI.create("test"), getClass().getClassLoader());
-        factory = new TargetInvokerFactoryImpl();
+        ClassLoaderRegistry classLoaderRegistry = EasyMock.createMock(ClassLoaderRegistry.class);
+        EasyMock.expect(classLoaderRegistry.getClassLoader(EasyMock.isA(URI.class))).andReturn(getClass().getClassLoader());
+        EasyMock.replay(classLoaderRegistry);
+
+        factory = new BytecodeConsumerInvokerFactory(classLoaderRegistry);
     }
 
     public class StringTarget {

@@ -17,9 +17,26 @@
            name="JDKReflectionComposite"
            autowire="true">
 
-     <component name="JDKReflectionFactoryExtension">
-        <f3:implementation.system class="org.fabric3.implementation.reflection.jdk.JDKReflectionFactoryExtension"/>
+    <component name="JDKInstantiatorFactory">
+        <f3:implementation.system class="org.fabric3.implementation.reflection.jdk.JDKInstantiatorFactory"/>
     </component>
 
+
+    <component name="JDKInjectorFactory">
+        <f3:implementation.system class="org.fabric3.implementation.reflection.jdk.JDKInjectorFactory"/>
+    </component>
+
+
+    <component name="JDKLifecycleInvokerFactory">
+        <f3:implementation.system class="org.fabric3.implementation.reflection.jdk.JDKLifecycleInvokerFactory"/>
+    </component>
+
+    <component name="JDKTargetInvokerFactory">
+        <f3:implementation.system class="org.fabric3.implementation.reflection.jdk.JDKTargetInvokerFactory"/>
+    </component>
+
+    <component name="JDKConsumerInvokerFactory">
+        <f3:implementation.system class="org.fabric3.implementation.reflection.jdk.JDKConsumerInvokerFactory"/>
+    </component>
 
 </composite>

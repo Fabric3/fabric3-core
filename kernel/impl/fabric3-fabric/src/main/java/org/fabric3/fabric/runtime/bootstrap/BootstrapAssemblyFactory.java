@@ -143,7 +143,11 @@ import org.fabric3.implementation.pojo.generator.GenerationHelperImpl;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilderImpl;
 import org.fabric3.implementation.pojo.reflection.ReflectionFactoryImpl;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.implementation.reflection.jdk.JDKReflectionFactoryExtension;
+import org.fabric3.implementation.reflection.jdk.JDKConsumerInvokerFactory;
+import org.fabric3.implementation.reflection.jdk.JDKInjectorFactory;
+import org.fabric3.implementation.reflection.jdk.JDKInstantiatorFactory;
+import org.fabric3.implementation.reflection.jdk.JDKLifecycleInvokerFactory;
+import org.fabric3.implementation.reflection.jdk.JDKTargetInvokerFactory;
 import org.fabric3.implementation.system.generator.SystemComponentGenerator;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
@@ -219,8 +223,12 @@ public class BootstrapAssemblyFactory {
                                       ManagementService managementService,
                                       HostInfo info) throws InitializationException {
 
-        CommandExecutorRegistry commandRegistry
-                = createCommandExecutorRegistry(monitorService, classLoaderRegistry, scopeRegistry, componentManager, channelManager, managementService);
+        CommandExecutorRegistry commandRegistry = createCommandExecutorRegistry(monitorService,
+                                                                                classLoaderRegistry,
+                                                                                scopeRegistry,
+                                                                                componentManager,
+                                                                                channelManager,
+                                                                                managementService);
         DeployerMonitor monitor;
         try {
             monitor = monitorService.createMonitor(DeployerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
@@ -242,8 +250,15 @@ public class BootstrapAssemblyFactory {
         Collector collector = new CollectorImpl();
         ContributionHelper contributionHelper = new ContributionHelperImpl(metaDataStore, info);
 
-        return new RuntimeDomain(metaDataStore, generator, logicalModelInstantiator, policyAttacher, logicalComponentManager, deployer, collector,
-                                 contributionHelper, info);
+        return new RuntimeDomain(metaDataStore,
+                                 generator,
+                                 logicalModelInstantiator,
+                                 policyAttacher,
+                                 logicalComponentManager,
+                                 deployer,
+                                 collector,
+                                 contributionHelper,
+                                 info);
     }
 
     private static LogicalModelInstantiator createLogicalModelGenerator(ContractMatcher matcher) {
@@ -257,10 +272,17 @@ public class BootstrapAssemblyFactory {
         WireInstantiator wireInstantiator = new WireInstantiatorImpl(matcher);
         ChannelInstantiator channelInstantiator = new ChannelInstantiatorImpl();
 
-        CompositeComponentInstantiator compositeInstantiator
-                = new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator, channelInstantiator);
-        return new LogicalModelInstantiatorImpl(compositeInstantiator, atomicInstantiator, wireInstantiator, autowireInstantiator, channelInstantiator,
-                                                promotionNormalizer, autowireNormalizer, promotionResolutionService);
+        CompositeComponentInstantiator compositeInstantiator = new CompositeComponentInstantiatorImpl(atomicInstantiator,
+                                                                                                      wireInstantiator,
+                                                                                                      channelInstantiator);
+        return new LogicalModelInstantiatorImpl(compositeInstantiator,
+                                                atomicInstantiator,
+                                                wireInstantiator,
+                                                autowireInstantiator,
+                                                channelInstantiator,
+                                                promotionNormalizer,
+                                                autowireNormalizer,
+                                                promotionResolutionService);
     }
 
     private static CommandExecutorRegistry createCommandExecutorRegistry(MonitorProxyService monitorService,
@@ -278,8 +300,11 @@ public class BootstrapAssemblyFactory {
         try {
             ContextMonitor contextMonitor = monitorService.createMonitor(ContextMonitor.class, Names.RUNTIME_MONITOR_CHANNEL_URI);
             commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry, contextMonitor));
-            BuildComponentCommandExecutor executor
-                    = createBuildComponentExecutor(componentManager, scopeRegistry, transformerRegistry, classLoaderRegistry, managementService);
+            BuildComponentCommandExecutor executor = createBuildComponentExecutor(componentManager,
+                                                                                  scopeRegistry,
+                                                                                  transformerRegistry,
+                                                                                  classLoaderRegistry,
+                                                                                  managementService);
             commandRegistry.register(BuildComponentCommand.class, executor);
             commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
             commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
@@ -311,12 +336,24 @@ public class BootstrapAssemblyFactory {
 
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
 
-        JDKReflectionFactoryExtension reflectionFactoryExtension = new JDKReflectionFactoryExtension();
-        ReflectionFactory reflectionFactory = new ReflectionFactoryImpl(reflectionFactoryExtension);
+        JDKInstantiatorFactory instantiatorFactory = new JDKInstantiatorFactory();
+        JDKInjectorFactory injectorFactory = new JDKInjectorFactory();
+        JDKLifecycleInvokerFactory lifecycleInvokerFactory = new JDKLifecycleInvokerFactory();
+        JDKTargetInvokerFactory targetInvokerFactory = new JDKTargetInvokerFactory();
+        JDKConsumerInvokerFactory consumerInvokerFactory = new JDKConsumerInvokerFactory();
+        ReflectionFactory reflectionFactory = new ReflectionFactoryImpl(instantiatorFactory,
+                                                                        injectorFactory,
+                                                                        lifecycleInvokerFactory,
+                                                                        targetInvokerFactory,
+                                                                        consumerInvokerFactory);
 
         ImplementationManagerFactoryBuilderImpl factoryBuilder = new ImplementationManagerFactoryBuilderImpl(reflectionFactory, classLoaderRegistry);
-        SystemComponentBuilder builder
-                = new SystemComponentBuilder(scopeRegistry, factoryBuilder, classLoaderRegistry, propertyBuilder, managementService, helper);
+        SystemComponentBuilder builder = new SystemComponentBuilder(scopeRegistry,
+                                                                    factoryBuilder,
+                                                                    classLoaderRegistry,
+                                                                    propertyBuilder,
+                                                                    managementService,
+                                                                    helper);
 
         builders.put(SystemComponentDefinition.class, builder);
         BuildComponentCommandExecutor executor = new BuildComponentCommandExecutor(componentManager);

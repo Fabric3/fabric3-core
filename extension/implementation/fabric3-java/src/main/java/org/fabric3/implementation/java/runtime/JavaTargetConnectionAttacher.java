@@ -40,6 +40,8 @@ package org.fabric3.implementation.java.runtime;
 import java.lang.reflect.Method;
 import java.net.URI;
 
+import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -61,10 +63,14 @@ import org.fabric3.spi.util.UriHelper;
 @EagerInit
 public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<JavaConnectionTargetDefinition> {
     private ComponentManager manager;
+    private ReflectionFactory reflectionFactory;
     private ClassLoaderRegistry classLoaderRegistry;
 
-    public JavaTargetConnectionAttacher(@Reference ComponentManager manager, @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public JavaTargetConnectionAttacher(@Reference ComponentManager manager,
+                                        @Reference ReflectionFactory reflectionFactory,
+                                        @Reference ClassLoaderRegistry classLoaderRegistry) {
         this.manager = manager;
+        this.reflectionFactory = reflectionFactory;
         this.classLoaderRegistry = classLoaderRegistry;
     }
 
@@ -77,8 +83,11 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
             throw new ConnectionAttachException("Target component not found: " + targetName);
         }
         ClassLoader loader = classLoaderRegistry.getClassLoader(target.getClassLoaderId());
+
         Method method = loadMethod(target, component);
-        InvokerEventStreamHandler handler = new InvokerEventStreamHandler(method, component, loader);
+        ConsumerInvoker invoker = reflectionFactory.createConsumerInvoker(method);
+
+        InvokerEventStreamHandler handler = new InvokerEventStreamHandler(invoker, component, loader);
         for (EventStream stream : connection.getEventStreams()) {
             stream.addHandler(handler);
         }

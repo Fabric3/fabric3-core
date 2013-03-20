@@ -34,12 +34,25 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
+ *
  */
-package org.fabric3.implementation.pojo.spi.reflection;
+package org.fabric3.implementation.reflection.jdk;
+
+import java.lang.reflect.Method;
+
+import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvokerFactory;
 
 /**
- * Marker for the default runtime {@link ReflectionFactoryExtension}.
+ * The default runtime reflection factory extension that uses JDK reflection.
  */
-public interface DefaultReflectionFactoryExtension extends ReflectionFactoryExtension {
+public class JDKConsumerInvokerFactory implements ConsumerInvokerFactory {
 
+    public boolean isDefault() {
+        return true;
+    }
+
+    public ConsumerInvoker createInvoker(Method method) {
+        return new MethodTargetInvoker(method);
+    }
 }

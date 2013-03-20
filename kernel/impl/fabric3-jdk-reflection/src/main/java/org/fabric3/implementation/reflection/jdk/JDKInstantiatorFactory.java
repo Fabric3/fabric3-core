@@ -36,54 +36,23 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.fabric3.implementation.pojo.spi.reflection;
+package org.fabric3.implementation.reflection.jdk;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 
-import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.implementation.pojo.spi.reflection.InstantiatorFactory;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Creates {@link org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker}s, {@link org.fabric3.spi.objectfactory.Injector}s, and {@link
- * org.fabric3.spi.objectfactory.ObjectFactory}s for instantiating and manipulating component implementation instances.
+ * The default factory that uses JDK reflection.
  */
-public interface ReflectionFactoryExtension {
+public class JDKInstantiatorFactory implements InstantiatorFactory {
 
-    /**
-     * Creates an object factory that is used to instantiate instances.
-     *
-     * @param constructor        the constructor to instantiate with
-     * @param parameterFactories object factories which return constructor parameters
-     * @return the object factory
-     */
-    <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories);
+    public boolean isDefault() {
+        return true;
+    }
 
-    /**
-     * Creates an injector for a field or method.
-     *
-     * @param member           the field or method
-     * @param parameterFactory the factory that returns an instance to be injected
-     * @return the injector
-     */
-    Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory);
-
-    /**
-     * Creates a lifecycle invoker that is used to issue a method callback on an implementation instance.
-     *
-     * @param method the callback method
-     * @return the invoker
-     */
-    LifecycleInvoker createLifecycleInvoker(Method method);
-
-
-    /**
-     * Creates a target invoker for the given method.
-     *
-     * @param method the method
-     * @return the invoker
-     */
-    TargetInvoker createTargetInvoker(Method method);
-
+    public <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories) {
+        return new ReflectiveObjectFactory<T>(constructor, parameterFactories);
+    }
 }

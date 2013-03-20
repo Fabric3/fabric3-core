@@ -43,11 +43,15 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.fabric3.implementation.pojo.spi.reflection.DefaultReflectionFactoryExtension;
+import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvokerFactory;
+import org.fabric3.implementation.pojo.spi.reflection.InjectorFactory;
+import org.fabric3.implementation.pojo.spi.reflection.InstantiatorFactory;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvokerFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactoryExtension;
 import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.TargetInvokerFactory;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.Reference;
@@ -56,35 +60,88 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class ReflectionFactoryImpl implements ReflectionFactory {
-    private ReflectionFactoryExtension extension;
+
+    private InstantiatorFactory instantiatorFactory;
+    private InjectorFactory injectorFactory;
+    private LifecycleInvokerFactory lifecycleInvokerFactory;
+    private TargetInvokerFactory targetInvokerFactory;
+    private ConsumerInvokerFactory consumerInvokerFactory;
+
+    public ReflectionFactoryImpl(@Reference InstantiatorFactory instantiatorFactory,
+                                 @Reference InjectorFactory injectorFactory,
+                                 @Reference LifecycleInvokerFactory lifecycleInvokerFactory,
+                                 @Reference TargetInvokerFactory targetInvokerFactory,
+                                 @Reference ConsumerInvokerFactory consumerInvokerFactory) {
+        this.instantiatorFactory = instantiatorFactory;
+        this.injectorFactory = injectorFactory;
+        this.lifecycleInvokerFactory = lifecycleInvokerFactory;
+        this.targetInvokerFactory = targetInvokerFactory;
+        this.consumerInvokerFactory = consumerInvokerFactory;
+    }
 
     @Reference(required = false)
-    public void setExtensions(List<ReflectionFactoryExtension> extensions) {
-        for (ReflectionFactoryExtension entry : extensions) {
-            if (!(entry instanceof DefaultReflectionFactoryExtension)) {
-                extension = entry;
-                return;
+    public void setInstantiatorFactories(List<InstantiatorFactory> factories) {
+        for (InstantiatorFactory factory : factories) {
+            if (!factory.isDefault() || instantiatorFactory == null) {
+                instantiatorFactory = factory;
+
             }
         }
     }
 
-    public ReflectionFactoryImpl(@Reference DefaultReflectionFactoryExtension extension) {
-        this.extension = extension;
+    @Reference(required = false)
+    public void setInjectorFactories(List<InjectorFactory> factories) {
+        for (InjectorFactory factory : factories) {
+            if (!factory.isDefault() || injectorFactory == null) {
+                injectorFactory = factory;
+            }
+        }
+    }
+
+    @Reference(required = false)
+    public void setLifecycleInvokerFactories(List<LifecycleInvokerFactory> factories) {
+        for (LifecycleInvokerFactory factory : factories) {
+            if (!factory.isDefault() || lifecycleInvokerFactory == null) {
+                lifecycleInvokerFactory = factory;
+            }
+        }
+    }
+
+    @Reference(required = false)
+    public void setTargetInvokerFactories(List<TargetInvokerFactory> factories) {
+        for (TargetInvokerFactory factory : factories) {
+            if (!factory.isDefault() || targetInvokerFactory == null) {
+                targetInvokerFactory = factory;
+            }
+        }
+    }
+
+    @Reference(required = false)
+    public void setConsumerInvokerFactories(List<ConsumerInvokerFactory> factories) {
+        for (ConsumerInvokerFactory factory : factories) {
+            if (!factory.isDefault() || targetInvokerFactory == null) {
+                consumerInvokerFactory = factory;
+            }
+        }
     }
 
     public <T> ObjectFactory<T> createInstantiator(Constructor<T> constructor, ObjectFactory<?>[] parameterFactories) {
-        return extension.createInstantiator(constructor, parameterFactories);
+        return instantiatorFactory.createInstantiator(constructor, parameterFactories);
     }
 
     public Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory) {
-        return extension.createInjector(member, parameterFactory);
+        return injectorFactory.createInjector(member, parameterFactory);
     }
 
     public LifecycleInvoker createLifecycleInvoker(Method method) {
-        return extension.createLifecycleInvoker(method);
+        return lifecycleInvokerFactory.createLifecycleInvoker(method);
     }
 
     public TargetInvoker createTargetInvoker(Method method) {
-        return extension.createTargetInvoker(method);
+        return targetInvokerFactory.createTargetInvoker(method);
+    }
+
+    public ConsumerInvoker createConsumerInvoker(Method method) {
+        return consumerInvokerFactory.createInvoker(method);
     }
 }

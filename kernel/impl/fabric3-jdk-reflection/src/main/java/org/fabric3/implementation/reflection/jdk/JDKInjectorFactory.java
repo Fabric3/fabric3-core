@@ -36,41 +36,33 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.fabric3.implementation.bytecode.proxy.common;
+package org.fabric3.implementation.reflection.jdk;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.net.URI;
 
-import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.implementation.pojo.spi.reflection.InjectorFactory;
+import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Classloader capable of loading generated classes at runtime.
+ * The default runtime reflection factory extension that uses JDK reflection.
  */
-public class BytecodeClassLoader extends MultiParentClassLoader {
-    private Method method;
+public class JDKInjectorFactory implements InjectorFactory {
 
-    public BytecodeClassLoader(URI name, ClassLoader parent) {
-        super(name, parent);
-        try {
-            // Attempt to load the access class in the same loader, which makes protected and default access members accessible.
-            method = ClassLoader.class.getDeclaredMethod("defineClass", new Class[]{String.class, byte[].class, int.class, int.class});
-            method.setAccessible(true);
-        } catch (NoSuchMethodException e) {
-            throw new AssertionError(e);
-        }
+    public boolean isDefault() {
+        return true;
     }
 
-    public Class<?> defineClass(String name, byte[] bytes) throws ClassFormatError {
-        try {
-            // Attempt to load the class
-            return (Class) method.invoke(getParent(), name, bytes, 0, bytes.length);
-        } catch (Exception ignored) {
+    public Injector<?> createInjector(Member member, ObjectFactory<?> parameterFactory) {
+        if (member instanceof Field) {
+            return new FieldInjector((Field) member, parameterFactory);
+        } else if (member instanceof Method) {
+            return new MethodInjector((Method) member, parameterFactory);
+        } else {
+            throw new AssertionError("Unsupported type: " + member);
         }
-        return defineClass(name, bytes, 0, bytes.length);
-    }
-
-    protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        return super.loadClass(name, resolve);
     }
 
 }

@@ -36,25 +36,23 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.fabric3.implementation.bytecode.reflection;
+package org.fabric3.implementation.reflection.jdk;
 
 import java.lang.reflect.Method;
 
-import org.fabric3.implementation.bytecode.proxy.common.BytecodeClassLoader;
-import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.TargetInvoker;
+import org.fabric3.implementation.pojo.spi.reflection.TargetInvokerFactory;
 
 /**
- * Creates {@link LifecycleInvoker} instances.
+ * The default factory that uses JDK reflection.
  */
-public interface LifecycleInvokerFactory {
+public class JDKTargetInvokerFactory implements TargetInvokerFactory {
 
-    /**
-     * Creates a lifecycle invoker for a method.
-     *
-     * @param method the method
-     * @param loader the classloader to create the invoker with
-     * @return the invoker
-     */
-    LifecycleInvoker createLifecycleInvoker(Method method, BytecodeClassLoader loader);
+    public boolean isDefault() {
+        return true;
+    }
 
+    public TargetInvoker createTargetInvoker(Method method) {
+        return new MethodTargetInvoker(method);
+    }
 }
