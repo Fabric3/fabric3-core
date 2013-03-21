@@ -37,8 +37,6 @@
 */
 package org.fabric3.spi.monitor;
 
-import java.lang.reflect.Array;
-
 import org.fabric3.api.MonitorEvent;
 import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.spi.channel.EventStreamHandler;
@@ -53,8 +51,7 @@ public class DispatcherWrapper implements EventStreamHandler {
         this.dispatcher = dispatcher;
     }
 
-    public void handle(Object param) {
-        Object event = Array.get(param, 0);
+    public void handle(Object event) {
         if (!(event instanceof MonitorEvent)) {
             return;
         }

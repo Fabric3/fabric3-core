@@ -53,6 +53,6 @@ public class JDKConsumerInvokerFactory implements ConsumerInvokerFactory {
     }
 
     public ConsumerInvoker createInvoker(Method method) {
-        return new MethodInvoker(method);
+        return new ConsumerMethodInvoker(method);
     }
 }

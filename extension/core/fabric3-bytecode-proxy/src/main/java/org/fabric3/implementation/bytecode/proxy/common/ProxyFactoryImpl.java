@@ -427,7 +427,7 @@ public class ProxyFactoryImpl implements ProxyFactory, ClassLoaderListener {
                     mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
                 } else {
                     // object type
-                    mv.visitVarInsn(ALOAD, 0);
+                    mv.visitVarInsn(ALOAD, 1);
                 }
             }
 

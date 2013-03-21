@@ -43,24 +43,24 @@ import junit.framework.TestCase;
 
 /**
  */
-public class JavaTypeEventFilterTestCase  extends TestCase {
+public class JavaTypeEventFilterTestCase extends TestCase {
 
-    public void testFilter() throws Exception  {
+    public void testFilter() throws Exception {
         JavaTypeEventFilter filter = new JavaTypeEventFilter(String.class);
-        assertFalse(filter.filter(new Object[]{1}));
+        assertFalse(filter.filter(1));
     }
 
-    public void testMultipleTypes() throws Exception  {
+    public void testMultipleTypes() throws Exception {
         Class<?>[] types = new Class<?>[]{String.class, Integer.class};
         JavaTypeEventFilter filter = new JavaTypeEventFilter(types);
-        assertTrue(filter.filter(new Object[]{1}));
-        assertTrue(filter.filter(new Object[]{"test"}));
-        assertFalse(filter.filter(new Object[]{new ArrayList()}));
+        assertTrue(filter.filter(1));
+        assertTrue(filter.filter("test"));
+        assertFalse(filter.filter(new ArrayList()));
     }
 
-    public void testInheritence() throws Exception  {
+    public void testInheritence() throws Exception {
         JavaTypeEventFilter filter = new JavaTypeEventFilter(Foo.class);
-        assertTrue(filter.filter(new Object[]{new Bar()}));
+        assertTrue(filter.filter(new Bar()));
     }
 
     private class Foo {

@@ -37,8 +37,6 @@
 */
 package org.fabric3.fabric.builder.channel;
 
-import java.lang.reflect.Array;
-
 import org.fabric3.spi.builder.channel.EventFilter;
 
 /**
@@ -57,12 +55,8 @@ public class JavaTypeEventFilter implements EventFilter {
     }
 
     public boolean filter(Object object) {
-        if (!object.getClass().isArray()) {
-            throw new AssertionError("Java types must be passed as arrays: " + object.getClass());
-        }
-        Object param = Array.get(object, 0);
         for (Class<?> type : types) {
-            if (type.isAssignableFrom(param.getClass())) {
+            if (type.isAssignableFrom(object.getClass())) {
                 return true;
             }
         }

@@ -39,11 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.zeromq.common.SocketAddressDefinition;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
@@ -56,8 +51,6 @@ import org.fabric3.binding.zeromq.runtime.federation.AddressAnnouncement;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
 import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
 import org.fabric3.binding.zeromq.runtime.handler.PublisherHandler;
-import org.fabric3.binding.zeromq.runtime.handler.UnwrappingHandler;
-import org.fabric3.binding.zeromq.runtime.handler.WrappingHandler;
 import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
 import org.fabric3.binding.zeromq.runtime.message.NonReliablePublisher;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableSubscriber;
@@ -78,6 +71,10 @@ import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.type.java.JavaClass;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  *
@@ -315,7 +312,6 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                     transformer = handlerFactory.createHandler(dataType, BYTES, loader);
                 }
 
-                stream.addHandler(new UnwrappingHandler());
                 stream.addHandler(transformer);
             } catch (ClassNotFoundException e) {
                 throw new BrokerException("Error loading event type", e);
@@ -337,10 +333,8 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 // single frame data
                 head = handlerFactory.createHandler(BYTES, dataType, loader);
             }
-            WrappingHandler wrappingHandler = new WrappingHandler();
             AsyncFanOutHandler fanOutHandler = new AsyncFanOutHandler(executorService);
-            wrappingHandler.setNext(fanOutHandler);
-            head.setNext(wrappingHandler);
+            head.setNext(fanOutHandler);
             return head;
         } catch (HandlerCreationException e) {
             throw new BrokerException(e);

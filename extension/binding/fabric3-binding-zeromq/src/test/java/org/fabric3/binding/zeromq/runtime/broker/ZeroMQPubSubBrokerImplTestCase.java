@@ -129,7 +129,7 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
         EventStream stream = EasyMock.createMock(EventStream.class);
         EasyMock.expect(stream.getDefinition()).andReturn(new PhysicalEventStreamDefinition("test"));
         stream.addHandler(EasyMock.isA(EventStreamHandler.class));
-        EasyMock.expectLastCall().times(3);
+        EasyMock.expectLastCall().times(2);
         ChannelConnection connection = EasyMock.createMock(ChannelConnection.class);
         EasyMock.expect(connection.getEventStreams()).andReturn(Collections.singletonList(stream));
 

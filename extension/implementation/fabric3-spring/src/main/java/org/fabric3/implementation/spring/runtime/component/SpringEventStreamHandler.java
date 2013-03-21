@@ -97,7 +97,7 @@ public class SpringEventStreamHandler implements EventStreamHandler {
             ClassLoader old = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(targetTCCLClassLoader);
-                getConsumerMethod().invoke(beanProxy, (Object[]) event);
+                getConsumerMethod().invoke(beanProxy, event);
             } finally {
                 Thread.currentThread().setContextClassLoader(old);
             }
@@ -147,6 +147,5 @@ public class SpringEventStreamHandler implements EventStreamHandler {
         }
         throw new ServiceRuntimeException("Could not load method with type: " + type);
     }
-
 
 }

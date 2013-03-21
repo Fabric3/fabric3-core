@@ -102,7 +102,7 @@ public class BytecodeConsumerInvokerFactory implements ConsumerInvokerFactory, C
 
         // use the toString() hashcode of the method since more than one invoker may be created per class (if it has multiple methods)
         int code = Math.abs(method.toString().hashCode());
-        String className = declaringClass.getName() + "_ServiceInvoker" + code;
+        String className = declaringClass.getName() + "_ConsumerInvoker" + code;
 
         try {
             Class<ConsumerInvoker> invokerClass = (Class<ConsumerInvoker>) classLoader.loadClass(className);
@@ -116,7 +116,7 @@ public class BytecodeConsumerInvokerFactory implements ConsumerInvokerFactory, C
         }
 
         String internalTargetName = Type.getInternalName(declaringClass);
-        String internalInvokerName = internalTargetName + "_ServiceInvoker" + code;
+        String internalInvokerName = internalTargetName + "_ConsumerInvoker" + code;
 
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 

@@ -98,8 +98,7 @@ public class TransformerHandler implements EventStreamHandler {
                     throw new ServiceRuntimeException(e);
                 }
             }
-            // TODO optimize
-            event = new Object[]{content};
+            event = content;
         }
         next.handle(event);
     }

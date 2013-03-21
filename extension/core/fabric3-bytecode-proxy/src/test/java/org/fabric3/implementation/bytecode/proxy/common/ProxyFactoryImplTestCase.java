@@ -43,7 +43,10 @@ public class ProxyFactoryImplTestCase extends TestCase {
     public void testCheckedExceptionDispatch() throws Exception {
         Method[] methods = ProxyCheckedExceptionInterface.class.getMethods();
 
-        ProxyCheckedExceptionInterface proxy = factory.createProxy(URI, ProxyCheckedExceptionInterface.class, methods, MockCheckedExceptionDispatcher.class,
+        ProxyCheckedExceptionInterface proxy = factory.createProxy(URI,
+                                                                   ProxyCheckedExceptionInterface.class,
+                                                                   methods,
+                                                                   MockCheckedExceptionDispatcher.class,
                                                                    true);
         try {
             proxy.handle("test");
@@ -56,7 +59,10 @@ public class ProxyFactoryImplTestCase extends TestCase {
     public void testCheckedRuntimeExceptionDispatch() throws Exception {
         Method[] methods = ProxyCheckedExceptionInterface.class.getMethods();
 
-        ProxyRuntimeExceptionInterface proxy = factory.createProxy(URI, ProxyRuntimeExceptionInterface.class, methods, MockRuntimeExceptionDispatcher.class,
+        ProxyRuntimeExceptionInterface proxy = factory.createProxy(URI,
+                                                                   ProxyRuntimeExceptionInterface.class,
+                                                                   methods,
+                                                                   MockRuntimeExceptionDispatcher.class,
                                                                    true);
         try {
             proxy.handle("test");
@@ -86,6 +92,15 @@ public class ProxyFactoryImplTestCase extends TestCase {
         assertEquals(Byte.MAX_VALUE, proxy.getBytePrimitive(Byte.MAX_VALUE));
         assertTrue(proxy.getBooleanPrimitive(true));
     }
+
+
+    public void testUnwrappedDispatch() throws Exception {
+        Method[] methods = ProxyReturnInterface.class.getMethods();
+        ProxyReturnInterface proxy = factory.createProxy(URI, ProxyReturnInterface.class, methods, MockUnwrappedDispatcher.class, false);
+
+        assertEquals("event", proxy.handle("event"));
+    }
+
 
     public void setUp() throws Exception {
         super.setUp();

@@ -46,13 +46,12 @@ package org.fabric3.implementation.reflection.jdk;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
 
 /**
  * Performs an invocation on a method of a given target instance
  */
-public class MethodInvoker implements ServiceInvoker, ConsumerInvoker {
+public class MethodInvoker implements ServiceInvoker {
     private final Method method;
 
     /**

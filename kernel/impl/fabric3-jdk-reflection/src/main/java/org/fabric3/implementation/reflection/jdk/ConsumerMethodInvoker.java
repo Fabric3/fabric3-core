@@ -41,40 +41,30 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.implementation.proxy.jdk.channel;
+package org.fabric3.implementation.reflection.jdk;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Map;
 
-import org.fabric3.spi.channel.EventStream;
+import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 
 /**
- * Dispatches from a proxy to an {@link EventStream}.
+ * Performs an invocation on a method of a given target instance
  */
-public final class JDKEventHandler extends AbstractJDKEventHandler {
-    private Map<Method, EventStream> streams;
+public class ConsumerMethodInvoker implements ConsumerInvoker {
+    private final Method method;
 
     /**
-     * Constructor.
+     * Instantiates an invoker for the given method.
      *
-     * @param streams the method to channel handler mappings
+     * @param method the method to invoke on
      */
-    public JDKEventHandler(Map<Method, EventStream> streams) {
-        this.streams = streams;
+    public ConsumerMethodInvoker(Method method) {
+        this.method = method;
+        this.method.setAccessible(true);
     }
 
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        EventStream stream = streams.get(method);
-        if (stream == null) {
-            return handleProxyMethod(method);
-        }
-        if (args != null) {
-            // unwrap the argument
-            stream.getHeadHandler().handle(args[0]);
-        } else {
-            stream.getHeadHandler().handle(args);
-        }
-        return null;
+    public Object invoke(Object obj, Object args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        return method.invoke(obj, args);
     }
-
 }

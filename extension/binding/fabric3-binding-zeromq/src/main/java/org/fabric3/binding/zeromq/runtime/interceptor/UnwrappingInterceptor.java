@@ -14,7 +14,7 @@ public class UnwrappingInterceptor implements Interceptor {
     public Message invoke(Message msg) {
         Object body = msg.getBody();
         if (body == null || !body.getClass().isArray()) {
-            throw new ServiceRuntimeException("Expected object array type");
+            return next.invoke(msg);
         }
         Object[] payload = (Object[]) body;
         if (payload.length != 1) {
