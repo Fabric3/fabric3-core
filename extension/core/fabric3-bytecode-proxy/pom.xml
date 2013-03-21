@@ -31,9 +31,9 @@ Public License. See the accompanying license file for details.
         </dependency>
 
         <dependency>
-            <groupId>com.esotericsoftware.reflectasm</groupId>
-            <artifactId>reflectasm</artifactId>
-            <version>1.07</version>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>4.0</version>
         </dependency>
 
         <dependency>
@@ -46,19 +46,6 @@ Public License. See the accompanying license file for details.
         </dependency>
 
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>sonatype-oss-public</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
