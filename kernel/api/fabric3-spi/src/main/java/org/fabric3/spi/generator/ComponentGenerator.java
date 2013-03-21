@@ -58,7 +58,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 
 /**
- * Generates metadata used to provision components and physical wires to runtimes.
+ * Generates metadata used to provision components and physical wires to a runtime.
  */
 public interface ComponentGenerator<C extends LogicalComponent<? extends Implementation<?>>> {
 
@@ -73,8 +73,8 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
     PhysicalComponentDefinition generate(C component) throws GenerationException;
 
     /**
-     * Generates a {@link PhysicalSourceDefinition} used to attach a physical wire to a source component. Metadata contained in the
-     * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
+     * Generates a {@link PhysicalSourceDefinition} used to attach a physical wire to a source component. Metadata contained in the PhysicalWireSourceDefinition
+     * is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
      * @param reference the source logical reference
      * @param policy    the provided intents and policy sets
@@ -84,8 +84,8 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
     PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException;
 
     /**
-     * Generates a {@link PhysicalTargetDefinition} used to attach a physical wire to a target component. Metadata contained in the
-     * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its target on a runtime.
+     * Generates a {@link PhysicalTargetDefinition} used to attach a physical wire to a target component. Metadata contained in the PhysicalWireSourceDefinition
+     * is specific to the component implementation type and used when the wire is attached to its target on a runtime.
      *
      * @param service the target logical service
      * @param policy  the provided intents and policy sets
@@ -95,9 +95,8 @@ public interface ComponentGenerator<C extends LogicalComponent<? extends Impleme
     PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException;
 
     /**
-     * Generates a {@link PhysicalSourceDefinition} used to attach a physical wire for a callback service to a source component. Metadata contained in
-     * the PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a
-     * runtime.
+     * Generates a {@link PhysicalSourceDefinition} used to attach a physical wire for a callback service to a source component. Metadata contained in the
+     * PhysicalWireSourceDefinition is specific to the component implementation type and used when the wire is attached to its source on a runtime.
      *
      * @param service the forward service the callback is being generated for
      * @param policy  the provided intents and policy sets
