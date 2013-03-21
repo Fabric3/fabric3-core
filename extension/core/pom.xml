@@ -41,5 +41,6 @@
 		<module>fabric3-recovery</module>
 		<module>fabric3-execution</module>
 		<module>fabric3-writer</module>
+        <module>fabric3-channel-disruptor</module>
 	</modules>
 </project>
