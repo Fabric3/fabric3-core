@@ -43,9 +43,9 @@
  */
 package org.fabric3.spi.model.physical;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.net.URI;
-import javax.xml.namespace.QName;
 
 /**
  * Used to provision a channel on a runtime.
@@ -109,4 +109,5 @@ public class PhysicalChannelDefinition implements Serializable {
     public void setBindingDefinition(PhysicalChannelBindingDefinition bindingDefinition) {
         this.bindingDefinition = bindingDefinition;
     }
+
 }

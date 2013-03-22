@@ -43,27 +43,14 @@
  */
 package org.fabric3.fabric.executor;
 
-import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.fabric.channel.AsyncFanOutHandler;
-import org.fabric3.fabric.channel.ChannelImpl;
-import org.fabric3.fabric.channel.FanOutHandler;
-import org.fabric3.fabric.channel.ReplicationHandler;
-import org.fabric3.fabric.channel.ReplicationMonitor;
-import org.fabric3.fabric.channel.SyncFanOutHandler;
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelManager;
@@ -71,10 +58,12 @@ import org.fabric3.spi.channel.RegistrationException;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.federation.ZoneChannelException;
-import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Builds a set of channels defined in a composite on a runtime.
@@ -82,37 +71,30 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 @EagerInit
 public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChannelsCommand> {
     private ChannelManager channelManager;
-    private ExecutorService executorService;
     private CommandExecutorRegistry executorRegistry;
-    private ReplicationMonitor monitor;
-    private ZoneTopologyService topologyService;
-    private boolean replicationCapable;
-    private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>>
-            builders = Collections.emptyMap();
+
+    private Map<Class<? extends PhysicalChannelDefinition>, ChannelBuilder> channelBuilders = Collections.emptyMap();
+
+    private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>> bindingBuilders
+            = Collections.emptyMap();
 
     @Constructor
     public BuildChannelsCommandExecutor(@Reference ChannelManager channelManager,
                                         @Reference ExecutorService executorService,
-                                        @Reference CommandExecutorRegistry executorRegistry,
-                                        @Monitor ReplicationMonitor monitor) {
+                                        @Reference CommandExecutorRegistry executorRegistry) {
         this.channelManager = channelManager;
-        this.executorService = executorService;
         this.executorRegistry = executorRegistry;
-        this.monitor = monitor;
     }
 
     @Reference(required = false)
-    public void setTopologyService(List<ZoneTopologyService> services) {
-        // use a collection to force reinjection
-        if (services != null && !services.isEmpty()) {
-            this.topologyService = services.get(0);
-            replicationCapable = topologyService.supportsDynamicChannels();
-        }
+    public void setBindingBuilders(Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>>
+                                               builders) {
+        this.bindingBuilders = builders;
     }
 
     @Reference(required = false)
-    public void setBuilders(Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>> builders) {
-        this.builders = builders;
+    public void setChannelBuilders(Map<Class<? extends PhysicalChannelDefinition>, ChannelBuilder> channelBuilders) {
+        this.channelBuilders = channelBuilders;
     }
 
     @Init
@@ -124,32 +106,16 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
         try {
             List<PhysicalChannelDefinition> definitions = command.getDefinitions();
             for (PhysicalChannelDefinition definition : definitions) {
-                URI uri = definition.getUri();
-                QName deployable = definition.getDeployable();
-                FanOutHandler fanOutHandler;
-                if (definition.isSynchronous()) {
-                    fanOutHandler = new SyncFanOutHandler();
-                } else {
-                    fanOutHandler = new AsyncFanOutHandler(executorService);
-                }
-                Channel channel;
-                if (definition.isReplicate() && replicationCapable) {
-                    String channelName = uri.toString();
-                    ReplicationHandler replicationHandler = new ReplicationHandler(channelName, topologyService, monitor);
-                    channel = new ChannelImpl(uri, deployable, replicationHandler, fanOutHandler);
-                    try {
-                        topologyService.openChannel(channelName, null, replicationHandler);
-                    } catch (ZoneChannelException e) {
-                        throw new ExecutionException(e);
-                    }
-                } else {
-                    channel = new ChannelImpl(uri, deployable, fanOutHandler);
-                }
+
+                Channel channel = getBuilder(definition).build(definition);
+
                 PhysicalChannelBindingDefinition bindingDefinition = definition.getBindingDefinition();
                 buildBinding(channel, bindingDefinition);
                 channelManager.register(channel);
             }
         } catch (RegistrationException e) {
+            throw new ExecutionException(e.getMessage(), e);
+        } catch (BuilderException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
     }
@@ -166,10 +132,18 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
         }
     }
 
-    private ChannelBindingBuilder getBuilder(PhysicalChannelBindingDefinition bindingDefinition) throws ExecutionException {
-        ChannelBindingBuilder<?> builder = builders.get(bindingDefinition.getClass());
+    private ChannelBindingBuilder getBuilder(PhysicalChannelBindingDefinition definition) throws ExecutionException {
+        ChannelBindingBuilder<?> builder = bindingBuilders.get(definition.getClass());
         if (builder == null) {
-            throw new ExecutionException("Channel binding builder not found for type " + bindingDefinition.getClass());
+            throw new ExecutionException("Channel binding builder not found for type " + definition.getClass());
+        }
+        return builder;
+    }
+
+    private ChannelBuilder getBuilder(PhysicalChannelDefinition definition) throws ExecutionException {
+        ChannelBuilder builder = channelBuilders.get(definition.getClass());
+        if (builder == null) {
+            throw new ExecutionException("Channel builder not found for type " + definition.getClass());
         }
         return builder;
     }

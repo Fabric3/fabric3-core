@@ -43,14 +43,12 @@
  */
 package org.fabric3.fabric.runtime;
 
+import javax.management.MBeanServer;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.management.MBeanServer;
-
-import org.w3c.dom.Document;
 
 import org.fabric3.contribution.manifest.ContributionExport;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
@@ -97,7 +95,7 @@ import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.synthesize.ComponentRegistrationException;
 import org.fabric3.spi.synthesize.ComponentSynthesizer;
-
+import org.w3c.dom.Document;
 import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 import static org.fabric3.host.Names.HOST_CONTRIBUTION;
 import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL;
@@ -190,9 +188,7 @@ public class DefaultBootstrapper implements Bootstrapper {
                                                               classLoaderRegistry,
                                                               scopeRegistry,
                                                               componentManager,
-                                                              lcm,
-                                                              channelManager,
-                                                              metaDataStore,
+                                                              lcm, metaDataStore,
                                                               managementService,
                                                               hostInfo);
 

@@ -43,21 +43,20 @@
  */
 package org.fabric3.fabric.executor;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.fabric.channel.ReplicationMonitor;
 import org.fabric3.fabric.command.BuildChannelsCommand;
+import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.federation.MessageReceiver;
 import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
@@ -67,7 +66,6 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
  */
 public class BuildChannelsCommandExecutorTestCase extends TestCase {
 
-
     @SuppressWarnings({"unchecked"})
     public void testBuildChannel() throws Exception {
         PhysicalChannelDefinition definition = new MockDefinition();
@@ -75,30 +73,41 @@ public class BuildChannelsCommandExecutorTestCase extends TestCase {
 
         CommandExecutorRegistry registry = EasyMock.createMock(CommandExecutorRegistry.class);
 
-        ChannelBindingBuilder builder = EasyMock.createMock(ChannelBindingBuilder.class);
-        builder.build(EasyMock.isA(PhysicalChannelBindingDefinition.class), EasyMock.isA(Channel.class));
+        Channel channel = EasyMock.createMock(Channel.class);
+
+        ChannelBuilder channelBuilder = EasyMock.createMock(ChannelBuilder.class);
+        EasyMock.expect(channelBuilder.build(EasyMock.isA(PhysicalChannelDefinition.class))).andReturn(channel);
+
+        ChannelBindingBuilder bindingBuilder = EasyMock.createMock(ChannelBindingBuilder.class);
+        bindingBuilder.build(EasyMock.isA(PhysicalChannelBindingDefinition.class), EasyMock.isA(Channel.class));
 
         ChannelManager channelManager = EasyMock.createMock(ChannelManager.class);
         channelManager.register(EasyMock.isA(Channel.class));
 
         ZoneTopologyService topologyService = EasyMock.createMock(ZoneTopologyService.class);
-        EasyMock.expect(topologyService.supportsDynamicChannels()).andReturn(true);
-        topologyService.openChannel(EasyMock.isA(String.class), (String) EasyMock.eq(null), EasyMock.isA(MessageReceiver.class));
 
         ReplicationMonitor monitor = EasyMock.createMock(ReplicationMonitor.class);
-        EasyMock.replay(channelManager, builder, registry, topologyService, monitor);
 
-        BuildChannelsCommandExecutor executor = new BuildChannelsCommandExecutor(channelManager, null, registry, monitor);
+        EasyMock.replay(channelManager, channelBuilder, channel, bindingBuilder, registry, topologyService, monitor);
 
-        Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>> map =
-                Collections.<Class<? extends PhysicalChannelBindingDefinition>,
-                        ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>>singletonMap(MockBindingDefinition.class, builder);
-        executor.setBuilders(map);
-        executor.setTopologyService(Collections.singletonList(topologyService));
+        BuildChannelsCommandExecutor executor = new BuildChannelsCommandExecutor(channelManager, null, registry);
+
+        Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>> bindingBuilderMap
+                = Collections.<Class<? extends PhysicalChannelBindingDefinition>,
+                ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>>singletonMap(
+                MockBindingDefinition.class,
+                bindingBuilder);
+        executor.setBindingBuilders(bindingBuilderMap);
+
+        Map<Class<? extends PhysicalChannelDefinition>, ChannelBuilder> channelBuilderMap
+                = Collections.<Class<? extends PhysicalChannelDefinition>, ChannelBuilder>singletonMap(MockDefinition.class, channelBuilder);
+
+        executor.setChannelBuilders(channelBuilderMap);
+
         BuildChannelsCommand command = new BuildChannelsCommand(Collections.singletonList(definition));
         executor.execute(command);
 
-        EasyMock.verify(channelManager, builder, registry, topologyService, monitor);
+        EasyMock.verify(channelManager, channelBuilder, channel, bindingBuilder, registry, topologyService, monitor);
     }
 
     private class MockDefinition extends PhysicalChannelDefinition {

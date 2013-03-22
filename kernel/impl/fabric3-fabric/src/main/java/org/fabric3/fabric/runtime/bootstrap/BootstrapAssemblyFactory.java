@@ -49,11 +49,9 @@ import org.fabric3.contribution.wire.JavaContributionWire;
 import org.fabric3.contribution.wire.LocationContributionWire;
 import org.fabric3.fabric.builder.Connector;
 import org.fabric3.fabric.builder.ConnectorImpl;
-import org.fabric3.fabric.channel.ReplicationMonitor;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.collector.CollectorImpl;
 import org.fabric3.fabric.command.AttachWireCommand;
-import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.fabric.command.BuildComponentCommand;
 import org.fabric3.fabric.command.ChannelConnectionCommand;
 import org.fabric3.fabric.command.ConnectionCommand;
@@ -66,7 +64,6 @@ import org.fabric3.fabric.domain.ContributionHelperImpl;
 import org.fabric3.fabric.domain.LocalDeployer;
 import org.fabric3.fabric.domain.RuntimeDomain;
 import org.fabric3.fabric.executor.AttachWireCommandExecutor;
-import org.fabric3.fabric.executor.BuildChannelsCommandExecutor;
 import org.fabric3.fabric.executor.BuildComponentCommandExecutor;
 import org.fabric3.fabric.executor.ChannelConnectionCommandExecutor;
 import org.fabric3.fabric.executor.CommandExecutorRegistryImpl;
@@ -170,7 +167,6 @@ import org.fabric3.monitor.runtime.MonitorWireAttacher;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
-import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopeRegistry;
@@ -218,7 +214,6 @@ public class BootstrapAssemblyFactory {
                                       ScopeRegistry scopeRegistry,
                                       ComponentManager componentManager,
                                       LogicalComponentManager logicalComponentManager,
-                                      ChannelManager channelManager,
                                       MetaDataStore metaDataStore,
                                       ManagementService managementService,
                                       HostInfo info) throws InitializationException {
@@ -227,7 +222,6 @@ public class BootstrapAssemblyFactory {
                                                                                 classLoaderRegistry,
                                                                                 scopeRegistry,
                                                                                 componentManager,
-                                                                                channelManager,
                                                                                 managementService);
         DeployerMonitor monitor;
         try {
@@ -289,7 +283,6 @@ public class BootstrapAssemblyFactory {
                                                                          ClassLoaderRegistry classLoaderRegistry,
                                                                          ScopeRegistry scopeRegistry,
                                                                          ComponentManager componentManager,
-                                                                         ChannelManager channelManager,
                                                                          ManagementService managementService) {
 
         DefaultTransformerRegistry transformerRegistry = createTransformerRegistry(classLoaderRegistry);
@@ -310,8 +303,6 @@ public class BootstrapAssemblyFactory {
             commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
             commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(componentManager, commandRegistry));
             commandRegistry.register(ChannelConnectionCommand.class, new ChannelConnectionCommandExecutor(commandRegistry));
-            ReplicationMonitor monitor = monitorService.createMonitor(ReplicationMonitor.class, Names.RUNTIME_MONITOR_CHANNEL_URI);
-            commandRegistry.register(BuildChannelsCommand.class, new BuildChannelsCommandExecutor(channelManager, null, commandRegistry, monitor));
         } catch (MonitorCreationException e) {
             throw new AssertionError(e);
         }
