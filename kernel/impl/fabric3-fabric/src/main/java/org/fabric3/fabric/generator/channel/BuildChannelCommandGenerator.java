@@ -37,22 +37,15 @@
 */
 package org.fabric3.fabric.generator.channel;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.spi.channel.ChannelIntents;
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -62,6 +55,9 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Creates a command to build channels defined in a composite on a runtime.
@@ -97,11 +93,8 @@ public class BuildChannelCommandGenerator implements CommandGenerator {
         List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
         for (LogicalChannel channel : composite.getChannels()) {
             if (channel.getState() == LogicalState.NEW || !incremental) {
-                URI uri = channel.getUri();
-                QName deployable = channel.getDeployable();
-                boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
-                boolean replicate = channel.getDefinition().getIntents().contains(ChannelIntents.REPLICATE_INTENT);
-                PhysicalChannelDefinition definition = new PhysicalChannelDefinition(uri, deployable, sync, replicate);
+                ChannelGenerator generator = generatorRegistry.getChannelGenerator(channel.getDefinition().getType());
+                PhysicalChannelDefinition definition = generator.generate(channel);
                 generateBinding(channel, definition);
                 definitions.add(definition);
             }

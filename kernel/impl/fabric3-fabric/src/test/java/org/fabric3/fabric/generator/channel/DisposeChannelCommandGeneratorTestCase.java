@@ -37,47 +37,65 @@
 */
 package org.fabric3.fabric.generator.channel;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.fabric.command.DisposeChannelsCommand;
+import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
  *
  */
 public class DisposeChannelCommandGeneratorTestCase extends TestCase {
+    private ChannelGenerator channelGenerator;
+    private GeneratorRegistry registry;
+    private DisposeChannelCommandGenerator commandGenerator;
+    private LogicalCompositeComponent composite;
 
     public void testGenerateIncremental() throws Exception {
-        DisposeChannelCommandGenerator generator = new DisposeChannelCommandGenerator(0);
+        EasyMock.replay(channelGenerator, registry);
 
-        LogicalCompositeComponent composite = createComposite();
-
-        DisposeChannelsCommand command = generator.generate(composite, true);
+        DisposeChannelsCommand command = commandGenerator.generate(composite, true);
 
         assertEquals(1, command.getDefinitions().size());
-        assertEquals("oldChannel", command.getDefinitions().get(0).getUri().toString());
+
+        EasyMock.verify(channelGenerator, registry);
     }
 
     public void testGenerateFull() throws Exception {
+        EasyMock.replay(channelGenerator, registry);
 
-        DisposeChannelCommandGenerator generator = new DisposeChannelCommandGenerator(0);
-
-        LogicalCompositeComponent composite = createComposite();
-
-        DisposeChannelsCommand command = generator.generate(composite, false);
+        DisposeChannelsCommand command = commandGenerator.generate(composite, false);
 
         assertEquals(1, command.getDefinitions().size());
-        EasyMock.verify();
+        EasyMock.verify(channelGenerator, registry);
     }
 
-    private LogicalCompositeComponent createComposite() {
-        LogicalCompositeComponent composite = new LogicalCompositeComponent(URI.create("composite"), null, null);
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        channelGenerator = EasyMock.createMock(ChannelGenerator.class);
+        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("test", "test"), false, false);
+        EasyMock.expect(channelGenerator.generate(EasyMock.isA(LogicalChannel.class))).andReturn(definition);
+
+        registry = EasyMock.createMock(GeneratorRegistry.class);
+        EasyMock.expect(registry.getChannelGenerator(EasyMock.isA(String.class))).andReturn(channelGenerator);
+
+        commandGenerator = new DisposeChannelCommandGenerator(registry, 0);
+
+        createComposite();
+    }
+
+    private void createComposite() {
+        composite = new LogicalCompositeComponent(URI.create("composite"), null, null);
 
         ChannelDefinition newDefinition = new ChannelDefinition("newChannel", URI.create("contribution"));
         LogicalChannel newChannel = new LogicalChannel(URI.create("newChannel"), newDefinition, composite);
@@ -87,9 +105,6 @@ public class DisposeChannelCommandGeneratorTestCase extends TestCase {
         LogicalChannel oldChannel = new LogicalChannel(URI.create("oldChannel"), oldDefinition, composite);
         oldChannel.setState(LogicalState.MARKED);
         composite.addChannel(oldChannel);
-
-        return composite;
     }
-
 
 }

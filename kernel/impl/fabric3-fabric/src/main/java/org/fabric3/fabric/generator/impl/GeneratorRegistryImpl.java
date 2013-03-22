@@ -43,11 +43,10 @@
  */
 package org.fabric3.fabric.generator.impl;
 
+import javax.xml.namespace.QName;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
@@ -56,6 +55,7 @@ import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.generator.BindingGenerator;
+import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.EventStreamHandlerGenerator;
@@ -63,27 +63,20 @@ import org.fabric3.spi.generator.InterceptorGenerator;
 import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
 public class GeneratorRegistryImpl implements GeneratorRegistry {
-
-    private Map<Class<?>, ComponentGenerator<?>> componentGenerators = new ConcurrentHashMap<Class<?>, ComponentGenerator<?>>();
-
-    private Map<Class<?>, BindingGenerator<?>> bindingGenerators = new ConcurrentHashMap<Class<?>, BindingGenerator<?>>();
-
-    private Map<Class<?>, ConnectionBindingGenerator<?>> connectionBindingGenerators =
-            new ConcurrentHashMap<Class<?>, ConnectionBindingGenerator<?>>();
-
-    private Map<QName, InterceptorGenerator> interceptorGenerators = new ConcurrentHashMap<QName, InterceptorGenerator>();
-
-    private Map<QName, EventStreamHandlerGenerator> handlerGenerators = new ConcurrentHashMap<QName, EventStreamHandlerGenerator>();
-
-    private Map<Class<?>, ResourceReferenceGenerator<?>> resourceReferenceGenerators =
-            new ConcurrentHashMap<Class<?>, ResourceReferenceGenerator<?>>();
-
-    private Map<Class<?>, ResourceGenerator<?>> resourceGenerators = new ConcurrentHashMap<Class<?>, ResourceGenerator<?>>();
+    private Map<Class<?>, ComponentGenerator<?>> componentGenerators = new HashMap<Class<?>, ComponentGenerator<?>>();
+    private Map<Class<?>, BindingGenerator<?>> bindingGenerators = new HashMap<Class<?>, BindingGenerator<?>>();
+    private Map<Class<?>, ConnectionBindingGenerator<?>> connectionBindingGenerators = new ConcurrentHashMap<Class<?>, ConnectionBindingGenerator<?>>();
+    private Map<QName, InterceptorGenerator> interceptorGenerators = new HashMap<QName, InterceptorGenerator>();
+    private Map<QName, EventStreamHandlerGenerator> handlerGenerators = new HashMap<QName, EventStreamHandlerGenerator>();
+    private Map<Class<?>, ResourceReferenceGenerator<?>> resourceReferenceGenerators = new HashMap<Class<?>, ResourceReferenceGenerator<?>>();
+    private Map<Class<?>, ResourceGenerator<?>> resourceGenerators = new HashMap<Class<?>, ResourceGenerator<?>>();
+    private Map<String, ChannelGenerator> channelGenerators = new HashMap<String, ChannelGenerator>();
 
     @Reference(required = false)
     public void setComponentGenerators(Map<Class<?>, ComponentGenerator<?>> componentGenerators) {
@@ -120,6 +113,11 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         this.handlerGenerators = handlerGenerators;
     }
 
+    @Reference(required = false)
+    public void setChannelGenerators(Map<String, ChannelGenerator> channelGenerators) {
+        this.channelGenerators = channelGenerators;
+    }
+
     public <T extends Implementation<?>> void register(Class<T> clazz, ComponentGenerator<LogicalComponent<T>> generator) {
         componentGenerators.put(clazz, generator);
     }
@@ -133,8 +131,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Implementation<?>> ComponentGenerator<LogicalComponent<T>> getComponentGenerator(Class<T> clazz)
-            throws GeneratorNotFoundException {
+    public <T extends Implementation<?>> ComponentGenerator<LogicalComponent<T>> getComponentGenerator(Class<T> clazz) throws GeneratorNotFoundException {
         ComponentGenerator<LogicalComponent<T>> generator = (ComponentGenerator<LogicalComponent<T>>) componentGenerators.get(clazz);
         if (generator == null) {
             throw new GeneratorNotFoundException(clazz);
@@ -152,8 +149,7 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     }
 
     @SuppressWarnings({"unchecked"})
-    public <T extends BindingDefinition> ConnectionBindingGenerator<T> getConnectionBindingGenerator(Class<T> clazz)
-            throws GeneratorNotFoundException {
+    public <T extends BindingDefinition> ConnectionBindingGenerator<T> getConnectionBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException {
         ConnectionBindingGenerator<T> generator = (ConnectionBindingGenerator<T>) connectionBindingGenerators.get(clazz);
         if (generator == null) {
             throw new GeneratorNotFoundException(clazz);
@@ -196,4 +192,11 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         return generator;
     }
 
+    public ChannelGenerator getChannelGenerator(String type) throws GeneratorNotFoundException {
+        ChannelGenerator generator = channelGenerators.get(type);
+        if (generator == null) {
+            throw new GeneratorNotFoundException(type);
+        }
+        return generator;
+    }
 }

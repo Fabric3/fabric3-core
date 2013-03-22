@@ -67,7 +67,7 @@
 
     <component name="BindingSelector">
         <f3:implementation.system class="org.fabric3.fabric.binding.BindingSelectorImpl"/>
-        <property name="disable" source ="$systemConfig//f3:bindings/f3:binding.sca/@disable"/>
+        <property name="disable" source="$systemConfig//f3:bindings/f3:binding.sca/@disable"/>
     </component>
 
     <component name="ConfigurableBindingSelectionStrategy">
@@ -149,8 +149,12 @@
         <f3:implementation.system class="org.fabric3.fabric.generator.context.StopContextCommandGeneratorImpl"/>
     </component>
 
-     <component f3:key="{urn:fabric3.org}allowsPassByReferencePolicy" name="ByReferenceInterceptorGenerator">
+    <component name="ByReferenceInterceptorGenerator" f3:key="{urn:fabric3.org}allowsPassByReferencePolicy">
         <f3:implementation.system class="org.fabric3.fabric.generator.utility.NullInterceptorGenerator"/>
+    </component>
+
+    <component name="DefaultChannelGenerator" f3:key="default">
+        <f3:implementation.system class="org.fabric3.fabric.generator.channel.DefaultChannelGenerator"/>
     </component>
 
 </composite>

@@ -37,33 +37,33 @@
 */
 package org.fabric3.fabric.generator.channel;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.fabric.command.DisposeChannelsCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
-import org.fabric3.spi.channel.ChannelIntents;
-import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Creates a command to remove channels defined in a composite from a runtime.
  */
 @EagerInit
 public class DisposeChannelCommandGenerator implements CommandGenerator {
+    private GeneratorRegistry generatorRegistry;
     private int order;
 
-    public DisposeChannelCommandGenerator(@Property(name = "order") int order) {
+    public DisposeChannelCommandGenerator(@Reference GeneratorRegistry generatorRegistry, @Property(name = "order") int order) {
+        this.generatorRegistry = generatorRegistry;
         this.order = order;
     }
 
@@ -83,15 +83,12 @@ public class DisposeChannelCommandGenerator implements CommandGenerator {
         return new DisposeChannelsCommand(definitions);
     }
 
-    private List<PhysicalChannelDefinition> createDefinitions(LogicalCompositeComponent composite) {
+    private List<PhysicalChannelDefinition> createDefinitions(LogicalCompositeComponent composite) throws GenerationException {
         List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
         for (LogicalChannel channel : composite.getChannels()) {
             if (channel.getState() == LogicalState.MARKED) {
-                URI uri = channel.getUri();
-                QName deployable = channel.getDeployable();
-                boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
-                boolean replicating = channel.getDefinition().getIntents().contains(ChannelIntents.REPLICATE_INTENT);
-                PhysicalChannelDefinition definition = new PhysicalChannelDefinition(uri, deployable, sync, replicating);
+                ChannelGenerator generator = generatorRegistry.getChannelGenerator(channel.getDefinition().getType());
+                PhysicalChannelDefinition definition = generator.generate(channel);
                 definitions.add(definition);
             }
         }

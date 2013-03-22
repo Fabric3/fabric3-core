@@ -37,20 +37,15 @@
 */
 package org.fabric3.fabric.generator.channel;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.fabric.command.DisposeChannelsCommand;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.spi.channel.ChannelIntents;
+import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -59,6 +54,8 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.fabric3.spi.model.type.binding.SCABinding;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -105,11 +102,8 @@ public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGe
 
     @SuppressWarnings({"unchecked"})
     private void generateChannelDefinition(LogicalChannel channel, List<PhysicalChannelDefinition> definitions) throws GenerationException {
-        URI uri = channel.getUri();
-        QName deployable = channel.getDeployable();
-        boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
-        boolean replicate = channel.getDefinition().getIntents().contains(ChannelIntents.REPLICATE_INTENT);
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(uri, deployable, sync, replicate);
+        ChannelGenerator generator = generatorRegistry.getChannelGenerator(channel.getDefinition().getType());
+        PhysicalChannelDefinition definition = generator.generate(channel);
 
         if (!channel.getBindings().isEmpty()) {
             // generate binding information

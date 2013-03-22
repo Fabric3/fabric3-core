@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -35,56 +35,35 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.model.type.component;
+package org.fabric3.fabric.generator.channel;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.ArrayList;
+
+import junit.framework.TestCase;
+import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.spi.channel.ChannelIntents;
+import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- * A channel configuration in a composite.
+ *
  */
-public class ChannelDefinition extends BindableDefinition<Composite> {
-    private static final long serialVersionUID = 8735705202863105855L;
+public class DefaultChannelGeneratorTestCase extends TestCase {
+    private DefaultChannelGenerator generator = new DefaultChannelGenerator();
 
-    private String name;
-    private URI contributionUri;
-    private String type = "default";
+    public void testGenerate() throws Exception {
+        ChannelDefinition channelDefinition = new ChannelDefinition("test", URI.create("contribution"));
+        channelDefinition.addIntent(ChannelIntents.REPLICATE_INTENT);
+        channelDefinition.addIntent(ChannelIntents.SYNC_INTENT);
+        LogicalChannel channel = new LogicalChannel(URI.create("test"), channelDefinition, null);
+        QName deployable = new QName("test", "test");
+        channel.setDeployable(deployable);
 
-    public ChannelDefinition(String name, URI contributionUri) {
-        this.name = name;
-        this.contributionUri = contributionUri;
-        bindings = new ArrayList<BindingDefinition>();
-    }
+        PhysicalChannelDefinition definition = generator.generate(channel);
 
-    public ChannelDefinition(String name, URI contributionUri, String type) {
-        this.name = name;
-        this.contributionUri = contributionUri;
-        this.type = type;
-        bindings = new ArrayList<BindingDefinition>();
-    }
-
-    /**
-     * Returns the channel name.
-     *
-     * @return the channel name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns the URI of the contribution this channel is defined in.
-     *
-     * @return the URI of the contribution this channel is defined in
-     */
-    public URI getContributionUri() {
-        return contributionUri;
-    }
-
-    /**
-     * Returns the channel type.
-     */
-    public String getType() {
-        return type;
+        assertEquals(deployable, definition.getDeployable());
+        assertTrue(definition.isReplicate());
+        assertTrue(definition.isSynchronous());
     }
 }

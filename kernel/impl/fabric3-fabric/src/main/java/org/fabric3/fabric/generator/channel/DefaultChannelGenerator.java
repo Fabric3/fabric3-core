@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -35,56 +35,29 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.model.type.component;
+package org.fabric3.fabric.generator.channel;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.ArrayList;
+
+import org.fabric3.spi.channel.ChannelIntents;
+import org.fabric3.spi.generator.ChannelGenerator;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * A channel configuration in a composite.
+ * Generates a channel using the default implementation.
  */
-public class ChannelDefinition extends BindableDefinition<Composite> {
-    private static final long serialVersionUID = 8735705202863105855L;
+@EagerInit
+public class DefaultChannelGenerator implements ChannelGenerator {
 
-    private String name;
-    private URI contributionUri;
-    private String type = "default";
-
-    public ChannelDefinition(String name, URI contributionUri) {
-        this.name = name;
-        this.contributionUri = contributionUri;
-        bindings = new ArrayList<BindingDefinition>();
-    }
-
-    public ChannelDefinition(String name, URI contributionUri, String type) {
-        this.name = name;
-        this.contributionUri = contributionUri;
-        this.type = type;
-        bindings = new ArrayList<BindingDefinition>();
-    }
-
-    /**
-     * Returns the channel name.
-     *
-     * @return the channel name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns the URI of the contribution this channel is defined in.
-     *
-     * @return the URI of the contribution this channel is defined in
-     */
-    public URI getContributionUri() {
-        return contributionUri;
-    }
-
-    /**
-     * Returns the channel type.
-     */
-    public String getType() {
-        return type;
+    public PhysicalChannelDefinition generate(LogicalChannel channel) throws GenerationException {
+        URI uri = channel.getUri();
+        QName deployable = channel.getDeployable();
+        boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
+        boolean replicate = channel.getDefinition().getIntents().contains(ChannelIntents.REPLICATE_INTENT);
+        return new PhysicalChannelDefinition(uri, deployable, sync, replicate);
     }
 }

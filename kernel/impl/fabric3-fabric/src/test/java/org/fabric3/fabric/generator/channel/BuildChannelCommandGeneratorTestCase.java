@@ -37,20 +37,22 @@
 */
 package org.fabric3.fabric.generator.channel;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
  *
@@ -62,10 +64,17 @@ public class BuildChannelCommandGeneratorTestCase extends TestCase {
         ConnectionBindingGenerator<MockBinding> bindingGenerator = EasyMock.createMock(ConnectionBindingGenerator.class);
         MockPhysicalChannelBindingDefinition physical = new MockPhysicalChannelBindingDefinition();
         EasyMock.expect(bindingGenerator.generateChannelBinding(EasyMock.isA(LogicalBinding.class))).andReturn(physical);
+
+        ChannelGenerator channelGenerator = EasyMock.createMock(ChannelGenerator.class);
+        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("newChannel"), new QName("test", "test"), false, false);
+        EasyMock.expect(channelGenerator.generate(EasyMock.isA(LogicalChannel.class))).andReturn(definition);
+
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
+        EasyMock.expect(registry.getChannelGenerator(EasyMock.isA(String.class))).andReturn(channelGenerator);
         registry.getConnectionBindingGenerator(MockBinding.class);
         EasyMock.expectLastCall().andReturn(bindingGenerator);
-        EasyMock.replay(bindingGenerator, registry);
+
+        EasyMock.replay(bindingGenerator, registry, channelGenerator);
 
         BuildChannelCommandGenerator generator = new BuildChannelCommandGenerator(0, registry);
 
@@ -75,7 +84,7 @@ public class BuildChannelCommandGeneratorTestCase extends TestCase {
 
         assertEquals(1, command.getDefinitions().size());
         assertEquals("newChannel", command.getDefinitions().get(0).getUri().toString());
-        EasyMock.verify(registry);
+        EasyMock.verify(bindingGenerator, registry, channelGenerator);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -83,10 +92,17 @@ public class BuildChannelCommandGeneratorTestCase extends TestCase {
         ConnectionBindingGenerator<MockBinding> bindingGenerator = EasyMock.createMock(ConnectionBindingGenerator.class);
         MockPhysicalChannelBindingDefinition physical = new MockPhysicalChannelBindingDefinition();
         EasyMock.expect(bindingGenerator.generateChannelBinding(EasyMock.isA(LogicalBinding.class))).andReturn(physical);
+
+        ChannelGenerator channelGenerator = EasyMock.createMock(ChannelGenerator.class);
+        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("newChannel"), new QName("test", "test"), false, false);
+        EasyMock.expect(channelGenerator.generate(EasyMock.isA(LogicalChannel.class))).andReturn(definition).times(2);
+
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
+        EasyMock.expect(registry.getChannelGenerator(EasyMock.isA(String.class))).andReturn(channelGenerator).times(2);
         registry.getConnectionBindingGenerator(MockBinding.class);
         EasyMock.expectLastCall().andReturn(bindingGenerator);
-        EasyMock.replay(bindingGenerator, registry);
+
+        EasyMock.replay(bindingGenerator, registry, channelGenerator);
 
         BuildChannelCommandGenerator generator = new BuildChannelCommandGenerator(0, registry);
 
@@ -95,7 +111,7 @@ public class BuildChannelCommandGeneratorTestCase extends TestCase {
         BuildChannelsCommand command = generator.generate(composite, false);
 
         assertEquals(2, command.getDefinitions().size());
-        EasyMock.verify(registry);
+        EasyMock.verify(bindingGenerator, registry, channelGenerator);
     }
 
     private LogicalCompositeComponent createComposite() {
@@ -115,7 +131,7 @@ public class BuildChannelCommandGeneratorTestCase extends TestCase {
         return composite;
     }
 
-    private class MockPhysicalChannelBindingDefinition extends PhysicalChannelBindingDefinition{
+    private class MockPhysicalChannelBindingDefinition extends PhysicalChannelBindingDefinition {
         private static final long serialVersionUID = 4942207684356048495L;
     }
 }

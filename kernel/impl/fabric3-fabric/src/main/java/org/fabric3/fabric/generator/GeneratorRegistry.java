@@ -50,6 +50,7 @@ import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.generator.BindingGenerator;
+import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.EventStreamHandlerGenerator;
@@ -59,13 +60,13 @@ import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
- * A registry for {@link ComponentGenerator}s, {@link BindingGenerator}s, {@link ConnectionBindingGenerator}s, and {@link InterceptorGenerator}s .
- * Generators are responsible for producing physical model objects that are provisioned to service nodes from their logical counterparts.
+ * A registry for {@link ComponentGenerator}s, {@link BindingGenerator}s, {@link ConnectionBindingGenerator}s, and {@link InterceptorGenerator}s . Generators
+ * are responsible for producing physical model objects that are provisioned to service nodes from their logical counterparts.
  */
 public interface GeneratorRegistry {
 
     /**
-     * Returns a component generator for the specified implementation.
+     * Returns a {@link CommandGenerator} for the specified implementation.
      *
      * @param clazz the implementation type the generator handles.
      * @return a the component generator for that implementation type
@@ -74,7 +75,7 @@ public interface GeneratorRegistry {
     <T extends Implementation<?>> ComponentGenerator<LogicalComponent<T>> getComponentGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
-     * Returns a binding generator for the specified binding class.
+     * Returns a {@link BindingGenerator} for the specified binding class.
      *
      * @param clazz The binding type type the generator handles.
      * @return The registered binding generator.
@@ -83,7 +84,7 @@ public interface GeneratorRegistry {
     <T extends BindingDefinition> BindingGenerator<T> getBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
-     * Returns a connection binding generator for the specified binding class.
+     * Returns a {@link ConnectionBindingGenerator} for the specified binding class.
      *
      * @param clazz The binding type type the generator handles.
      * @return The registered binding generator.
@@ -92,17 +93,16 @@ public interface GeneratorRegistry {
     <T extends BindingDefinition> ConnectionBindingGenerator<?> getConnectionBindingGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
-     * Returns the resource reference generator for the resource type.
+     * Returns the {@link ResourceReferenceGenerator} for the resource type.
      *
      * @param clazz the resource type the generator handles
      * @return the resource reference generator
      * @throws GeneratorNotFoundException if no generator is registered for the resource type
      */
-    <T extends ResourceReferenceDefinition> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz)
-            throws GeneratorNotFoundException;
+    <T extends ResourceReferenceDefinition> ResourceReferenceGenerator<T> getResourceReferenceGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
-     * Returns the resource generator for the resource type.
+     * Returns the {@link ResourceGenerator} for the resource type.
      *
      * @param clazz the resource type the generator handles
      * @return the resource generator
@@ -111,7 +111,7 @@ public interface GeneratorRegistry {
     <T extends ResourceDefinition> ResourceGenerator<T> getResourceGenerator(Class<T> clazz) throws GeneratorNotFoundException;
 
     /**
-     * Returns the interceptor definition generator for the qualified name.
+     * Returns the {@link InterceptorGenerator} for the qualified name.
      *
      * @param extensionName qualified name of the policy extension
      * @return interceptor generator
@@ -119,6 +119,21 @@ public interface GeneratorRegistry {
      */
     InterceptorGenerator getInterceptorGenerator(QName extensionName) throws GeneratorNotFoundException;
 
+    /**
+     * Returns the {@link EventStreamHandlerGenerator} for the qualified name.
+     *
+     * @param extensionName qualified name of the generator
+     * @return the generator
+     * @throws GeneratorNotFoundException if no generator is registered for qualified name
+     */
     EventStreamHandlerGenerator getEventStreamHandlerGenerator(QName extensionName) throws GeneratorNotFoundException;
 
+    /**
+     * Returns the {@link ChannelGenerator} for the type.
+     *
+     * @param type the channel type
+     * @return the channel generator
+     * @throws GeneratorNotFoundException if no generator is registered for the type
+     */
+    ChannelGenerator getChannelGenerator(String type) throws GeneratorNotFoundException;
 }
