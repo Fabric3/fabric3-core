@@ -35,23 +35,19 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.builder.channel;
+package org.fabric3.fabric.model.physical;
 
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.channel.Channel;
+import javax.xml.namespace.QName;
+import java.net.URI;
+
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- * Builds a channel.
+ * Defines a default channel implementation.
  */
-public interface ChannelBuilder<T extends PhysicalChannelDefinition> {
+public class DefaultChannelDefinition extends PhysicalChannelDefinition {
 
-    /**
-     * Creates the channel from the definition.
-     *
-     * @param definition the physical channel definition
-     * @return the channel
-     * @throws BuilderException if there is an error building the channel
-     */
-    Channel build(T definition) throws BuilderException;
+    public DefaultChannelDefinition(URI uri, QName deployable, boolean synchronous, boolean replicate) {
+        super(uri, deployable, synchronous, replicate);
+    }
 }

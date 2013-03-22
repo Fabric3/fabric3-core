@@ -92,11 +92,9 @@ public class BuildChannelsCommandExecutorTestCase extends TestCase {
 
         BuildChannelsCommandExecutor executor = new BuildChannelsCommandExecutor(channelManager, null, registry);
 
-        Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>> bindingBuilderMap
-                = Collections.<Class<? extends PhysicalChannelBindingDefinition>,
-                ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>>singletonMap(
-                MockBindingDefinition.class,
-                bindingBuilder);
+        Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder> bindingBuilderMap
+                = Collections.<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder>singletonMap(MockBindingDefinition.class,
+                                                                                                                     bindingBuilder);
         executor.setBindingBuilders(bindingBuilderMap);
 
         Map<Class<? extends PhysicalChannelDefinition>, ChannelBuilder> channelBuilderMap

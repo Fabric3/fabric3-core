@@ -46,6 +46,7 @@ import org.easymock.classextension.EasyMock;
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.fabric.command.DisposeChannelsCommand;
 import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.fabric.model.physical.DefaultChannelDefinition;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.spi.channel.ChannelIntents;
 import org.fabric3.spi.generator.ChannelGenerator;
@@ -192,7 +193,7 @@ public class DomainChannelCommandGeneratorImplTestCase extends TestCase {
 
     private ChannelGenerator getChannelGenerator() throws GenerationException {
         ChannelGenerator channelGenerator = org.easymock.EasyMock.createMock(ChannelGenerator.class);
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("channel"), new QName("test", "test"), false, false);
+        PhysicalChannelDefinition definition = new DefaultChannelDefinition(URI.create("channel"), new QName("test", "test"), false, false);
         EasyMock.expect(channelGenerator.generate(org.easymock.EasyMock.isA(LogicalChannel.class))).andReturn(definition);
         return channelGenerator;
     }

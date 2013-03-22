@@ -40,6 +40,7 @@ package org.fabric3.fabric.generator.channel;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
+import org.fabric3.fabric.model.physical.DefaultChannelDefinition;
 import org.fabric3.spi.channel.ChannelIntents;
 import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.generator.GenerationException;
@@ -58,6 +59,6 @@ public class DefaultChannelGenerator implements ChannelGenerator {
         QName deployable = channel.getDeployable();
         boolean sync = channel.getDefinition().getIntents().contains(ChannelIntents.SYNC_INTENT);
         boolean replicate = channel.getDefinition().getIntents().contains(ChannelIntents.REPLICATE_INTENT);
-        return new PhysicalChannelDefinition(uri, deployable, sync, replicate);
+        return new DefaultChannelDefinition(uri, deployable, sync, replicate);
     }
 }

@@ -49,18 +49,18 @@ import org.fabric3.fabric.channel.FanOutHandler;
 import org.fabric3.fabric.channel.ReplicationHandler;
 import org.fabric3.fabric.channel.ReplicationMonitor;
 import org.fabric3.fabric.channel.SyncFanOutHandler;
+import org.fabric3.fabric.model.physical.DefaultChannelDefinition;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.federation.ZoneChannelException;
 import org.fabric3.spi.federation.ZoneTopologyService;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
-public class DefaultChannelBuilder implements ChannelBuilder {
+public class DefaultChannelBuilder implements ChannelBuilder<DefaultChannelDefinition> {
     private ExecutorService executorService;
     private ReplicationMonitor monitor;
     private ZoneTopologyService topologyService;
@@ -80,7 +80,7 @@ public class DefaultChannelBuilder implements ChannelBuilder {
         }
     }
 
-    public Channel build(PhysicalChannelDefinition definition) throws BuilderException {
+    public Channel build(DefaultChannelDefinition definition) throws BuilderException {
         URI uri = definition.getUri();
         QName deployable = definition.getDeployable();
         FanOutHandler fanOutHandler;

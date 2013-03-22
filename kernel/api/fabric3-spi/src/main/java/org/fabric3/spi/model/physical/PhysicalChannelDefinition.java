@@ -50,7 +50,7 @@ import java.net.URI;
 /**
  * Used to provision a channel on a runtime.
  */
-public class PhysicalChannelDefinition implements Serializable {
+public abstract class PhysicalChannelDefinition implements Serializable {
     private static final long serialVersionUID = 8681183877136491160L;
     private URI uri;
     private QName deployable;

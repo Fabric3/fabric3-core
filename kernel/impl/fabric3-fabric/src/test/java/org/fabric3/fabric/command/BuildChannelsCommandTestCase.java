@@ -37,13 +37,13 @@
 */
 package org.fabric3.fabric.command;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-
+import org.fabric3.fabric.model.physical.DefaultChannelDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 public class BuildChannelsCommandTestCase extends TestCase {
@@ -64,7 +64,9 @@ public class BuildChannelsCommandTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("channel"), new QName("test", "composite"), false, false);
+        URI uri = URI.create("channel");
+        QName name = new QName("test", "composite");
+        PhysicalChannelDefinition definition = new DefaultChannelDefinition(uri, name, false, false);
         definitions = Collections.singletonList(definition);
     }
 }

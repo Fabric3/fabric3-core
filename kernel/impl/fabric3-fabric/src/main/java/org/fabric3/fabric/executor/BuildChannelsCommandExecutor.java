@@ -75,8 +75,7 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
 
     private Map<Class<? extends PhysicalChannelDefinition>, ChannelBuilder> channelBuilders = Collections.emptyMap();
 
-    private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>> bindingBuilders
-            = Collections.emptyMap();
+    private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder> bindingBuilders = Collections.emptyMap();
 
     @Constructor
     public BuildChannelsCommandExecutor(@Reference ChannelManager channelManager,
@@ -87,8 +86,7 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
     }
 
     @Reference(required = false)
-    public void setBindingBuilders(Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>>
-                                               builders) {
+    public void setBindingBuilders(Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder> builders) {
         this.bindingBuilders = builders;
     }
 
@@ -102,6 +100,7 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
         executorRegistry.register(BuildChannelsCommand.class, this);
     }
 
+    @SuppressWarnings("unchecked")
     public void execute(BuildChannelsCommand command) throws ExecutionException {
         try {
             List<PhysicalChannelDefinition> definitions = command.getDefinitions();
@@ -141,7 +140,7 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
     }
 
     private ChannelBuilder getBuilder(PhysicalChannelDefinition definition) throws ExecutionException {
-        ChannelBuilder builder = channelBuilders.get(definition.getClass());
+        ChannelBuilder<?> builder = channelBuilders.get(definition.getClass());
         if (builder == null) {
             throw new ExecutionException("Channel builder not found for type " + definition.getClass());
         }

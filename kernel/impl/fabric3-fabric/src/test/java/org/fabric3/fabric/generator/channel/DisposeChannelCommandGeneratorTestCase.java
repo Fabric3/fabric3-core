@@ -44,6 +44,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.command.DisposeChannelsCommand;
 import org.fabric3.fabric.generator.GeneratorRegistry;
+import org.fabric3.fabric.model.physical.DefaultChannelDefinition;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -83,7 +84,7 @@ public class DisposeChannelCommandGeneratorTestCase extends TestCase {
         super.setUp();
 
         channelGenerator = EasyMock.createMock(ChannelGenerator.class);
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("test", "test"), false, false);
+        PhysicalChannelDefinition definition = new DefaultChannelDefinition(URI.create("test"), new QName("test", "test"), false, false);
         EasyMock.expect(channelGenerator.generate(EasyMock.isA(LogicalChannel.class))).andReturn(definition);
 
         registry = EasyMock.createMock(GeneratorRegistry.class);
