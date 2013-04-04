@@ -46,12 +46,6 @@ Public License. See the accompanying license file for details.
         </dependency>
 
         <dependency>
-            <groupId>com.higherfrequencytrading</groupId>
-            <artifactId>chronicle</artifactId>
-            <version>1.6</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
             <version>${disruptor.version}</version>
