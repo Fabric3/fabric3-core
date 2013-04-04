@@ -15,7 +15,8 @@
  specific language governing permissions and limitations
  under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -27,20 +28,21 @@
     <artifactId>fabric3-extension-core-parent-pom</artifactId>
     <name>Fabric3 Core Extensions Parent POM</name>
     <description>Fabric3 Core Extensions Parent POM.</description>
-	<packaging>pom</packaging>
+    <packaging>pom</packaging>
 
-	<modules>
-		<module>fabric3-async</module>
-		<module>fabric3-contribution-scanner</module>
-		<module>fabric3-jdk-proxy</module>
+    <modules>
+        <module>fabric3-async</module>
+        <module>fabric3-contribution-scanner</module>
+        <module>fabric3-jdk-proxy</module>
         <module>fabric3-bytecode-proxy</module>
-		<module>fabric3-jetty</module>
-		<module>fabric3-resource</module>
-		<module>fabric3-sca-intents</module>
-		<module>fabric3-test-spi</module>
-		<module>fabric3-recovery</module>
-		<module>fabric3-execution</module>
-		<module>fabric3-writer</module>
+        <module>fabric3-jetty</module>
+        <module>fabric3-resource</module>
+        <module>fabric3-sca-intents</module>
+        <module>fabric3-test-spi</module>
+        <module>fabric3-recovery</module>
+        <module>fabric3-execution</module>
+        <module>fabric3-writer</module>
         <module>fabric3-channel-disruptor</module>
-	</modules>
+        <module>fabric3-monitor-impl</module>
+    </modules>
 </project>

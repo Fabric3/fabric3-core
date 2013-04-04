@@ -49,11 +49,13 @@ public class MonitorTargetDefinition extends PhysicalTargetDefinition {
     private URI classLoaderId;
     private String monitorType;
     private URI monitorable;
+    private String destination;
 
-    public MonitorTargetDefinition(String monitorType, URI monitorable, URI uri) {
+    public MonitorTargetDefinition(String monitorType, URI monitorable, String destination) {
         this.monitorType = monitorType;
         this.monitorable = monitorable;
-        setUri(uri);
+        this.destination = destination;
+        setUri(null);
     }
 
     public URI getClassLoaderId() {
@@ -70,5 +72,9 @@ public class MonitorTargetDefinition extends PhysicalTargetDefinition {
 
     public URI getMonitorable() {
         return monitorable;
+    }
+
+    public String getDestination() {
+        return destination;
     }
 }

@@ -43,36 +43,31 @@
  */
 package org.fabric3.host.monitor;
 
-import java.net.URI;
-
-import org.fabric3.api.MonitorEvent;
-
 /**
- * Creates monitor proxies that send {@link MonitorEvent}s to a channel.
+ * Delegates to a {@link MonitorProxyServiceExtension} to create monitor proxies.
  */
 public interface MonitorProxyService {
 
     /**
-     * Create a proxy using the runtime as the event source.
+     * Create a proxy using the runtime as the event source that routes to the default monitor destination.
      *
-     * @param type       the proxy interface
-     * @param channelUri the destination channel
-     * @param <T>        the proxy type
+     * @param type the proxy interface
+     * @param <T>  the proxy type
      * @return the proxy
      * @throws MonitorCreationException if an error occurs creating the proxy
      */
-    <T> T createMonitor(Class<T> type, URI channelUri) throws MonitorCreationException;
+    <T> T createMonitor(Class<T> type) throws MonitorCreationException;
 
     /**
-     * Create a proxy using the given monitorable as the event source.
+     * Create a proxy using the given monitorable as the event source and the given destination.
      *
      * @param type        the proxy interface
      * @param monitorable the event source
-     * @param channelUri  the destination channel
+     * @param destination the destination name
      * @param <T>         the proxy type
      * @return the proxy
      * @throws MonitorCreationException if an error occurs creating the proxy
      */
-    <T> T createMonitor(Class<T> type, Monitorable monitorable, URI channelUri) throws MonitorCreationException;
+    <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws MonitorCreationException;
 
 }

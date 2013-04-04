@@ -37,15 +37,6 @@
 */
 package org.fabric3.runtime.weblogic.boot;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -55,13 +46,19 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.xml.bind.JAXBContext;
-
-import org.w3c.dom.Document;
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.classloader.MaskingClassLoader;
-import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
@@ -76,10 +73,9 @@ import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.weblogic.api.Constants;
-import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorEventDispatcher;
-import org.fabric3.runtime.weblogic.monitor.WebLogicMonitorEventDispatcherFactory;
+import org.fabric3.runtime.weblogic.monitor.WebLogicDestinationRouter;
 import org.fabric3.runtime.weblogic.work.WebLogicExecutorService;
-
+import org.w3c.dom.Document;
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
 import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
 
@@ -221,9 +217,9 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
-            WebLogicMonitorEventDispatcher runtimeDispatcher = new WebLogicMonitorEventDispatcher();
-            WebLogicMonitorEventDispatcher appDispatcher = new WebLogicMonitorEventDispatcher();
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, runtimeDispatcher, appDispatcher);
+            WebLogicDestinationRouter destinationRouter = new WebLogicDestinationRouter();
+
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, destinationRouter);
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
@@ -238,19 +234,9 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             BootConfiguration configuration = new BootConfiguration();
 
             List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
-            WebLogicMonitorEventDispatcherFactory factory = new WebLogicMonitorEventDispatcherFactory();
-            ComponentRegistration dispatcherRegistration = new ComponentRegistration("MonitorEventDispatcherFactory",
-                                                                                     MonitorEventDispatcherFactory.class,
-                                                                                     factory,
-                                                                                     true);
-
-            registrations.add(dispatcherRegistration);
 
             WebLogicExecutorService executorService = new WebLogicExecutorService();
-            ComponentRegistration executorRegistration = new ComponentRegistration("WebLogicExecutorService",
-                                                                                   ExecutorService.class,
-                                                                                   executorService,
-                                                                                   true);
+            ComponentRegistration executorRegistration = new ComponentRegistration("WebLogicExecutorService", ExecutorService.class, executorService, true);
             registrations.add(executorRegistration);
 
             configuration.addRegistrations(registrations);
@@ -271,7 +257,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             context.setAttribute(RUNTIME_ATTRIBUTE, runtime);
 
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
-            monitor = monitorService.createMonitor(ServerMonitor.class, Names.RUNTIME_MONITOR_CHANNEL_URI);
+            monitor = monitorService.createMonitor(ServerMonitor.class);
 
             start(mBeanServer, componentRuntime, runtimeMode);
 
@@ -285,10 +271,10 @@ public class Fabric3WebLogicListener implements ServletContextListener {
     }
 
     /**
-     * Starts the runtime. If the host web application is in the active state, the runtime will be started synchronously. If not, the runtime will be
-     * started on a separate thread after the web application state has been transitioned to active. Starting the runtime asynchronously avoids race
-     * conditions where a deployment is sent to participants and the host web app is not initialized prior to participants attempting to resolve
-     * contributions (.cf FABRICTHREE-662).
+     * Starts the runtime. If the host web application is in the active state, the runtime will be started synchronously. If not, the runtime will be started on
+     * a separate thread after the web application state has been transitioned to active. Starting the runtime asynchronously avoids race conditions where a
+     * deployment is sent to participants and the host web app is not initialized prior to participants attempting to resolve contributions (.cf
+     * FABRICTHREE-662).
      *
      * @param mBeanServer      the MBean server
      * @param componentRuntime the component runtime MBean
@@ -389,8 +375,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
         } else if ("participant".equals(mode)) {
             return RuntimeMode.PARTICIPANT;
         } else if (!"vm".equals(mode)) {
-            throw new IllegalArgumentException("Invalid runtime mode: " + mode
-                                                       + ". Valid modes are 'controller', 'participant' or 'vm' (default).");
+            throw new IllegalArgumentException("Invalid runtime mode: " + mode + ". Valid modes are 'controller', 'participant' or 'vm' (default).");
         }
         return RuntimeMode.VM;
     }

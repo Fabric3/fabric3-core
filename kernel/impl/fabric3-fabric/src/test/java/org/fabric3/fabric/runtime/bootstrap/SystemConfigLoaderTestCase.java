@@ -83,16 +83,6 @@ public class SystemConfigLoaderTestCase extends TestCase {
             "   </web.server>" +
             "</config>";
 
-    private static final String CONFIG_MONITOR =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                    "<runtime.monitor>" +
-                    "<configuration>" +
-                    "   <appender name='CUSTOM' class='org.fabric3.monitor.runtime.TestAppender'>" +
-                    "       <encoder><pattern>test-appender: %msg</pattern></encoder>" +
-                    "   </appender>" +
-                    "</configuration>" +
-                    "</runtime.monitor>";
-
     private static final String DEPLOY_DIRS = "<config>" +
             "   <deploy.directories>" +
             "       <deploy.directory>foo</deploy.directory>" +
@@ -103,16 +93,6 @@ public class SystemConfigLoaderTestCase extends TestCase {
     private static final String ENVIRONMENT = "<config><runtime environment='test'/></config>";
 
     private static final String DEFAULT_ENVIRONMENT = "<config><runtime/></config>";
-
-    public void testGetMonitorConfiguration() throws Exception {
-        SystemConfigLoader loader = new SystemConfigLoader();
-        ByteArrayInputStream stream = new ByteArrayInputStream(CONFIG_MONITOR.getBytes());
-        InputStreamSource source = new InputStreamSource("stream", stream);
-        Document systemConfig = loader.loadSystemConfig(source);
-        Element element = loader.getMonitorConfiguration("runtime.monitor", systemConfig);
-        assertEquals(1, element.getElementsByTagName("logger").getLength());
-        assertEquals(1, element.getElementsByTagName("appender-ref").getLength());
-    }
 
     public void testParseDomainName() throws Exception {
         SystemConfigLoader loader = new SystemConfigLoader();

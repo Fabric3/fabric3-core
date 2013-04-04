@@ -122,6 +122,7 @@
                 <include>org.codehaus.fabric3:fabric3-federation-deployment</include>
                 <include>org.codehaus.fabric3:fabric3-jgroups</include>
                 <include>org.codehaus.fabric3:fabric3-federation-jgroups</include>
+                <include>org.codehaus.fabric3:fabric3-monitor-impl</include>
             </includes>
             <outputDirectory>extensions</outputDirectory>
         </dependencySet>

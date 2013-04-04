@@ -43,19 +43,14 @@
  */
 package org.fabric3.fabric.runtime;
 
+import javax.management.MBeanServer;
 import java.io.File;
 import java.net.URI;
-import javax.management.MBeanServer;
-import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.contribution.MetaDataStoreImpl;
 import org.fabric3.contribution.ProcessorRegistryImpl;
-import org.fabric3.fabric.channel.ChannelConnectionImpl;
-import org.fabric3.fabric.channel.ChannelImpl;
 import org.fabric3.fabric.channel.ChannelManagerImpl;
-import org.fabric3.fabric.channel.EventStreamImpl;
-import org.fabric3.fabric.channel.SyncFanOutHandler;
 import org.fabric3.fabric.classloader.ClassLoaderRegistryImpl;
 import org.fabric3.fabric.cm.ComponentManagerImpl;
 import org.fabric3.fabric.component.scope.CompositeScopeContainer;
@@ -65,9 +60,9 @@ import org.fabric3.fabric.lcm.LogicalComponentManagerImpl;
 import org.fabric3.fabric.management.DelegatingManagementService;
 import org.fabric3.fabric.repository.RepositoryImpl;
 import org.fabric3.host.Names;
-import org.fabric3.host.Namespaces;
+import org.fabric3.host.monitor.DelegatingDestinationRouter;
+import org.fabric3.host.monitor.DestinationRouter;
 import org.fabric3.host.monitor.MonitorCreationException;
-import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.repository.Repository;
 import org.fabric3.host.repository.RepositoryException;
@@ -76,12 +71,9 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.ShutdownException;
-import org.fabric3.monitor.runtime.JDKMonitorProxyService;
-import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.monitor.proxy.JDKMonitorProxyService;
+import org.fabric3.monitor.proxy.MonitorProxyServiceImpl;
 import org.fabric3.spi.channel.ChannelManager;
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.channel.RegistrationException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.InstanceLifecycleException;
@@ -94,10 +86,6 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.management.ManagementService;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
-import org.fabric3.spi.monitor.DispatcherWrapper;
-
-import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 
 /**
  *
@@ -116,19 +104,16 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
     private ScopeRegistry scopeRegistry;
     private ManagementService managementService;
     private MBeanServer mbServer;
-    private MonitorEventDispatcher runtimeDispatcher;
-    private MonitorEventDispatcher appDispatcher;
     private Repository repository;
     private MonitorLevel level = MonitorLevel.INFO;
+    private DestinationRouter router;
 
     protected AbstractRuntime(RuntimeConfiguration configuration) {
         hostInfo = configuration.getHostInfo();
         mbServer = configuration.getMBeanServer();
-        runtimeDispatcher = configuration.getRuntimeDispatcher();
-        appDispatcher = configuration.getAppDispatcher();
+        router = configuration.getDestinationRouter();
         repository = configuration.getRepository();
         System.setProperty(JAVA_LIBRARY_PATH, new File(hostInfo.getTempDir(), "native").getAbsolutePath());
-
     }
 
     public HostInfo getHostInfo() {
@@ -160,21 +145,17 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         componentManager = new ComponentManagerImpl();
         channelManager = new ChannelManagerImpl();
 
-        // register runtime and app channels
-        QName deployable = new QName(Namespaces.F3, "boot");
-        runtimeDispatcher.start();
-        registerChannel(RUNTIME_MONITOR_CHANNEL_URI, deployable, runtimeDispatcher);
-        appDispatcher.start();
-        registerChannel(Names.APPLICATION_MONITOR_CHANNEL_URI, deployable, appDispatcher);
-
         classLoaderRegistry = new ClassLoaderRegistryImpl();
         ProcessorRegistry processorRegistry = new ProcessorRegistryImpl();
         metaDataStore = new MetaDataStoreImpl(processorRegistry);
         String runtimeName = hostInfo.getRuntimeName();
-        monitorService = new JDKMonitorProxyService(runtimeName, this, channelManager);
+
+        router = new DelegatingDestinationRouter();
+        monitorService = new MonitorProxyServiceImpl(new JDKMonitorProxyService(runtimeName, this, router));
+
         ScopeContainerMonitor monitor;
         try {
-            monitor = monitorService.createMonitor(ScopeContainerMonitor.class, Names.RUNTIME_MONITOR_CHANNEL_URI);
+            monitor = monitorService.createMonitor(ScopeContainerMonitor.class);
         } catch (MonitorCreationException e) {
             throw new InitializationException(e);
         }
@@ -189,21 +170,6 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         }
     }
 
-    private void registerChannel(URI name, QName deployable, MonitorEventDispatcher dispatcher) throws InitializationException {
-        SyncFanOutHandler handler = new SyncFanOutHandler();
-        Channel channel = new ChannelImpl(name, deployable, handler);
-        ChannelConnection connection = new ChannelConnectionImpl();
-        EventStream stream = new EventStreamImpl(new PhysicalEventStreamDefinition("dispatcher"));
-        stream.addHandler(new DispatcherWrapper(dispatcher));
-        connection.addEventStream(stream);
-        channel.subscribe(URI.create("Fabric3Dispatcher"), connection);
-        try {
-            channelManager.register(channel);
-        } catch (RegistrationException e) {
-            throw new InitializationException(e);
-        }
-    }
-
     public void destroy() throws ShutdownException {
         // destroy system components
         WorkContext workContext = new WorkContext();
@@ -213,7 +179,6 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         } catch (RepositoryException e) {
             throw new ShutdownException(e);
         }
-        runtimeDispatcher.stop();
     }
 
     public <I> I getComponent(Class<I> service, URI uri) {
@@ -276,6 +241,10 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
 
     public Repository getRepository() {
         return repository;
+    }
+
+    public DestinationRouter getDestinationRouter() {
+        return router;
     }
 
     /**

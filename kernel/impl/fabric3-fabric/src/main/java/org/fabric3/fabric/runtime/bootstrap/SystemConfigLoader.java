@@ -43,6 +43,8 @@
  */
 package org.fabric3.fabric.runtime.bootstrap;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -51,29 +53,21 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.oasisopen.sca.Constants;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.Environment;
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.monitor.MonitorConfigurationException;
 import org.fabric3.host.runtime.ParseException;
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
-
-import static org.fabric3.host.runtime.BootConstants.RUNTIME_ALIAS;
-import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
+import org.oasisopen.sca.Constants;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Loads the system configuration property for a runtime domain.
@@ -277,39 +271,6 @@ public class SystemConfigLoader {
     }
 
     /**
-     * Returns the monitor configuration. If not set, null will be returned.
-     *
-     * @param elementName  the element name of the monitor configuration
-     * @param systemConfig the system configuration
-     * @return the monitor configuration
-     * @throws MonitorConfigurationException if there is an error parsing the monitor configuration
-     */
-    public Element getMonitorConfiguration(String elementName, Document systemConfig) throws MonitorConfigurationException {
-        Element root = systemConfig.getDocumentElement();
-        NodeList nodes;
-        if (RUNTIME_MONITOR.equals(elementName)) {
-            // the configuration element <runtime.monitor> is used as an alias for the runtime monitor name, which is ROOT 
-            nodes = root.getElementsByTagName(RUNTIME_ALIAS);
-        } else {
-            nodes = root.getElementsByTagName(elementName);
-        }
-        if (nodes.getLength() == 1) {
-            Element monitorElement = (Element) nodes.item(0);
-            NodeList configurationElements = monitorElement.getElementsByTagName("configuration");
-            if (configurationElements.getLength() != 1) {
-                throw new MonitorConfigurationException("Invalid system configuration: Only one monitor <configuration> element must be specified");
-            } else {
-                Element element = (Element) configurationElements.item(0);
-                addAppenderReferences(systemConfig, elementName, element);
-                return element;
-            }
-        } else if (nodes.getLength() == 0) {
-            return null;
-        }
-        throw new MonitorConfigurationException("Invalid system configuration: more than one <monitor> element specified");
-    }
-
-    /**
      * Returns configured deployment directories or an empty collection.
      *
      * @param systemConfig the system configuration
@@ -325,36 +286,6 @@ public class SystemConfigLoader {
             files.add(file);
         }
         return files;
-    }
-
-    /**
-     * Adds appender references to the monitor configuration
-     *
-     * @param systemConfig the system configuration
-     * @param loggerName   the logger name
-     * @param element      the configuration element
-     */
-    private void addAppenderReferences(Document systemConfig, String loggerName, Element element) {
-        NodeList elements = element.getElementsByTagName("appender");
-        List<Element> added = new ArrayList<Element>();
-        for (int i = 0; i < elements.getLength(); i++) {
-            Node node = elements.item(i);
-            Node nameAttribute = node.getAttributes().getNamedItem("name");
-            if (nameAttribute != null) {
-                String name = nameAttribute.getNodeValue();
-                Element reference = systemConfig.createElement("appender-ref");
-                reference.setAttribute("ref", name);
-                added.add(reference);
-            }
-        }
-        if (!added.isEmpty()) {
-            Element root = systemConfig.createElement("logger");
-            root.setAttribute("name", loggerName);
-            element.appendChild(root);
-            for (Element reference : added) {
-                root.appendChild(reference);
-            }
-        }
     }
 
 }

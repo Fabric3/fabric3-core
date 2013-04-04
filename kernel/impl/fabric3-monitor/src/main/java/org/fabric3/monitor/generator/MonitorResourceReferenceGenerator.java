@@ -39,15 +39,12 @@ package org.fabric3.monitor.generator;
 
 import java.net.URI;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
-import org.fabric3.host.Names;
 import org.fabric3.monitor.model.MonitorResourceReference;
 import org.fabric3.monitor.provision.MonitorTargetDefinition;
-import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *
@@ -55,25 +52,12 @@ import org.fabric3.spi.model.instance.LogicalResourceReference;
 @EagerInit
 public class MonitorResourceReferenceGenerator implements ResourceReferenceGenerator<MonitorResourceReference> {
 
-    public MonitorTargetDefinition generateWireTarget(LogicalResourceReference<MonitorResourceReference> resourceReference)
-            throws GenerationException {
+    public MonitorTargetDefinition generateWireTarget(LogicalResourceReference<MonitorResourceReference> resourceReference) {
         LogicalComponent<?> component = resourceReference.getParent();
         String type = resourceReference.getDefinition().getServiceContract().getQualifiedInterfaceName();
         URI monitorable = component.getUri();
-        String channelName = resourceReference.getDefinition().getChannelName();
-        URI channelUri;
-        if (channelName == null) {
-            // if the component is in the system domain, connect to the runtime channel; otherwise, connect to the app channel
-            if (component.getUri().toString().startsWith(Names.RUNTIME_NAME)) {
-                channelUri = Names.RUNTIME_MONITOR_CHANNEL_URI;
-            } else {
-                channelUri = Names.APPLICATION_MONITOR_CHANNEL_URI;
-            }
-        } else {
-            URI compositeUri = component.getParent().getUri();
-            channelUri = URI.create(compositeUri.toString() + "/" + channelName);
-        }
-        MonitorTargetDefinition definition = new MonitorTargetDefinition(type, monitorable, channelUri);
+        String destination = resourceReference.getDefinition().getDestination();
+        MonitorTargetDefinition definition = new MonitorTargetDefinition(type, monitorable, destination);
         definition.setOptimizable(true);
         return definition;
     }

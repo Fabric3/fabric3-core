@@ -68,12 +68,5 @@ public interface Names {
 
     URI RUNTIME_DOMAIN_SERVICE_URI = URI.create(RUNTIME_NAME + "/RuntimeDomain");
 
-    String RUNTIME_MONITOR_CHANNEL = "RuntimeMonitorChannel";
-
-    String APPLICATION_MONITOR_CHANNEL = "ApplicationMonitorChannel";
-
-    URI RUNTIME_MONITOR_CHANNEL_URI = URI.create(RUNTIME_NAME + "/" + RUNTIME_MONITOR_CHANNEL);
-
-    URI APPLICATION_MONITOR_CHANNEL_URI = URI.create(RUNTIME_NAME + "/" + APPLICATION_MONITOR_CHANNEL);
 
 }

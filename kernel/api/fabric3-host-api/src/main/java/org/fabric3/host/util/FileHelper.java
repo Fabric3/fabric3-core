@@ -112,8 +112,8 @@ public class FileHelper {
     /**
      * Returns the index of the last extension separator character, which is a dot.
      * <p/>
-     * This method also checks that there is no directory separator after the last dot. To do this it uses {@link #indexOfLastSeparator(String)} which
-     * will handle a file in either Unix or Windows format.
+     * This method also checks that there is no directory separator after the last dot. To do this it uses {@link #indexOfLastSeparator(String)} which will
+     * handle a file in either Unix or Windows format.
      * <p/>
      * The output will be the same irrespective of the machine that the code is running on.
      *
@@ -186,20 +186,20 @@ public class FileHelper {
     }
 
     /**
-     * Make a directory, including any necessary but nonexistent parent directories. If there already exists a file with specified name or the
-     * directory cannot be created then an exception is thrown.
+     * Make a directory, including any necessary but nonexistent parent directories. If there already exists a file with specified name or the directory cannot
+     * be created then an exception is thrown.
      *
      * @param directory directory to create, not null
      * @throws NullPointerException if the directory is null
      * @throws IOException          if the directory cannot be created
      */
     public static void forceMkdir(File directory) throws IOException {
-        if(directory == null)
+        if (directory == null) {
             return;
+        }
         if (directory.exists()) {
             if (directory.isFile()) {
-                String message =
-                        "File " + directory + " exists and is " + "not a directory. Unable to create directory.";
+                String message = "File " + directory + " exists and is " + "not a directory. Unable to create directory.";
                 throw new IOException(message);
             }
         } else {
@@ -213,8 +213,8 @@ public class FileHelper {
     /**
      * Delete a file. If file is a directory, delete it and all sub-directories.
      * <p/>
-     * The difference between File.delete() and this method are: <ul> <li>A directory to be deleted does not have to be empty.</li> <li>You get
-     * exceptions when a file or directory cannot be deleted. (java.io.File methods returns a boolean)</li> </ul>
+     * The difference between File.delete() and this method are: <ul> <li>A directory to be deleted does not have to be empty.</li> <li>You get exceptions when
+     * a file or directory cannot be deleted. (java.io.File methods returns a boolean)</li> </ul>
      *
      * @param file file or directory to delete, not null
      * @throws IOException in case deletion is unsuccessful
@@ -331,8 +331,9 @@ public class FileHelper {
      * @throws IOException in case cleaning is unsuccessful
      */
     public static void cleanDirectory(File directory) throws IOException {
-        if(directory == null)
+        if (directory == null) {
             return;
+        }
         if (!directory.exists()) {
             String message = directory + " does not exist";
             throw new IllegalArgumentException(message);
@@ -401,8 +402,8 @@ public class FileHelper {
     /**
      * Copies a whole directory to a new location preserving the file dates.
      * <p/>
-     * This method copies the specified directory and all its child directories and files to the specified destination. The destination is the new
-     * location and name of the directory.
+     * This method copies the specified directory and all its child directories and files to the specified destination. The destination is the new location and
+     * name of the directory.
      * <p/>
      * The destination directory is created if it does not exist. If the destination directory did exist, then this method merges the source with the
      * destination, with the source taking precedence.
@@ -479,8 +480,8 @@ public class FileHelper {
     /**
      * Copies a file to a new location preserving the file date.
      * <p/>
-     * This method copies the contents of the specified source file to the specified destination file. The directory holding the destination file is
-     * created if it does not exist. If the destination file exists, then this method will overwrite it.
+     * This method copies the contents of the specified source file to the specified destination file. The directory holding the destination file is created if
+     * it does not exist. If the destination file exists, then this method will overwrite it.
      *
      * @param srcFile  an existing file to copy, must not be <code>null</code>
      * @param destFile the new file, must not be <code>null</code>
@@ -493,8 +494,8 @@ public class FileHelper {
     /**
      * Copies a file to a new location.
      * <p/>
-     * This method copies the contents of the specified source file to the specified destination file. The directory holding the destination file is
-     * created if it does not exist. If the destination file exists, then this method will overwrite it.
+     * This method copies the contents of the specified source file to the specified destination file. The directory holding the destination file is created if
+     * it does not exist. If the destination file exists, then this method will overwrite it.
      *
      * @param srcFile          an existing file to copy, must not be <code>null</code>
      * @param destFile         the new file, must not be <code>null</code>
@@ -517,7 +518,7 @@ public class FileHelper {
         if (srcFile.getCanonicalPath().equals(destFile.getCanonicalPath())) {
             throw new IOException("Source '" + srcFile + "' and destination '" + destFile + "' are the same");
         }
-        if (!(destFile.getParentFile() != null && destFile.getParentFile().exists())) {
+        if (destFile.getParentFile() != null && !destFile.getParentFile().exists()) {
             if (!destFile.getParentFile().mkdirs()) {
                 throw new IOException("Destination '" + destFile + "' directory cannot be created");
             }
@@ -531,8 +532,8 @@ public class FileHelper {
     /**
      * Copies a file to a directory preserving the file date.
      * <p/>
-     * This method copies the contents of the specified source file to a file of the same name in the specified destination directory. The destination
-     * directory is created if it does not exist. If the destination file exists, then this method will overwrite it.
+     * This method copies the contents of the specified source file to a file of the same name in the specified destination directory. The destination directory
+     * is created if it does not exist. If the destination file exists, then this method will overwrite it.
      *
      * @param srcFile an existing file to copy, must not be <code>null</code>
      * @param destDir the directory to place the copy in, must not be <code>null</code>
@@ -545,8 +546,8 @@ public class FileHelper {
     /**
      * Copies a file to a directory optionally preserving the file date.
      * <p/>
-     * This method copies the contents of the specified source file to a file of the same name in the specified destination directory. The destination
-     * directory is created if it does not exist. If the destination file exists, then this method will overwrite it.
+     * This method copies the contents of the specified source file to a file of the same name in the specified destination directory. The destination directory
+     * is created if it does not exist. If the destination file exists, then this method will overwrite it.
      *
      * @param srcFile          an existing file to copy, must not be <code>null</code>
      * @param destDir          the directory to place the copy in, must not be <code>null</code>
@@ -581,7 +582,6 @@ public class FileHelper {
             throw new IOException(message);
         }
     }
-
 
     /**
      * Writes an InputStream to disk.
@@ -725,9 +725,8 @@ public class FileHelper {
     }
 
     /**
-     * Given a parentLocation as a base, returns the absolute path to the childLocation. The childLocation may be absolute or relative.  If the child
-     * is absolute, it is simply returned unchanged.  If it is relative, this method then resolves the location of the child from the parent
-     * location.
+     * Given a parentLocation as a base, returns the absolute path to the childLocation. The childLocation may be absolute or relative.  If the child is
+     * absolute, it is simply returned unchanged.  If it is relative, this method then resolves the location of the child from the parent location.
      *
      * @param parentLocation
      * @param childLocation
@@ -776,9 +775,7 @@ public class FileHelper {
 
                     // if the basePath is now the root, then add back a parent dir. ind.
                     // and break from this loop.
-                    if (i != countParentInd - 1 &&
-                            ((basePath.endsWith(fwdSlash) && basePath.length() == 1) ||
-                                    basePath.endsWith(":"))) {
+                    if (i != countParentInd - 1 && ((basePath.endsWith(fwdSlash) && basePath.length() == 1) || basePath.endsWith(":"))) {
                         int addParentIndCount = countParentInd - 1 - i;
                         for (int j = 0; j < addParentIndCount; j++) {
                             if (basePath.endsWith(":") || basePath.endsWith(PARENT_DIRECTORY_INDICATOR)) {
@@ -800,8 +797,7 @@ public class FileHelper {
     }
 
     /**
-     * Determine if the given String represents an absolute path by checking if the string starts with a '/' or is a URI that starts with a scheme
-     * 'scheme:/'.
+     * Determine if the given String represents an absolute path by checking if the string starts with a '/' or is a URI that starts with a scheme 'scheme:/'.
      *
      * @param aPath
      * @return true if path is absolute, otherwise false.

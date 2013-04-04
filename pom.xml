@@ -49,6 +49,7 @@
 		<servlet.artifactId>servlet-api</servlet.artifactId>
 		<servlet.version>3.0.20100224</servlet.version>
 		<jetty.version>8.1.7.v20120910</jetty.version>
+        <disruptor.version>3.0.0.beta3</disruptor.version>
 
 		<!-- if the Logback version changes, update the export added via BootExports.addExport() 
 			in Fabric3Server -->

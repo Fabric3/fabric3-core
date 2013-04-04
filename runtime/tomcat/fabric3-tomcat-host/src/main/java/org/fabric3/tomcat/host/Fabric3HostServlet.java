@@ -37,6 +37,12 @@
 */
 package org.fabric3.tomcat.host;
 
+import javax.management.MBeanServer;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -46,12 +52,6 @@ import java.net.URL;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import javax.management.MBeanServer;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.catalina.ContainerServlet;
 import org.apache.catalina.Context;
@@ -61,12 +61,10 @@ import org.apache.catalina.Realm;
 import org.apache.catalina.Service;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.mbeans.MBeanUtils;
-import org.w3c.dom.Document;
-
 import org.fabric3.host.Fabric3Exception;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.classloader.MaskingClassLoader;
-import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.host.monitor.DelegatingDestinationRouter;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
@@ -81,11 +79,8 @@ import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
-
+import org.w3c.dom.Document;
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
-import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
-import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
-import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
 import static org.fabric3.host.runtime.BootstrapHelper.createHostInfo;
 
 public class Fabric3HostServlet extends HttpServlet implements ContainerServlet {
@@ -207,11 +202,9 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
             // use the Tomcat JMX server
             MBeanServer mBeanServer = MBeanUtils.createServer();
 
-            // create and configure the monitor dispatchers
-            MonitorEventDispatcher runtimeDispatcher = bootstrapService.createMonitorDispatcher(RUNTIME_MONITOR, systemConfig, hostInfo);
-            MonitorEventDispatcher appDispatcher = bootstrapService.createMonitorDispatcher(APP_MONITOR, systemConfig, hostInfo);
+            DelegatingDestinationRouter router = new DelegatingDestinationRouter();
 
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, runtimeDispatcher, appDispatcher);
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, router);
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
@@ -237,7 +230,7 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
             coordinator = bootstrapService.createCoordinator(configuration);
             coordinator.start();
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
-            monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
+            monitor = monitorService.createMonitor(ServerMonitor.class);
             monitor.started(mode.toString(), environment);
         } catch (Fabric3Exception e) {
             if (monitor != null) {
@@ -294,7 +287,6 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
                 notAuthorized(resp);
             }
 
-
         } else {
             notAuthorized(resp);
             return false;
@@ -327,8 +319,9 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
         });
         for (File dir : directories) {
             File candidate = findInstallationDirectory(dir);
-            if (candidate != null)
+            if (candidate != null) {
                 return candidate;
+            }
         }
         return null;
     }

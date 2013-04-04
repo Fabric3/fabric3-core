@@ -120,7 +120,6 @@ import org.fabric3.fabric.instantiator.promotion.PromotionResolutionServiceImpl;
 import org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl;
 import org.fabric3.fabric.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.fabric.xml.XMLFactoryImpl;
-import org.fabric3.host.Names;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
@@ -198,7 +197,6 @@ import org.fabric3.transform.property.Property2StringTransformer;
 import org.fabric3.transform.string2java.String2ClassTransformer;
 import org.fabric3.transform.string2java.String2IntegerTransformer;
 import org.fabric3.transform.string2java.String2QNameTransformer;
-import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 
 /**
  * Bootstraps services required for instantiation, generation, and deployment.
@@ -225,7 +223,7 @@ public class BootstrapAssemblyFactory {
                                                                                 managementService);
         DeployerMonitor monitor;
         try {
-            monitor = monitorService.createMonitor(DeployerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
+            monitor = monitorService.createMonitor(DeployerMonitor.class);
         } catch (MonitorCreationException e) {
             throw new InitializationException(e);
         }
@@ -291,7 +289,7 @@ public class BootstrapAssemblyFactory {
 
         CommandExecutorRegistryImpl commandRegistry = new CommandExecutorRegistryImpl();
         try {
-            ContextMonitor contextMonitor = monitorService.createMonitor(ContextMonitor.class, Names.RUNTIME_MONITOR_CHANNEL_URI);
+            ContextMonitor contextMonitor = monitorService.createMonitor(ContextMonitor.class);
             commandRegistry.register(StartContextCommand.class, new StartContextCommandExecutor(scopeRegistry, contextMonitor));
             BuildComponentCommandExecutor executor = createBuildComponentExecutor(componentManager,
                                                                                   scopeRegistry,

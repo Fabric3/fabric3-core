@@ -37,6 +37,8 @@
 */
 package org.fabric3.runtime.maven.itest;
 
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -46,30 +48,23 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
-import org.w3c.dom.Document;
-
 import org.fabric3.host.Names;
 import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
+import org.fabric3.host.os.OperatingSystem;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
-import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.os.OperatingSystem;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ShutdownException;
@@ -78,7 +73,7 @@ import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.maven.MavenRuntime;
-
+import org.w3c.dom.Document;
 import static org.fabric3.runtime.maven.itest.TestConstants.DOMAIN;
 
 /**
@@ -104,7 +99,6 @@ public class MavenRuntimeBooter {
     private Log log;
 
     private RuntimeCoordinator coordinator;
-
 
     public MavenRuntimeBooter(MavenBootConfiguration configuration) {
         mavenVersion = configuration.getMavenVersion();
@@ -137,14 +131,6 @@ public class MavenRuntimeBooter {
 
             BootConfiguration configuration = new BootConfiguration();
 
-            List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
-            MavenMonitorEventDispatcherFactory factory = new MavenMonitorEventDispatcherFactory(log);
-            ComponentRegistration registration = new ComponentRegistration("MonitorEventDispatcherFactory",
-                                                                           MonitorEventDispatcherFactory.class,
-                                                                           factory, true);
-            registrations.add(registration);
-            configuration.addRegistrations(registrations);
-
             configuration.setRuntime(runtime);
             configuration.setHostClassLoader(hostClassLoader);
             configuration.setBootClassLoader(bootClassLoader);
@@ -166,8 +152,7 @@ public class MavenRuntimeBooter {
         }
     }
 
-    private MavenRuntime createRuntime(BootstrapService bootstrapService, Document systemConfig)
-            throws MojoExecutionException, InitializationException {
+    private MavenRuntime createRuntime(BootstrapService bootstrapService, Document systemConfig) throws MojoExecutionException, InitializationException {
         String environment = bootstrapService.parseEnvironment(systemConfig);
 
         File tempDir = new File(System.getProperty("java.io.tmpdir"), ".f3");
@@ -188,9 +173,10 @@ public class MavenRuntimeBooter {
 
         MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer(DOMAIN);
 
-        MavenMonitorEventDispatcher runtimeDispatcher = new MavenMonitorEventDispatcher(log);
-        MavenMonitorEventDispatcher appDispatcher = new MavenMonitorEventDispatcher(log);
-        RuntimeConfiguration configuration = new RuntimeConfiguration(hostInfo, mBeanServer, runtimeDispatcher, appDispatcher);
+        MavenMonitorDestinationRouter runtimeDispatcher = new MavenMonitorDestinationRouter(log);
+        MavenMonitorDestinationRouter appDispatcher = new MavenMonitorDestinationRouter(log);
+        // FIXME destination dispatcher
+        RuntimeConfiguration configuration = new RuntimeConfiguration(hostInfo, mBeanServer, null);
 
         return instantiateRuntime(configuration, bootClassLoader);
     }
@@ -271,6 +257,5 @@ public class MavenRuntimeBooter {
             throw new MojoExecutionException("Invalid system configuration: " + systemConfig, e);
         }
     }
-
 
 }

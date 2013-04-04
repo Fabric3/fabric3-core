@@ -70,8 +70,8 @@ public final class BootstrapHelper {
     }
 
     /**
-     * Gets the installation directory based on the location of a class file. The installation directory is calculated by determining the path of the
-     * jar containing the given class file and returning its parent directory.
+     * Gets the installation directory based on the location of a class file. The installation directory is calculated by determining the path of the jar
+     * containing the given class file and returning its parent directory.
      *
      * @param clazz the class to use as a way to find the executable jar
      * @return directory where Fabric3 runtime is installed.
@@ -127,8 +127,8 @@ public final class BootstrapHelper {
     }
 
     /**
-     * Create a classloader from all the jar files or sub-directories in a directory. The classpath for the returned classloader will comprise all jar
-     * files and sub-directories of the supplied directory. Hidden files and those that do not contain a valid manifest will be silently ignored.
+     * Create a classloader from all the jar files or sub-directories in a directory. The classpath for the returned classloader will comprise all jar files and
+     * sub-directories of the supplied directory. Hidden files and those that do not contain a valid manifest will be silently ignored.
      *
      * @param parent    the parent for the new classloader
      * @param directory the directory to scan
@@ -244,6 +244,11 @@ public final class BootstrapHelper {
                                    javaEEXAEnabled);
     }
 
+    /**
+     * Returns the current {@link OperatingSystem}.
+     *
+     * @return the current OS
+     */
     public static OperatingSystem getOperatingSystem() {
         String name = System.getProperty("os.name");
         String processor = OSHelper.parseProcessor(System.getProperty("os.arch"));

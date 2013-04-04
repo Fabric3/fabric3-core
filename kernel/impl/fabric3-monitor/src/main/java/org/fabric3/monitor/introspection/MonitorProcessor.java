@@ -68,9 +68,8 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
  *
  */
 public class MonitorProcessor extends AbstractAnnotationProcessor<Monitor> {
-
-    private final IntrospectionHelper helper;
-    private final JavaContractProcessor contractProcessor;
+    private IntrospectionHelper helper;
+    private JavaContractProcessor contractProcessor;
 
     public MonitorProcessor(@Reference IntrospectionHelper helper, @Reference JavaContractProcessor contractProcessor) {
         super(Monitor.class);
@@ -88,11 +87,7 @@ public class MonitorProcessor extends AbstractAnnotationProcessor<Monitor> {
         componentType.add(resource, site);
     }
 
-    public void visitMethod(Monitor annotation,
-                            Method method,
-                            Class<?> implClass,
-                            InjectingComponentType componentType,
-                            IntrospectionContext context) {
+    public void visitMethod(Monitor annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         String name = helper.getSiteName(method, null);
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Type genericType = helper.getGenericType(method);
@@ -117,18 +112,17 @@ public class MonitorProcessor extends AbstractAnnotationProcessor<Monitor> {
         componentType.add(resource, site);
     }
 
-
     private MonitorResourceReference createDefinition(String name,
                                                       Monitor annotation,
                                                       Class<?> type,
                                                       ComponentType componentType,
                                                       IntrospectionContext context) {
         ServiceContract contract = contractProcessor.introspect(type, context, componentType);
-        String channelName = annotation.value();
-        if (channelName.length() == 0) {
+        String destinationName = annotation.value();
+        if (destinationName.length() == 0) {
             return new MonitorResourceReference(name, contract);
         } else {
-            return new MonitorResourceReference(name, contract, channelName);
+            return new MonitorResourceReference(name, contract, destinationName);
         }
     }
 }

@@ -47,13 +47,10 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
-import org.w3c.dom.Document;
-
 import org.fabric3.host.Environment;
 import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.monitor.MonitorConfigurationException;
-import org.fabric3.host.monitor.MonitorEventDispatcher;
 import org.fabric3.host.stream.Source;
+import org.w3c.dom.Document;
 
 /**
  * Provides operations to bootstrap a runtime.
@@ -148,17 +145,6 @@ public interface BootstrapService {
      * @return the runtime name
      */
     String getRuntimeName(URI domainName, String zoneName, String runtimeId, RuntimeMode mode);
-
-    /**
-     * Creates a {@link MonitorEventDispatcher} for dispatching runtime events.
-     *
-     * @param elementName  the element name of the monitor configuration
-     * @param systemConfig the runtime system configuration
-     * @param hostInfo     the runtime host info
-     * @return the dispatcher
-     * @throws MonitorConfigurationException if there is an error creating the dispatcher
-     */
-    MonitorEventDispatcher createMonitorDispatcher(String elementName, Document systemConfig, HostInfo hostInfo) throws MonitorConfigurationException;
 
     /**
      * Introspects the contents of a file system repository and categorizes its contents as extensions or user contributions.

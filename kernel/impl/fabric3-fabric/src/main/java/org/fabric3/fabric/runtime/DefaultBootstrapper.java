@@ -61,7 +61,9 @@ import org.fabric3.host.Version;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
+import org.fabric3.host.monitor.DestinationRouter;
 import org.fabric3.host.monitor.MonitorProxyService;
+import org.fabric3.host.monitor.Monitorable;
 import org.fabric3.host.repository.Repository;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootExports;
@@ -71,7 +73,6 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
-import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -89,17 +90,13 @@ import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.management.ManagementService;
-import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
-import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.synthesize.ComponentRegistrationException;
 import org.fabric3.spi.synthesize.ComponentSynthesizer;
 import org.w3c.dom.Document;
 import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 import static org.fabric3.host.Names.HOST_CONTRIBUTION;
-import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL;
-import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
 
 /**
  * The default Bootstrapper implementation.
@@ -139,6 +136,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     private ClassLoader hostClassLoader;
     private Contribution bootContribution;
     private List<ComponentRegistration> registrations;
+    private DestinationRouter router;
 
     public DefaultBootstrapper(BootConfiguration configuration) {
         runtime = configuration.getRuntime();
@@ -161,6 +159,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         RuntimeServices runtimeServices = runtime.getComponent(RuntimeServices.class, RUNTIME_SERVICES);
         hostInfo = runtimeServices.getHostInfo();
         monitorService = runtimeServices.getMonitorProxyService();
+        router = runtimeServices.getDestinationRouter();
         lcm = runtimeServices.getLogicalComponentManager();
         componentManager = runtimeServices.getComponentManager();
         channelManager = runtimeServices.getChannelManager();
@@ -174,12 +173,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         managementService = runtimeServices.getManagementService();
         hostInfo = runtimeServices.getHostInfo();
 
-        synthesizer = new SingletonComponentSynthesizer(implementationProcessor,
-                                                        instantiator,
-                                                        lcm,
-                                                        componentManager,
-                                                        contractProcessor,
-                                                        scopeContainer);
+        synthesizer = new SingletonComponentSynthesizer(implementationProcessor, instantiator, lcm, componentManager, contractProcessor, scopeContainer);
 
         // register components provided by the runtime itself so they may be wired to
         registerRuntimeComponents(registrations);
@@ -188,16 +182,13 @@ public class DefaultBootstrapper implements Bootstrapper {
                                                               classLoaderRegistry,
                                                               scopeRegistry,
                                                               componentManager,
-                                                              lcm, metaDataStore,
+                                                              lcm,
+                                                              metaDataStore,
                                                               managementService,
                                                               hostInfo);
 
         // register the runtime domain component
         registerComponent("RuntimeDomain", Domain.class, runtimeDomain, true);
-
-
-        // register the domain channel
-        registerRuntimeDomainChannel();
 
         // create host and boot contributions
         synthesizeContributions();
@@ -206,8 +197,10 @@ public class DefaultBootstrapper implements Bootstrapper {
     public void bootSystem() throws InitializationException {
         try {
             // load the system composite
-            Composite composite =
-                    BootstrapCompositeFactory.createSystemComposite(systemCompositeUrl, bootContribution, bootClassLoader, implementationProcessor);
+            Composite composite = BootstrapCompositeFactory.createSystemComposite(systemCompositeUrl,
+                                                                                  bootContribution,
+                                                                                  bootClassLoader,
+                                                                                  implementationProcessor);
 
             // create the property and merge it into the composite
             LogicalProperty logicalProperty = new LogicalProperty("systemConfig", systemConfig, false, domain);
@@ -231,13 +224,14 @@ public class DefaultBootstrapper implements Bootstrapper {
 
         // services available through the outward facing Fabric3Runtime API
         registerComponent("MonitorProxyService", MonitorProxyService.class, monitorService, true);
+        registerComponent("DestinationRouter", DestinationRouter.class, router, true);
+
         Class<HostInfo> type = getHostInfoType(hostInfo);
         registerComponent("HostInfo", type, hostInfo, true);
         if (mbeanServer != null) {
             registerComponent("MBeanServer", MBeanServer.class, mbeanServer, false);
         }
         registerComponent("ManagementService", ManagementService.class, managementService, true);
-
 
         // services available through the inward facing RuntimeServices SPI
         registerComponent("ComponentManager", ComponentManager.class, componentManager, true);
@@ -248,6 +242,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         registerComponent("ScopeRegistry", ScopeRegistry.class, scopeRegistry, true);
         registerComponent("MetaDataStore", MetaDataStore.class, metaDataStore, true);
         registerComponent("Repository", Repository.class, repository, true);
+        registerComponent("Monitorable", Monitorable.class, runtime, false);
 
         // register other components provided by the host environment
         for (ComponentRegistration registration : registrations) {
@@ -294,17 +289,6 @@ public class DefaultBootstrapper implements Bootstrapper {
         } catch (ComponentRegistrationException e) {
             throw new InitializationException(e);
         }
-    }
-
-    /**
-     * Registers the runtime domain channels.
-     */
-    private void registerRuntimeDomainChannel() {
-        ChannelDefinition definition = new ChannelDefinition(RUNTIME_MONITOR_CHANNEL, BOOT_CONTRIBUTION);
-        LogicalCompositeComponent domain = lcm.getRootComponent();
-        LogicalChannel logicalChannel = new LogicalChannel(RUNTIME_MONITOR_CHANNEL_URI, definition, domain);
-        logicalChannel.setState(LogicalState.PROVISIONED);
-        domain.addChannel(logicalChannel);
     }
 
     /**
@@ -359,6 +343,5 @@ public class DefaultBootstrapper implements Bootstrapper {
         classLoaderRegistry.register(contributionUri, loader);
         return contribution;
     }
-
 
 }

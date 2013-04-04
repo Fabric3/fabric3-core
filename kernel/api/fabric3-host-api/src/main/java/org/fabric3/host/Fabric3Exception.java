@@ -43,8 +43,6 @@
  */
 package org.fabric3.host;
 
-import java.io.PrintWriter;
-
 /**
  * The root checked exception for the Fabric3 runtime.
  */
@@ -128,12 +126,5 @@ public abstract class Fabric3Exception extends Exception {
      */
     public String getIdentifier() {
         return identifier;
-    }
-
-    protected void printStackTraceElements(PrintWriter writer) {
-        for (StackTraceElement element : getStackTrace()) {
-            writer.print("\tat ");
-            writer.println(element);
-        }
     }
 }

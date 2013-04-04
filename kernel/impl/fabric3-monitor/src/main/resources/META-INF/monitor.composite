@@ -20,29 +20,12 @@
         <f3:implementation.system class="org.fabric3.monitor.introspection.MonitorProcessor"/>
     </component>
 
-    <component name="MonitorImplementationLoader" f3:key="sca:implementation.monitor">
-        <f3:implementation.system class="org.fabric3.monitor.introspection.MonitorImplementationLoader"/>
-    </component>
-
     <component name="MonitorGenerator" f3:key="org.fabric3.monitor.model.MonitorResourceReference">
         <f3:implementation.system class="org.fabric3.monitor.generator.MonitorResourceReferenceGenerator"/>
-    </component>
-
-    <component name="MonitorComponentGenerator" f3:key="org.fabric3.monitor.model.MonitorImplementation">
-        <f3:implementation.system class="org.fabric3.monitor.generator.MonitorComponentGenerator"/>
     </component>
 
     <component name="MonitorWireAttacher" f3:key="org.fabric3.monitor.provision.MonitorTargetDefinition">
         <f3:implementation.system class="org.fabric3.monitor.runtime.MonitorWireAttacher"/>
     </component>
-
-    <component name="MonitorTargetConnectionAttacher" f3:key="org.fabric3.monitor.provision.MonitorConnectionTargetDefinition">
-        <f3:implementation.system class="org.fabric3.monitor.runtime.MonitorTargetConnectionAttacher"/>
-    </component>
-
-    <component name="MonitorComponentBuilder" f3:key="org.fabric3.monitor.provision.MonitorComponentDefinition">
-        <f3:implementation.system class="org.fabric3.monitor.runtime.MonitorComponentBuilder"/>
-    </component>
-
 
 </composite>

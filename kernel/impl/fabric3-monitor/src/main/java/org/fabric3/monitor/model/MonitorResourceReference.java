@@ -51,7 +51,7 @@ import org.fabric3.model.type.contract.ServiceContract;
  */
 public class MonitorResourceReference extends ResourceReferenceDefinition {
     private static final long serialVersionUID = -6723752212878850748L;
-    private String channelName;
+    private String destination;
 
     /**
      * Constructor that uses the default channel.
@@ -68,20 +68,19 @@ public class MonitorResourceReference extends ResourceReferenceDefinition {
      *
      * @param name        the resource name
      * @param contract    the service contract required of the resource
-     * @param channelName the target channel to send monitor events
+     * @param destination the destination to send monitor events
      */
-    public MonitorResourceReference(String name, ServiceContract contract, String channelName) {
+    public MonitorResourceReference(String name, ServiceContract contract, String destination) {
         super(name, contract, false);
-        this.channelName = channelName;
+        this.destination = destination;
     }
 
-
     /**
-     * Returns the target channel to send monitor events or null if the channel is not specified and a default should be used.
+     * Returns the destination to send monitor events or null if the channel is not specified and a default should be used.
      *
-     * @return the target channel to send monitor events or null
+     * @return the target destination to send monitor events or null
      */
-    public String getChannelName() {
-        return channelName;
+    public String getDestination() {
+        return destination;
     }
 }

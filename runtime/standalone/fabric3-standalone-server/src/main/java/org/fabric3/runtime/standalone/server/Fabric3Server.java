@@ -43,24 +43,22 @@
  */
 package org.fabric3.runtime.standalone.server;
 
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.ObjectName;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
-import javax.management.ObjectName;
-
-import org.w3c.dom.Document;
 
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.host.Fabric3Exception;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.classloader.MaskingClassLoader;
-import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.host.monitor.DelegatingDestinationRouter;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootExports;
@@ -75,11 +73,8 @@ import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
-
+import org.w3c.dom.Document;
 import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
-import static org.fabric3.host.Names.RUNTIME_MONITOR_CHANNEL_URI;
-import static org.fabric3.host.runtime.BootConstants.APP_MONITOR;
-import static org.fabric3.host.runtime.BootConstants.RUNTIME_MONITOR;
 
 /**
  * This class provides the command line interface for starting the Fabric3 standalone server.
@@ -114,6 +109,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
     public void start(Params params) throws Fabric3ServerException {
         try {
 
+            // FIXME remove
             // add LogBack to exports
             BootExports.addExport("org.slf4j.*", "1.6.4");
 
@@ -169,11 +165,9 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             MBeanServer mbServer = MBeanServerFactory.createMBeanServer(DOMAIN);
 
-            // create and configure the monitor dispatchers
-            MonitorEventDispatcher runtimeDispatcher = bootstrapService.createMonitorDispatcher(RUNTIME_MONITOR, systemConfig, hostInfo);
-            MonitorEventDispatcher appDispatcher = bootstrapService.createMonitorDispatcher(APP_MONITOR, systemConfig, hostInfo);
+            DelegatingDestinationRouter router = new DelegatingDestinationRouter();
 
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mbServer, runtimeDispatcher, appDispatcher, null);
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mbServer, router, null);
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
@@ -201,7 +195,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
             latch = new CountDownLatch(1);
 
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
-            monitor = monitorService.createMonitor(ServerMonitor.class, RUNTIME_MONITOR_CHANNEL_URI);
+            monitor = monitorService.createMonitor(ServerMonitor.class);
             monitor.started(productName, mode.toString(), environment);
 
             try {
@@ -295,7 +289,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
         String clone;
     }
 
-
     public interface ServerMonitor {
 
         @Severe("Shutdown error")
@@ -311,6 +304,5 @@ public class Fabric3Server implements Fabric3ServerMBean {
         void exited(Exception e);
 
     }
-
 
 }

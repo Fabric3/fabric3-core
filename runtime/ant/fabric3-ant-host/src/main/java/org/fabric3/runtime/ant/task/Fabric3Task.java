@@ -37,6 +37,8 @@
 */
 package org.fabric3.runtime.ant.task;
 
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -45,8 +47,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.FileScanner;
@@ -54,8 +54,6 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileList;
 import org.apache.tools.ant.types.FileSet;
-import org.w3c.dom.Document;
-
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.classloader.MaskingClassLoader;
@@ -65,12 +63,10 @@ import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
-import org.fabric3.host.monitor.MonitorEventDispatcherFactory;
 import org.fabric3.host.runtime.BootConfiguration;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
-import org.fabric3.host.runtime.ComponentRegistration;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HiddenPackages;
 import org.fabric3.host.runtime.HostInfo;
@@ -80,8 +76,8 @@ import org.fabric3.host.runtime.ScanResult;
 import org.fabric3.host.runtime.ShutdownException;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.runtime.ant.api.TestRunner;
-import org.fabric3.runtime.ant.monitor.AntMonitorEventDispatcher;
-import org.fabric3.runtime.ant.monitor.AntMonitorEventDispatcherFactory;
+import org.fabric3.runtime.ant.monitor.AntDestinationRouter;
+import org.w3c.dom.Document;
 
 /**
  * Launches a Fabric3 instance from the Ant runtime distribution.
@@ -181,9 +177,9 @@ public class Fabric3Task extends Task {
 
             MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("fabric3");
 
-            AntMonitorEventDispatcher runtimeDispatcher = new AntMonitorEventDispatcher(this);
-            AntMonitorEventDispatcher appDispatcher = new AntMonitorEventDispatcher(this);
-            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, runtimeDispatcher, appDispatcher);
+            AntDestinationRouter destinationRouter = new AntDestinationRouter(this);
+
+            RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mBeanServer, destinationRouter);
 
             runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
@@ -195,14 +191,6 @@ public class Fabric3Task extends Task {
             ScanResult result = bootstrapService.scanRepository(hostInfo);
 
             BootConfiguration configuration = new BootConfiguration();
-
-            List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
-            AntMonitorEventDispatcherFactory factory = new AntMonitorEventDispatcherFactory(this);
-            ComponentRegistration registration = new ComponentRegistration("MonitorEventDispatcherFactory",
-                                                                           MonitorEventDispatcherFactory.class,
-                                                                           factory, true);
-            registrations.add(registration);
-            configuration.addRegistrations(registrations);
 
             configuration.setRuntime(runtime);
             configuration.setHostClassLoader(hostLoader);

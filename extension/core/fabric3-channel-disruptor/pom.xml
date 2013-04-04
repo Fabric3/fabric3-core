@@ -33,7 +33,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
-            <version>3.0.0.beta3</version>
+            <version>${disruptor.version}</version>
         </dependency>
 
         <dependency>

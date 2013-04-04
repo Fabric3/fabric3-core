@@ -39,7 +39,7 @@ package org.fabric3.host.runtime;
 
 import javax.management.MBeanServer;
 
-import org.fabric3.host.monitor.MonitorEventDispatcher;
+import org.fabric3.host.monitor.DestinationRouter;
 import org.fabric3.host.repository.Repository;
 
 /**
@@ -48,46 +48,34 @@ import org.fabric3.host.repository.Repository;
 public class RuntimeConfiguration {
     private HostInfo hostInfo;
     private MBeanServer mBeanServer;
-    private MonitorEventDispatcher runtimeDispatcher;
-    private MonitorEventDispatcher appDispatcher;
     private Repository repository;
+    private DestinationRouter router;
 
     /**
      * Constructor taking the minimal host dependencies to boot a runtime.
      *
-     * @param hostInfo          the host info instance
-     * @param mBeanServer       the JMX MBean server
-     * @param runtimeDispatcher the dispatcher for handling runtime events
-     * @param appDispatcher     the dispatcher for handling application events
+     * @param hostInfo    the host info instance
+     * @param mBeanServer the JMX MBean server
+     * @param router      the destination router
      */
-    public RuntimeConfiguration(HostInfo hostInfo,
-                                MBeanServer mBeanServer,
-                                MonitorEventDispatcher runtimeDispatcher,
-                                MonitorEventDispatcher appDispatcher) {
+    public RuntimeConfiguration(HostInfo hostInfo, MBeanServer mBeanServer, DestinationRouter router) {
         this.hostInfo = hostInfo;
         this.mBeanServer = mBeanServer;
-        this.runtimeDispatcher = runtimeDispatcher;
-        this.appDispatcher = appDispatcher;
+        this.router = router;
     }
 
     /**
      * Constructor taking all configurable dependencies to boot a runtime.
      *
-     * @param hostInfo          the host info instance
-     * @param mBeanServer       the JMX MBean server
-     * @param runtimeDispatcher the dispatcher for handling runtime events
-     * @param appDispatcher     the dispatcher for handling application events
-     * @param repository        the artifact repository
+     * @param hostInfo    the host info instance
+     * @param mBeanServer the JMX MBean server
+     * @param router      the destination router
+     * @param repository  the artifact repository
      */
-    public RuntimeConfiguration(HostInfo hostInfo,
-                                MBeanServer mBeanServer,
-                                MonitorEventDispatcher runtimeDispatcher,
-                                MonitorEventDispatcher appDispatcher,
-                                Repository repository) {
+    public RuntimeConfiguration(HostInfo hostInfo, MBeanServer mBeanServer, DestinationRouter router, Repository repository) {
         this.hostInfo = hostInfo;
         this.mBeanServer = mBeanServer;
-        this.runtimeDispatcher = runtimeDispatcher;
-        this.appDispatcher = appDispatcher;
+        this.router = router;
         this.repository = repository;
     }
 
@@ -110,24 +98,6 @@ public class RuntimeConfiguration {
     }
 
     /**
-     * Returns the dispatcher for handling runtime monitor events
-     *
-     * @return the dispatcher for handling runtime monitor events
-     */
-    public MonitorEventDispatcher getRuntimeDispatcher() {
-        return runtimeDispatcher;
-    }
-
-    /**
-     * Returns the dispatcher for handling application monitor events
-     *
-     * @return the dispatcher for handling application monitor events
-     */
-    public MonitorEventDispatcher getAppDispatcher() {
-        return appDispatcher;
-    }
-
-    /**
      * Returns the runtime repository
      *
      * @return the runtime repository
@@ -136,4 +106,7 @@ public class RuntimeConfiguration {
         return repository;
     }
 
+    public DestinationRouter getDestinationRouter() {
+        return router;
+    }
 }

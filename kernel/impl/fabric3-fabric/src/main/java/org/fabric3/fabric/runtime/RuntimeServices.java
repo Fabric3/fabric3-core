@@ -39,6 +39,7 @@ package org.fabric3.fabric.runtime;
 
 import javax.management.MBeanServer;
 
+import org.fabric3.host.monitor.DestinationRouter;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.repository.Repository;
 import org.fabric3.host.runtime.HostInfo;
@@ -142,4 +143,8 @@ public interface RuntimeServices {
      */
     Repository getRepository();
 
+    /**
+     * Returns the default monitor destination router.
+     */
+    DestinationRouter getDestinationRouter();
 }
