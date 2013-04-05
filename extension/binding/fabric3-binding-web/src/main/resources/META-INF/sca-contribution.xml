@@ -14,7 +14,6 @@ Public License. See the accompanying license file for details.
               f3:extension="true"
               f3:description="Web binding extension">
     <import.java package="org.fabric3.spi.*" version="1.9.7"/>
-    <import.java package="org.slf4j.*" version="1.6.4" required="false"/>
 
     <deployable composite="f3:WebBindingExtension"/>
 </contribution>

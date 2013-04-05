@@ -37,18 +37,17 @@
 */
 package org.fabric3.tx.atomikos.tm;
 
-import java.io.File;
 import javax.transaction.Status;
 import javax.transaction.Transaction;
+import java.io.File;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.api.MonitorChannel;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.RuntimeRecover;
+import org.fabric3.spi.monitor.MonitorProxy;
 
 /**
  *
@@ -56,16 +55,16 @@ import org.fabric3.spi.event.RuntimeRecover;
 public class AtomikosTransactionManagerTestCase extends TestCase {
     private EventService eventService;
     private HostInfo info;
-    private MonitorChannel channel;
+    private MonitorProxy monitorProxy;
     private File dataDir;
 
     public void testTransactionManagerInit() throws Exception {
         EasyMock.expect(info.getDataDir()).andReturn(dataDir);
         EasyMock.expect(info.getRuntimeName()).andReturn("vm");
 
-        EasyMock.replay(eventService, info, channel);
+        EasyMock.replay(eventService, info, monitorProxy);
 
-        AtomikosTransactionManager tm = new AtomikosTransactionManager(eventService, info, channel);
+        AtomikosTransactionManager tm = new AtomikosTransactionManager(eventService, info, monitorProxy);
 
         tm.init();
         tm.onEvent(new RuntimeRecover());
@@ -84,16 +83,16 @@ public class AtomikosTransactionManagerTestCase extends TestCase {
 
         tm.destroy();
 
-        EasyMock.verify(eventService, info, channel);
+        EasyMock.verify(eventService, info, monitorProxy);
     }
 
     public void testTransactionManagerProperties() throws Exception {
         EasyMock.expect(info.getDataDir()).andReturn(dataDir);
         EasyMock.expect(info.getRuntimeName()).andReturn("vm");
 
-        EasyMock.replay(eventService, info, channel);
+        EasyMock.replay(eventService, info, monitorProxy);
 
-        AtomikosTransactionManager tm = new AtomikosTransactionManager(eventService, info, channel);
+        AtomikosTransactionManager tm = new AtomikosTransactionManager(eventService, info, monitorProxy);
 
         tm.setTimeout(10000);
         tm.setCheckPointInterval(10000);
@@ -104,7 +103,7 @@ public class AtomikosTransactionManagerTestCase extends TestCase {
 
         tm.destroy();
 
-        EasyMock.verify(eventService, info, channel);
+        EasyMock.verify(eventService, info, monitorProxy);
     }
 
     @Override
@@ -115,7 +114,7 @@ public class AtomikosTransactionManagerTestCase extends TestCase {
         dataDir.mkdir();
 
         eventService = EasyMock.createNiceMock(EventService.class);
-        channel = EasyMock.createNiceMock(MonitorChannel.class);
+        monitorProxy = EasyMock.createNiceMock(MonitorProxy.class);
         info = EasyMock.createMock(HostInfo.class);
     }
 

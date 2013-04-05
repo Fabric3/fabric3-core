@@ -37,6 +37,8 @@
 */
 package org.fabric3.spi.monitor;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
+
 /**
  * Manages and exposes configuration for the runtime monitor implementation.
  */
@@ -59,11 +61,19 @@ public interface MonitorService {
     void setDeployableLevel(String deployable, String level);
 
     /**
-     * Sets the log level on the underlying provider.
+     * Sets the monitoring level on the library provider.
      *
-     * @param key   the log key
+     * @param key   the provider key
      * @param level the level
      */
     void setProviderLevel(String key, String level);
+
+    /**
+     * Returns the monitoring level for the library provider.
+     *
+     * @param key the provider key
+     * @return the level
+     */
+    MonitorLevel getProviderLevel(String key);
 
 }

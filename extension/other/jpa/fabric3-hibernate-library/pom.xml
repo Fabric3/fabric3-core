@@ -48,17 +48,10 @@ Public License. See the accompanying license file for details.
             <version>3.5.3-Final</version>
         </dependency>
 
-        <!-- SLF4J replaces clogging -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.5.6</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.5.6</version>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-monitor-log</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

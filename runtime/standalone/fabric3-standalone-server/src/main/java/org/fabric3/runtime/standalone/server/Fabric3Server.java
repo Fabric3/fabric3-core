@@ -61,7 +61,6 @@ import org.fabric3.host.classloader.MaskingClassLoader;
 import org.fabric3.host.monitor.DelegatingDestinationRouter;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.runtime.BootConfiguration;
-import org.fabric3.host.runtime.BootExports;
 import org.fabric3.host.runtime.BootstrapFactory;
 import org.fabric3.host.runtime.BootstrapHelper;
 import org.fabric3.host.runtime.BootstrapService;
@@ -108,10 +107,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
      */
     public void start(Params params) throws Fabric3ServerException {
         try {
-
-            // FIXME remove
-            // add LogBack to exports
-            BootExports.addExport("org.slf4j.*", "1.6.4");
 
             //  calculate config directories based on the mode the runtime is booted in
             File installDirectory = BootstrapHelper.getInstallDirectory(Fabric3Server.class);

@@ -37,10 +37,6 @@
 */
 package org.fabric3.tx.atomikos.tm;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import java.util.Properties;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.InvalidTransactionException;
@@ -49,23 +45,27 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Properties;
 
 import com.atomikos.icatch.config.UserTransactionService;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
 import com.atomikos.icatch.jta.TransactionManagerImp;
 import com.atomikos.icatch.system.Configuration;
+import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.event.EventService;
+import org.fabric3.spi.event.Fabric3EventListener;
+import org.fabric3.spi.event.RuntimeRecover;
+import org.fabric3.spi.monitor.MonitorProxy;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
-
-import org.fabric3.api.MonitorChannel;
-import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.event.EventService;
-import org.fabric3.spi.event.Fabric3EventListener;
-import org.fabric3.spi.event.RuntimeRecover;
 
 /**
  * Wraps an Atomikos transaction manager. Configured JDBC and JMS resource registration is handled implicitly by Atomikos.
@@ -97,18 +97,20 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
     // True if 2PC on a participating resource should be handled from a single thread. False by default so acknowledgements are done in parallel.  
     private boolean singleThreaded2PC;
 
-    // Set to false if transaction logging to disk should not be done. If set to true, transaction integrity cannot be guaranteed.
+    // Set to false if transaction logging to disk should not be done. If set to false, transaction integrity cannot be guaranteed.
     // Only for use in unit or integration tests where disk access needs to be disabled for performance.
     private boolean enableLogging = true;
 
     private long checkPointInterval = -1;
 
-    private MonitorChannel monitorChannel;
+    private MonitorLevel monitorLevel = MonitorLevel.WARNING;
 
-    public AtomikosTransactionManager(@Reference EventService eventService, @Reference HostInfo info, @Monitor MonitorChannel monitorChannel) {
+    private MonitorProxy monitorProxy;
+
+    public AtomikosTransactionManager(@Reference EventService eventService, @Reference HostInfo info, @Monitor MonitorProxy monitorProxy) {
         this.eventService = eventService;
         this.info = info;
-        this.monitorChannel = monitorChannel;
+        this.monitorProxy = monitorProxy;
     }
 
     @Property(required = false)
@@ -134,6 +136,11 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
     @Property(required = false)
     public void setCheckPointInterval(long checkPointInterval) {
         this.checkPointInterval = checkPointInterval;
+    }
+
+    @Property(required = false)
+    public void setMonitorLevel(String level) {
+        this.monitorLevel = MonitorLevel.valueOf(level);
     }
 
     @Init
@@ -167,7 +174,8 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
         }
 
         // redirect logging
-        Configuration.addConsole(new ConsoleChannelRedirector(monitorChannel));
+        ConsoleMonitorRedirector redirector = new ConsoleMonitorRedirector(monitorProxy, monitorLevel);
+        Configuration.addConsole(redirector);
     }
 
     @Destroy
@@ -179,8 +187,8 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
     }
 
     /**
-     * Performs initialization and transaction recovery. This is done after transactional resources (potentially in other extensions) have registered
-     * with the transaction manager.
+     * Performs initialization and transaction recovery. This is done after transactional resources (potentially in other extensions) have registered with the
+     * transaction manager.
      */
     public void onEvent(RuntimeRecover event) {
         synchronized (TransactionManagerImp.class) {

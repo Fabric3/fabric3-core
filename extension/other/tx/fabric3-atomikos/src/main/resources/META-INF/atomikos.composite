@@ -21,6 +21,7 @@ $Rev: 7291 $ $Date: 2009-07-06 12:00:22 +0200 (Mon, 06 Jul 2009) $
         <property name="timeout" source="$systemConfig/f3:transaction.manager/@timeout"/>
         <property name="singleThreaded2PC" source="$systemConfig/f3:transaction.manager/@single.threaded"/>
         <property name="enableLogging" source="$systemConfig/f3:transaction.manager/@logging"/>
+        <property name="monitorLevel" source="$systemConfig/f3:transaction.manager/@monitor.level"/>
         <property name="checkPointInterval" source="$systemConfig/f3:transaction.manager/@checkpoint.interval"/>
         <property name="properties" source="$systemConfig/f3:transaction.manager/*"/>
     </component>

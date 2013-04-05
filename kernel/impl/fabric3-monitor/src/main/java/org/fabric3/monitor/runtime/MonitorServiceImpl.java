@@ -43,6 +43,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
@@ -52,6 +53,7 @@ import org.fabric3.spi.builder.component.ComponentBuilderListener;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.fabric3.spi.monitor.MonitorLocator;
 import org.fabric3.spi.monitor.MonitorService;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -72,10 +74,13 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
     private Map<URI, MonitorLevel> applicationComponentLevels = Collections.emptyMap();
     private Map<URI, MonitorLevel> runtimeComponentLevels = Collections.emptyMap();
     private Map<QName, MonitorLevel> deployableLevels = Collections.emptyMap();
+    private Map<String, MonitorLevel> providerLevels = new ConcurrentHashMap<String, MonitorLevel>();
+
     private MonitorLevel defaultLevel;
 
     public MonitorServiceImpl(@Reference ComponentManager manager, @Reference HostInfo info) {
         this.manager = manager;
+        MonitorLocator.setInstance(this);
     }
 
     @Property(required = false)
@@ -156,7 +161,11 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
     @ManagementOperation(description = "Sets the monitoring level for a provider")
     public void setProviderLevel(String key, String level) {
         MonitorLevel parsed = MonitorLevel.valueOf(level);
+        providerLevels.put(key, parsed);
+    }
 
+    public MonitorLevel getProviderLevel(String key) {
+        return providerLevels.get(key);
     }
 
     public void onBuild(Component component, PhysicalComponentDefinition definition) {

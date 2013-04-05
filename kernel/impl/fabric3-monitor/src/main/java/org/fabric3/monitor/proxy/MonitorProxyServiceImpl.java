@@ -41,6 +41,8 @@ import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
 import org.fabric3.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.host.monitor.Monitorable;
+import org.fabric3.spi.monitor.MonitorLocator;
+import org.fabric3.spi.monitor.MonitorProxy;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -51,6 +53,11 @@ public class MonitorProxyServiceImpl implements MonitorProxyService {
 
     public MonitorProxyServiceImpl(JDKMonitorProxyService extension) {
         this.extension = extension;
+        try {
+            MonitorLocator.setMonitorProxy(extension.createMonitor(MonitorProxy.class));
+        } catch (MonitorCreationException e) {
+            throw new AssertionError(e);
+        }
     }
 
     /**

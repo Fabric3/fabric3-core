@@ -57,7 +57,7 @@ public class CachingEmfResolverTest extends TestCase {
         PersistenceContextParserImpl parser = null;
         CacheMonitor monitor = EasyMock.createNiceMock(CacheMonitor.class);
         DefaultEntityManagerFactoryCache cache = new DefaultEntityManagerFactoryCache(monitor);
-        emfResolver = new CachingEntityManagerFactoryResolver(parser, cache, null);
+        emfResolver = new CachingEntityManagerFactoryResolver(parser, cache);
     }
 
     public void testBuild() throws Exception {

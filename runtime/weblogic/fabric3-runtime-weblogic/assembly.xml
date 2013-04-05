@@ -58,10 +58,6 @@
                 <include>jaxen:jaxen</include>
                 <include>org.codehaus.woodstox:woodstox-core-asl</include>
 
-                <!-- logback is required because the monitor module references ILoggingEvent from MonitorEventImpl  -->
-                <include>ch.qos.logback:logback-classic</include>
-                <include>ch.qos.logback:logback-core</include>
-                <include>org.slf4j:slf4j-api</include>
             </includes>
             <outputDirectory>fabric3/boot</outputDirectory>
         </dependencySet>

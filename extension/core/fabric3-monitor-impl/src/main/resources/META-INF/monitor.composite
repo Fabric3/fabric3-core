@@ -5,9 +5,6 @@
 
  Fabric3 is licensed under modified terms of the GNU General
  Public License. See the accompanying license file for details.
- ________________________________________________
- Portions originally based on Apache Tuscany 2007
- licensed under the Apache 2.0 license.
 
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"

@@ -45,11 +45,13 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.fabric3.api.MonitorChannel;
 import org.fabric3.host.monitor.DestinationRouter;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.host.monitor.Monitorable;
 import org.fabric3.spi.monitor.DispatchInfo;
+import org.fabric3.spi.monitor.MonitorProxy;
 import org.fabric3.spi.monitor.MonitorUtil;
 import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
@@ -85,6 +87,9 @@ public class JDKMonitorProxyService implements MonitorProxyServiceExtension {
         }
 
         JDKMonitorHandler handler = new JDKMonitorHandler(destinationIndex, runtimeName, monitorable, router, levels);
+        if (MonitorChannel.class.isAssignableFrom(type) || MonitorProxy.class.isAssignableFrom(type)) {
+            return type.cast(handler);
+        }
         return type.cast(Proxy.newProxyInstance(loader, new Class[]{type}, handler));
     }
 

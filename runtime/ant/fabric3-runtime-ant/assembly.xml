@@ -77,9 +77,6 @@
                 <include>org.codehaus.fabric3:fabric3-thread-pool</include>
                 <include>jaxen:jaxen</include>
                 <include>org.codehaus.woodstox:woodstox-core-asl</include>
-                <include>ch.qos.logback:logback-classic</include>
-                <include>ch.qos.logback:logback-core</include>
-                <include>org.slf4j:slf4j-api</include>
             </includes>
             <outputDirectory>boot</outputDirectory>
         </dependencySet>

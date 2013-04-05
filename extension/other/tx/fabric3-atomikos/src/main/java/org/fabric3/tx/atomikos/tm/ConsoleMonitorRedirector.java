@@ -41,37 +41,40 @@ import java.io.IOException;
 
 import com.atomikos.diagnostics.Console;
 
-import org.fabric3.api.MonitorChannel;
+import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.spi.monitor.MonitorProxy;
 
 /**
- * Redirects Atomikos log output to the runtime monitor channel.
+ * Redirects Atomikos log output to the Fabric3 monitor subsystem.
  */
-public class ConsoleChannelRedirector implements Console {
-    private MonitorChannel channel;
+public class ConsoleMonitorRedirector implements Console {
+    private MonitorProxy proxy;
+    private MonitorLevel monitorLevel;
 
-    public ConsoleChannelRedirector(MonitorChannel channel) {
-        this.channel = channel;
+    public ConsoleMonitorRedirector(MonitorProxy proxy, MonitorLevel level) {
+        this.monitorLevel = level;
+        this.proxy = proxy;
     }
 
     public void println(String string) throws IOException {
-        channel.warn(string);
+        send(MonitorLevel.WARNING, string);
     }
 
     public void print(String string) throws IOException {
-        channel.warn(string);
+        send(MonitorLevel.WARNING, string);
     }
 
     public void println(String string, int level) throws IOException {
         switch (level) {
-        case Console.WARN:
-            channel.warn(string);
-            break;
-        case Console.INFO:
-            channel.debug(string);
-            break;
-        case Console.DEBUG:
-            channel.trace(string);
-            break;
+            case Console.WARN:
+                send(MonitorLevel.WARNING, string);
+                break;
+            case Console.INFO:
+                send(MonitorLevel.DEBUG, string);
+                break;
+            case Console.DEBUG:
+                send(MonitorLevel.TRACE, string);
+                break;
         }
     }
 
@@ -90,4 +93,12 @@ public class ConsoleChannelRedirector implements Console {
     public int getLevel() {
         return 0;
     }
+
+    private void send(MonitorLevel eventLevel, String string) {
+        if (monitorLevel.intValue() > eventLevel.intValue()) {
+            return;
+        }
+        proxy.send(eventLevel, System.currentTimeMillis(), string);
+    }
+
 }

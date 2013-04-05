@@ -11,7 +11,7 @@ Public License. See the accompanying license file for details.
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
-              f3:description="Bytecode proxy extension">
+              f3:description="Monitor extension">
     <import.java package="org.fabric3.spi.*" version="1.9.7"/>
     <import.java package="org.fabric3.implementation.pojo.*" version="1.9.7"/>
     <deployable composite="f3:MonitorImplementationExtension"/>

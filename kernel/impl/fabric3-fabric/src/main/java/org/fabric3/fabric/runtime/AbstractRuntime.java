@@ -60,7 +60,6 @@ import org.fabric3.fabric.lcm.LogicalComponentManagerImpl;
 import org.fabric3.fabric.management.DelegatingManagementService;
 import org.fabric3.fabric.repository.RepositoryImpl;
 import org.fabric3.host.Names;
-import org.fabric3.host.monitor.DelegatingDestinationRouter;
 import org.fabric3.host.monitor.DestinationRouter;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyService;
@@ -150,7 +149,6 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         metaDataStore = new MetaDataStoreImpl(processorRegistry);
         String runtimeName = hostInfo.getRuntimeName();
 
-        router = new DelegatingDestinationRouter();
         monitorService = new MonitorProxyServiceImpl(new JDKMonitorProxyService(runtimeName, this, router));
 
         ScopeContainerMonitor monitor;

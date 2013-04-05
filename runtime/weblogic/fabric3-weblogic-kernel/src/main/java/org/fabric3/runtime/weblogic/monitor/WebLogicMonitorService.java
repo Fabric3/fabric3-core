@@ -37,12 +37,9 @@
 */
 package org.fabric3.runtime.weblogic.monitor;
 
-
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
@@ -50,6 +47,7 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.monitor.MonitorService;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * No-op implementation of MonitorLevelService.
@@ -82,6 +80,10 @@ public class WebLogicMonitorService implements MonitorService {
 
     public void setProviderLevel(String key, String level) {
         // no-op - not supported
+    }
+
+    public MonitorLevel getProviderLevel(String key) {
+        return null;
     }
 
 }

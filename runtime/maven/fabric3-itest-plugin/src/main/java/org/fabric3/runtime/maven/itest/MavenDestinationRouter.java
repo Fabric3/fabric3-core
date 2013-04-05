@@ -51,10 +51,10 @@ import org.fabric3.host.monitor.MessageFormatter;
 /**
  * Forwards monitor events to the Maven logger.
  */
-public class MavenMonitorDestinationRouter implements DestinationRouter {
+public class MavenDestinationRouter implements DestinationRouter {
     private Log log;
 
-    public MavenMonitorDestinationRouter(Log log) {
+    public MavenDestinationRouter(Log log) {
         this.log = log;
     }
 
@@ -63,11 +63,6 @@ public class MavenMonitorDestinationRouter implements DestinationRouter {
     }
 
     public void send(MonitorLevel level, int destinationIndex, String runtimeName, long timestamp, String source, String message, Object... args) {
-        write(level, message, args);
-    }
-
-    private void write(MonitorLevel level, String message, Object[] args) {
-
         message = MessageFormatter.format(message, args);
 
         if (MonitorLevel.SEVERE == level) {
@@ -101,7 +96,6 @@ public class MavenMonitorDestinationRouter implements DestinationRouter {
                 log.debug(message);
             }
         }
-
     }
 
 }

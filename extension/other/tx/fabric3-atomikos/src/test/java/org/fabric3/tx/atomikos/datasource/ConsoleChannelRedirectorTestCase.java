@@ -37,34 +37,35 @@
 */
 package org.fabric3.tx.atomikos.datasource;
 
-import java.io.IOException;
-
-import com.atomikos.diagnostics.Console;
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
-
-import org.fabric3.api.MonitorChannel;
-import org.fabric3.tx.atomikos.tm.ConsoleChannelRedirector;
+import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.spi.monitor.MonitorProxy;
+import org.fabric3.tx.atomikos.tm.ConsoleMonitorRedirector;
 
 /**
  */
 public class ConsoleChannelRedirectorTestCase extends TestCase {
 
     public void testPrint() throws Exception {
-        MonitorChannel channel = EasyMock.createMock(MonitorChannel.class);
-        channel.warn("warning");
-        EasyMock.expectLastCall().times(3);
-        channel.debug("info");
-        channel.trace("debug");
-        EasyMock.replay(channel);
+        MockMonitorProxy proxy = new MockMonitorProxy();
 
-        ConsoleChannelRedirector redirector = new ConsoleChannelRedirector(channel);
+        ConsoleMonitorRedirector redirector = new ConsoleMonitorRedirector(proxy, MonitorLevel.TRACE);
         redirector.println("warning");
         redirector.print("warning");
 
-        redirector.print("warning", ConsoleChannelRedirector.WARN);
-        redirector.print("info", ConsoleChannelRedirector.INFO);
-        redirector.print("debug", ConsoleChannelRedirector.DEBUG);
-        EasyMock.verify(channel);
+        redirector.print("warning", ConsoleMonitorRedirector.WARN);
+        redirector.print("info", ConsoleMonitorRedirector.INFO);
+        redirector.print("debug", ConsoleMonitorRedirector.DEBUG);
+
+        assertEquals(5, proxy.invoked);
+    }
+
+    // note EasyMock cannot be used as there is a bug with varargs methods
+    private class MockMonitorProxy implements MonitorProxy {
+        private int invoked;
+
+        public void send(MonitorLevel level, long timestamp, String template, Object... args) {
+            invoked++;
+        }
     }
 }

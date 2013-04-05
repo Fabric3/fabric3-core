@@ -41,15 +41,17 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.fabric3.api.MonitorChannel;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.host.monitor.DestinationRouter;
 import org.fabric3.host.monitor.Monitorable;
 import org.fabric3.spi.monitor.DispatchInfo;
-import org.fabric3.host.monitor.DestinationRouter;
+import org.fabric3.spi.monitor.MonitorProxy;
 
 /**
  * JDK-based dispatcher for monitor events.
  */
-public class JDKMonitorHandler implements InvocationHandler {
+public class JDKMonitorHandler implements InvocationHandler, MonitorChannel, MonitorProxy {
     private DestinationRouter router;
     private int destinationIndex;
     private String runtimeName;
@@ -99,12 +101,41 @@ public class JDKMonitorHandler implements InvocationHandler {
 
     }
 
-    private void send(MonitorLevel level, long timestamp, String template, Object[] args) {
+    public void severe(String message, Object... args) {
+        checkAndSend(MonitorLevel.SEVERE, message, args);
+    }
+
+    public void warn(String message, Object... args) {
+        checkAndSend(MonitorLevel.WARNING, message, args);
+    }
+
+    public void info(String message, Object... args) {
+        checkAndSend(MonitorLevel.INFO, message, args);
+    }
+
+    public void debug(String message, Object... args) {
+        checkAndSend(MonitorLevel.DEBUG, message, args);
+    }
+
+    public void trace(String message, Object... args) {
+        checkAndSend(MonitorLevel.TRACE, message, args);
+    }
+
+    public void send(MonitorLevel level, long timestamp, String template, Object[] args) {
         if (args == null) {
             router.send(level, destinationIndex, runtimeName, timestamp, source, template);
         } else {
             router.send(level, destinationIndex, runtimeName, timestamp, source, template, args);
         }
-
     }
+
+    private void checkAndSend(MonitorLevel level, String message, Object[] args) {
+        if (level.intValue() < monitorable.getLevel().intValue()) {
+            // monitoring is off
+            return;
+        }
+        long timestamp = System.currentTimeMillis();
+        send(level, timestamp, message, args);
+    }
+
 }

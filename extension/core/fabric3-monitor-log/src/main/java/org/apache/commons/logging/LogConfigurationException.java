@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -34,64 +34,51 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.api;
+ *
+ * -----------------------------------------------------------------------
+ *
+ * Copyright 2001-2004 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import java.io.Serializable;
-
-import org.fabric3.api.annotation.monitor.MonitorLevel;
+package org.apache.commons.logging;
 
 /**
- * Encapsulates monitor data that will be broadcast as an event.
+ * This class exists to allow Fabric3 to replace Commons Logging with a direct bridge to its monitor subsystem.
  */
-public interface MonitorEvent extends Serializable {
+public class LogConfigurationException extends RuntimeException {
+    protected Throwable cause = null;
 
-    /**
-     * Returns the runtime which originated the event.
-     *
-     * @return the runtime which originated the event
-     */
-    public String getRuntime();
+    public LogConfigurationException() {
+        super();
+    }
 
-    /**
-     * Returns the name of the object (such as a component) which originated the event.
-     *
-     * @return the Monitorable name
-     */
-    public String getSource();
+    public LogConfigurationException(String message) {
+        super(message);
+    }
 
-    /**
-     * Returns the event level.
-     *
-     * @return the event level
-     */
-    public MonitorLevel getMonitorLevel();
+    public LogConfigurationException(Throwable cause) {
+        this((cause == null) ? null : cause.toString(), cause);
+    }
 
-    /**
-     * Returns the time the event was created.
-     *
-     * @return the time the event was created
-     */
-    public long getTimeStamp();
+    public LogConfigurationException(String message, Throwable cause) {
+        super(message + " (Caused by " + cause + ")");
+        this.cause = cause;
+    }
 
-    /**
-     * Returns the name of the executing thread when the event was created.
-     *
-     * @return the name of the executing thread when the event was created
-     */
-    public String getThreadName();
+    public Throwable getCause() {
+        return (this.cause);
+    }
 
-    /**
-     * Returns the event message.
-     *
-     * @return the event message
-     */
-    public String getMessage();
-
-    /**
-     * Returns any data (such as an exception) associated with the event.
-     *
-     * @return any data associated with the event
-     */
-    public Object[] getData();
 }

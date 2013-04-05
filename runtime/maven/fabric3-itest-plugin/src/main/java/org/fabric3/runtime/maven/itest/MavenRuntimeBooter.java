@@ -173,10 +173,8 @@ public class MavenRuntimeBooter {
 
         MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer(DOMAIN);
 
-        MavenMonitorDestinationRouter runtimeDispatcher = new MavenMonitorDestinationRouter(log);
-        MavenMonitorDestinationRouter appDispatcher = new MavenMonitorDestinationRouter(log);
-        // FIXME destination dispatcher
-        RuntimeConfiguration configuration = new RuntimeConfiguration(hostInfo, mBeanServer, null);
+        MavenDestinationRouter router = new MavenDestinationRouter(log);
+        RuntimeConfiguration configuration = new RuntimeConfiguration(hostInfo, mBeanServer, router);
 
         return instantiateRuntime(configuration, bootClassLoader);
     }

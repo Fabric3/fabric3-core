@@ -44,5 +44,6 @@
         <module>fabric3-writer</module>
         <module>fabric3-channel-disruptor</module>
         <module>fabric3-monitor-impl</module>
+        <module>fabric3-monitor-log</module>
     </modules>
 </project>

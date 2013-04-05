@@ -35,6 +35,11 @@ Public License. See the accompanying license file for details.
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-monitor-log</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.codehaus.fabric3.api</groupId>
             <artifactId>javax-jms</artifactId>
             <version>${jms.version}</version>
@@ -45,6 +50,10 @@ Public License. See the accompanying license file for details.
             <artifactId>activemq-core</artifactId>
             <version>5.6.0</version>
             <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
                 <!-- Exclude clogging as it interferes with classloading. It is replaced by SLF4J below. -->
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -113,19 +122,6 @@ Public License. See the accompanying license file for details.
             </exclusions>
         </dependency>
 
-        <!-- SLF4J replaces clogging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.6.4</version>
-        </dependency>
-
-        <dependency>
-             <groupId>ch.qos.logback</groupId>
-             <artifactId>logback-classic</artifactId>
-             <version>${logback.version}</version>
-            <scope>test</scope>
-         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -151,16 +147,6 @@ Public License. See the accompanying license file for details.
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
-    <dependencyManagement>
-      <dependencies>
-            <dependency>
-		      <groupId>org.slf4j</groupId>
-		      <artifactId>slf4j-api</artifactId>
-		      <version>1.6.4</version>
-		    </dependency>
-      </dependencies>
-    </dependencyManagement>
     
     <build>
         <plugins>

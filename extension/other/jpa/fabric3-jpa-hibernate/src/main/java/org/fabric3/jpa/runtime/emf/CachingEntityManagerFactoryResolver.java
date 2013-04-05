@@ -37,27 +37,22 @@
 */
 package org.fabric3.jpa.runtime.emf;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.spi.PersistenceUnitInfo;
+import javax.sql.DataSource;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.spi.PersistenceUnitInfo;
-import javax.sql.DataSource;
 
-import org.hibernate.ejb.Ejb3Configuration;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.Names;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.F3TransactionManagerLookup;
 import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.monitor.MonitorService;
+import org.hibernate.ejb.Ejb3Configuration;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * An {@link EntityManagerFactoryResolver} implementation that caches EntityManagerFactory instances.
@@ -67,31 +62,13 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
 
     private PersistenceContextParser parser;
     private EntityManagerFactoryCache cache;
-    private MonitorService monitorService;
 
-    private MonitorLevel logLevel = MonitorLevel.WARNING;
-
-    @Property(required = false)
-    public void setMonitorLevel(String logLevel) {
-        this.logLevel = MonitorLevel.valueOf(logLevel);
-    }
-
-    public CachingEntityManagerFactoryResolver(@Reference PersistenceContextParser parser,
-                                               @Reference EntityManagerFactoryCache cache,
-                                               @Reference MonitorService monitorService) {
+    public CachingEntityManagerFactoryResolver(@Reference PersistenceContextParser parser, @Reference EntityManagerFactoryCache cache) {
         this.parser = parser;
         this.cache = cache;
-        this.monitorService = monitorService;
     }
 
-    @Init
-    public void init() {
-        // Hibernate default level is INFO which is verbose. Only log warnings by default
-        monitorService.setProviderLevel("org.hibernate", logLevel.toString());
-    }
-
-    public synchronized EntityManagerFactory resolve(String unitName, PersistenceOverrides overrides, ClassLoader classLoader)
-            throws JpaResolutionException {
+    public synchronized EntityManagerFactory resolve(String unitName, PersistenceOverrides overrides, ClassLoader classLoader) throws JpaResolutionException {
         EntityManagerFactory resolvedEmf = cache.get(unitName);
         if (resolvedEmf != null) {
             return resolvedEmf;
@@ -109,8 +86,8 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
     }
 
     /**
-     * Creates an EntityManagerFactory for a persistence unit specified by the property overrides. The EMF is created by parsing all persistence.xml
-     * files on the classpath.
+     * Creates an EntityManagerFactory for a persistence unit specified by the property overrides. The EMF is created by parsing all persistence.xml files on
+     * the classpath.
      *
      * @param overrides   persistence unit property overrides
      * @param classLoader the persistence unit classloader
@@ -141,6 +118,5 @@ public class CachingEntityManagerFactoryResolver implements EntityManagerFactory
         }
         throw new JpaResolutionException("Persistence unit not defined for: " + unitName);
     }
-
 
 }

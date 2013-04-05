@@ -284,14 +284,6 @@ Public License. See the accompanying license file for details.
             <version>3.3.1</version>
         </dependency>
 
-        <!-- required by the monitor module -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-        
-
     </dependencies>
 
     <build>

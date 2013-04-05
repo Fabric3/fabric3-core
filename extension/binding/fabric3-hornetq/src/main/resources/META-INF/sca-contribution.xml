@@ -17,7 +17,6 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.binding.jms.spi.common" version="1.9.7"/>
     <import.java package="org.fabric3.binding.jms.model" version="1.9.7"/>
     <import.java package="org.fabric3.binding.jms.spi.*" version="1.9.7"/>
-    <import.java package="org.slf4j.*" version="1.6.4" required="false"/>
     <deployable composite="f3:HornetQRuntimeExtension" modes="participant vm"/>
     <deployable composite="f3:HornetQControllerExtension" modes="controller vm"/>
     <f3:extends name="jms"/>
