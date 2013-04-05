@@ -80,7 +80,6 @@ public class StaticLoggerBinder implements LoggerFactoryBinder, ILoggerFactory {
                 return new MonitorLogger(name, MonitorLevel.WARNING);
             }
         } else {
-
             for (int i = tokens.length - 1; i >= 0; i--) {
                 StringBuilder builder = new StringBuilder(tokens[0]);
                 for (int n = 1; n <= i; n++) {

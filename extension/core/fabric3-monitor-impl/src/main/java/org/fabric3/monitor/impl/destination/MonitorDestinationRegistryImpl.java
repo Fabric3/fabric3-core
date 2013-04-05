@@ -37,18 +37,20 @@
 */
 package org.fabric3.monitor.impl.destination;
 
-import java.io.File;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Collections;
+import java.util.List;
 
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.monitor.impl.appender.Appender;
-import org.fabric3.monitor.impl.appender.ConsoleAppender;
-import org.fabric3.monitor.impl.appender.NoRollStrategy;
-import org.fabric3.monitor.impl.appender.RollingFileAppender;
+import org.fabric3.monitor.impl.appender.AppenderCreationException;
+import org.fabric3.monitor.impl.appender.AppenderFactory;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
@@ -57,20 +59,29 @@ import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
  */
 @EagerInit
 public class MonitorDestinationRegistryImpl implements MonitorDestinationRegistry {
-    private HostInfo hostInfo;
+    private AppenderFactory appenderFactory;
+    private List<Appender> defaultAppenders = Collections.emptyList();
 
     private MonitorDestination[] destinations;
 
-    public MonitorDestinationRegistryImpl(@Reference HostInfo hostInfo) {
-        this.hostInfo = hostInfo;
+    public MonitorDestinationRegistryImpl(@Reference AppenderFactory appenderFactory) {
+        this.appenderFactory = appenderFactory;
+    }
+
+    @Property(required = false)
+    public void setDefaultAppenders(XMLStreamReader reader) throws AppenderCreationException, XMLStreamException {
+        defaultAppenders = appenderFactory.instantiate(reader);
     }
 
     @Init
-    public void init() throws IOException {
-        destinations = new MonitorDestination[1];
+    public void init() throws IOException, AppenderCreationException {
+        if (defaultAppenders.isEmpty()) {
+            defaultAppenders = appenderFactory.instantiateDefaultAppenders();
+        }
 
+        destinations = new MonitorDestination[1];
         // register the default destination as index 0
-        destinations[0] = createDefaultDestination();
+        destinations[0] = new MonitorDestinationImpl(DEFAULT_DESTINATION, defaultAppenders.toArray(new Appender[defaultAppenders.size()]));
 
         for (MonitorDestination destination : destinations) {
             destination.start();
@@ -107,18 +118,6 @@ public class MonitorDestinationRegistryImpl implements MonitorDestinationRegistr
             throw new AssertionError("Invalid index: " + index);
         }
         destinations[index].write(buffer);
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private MonitorDestination createDefaultDestination() throws IOException {
-        Appender consoleAppender = new ConsoleAppender();
-
-        File outputDir = new File(hostInfo.getDataDir(), "logs");
-        outputDir.mkdirs();
-        File outputFile = new File(outputDir, "fabric3.log");
-        RollingFileAppender fileAppender = new RollingFileAppender(outputFile, new NoRollStrategy());
-
-        return new MonitorDestinationImpl(DEFAULT_DESTINATION, consoleAppender, fileAppender);
     }
 
 }

@@ -23,6 +23,11 @@
 
     <component name="MonitorDestinationRegistry">
         <f3:implementation.system class="org.fabric3.monitor.impl.destination.MonitorDestinationRegistryImpl"/>
+        <property name="defaultAppenders" source="$systemConfig/f3:monitor/f3:appenders"/>
+    </component>
+
+    <component name="AppenderFactoryImpl">
+        <f3:implementation.system class="org.fabric3.monitor.impl.appender.AppenderFactoryImpl"/>
     </component>
 
     <component name="BytecodeMonitorProxyService">
