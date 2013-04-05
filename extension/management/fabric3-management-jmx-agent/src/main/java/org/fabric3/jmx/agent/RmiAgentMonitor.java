@@ -25,6 +25,6 @@ import org.fabric3.api.annotation.monitor.Info;
  */
 public interface RmiAgentMonitor {
 
-    @Info("JMX connector started on port {0,number,#}")
+    @Info("JMX connector started on port {0}")
     void jmxStarted(int port);
 }

@@ -49,7 +49,7 @@ public interface FtpHostMonitor {
      *
      * @param port the listener port
      */
-    @Info("FTP listener started on port {0,number,#}")
+    @Info("FTP listener started on port {0}")
     void startFtpListener(int port);
 
 }

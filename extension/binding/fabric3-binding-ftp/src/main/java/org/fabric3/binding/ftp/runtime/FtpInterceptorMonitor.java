@@ -52,7 +52,7 @@ public interface FtpInterceptorMonitor {
     @Debug("Response received: {0}")
     void onResponse(String response);
 
-    @Debug("Connecting to {0} on port {1,number,#}")
+    @Debug("Connecting to {0} on port {1}")
     void onConnect(InetAddress hostAddress, int port);
 
     @Debug("Authenticating")

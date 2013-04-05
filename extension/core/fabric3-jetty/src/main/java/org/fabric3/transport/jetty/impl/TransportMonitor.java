@@ -53,10 +53,10 @@ import org.fabric3.api.annotation.monitor.Warning;
  */
 public interface TransportMonitor {
 
-    @Info("HTTP listener started on port {0,number,#}")
+    @Info("HTTP listener started on port {0}")
     void startHttpListener(int port);
 
-    @Info("HTTPS listener started on port {0,number,#}")
+    @Info("HTTPS listener started on port {0}")
     void startHttpsListener(int port);
 
     /**
