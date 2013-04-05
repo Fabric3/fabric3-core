@@ -67,19 +67,9 @@ public class DelegatingDestinationRouter implements DestinationRouter {
     public void setDestination(DestinationRouter destination) {
         this.delegate = destination;
         for (Entry entry : cache) {
-            write(entry);
+            delegate.send(entry.level, entry.destinationIndex, entry.runtimeName, entry.timestamp, entry.source, entry.message, entry.values);
         }
         cache = null;
-    }
-
-    private void write(Entry entry) {
-        if (entry.values == null) {
-            delegate.send(entry.level, entry.destinationIndex, entry.runtimeName, entry.timestamp, entry.source, entry.message);
-        } else if (entry.values.length == 1) {
-            delegate.send(entry.level, entry.destinationIndex, entry.runtimeName, entry.timestamp, entry.source, entry.message, entry.values[0]);
-        } else {
-            throw new UnsupportedOperationException();
-        }
     }
 
     /**
