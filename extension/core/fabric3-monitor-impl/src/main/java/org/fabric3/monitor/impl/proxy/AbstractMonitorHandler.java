@@ -112,7 +112,7 @@ public class AbstractMonitorHandler implements InvocationHandler {
         if (asyncEnabled) {
             send(currentLevel, timestamp, currentMessage, args);
         } else {
-            router.send(level, destinationIndex, runtimeName, timestamp, source, template, args);
+            router.send(currentLevel, destinationIndex, runtimeName, timestamp, source, currentMessage, args);
         }
         return null;
 

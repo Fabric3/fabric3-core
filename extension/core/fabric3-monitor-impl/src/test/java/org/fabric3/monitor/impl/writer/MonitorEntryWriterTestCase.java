@@ -72,6 +72,12 @@ public class MonitorEntryWriterTestCase extends TestCase {
         assertTrue(string.contains("This is a true"));
     }
 
+    public void testEmptyTemplate() throws Exception {
+        MonitorEntryWriter.write(MonitorLevel.SEVERE, timestamp, null, buffer, timestampWriter, null);
+        String string = new String(buffer.array());
+        assertTrue(string.contains("SEVERE"));
+    }
+
     public void setUp() throws Exception {
         super.setUp();
         timestamp = System.currentTimeMillis();

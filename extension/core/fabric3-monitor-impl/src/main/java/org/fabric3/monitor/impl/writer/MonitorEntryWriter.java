@@ -80,6 +80,10 @@ public final class MonitorEntryWriter {
     }
 
     private static int writeTemplate(String template, Object[] args, ByteBuffer buffer) {
+        if (template == null) {
+            return 0;
+        }
+
         int bytesWritten = 0;
         int counter = 0;
         for (int i = 0; i < template.length(); i++) {
@@ -98,7 +102,6 @@ public final class MonitorEntryWriter {
         }
         return bytesWritten;
     }
-
 
     private static int writeParameter(Object arg, ByteBuffer buffer) {
         if (arg instanceof CharSequence) {
