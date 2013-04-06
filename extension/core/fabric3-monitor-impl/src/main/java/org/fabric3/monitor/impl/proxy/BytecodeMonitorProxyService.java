@@ -66,7 +66,7 @@ public class BytecodeMonitorProxyService implements MonitorProxyServiceExtension
     private String runtimeName;
     private Monitorable defaultMonitorable;
     private RingBufferDestinationRouter router;
-    private boolean enabled = true;
+    private boolean enabled = false;
 
     private String pattern = "%d:%m:%Y %H:%i:%s.%F";
     private TimeZone timeZone = TimeZone.getDefault();

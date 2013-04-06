@@ -45,6 +45,7 @@ import java.util.concurrent.ExecutorService;
 
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
 import org.fabric3.monitor.impl.writer.MonitorEntryWriter;
@@ -65,20 +66,25 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
 
     private ExecutorService executorService;
     private MonitorDestinationRegistry registry;
+    private DestinationMonitor monitor;
+
     private Disruptor<MonitorEventEntry> disruptor;
 
     private int capacity = 2000;
     private int ringSize = 65536;
-    private boolean enabled = true;
+    private boolean enabled = false;
 
     private String pattern = "%d:%m:%Y %H:%i:%s.%F";
     private TimeZone timeZone = TimeZone.getDefault();
 
     private TimestampWriter timestampWriter;
 
-    public RingBufferDestinationRouterImpl(@Reference ExecutorService executorService, @Reference MonitorDestinationRegistry registry) {
+    public RingBufferDestinationRouterImpl(@Reference ExecutorService executorService,
+                                           @Reference MonitorDestinationRegistry registry,
+                                           @Monitor DestinationMonitor monitor) {
         this.executorService = executorService;
         this.registry = registry;
+        this.monitor = monitor;
     }
 
     @Property(required = false)
@@ -116,6 +122,8 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
             MonitorEventHandler handler = new MonitorEventHandler(registry);
             disruptor.handleEventsWith(handler);
             disruptor.start();
+        } else {
+            monitor.synchronousOutput();
         }
     }
 

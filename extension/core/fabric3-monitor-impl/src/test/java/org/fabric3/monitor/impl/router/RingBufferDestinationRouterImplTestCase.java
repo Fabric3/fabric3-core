@@ -45,6 +45,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.monitor.impl.destination.MonitorDestination;
 import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
@@ -92,7 +93,10 @@ public class RingBufferDestinationRouterImplTestCase extends TestCase {
         latch = new CountDownLatch(1);
         registry = new MockRegistry(latch);
 
-        router = new RingBufferDestinationRouterImpl(executorService, registry);
+        DestinationMonitor monitor = EasyMock.createNiceMock(DestinationMonitor.class);
+        EasyMock.replay(monitor);
+
+        router = new RingBufferDestinationRouterImpl(executorService, registry, monitor);
         router.setCapacity(100);
         router.setRingSize(2);
 
