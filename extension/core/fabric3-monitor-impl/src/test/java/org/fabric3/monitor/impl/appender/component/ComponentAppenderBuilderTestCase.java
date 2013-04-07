@@ -35,46 +35,40 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.impl.appender.component;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.List;
+import java.net.URI;
 
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import org.fabric3.host.Names;
 import org.fabric3.monitor.spi.appender.Appender;
+import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.AtomicComponent;
 
 /**
  *
  */
-public class MonitorDestinationImpl implements MonitorDestination {
-    private String name;
-    private Appender[] appenders;
+public class ComponentAppenderBuilderTestCase extends TestCase {
+    private ComponentAppenderBuilder builder;
+    private ComponentManager componentManager;
 
-    public MonitorDestinationImpl(String name, List<Appender> appenders) {
-        this.name = name;
-        this.appenders = appenders.toArray(new Appender[appenders.size()]);
+    public void testBuild() throws Exception {
+        URI uri = URI.create(Names.RUNTIME_NAME + "/test");
+        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
+
+        EasyMock.expect(componentManager.getComponent(uri)).andReturn(component);
+        EasyMock.replay(componentManager, component);
+
+        Appender appender = builder.build(new PhysicalComponentAppenderDefinition("test"));
+        assertNotNull(appender);
+
+        EasyMock.verify(componentManager, component);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void start() throws IOException {
-        for (Appender appender : appenders) {
-            appender.start();
-        }
-    }
-
-    public void stop() throws IOException {
-        for (Appender appender : appenders) {
-            appender.stop();
-        }
-    }
-
-    public void write(ByteBuffer buffer) throws IOException {
-        for (Appender appender : appenders) {
-            buffer.position(0);
-            appender.write(buffer);
-        }
+    public void setUp() throws Exception {
+        super.setUp();
+        componentManager = EasyMock.createMock(ComponentManager.class);
+        builder = new ComponentAppenderBuilder(componentManager);
     }
 }

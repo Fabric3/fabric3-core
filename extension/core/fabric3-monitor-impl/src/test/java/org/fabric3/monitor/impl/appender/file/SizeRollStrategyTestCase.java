@@ -35,46 +35,34 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.impl.appender.file;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.List;
+import java.io.File;
+import java.io.FileOutputStream;
 
-import org.fabric3.monitor.spi.appender.Appender;
+import junit.framework.TestCase;
 
 /**
  *
  */
-public class MonitorDestinationImpl implements MonitorDestination {
-    private String name;
-    private Appender[] appenders;
+public class SizeRollStrategyTestCase extends TestCase {
+    private File file;
 
-    public MonitorDestinationImpl(String name, List<Appender> appenders) {
-        this.name = name;
-        this.appenders = appenders.toArray(new Appender[appenders.size()]);
+    public void testTriggerRoll() throws Exception {
+        SizeRollStrategy strategy = new SizeRollStrategy(10);
+        assertTrue(strategy.checkRoll(file));
     }
 
-    public String getName() {
-        return name;
+    public void setUp() throws Exception {
+        super.setUp();
+        file = new File("f3rolling.log");
+        FileOutputStream stream = new FileOutputStream(file);
+        stream.write("1234567890".getBytes());
+        stream.close();
     }
 
-    public void start() throws IOException {
-        for (Appender appender : appenders) {
-            appender.start();
-        }
-    }
-
-    public void stop() throws IOException {
-        for (Appender appender : appenders) {
-            appender.stop();
-        }
-    }
-
-    public void write(ByteBuffer buffer) throws IOException {
-        for (Appender appender : appenders) {
-            buffer.position(0);
-            appender.write(buffer);
-        }
+    public void tearDown() throws Exception {
+        super.tearDown();
+        file.delete();
     }
 }

@@ -35,46 +35,23 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.impl.appender.factory;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.List;
-
-import org.fabric3.monitor.spi.appender.Appender;
+import org.fabric3.api.annotation.monitor.Severe;
+import org.fabric3.api.annotation.monitor.Warning;
 
 /**
  *
  */
-public class MonitorDestinationImpl implements MonitorDestination {
-    private String name;
-    private Appender[] appenders;
+public interface AppenderFactoryMonitor {
 
-    public MonitorDestinationImpl(String name, List<Appender> appenders) {
-        this.name = name;
-        this.appenders = appenders.toArray(new Appender[appenders.size()]);
-    }
+    @Severe("Error configuring appender in system configuration. Defaulting to console output.")
+    void configurationError();
 
-    public String getName() {
-        return name;
-    }
+    @Severe
+    void configurationErrorDetail(String error);
 
-    public void start() throws IOException {
-        for (Appender appender : appenders) {
-            appender.start();
-        }
-    }
+    @Warning("More than one {0} appender was defined. Discarding the second configuration.")
+    void multipleAppenders(String name);
 
-    public void stop() throws IOException {
-        for (Appender appender : appenders) {
-            appender.stop();
-        }
-    }
-
-    public void write(ByteBuffer buffer) throws IOException {
-        for (Appender appender : appenders) {
-            buffer.position(0);
-            appender.write(buffer);
-        }
-    }
 }

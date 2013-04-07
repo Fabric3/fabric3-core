@@ -44,9 +44,9 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.monitor.impl.appender.Appender;
-import org.fabric3.monitor.impl.appender.AppenderCreationException;
-import org.fabric3.monitor.impl.appender.AppenderFactory;
+import org.fabric3.monitor.spi.appender.Appender;
+import org.fabric3.monitor.impl.appender.factory.AppenderCreationException;
+import org.fabric3.monitor.impl.appender.factory.AppenderFactory;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -81,7 +81,7 @@ public class MonitorDestinationRegistryImpl implements MonitorDestinationRegistr
 
         destinations = new MonitorDestination[1];
         // register the default destination as index 0
-        destinations[0] = new MonitorDestinationImpl(DEFAULT_DESTINATION, defaultAppenders.toArray(new Appender[defaultAppenders.size()]));
+        destinations[0] = new MonitorDestinationImpl(DEFAULT_DESTINATION, defaultAppenders);
 
         for (MonitorDestination destination : destinations) {
             destination.start();

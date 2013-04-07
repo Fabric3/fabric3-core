@@ -35,33 +35,38 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.appender;
+package org.fabric3.monitor.impl.appender.console;
 
-import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-import java.util.List;
+import java.io.ByteArrayInputStream;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.LoaderRegistry;
 
 /**
- * Instantiates appenders from an XML configuration source.
+ *
  */
-public interface AppenderFactory {
+public class ConsoleAppenderLoaderTestCase extends TestCase {
+    private static final String XML = "<appender.console/>";
 
-    /**
-     * Instantiates a collection of default appenders.
-     *
-     * @return the appenders
-     * @throws AppenderCreationException if there is an error instantiating the appenders
-     */
-    List<Appender> instantiateDefaultAppenders() throws AppenderCreationException;
+    public void testLoad() throws Exception {
+        LoaderRegistry registry = EasyMock.createMock(LoaderRegistry.class);
+        EasyMock.replay(registry);
 
-    /**
-     * Instantiates a collection of appenders from a configuration.
-     *
-     * @param reader the configuration source
-     * @return the appenders
-     * @throws AppenderCreationException if there is an error instantiating the appenders
-     * @throws XMLStreamException        if there is an error parsing the configuration
-     */
-    List<Appender> instantiate(XMLStreamReader reader) throws AppenderCreationException, XMLStreamException;
+        ConsoleAppenderLoader loader = new ConsoleAppenderLoader(registry);
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
+        reader.nextTag();
+
+        IntrospectionContext context = new DefaultIntrospectionContext();
+        ConsoleAppenderDefinition definition = loader.load(reader, context);
+
+        assertNotNull(definition);
+        assertFalse(context.hasErrors());
+        EasyMock.verify(registry);
+    }
 
 }

@@ -35,16 +35,40 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.appender;
+package org.fabric3.monitor.impl.appender.file;
 
-import org.fabric3.api.annotation.monitor.Warning;
+import org.fabric3.monitor.spi.appender.AppenderDefinition;
 
 /**
- *
+ * Configuration for a file appender.
  */
-public interface AppenderFactoryMonitor {
+public class FileAppenderDefinition extends AppenderDefinition {
 
-    @Warning("More than one {0} appender was defined. Discarding the second configuration.")
-    void multipleAppenders(String name);
+    private String fileName;
+    private String rollType = FileAppenderConstants.ROLL_STRATEGY_NONE;
+    private long rollSize;
 
+    public FileAppenderDefinition(String fileName, String rollType, long rollSize) {
+        super("file");
+        this.fileName = fileName;
+        this.rollType = rollType;
+        this.rollSize = rollSize;
+    }
+
+    public FileAppenderDefinition(String fileName) {
+        super("file");
+        this.fileName = fileName;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public String getRollType() {
+        return rollType;
+    }
+
+    public long getRollSize() {
+        return rollSize;
+    }
 }

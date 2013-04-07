@@ -106,8 +106,10 @@ public class Fabric3Server implements Fabric3ServerMBean {
      * @throws Fabric3ServerException if catastrophic exception was encountered leaving the runtime in an unstable state
      */
     public void start(Params params) throws Fabric3ServerException {
-        try {
 
+        DelegatingDestinationRouter router = new DelegatingDestinationRouter();
+
+        try {
             //  calculate config directories based on the mode the runtime is booted in
             File installDirectory = BootstrapHelper.getInstallDirectory(Fabric3Server.class);
             File extensionsDir = new File(installDirectory, "extensions");
@@ -160,8 +162,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             MBeanServer mbServer = MBeanServerFactory.createMBeanServer(DOMAIN);
 
-            DelegatingDestinationRouter router = new DelegatingDestinationRouter();
-
             RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, mbServer, router, null);
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
@@ -200,9 +200,11 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 e.printStackTrace();
             }
         } catch (RuntimeException ex) {
+            router.flush(System.out);
             shutdown();
             handleStartException(ex);
         } catch (Exception ex) {
+            router.flush(System.out);
             shutdown();
             handleStartException(ex);
         }

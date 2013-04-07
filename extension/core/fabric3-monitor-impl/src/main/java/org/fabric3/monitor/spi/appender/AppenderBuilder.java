@@ -35,46 +35,22 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.spi.appender;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.List;
-
-import org.fabric3.monitor.spi.appender.Appender;
+import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
+import org.fabric3.spi.builder.BuilderException;
 
 /**
- *
+ * Instantiates an {@link Appender} from a definition.
  */
-public class MonitorDestinationImpl implements MonitorDestination {
-    private String name;
-    private Appender[] appenders;
+public interface AppenderBuilder<D extends PhysicalAppenderDefinition> {
 
-    public MonitorDestinationImpl(String name, List<Appender> appenders) {
-        this.name = name;
-        this.appenders = appenders.toArray(new Appender[appenders.size()]);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void start() throws IOException {
-        for (Appender appender : appenders) {
-            appender.start();
-        }
-    }
-
-    public void stop() throws IOException {
-        for (Appender appender : appenders) {
-            appender.stop();
-        }
-    }
-
-    public void write(ByteBuffer buffer) throws IOException {
-        for (Appender appender : appenders) {
-            buffer.position(0);
-            appender.write(buffer);
-        }
-    }
+    /**
+     * Instantiates the appender.
+     *
+     * @param definition the definition
+     * @return the appender
+     * @throws BuilderException if there is an error creating the appender
+     */
+    Appender build(D definition) throws BuilderException;
 }

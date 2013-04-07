@@ -35,40 +35,35 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.appender;
+package org.fabric3.monitor.impl.appender.factory;
 
-import java.io.File;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.util.List;
+
+import org.fabric3.monitor.spi.appender.Appender;
 
 /**
- * Signals to roll a file when it has reached a given size.
+ * Instantiates appenders from an XML configuration source.
  */
-public class SizeRollStrategy implements RollStrategy {
-    private long size;
-
-    private int counter = 1;
+public interface AppenderFactory {
 
     /**
-     * Constructor the size in bytes when a file should be rolled.
+     * Instantiates a collection of default appenders.
      *
-     * @param size the size in bytes when a file should be rolled.
+     * @return the appenders
+     * @throws AppenderCreationException if there is an error instantiating the appenders
      */
-    public SizeRollStrategy(long size) {
-        this.size = size;
-    }
+    List<Appender> instantiateDefaultAppenders() throws AppenderCreationException;
 
-    public boolean checkRoll(File file) {
-        return (file.length() >= size);
-    }
-
-    public File getBackup(File file) {
-        while (true) {
-            File backup = new File(file.getParent(), file.getName() + counter);
-            if (backup.exists()) {
-                counter++;
-            } else {
-                return backup;
-            }
-        }
-    }
+    /**
+     * Instantiates a collection of appenders from a configuration.
+     *
+     * @param reader the configuration source
+     * @return the appenders
+     * @throws AppenderCreationException if there is an error instantiating the appenders
+     * @throws XMLStreamException        if there is an error parsing the configuration
+     */
+    List<Appender> instantiate(XMLStreamReader reader) throws AppenderCreationException, XMLStreamException;
 
 }

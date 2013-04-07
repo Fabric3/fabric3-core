@@ -14,5 +14,8 @@ Public License. See the accompanying license file for details.
               f3:description="Monitor extension">
     <import.java package="org.fabric3.spi.*" version="1.9.7"/>
     <import.java package="org.fabric3.implementation.pojo.*" version="1.9.7"/>
+
+    <export.java package="org.fabric3.monitor.spi.*" version="1.9.7"/>
+
     <deployable composite="f3:MonitorImplementationExtension"/>
 </contribution>

@@ -35,46 +35,52 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.impl.appender.file;
 
-import java.io.IOException;
+import java.io.File;
 import java.nio.ByteBuffer;
-import java.util.List;
 
-import org.fabric3.monitor.spi.appender.Appender;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  *
  */
-public class MonitorDestinationImpl implements MonitorDestination {
-    private String name;
-    private Appender[] appenders;
+public class FileAppenderTestCase extends TestCase {
+    private File file;
+    private File backup;
+    private ByteBuffer buffer;
 
-    public MonitorDestinationImpl(String name, List<Appender> appenders) {
-        this.name = name;
-        this.appenders = appenders.toArray(new Appender[appenders.size()]);
-    }
+    public void testRollFile() throws Exception {
+        RollStrategy strategy = EasyMock.createMock(RollStrategy.class);
+        EasyMock.expect(strategy.checkRoll(file)).andReturn(true);
+        EasyMock.expect(strategy.getBackup(file)).andReturn(backup);
+        EasyMock.replay(strategy);
 
-    public String getName() {
-        return name;
-    }
-
-    public void start() throws IOException {
-        for (Appender appender : appenders) {
+        FileAppender appender = new FileAppender(file, strategy);
+        try {
             appender.start();
-        }
-    }
 
-    public void stop() throws IOException {
-        for (Appender appender : appenders) {
+            assertFalse(backup.exists());
+            appender.write(buffer);
+            assertTrue(backup.exists());
+        } finally {
             appender.stop();
         }
     }
 
-    public void write(ByteBuffer buffer) throws IOException {
-        for (Appender appender : appenders) {
-            buffer.position(0);
-            appender.write(buffer);
-        }
+    public void setUp() throws Exception {
+        super.setUp();
+        file = new File("f3rolling.log");
+        backup = new File("f3rolling.bak");
+        file.createNewFile();
+        buffer = ByteBuffer.allocate(1);
+        buffer.put((byte) 'x');
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+        file.delete();
+        backup.delete();
     }
 }

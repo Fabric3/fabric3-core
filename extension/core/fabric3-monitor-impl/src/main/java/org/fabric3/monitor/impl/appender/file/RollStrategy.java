@@ -35,46 +35,29 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.impl.appender.file;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.List;
-
-import org.fabric3.monitor.spi.appender.Appender;
+import java.io.File;
 
 /**
- *
+ * Implements a trigger for rolling a file such as when it reaches a size or time period.
  */
-public class MonitorDestinationImpl implements MonitorDestination {
-    private String name;
-    private Appender[] appenders;
+public interface RollStrategy {
 
-    public MonitorDestinationImpl(String name, List<Appender> appenders) {
-        this.name = name;
-        this.appenders = appenders.toArray(new Appender[appenders.size()]);
-    }
+    /**
+     * Returns true if the file should be rolled.
+     *
+     * @param file the file to check
+     * @return tr
+     */
+    boolean checkRoll(File file);
 
-    public String getName() {
-        return name;
-    }
+    /**
+     * Returns the file to backup the existing rolling file to.
+     *
+     * @param file the existing rolling file
+     * @return the file to backup to
+     */
+    File getBackup(File file);
 
-    public void start() throws IOException {
-        for (Appender appender : appenders) {
-            appender.start();
-        }
-    }
-
-    public void stop() throws IOException {
-        for (Appender appender : appenders) {
-            appender.stop();
-        }
-    }
-
-    public void write(ByteBuffer buffer) throws IOException {
-        for (Appender appender : appenders) {
-            buffer.position(0);
-            appender.write(buffer);
-        }
-    }
 }

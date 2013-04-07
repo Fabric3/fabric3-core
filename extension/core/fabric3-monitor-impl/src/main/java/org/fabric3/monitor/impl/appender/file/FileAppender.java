@@ -35,34 +35,64 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.appender;
+package org.fabric3.monitor.impl.appender.file;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
-import junit.framework.TestCase;
+import org.fabric3.host.util.FileHelper;
+import org.fabric3.monitor.spi.appender.Appender;
 
 /**
- *
+ * Writes monitor events to a file that may be rolled periodically according to a {@link RollStrategy}.
  */
-public class SizeRollStrategyTestCase extends TestCase {
+public class FileAppender implements Appender {
     private File file;
+    private RollStrategy strategy;
+    private FileOutputStream stream;
+    private FileChannel fileChannel;
 
-    public void testTriggerRoll() throws Exception {
-        SizeRollStrategy strategy = new SizeRollStrategy(10);
-        assertTrue(strategy.checkRoll(file));
+    public FileAppender(File file, RollStrategy strategy) {
+        this.file = file;
+        this.strategy = strategy;
     }
 
-    public void setUp() throws Exception {
-        super.setUp();
-        file = new File("f3rolling.log");
-        FileOutputStream stream = new FileOutputStream(file);
-        stream.write("1234567890".getBytes());
-        stream.close();
+    public void start() throws FileNotFoundException {
+        initializeChannel();
     }
 
-    public void tearDown() throws Exception {
-        super.tearDown();
-        file.delete();
+    public void stop() throws IOException {
+        if (stream != null) {
+            stream.close();
+            stream = null;
+        }
     }
+
+    public void write(ByteBuffer buffer) throws IOException {
+        roll();
+        fileChannel.write(buffer);
+    }
+
+    private void initializeChannel() throws FileNotFoundException {
+        stream = new FileOutputStream(file, true);
+        fileChannel = stream.getChannel();
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private void roll() throws IOException {
+        if (!file.exists()) {
+            initializeChannel();
+        } else if (strategy.checkRoll(file)) {
+            stream.close();
+            File backup = strategy.getBackup(file);
+            FileHelper.copyFile(file, backup);
+            file.delete();
+            initializeChannel();
+        }
+    }
+
 }

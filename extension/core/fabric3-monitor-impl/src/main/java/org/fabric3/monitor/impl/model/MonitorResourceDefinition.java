@@ -35,46 +35,35 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.impl.model;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.monitor.spi.appender.Appender;
+import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.monitor.spi.appender.AppenderDefinition;
 
 /**
- *
+ * A monitor resource configuration.
  */
-public class MonitorDestinationImpl implements MonitorDestination {
+public class MonitorResourceDefinition extends ResourceDefinition {
     private String name;
-    private Appender[] appenders;
+    private List<AppenderDefinition> appenderDefinitions;
 
-    public MonitorDestinationImpl(String name, List<Appender> appenders) {
+    public MonitorResourceDefinition(String name) {
         this.name = name;
-        this.appenders = appenders.toArray(new Appender[appenders.size()]);
+        appenderDefinitions = new ArrayList<AppenderDefinition>();
     }
 
     public String getName() {
         return name;
     }
 
-    public void start() throws IOException {
-        for (Appender appender : appenders) {
-            appender.start();
-        }
+    public List<AppenderDefinition> getAppenderDefinitions() {
+        return appenderDefinitions;
     }
 
-    public void stop() throws IOException {
-        for (Appender appender : appenders) {
-            appender.stop();
-        }
-    }
-
-    public void write(ByteBuffer buffer) throws IOException {
-        for (Appender appender : appenders) {
-            buffer.position(0);
-            appender.write(buffer);
-        }
+    public void add(AppenderDefinition definition) {
+        appenderDefinitions.add(definition);
     }
 }

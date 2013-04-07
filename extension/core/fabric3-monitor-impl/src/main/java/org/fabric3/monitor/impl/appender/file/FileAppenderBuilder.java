@@ -35,46 +35,45 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.impl.appender.file;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.List;
+import java.io.File;
 
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.monitor.spi.appender.Appender;
+import org.fabric3.monitor.spi.appender.AppenderBuilder;
+import org.fabric3.spi.builder.BuilderException;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
- *
+ * Instantiates a {@link FileAppender} from a {@link PhysicalFileAppenderDefinition}.
  */
-public class MonitorDestinationImpl implements MonitorDestination {
-    private String name;
-    private Appender[] appenders;
+@EagerInit
+public class FileAppenderBuilder implements AppenderBuilder<PhysicalFileAppenderDefinition> {
+    private HostInfo hostInfo;
 
-    public MonitorDestinationImpl(String name, List<Appender> appenders) {
-        this.name = name;
-        this.appenders = appenders.toArray(new Appender[appenders.size()]);
+    public FileAppenderBuilder(@Reference HostInfo hostInfo) {
+        this.hostInfo = hostInfo;
     }
 
-    public String getName() {
-        return name;
-    }
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public Appender build(PhysicalFileAppenderDefinition definition) throws BuilderException {
+        File outputDir = new File(hostInfo.getDataDir(), "logs");
+        outputDir.mkdirs();
+        File outputFile = new File(outputDir, definition.getFileName());
 
-    public void start() throws IOException {
-        for (Appender appender : appenders) {
-            appender.start();
+        String rollType = definition.getRollType();
+
+        if (FileAppenderConstants.ROLL_STRATEGY_NONE.equals(rollType)) {
+            RollStrategy strategy = new NoRollStrategy();
+            return new FileAppender(outputFile, strategy);
+        } else if (FileAppenderConstants.ROLL_STRATEGY_SIZE.equals(rollType)) {
+            RollStrategy strategy = new SizeRollStrategy(definition.getRollSize());
+            return new FileAppender(outputFile, strategy);
+        } else {
+            throw new BuilderException("Unknown roll type: " + rollType);
         }
-    }
 
-    public void stop() throws IOException {
-        for (Appender appender : appenders) {
-            appender.stop();
-        }
-    }
-
-    public void write(ByteBuffer buffer) throws IOException {
-        for (Appender appender : appenders) {
-            buffer.position(0);
-            appender.write(buffer);
-        }
     }
 }

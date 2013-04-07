@@ -35,36 +35,47 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.appender;
+package org.fabric3.monitor.impl.appender.file;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.io.File;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.host.util.FileHelper;
+import org.fabric3.monitor.spi.appender.Appender;
 
 /**
- * Writes monitor events to a sink such as a file or stream.
+ *
  */
-public interface Appender {
+public class FileAppenderBuilderTestCase extends TestCase {
 
-    /**
-     * Initializes the appender to record events.
-     *
-     * @throws IOException if an initialization error occurs
-     */
-    void start() throws IOException;
+    public void testRollingAppenderBuild() throws Exception {
+        HostInfo info = EasyMock.createMock(HostInfo.class);
+        EasyMock.expect(info.getDataDir()).andReturn(new File("test"));
+        EasyMock.replay(info);
 
-    /**
-     * Closes any open resources used by the appender.
-     *
-     * @throws IOException if an exception occurs closing resources
-     */
-    void stop() throws IOException;
+        FileAppenderBuilder builder = new FileAppenderBuilder(info);
+        Appender appender = builder.build(new PhysicalFileAppenderDefinition("test", "size", 10));
+        assertNotNull(appender);
 
-    /**
-     * Writes an event to the sink.
-     *
-     * @param buffer the event buffer
-     * @throws IOException if a writePrefix error occurs
-     */
-    void write(ByteBuffer buffer) throws IOException;
+        EasyMock.verify(info);
+    }
 
+    public void testNoRollAppenderBuild() throws Exception {
+        HostInfo info = EasyMock.createMock(HostInfo.class);
+        EasyMock.expect(info.getDataDir()).andReturn(new File("test"));
+        EasyMock.replay(info);
+
+        FileAppenderBuilder builder = new FileAppenderBuilder(info);
+        Appender appender = builder.build(new PhysicalFileAppenderDefinition("test", "none", -1));
+        assertNotNull(appender);
+
+        EasyMock.verify(info);
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+        FileHelper.deleteDirectory(new File("test"));
+    }
 }

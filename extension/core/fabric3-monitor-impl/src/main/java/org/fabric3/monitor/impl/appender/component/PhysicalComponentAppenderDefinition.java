@@ -35,29 +35,21 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.appender;
+package org.fabric3.monitor.impl.appender.component;
 
-import java.io.File;
+import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
 
 /**
- * Implements a trigger for rolling a file such as when it reaches a size or time period.
+ * Configuration for a component appender.
  */
-public interface RollStrategy {
+public class PhysicalComponentAppenderDefinition extends PhysicalAppenderDefinition {
+    private String componentName;
 
-    /**
-     * Returns true if the file should be rolled.
-     *
-     * @param file the file to check
-     * @return tr
-     */
-    boolean checkRoll(File file);
+    public PhysicalComponentAppenderDefinition(String componentName) {
+        this.componentName = componentName;
+    }
 
-    /**
-     * Returns the file to backup the existing rolling file to.
-     *
-     * @param file the existing rolling file
-     * @return the file to backup to
-     */
-    File getBackup(File file);
-
+    public String getComponentName() {
+        return componentName;
+    }
 }

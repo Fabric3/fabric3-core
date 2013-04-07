@@ -35,52 +35,33 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.appender;
+package org.fabric3.monitor.impl.appender.file;
 
-import java.io.File;
-import java.nio.ByteBuffer;
-
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
 
 /**
- *
+ * Configuration for a file appender.
  */
-public class RollingFileAppenderTestCase extends TestCase {
-    private File file;
-    private File backup;
-    private ByteBuffer buffer;
+public class PhysicalFileAppenderDefinition extends PhysicalAppenderDefinition {
+    private String fileName;
+    private String rollType;
+    private long rollSize;
 
-    public void testRollFile() throws Exception {
-        RollStrategy strategy = EasyMock.createMock(RollStrategy.class);
-        EasyMock.expect(strategy.checkRoll(file)).andReturn(true);
-        EasyMock.expect(strategy.getBackup(file)).andReturn(backup);
-        EasyMock.replay(strategy);
-
-        RollingFileAppender appender = new RollingFileAppender(file, strategy);
-        try {
-            appender.start();
-
-            assertFalse(backup.exists());
-            appender.write(buffer);
-            assertTrue(backup.exists());
-        } finally {
-            appender.stop();
-        }
+    public PhysicalFileAppenderDefinition(String fileName, String rollType, long rollSize) {
+        this.fileName = fileName;
+        this.rollType = rollType;
+        this.rollSize = rollSize;
     }
 
-    public void setUp() throws Exception {
-        super.setUp();
-        file = new File("f3rolling.log");
-        backup = new File("f3rolling.bak");
-        file.createNewFile();
-        buffer = ByteBuffer.allocate(1);
-        buffer.put((byte) 'x');
+    public String getFileName() {
+        return fileName;
     }
 
-    public void tearDown() throws Exception {
-        super.tearDown();
-        file.delete();
-        backup.delete();
+    public String getRollType() {
+        return rollType;
+    }
+
+    public long getRollSize() {
+        return rollSize;
     }
 }

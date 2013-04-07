@@ -35,46 +35,19 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.impl.appender.console;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.List;
-
-import org.fabric3.monitor.spi.appender.Appender;
+import org.fabric3.monitor.spi.appender.AppenderGenerator;
+import org.fabric3.spi.generator.GenerationException;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- *
+ * Generates a {@link PhysicalConsoleAppenderDefinition} from a {@link ConsoleAppenderDefinition}.
  */
-public class MonitorDestinationImpl implements MonitorDestination {
-    private String name;
-    private Appender[] appenders;
+@EagerInit
+public class ConsoleAppenderGenerator implements AppenderGenerator<ConsoleAppenderDefinition> {
 
-    public MonitorDestinationImpl(String name, List<Appender> appenders) {
-        this.name = name;
-        this.appenders = appenders.toArray(new Appender[appenders.size()]);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void start() throws IOException {
-        for (Appender appender : appenders) {
-            appender.start();
-        }
-    }
-
-    public void stop() throws IOException {
-        for (Appender appender : appenders) {
-            appender.stop();
-        }
-    }
-
-    public void write(ByteBuffer buffer) throws IOException {
-        for (Appender appender : appenders) {
-            buffer.position(0);
-            appender.write(buffer);
-        }
+    public PhysicalConsoleAppenderDefinition generateResource(ConsoleAppenderDefinition definition) throws GenerationException {
+        return new PhysicalConsoleAppenderDefinition();
     }
 }

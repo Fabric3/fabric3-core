@@ -35,46 +35,51 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.impl.builder;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.Collections;
+import java.util.Map;
 
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import org.fabric3.monitor.impl.destination.MonitorDestination;
+import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
+import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
+import org.fabric3.monitor.impl.physical.PhysicalMonitorDefinition;
 import org.fabric3.monitor.spi.appender.Appender;
+import org.fabric3.monitor.spi.appender.AppenderBuilder;
 
 /**
  *
  */
-public class MonitorDestinationImpl implements MonitorDestination {
-    private String name;
-    private Appender[] appenders;
+public class MonitorBuilderTestCase extends TestCase {
 
-    public MonitorDestinationImpl(String name, List<Appender> appenders) {
-        this.name = name;
-        this.appenders = appenders.toArray(new Appender[appenders.size()]);
+    @SuppressWarnings("unchecked")
+    public void testBuild() throws Exception {
+        MonitorDestinationRegistry registry = EasyMock.createMock(MonitorDestinationRegistry.class);
+        registry.register(EasyMock.isA(MonitorDestination.class));
+
+        Appender appender = EasyMock.createMock(Appender.class);
+
+        AppenderBuilder appenderBuilder = EasyMock.createMock(AppenderBuilder.class);
+        EasyMock.expect(appenderBuilder.build(EasyMock.isA(PhysicalAppenderDefinition.class))).andReturn(appender);
+
+        EasyMock.replay(registry, appenderBuilder, appender);
+
+        MonitorBuilder builder = new MonitorBuilder(registry);
+
+        Map map = Collections.singletonMap(MockDefinition.class, appenderBuilder);
+        builder.setAppenderBuilders(map);
+
+        PhysicalMonitorDefinition physicalDefinition = new PhysicalMonitorDefinition("test");
+        physicalDefinition.add(new MockDefinition());
+        builder.build(physicalDefinition);
+
+        EasyMock.verify(registry, appenderBuilder, appender);
+
     }
 
-    public String getName() {
-        return name;
-    }
+    private class MockDefinition extends  PhysicalAppenderDefinition {
 
-    public void start() throws IOException {
-        for (Appender appender : appenders) {
-            appender.start();
-        }
-    }
-
-    public void stop() throws IOException {
-        for (Appender appender : appenders) {
-            appender.stop();
-        }
-    }
-
-    public void write(ByteBuffer buffer) throws IOException {
-        for (Appender appender : appenders) {
-            buffer.position(0);
-            appender.write(buffer);
-        }
     }
 }

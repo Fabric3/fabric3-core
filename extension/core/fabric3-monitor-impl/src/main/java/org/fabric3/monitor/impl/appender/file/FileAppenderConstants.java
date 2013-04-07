@@ -35,20 +35,15 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.appender;
-
-import org.fabric3.host.Fabric3Exception;
+package org.fabric3.monitor.impl.appender.file;
 
 /**
- *
+ * File appender constants.
  */
-public class AppenderCreationException extends Fabric3Exception {
+public interface FileAppenderConstants {
 
-    public AppenderCreationException(String message) {
-        super(message);
-    }
+    String ROLL_STRATEGY_NONE = "none";
 
-    public AppenderCreationException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    String ROLL_STRATEGY_SIZE = "size";
+
 }

@@ -35,20 +35,36 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.appender;
+package org.fabric3.monitor.spi.appender;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
- * Never rolls a file.
+ * Writes monitor events to a sink such as a file or stream.
  */
-public class NoRollStrategy implements RollStrategy {
+public interface Appender {
 
-    public boolean checkRoll(File file) {
-        return false;
-    }
+    /**
+     * Initializes the appender to record events.
+     *
+     * @throws IOException if an initialization error occurs
+     */
+    void start() throws IOException;
 
-    public File getBackup(File file) {
-        throw new UnsupportedOperationException();
-    }
+    /**
+     * Closes any open resources used by the appender.
+     *
+     * @throws IOException if an exception occurs closing resources
+     */
+    void stop() throws IOException;
+
+    /**
+     * Writes an event to the sink.
+     *
+     * @param buffer the event buffer
+     * @throws IOException if a writePrefix error occurs
+     */
+    void write(ByteBuffer buffer) throws IOException;
+
 }

@@ -35,46 +35,40 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.impl.appender.file;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.List;
-
-import org.fabric3.monitor.spi.appender.Appender;
+import java.io.File;
 
 /**
- *
+ * Signals to roll a file when it has reached a given size.
  */
-public class MonitorDestinationImpl implements MonitorDestination {
-    private String name;
-    private Appender[] appenders;
+public class SizeRollStrategy implements RollStrategy {
+    private long size;
 
-    public MonitorDestinationImpl(String name, List<Appender> appenders) {
-        this.name = name;
-        this.appenders = appenders.toArray(new Appender[appenders.size()]);
+    private int counter = 1;
+
+    /**
+     * Constructor the size in bytes when a file should be rolled.
+     *
+     * @param size the size in bytes when a file should be rolled.
+     */
+    public SizeRollStrategy(long size) {
+        this.size = size;
     }
 
-    public String getName() {
-        return name;
+    public boolean checkRoll(File file) {
+        return (file.length() >= size);
     }
 
-    public void start() throws IOException {
-        for (Appender appender : appenders) {
-            appender.start();
+    public File getBackup(File file) {
+        while (true) {
+            File backup = new File(file.getParent(), file.getName() + counter);
+            if (backup.exists()) {
+                counter++;
+            } else {
+                return backup;
+            }
         }
     }
 
-    public void stop() throws IOException {
-        for (Appender appender : appenders) {
-            appender.stop();
-        }
-    }
-
-    public void write(ByteBuffer buffer) throws IOException {
-        for (Appender appender : appenders) {
-            buffer.position(0);
-            appender.write(buffer);
-        }
-    }
 }

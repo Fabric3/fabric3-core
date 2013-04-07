@@ -35,46 +35,34 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.impl.physical;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.monitor.spi.appender.Appender;
+import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- *
+ * Monitor configuration.
  */
-public class MonitorDestinationImpl implements MonitorDestination {
+public class PhysicalMonitorDefinition extends PhysicalResourceDefinition {
     private String name;
-    private Appender[] appenders;
+    private List<PhysicalAppenderDefinition> definitions = new ArrayList<PhysicalAppenderDefinition>();
 
-    public MonitorDestinationImpl(String name, List<Appender> appenders) {
+    public PhysicalMonitorDefinition(String name) {
         this.name = name;
-        this.appenders = appenders.toArray(new Appender[appenders.size()]);
     }
 
     public String getName() {
         return name;
     }
 
-    public void start() throws IOException {
-        for (Appender appender : appenders) {
-            appender.start();
-        }
+    public List<PhysicalAppenderDefinition> getDefinitions() {
+        return definitions;
     }
 
-    public void stop() throws IOException {
-        for (Appender appender : appenders) {
-            appender.stop();
-        }
+    public void add(PhysicalAppenderDefinition definition) {
+        definitions.add(definition);
     }
 
-    public void write(ByteBuffer buffer) throws IOException {
-        for (Appender appender : appenders) {
-            buffer.position(0);
-            appender.write(buffer);
-        }
-    }
 }
