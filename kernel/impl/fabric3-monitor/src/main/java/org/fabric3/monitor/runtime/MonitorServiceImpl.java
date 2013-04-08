@@ -64,7 +64,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * FIXME re-implement
+ *
  */
 @EagerInit
 @Management(name = "MonitorService", path = "/runtime/monitor", description = "Sets monitoring levels for the runtime")
@@ -75,8 +75,9 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
     private Map<URI, MonitorLevel> runtimeComponentLevels = Collections.emptyMap();
     private Map<QName, MonitorLevel> deployableLevels = Collections.emptyMap();
     private Map<String, MonitorLevel> providerLevels = new ConcurrentHashMap<String, MonitorLevel>();
+    private Map<URI, MonitorLevel> contributionLevels = new ConcurrentHashMap<URI, MonitorLevel>();
 
-    private MonitorLevel defaultLevel;
+    private MonitorLevel defaultLevel = MonitorLevel.INFO;
 
     public MonitorServiceImpl(@Reference ComponentManager manager, @Reference HostInfo info) {
         this.manager = manager;
@@ -106,18 +107,34 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
     }
 
     /**
-     * Used at runtime startup to set the monitor levels based on class names.
+     * Used at runtime startup to set the monitor levels based on a contribution name.
      *
      * @param levels the mapping of classes-loggers to monitor level
      */
     @Property(required = false)
-    public void setLoggerLevels(Element levels) {
+    public void setContributionLevels(Element levels) {
         NodeList list = levels.getElementsByTagName("level");
         for (int i = 0; i < list.getLength(); i++) {
             Element element = (Element) list.item(i);
-            String className = element.getAttribute("name");
+            String name = element.getAttribute("name");
             String level = element.getAttribute("value");
-            setProviderLevel(className, level);
+            setContributionLevel(name, level);
+        }
+    }
+
+    /**
+     * Used at runtime startup to set the monitor levels based on a provider key. e.g a LogBack or Commons Logging key.
+     *
+     * @param levels the mapping of classes-loggers to monitor level
+     */
+    @Property(required = false)
+    public void setProviderLevels(Element levels) {
+        NodeList list = levels.getElementsByTagName("level");
+        for (int i = 0; i < list.getLength(); i++) {
+            Element element = (Element) list.item(i);
+            String name = element.getAttribute("name");
+            String level = element.getAttribute("value");
+            setProviderLevel(name, level);
         }
     }
 
@@ -168,7 +185,27 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
         return providerLevels.get(key);
     }
 
+    @ManagementOperation(description = "Sets the monitoring level for a contribution or extension")
+    private void setContributionLevel(String key, String level) {
+        MonitorLevel parsed = MonitorLevel.valueOf(level);
+        URI uri = URI.create(key);
+        contributionLevels.put(uri, parsed);
+        for (Component component : manager.getComponents()) {
+            if (uri.equals(component.getClassLoaderId())) {
+                component.setLevel(parsed);
+            }
+        }
+    }
+
+    public MonitorLevel getContributionLevel(String key) {
+        return contributionLevels.get(URI.create(key));
+    }
+
     public void onBuild(Component component, PhysicalComponentDefinition definition) {
+        if (MonitorLevel.INFO != defaultLevel) {
+            component.setLevel(defaultLevel);
+        }
+
         String strUri = component.getUri().toString();
         for (Map.Entry<URI, MonitorLevel> entry : runtimeComponentLevels.entrySet()) {
             if (strUri.startsWith(entry.getKey().toString())) {
@@ -186,6 +223,12 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
         if (level != null) {
             component.setLevel(level);
         }
+
+        level = contributionLevels.get(component.getClassLoaderId());
+        if (level != null) {
+            component.setLevel(level);
+        }
+
     }
 
     public void onDispose(Component component, PhysicalComponentDefinition definition) {
