@@ -61,7 +61,7 @@ import org.oasisopen.sca.annotation.Reference;
 public class FileAppenderLoader extends AbstractValidatingTypeLoader<FileAppenderDefinition> {
     private static final QName SCA_TYPE = new QName(Constants.SCA_NS, "appender.file");
     private static final QName F3_TYPE = new QName(Namespaces.F3, "appender.file");
-
+    private static final String FABRIC3_LOG = "fabric3.log";
     private static final long SIZE_100MB = 104857600;
 
     private LoaderRegistry registry;
@@ -92,9 +92,16 @@ public class FileAppenderLoader extends AbstractValidatingTypeLoader<FileAppende
         Location location = reader.getLocation();
         if (fileName == null) {
             FileAppenderDefinition definition = new FileAppenderDefinition("");
-            MissingAttribute error = new MissingAttribute("A file must be defined for the appender", location, definition);
-            context.addError(error);
-            return definition;
+            MissingAttribute error;
+            if (location == null) {
+                // system config
+                fileName = FABRIC3_LOG;
+
+            } else {
+                error = new MissingAttribute("A file must be defined for the appender", location, definition);
+                context.addError(error);
+                return definition;
+            }
         }
 
         String rollType = reader.getAttributeValue(null, "roll.type");
