@@ -53,7 +53,7 @@ import org.fabric3.spi.monitor.DispatchInfo;
 /**
  *
  */
-public class AbstractMonitorHandler implements InvocationHandler {
+public class JDKMonitorHandler implements InvocationHandler {
     private RingBufferDestinationRouter router;
     private TimestampWriter timestampWriter;
     private boolean asyncEnabled;
@@ -66,13 +66,13 @@ public class AbstractMonitorHandler implements InvocationHandler {
     private MonitorLevel level;
     private String template;
 
-    public AbstractMonitorHandler(int destinationIndex,
-                                  String runtimeName,
-                                  Monitorable monitorable,
-                                  RingBufferDestinationRouter router,
-                                  Map<String, DispatchInfo> infos,
-                                  TimestampWriter timestampWriter,
-                                  boolean asyncEnabled) {
+    public JDKMonitorHandler(int destinationIndex,
+                             String runtimeName,
+                             Monitorable monitorable,
+                             RingBufferDestinationRouter router,
+                             Map<String, DispatchInfo> infos,
+                             TimestampWriter timestampWriter,
+                             boolean asyncEnabled) {
         this.destinationIndex = destinationIndex;
         this.runtimeName = runtimeName;
         this.monitorable = monitorable;

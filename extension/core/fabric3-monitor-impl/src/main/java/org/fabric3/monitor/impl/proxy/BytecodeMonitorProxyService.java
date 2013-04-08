@@ -115,7 +115,7 @@ public class BytecodeMonitorProxyService implements MonitorProxyServiceExtension
             levels.put(method.getName(), info);
         }
 
-        AbstractMonitorHandler handler = new AbstractMonitorHandler(destinationIndex, runtimeName, monitorable, router, levels, timestampWriter, enabled);
+        JDKMonitorHandler handler = new JDKMonitorHandler(destinationIndex, runtimeName, monitorable, router, levels, timestampWriter, enabled);
         return type.cast(Proxy.newProxyInstance(loader, new Class[]{type}, handler));
     }
 
