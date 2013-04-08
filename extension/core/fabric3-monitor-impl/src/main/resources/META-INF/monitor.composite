@@ -16,7 +16,7 @@
 
     <component name="RingBufferDestinationRouter">
         <f3:implementation.system class="org.fabric3.monitor.impl.router.RingBufferDestinationRouterImpl"/>
-        <property name="enabled" source="$systemConfig/f3:monitor/@asynchronous"/>
+        <property name="mode" source="$systemConfig/f3:monitor/@mode"/>
         <property name="capacity" source="$systemConfig/f3:monitor/@capacity"/>
         <property name="ringSize" source="$systemConfig/f3:monitor/@ring.size"/>
         <property name="waitStrategy" source="$systemConfig/f3:monitor/@wait.strategy"/>

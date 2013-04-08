@@ -52,6 +52,9 @@ public interface DestinationMonitor {
     @Warning("Unknown ring buffer strategy configured for the monitor subsystem: {0}. Defaulting to blocking strategy.")
     void invalidStrategy(String strategy);
 
+    @Warning("The monitor subsystem was configured with an unknown mode: {0}. Defaulting to development mode.")
+    void unknownMode(String mode);
+
     @Debug("Blocking strategy enabled on monitor ring buffer")
     void blockingStrategy();
 
@@ -69,4 +72,5 @@ public interface DestinationMonitor {
 
     @Debug("Timeout strategy enabled on monitor ring buffer. Timeout (ns): {0}.")
     void timeoutStrategy(long timeoutNanos);
+
 }

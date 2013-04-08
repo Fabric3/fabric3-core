@@ -71,6 +71,8 @@ import org.oasisopen.sca.annotation.Reference;
  * ring buffer entries.
  */
 public class RingBufferDestinationRouterImpl implements RingBufferDestinationRouter {
+    public static final String PRODUCTION_MODE = "production";
+    private static final String DEVELOPMENT_MODE = "development";
 
     private ExecutorService executorService;
     private MonitorDestinationRegistry registry;
@@ -121,8 +123,15 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
     }
 
     @Property(required = false)
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setMode(String mode) {
+        if (PRODUCTION_MODE.equalsIgnoreCase(mode)) {
+            this.enabled = true;
+        } else if (DEVELOPMENT_MODE.equalsIgnoreCase(mode)) {
+            this.enabled = false;
+        } else {
+            this.enabled = false;
+            monitor.unknownMode(mode);
+        }
     }
 
     @Property(required = false)

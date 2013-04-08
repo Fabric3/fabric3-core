@@ -61,7 +61,7 @@ public class RingBufferDestinationRouterImplTestCase extends TestCase {
     private CountDownLatch latch;
 
     public void testRingBufferRoute() throws Exception {
-        router.setEnabled(true);
+        router.setMode("production");
 
         registry.write(0, buffer);
 
@@ -75,7 +75,7 @@ public class RingBufferDestinationRouterImplTestCase extends TestCase {
     }
 
     public void testSynchronousRoute() throws Exception {
-        router.setEnabled(false);
+        router.setMode("development");
 
         registry.write(0, buffer);
 
