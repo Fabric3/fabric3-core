@@ -37,28 +37,24 @@
 */
 package org.fabric3.federation.jgroups;
 
-import org.jgroups.Global;
-import org.jgroups.logging.CustomLogFactory;
-import org.jgroups.logging.Log;
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.MonitorChannel;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.federation.jgroups.log.Fabric3LogFactory;
 import org.fabric3.spi.monitor.MonitorService;
+import org.jgroups.Global;
+import org.jgroups.logging.CustomLogFactory;
+import org.jgroups.logging.Log;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Overrides the static JGroups log factory and redirects output to a Fabric3 monitor channel.
+ * Overrides the static JGroups log factory and redirects output to a Fabric3 monitor infrastructure.
  */
 @EagerInit
 public class LogFactoryOverride implements CustomLogFactory, Log {
     private MonitorLevel level = MonitorLevel.SEVERE;
-    private MonitorService monitorService;
     private MonitorChannel monitor;
 
     static {
@@ -66,14 +62,19 @@ public class LogFactoryOverride implements CustomLogFactory, Log {
         Fabric3LogFactory.log = new LogFactoryOverride();
     }
 
-    public LogFactoryOverride() {
+    protected LogFactoryOverride() {
     }
 
     @Constructor
     public LogFactoryOverride(@Reference MonitorService monitorService, @Monitor MonitorChannel monitor) {
-        this.monitorService = monitorService;
         this.monitor = monitor;
-        ((LogFactoryOverride) Fabric3LogFactory.log).setMonitor(monitor);
+        LogFactoryOverride override = (LogFactoryOverride) Fabric3LogFactory.log;
+        override.setMonitor(monitor);
+        MonitorLevel level = monitorService.getProviderLevel("org.jgroups");
+        if (level == null) {
+            level = MonitorLevel.SEVERE;
+        }
+        override.setLevel(level);
     }
 
     public void setMonitor(MonitorChannel monitor) {
@@ -82,22 +83,6 @@ public class LogFactoryOverride implements CustomLogFactory, Log {
 
     public void setLevel(MonitorLevel level) {
         this.level = level;
-    }
-
-    @Property(required = false)
-    public void setLogLevel(String logLevel) {
-        try {
-            level = MonitorLevel.valueOf(logLevel.toUpperCase());
-            ((LogFactoryOverride) Fabric3LogFactory.log).setLevel(level);
-            monitorService.setDeployableLevel("{urn:fabric3.org}JGroupsFederationCommonExtension", level.toString());
-        } catch (IllegalArgumentException e) {
-            monitor.severe("Illegal log level: " + logLevel);
-        }
-    }
-
-    @Init()
-    public void inti() {
-
     }
 
     public Log getLog(Class clazz) {

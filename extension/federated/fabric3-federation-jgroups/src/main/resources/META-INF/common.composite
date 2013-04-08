@@ -18,7 +18,6 @@ Public License. See the accompanying license file for details.
 
     <component name="LogFactoryOverride">
         <f3:implementation.system class="org.fabric3.federation.jgroups.LogFactoryOverride"/>
-        <property name="logLevel" source="$systemConfig//f3:federation/@logging"/>
     </component>
 
 
