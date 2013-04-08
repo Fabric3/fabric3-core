@@ -37,7 +37,9 @@
 */
 package org.fabric3.monitor.impl.router;
 
+import org.fabric3.api.annotation.monitor.Debug;
 import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.Warning;
 
 /**
  *
@@ -47,4 +49,24 @@ public interface DestinationMonitor {
     @Info("Monitor is configured for synchronous output. Asynchronous output should be enabled on production systems.")
     void synchronousOutput();
 
+    @Warning("Unknown ring buffer strategy configured for the monitor subsystem: {0}. Defaulting to blocking strategy.")
+    void invalidStrategy(String strategy);
+
+    @Debug("Blocking strategy enabled on monitor ring buffer")
+    void blockingStrategy();
+
+    @Debug("Sleeping wait strategy enabled on monitor ring buffer")
+    void sleepingStrategy();
+
+    @Debug("Phased backoff with lock strategy enabled on monitor ring buffer. Spin timeout (ns): {0}. Yield timeout (ns): {1}.")
+    void phasedBackoffWithLockStrategy(long spinTimeoutNanos, long yieldTimeoutNanos);
+
+    @Debug("Phased backoff with sleep strategy enabled on monitor ring buffer. Spin timeout (ns): {0}. Yield timeout (ns): {1}.")
+    void phasedBackoffWithSleepStrategy(long spinTimeoutNanos, long yieldTimeoutNanos);
+
+    @Debug("Busy spin strategy enabled on monitor ring buffer")
+    void busySpinStrategy();
+
+    @Debug("Timeout strategy enabled on monitor ring buffer. Timeout (ns): {0}.")
+    void timeoutStrategy(long timeoutNanos);
 }

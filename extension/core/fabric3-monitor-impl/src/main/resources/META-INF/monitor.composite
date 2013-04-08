@@ -16,9 +16,18 @@
 
     <component name="RingBufferDestinationRouter">
         <f3:implementation.system class="org.fabric3.monitor.impl.router.RingBufferDestinationRouterImpl"/>
+        <property name="enabled" source="$systemConfig/f3:monitor/@asynchronous"/>
+        <property name="capacity" source="$systemConfig/f3:monitor/@capacity"/>
+        <property name="ringSize" source="$systemConfig/f3:monitor/@ring.size"/>
+        <property name="waitStrategy" source="$systemConfig/f3:monitor/@wait.strategy"/>
+        <property name="blockingTimeoutNanos" source="$systemConfig/f3:monitor/@blocking.timeout"/>
+        <property name="spinTimeoutNanos" source="$systemConfig/f3:monitor/@spin.timeout"/>
+        <property name="yieldTimeoutNanos" source="$systemConfig/f3:monitor/@yield.timeout"/>
+        <property name="phasedBlockingType" source="$systemConfig/f3:monitor/@phased.blocking.type"/>
+
         <property name="pattern" source="$systemConfig/f3:monitor/@pattern"/>
         <property name="timeZone" source="$systemConfig/f3:monitor/@time.zone"/>
-        <property name="enabled" source="$systemConfig/f3:monitor/@asynchronous"/>
+
     </component>
 
     <component name="MonitorDestinationRegistry">

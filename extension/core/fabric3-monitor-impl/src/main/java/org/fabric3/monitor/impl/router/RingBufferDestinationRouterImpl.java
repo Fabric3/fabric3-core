@@ -42,9 +42,17 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import com.lmax.disruptor.BlockingWaitStrategy;
+import com.lmax.disruptor.BusySpinWaitStrategy;
+import com.lmax.disruptor.PhasedBackoffWaitStrategy;
 import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.SleepingWaitStrategy;
+import com.lmax.disruptor.TimeoutBlockingWaitStrategy;
+import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.dsl.ProducerType;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
@@ -72,6 +80,11 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
 
     private int capacity = 2000;
     private int ringSize = 65536;
+    private String strategyType = "blocking";
+    private long blockingTimeoutNanos = 1000;
+    private long spinTimeoutNanos = 1000;
+    private long yieldTimeoutNanos = 1000;
+    private String phasedBlockingType = "lock";
     private boolean enabled = false;
 
     private String pattern = "%d:%m:%Y %H:%i:%s.%F";
@@ -112,13 +125,65 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
         this.enabled = enabled;
     }
 
+    @Property(required = false)
+    public void setBlockingTimeoutNanos(long blockingTimeoutNanos) {
+        this.blockingTimeoutNanos = blockingTimeoutNanos;
+    }
+
+    @Property(required = false)
+    public void setPhasedBlockingType(String type) {
+        this.phasedBlockingType = type;
+    }
+
+    @Property(required = false)
+    public void setWaitStrategy(String strategy) {
+        strategyType = strategy;
+    }
+
+    @Property(required = false)
+    public void setSpinTimeoutNanos(long timeout) {
+        this.spinTimeoutNanos = timeout;
+    }
+
+    @Property(required = false)
+    public void setYieldTimeoutNanos(long timeout) {
+        this.yieldTimeoutNanos = timeout;
+    }
+
     @Init
     public void init() throws FileNotFoundException {
         timestampWriter = new TimestampWriter(pattern, timeZone);
 
         if (enabled) {
+            WaitStrategy waitStrategy;
+            if ("blocking".equalsIgnoreCase(strategyType)) {
+                waitStrategy = new BlockingWaitStrategy();
+                monitor.blockingStrategy();
+            } else if ("sleeping".equalsIgnoreCase(strategyType)) {
+                waitStrategy = new SleepingWaitStrategy();
+                monitor.sleepingStrategy();
+            } else if ("backoff".equalsIgnoreCase(strategyType)) {
+                if ("lock".equalsIgnoreCase(phasedBlockingType)) {
+                    waitStrategy = PhasedBackoffWaitStrategy.withLock(spinTimeoutNanos, yieldTimeoutNanos, TimeUnit.NANOSECONDS);
+                    monitor.phasedBackoffWithLockStrategy(spinTimeoutNanos, yieldTimeoutNanos);
+                } else {
+                    waitStrategy = PhasedBackoffWaitStrategy.withSleep(spinTimeoutNanos, yieldTimeoutNanos, TimeUnit.NANOSECONDS);
+                    monitor.phasedBackoffWithSleepStrategy(spinTimeoutNanos, yieldTimeoutNanos);
+                }
+            } else if ("spin".equalsIgnoreCase(strategyType)) {
+                waitStrategy = new BusySpinWaitStrategy();
+                monitor.busySpinStrategy();
+            } else if ("timeout".equalsIgnoreCase(strategyType)) {
+                waitStrategy = new TimeoutBlockingWaitStrategy(blockingTimeoutNanos, TimeUnit.NANOSECONDS);
+                monitor.timeoutStrategy(blockingTimeoutNanos);
+            } else {
+                waitStrategy = new BlockingWaitStrategy();
+                monitor.invalidStrategy(strategyType);
+            }
+
             MonitorEventEntryFactory factory = new MonitorEventEntryFactory(capacity);
-            disruptor = new Disruptor<MonitorEventEntry>(factory, ringSize, executorService);
+
+            disruptor = new Disruptor<MonitorEventEntry>(factory, ringSize, executorService, ProducerType.MULTI, waitStrategy);
             MonitorEventHandler handler = new MonitorEventHandler(registry);
             disruptor.handleEventsWith(handler);
             disruptor.start();
