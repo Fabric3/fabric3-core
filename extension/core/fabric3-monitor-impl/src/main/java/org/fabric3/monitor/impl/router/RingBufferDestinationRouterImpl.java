@@ -87,7 +87,7 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
     private long spinTimeoutNanos = 1000;
     private long yieldTimeoutNanos = 1000;
     private String phasedBlockingType = "lock";
-    private boolean enabled = false;
+    private boolean enabled = false;  // true if the ring buffer (production mode) is enabled
 
     private String pattern = "%d:%m:%Y %H:%i:%s.%F";
     private TimeZone timeZone = TimeZone.getDefault();
@@ -164,34 +164,8 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
         timestampWriter = new TimestampWriter(pattern, timeZone);
 
         if (enabled) {
-            WaitStrategy waitStrategy;
-            if ("blocking".equalsIgnoreCase(strategyType)) {
-                waitStrategy = new BlockingWaitStrategy();
-                monitor.blockingStrategy();
-            } else if ("sleeping".equalsIgnoreCase(strategyType)) {
-                waitStrategy = new SleepingWaitStrategy();
-                monitor.sleepingStrategy();
-            } else if ("backoff".equalsIgnoreCase(strategyType)) {
-                if ("lock".equalsIgnoreCase(phasedBlockingType)) {
-                    waitStrategy = PhasedBackoffWaitStrategy.withLock(spinTimeoutNanos, yieldTimeoutNanos, TimeUnit.NANOSECONDS);
-                    monitor.phasedBackoffWithLockStrategy(spinTimeoutNanos, yieldTimeoutNanos);
-                } else {
-                    waitStrategy = PhasedBackoffWaitStrategy.withSleep(spinTimeoutNanos, yieldTimeoutNanos, TimeUnit.NANOSECONDS);
-                    monitor.phasedBackoffWithSleepStrategy(spinTimeoutNanos, yieldTimeoutNanos);
-                }
-            } else if ("spin".equalsIgnoreCase(strategyType)) {
-                waitStrategy = new BusySpinWaitStrategy();
-                monitor.busySpinStrategy();
-            } else if ("timeout".equalsIgnoreCase(strategyType)) {
-                waitStrategy = new TimeoutBlockingWaitStrategy(blockingTimeoutNanos, TimeUnit.NANOSECONDS);
-                monitor.timeoutStrategy(blockingTimeoutNanos);
-            } else {
-                waitStrategy = new BlockingWaitStrategy();
-                monitor.invalidStrategy(strategyType);
-            }
-
+            WaitStrategy waitStrategy = createWaitStrategy();
             MonitorEventEntryFactory factory = new MonitorEventEntryFactory(capacity);
-
             disruptor = new Disruptor<MonitorEventEntry>(factory, ringSize, executorService, ProducerType.MULTI, waitStrategy);
             MonitorEventHandler handler = new MonitorEventHandler(registry);
             disruptor.handleEventsWith(handler);
@@ -252,6 +226,35 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
                 }
             }
         }
+    }
+
+    private WaitStrategy createWaitStrategy() {
+        WaitStrategy waitStrategy;
+        if ("blocking".equalsIgnoreCase(strategyType)) {
+            waitStrategy = new BlockingWaitStrategy();
+            monitor.blockingStrategy();
+        } else if ("sleeping".equalsIgnoreCase(strategyType)) {
+            waitStrategy = new SleepingWaitStrategy();
+            monitor.sleepingStrategy();
+        } else if ("backoff".equalsIgnoreCase(strategyType)) {
+            if ("lock".equalsIgnoreCase(phasedBlockingType)) {
+                waitStrategy = PhasedBackoffWaitStrategy.withLock(spinTimeoutNanos, yieldTimeoutNanos, TimeUnit.NANOSECONDS);
+                monitor.phasedBackoffWithLockStrategy(spinTimeoutNanos, yieldTimeoutNanos);
+            } else {
+                waitStrategy = PhasedBackoffWaitStrategy.withSleep(spinTimeoutNanos, yieldTimeoutNanos, TimeUnit.NANOSECONDS);
+                monitor.phasedBackoffWithSleepStrategy(spinTimeoutNanos, yieldTimeoutNanos);
+            }
+        } else if ("spin".equalsIgnoreCase(strategyType)) {
+            waitStrategy = new BusySpinWaitStrategy();
+            monitor.busySpinStrategy();
+        } else if ("timeout".equalsIgnoreCase(strategyType)) {
+            waitStrategy = new TimeoutBlockingWaitStrategy(blockingTimeoutNanos, TimeUnit.NANOSECONDS);
+            monitor.timeoutStrategy(blockingTimeoutNanos);
+        } else {
+            waitStrategy = new BlockingWaitStrategy();
+            monitor.invalidStrategy(strategyType);
+        }
+        return waitStrategy;
     }
 
 }
