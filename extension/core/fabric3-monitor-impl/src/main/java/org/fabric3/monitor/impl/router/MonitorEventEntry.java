@@ -42,7 +42,7 @@ import java.nio.ByteBuffer;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
- * An entry for writing data to a ring buffer.
+ * An entry for writing a monitor event to a ring buffer.
  */
 public class MonitorEventEntry {
     private long sequence;
@@ -51,47 +51,103 @@ public class MonitorEventEntry {
     private MonitorLevel level;
     private int destinationIndex;
 
+    /**
+     * Constructor.
+     *
+     * @param capacity the fixed event size in bytes
+     */
     public MonitorEventEntry(int capacity) {
         buffer = ByteBuffer.allocateDirect(capacity);
     }
 
+    /**
+     * Returns the ring buffer sequence number for the current event contained in this entry.
+     *
+     * @return the ring buffer sequence number
+     */
     public long getSequence() {
         return sequence;
     }
 
+    /**
+     * Sets the ring buffer sequence number for the current event contained in this entry.
+     *
+     * @param sequence the ring buffer sequence number
+     */
     public void setSequence(long sequence) {
         this.sequence = sequence;
     }
 
+    /**
+     * Returns the buffer containing the event.
+     *
+     * @return the event buffer
+     */
     public ByteBuffer getBuffer() {
         return buffer;
     }
 
+    /**
+     * Sets the buffer containing the event.
+     *
+     * @param buffer the event buffer
+     */
     public void setBuffer(ByteBuffer buffer) {
         this.buffer = buffer;
     }
 
+    /**
+     * Returns the event level.
+     *
+     * @return the event level
+     */
     public MonitorLevel getLevel() {
         return level;
     }
 
+    /**
+     * Sets the event level.
+     *
+     * @param level the event level
+     */
     public void setLevel(MonitorLevel level) {
         this.level = level;
     }
 
-    public long getTimestamp() {
+    /**
+     * Returns the current timestamp in nanoseconds for the event contained in this entry.
+     *
+     * @return the current timestamp in nanoseconds
+     */
+    public long getTimestampNanos() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
+    /**
+     * Sets the current timestamp in nanoseconds for the event contained in this entry.
+     *
+     * @param timestamp the current timestamp in nanoseconds
+     */
+    public void setTimestampNanos(long timestamp) {
         this.timestamp = timestamp;
     }
 
-    public void setDestinationIndex(int index) {
-     this.destinationIndex = index;
-    }
-
+    /**
+     * Returns the index of the destination the event must be sent to.
+     *
+     * @return the destination index
+     */
     public int getDestinationIndex() {
         return destinationIndex;
     }
+
+    /**
+     * Sets the index of the destination the event must be sent to.
+     *
+     * @param index the destination index
+     */
+    public void setDestinationIndex(int index) {
+        this.destinationIndex = index;
+    }
+
 }

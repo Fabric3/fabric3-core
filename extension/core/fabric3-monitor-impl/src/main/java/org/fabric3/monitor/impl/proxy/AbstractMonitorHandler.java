@@ -121,9 +121,10 @@ public class AbstractMonitorHandler implements InvocationHandler {
     private void send(MonitorLevel level, long timestamp, String template, Object[] args) {
         MonitorEventEntry entry = null;
         try {
+            long start = System.nanoTime();
             entry = router.get();
             entry.setDestinationIndex(destinationIndex);
-
+            entry.setTimestampNanos(start);
             ByteBuffer buffer = entry.getBuffer();
 
             MonitorEntryWriter.write(level, timestamp, template, buffer, timestampWriter, args);

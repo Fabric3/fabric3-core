@@ -207,6 +207,7 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
             try {
                 entry = get();
                 entry.setDestinationIndex(destinationIndex);
+                entry.setTimestampNanos(System.nanoTime());
                 ByteBuffer buffer = entry.getBuffer();
                 MonitorEntryWriter.write(level, timestamp, template, buffer, timestampWriter, args);
             } finally {
