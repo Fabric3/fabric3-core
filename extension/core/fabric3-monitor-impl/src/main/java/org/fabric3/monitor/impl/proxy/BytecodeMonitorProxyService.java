@@ -554,8 +554,10 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 mv.visitLocalVariable("arg" + i, "Ljava/lang/String;", null, l4, l35, i);
             } else if (Integer.TYPE.equals(paramType)) {
                 mv.visitLocalVariable("arg" + i, "I", null, l4, l35, i);
+            } else if (paramType.isPrimitive()) {
+                throw new AssertionError("Unhandled type: " + paramType);
             } else {
-                throw new AssertionError("Unhandled type: " + paramType.getName());
+                mv.visitLocalVariable("arg" + i, "Ljava/lang/Object;", null, l4, l35, i);
             }
 
         }
@@ -729,8 +731,15 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 mv.visitMethodInsn(INVOKESTATIC, "org/fabric3/monitor/impl/writer/IntWriter", "write", "(ILjava/nio/ByteBuffer;)I");
                 mv.visitInsn(IADD);
                 mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
+            } else if (Object.class.isAssignableFrom(paramType)) {
+                mv.visitVarInsn(ILOAD, varBytesWrittenPosition);
+                mv.visitVarInsn(ALOAD, varMethodArgOffset + i);  // Load the current method param
+                mv.visitVarInsn(ALOAD, varBufferPosition);
+                mv.visitMethodInsn(INVOKESTATIC, "org/fabric3/monitor/impl/writer/ObjectWriter", "write", "(Ljava/lang/Object;Ljava/nio/ByteBuffer;)I");
+                mv.visitInsn(IADD);
+                mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
 
-            } else {
+            } else if (paramType.isPrimitive()) {
                 throw new AssertionError("Unhandled type: " + paramType);
             }
 
@@ -790,8 +799,10 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 mv.visitLocalVariable("arg" + i, "Ljava/lang/String;", null, l0, l20, i + 1);
             } else if (Integer.TYPE.equals(paramType)) {
                 mv.visitLocalVariable("arg" + i, "I", null, l0, l20, i + 1);
+            } else if (paramType.isPrimitive()) {
+                throw new AssertionError("Unhandled type");
             } else {
-                throw new AssertionError("Unhandled type: " + paramType.getName());
+                mv.visitLocalVariable("arg" + i, "Ljava/lang/Object;", null, l0, l20, i + 1);
             }
         }
 

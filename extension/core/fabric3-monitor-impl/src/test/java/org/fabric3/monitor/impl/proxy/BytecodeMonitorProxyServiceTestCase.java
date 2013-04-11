@@ -96,6 +96,17 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
         EasyMock.verify(router, monitorable);
     }
 
+    public void testInvokeObject() throws Exception {
+        EasyMock.replay(router, monitorable);
+
+        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
+        Foo foo = new Foo();
+        monitor.monitor(foo);
+
+        assertTrue(getStringContents().contains("] Monitor event The Foo Object"));
+        EasyMock.verify(router, monitorable);
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         entry = new MonitorEventEntry(2000);
@@ -127,7 +138,6 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
         return new String(bytes);
     }
 
-
     public interface ParamsMonitor {
 
         @Severe("Monitor event")
@@ -141,6 +151,9 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
 
         @Severe("Monitor event {0}")
         void monitor(int arg1);
+
+        @Severe("Monitor event {0}")
+        void monitor(Foo arg1);
     }
 
     //    public void testVerify() throws Exception {
@@ -148,5 +161,12 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
     //        CheckClassAdapter.verify(cr, true, new PrintWriter(System.out));
     //
     //    }
+
+    private class Foo {
+
+        public String toString() {
+            return "The Foo Object";
+        }
+    }
 
 }
