@@ -49,6 +49,7 @@ import org.fabric3.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.host.monitor.Monitorable;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
+import org.fabric3.spi.classloader.BytecodeClassLoader;
 import org.fabric3.spi.monitor.DispatchInfo;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;

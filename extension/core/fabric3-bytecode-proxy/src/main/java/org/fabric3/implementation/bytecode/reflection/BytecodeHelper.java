@@ -38,8 +38,8 @@
  */
 package org.fabric3.implementation.bytecode.reflection;
 
-import org.fabric3.implementation.bytecode.classloader.BytecodeClassLoader;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
+import org.fabric3.spi.classloader.BytecodeClassLoader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;

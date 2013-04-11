@@ -35,14 +35,12 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.proxy;
+package org.fabric3.spi.classloader;
 
 import java.net.URI;
 
-import org.fabric3.spi.classloader.MultiParentClassLoader;
-
 /**
- *
+ * Classloader capable of loading generated classes at runtime.
  */
 public class BytecodeClassLoader extends MultiParentClassLoader {
 
