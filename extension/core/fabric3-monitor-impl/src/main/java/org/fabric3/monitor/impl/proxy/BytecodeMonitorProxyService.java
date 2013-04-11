@@ -227,252 +227,13 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
     }
 
     /**
-     * Creates a writeTemplate method based on the number of arguments for the proxy interface method in the form:
-     * <pre>
-     *      int writeTemplate(String template, <type> arg1, <type> arg2, ...<type> argN, ByteBuffer buffer)
-     * </pre>
+     * Implements a monitor interface method.
      *
-     * @param method the proxy interface method
-     * @return the signature
+     * @param cw                     the class writer
+     * @param index                  the method index
+     * @param proxyClassNameInternal the parameter signature
+     * @param writeTemplateSignature the parameter types
      */
-    private String calculateWriteTemplateSignature(Method method) {
-        // create a writeTemplate method based on the number of arguments for the proxy interface method in the form:
-        // int writeTemplate(String template, <type> arg1, <type> arg2, ...<type> argN, ByteBuffer buffer)
-        Class<?>[] paramTypes = method.getParameterTypes();
-        StringBuilder paramSignature = new StringBuilder("(Ljava/lang/String;");
-        for (Class<?> paramType : paramTypes) {
-            paramSignature.append(Type.getDescriptor(paramType));
-        }
-        paramSignature.append("Ljava/nio/ByteBuffer;)I");
-        return paramSignature.toString();
-    }
-
-    /**
-     * Creates the writeTemplate method. The method signature will take the same arguments as the proxy interface method that it is to be invoked from.
-     *
-     * @param cw         the class writer
-     * @param index      the method index
-     * @param signature  the parameter signature
-     * @param paramTypes the parameter types
-     */
-    private void writeTemplateMethod(ClassWriter cw, int index, String signature, Class<?>[] paramTypes) {
-        int varTemplatePosition = 1; // Position 0 is reserved for "this"
-        int varMethodArgOffset = varTemplatePosition + 1;                        //2
-
-        int varBufferPosition = varTemplatePosition + paramTypes.length + 1;     //5
-        int varNumberArgsPosition = varBufferPosition + 1;                       //6
-        int varBytesWrittenPosition = varNumberArgsPosition + 1;                 //7
-        int varCounterPosition = varBytesWrittenPosition + 1;                    //8
-        int varIPosition = varCounterPosition + 1;                               //9
-        int varCurrentPosition = varIPosition + 1;                               //10
-
-        MethodVisitor mv = cw.visitMethod(ACC_PRIVATE, "writeTemplate" + index, signature, null, null);
-
-        mv.visitCode();
-        Label l0 = new Label();
-        mv.visitLabel(l0);
-        mv.visitLineNumber(103, l0);
-
-        // set the number of arguments for this method
-        pushInteger(paramTypes.length, mv);
-        mv.visitVarInsn(ISTORE, varNumberArgsPosition);
-
-        Label l1 = new Label();
-        mv.visitLabel(l1);
-        mv.visitLineNumber(104, l1);
-        mv.visitVarInsn(ALOAD, varTemplatePosition);
-        Label l2 = new Label();
-        mv.visitJumpInsn(IFNONNULL, l2);
-
-        // if the template is null, return 0
-        Label l3 = new Label();
-        mv.visitLabel(l3);
-        mv.visitLineNumber(105, l3);
-        mv.visitInsn(ICONST_0);
-        mv.visitInsn(IRETURN);
-
-        mv.visitLabel(l2);
-        mv.visitLineNumber(108, l2);
-
-        // set bytesWritten to 0
-        mv.visitInsn(ICONST_0);
-        mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
-
-        Label l4 = new Label();
-        mv.visitLabel(l4);
-        mv.visitLineNumber(109, l4);
-
-        // set counter to 0
-        mv.visitInsn(ICONST_0);
-        mv.visitVarInsn(ISTORE, varCounterPosition);
-
-        Label l5 = new Label();
-        mv.visitLabel(l5);
-        mv.visitLineNumber(110, l5);
-
-        // for the length of the template, write its bytes or perform argument substitution to the byte buffer
-        mv.visitInsn(ICONST_0);
-        mv.visitVarInsn(ISTORE, varIPosition);
-        Label l6 = new Label();
-        mv.visitLabel(l6);
-        mv.visitVarInsn(ILOAD, varIPosition);
-        mv.visitVarInsn(ALOAD, varTemplatePosition);
-        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "length", "()I");
-        Label l7 = new Label();
-        // jump if i (specified by the for loop) is greater than or equal to the template length
-        mv.visitJumpInsn(IF_ICMPGE, l7);
-
-        // get the next character in the template and load it on the stack
-        Label l8 = new Label();
-        mv.visitLabel(l8);
-        mv.visitLineNumber(111, l8);
-        mv.visitVarInsn(ALOAD, varTemplatePosition);
-        mv.visitVarInsn(ILOAD, varIPosition);
-        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "charAt", "(I)C");
-        mv.visitVarInsn(ISTORE, varCurrentPosition);
-
-        // compare the character to '{'
-        Label l9 = new Label();
-        mv.visitLabel(l9);
-        mv.visitLineNumber(112, l9);
-        mv.visitIntInsn(BIPUSH, 123);   // '{' char
-        mv.visitVarInsn(ILOAD, varCurrentPosition);
-        Label l10 = new Label();
-
-        // if the character is not equal to '{', jump
-        mv.visitJumpInsn(IF_ICMPNE, l10);
-
-        // character equal to '{' - perform substitution with the next argument
-        Label l11 = new Label();
-        mv.visitLabel(l11);
-        mv.visitLineNumber(113, l11);
-
-        // if counter is greater or equal to the number of method params, throw an exception
-        mv.visitVarInsn(ILOAD, varCounterPosition);
-        mv.visitVarInsn(ILOAD, varNumberArgsPosition);
-        Label l12 = new Label();
-        mv.visitJumpInsn(IF_ICMPLT, l12);
-        Label l13 = new Label();
-        mv.visitLabel(l13);
-        mv.visitLineNumber(114, l13);
-        writeThrowTemplateException(varTemplatePosition, mv);
-
-        // counter less than number of method params
-        mv.visitLabel(l12);
-        mv.visitLineNumber(116, l12);
-
-        // Generate code that performs the actual substitution with the current argument. The generated code contains an if..else block that looks up the
-        // current argument based on the counter number and loads it on the stack from its local variable position. After it is loaded, a writer is called to
-        // put its contents into the byte buffer.
-
-        Label endIf = new Label();
-        for (int i = 0; i < paramTypes.length; i++) {
-            // load the counter
-            mv.visitVarInsn(ILOAD, varCounterPosition);
-
-            // load the current argument number
-            pushInteger(i, mv);
-            Label label = new Label();
-            // compare the counter to the argument number, if it is equal write the argument corresponding to the number to the buffer
-            mv.visitJumpInsn(IF_ICMPNE, label);
-
-            Class<?> paramType = paramTypes[i];
-            if (CharSequence.class.isAssignableFrom(paramType)) {
-                mv.visitVarInsn(ILOAD, varBytesWrittenPosition);
-                mv.visitVarInsn(ALOAD, varMethodArgOffset + i);  // Load the current method param
-                mv.visitVarInsn(ALOAD, varBufferPosition);
-                mv.visitMethodInsn(INVOKESTATIC,
-                                   "org/fabric3/monitor/impl/writer/CharSequenceWriter",
-                                   "write",
-                                   "(Ljava/lang/CharSequence;Ljava/nio/ByteBuffer;)I");
-                mv.visitInsn(IADD);
-                mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
-            } else if (Integer.TYPE.equals(paramType)) {
-
-                mv.visitVarInsn(ILOAD, varBytesWrittenPosition);
-                mv.visitVarInsn(ILOAD, varMethodArgOffset + i);
-                mv.visitVarInsn(ALOAD, varBufferPosition);
-                mv.visitMethodInsn(INVOKESTATIC, "org/fabric3/monitor/impl/writer/IntWriter", "write", "(ILjava/nio/ByteBuffer;)I");
-                mv.visitInsn(IADD);
-                mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
-
-            } else {
-                throw new AssertionError("Unhandled type: " + paramType);
-            }
-
-            mv.visitLabel(label);
-        }
-        mv.visitLabel(endIf);
-        mv.visitLineNumber(121, endIf);
-
-        mv.visitVarInsn(ILOAD, varIPosition); // xcv 8
-        mv.visitInsn(ICONST_2);   // skip 2 places for {0}
-        mv.visitInsn(IADD);
-        mv.visitVarInsn(ISTORE, varIPosition);  // xcv 8
-
-        Label l17 = new Label();
-        mv.visitLabel(l17);
-        mv.visitLineNumber(122, l17);
-
-        mv.visitIincInsn(7, varTemplatePosition);
-        Label l18 = new Label();
-        mv.visitJumpInsn(GOTO, l18);
-
-        // current not equal to '{'  - increment bytesWritten and write the current character to the byte buffer
-        mv.visitLabel(l10);
-        mv.visitLineNumber(124, l10);
-        //        mv.visitIincInsn(6, varTemplatePosition);
-        mv.visitIincInsn(varBytesWrittenPosition, 1);
-        Label l19 = new Label();
-        mv.visitLabel(l19);
-
-        mv.visitLineNumber(125, l19);
-        mv.visitVarInsn(ALOAD, varBufferPosition);
-        mv.visitVarInsn(ILOAD, varCurrentPosition);
-        mv.visitInsn(I2B);
-        mv.visitMethodInsn(INVOKEVIRTUAL, "java/nio/ByteBuffer", "put", "(B)Ljava/nio/ByteBuffer;");
-        mv.visitInsn(POP);
-        mv.visitLabel(l18);
-
-        // loop
-        mv.visitLineNumber(110, l18);
-        mv.visitIincInsn(varIPosition, 1);   //xcv 8
-        mv.visitJumpInsn(GOTO, l6);
-
-        // return bytesWritten
-        mv.visitLabel(l7);
-        mv.visitLineNumber(128, l7);
-        mv.visitVarInsn(ILOAD, varBytesWrittenPosition);
-        mv.visitInsn(IRETURN);
-        Label l20 = new Label();
-        mv.visitLabel(l20);
-
-        mv.visitLocalVariable("this", "Lorg/fabric3/monitor/impl/proxy/AbstractMonitorHandler;", null, l0, l20, 0);
-        mv.visitLocalVariable("template", "Ljava/lang/String;", null, l0, l20, varTemplatePosition);
-
-        for (int i = 1; i <= paramTypes.length; i++) {
-            Class<?> paramType = paramTypes[i - 1];
-            if (String.class.equals(paramType)) {
-                mv.visitLocalVariable("arg" + i, "Ljava/lang/String;", null, l0, l20, i + 1);
-            } else if (Integer.TYPE.equals(paramType)) {
-                mv.visitLocalVariable("arg" + i, "I", null, l0, l20, i + 1);
-            } else {
-                throw new AssertionError("Unhandled type: " + paramType.getName());
-            }
-        }
-
-        mv.visitLocalVariable("buffer", "Ljava/nio/ByteBuffer;", null, l0, l20, varBufferPosition);
-        mv.visitLocalVariable("numberArgs", "I", null, l1, l20, varNumberArgsPosition);
-        mv.visitLocalVariable("bytesWritten", "I", null, l4, l20, varBytesWrittenPosition);
-        mv.visitLocalVariable("counter", "I", null, l5, l20, varCounterPosition);
-        mv.visitLocalVariable("i", "I", null, l6, l7, varIPosition);
-        mv.visitLocalVariable("current", "C", null, l9, l18, varCurrentPosition);
-
-        mv.visitMaxs(4, 10);
-        mv.visitEnd();
-
-    }
-
     private void writeMethod(ClassWriter cw, Method method, int index, String proxyClassNameInternal, String writeTemplateSignature) {
         String methodSignature = Type.getMethodDescriptor(method);
 
@@ -818,7 +579,253 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
 
         mv.visitMaxs(9, 14);
         mv.visitEnd();
+    }
 
+    /**
+     * Creates the writeTemplate method. The method signature will take the same arguments as the proxy interface method that it is to be invoked from.
+     *
+     * @param cw         the class writer
+     * @param index      the method index
+     * @param signature  the parameter signature
+     * @param paramTypes the parameter types
+     */
+    private void writeTemplateMethod(ClassWriter cw, int index, String signature, Class<?>[] paramTypes) {
+        int varTemplatePosition = 1; // Position 0 is reserved for "this"
+        int varMethodArgOffset = varTemplatePosition + 1;                        //2
+
+        int varBufferPosition = varTemplatePosition + paramTypes.length + 1;     //5
+        int varNumberArgsPosition = varBufferPosition + 1;                       //6
+        int varBytesWrittenPosition = varNumberArgsPosition + 1;                 //7
+        int varCounterPosition = varBytesWrittenPosition + 1;                    //8
+        int varIPosition = varCounterPosition + 1;                               //9
+        int varCurrentPosition = varIPosition + 1;                               //10
+
+        MethodVisitor mv = cw.visitMethod(ACC_PRIVATE, "writeTemplate" + index, signature, null, null);
+
+        mv.visitCode();
+        Label l0 = new Label();
+        mv.visitLabel(l0);
+        mv.visitLineNumber(103, l0);
+
+        // set the number of arguments for this method
+        pushInteger(paramTypes.length, mv);
+        mv.visitVarInsn(ISTORE, varNumberArgsPosition);
+
+        Label l1 = new Label();
+        mv.visitLabel(l1);
+        mv.visitLineNumber(104, l1);
+        mv.visitVarInsn(ALOAD, varTemplatePosition);
+        Label l2 = new Label();
+        mv.visitJumpInsn(IFNONNULL, l2);
+
+        // if the template is null, return 0
+        Label l3 = new Label();
+        mv.visitLabel(l3);
+        mv.visitLineNumber(105, l3);
+        mv.visitInsn(ICONST_0);
+        mv.visitInsn(IRETURN);
+
+        mv.visitLabel(l2);
+        mv.visitLineNumber(108, l2);
+
+        // set bytesWritten to 0
+        mv.visitInsn(ICONST_0);
+        mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
+
+        Label l4 = new Label();
+        mv.visitLabel(l4);
+        mv.visitLineNumber(109, l4);
+
+        // set counter to 0
+        mv.visitInsn(ICONST_0);
+        mv.visitVarInsn(ISTORE, varCounterPosition);
+
+        Label l5 = new Label();
+        mv.visitLabel(l5);
+        mv.visitLineNumber(110, l5);
+
+        // for the length of the template, write its bytes or perform argument substitution to the byte buffer
+        mv.visitInsn(ICONST_0);
+        mv.visitVarInsn(ISTORE, varIPosition);
+        Label l6 = new Label();
+        mv.visitLabel(l6);
+        mv.visitVarInsn(ILOAD, varIPosition);
+        mv.visitVarInsn(ALOAD, varTemplatePosition);
+        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "length", "()I");
+        Label l7 = new Label();
+        // jump if i (specified by the for loop) is greater than or equal to the template length
+        mv.visitJumpInsn(IF_ICMPGE, l7);
+
+        // get the next character in the template and load it on the stack
+        Label l8 = new Label();
+        mv.visitLabel(l8);
+        mv.visitLineNumber(111, l8);
+        mv.visitVarInsn(ALOAD, varTemplatePosition);
+        mv.visitVarInsn(ILOAD, varIPosition);
+        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "charAt", "(I)C");
+        mv.visitVarInsn(ISTORE, varCurrentPosition);
+
+        // compare the character to '{'
+        Label l9 = new Label();
+        mv.visitLabel(l9);
+        mv.visitLineNumber(112, l9);
+        mv.visitIntInsn(BIPUSH, 123);   // '{' char
+        mv.visitVarInsn(ILOAD, varCurrentPosition);
+        Label l10 = new Label();
+
+        // if the character is not equal to '{', jump
+        mv.visitJumpInsn(IF_ICMPNE, l10);
+
+        // character equal to '{' - perform substitution with the next argument
+        Label l11 = new Label();
+        mv.visitLabel(l11);
+        mv.visitLineNumber(113, l11);
+
+        // if counter is greater or equal to the number of method params, throw an exception
+        mv.visitVarInsn(ILOAD, varCounterPosition);
+        mv.visitVarInsn(ILOAD, varNumberArgsPosition);
+        Label l12 = new Label();
+        mv.visitJumpInsn(IF_ICMPLT, l12);
+        Label l13 = new Label();
+        mv.visitLabel(l13);
+        mv.visitLineNumber(114, l13);
+        writeThrowTemplateException(varTemplatePosition, mv);
+
+        // counter less than number of method params
+        mv.visitLabel(l12);
+        mv.visitLineNumber(116, l12);
+
+        // Generate code that performs the actual substitution with the current argument. The generated code contains an if..else block that looks up the
+        // current argument based on the counter number and loads it on the stack from its local variable position. After it is loaded, a writer is called to
+        // put its contents into the byte buffer.
+
+        Label endIf = new Label();
+        for (int i = 0; i < paramTypes.length; i++) {
+            // load the counter
+            mv.visitVarInsn(ILOAD, varCounterPosition);
+
+            // load the current argument number
+            pushInteger(i, mv);
+            Label label = new Label();
+            // compare the counter to the argument number, if it is equal write the argument corresponding to the number to the buffer
+            mv.visitJumpInsn(IF_ICMPNE, label);
+
+            Class<?> paramType = paramTypes[i];
+            if (CharSequence.class.isAssignableFrom(paramType)) {
+                mv.visitVarInsn(ILOAD, varBytesWrittenPosition);
+                mv.visitVarInsn(ALOAD, varMethodArgOffset + i);  // Load the current method param
+                mv.visitVarInsn(ALOAD, varBufferPosition);
+                mv.visitMethodInsn(INVOKESTATIC,
+                                   "org/fabric3/monitor/impl/writer/CharSequenceWriter",
+                                   "write",
+                                   "(Ljava/lang/CharSequence;Ljava/nio/ByteBuffer;)I");
+                mv.visitInsn(IADD);
+                mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
+            } else if (Integer.TYPE.equals(paramType)) {
+
+                mv.visitVarInsn(ILOAD, varBytesWrittenPosition);
+                mv.visitVarInsn(ILOAD, varMethodArgOffset + i);
+                mv.visitVarInsn(ALOAD, varBufferPosition);
+                mv.visitMethodInsn(INVOKESTATIC, "org/fabric3/monitor/impl/writer/IntWriter", "write", "(ILjava/nio/ByteBuffer;)I");
+                mv.visitInsn(IADD);
+                mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
+
+            } else {
+                throw new AssertionError("Unhandled type: " + paramType);
+            }
+
+            mv.visitLabel(label);
+        }
+        mv.visitLabel(endIf);
+        mv.visitLineNumber(121, endIf);
+
+        mv.visitVarInsn(ILOAD, varIPosition); // xcv 8
+        mv.visitInsn(ICONST_2);   // skip 2 places for {0}
+        mv.visitInsn(IADD);
+        mv.visitVarInsn(ISTORE, varIPosition);  // xcv 8
+
+        Label l17 = new Label();
+        mv.visitLabel(l17);
+        mv.visitLineNumber(122, l17);
+
+        mv.visitIincInsn(7, varTemplatePosition);
+        Label l18 = new Label();
+        mv.visitJumpInsn(GOTO, l18);
+
+        // current not equal to '{'  - increment bytesWritten and write the current character to the byte buffer
+        mv.visitLabel(l10);
+        mv.visitLineNumber(124, l10);
+        //        mv.visitIincInsn(6, varTemplatePosition);
+        mv.visitIincInsn(varBytesWrittenPosition, 1);
+        Label l19 = new Label();
+        mv.visitLabel(l19);
+
+        mv.visitLineNumber(125, l19);
+        mv.visitVarInsn(ALOAD, varBufferPosition);
+        mv.visitVarInsn(ILOAD, varCurrentPosition);
+        mv.visitInsn(I2B);
+        mv.visitMethodInsn(INVOKEVIRTUAL, "java/nio/ByteBuffer", "put", "(B)Ljava/nio/ByteBuffer;");
+        mv.visitInsn(POP);
+        mv.visitLabel(l18);
+
+        // loop
+        mv.visitLineNumber(110, l18);
+        mv.visitIincInsn(varIPosition, 1);   //xcv 8
+        mv.visitJumpInsn(GOTO, l6);
+
+        // return bytesWritten
+        mv.visitLabel(l7);
+        mv.visitLineNumber(128, l7);
+        mv.visitVarInsn(ILOAD, varBytesWrittenPosition);
+        mv.visitInsn(IRETURN);
+        Label l20 = new Label();
+        mv.visitLabel(l20);
+
+        mv.visitLocalVariable("this", "Lorg/fabric3/monitor/impl/proxy/AbstractMonitorHandler;", null, l0, l20, 0);
+        mv.visitLocalVariable("template", "Ljava/lang/String;", null, l0, l20, varTemplatePosition);
+
+        for (int i = 1; i <= paramTypes.length; i++) {
+            Class<?> paramType = paramTypes[i - 1];
+            if (String.class.equals(paramType)) {
+                mv.visitLocalVariable("arg" + i, "Ljava/lang/String;", null, l0, l20, i + 1);
+            } else if (Integer.TYPE.equals(paramType)) {
+                mv.visitLocalVariable("arg" + i, "I", null, l0, l20, i + 1);
+            } else {
+                throw new AssertionError("Unhandled type: " + paramType.getName());
+            }
+        }
+
+        mv.visitLocalVariable("buffer", "Ljava/nio/ByteBuffer;", null, l0, l20, varBufferPosition);
+        mv.visitLocalVariable("numberArgs", "I", null, l1, l20, varNumberArgsPosition);
+        mv.visitLocalVariable("bytesWritten", "I", null, l4, l20, varBytesWrittenPosition);
+        mv.visitLocalVariable("counter", "I", null, l5, l20, varCounterPosition);
+        mv.visitLocalVariable("i", "I", null, l6, l7, varIPosition);
+        mv.visitLocalVariable("current", "C", null, l9, l18, varCurrentPosition);
+
+        mv.visitMaxs(4, 10);
+        mv.visitEnd();
+
+    }
+
+    /**
+     * Creates a writeTemplate method based on the number of arguments for the proxy interface method in the form:
+     * <pre>
+     *      int writeTemplate(String template, <type> arg1, <type> arg2, ...<type> argN, ByteBuffer buffer)
+     * </pre>
+     *
+     * @param method the proxy interface method
+     * @return the signature
+     */
+    private String calculateWriteTemplateSignature(Method method) {
+        // create a writeTemplate method based on the number of arguments for the proxy interface method in the form:
+        // int writeTemplate(String template, <type> arg1, <type> arg2, ...<type> argN, ByteBuffer buffer)
+        Class<?>[] paramTypes = method.getParameterTypes();
+        StringBuilder paramSignature = new StringBuilder("(Ljava/lang/String;");
+        for (Class<?> paramType : paramTypes) {
+            paramSignature.append(Type.getDescriptor(paramType));
+        }
+        paramSignature.append("Ljava/nio/ByteBuffer;)I");
+        return paramSignature.toString();
     }
 
     private void writeConstructor(ClassWriter cw, String proxyClassDescriptor) {
