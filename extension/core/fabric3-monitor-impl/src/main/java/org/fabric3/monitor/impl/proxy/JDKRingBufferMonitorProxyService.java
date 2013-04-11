@@ -35,21 +35,44 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.host.monitor;
+package org.fabric3.monitor.impl.proxy;
 
-import org.fabric3.host.Fabric3Exception;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.fabric3.host.monitor.MonitorCreationException;
+import org.fabric3.host.monitor.Monitorable;
+import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
+import org.fabric3.spi.monitor.DispatchInfo;
+import org.oasisopen.sca.annotation.Reference;
+import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
 /**
- *
+ * Performs bytecode generation at runtime to create a monitor proxy.
  */
-public class MonitorCreationException extends Fabric3Exception {
-    private static final long serialVersionUID = -637054545414432895L;
+public class JDKRingBufferMonitorProxyService extends AbstractMonitorProxyService {
 
-    public MonitorCreationException(String message) {
-        super(message);
+    public JDKRingBufferMonitorProxyService(@Reference RingBufferDestinationRouter router, @Reference Monitorable monitorable, @Reference HostInfo info) {
+        super(router, monitorable, info);
     }
 
-    public MonitorCreationException(Exception e) {
-       super(e);
+    public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws MonitorCreationException {
+        if (destination == null) {
+            destination = DEFAULT_DESTINATION;
+        }
+        int destinationIndex = router.getDestinationIndex(destination);
+        ClassLoader loader = type.getClassLoader();
+        Map<String, DispatchInfo> levels = new HashMap<String, DispatchInfo>();
+        for (Method method : type.getMethods()) {
+            DispatchInfo info = createDispatchInfo(type, loader, method);
+            levels.put(method.getName(), info);
+        }
+
+        JDKMonitorHandler handler = new JDKMonitorHandler(destinationIndex, runtimeName, monitorable, router, levels, timestampWriter, enabled);
+        return type.cast(Proxy.newProxyInstance(loader, new Class[]{type}, handler));
     }
+
 }

@@ -40,7 +40,7 @@
     </component>
 
     <component name="BytecodeMonitorProxyService">
-        <f3:implementation.system class="org.fabric3.monitor.impl.proxy.BytecodeMonitorProxyService"/>
+        <f3:implementation.system class="org.fabric3.monitor.impl.proxy.JDKRingBufferMonitorProxyService"/>
         <property name="pattern" source="$systemConfig/f3:monitor/@pattern"/>
         <property name="timeZone" source="$systemConfig/f3:monitor/@time.zone"/>
         <property name="enabled" source="$systemConfig/f3:monitor/@asynchronous"/>

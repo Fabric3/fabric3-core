@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -35,21 +35,47 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.host.monitor;
+package org.fabric3.monitor.impl.proxy;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.host.monitor.Monitorable;
+import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
+import org.fabric3.monitor.impl.writer.TimestampWriter;
+import org.fabric3.spi.monitor.DispatchInfo;
 
 /**
  *
  */
-public class MonitorCreationException extends Fabric3Exception {
-    private static final long serialVersionUID = -637054545414432895L;
+public abstract class AbstractMonitorHandler {
+    protected static final byte[] NEWLINE = "\n".getBytes();
 
-    public MonitorCreationException(String message) {
-        super(message);
+    protected RingBufferDestinationRouter router;
+    protected TimestampWriter timestampWriter;
+    protected boolean asyncEnabled;
+    protected int destinationIndex;
+    protected String runtimeName;
+    protected Monitorable monitorable;
+    protected String source;
+    protected DispatchInfo[] infos;
+
+    protected MonitorLevel level;
+    protected String template;
+
+    public void init(int destinationIndex,
+                     String runtimeName,
+                     Monitorable monitorable,
+                     RingBufferDestinationRouter router,
+                     DispatchInfo[] infos,
+                     TimestampWriter timestampWriter,
+                     boolean asyncEnabled) {
+        this.destinationIndex = destinationIndex;
+        this.runtimeName = runtimeName;
+        this.monitorable = monitorable;
+        this.router = router;
+        this.timestampWriter = timestampWriter;
+        this.asyncEnabled = asyncEnabled;
+        this.source = monitorable.getName();
+        this.infos = infos;
     }
 
-    public MonitorCreationException(Exception e) {
-       super(e);
-    }
 }

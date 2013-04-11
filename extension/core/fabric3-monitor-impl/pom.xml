@@ -29,6 +29,16 @@ Public License. See the accompanying license file for details.
             <artifactId>fabric3-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+
+        <!-- for debug asm  -->
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-debug-all</artifactId>
+            <version>4.0</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>

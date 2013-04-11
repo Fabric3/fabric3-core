@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -35,21 +35,23 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.host.monitor;
+package org.fabric3.monitor.impl.proxy;
 
-import org.fabric3.host.Fabric3Exception;
+import java.net.URI;
+
+import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**
  *
  */
-public class MonitorCreationException extends Fabric3Exception {
-    private static final long serialVersionUID = -637054545414432895L;
+public class BytecodeClassLoader extends MultiParentClassLoader {
 
-    public MonitorCreationException(String message) {
-        super(message);
+    public BytecodeClassLoader(URI name, ClassLoader parent) {
+        super(name, parent);
     }
 
-    public MonitorCreationException(Exception e) {
-       super(e);
+    public Class<?> defineClass(String name, byte[] bytes) throws ClassFormatError {
+        return defineClass(name, bytes, 0, bytes.length);
     }
+
 }
