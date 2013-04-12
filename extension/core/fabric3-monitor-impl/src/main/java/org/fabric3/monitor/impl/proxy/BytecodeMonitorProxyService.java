@@ -419,6 +419,8 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                     mv.visitVarInsn(ILOAD, i + 1);
                 } else if (Long.TYPE.equals(paramType)) {
                     mv.visitVarInsn(LLOAD, i + 1);
+                } else if (Double.TYPE.equals(paramType)) {
+                    mv.visitVarInsn(DLOAD, i + 1);
                 } else if (Boolean.TYPE.equals(paramType)) {
                     mv.visitVarInsn(ILOAD, i + 1);
                 } else if (Float.TYPE.equals(paramType)) {
@@ -522,6 +524,9 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 } else if (Long.TYPE.equals(paramTypes[i])) {
                     mv.visitVarInsn(LLOAD, i + 1);
                     mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
+                } else if (Double.TYPE.equals(paramTypes[i])) {
+                    mv.visitVarInsn(DLOAD, i + 1);
+                    mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
                 } else if (Float.TYPE.equals(paramTypes[i])) {
                     mv.visitVarInsn(FLOAD, i + 1);
                     mv.visitMethodInsn(INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;");
@@ -574,6 +579,8 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 mv.visitLocalVariable("arg" + i, "I", null, l4, l35, i);
             } else if (Long.TYPE.equals(paramType)) {
                 mv.visitLocalVariable("arg" + i, "J", null, l4, l35, i);
+            } else if (Double.TYPE.equals(paramType)) {
+                mv.visitLocalVariable("arg" + i, "D", null, l4, l35, i);
             } else if (Boolean.TYPE.equals(paramType)) {
                 mv.visitLocalVariable("arg" + i, "Z", null, l4, l35, i);
             } else if (Float.TYPE.equals(paramType)) {
@@ -763,6 +770,13 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 mv.visitMethodInsn(INVOKESTATIC, "org/fabric3/monitor/impl/writer/LongWriter", "write", "(JLjava/nio/ByteBuffer;)I");
                 mv.visitInsn(IADD);
                 mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
+            } else if (Double.TYPE.equals(paramType)) {
+                mv.visitVarInsn(ILOAD, varBytesWrittenPosition);
+                mv.visitVarInsn(DLOAD, varMethodArgOffset + i);
+                mv.visitVarInsn(ALOAD, varBufferPosition);
+                mv.visitMethodInsn(INVOKESTATIC, "org/fabric3/monitor/impl/writer/DoubleWriter", "write", "(DLjava/nio/ByteBuffer;)I");
+                mv.visitInsn(IADD);
+                mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
             } else if (Boolean.TYPE.equals(paramType)) {
                 mv.visitVarInsn(ILOAD, varBytesWrittenPosition);
                 mv.visitVarInsn(ILOAD, varMethodArgOffset + i);
@@ -847,6 +861,8 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 mv.visitLocalVariable("arg" + i, "I", null, l0, l20, i + 1);
             } else if (Long.TYPE.equals(paramType)) {
                 mv.visitLocalVariable("arg" + i, "J", null, l0, l20, i + 1);
+            } else if (Double.TYPE.equals(paramType)) {
+                mv.visitLocalVariable("arg" + i, "D", null, l0, l20, i + 1);
             } else if (Boolean.TYPE.equals(paramType)) {
                 mv.visitLocalVariable("arg" + i, "Z", null, l0, l20, i + 1);
             } else if (Float.TYPE.equals(paramType)) {
