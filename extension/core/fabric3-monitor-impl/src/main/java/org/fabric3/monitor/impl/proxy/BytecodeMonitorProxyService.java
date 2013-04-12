@@ -206,7 +206,9 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         cw.visitEnd();
 
         byte[] classBytes = cw.toByteArray();
-        BytecodeClassLoader bytecodeClassLoader = new BytecodeClassLoader(URI.create("test"), getClass().getClassLoader());
+
+        BytecodeClassLoader bytecodeClassLoader = getClassLoader(type);
+
         Class<?> clazz = bytecodeClassLoader.defineClass(proxyClassName, classBytes);
         try {
             Collection<DispatchInfo> values = levels.values();
@@ -1034,5 +1036,18 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         return offset;
     }
 
+    /**
+     * Returns a classloader for loading the proxy class, creating one if necessary.
+     *
+     * @param type the type to generate a classloader for
+     * @return the classloader
+     */
+    private BytecodeClassLoader getClassLoader(Class<?> type) {
+        ClassLoader parent = type.getClassLoader();
+        ClassLoader extensionClassLoader = getClass().getClassLoader();
+        BytecodeClassLoader classLoader = new BytecodeClassLoader(URI.create("BytecodeClassLoader"), parent);
+        classLoader.addParent(extensionClassLoader); // proxy classes need to be visible as well
+        return classLoader;
+    }
 
 }

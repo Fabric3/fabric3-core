@@ -64,8 +64,8 @@ public abstract class AbstractMonitorProxyService implements MonitorProxyService
     protected String runtimeName;
     protected Monitorable defaultMonitorable;
     protected RingBufferDestinationRouter router;
-    protected boolean enabled = false;
 
+    protected boolean enabled = false;
     protected String pattern = "%d:%m:%Y %H:%i:%s.%F";
     protected TimeZone timeZone = TimeZone.getDefault();
 
