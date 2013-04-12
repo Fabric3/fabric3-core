@@ -241,8 +241,10 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         Class<?>[] paramTypes = method.getParameterTypes();
         int numParams = paramTypes.length;
 
+        int offset = calculateParameterSpace(paramTypes);
+
         // calculate position of local variables
-        int varIndexPosition = numParams + 1;         // pos of the index variable used for looking up the DispatchInfo
+        int varIndexPosition = offset + 1;         // pos of the index variable used for looking up the DispatchInfo
         int varCurrentLevelPosition = varIndexPosition + 1;
         int varCurrentMessagePosition = varCurrentLevelPosition + 1;
         int varTimestampPosition = varCurrentMessagePosition + 1;
@@ -419,6 +421,8 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                     mv.visitVarInsn(LLOAD, i + 1);
                 } else if (Boolean.TYPE.equals(paramType)) {
                     mv.visitVarInsn(ILOAD, i + 1);
+                } else if (Float.TYPE.equals(paramType)) {
+                    mv.visitVarInsn(FLOAD, i + 1);
                 } else {
                     throw new AssertionError("Unhandled type: " + paramType);
                 }
@@ -518,6 +522,9 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 } else if (Long.TYPE.equals(paramTypes[i])) {
                     mv.visitVarInsn(LLOAD, i + 1);
                     mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
+                } else if (Float.TYPE.equals(paramTypes[i])) {
+                    mv.visitVarInsn(FLOAD, i + 1);
+                    mv.visitMethodInsn(INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;");
                 } else if (Boolean.TYPE.equals(paramTypes[i])) {
                     mv.visitVarInsn(ILOAD, i + 1);
                     mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(Z)Ljava/lang/Boolean;");
@@ -569,6 +576,8 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 mv.visitLocalVariable("arg" + i, "J", null, l4, l35, i);
             } else if (Boolean.TYPE.equals(paramType)) {
                 mv.visitLocalVariable("arg" + i, "Z", null, l4, l35, i);
+            } else if (Float.TYPE.equals(paramType)) {
+                mv.visitLocalVariable("arg" + i, "F", null, l4, l35, i);
             } else if (paramType.isPrimitive()) {
                 throw new AssertionError("Unhandled type: " + paramType);
             } else {
@@ -610,7 +619,9 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         int varTemplatePosition = 1; // Position 0 is reserved for "this"
         int varMethodArgOffset = varTemplatePosition + 1;                        //2
 
-        int varBufferPosition = varTemplatePosition + paramTypes.length + 1;     //5
+        int offset = calculateParameterSpace(paramTypes);
+
+        int varBufferPosition = varTemplatePosition + offset + 1;     //5
         int varNumberArgsPosition = varBufferPosition + 1;                       //6
         int varBytesWrittenPosition = varNumberArgsPosition + 1;                 //7
         int varCounterPosition = varBytesWrittenPosition + 1;                    //8
@@ -759,6 +770,13 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 mv.visitMethodInsn(INVOKESTATIC, "org/fabric3/monitor/impl/writer/BooleanWriter", "write", "(ZLjava/nio/ByteBuffer;)I");
                 mv.visitInsn(IADD);
                 mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
+            } else if (Float.TYPE.equals(paramType)) {
+                mv.visitVarInsn(ILOAD, varBytesWrittenPosition);
+                mv.visitVarInsn(FLOAD, varMethodArgOffset + i);
+                mv.visitVarInsn(ALOAD, varBufferPosition);
+                mv.visitMethodInsn(INVOKESTATIC, "org/fabric3/monitor/impl/writer/FloatWriter", "write", "(FLjava/nio/ByteBuffer;)I");
+                mv.visitInsn(IADD);
+                mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
             } else if (Object.class.isAssignableFrom(paramType)) {
                 mv.visitVarInsn(ILOAD, varBytesWrittenPosition);
                 mv.visitVarInsn(ALOAD, varMethodArgOffset + i);  // Load the current method param
@@ -831,6 +849,8 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 mv.visitLocalVariable("arg" + i, "J", null, l0, l20, i + 1);
             } else if (Boolean.TYPE.equals(paramType)) {
                 mv.visitLocalVariable("arg" + i, "Z", null, l0, l20, i + 1);
+            } else if (Float.TYPE.equals(paramType)) {
+                mv.visitLocalVariable("arg" + i, "F", null, l0, l20, i + 1);
             } else if (paramType.isPrimitive()) {
                 throw new AssertionError("Unhandled type");
             } else {
@@ -931,5 +951,24 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         mv.visitMethodInsn(INVOKESPECIAL, "org/oasisopen/sca/ServiceRuntimeException", "<init>", "(Ljava/lang/String;)V");
         mv.visitInsn(ATHROW);
     }
+
+    /**
+     * Calculates the stack space needed by the given parameters. Doubles and Longs occupy two slots; other types occupy one spot.
+     *
+     * @param paramTypes the parameter types
+     * @return the stack space
+     */
+    private int calculateParameterSpace(Class<?>[] paramTypes) {
+        int offset = 0;
+        for (Class<?> paramType : paramTypes) {
+            if (Double.TYPE.equals(paramType) || Long.TYPE.equals(paramType)) {
+                offset = offset + 2;
+            } else {
+                offset++;
+            }
+        }
+        return offset;
+    }
+
 
 }
