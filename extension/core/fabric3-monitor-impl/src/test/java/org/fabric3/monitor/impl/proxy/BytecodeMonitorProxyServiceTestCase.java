@@ -141,6 +141,16 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
         EasyMock.verify(router, monitorable);
     }
 
+    public void testInvokeBoolean() throws Exception {
+        EasyMock.replay(router, monitorable);
+
+        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
+        monitor.monitor(true);
+
+        assertTrue(getStringContents().contains("] Monitor event true"));
+        EasyMock.verify(router, monitorable);
+    }
+
     private String getStringContents() {
         entry.getBuffer().flip();
         byte[] bytes = new byte[entry.getBuffer().limit()];
@@ -168,8 +178,12 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
         @Severe("Monitor event {0}")
         void monitor(Long arg1);
 
+        @Severe("Monitor event {0}")
+        void monitor(boolean arg1);
+
     }
 
+    // Used to verify bytecode
     //    public void testVerify() throws Exception {
     //        ClassReader cr = new ClassReader(proxyService.createClass(ParamsMonitor.class, "foo"));
     //        CheckClassAdapter.verify(cr, true, new PrintWriter(System.out));
