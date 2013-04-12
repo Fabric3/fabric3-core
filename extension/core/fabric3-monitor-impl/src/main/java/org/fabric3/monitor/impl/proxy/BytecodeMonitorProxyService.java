@@ -429,6 +429,8 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                     mv.visitVarInsn(ILOAD, i + 1);
                 } else if (Byte.TYPE.equals(paramType)) {
                     mv.visitVarInsn(ILOAD, i + 1);
+                } else if (Character.TYPE.equals(paramType)) {
+                    mv.visitVarInsn(ILOAD, i + 1);
                 } else {
                     throw new AssertionError("Unhandled type: " + paramType);
                 }
@@ -543,6 +545,9 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 } else if (Byte.TYPE.equals(paramTypes[i])) {
                     mv.visitVarInsn(ILOAD, i + 1);
                     mv.visitMethodInsn(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;");
+                } else if (Character.TYPE.equals(paramTypes[i])) {
+                    mv.visitVarInsn(ILOAD, i + 1);
+                    mv.visitMethodInsn(INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;");
                 }
             } else {
                 mv.visitVarInsn(ALOAD, i + 1);  // i+1 since that is the position of the method argument (position 0 is reserved for "this")
@@ -599,6 +604,8 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 mv.visitLocalVariable("arg" + i, "S", null, l4, l35, i);
             } else if (Byte.TYPE.equals(paramType)) {
                 mv.visitLocalVariable("arg" + i, "B", null, l4, l35, i);
+            } else if (Character.TYPE.equals(paramType)) {
+                mv.visitLocalVariable("arg" + i, "C", null, l4, l35, i);
             } else if (paramType.isPrimitive()) {
                 throw new AssertionError("Unhandled type: " + paramType);
             } else {
@@ -819,6 +826,13 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 mv.visitMethodInsn(INVOKESTATIC, "org/fabric3/monitor/impl/writer/ByteWriter", "write", "(BLjava/nio/ByteBuffer;)I");
                 mv.visitInsn(IADD);
                 mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
+            } else if (Character.TYPE.equals(paramType)) {
+                mv.visitVarInsn(ILOAD, varBytesWrittenPosition);
+                mv.visitVarInsn(ILOAD, varMethodArgOffset + i);
+                mv.visitVarInsn(ALOAD, varBufferPosition);
+                mv.visitMethodInsn(INVOKESTATIC, "org/fabric3/monitor/impl/writer/CharWriter", "write", "(CLjava/nio/ByteBuffer;)I");
+                mv.visitInsn(IADD);
+                mv.visitVarInsn(ISTORE, varBytesWrittenPosition);
             } else if (Object.class.isAssignableFrom(paramType)) {
                 mv.visitVarInsn(ILOAD, varBytesWrittenPosition);
                 mv.visitVarInsn(ALOAD, varMethodArgOffset + i);  // Load the current method param
@@ -899,6 +913,8 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
                 mv.visitLocalVariable("arg" + i, "S", null, l0, l20, i + 1);
             } else if (Byte.TYPE.equals(paramType)) {
                 mv.visitLocalVariable("arg" + i, "B", null, l0, l20, i + 1);
+            } else if (Character.TYPE.equals(paramType)) {
+                mv.visitLocalVariable("arg" + i, "C", null, l0, l20, i + 1);
             } else if (paramType.isPrimitive()) {
                 throw new AssertionError("Unhandled type");
             } else {
