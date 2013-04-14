@@ -82,11 +82,10 @@ public class FileAppender implements Appender {
         fileChannel = stream.getChannel();
     }
 
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void roll() throws IOException {
-        if (!file.exists()) {
-            initializeChannel();
-        } else if (strategy.checkRoll(file)) {
+        if (strategy.checkRoll(file)) {
             stream.close();
             File backup = strategy.getBackup(file);
             FileHelper.copyFile(file, backup);
