@@ -40,21 +40,121 @@ package org.fabric3.monitor.impl.router;
 import java.nio.ByteBuffer;
 
 import com.lmax.disruptor.EventHandler;
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
+import org.fabric3.monitor.impl.writer.BooleanWriter;
+import org.fabric3.monitor.impl.writer.ByteWriter;
+import org.fabric3.monitor.impl.writer.CharWriter;
+import org.fabric3.monitor.impl.writer.DoubleWriter;
+import org.fabric3.monitor.impl.writer.FloatWriter;
+import org.fabric3.monitor.impl.writer.IntWriter;
+import org.fabric3.monitor.impl.writer.LongWriter;
+import org.fabric3.monitor.impl.writer.MonitorEntryWriter;
+import org.fabric3.monitor.impl.writer.ObjectWriter;
+import org.fabric3.monitor.impl.writer.TimestampWriter;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Receives events from the ring buffer and performs the actual routing to a destination.
  */
 public class MonitorEventHandler implements EventHandler<MonitorEventEntry> {
+    private static final byte[] NEWLINE = "\n".getBytes();
+//    public static final int MIN = 100000;
+//    public static final int MAX = 200000;
+
     private MonitorDestinationRegistry registry;
+    private TimestampWriter timestampWriter;
 
-    public MonitorEventHandler(MonitorDestinationRegistry registry) {
+//    private int counter;
+//    private long elapsedTime;
+
+    public MonitorEventHandler(MonitorDestinationRegistry registry, TimestampWriter timestampWriter) {
         this.registry = registry;
+        this.timestampWriter = timestampWriter;
     }
 
-    public void onEvent(MonitorEventEntry event, long sequence, boolean endOfBatch) throws Exception {
-        int index = event.getDestinationIndex();
-        ByteBuffer buffer = event.getBuffer();
+    public void onEvent(MonitorEventEntry entry, long sequence, boolean endOfBatch) throws Exception {
+        ByteBuffer buffer = entry.getBuffer();
+        int index = entry.getDestinationIndex();
+        MonitorLevel level = entry.getLevel();
+
+        int count = MonitorEntryWriter.writePrefix(level, entry.getEntryTimestamp(), buffer, timestampWriter);
+        count = count + writeTemplate(entry.getTemplate(), entry);
+        buffer.put(NEWLINE) ;
+        count++;
+
+        buffer.limit(count);
         registry.write(index, buffer);
+
+//        if (counter >= MIN) {
+//            long time = System.nanoTime() - entry.getTimestampNanos();
+//            elapsedTime = elapsedTime + time;
+//        }
+//        counter++;
+//        if (counter == MAX) {
+//            System.out.println("Time last event: " + (System.nanoTime() - entry.getTimestampNanos()));
+//            System.out.println("Elapsed: " + elapsedTime);
+//            System.out.println("Avg: " + (double) elapsedTime / (double) (MAX - MIN));
+//        }
     }
+
+    private int writeTemplate(String template, MonitorEventEntry entry) {
+        if (template == null) {
+            return 0;
+        }
+        ByteBuffer buffer = entry.getBuffer();
+        int bytesWritten = 0;
+        int counter = 0;
+        for (int i = 0; i < template.length(); i++) {
+            char current = template.charAt(i);
+            if ('{' == current) {
+                if (counter > entry.getLimit()) {
+                    throw new ServiceRuntimeException("Monitor message contains more parameters than are supplied by the method interface: " + template);
+                }
+                ParameterEntry parameterEntry = entry.getEntries()[counter];
+                bytesWritten = bytesWritten + writeParameter(parameterEntry, buffer);
+                i = i + 2;    // skip two places
+                counter++;
+            } else {
+                bytesWritten++;
+                buffer.put((byte) current);
+            }
+        }
+        return bytesWritten;
+    }
+
+    private int writeParameter(ParameterEntry parameterEntry, ByteBuffer buffer) {
+        int count = 0;
+        switch (parameterEntry.getSlot()) {
+            case SHORT:
+                count = count + IntWriter.write(parameterEntry.getShortValue(), buffer);
+                break;
+            case INT:
+                count = count + IntWriter.write(parameterEntry.getIntValue(), buffer);
+                break;
+            case LONG:
+                count = count + LongWriter.write(parameterEntry.getLongValue(), buffer);
+                break;
+            case DOUBLE:
+                count = count + DoubleWriter.write(parameterEntry.getDoubleValue(), buffer);
+                break;
+            case FLOAT:
+                count = count + FloatWriter.write(parameterEntry.getFloatValue(), buffer);
+                break;
+            case CHAR:
+                count = count + CharWriter.write(parameterEntry.getCharValue(), buffer);
+                break;
+            case BOOLEAN:
+                count = count + BooleanWriter.write(parameterEntry.getBooleanValue(), buffer);
+                break;
+            case BYTE:
+                count = count + ByteWriter.write(parameterEntry.getByteValue(), buffer);
+                break;
+            case OBJECT:
+                count = count + ObjectWriter.write(parameterEntry.getObjectValue(Object.class), buffer);
+                break;
+        }
+        return count;
+    }
+
 }

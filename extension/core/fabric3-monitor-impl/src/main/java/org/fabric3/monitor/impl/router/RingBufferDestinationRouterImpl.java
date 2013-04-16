@@ -167,7 +167,7 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
             WaitStrategy waitStrategy = createWaitStrategy();
             MonitorEventEntryFactory factory = new MonitorEventEntryFactory(capacity);
             disruptor = new Disruptor<MonitorEventEntry>(factory, ringSize, executorService, ProducerType.MULTI, waitStrategy);
-            MonitorEventHandler handler = new MonitorEventHandler(registry);
+            MonitorEventHandler handler = new MonitorEventHandler(registry, timestampWriter);
             disruptor.handleEventsWith(handler);
             disruptor.start();
         } else {
@@ -190,8 +190,13 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
         RingBuffer<MonitorEventEntry> ringBuffer = disruptor.getRingBuffer();
         long sequence = ringBuffer.next();
         MonitorEventEntry entry = ringBuffer.getPreallocated(sequence);
+
         entry.getBuffer().clear();
+        for (ParameterEntry parameterEntry : entry.getEntries()) {
+            parameterEntry.reset();
+        }
         entry.setSequence(sequence);
+
         return entry;
     }
 
@@ -208,8 +213,19 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
                 entry = get();
                 entry.setDestinationIndex(destinationIndex);
                 entry.setTimestampNanos(System.nanoTime());
-                ByteBuffer buffer = entry.getBuffer();
-                MonitorEntryWriter.write(level, timestamp, template, buffer, timestampWriter, args);
+                entry.setLevel(level);
+                entry.setEntryTimestamp(timestamp);
+                entry.setTemplate(template);
+                entry.setLimit(args == null ? 0 : args.length);
+                if (args != null) {
+                    for (int i = 0; i < args.length; i++) {
+                        Object arg = args[i];
+                        entry.getEntries()[i].setObjectValue(arg);
+                    }
+                }
+
+                //ByteBuffer buffer = entry.getBuffer();
+                //MonitorEntryWriter.write(level, timestamp, template, buffer, timestampWriter, args);
             } finally {
                 if (entry != null) {
                     publish(entry);

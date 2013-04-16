@@ -46,7 +46,6 @@ package org.fabric3.fabric.executor;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.Info;
-import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  *
@@ -58,8 +57,5 @@ public interface ContextMonitor {
 
     @Info("Composite {0} undeployed")
     void undeployed(QName composite);
-
-    @Severe("Error initializing components\n{0}")
-    void initializationError(String detail);
 
 }

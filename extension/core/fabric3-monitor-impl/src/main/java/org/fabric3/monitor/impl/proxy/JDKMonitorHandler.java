@@ -39,15 +39,12 @@ package org.fabric3.monitor.impl.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
 import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.Monitorable;
 import org.fabric3.monitor.impl.router.MonitorEventEntry;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
-import org.fabric3.monitor.impl.writer.MonitorEntryWriter;
-import org.fabric3.monitor.impl.writer.TimestampWriter;
 import org.fabric3.spi.monitor.DispatchInfo;
 
 /**
@@ -55,7 +52,6 @@ import org.fabric3.spi.monitor.DispatchInfo;
  */
 public class JDKMonitorHandler implements InvocationHandler {
     private RingBufferDestinationRouter router;
-    private TimestampWriter timestampWriter;
     private boolean asyncEnabled;
     private int destinationIndex;
     private String runtimeName;
@@ -71,13 +67,11 @@ public class JDKMonitorHandler implements InvocationHandler {
                              Monitorable monitorable,
                              RingBufferDestinationRouter router,
                              Map<String, DispatchInfo> infos,
-                             TimestampWriter timestampWriter,
                              boolean asyncEnabled) {
         this.destinationIndex = destinationIndex;
         this.runtimeName = runtimeName;
         this.monitorable = monitorable;
         this.router = router;
-        this.timestampWriter = timestampWriter;
         this.asyncEnabled = asyncEnabled;
         this.source = monitorable.getName();
         this.infos = infos;
@@ -125,15 +119,25 @@ public class JDKMonitorHandler implements InvocationHandler {
             entry = router.get();
             entry.setDestinationIndex(destinationIndex);
             entry.setTimestampNanos(start);
-            ByteBuffer buffer = entry.getBuffer();
+            entry.setTemplate(template);
+            if (args != null) {
+                for (int i = 0; i < args.length; i++) {
+                    Object arg = args[i];
+                    entry.getEntries()[i].setObjectValue(arg);
+                }
+            }
+            entry.setLevel(level);
+            entry.setLimit(args == null ? 0 : args.length);
+            entry.setEntryTimestamp(timestamp);
 
-            MonitorEntryWriter.write(level, timestamp, template, buffer, timestampWriter, args);
+            //            ByteBuffer buffer = entry.getBuffer();
+            //
+            //            MonitorEntryWriter.write(level, timestamp, template, buffer, timestampWriter, args);
         } finally {
             if (entry != null) {
                 router.publish(entry);
             }
         }
     }
-
 
 }

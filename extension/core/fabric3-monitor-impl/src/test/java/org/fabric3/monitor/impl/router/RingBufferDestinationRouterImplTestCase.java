@@ -68,6 +68,7 @@ public class RingBufferDestinationRouterImplTestCase extends TestCase {
         router.init();
         MonitorEventEntry entry = router.get();
         entry.setBuffer(buffer);
+        entry.setLevel(MonitorLevel.SEVERE);
         router.publish(entry);
         router.destroy();
 
@@ -100,7 +101,7 @@ public class RingBufferDestinationRouterImplTestCase extends TestCase {
         router.setCapacity(100);
         router.setRingSize(2);
 
-        buffer = ByteBuffer.allocate(1);
+        buffer = ByteBuffer.allocate(200);
     }
 
     public void tearDown() throws Exception {

@@ -45,11 +45,18 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
  * An entry for writing a monitor event to a ring buffer.
  */
 public class MonitorEventEntry {
+    private static final int DEFAULT_PARAM_SIZE = 10;
+
+    private String template;
+    private ParameterEntry[] entries;
+    private int parameterLimit = 0;
+
     private long sequence;
     private ByteBuffer buffer;
     private long timestamp;
     private MonitorLevel level;
     private int destinationIndex;
+    private long entryTimestamp;
 
     /**
      * Constructor.
@@ -58,6 +65,73 @@ public class MonitorEventEntry {
      */
     public MonitorEventEntry(int capacity) {
         buffer = ByteBuffer.allocateDirect(capacity);
+        entries = new ParameterEntry[DEFAULT_PARAM_SIZE];
+        for (int i = 0; i < entries.length; i++) {
+            entries[i] = new ParameterEntry();
+        }
+    }
+
+    /**
+     * Returns the {@link ParameterEntry}s for this event.
+     *
+     * @return the {@link ParameterEntry}s
+     */
+    public ParameterEntry[] getEntries() {
+        return entries;
+    }
+
+    /**
+     * Sets the number of set parameters.
+     *
+     * @param limit the number of set parameters
+     */
+    public void setLimit(int limit) {
+        parameterLimit = limit;
+    }
+
+    /**
+     * Returns the number of set parameters, e.g. 0 is no parameters, 1 is single parameter.
+     *
+     * @return the number of set parameters
+     */
+    public int getLimit() {
+        return parameterLimit;
+    }
+
+    /**
+     * Returns the monitor event template.
+     *
+     * @return the monitor event template
+     */
+    public String getTemplate() {
+        return template;
+    }
+
+    /**
+     * Sets the monitor event template.
+     *
+     * @param template the monitor event template
+     */
+    public void setTemplate(String template) {
+        this.template = template;
+    }
+
+    /**
+     * Returns the event entry timestamp in milliseconds.
+     *
+     * @return the event entry timestamp in milliseconds
+     */
+    public long getEntryTimestamp() {
+        return entryTimestamp;
+    }
+
+    /**
+     * Sets the event entry timestamp in milliseconds.
+     *
+     * @param entryTimestamp the event entry timestamp in milliseconds
+     */
+    public void setEntryTimestamp(long entryTimestamp) {
+        this.entryTimestamp = entryTimestamp;
     }
 
     /**

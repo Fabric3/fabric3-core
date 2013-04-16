@@ -44,6 +44,7 @@ import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.host.monitor.Monitorable;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.monitor.impl.router.MonitorEventEntry;
+import org.fabric3.monitor.impl.router.ParameterEntry;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 
 /**
@@ -56,13 +57,28 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
     private Monitorable monitorable;
     private MonitorEventEntry entry;
 
+    // Used to verify bytecode
+//    public void testVerify() throws Exception {
+//        ClassReader cr = new ClassReader(proxyService.generateClass(ParamsMonitor.class, 0));
+//        CheckClassAdapter.verify(cr, true, new PrintWriter(System.out));
+//    }
+
     public void testInvokeTwoStrings() throws Exception {
         EasyMock.replay(router, monitorable);
 
         ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
         monitor.monitor("foo", "bar");
 
-        assertTrue(getStringContents().contains("] Monitor event foo, bar"));
+        assertNotNull(entry.getTemplate());
+        assertNotNull(entry.getEntryTimestamp());
+        assertNotNull(entry.getTimestampNanos());
+        assertEquals(MonitorLevel.SEVERE, entry.getLevel());
+        assertEquals(2, entry.getLimit());
+        assertEquals(ParameterEntry.Slot.OBJECT, entry.getEntries()[0].getSlot());
+        assertEquals("foo", entry.getEntries()[0].getObjectValue(String.class));
+        assertEquals(ParameterEntry.Slot.OBJECT, entry.getEntries()[1].getSlot());
+        assertEquals("bar", entry.getEntries()[1].getObjectValue(String.class));
+
         EasyMock.verify(router, monitorable);
     }
 
@@ -72,7 +88,14 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
         ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
         monitor.monitor("foo");
 
-        assertTrue(getStringContents().contains("] Monitor event foo"));
+        assertNotNull(entry.getTemplate());
+        assertNotNull(entry.getEntryTimestamp());
+        assertNotNull(entry.getTimestampNanos());
+        assertEquals(MonitorLevel.SEVERE, entry.getLevel());
+        assertEquals(1, entry.getLimit());
+        assertEquals(ParameterEntry.Slot.OBJECT, entry.getEntries()[0].getSlot());
+        assertEquals("foo", entry.getEntries()[0].getObjectValue(String.class));
+
         EasyMock.verify(router, monitorable);
     }
 
@@ -82,7 +105,14 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
         ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
         monitor.monitor(1);
 
-        assertTrue(getStringContents().contains("] Monitor event 1"));
+        assertNotNull(entry.getTemplate());
+        assertNotNull(entry.getEntryTimestamp());
+        assertNotNull(entry.getTimestampNanos());
+        assertEquals(MonitorLevel.SEVERE, entry.getLevel());
+        assertEquals(1, entry.getLimit());
+        assertEquals(ParameterEntry.Slot.INT, entry.getEntries()[0].getSlot());
+        assertEquals(1, entry.getEntries()[0].getIntValue());
+
         EasyMock.verify(router, monitorable);
     }
 
@@ -92,7 +122,12 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
         ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
         monitor.monitor();
 
-        assertTrue(getStringContents().contains("] Monitor event"));
+        assertNotNull(entry.getTemplate());
+        assertNotNull(entry.getEntryTimestamp());
+        assertNotNull(entry.getTimestampNanos());
+        assertEquals(MonitorLevel.SEVERE, entry.getLevel());
+        assertEquals(0, entry.getLimit());
+
         EasyMock.verify(router, monitorable);
     }
 
@@ -103,7 +138,133 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
         Foo foo = new Foo();
         monitor.monitor(foo);
 
-        assertTrue(getStringContents().contains("] Monitor event The Foo Object"));
+        assertNotNull(entry.getTemplate());
+        assertNotNull(entry.getEntryTimestamp());
+        assertNotNull(entry.getTimestampNanos());
+        assertEquals(MonitorLevel.SEVERE, entry.getLevel());
+        assertEquals(1, entry.getLimit());
+        assertEquals(ParameterEntry.Slot.OBJECT, entry.getEntries()[0].getSlot());
+        assertEquals(foo, entry.getEntries()[0].getObjectValue(Foo.class));
+
+        EasyMock.verify(router, monitorable);
+    }
+
+    public void testInvokeLong() throws Exception {
+        EasyMock.replay(router, monitorable);
+
+        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
+        monitor.monitor(Long.MAX_VALUE);
+
+        assertNotNull(entry.getTemplate());
+        assertNotNull(entry.getEntryTimestamp());
+        assertNotNull(entry.getTimestampNanos());
+        assertEquals(MonitorLevel.SEVERE, entry.getLevel());
+        assertEquals(1, entry.getLimit());
+        assertEquals(ParameterEntry.Slot.LONG, entry.getEntries()[0].getSlot());
+        assertEquals(Long.MAX_VALUE, entry.getEntries()[0].getLongValue());
+
+        EasyMock.verify(router, monitorable);
+    }
+
+    public void testInvokeBoolean() throws Exception {
+        EasyMock.replay(router, monitorable);
+
+        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
+        monitor.monitor(true);
+
+        assertNotNull(entry.getTemplate());
+        assertNotNull(entry.getEntryTimestamp());
+        assertNotNull(entry.getTimestampNanos());
+        assertEquals(MonitorLevel.SEVERE, entry.getLevel());
+        assertEquals(1, entry.getLimit());
+        assertEquals(ParameterEntry.Slot.BOOLEAN, entry.getEntries()[0].getSlot());
+        assertTrue(entry.getEntries()[0].getBooleanValue());
+
+        EasyMock.verify(router, monitorable);
+    }
+
+    public void testInvokeFloat() throws Exception {
+        EasyMock.replay(router, monitorable);
+
+        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
+        monitor.monitor(1.1f);
+
+        assertNotNull(entry.getTemplate());
+        assertNotNull(entry.getEntryTimestamp());
+        assertNotNull(entry.getTimestampNanos());
+        assertEquals(MonitorLevel.SEVERE, entry.getLevel());
+        assertEquals(1, entry.getLimit());
+        assertEquals(ParameterEntry.Slot.FLOAT, entry.getEntries()[0].getSlot());
+        assertEquals(1.1f, entry.getEntries()[0].getFloatValue());
+
+        EasyMock.verify(router, monitorable);
+    }
+
+    public void testInvokeDouble() throws Exception {
+        EasyMock.replay(router, monitorable);
+
+        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
+        monitor.monitor(1.1d);
+
+        assertNotNull(entry.getTemplate());
+        assertNotNull(entry.getEntryTimestamp());
+        assertNotNull(entry.getTimestampNanos());
+        assertEquals(MonitorLevel.SEVERE, entry.getLevel());
+        assertEquals(1, entry.getLimit());
+        assertEquals(ParameterEntry.Slot.DOUBLE, entry.getEntries()[0].getSlot());
+        assertEquals(1.1d, entry.getEntries()[0].getDoubleValue());
+
+        EasyMock.verify(router, monitorable);
+    }
+
+    public void testInvokeShort() throws Exception {
+        EasyMock.replay(router, monitorable);
+
+        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
+        monitor.monitor((short) 1);
+
+        assertNotNull(entry.getTemplate());
+        assertNotNull(entry.getEntryTimestamp());
+        assertNotNull(entry.getTimestampNanos());
+        assertEquals(MonitorLevel.SEVERE, entry.getLevel());
+        assertEquals(1, entry.getLimit());
+        assertEquals(ParameterEntry.Slot.SHORT, entry.getEntries()[0].getSlot());
+        assertEquals((short) 1, entry.getEntries()[0].getShortValue());
+
+        EasyMock.verify(router, monitorable);
+    }
+
+    public void testInvokeByte() throws Exception {
+        EasyMock.replay(router, monitorable);
+
+        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
+        monitor.monitor((byte) 'x');
+
+        assertNotNull(entry.getTemplate());
+        assertNotNull(entry.getEntryTimestamp());
+        assertNotNull(entry.getTimestampNanos());
+        assertEquals(MonitorLevel.SEVERE, entry.getLevel());
+        assertEquals(1, entry.getLimit());
+        assertEquals(ParameterEntry.Slot.BYTE, entry.getEntries()[0].getSlot());
+        assertEquals((byte) 'x', entry.getEntries()[0].getByteValue());
+
+        EasyMock.verify(router, monitorable);
+    }
+
+    public void testInvokeChar() throws Exception {
+        EasyMock.replay(router, monitorable);
+
+        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
+        monitor.monitor('x');
+
+        assertNotNull(entry.getTemplate());
+        assertNotNull(entry.getEntryTimestamp());
+        assertNotNull(entry.getTimestampNanos());
+        assertEquals(MonitorLevel.SEVERE, entry.getLevel());
+        assertEquals(1, entry.getLimit());
+        assertEquals(ParameterEntry.Slot.CHAR, entry.getEntries()[0].getSlot());
+        assertEquals('x', entry.getEntries()[0].getCharValue());
+
         EasyMock.verify(router, monitorable);
     }
 
@@ -129,83 +290,6 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
         proxyService = new BytecodeMonitorProxyService(router, monitorable, hostInfo);
         proxyService.setEnabled(true);
         proxyService.init();
-    }
-
-    public void testInvokeLong() throws Exception {
-        EasyMock.replay(router, monitorable);
-
-        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
-        monitor.monitor(Long.MAX_VALUE);
-
-        assertTrue(getStringContents().contains("] Monitor event " + Long.MAX_VALUE));
-        EasyMock.verify(router, monitorable);
-    }
-
-    public void testInvokeBoolean() throws Exception {
-        EasyMock.replay(router, monitorable);
-
-        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
-        monitor.monitor(true);
-
-        assertTrue(getStringContents().contains("] Monitor event true"));
-        EasyMock.verify(router, monitorable);
-    }
-
-    public void testInvokeFloat() throws Exception {
-        EasyMock.replay(router, monitorable);
-
-        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
-        monitor.monitor(1.1f);
-
-        assertTrue(getStringContents().contains("] Monitor event 1.1"));
-        EasyMock.verify(router, monitorable);
-    }
-
-    public void testInvokeDouble() throws Exception {
-        EasyMock.replay(router, monitorable);
-
-        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
-        monitor.monitor(1.1d);
-
-        assertTrue(getStringContents().contains("] Monitor event 1.1"));
-        EasyMock.verify(router, monitorable);
-    }
-
-    public void testInvokeShort() throws Exception {
-        EasyMock.replay(router, monitorable);
-
-        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
-        monitor.monitor((short) 1);
-
-        assertTrue(getStringContents().contains("] Monitor event 1"));
-        EasyMock.verify(router, monitorable);
-    }
-
-    public void testInvokeByte() throws Exception {
-        EasyMock.replay(router, monitorable);
-
-        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
-        monitor.monitor((byte) 'x');
-
-        assertTrue(getStringContents().contains("] Monitor event x"));
-        EasyMock.verify(router, monitorable);
-    }
-
-    public void testInvokeChar() throws Exception {
-        EasyMock.replay(router, monitorable);
-
-        ParamsMonitor monitor = proxyService.createMonitor(ParamsMonitor.class, monitorable, "destination");
-        monitor.monitor('x');
-
-        assertTrue(getStringContents().contains("] Monitor event x"));
-        EasyMock.verify(router, monitorable);
-    }
-
-    private String getStringContents() {
-        entry.getBuffer().flip();
-        byte[] bytes = new byte[entry.getBuffer().limit()];
-        entry.getBuffer().get(bytes);
-        return new String(bytes);
     }
 
     public interface ParamsMonitor {
@@ -247,13 +331,6 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
         void monitor(char arg1);
 
     }
-
-    // Used to verify bytecode
-    //    public void testVerify() throws Exception {
-    //        ClassReader cr = new ClassReader(proxyService.createClass(ParamsMonitor.class, "foo"));
-    //        CheckClassAdapter.verify(cr, true, new PrintWriter(System.out));
-    //
-    //    }
 
     private class Foo {
 
