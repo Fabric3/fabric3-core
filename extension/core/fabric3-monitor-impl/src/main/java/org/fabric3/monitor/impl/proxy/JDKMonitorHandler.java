@@ -129,10 +129,6 @@ public class JDKMonitorHandler implements InvocationHandler {
             entry.setLevel(level);
             entry.setLimit(args == null ? 0 : args.length);
             entry.setEntryTimestamp(timestamp);
-
-            //            ByteBuffer buffer = entry.getBuffer();
-            //
-            //            MonitorEntryWriter.write(level, timestamp, template, buffer, timestampWriter, args);
         } finally {
             if (entry != null) {
                 router.publish(entry);
