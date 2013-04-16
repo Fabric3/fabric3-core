@@ -54,7 +54,6 @@ import org.fabric3.spi.monitor.MonitorProxy;
 public class JDKMonitorHandler implements InvocationHandler, MonitorChannel, MonitorProxy {
     private DestinationRouter router;
     private int destinationIndex;
-    private String runtimeName;
     private Monitorable monitorable;
     private String source;
     private Map<String, DispatchInfo> infos;
@@ -62,9 +61,8 @@ public class JDKMonitorHandler implements InvocationHandler, MonitorChannel, Mon
     private MonitorLevel level;
     private String template;
 
-    public JDKMonitorHandler(int destinationIndex, String runtimeName, Monitorable monitorable, DestinationRouter router, Map<String, DispatchInfo> infos) {
+    public JDKMonitorHandler(int destinationIndex, Monitorable monitorable, DestinationRouter router, Map<String, DispatchInfo> infos) {
         this.destinationIndex = destinationIndex;
-        this.runtimeName = runtimeName;
         this.monitorable = monitorable;
         this.router = router;
         this.source = monitorable.getName();
@@ -123,9 +121,9 @@ public class JDKMonitorHandler implements InvocationHandler, MonitorChannel, Mon
 
     public void send(MonitorLevel level, long timestamp, String template, Object[] args) {
         if (args == null) {
-            router.send(level, destinationIndex, runtimeName, timestamp, source, template);
+            router.send(level, destinationIndex, timestamp, source, template);
         } else {
-            router.send(level, destinationIndex, runtimeName, timestamp, source, template, args);
+            router.send(level, destinationIndex, timestamp, source, template, args);
         }
     }
 

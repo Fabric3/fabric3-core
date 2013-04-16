@@ -147,9 +147,8 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
         classLoaderRegistry = new ClassLoaderRegistryImpl();
         ProcessorRegistry processorRegistry = new ProcessorRegistryImpl();
         metaDataStore = new MetaDataStoreImpl(processorRegistry);
-        String runtimeName = hostInfo.getRuntimeName();
 
-        monitorService = new MonitorProxyServiceImpl(new JDKMonitorProxyService(runtimeName, this, router));
+        monitorService = new MonitorProxyServiceImpl(new JDKMonitorProxyService(this, router));
 
         ScopeContainerMonitor monitor;
         try {

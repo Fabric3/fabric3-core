@@ -59,13 +59,11 @@ import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
  * JDK-based implementation of the {@link MonitorProxyServiceExtension}.
  */
 public class JDKMonitorProxyService implements MonitorProxyServiceExtension {
-    private String runtimeName;
     private Monitorable defaultMonitorable;
 
     private DestinationRouter router;
 
-    public JDKMonitorProxyService(String runtimeName, Monitorable monitorable, DestinationRouter router) {
-        this.runtimeName = runtimeName;
+    public JDKMonitorProxyService(Monitorable monitorable, DestinationRouter router) {
         this.defaultMonitorable = monitorable;
         this.router = router;
     }
@@ -86,7 +84,7 @@ public class JDKMonitorProxyService implements MonitorProxyServiceExtension {
             levels.put(method.getName(), info);
         }
 
-        JDKMonitorHandler handler = new JDKMonitorHandler(destinationIndex, runtimeName, monitorable, router, levels);
+        JDKMonitorHandler handler = new JDKMonitorHandler(destinationIndex, monitorable, router, levels);
         if (MonitorChannel.class.isAssignableFrom(type) || MonitorProxy.class.isAssignableFrom(type)) {
             return type.cast(handler);
         }

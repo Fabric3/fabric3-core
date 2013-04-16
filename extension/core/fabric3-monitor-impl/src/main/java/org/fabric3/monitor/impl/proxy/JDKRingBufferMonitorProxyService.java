@@ -71,7 +71,7 @@ public class JDKRingBufferMonitorProxyService extends AbstractMonitorProxyServic
             levels.put(method.getName(), info);
         }
 
-        JDKMonitorHandler handler = new JDKMonitorHandler(destinationIndex, runtimeName, monitorable, router, levels, enabled);
+        JDKMonitorHandler handler = new JDKMonitorHandler(destinationIndex, monitorable, router, levels, enabled);
         return type.cast(Proxy.newProxyInstance(loader, new Class[]{type}, handler));
     }
 

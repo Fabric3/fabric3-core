@@ -54,7 +54,6 @@ public class JDKMonitorHandler implements InvocationHandler {
     private RingBufferDestinationRouter router;
     private boolean asyncEnabled;
     private int destinationIndex;
-    private String runtimeName;
     private Monitorable monitorable;
     private String source;
     private Map<String, DispatchInfo> infos;
@@ -63,13 +62,11 @@ public class JDKMonitorHandler implements InvocationHandler {
     private String template;
 
     public JDKMonitorHandler(int destinationIndex,
-                             String runtimeName,
                              Monitorable monitorable,
                              RingBufferDestinationRouter router,
                              Map<String, DispatchInfo> infos,
                              boolean asyncEnabled) {
         this.destinationIndex = destinationIndex;
-        this.runtimeName = runtimeName;
         this.monitorable = monitorable;
         this.router = router;
         this.asyncEnabled = asyncEnabled;
@@ -106,7 +103,7 @@ public class JDKMonitorHandler implements InvocationHandler {
         if (asyncEnabled) {
             send(currentLevel, timestamp, currentMessage, args);
         } else {
-            router.send(currentLevel, destinationIndex, runtimeName, timestamp, source, currentMessage, args);
+            router.send(currentLevel, destinationIndex, timestamp, source, currentMessage, args);
         }
         return null;
 

@@ -66,7 +66,7 @@ public class AntDestinationRouter implements DestinationRouter {
         return 0;
     }
 
-    public void send(MonitorLevel level, int destinationIndex, String runtimeName, long timestamp, String source, String message, Object... args) {
+    public void send(MonitorLevel level, int destinationIndex, long timestamp, String source, String message, Object... args) {
         write(level, message, args);
     }
 

@@ -81,7 +81,7 @@ public class RingBufferDestinationRouterImplTestCase extends TestCase {
         registry.write(0, buffer);
 
         router.init();
-        router.send(MonitorLevel.SEVERE, 0, "runtime", System.currentTimeMillis(), "source", "this is a test {0}", "test");
+        router.send(MonitorLevel.SEVERE, 0, System.currentTimeMillis(), "source", "this is a test {0}", "test");
         router.destroy();
 
         assertTrue(latch.await(10, TimeUnit.SECONDS));

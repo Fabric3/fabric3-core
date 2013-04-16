@@ -67,12 +67,11 @@ public interface DestinationRouter {
      *
      * @param level            the level
      * @param destinationIndex the destination index
-     * @param runtimeName      the runtime name where the event was raised
      * @param timestamp        the event timestamp
      * @param source           the source emitting the event
      * @param message          the event message
      * @param args             event arguments
      */
-    void send(MonitorLevel level, int destinationIndex, String runtimeName, long timestamp, String source, String message, Object... args);
+    void send(MonitorLevel level, int destinationIndex, long timestamp, String source, String message, Object... args);
 
 }
