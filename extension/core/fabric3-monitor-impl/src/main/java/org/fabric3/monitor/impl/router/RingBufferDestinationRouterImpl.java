@@ -223,9 +223,6 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
                         entry.getEntries()[i].setObjectValue(arg);
                     }
                 }
-
-                //ByteBuffer buffer = entry.getBuffer();
-                //MonitorEntryWriter.write(level, timestamp, template, buffer, timestampWriter, args);
             } finally {
                 if (entry != null) {
                     publish(entry);
