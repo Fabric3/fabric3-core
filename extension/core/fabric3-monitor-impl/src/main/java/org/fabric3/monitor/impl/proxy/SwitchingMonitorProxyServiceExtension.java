@@ -56,7 +56,6 @@ public class SwitchingMonitorProxyServiceExtension implements MonitorProxyServic
 
     private RingBufferDestinationRouter router;
     private Monitorable monitorable;
-    private HostInfo info;
 
     private boolean bytecodeGeneration;
     private boolean enabled = false;
@@ -86,23 +85,22 @@ public class SwitchingMonitorProxyServiceExtension implements MonitorProxyServic
     }
 
 
-    public SwitchingMonitorProxyServiceExtension(@Reference RingBufferDestinationRouter router, @Reference Monitorable monitorable, @Reference HostInfo info) {
+    public SwitchingMonitorProxyServiceExtension(@Reference RingBufferDestinationRouter router, @Reference Monitorable monitorable) {
         this.router = router;
         this.monitorable = monitorable;
-        this.info = info;
     }
 
     @Init
     public void init() {
         if (bytecodeGeneration) {
-            BytecodeMonitorProxyService byteCodeDelegate = new BytecodeMonitorProxyService(router, monitorable, info);
+            BytecodeMonitorProxyService byteCodeDelegate = new BytecodeMonitorProxyService(router, monitorable);
             byteCodeDelegate.setEnabled(enabled);
             byteCodeDelegate.setPattern(pattern);
             byteCodeDelegate.setTimeZone(timeZone);
             byteCodeDelegate.init();
             delegate = byteCodeDelegate;
         } else {
-            JDKRingBufferMonitorProxyService jdkDelegate = new JDKRingBufferMonitorProxyService(router, monitorable, info);
+            JDKRingBufferMonitorProxyService jdkDelegate = new JDKRingBufferMonitorProxyService(router, monitorable);
             jdkDelegate.setEnabled(enabled);
             jdkDelegate.setPattern(pattern);
             jdkDelegate.setTimeZone(timeZone);

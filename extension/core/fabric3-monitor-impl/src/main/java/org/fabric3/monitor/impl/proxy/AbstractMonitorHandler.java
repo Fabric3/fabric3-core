@@ -37,42 +37,25 @@
 */
 package org.fabric3.monitor.impl.proxy;
 
-import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.Monitorable;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
-import org.fabric3.monitor.impl.writer.TimestampWriter;
 import org.fabric3.spi.monitor.DispatchInfo;
 
 /**
  *
  */
 public abstract class AbstractMonitorHandler {
-    protected static final byte[] NEWLINE = "\n".getBytes();
-
     protected RingBufferDestinationRouter router;
-    protected TimestampWriter timestampWriter;
     protected boolean asyncEnabled;
     protected int destinationIndex;
-    protected String runtimeName;
     protected Monitorable monitorable;
     protected String source;
     protected DispatchInfo[] infos;
 
-    protected MonitorLevel level;
-    protected String template;
-
-    public void init(int destinationIndex,
-                     String runtimeName,
-                     Monitorable monitorable,
-                     RingBufferDestinationRouter router,
-                     DispatchInfo[] infos,
-                     TimestampWriter timestampWriter,
-                     boolean asyncEnabled) {
+    public void init(int destinationIndex, Monitorable monitorable, RingBufferDestinationRouter router, DispatchInfo[] infos, boolean asyncEnabled) {
         this.destinationIndex = destinationIndex;
-        this.runtimeName = runtimeName;
         this.monitorable = monitorable;
         this.router = router;
-        this.timestampWriter = timestampWriter;
         this.asyncEnabled = asyncEnabled;
         this.source = monitorable.getName();
         this.infos = infos;

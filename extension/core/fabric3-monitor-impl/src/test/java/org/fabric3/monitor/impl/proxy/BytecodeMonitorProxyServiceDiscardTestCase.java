@@ -42,7 +42,6 @@ import org.easymock.EasyMock;
 import org.fabric3.api.annotation.monitor.Debug;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.Monitorable;
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 
 /**
@@ -76,12 +75,7 @@ public class BytecodeMonitorProxyServiceDiscardTestCase extends TestCase {
         EasyMock.expectLastCall().andReturn("test").atLeastOnce();
         EasyMock.expect(monitorable.getLevel()).andReturn(MonitorLevel.SEVERE);
 
-        HostInfo hostInfo = EasyMock.createMock(HostInfo.class);
-        hostInfo.getRuntimeName();
-        EasyMock.expectLastCall().andReturn("runtime");
-        EasyMock.replay(hostInfo);
-
-        proxyService = new BytecodeMonitorProxyService(router, monitorable, hostInfo);
+        proxyService = new BytecodeMonitorProxyService(router, monitorable);
         proxyService.setEnabled(true);
         proxyService.init();
     }

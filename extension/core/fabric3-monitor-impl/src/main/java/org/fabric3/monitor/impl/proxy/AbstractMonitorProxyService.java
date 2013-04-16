@@ -46,7 +46,6 @@ import java.util.TimeZone;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.host.monitor.Monitorable;
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 import org.fabric3.monitor.impl.writer.TimestampWriter;
 import org.fabric3.spi.monitor.DispatchInfo;
@@ -61,7 +60,6 @@ import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
  */
 @EagerInit
 public abstract class AbstractMonitorProxyService implements MonitorProxyServiceExtension {
-    protected String runtimeName;
     protected Monitorable defaultMonitorable;
     protected RingBufferDestinationRouter router;
 
@@ -71,8 +69,7 @@ public abstract class AbstractMonitorProxyService implements MonitorProxyService
 
     protected TimestampWriter timestampWriter;
 
-    public AbstractMonitorProxyService(RingBufferDestinationRouter router, Monitorable monitorable, HostInfo info) {
-        this.runtimeName = info.getRuntimeName();
+    public AbstractMonitorProxyService(RingBufferDestinationRouter router, Monitorable monitorable) {
         this.defaultMonitorable = monitorable;
         this.router = router;
     }

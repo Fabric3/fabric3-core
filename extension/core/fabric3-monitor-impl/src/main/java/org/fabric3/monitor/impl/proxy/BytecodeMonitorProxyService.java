@@ -48,7 +48,6 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.host.monitor.Monitorable;
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.monitor.impl.router.MonitorEventEntry;
 import org.fabric3.monitor.impl.router.ParameterEntry;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
@@ -140,8 +139,8 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
     public static final String MONITOR_LEVEL = Type.getInternalName(MonitorLevel.class);
     public static final String DESTINATION_ROUTER = Type.getInternalName(RingBufferDestinationRouter.class);
 
-    public BytecodeMonitorProxyService(@Reference RingBufferDestinationRouter router, @Reference Monitorable monitorable, @Reference HostInfo info) {
-        super(router, monitorable, info);
+    public BytecodeMonitorProxyService(@Reference RingBufferDestinationRouter router, @Reference Monitorable monitorable) {
+        super(router, monitorable);
     }
 
     public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws MonitorCreationException {
@@ -169,7 +168,7 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
             DispatchInfo[] infos = values.toArray(new DispatchInfo[values.size()]);
 
             AbstractMonitorHandler handler = (AbstractMonitorHandler) clazz.getConstructor().newInstance();
-            handler.init(destinationIndex, runtimeName, monitorable, router, infos, timestampWriter, enabled);
+            handler.init(destinationIndex, monitorable, router, infos, enabled);
             return type.cast(handler);
         } catch (InvocationTargetException e) {
             throw new MonitorCreationException(e);
@@ -274,28 +273,6 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         Label l5 = new Label();
         mv.visitLabel(l5);
         mv.visitLineNumber(65, l5);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, ABSTRACT_MONITOR_HANDLER, "level", "L" + MONITOR_LEVEL + ";");
-        Label l6 = new Label();
-        mv.visitJumpInsn(IFNULL, l6);
-        Label l7 = new Label();
-        mv.visitLabel(l7);
-        mv.visitLineNumber(66, l7);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, ABSTRACT_MONITOR_HANDLER, "level", "L" + MONITOR_LEVEL + ";");
-        mv.visitVarInsn(ASTORE, varCurrentLevelPosition);
-        Label l8 = new Label();
-        mv.visitLabel(l8);
-        mv.visitLineNumber(67, l8);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, ABSTRACT_MONITOR_HANDLER, "template", "Ljava/lang/String;");
-        mv.visitVarInsn(ASTORE, varCurrentMessagePosition);
-        Label l9 = new Label();
-        mv.visitLabel(l9);
-        Label l10 = new Label();
-        mv.visitJumpInsn(GOTO, l10);
-        mv.visitLabel(l6);
-        mv.visitLineNumber(69, l6);
 
         // lookup the DispatchInfo based on the index for the method
         mv.visitVarInsn(ALOAD, 0);
@@ -315,8 +292,7 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         mv.visitVarInsn(ALOAD, varDispatchInfoPosition);
         mv.visitMethodInsn(INVOKEVIRTUAL, DISPATCH_INFO, "getMessage", "()Ljava/lang/String;");
         mv.visitVarInsn(ASTORE, varCurrentMessagePosition);
-        mv.visitLabel(l10);
-        mv.visitLineNumber(73, l10);
+
         mv.visitVarInsn(ALOAD, varCurrentLevelPosition);
         Label l13 = new Label();
         mv.visitJumpInsn(IFNULL, l13);
@@ -574,12 +550,10 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         mv.visitLocalVariable("index", "I", null, l5, methodEnd, varIndexPosition);
 
         mv.visitLocalVariable("currentLevel", "L" + MONITOR_LEVEL + ";", null, l12, methodEnd, varCurrentLevelPosition);
-        mv.visitLocalVariable("currentMessage", "Ljava/lang/String;", null, l10, methodEnd, varCurrentMessagePosition);
+        mv.visitLocalVariable("currentMessage", "Ljava/lang/String;", null, l12, methodEnd, varCurrentMessagePosition);
         mv.visitLocalVariable("timestamp", "J", null, l15, methodEnd, varTimestampPosition);
 
-        mv.visitLocalVariable("currentLevel", "L" + MONITOR_LEVEL + ";", null, l8, l6, varCurrentLevelPosition);
-        mv.visitLocalVariable("currentMessage", "Ljava/lang/String;", null, l9, l6, varCurrentMessagePosition);
-        mv.visitLocalVariable("info", "L" + DISPATCH_INFO + ";", null, l11, l10, varDispatchInfoPosition);
+        mv.visitLocalVariable("info", "L" + DISPATCH_INFO + ";", null, l11, l12, varDispatchInfoPosition);
 
         mv.visitLocalVariable("entry", "L" + MONITOR_EVENT_ENTRY + ";", null, l0, l27, varEntryPosition);
         mv.visitLocalVariable("args", "[Ljava/lang/Object;", null, l32, l31, varArgsPosition);

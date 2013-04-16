@@ -44,7 +44,6 @@ import java.util.Map;
 
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.Monitorable;
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 import org.fabric3.spi.monitor.DispatchInfo;
 import org.oasisopen.sca.annotation.Reference;
@@ -55,8 +54,8 @@ import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
  */
 public class JDKRingBufferMonitorProxyService extends AbstractMonitorProxyService {
 
-    public JDKRingBufferMonitorProxyService(@Reference RingBufferDestinationRouter router, @Reference Monitorable monitorable, @Reference HostInfo info) {
-        super(router, monitorable, info);
+    public JDKRingBufferMonitorProxyService(@Reference RingBufferDestinationRouter router, @Reference Monitorable monitorable) {
+        super(router, monitorable);
     }
 
     public <T> T createMonitor(Class<T> type, Monitorable monitorable, String destination) throws MonitorCreationException {
