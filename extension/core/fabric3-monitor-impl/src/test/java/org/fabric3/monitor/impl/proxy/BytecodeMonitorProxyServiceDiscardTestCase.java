@@ -77,7 +77,6 @@ public class BytecodeMonitorProxyServiceDiscardTestCase extends TestCase {
 
         proxyService = new BytecodeMonitorProxyService(router, monitorable);
         proxyService.setEnabled(true);
-        proxyService.init();
     }
 
     public interface ParamsMonitor {

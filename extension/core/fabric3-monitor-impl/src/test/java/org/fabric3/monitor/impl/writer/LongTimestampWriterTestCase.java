@@ -38,50 +38,41 @@
 package org.fabric3.monitor.impl.writer;
 
 import java.nio.ByteBuffer;
-import java.util.TimeZone;
 
 import junit.framework.TestCase;
-import org.fabric3.api.annotation.monitor.MonitorLevel;
 
 /**
  *
  */
-public class MonitorEntryWriterTestCase extends TestCase {
-    private long timestamp;
-    private ByteBuffer buffer;
-    private FormattingTimestampWriter timestampWriter;
+public class LongTimestampWriterTestCase extends TestCase {
 
-    public void testWriteString() throws Exception {
-        MonitorEntryWriter.write(MonitorLevel.SEVERE, timestamp, "This is a {0}", buffer, timestampWriter, new Object[]{"test"});
-        String string = new String(buffer.array());
-        assertTrue(string.contains("SEVERE"));
-        assertTrue(string.contains("This is a test"));
+    public void testWrite() throws Exception {
+        LongTimestampWriter writer = new LongTimestampWriter();
+        long timestamp = System.currentTimeMillis();
+
+        String result = Long.toString(timestamp);
+
+        ByteBuffer buffer = ByteBuffer.allocate(result.length());
+
+        int written = writer.write(timestamp, buffer);
+
+        buffer.flip();
+
+        assertEquals(result.length(), written);
+        assertEquals(result, new String(buffer.array()));
     }
 
-    public void testWriteNumeric() throws Exception {
-        MonitorEntryWriter.write(MonitorLevel.SEVERE, timestamp, "This is a {0}", buffer, timestampWriter, new Object[]{1});
-        String string = new String(buffer.array());
-        assertTrue(string.contains("SEVERE"));
-        assertTrue(string.contains("This is a 1"));
+    public void testNegativeWrite() throws Exception {
+        LongTimestampWriter writer = new LongTimestampWriter();
+
+        ByteBuffer buffer = ByteBuffer.allocate(2);
+
+        int written = writer.write(-1l, buffer);
+
+        buffer.flip();
+
+        assertEquals(2, written);
+        assertEquals("-1", new String(buffer.array()));
     }
 
-    public void testWriteBoolean() throws Exception {
-        MonitorEntryWriter.write(MonitorLevel.SEVERE, timestamp, "This is a {0}", buffer, timestampWriter, new Object[]{true});
-        String string = new String(buffer.array());
-        assertTrue(string.contains("SEVERE"));
-        assertTrue(string.contains("This is a true"));
-    }
-
-    public void testEmptyTemplate() throws Exception {
-        MonitorEntryWriter.write(MonitorLevel.SEVERE, timestamp, null, buffer, timestampWriter, null);
-        String string = new String(buffer.array());
-        assertTrue(string.contains("SEVERE"));
-    }
-
-    public void setUp() throws Exception {
-        super.setUp();
-        timestamp = System.currentTimeMillis();
-        buffer = ByteBuffer.allocate(200);
-        timestampWriter = new FormattingTimestampWriter("%d:%m:%Y %H:%i:%s.%F", TimeZone.getDefault());
-    }
 }

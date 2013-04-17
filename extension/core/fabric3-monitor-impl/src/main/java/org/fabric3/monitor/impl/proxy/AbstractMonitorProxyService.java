@@ -47,11 +47,9 @@ import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.host.monitor.Monitorable;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
-import org.fabric3.monitor.impl.writer.TimestampWriter;
 import org.fabric3.spi.monitor.DispatchInfo;
 import org.fabric3.spi.monitor.MonitorUtil;
 import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
@@ -67,31 +65,14 @@ public abstract class AbstractMonitorProxyService implements MonitorProxyService
     protected String pattern = "%d:%m:%Y %H:%i:%s.%F";
     protected TimeZone timeZone = TimeZone.getDefault();
 
-    protected TimestampWriter timestampWriter;
-
     public AbstractMonitorProxyService(RingBufferDestinationRouter router, Monitorable monitorable) {
         this.defaultMonitorable = monitorable;
         this.router = router;
     }
 
     @Property(required = false)
-    public void setPattern(String pattern) {
-        this.pattern = pattern;
-    }
-
-    @Property(required = false)
-    public void setTimeZone(String id) {
-        this.timeZone = TimeZone.getTimeZone(id);
-    }
-
-    @Property(required = false)
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    @Init
-    public void init() {
-        this.timestampWriter = new TimestampWriter(pattern, timeZone);
     }
 
     public <T> T createMonitor(Class<T> type) throws MonitorCreationException {

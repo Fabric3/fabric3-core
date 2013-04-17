@@ -69,7 +69,12 @@ public final class MonitorEntryWriter {
         buffer.put((byte) ' ');
         bytesWritten++;
 
-        bytesWritten = bytesWritten + timestampWriter.write(timestamp, buffer);
+        written = timestampWriter.write(timestamp, buffer);
+        if (written == 0) {
+            buffer.position(buffer.position() - 1);
+        } else {
+            bytesWritten = bytesWritten + written;
+        }
 
         buffer.put((byte) ']');
         bytesWritten++;

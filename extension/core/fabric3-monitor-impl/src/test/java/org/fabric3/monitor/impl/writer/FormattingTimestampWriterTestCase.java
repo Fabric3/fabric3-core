@@ -46,10 +46,10 @@ import junit.framework.TestCase;
 /**
  *
  */
-public class TimestampWriterTestCase extends TestCase {
+public class FormattingTimestampWriterTestCase extends TestCase {
 
     public void testWriteTimestamp() throws Exception {
-        TimestampWriter writer = new TimestampWriter("%Y:%m:%d %H:%i:%s.%F", TimeZone.getDefault());
+        FormattingTimestampWriter writer = new FormattingTimestampWriter("%Y:%m:%d %H:%i:%s.%F", TimeZone.getDefault());
         ByteBuffer buffer = ByteBuffer.allocateDirect(100);
 
         Calendar calendar = Calendar.getInstance();

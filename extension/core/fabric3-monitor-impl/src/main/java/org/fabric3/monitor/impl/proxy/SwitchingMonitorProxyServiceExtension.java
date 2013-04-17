@@ -37,12 +37,9 @@
 */
 package org.fabric3.monitor.impl.proxy;
 
-import java.util.TimeZone;
-
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.host.monitor.Monitorable;
-import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
@@ -59,24 +56,12 @@ public class SwitchingMonitorProxyServiceExtension implements MonitorProxyServic
 
     private boolean bytecodeGeneration;
     private boolean enabled = false;
-    private String pattern = "%d:%m:%Y %H:%i:%s.%F";
-    private String timeZone = TimeZone.getDefault().getID();
 
     private MonitorProxyServiceExtension delegate;
 
     @Property(required = false)
     public void setProxy(String proxy) {
         this.bytecodeGeneration = "bytecode".equalsIgnoreCase(proxy);
-    }
-
-    @Property(required = false)
-    public void setPattern(String pattern) {
-        this.pattern = pattern;
-    }
-
-    @Property(required = false)
-    public void setTimeZone(String id) {
-        this.timeZone = id;
     }
 
     @Property(required = false)
@@ -95,16 +80,10 @@ public class SwitchingMonitorProxyServiceExtension implements MonitorProxyServic
         if (bytecodeGeneration) {
             BytecodeMonitorProxyService byteCodeDelegate = new BytecodeMonitorProxyService(router, monitorable);
             byteCodeDelegate.setEnabled(enabled);
-            byteCodeDelegate.setPattern(pattern);
-            byteCodeDelegate.setTimeZone(timeZone);
-            byteCodeDelegate.init();
             delegate = byteCodeDelegate;
         } else {
             JDKRingBufferMonitorProxyService jdkDelegate = new JDKRingBufferMonitorProxyService(router, monitorable);
             jdkDelegate.setEnabled(enabled);
-            jdkDelegate.setPattern(pattern);
-            jdkDelegate.setTimeZone(timeZone);
-            jdkDelegate.init();
             delegate = jdkDelegate;
         }
 

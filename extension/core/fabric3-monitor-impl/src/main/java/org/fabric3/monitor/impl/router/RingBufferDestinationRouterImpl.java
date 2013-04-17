@@ -56,7 +56,10 @@ import com.lmax.disruptor.dsl.ProducerType;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
+import org.fabric3.monitor.impl.writer.FormattingTimestampWriter;
+import org.fabric3.monitor.impl.writer.LongTimestampWriter;
 import org.fabric3.monitor.impl.writer.MonitorEntryWriter;
+import org.fabric3.monitor.impl.writer.NoOpTimestampWriter;
 import org.fabric3.monitor.impl.writer.TimestampWriter;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Destroy;
@@ -87,6 +90,7 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
     private long spinTimeoutNanos = 1000;
     private long yieldTimeoutNanos = 1000;
     private String phasedBlockingType = "lock";
+    private String timestampType = "formatted";
     private boolean enabled = false;  // true if the ring buffer (production mode) is enabled
 
     private String pattern = "%d:%m:%Y %H:%i:%s.%F";
@@ -159,9 +163,14 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
         this.yieldTimeoutNanos = timeout;
     }
 
+    @Property(required = false)
+    public void setTimestampFormat(String type) {
+        this.timestampType = type;
+    }
+
     @Init
     public void init() throws FileNotFoundException {
-        timestampWriter = new TimestampWriter(pattern, timeZone);
+        initializeTimestampWriter();
 
         if (enabled) {
             WaitStrategy waitStrategy = createWaitStrategy();
@@ -239,6 +248,19 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
                     throw new ServiceRuntimeException(e);
                 }
             }
+        }
+    }
+
+    private void initializeTimestampWriter() {
+        if (timestampType.equals("formatted")) {
+            timestampWriter = new FormattingTimestampWriter(pattern, timeZone);
+        } else if (timestampType.equals("unformatted")) {
+            timestampWriter = new LongTimestampWriter();
+        } else if (timestampType.equals("none")) {
+            timestampWriter = new NoOpTimestampWriter();
+        } else {
+            timestampWriter = new FormattingTimestampWriter(pattern, timeZone);
+            monitor.invalidTimestampType(timestampType);
         }
     }
 

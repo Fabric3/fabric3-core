@@ -40,17 +40,11 @@ package org.fabric3.monitor.impl.writer;
 import java.nio.ByteBuffer;
 
 /**
- * Writes a timestamp to the buffer.
+ *
  */
-public interface TimestampWriter {
+public class NoOpTimestampWriter implements TimestampWriter {
 
-    /**
-     * Writes the timestamp to the buffer.
-     *
-     * @param value  the timestamp
-     * @param buffer the buffer
-     * @return the bytes written
-     */
-    int write(long value, ByteBuffer buffer);
-
+    public int write(long value, ByteBuffer buffer) {
+        return 0;
+    }
 }
