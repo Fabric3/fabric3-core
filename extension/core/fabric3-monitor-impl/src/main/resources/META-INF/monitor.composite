@@ -28,8 +28,12 @@
 
     <component name="MonitorDestinationRegistry">
         <f3:implementation.system class="org.fabric3.monitor.impl.destination.MonitorDestinationRegistryImpl"/>
-        <property name="defaultAppenders" source="$systemConfig/f3:monitor/f3:appenders"/>
+    </component>
+
+    <component name="MonitorBuilder" f3:key="org.fabric3.monitor.impl.physical.PhysicalMonitorDefinition">
+        <f3:implementation.system class="org.fabric3.monitor.impl.builder.MonitorBuilder"/>
         <property name="capacity" source="$systemConfig/f3:monitor/@capacity"/>
+        <property name="defaultAppenders" source="$systemConfig/f3:monitor/f3:appenders"/>
     </component>
 
     <component name="EventWriter">
@@ -96,11 +100,5 @@
     <component name="MonitorResourceGenerator" f3:key="org.fabric3.monitor.impl.model.MonitorResourceDefinition">
         <f3:implementation.system class="org.fabric3.monitor.impl.generator.MonitorResourceGenerator"/>
     </component>
-
-    <component name="MonitorBuilder" f3:key="org.fabric3.monitor.impl.physical.PhysicalMonitorDefinition">
-        <f3:implementation.system class="org.fabric3.monitor.impl.builder.MonitorBuilder"/>
-        <property name="capacity" source="$systemConfig/f3:monitor/@capacity"/>
-    </component>
-
 
 </composite>

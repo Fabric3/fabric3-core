@@ -37,77 +37,43 @@
 */
 package org.fabric3.monitor.impl.destination;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.monitor.impl.appender.factory.AppenderCreationException;
-import org.fabric3.monitor.impl.appender.factory.AppenderFactory;
 import org.fabric3.monitor.impl.router.MonitorEventEntry;
-import org.fabric3.monitor.spi.appender.Appender;
-import org.fabric3.monitor.spi.writer.EventWriter;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
 /**
  *
  */
 @EagerInit
 public class MonitorDestinationRegistryImpl implements MonitorDestinationRegistry {
-    private AppenderFactory appenderFactory;
-    private EventWriter eventWriter;
-    private int capacity = 2000;
-
-    private List<Appender> defaultAppenders = Collections.emptyList();
-
-    private MonitorDestination[] destinations;
-
-    @Property(required = false)
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    public MonitorDestinationRegistryImpl(@Reference AppenderFactory appenderFactory, @Reference EventWriter eventWriter) {
-        this.appenderFactory = appenderFactory;
-        this.eventWriter = eventWriter;
-    }
-
-    @Property(required = false)
-    public void setDefaultAppenders(XMLStreamReader reader) throws AppenderCreationException, XMLStreamException {
-        defaultAppenders = appenderFactory.instantiate(reader);
-    }
+    private AtomicReference<MonitorDestination[]> destinations;
 
     @Init
     public void init() throws IOException, AppenderCreationException {
-        if (defaultAppenders.isEmpty()) {
-            defaultAppenders = appenderFactory.instantiateDefaultAppenders();
-        }
-
-        destinations = new MonitorDestination[1];
-        // register the default destination as index 0
-        destinations[0] = new MonitorDestinationImpl(DEFAULT_DESTINATION, eventWriter, capacity, defaultAppenders);
-
-        for (MonitorDestination destination : destinations) {
-            destination.start();
-        }
+        destinations = new AtomicReference<MonitorDestination[]>();
+        destinations.set(new MonitorDestination[0]);
     }
 
     @Destroy
     public void destroy() throws IOException {
-        for (MonitorDestination destination : destinations) {
+        MonitorDestination[] copy = destinations.get();
+        for (MonitorDestination destination : copy) {
             destination.stop();
         }
     }
 
-    public void register(MonitorDestination destination) {
-        throw new UnsupportedOperationException();
+    public synchronized void register(MonitorDestination destination) {
+        MonitorDestination[] source = destinations.get();
+        MonitorDestination[] target = new MonitorDestination[source.length + 1];
+        System.arraycopy(source, 0, target, 0, source.length);
+        target[target.length - 1] = destination;
+        destinations.lazySet(target);
     }
 
     public MonitorDestination unregister(String name) {
@@ -115,8 +81,9 @@ public class MonitorDestinationRegistryImpl implements MonitorDestinationRegistr
     }
 
     public int getIndex(String name) {
-        for (int i = 0; i < destinations.length; i++) {
-            MonitorDestination destination = destinations[i];
+        MonitorDestination[] copy = destinations.get();
+        for (int i = 0; i < copy.length; i++) {
+            MonitorDestination destination = copy[i];
             if (destination.getName().equals(name)) {
                 return i;
             }
@@ -127,16 +94,16 @@ public class MonitorDestinationRegistryImpl implements MonitorDestinationRegistr
     public void write(MonitorEventEntry entry) throws IOException {
         int index = entry.getDestinationIndex();
         checkIndex(index);
-        destinations[index].write(entry);
+        destinations.get()[index].write(entry);
     }
 
     public void write(int index, MonitorLevel level, long timestamp, String source, String template, Object... args) throws IOException {
         checkIndex(index);
-        destinations[index].write(level, timestamp, source, template, args);
+        destinations.get()[index].write(level, timestamp, source, template, args);
     }
 
     private void checkIndex(int index) {
-        if (index < 0 || index >= destinations.length) {
+        if (index < 0 || index >= destinations.get().length) {
             throw new AssertionError("Invalid index: " + index);
         }
     }

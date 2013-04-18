@@ -42,6 +42,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.monitor.impl.appender.factory.AppenderFactory;
 import org.fabric3.monitor.impl.destination.MonitorDestination;
 import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
 import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
@@ -67,9 +68,10 @@ public class MonitorBuilderTestCase extends TestCase {
         AppenderBuilder appenderBuilder = EasyMock.createMock(AppenderBuilder.class);
         EasyMock.expect(appenderBuilder.build(EasyMock.isA(PhysicalAppenderDefinition.class))).andReturn(appender);
 
-        EasyMock.replay(registry, appenderBuilder, eventWriter, appender);
+        AppenderFactory appenderFactory = EasyMock.createMock(AppenderFactory.class);
+        EasyMock.replay(registry, appenderBuilder, eventWriter, appender, appenderFactory);
 
-        MonitorBuilder builder = new MonitorBuilder(registry, eventWriter);
+        MonitorBuilder builder = new MonitorBuilder(registry, eventWriter, appenderFactory);
 
         Map map = Collections.singletonMap(MockDefinition.class, appenderBuilder);
         builder.setAppenderBuilders(map);
@@ -78,7 +80,7 @@ public class MonitorBuilderTestCase extends TestCase {
         physicalDefinition.add(new MockDefinition());
         builder.build(physicalDefinition);
 
-        EasyMock.verify(registry, appenderBuilder, eventWriter, appender);
+        EasyMock.verify(registry, appenderBuilder, eventWriter, appender, appenderFactory);
 
     }
 

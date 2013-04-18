@@ -37,10 +37,16 @@
 */
 package org.fabric3.monitor.impl.builder;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.monitor.impl.appender.factory.AppenderCreationException;
+import org.fabric3.monitor.impl.appender.factory.AppenderFactory;
 import org.fabric3.monitor.impl.destination.MonitorDestination;
 import org.fabric3.monitor.impl.destination.MonitorDestinationImpl;
 import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
@@ -52,8 +58,10 @@ import org.fabric3.monitor.spi.writer.EventWriter;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.resource.ResourceBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
+import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
 /**
  * Instantiates and registers or unregisters monitor destinations with the destination registry.
@@ -61,8 +69,12 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class MonitorBuilder implements ResourceBuilder<PhysicalMonitorDefinition> {
     private MonitorDestinationRegistry registry;
-    private int capacity = 2000;
     private EventWriter eventWriter;
+    private AppenderFactory appenderFactory;
+
+    private List<Appender> defaultAppenders = Collections.emptyList();
+    private int capacity = 2000;
+
     private Map<Class<?>, AppenderBuilder<?>> appenderBuilders;
 
     @Reference
@@ -75,9 +87,26 @@ public class MonitorBuilder implements ResourceBuilder<PhysicalMonitorDefinition
         this.capacity = capacity;
     }
 
-    public MonitorBuilder(@Reference MonitorDestinationRegistry registry, @Reference EventWriter eventWriter) {
+    @Property(required = false)
+    public void setDefaultAppenders(XMLStreamReader reader) throws AppenderCreationException, XMLStreamException {
+        defaultAppenders = appenderFactory.instantiate(reader);
+    }
+
+    public MonitorBuilder(@Reference MonitorDestinationRegistry registry, @Reference EventWriter eventWriter, @Reference AppenderFactory appenderFactory) {
         this.registry = registry;
         this.eventWriter = eventWriter;
+        this.appenderFactory = appenderFactory;
+    }
+
+    @Init
+    public void init() throws AppenderCreationException, IOException {
+        if (defaultAppenders.isEmpty()) {
+            defaultAppenders = appenderFactory.instantiateDefaultAppenders();
+        }
+        // register the default destination as index 0
+        MonitorDestination defaultDestination = new MonitorDestinationImpl(DEFAULT_DESTINATION, eventWriter, capacity, defaultAppenders);
+        defaultDestination.start();
+        registry.register(defaultDestination);
     }
 
     @SuppressWarnings("unchecked")
