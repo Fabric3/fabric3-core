@@ -45,7 +45,7 @@ import org.easymock.EasyMock;
 import org.fabric3.monitor.impl.appender.factory.AppenderFactory;
 import org.fabric3.monitor.impl.destination.MonitorDestination;
 import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
-import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
+import org.fabric3.monitor.spi.appender.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;

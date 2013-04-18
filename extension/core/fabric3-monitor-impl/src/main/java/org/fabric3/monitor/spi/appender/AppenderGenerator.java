@@ -37,7 +37,6 @@
 */
 package org.fabric3.monitor.spi.appender;
 
-import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
 import org.fabric3.spi.generator.GenerationException;
 
 /**

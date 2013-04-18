@@ -43,7 +43,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.monitor.impl.model.MonitorResourceDefinition;
-import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
+import org.fabric3.monitor.spi.appender.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.appender.AppenderDefinition;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;

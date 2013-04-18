@@ -37,7 +37,7 @@
 */
 package org.fabric3.monitor.impl.appender.component;
 
-import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
+import org.fabric3.monitor.spi.appender.PhysicalAppenderDefinition;
 
 /**
  * Configuration for a component appender.

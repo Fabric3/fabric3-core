@@ -53,7 +53,7 @@ import org.fabric3.model.type.ModelObject;
 import org.fabric3.monitor.impl.appender.console.ConsoleAppender;
 import org.fabric3.monitor.impl.appender.console.ConsoleAppenderDefinition;
 import org.fabric3.monitor.spi.appender.AppenderDefinition;
-import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
+import org.fabric3.monitor.spi.appender.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;

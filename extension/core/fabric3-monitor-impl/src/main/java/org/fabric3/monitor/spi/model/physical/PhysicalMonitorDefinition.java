@@ -40,7 +40,7 @@ package org.fabric3.monitor.spi.model.physical;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
+import org.fabric3.monitor.spi.appender.PhysicalAppenderDefinition;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
