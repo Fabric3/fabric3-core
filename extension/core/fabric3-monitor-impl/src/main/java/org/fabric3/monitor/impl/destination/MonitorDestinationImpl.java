@@ -41,17 +41,26 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
+import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.impl.router.MonitorEventEntry;
 import org.fabric3.monitor.spi.appender.Appender;
+import org.fabric3.monitor.spi.writer.EventWriter;
 
 /**
- *
+ * Default {@link MonitorDestination} implementation that writes to a collection of {@link Appender}s.
  */
 public class MonitorDestinationImpl implements MonitorDestination {
-    private String name;
-    private Appender[] appenders;
+    private static final byte[] NEWLINE = "\n".getBytes();
 
-    public MonitorDestinationImpl(String name, List<Appender> appenders) {
+    private String name;
+    private EventWriter eventWriter;
+    private Appender[] appenders;
+    private int capacity;
+
+    public MonitorDestinationImpl(String name, EventWriter eventWriter, int capacity, List<Appender> appenders) {
         this.name = name;
+        this.eventWriter = eventWriter;
+        this.capacity = capacity;
         this.appenders = appenders.toArray(new Appender[appenders.size()]);
     }
 
@@ -71,10 +80,31 @@ public class MonitorDestinationImpl implements MonitorDestination {
         }
     }
 
-    public void write(ByteBuffer buffer) throws IOException {
+    public void write(MonitorEventEntry entry) throws IOException {
+        ByteBuffer buffer = entry.getBuffer();
+        MonitorLevel level = entry.getLevel();
+
+        long entryTimestamp = entry.getEntryTimestamp();
+        int count = eventWriter.writePrefix(level, entryTimestamp, buffer);
+        count = count + eventWriter.writeTemplate(entry);
+        buffer.put(NEWLINE);
+        count++;
+
+        buffer.limit(count);
+        write(buffer);
+    }
+
+    public void write(MonitorLevel level, long timestamp, String source, String template, Object... args) throws IOException {
+        ByteBuffer buffer = ByteBuffer.allocate(capacity);
+        eventWriter.write(level, timestamp, template, buffer, args);
+        write(buffer);
+    }
+
+    private void write(ByteBuffer buffer) throws IOException {
         for (Appender appender : appenders) {
             buffer.position(0);
             appender.write(buffer);
         }
     }
+
 }

@@ -35,59 +35,44 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.spi.writer;
 
-import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.monitor.impl.router.MonitorEventEntry;
 
 /**
- * Manages and dispatches to {@link MonitorDestination}s.
+ * Writes monitor events to a buffer.
  */
-public interface MonitorDestinationRegistry {
+public interface EventWriter {
 
     /**
-     * Registers a {@link MonitorDestination}.
+     * Writes the event in character form into the buffer.
      *
-     * @param destination the destination
+     * @param level     the monitor level
+     * @param timestamp the timestamp
+     * @param template  the template
+     * @param buffer    the buffer to write into
+     * @param args      the arguments
      */
-    void register(MonitorDestination destination);
+    void write(MonitorLevel level, long timestamp, String template, ByteBuffer buffer, Object[] args);
 
     /**
-     * Un-registers a monitor destination corresponding to the given name.
-     *
-     * @param name the destination name
-     * @return the un-registered name
-     */
-    MonitorDestination unregister(String name);
-
-    /**
-     * Returns the index for the destination corresponding to the given name.
-     *
-     * @param name the destination name
-     * @return the index
-     */
-    int getIndex(String name);
-
-    /**
-     * Dispatches the entry to a destination.
+     * Writes the event in character form into the entry buffer.
      *
      * @param entry the entry
-     * @throws IOException if there is a dispatch error
+     * @return the number of bytes written
      */
-    void write(MonitorEventEntry entry) throws IOException;
+    int writeTemplate(MonitorEventEntry entry);
 
     /**
-     * Dispatches event data to a destination.
+     * Writes the monitor even prefix characters.
      *
-     * @param index     the destination index
-     * @param level     the monitor level to write
-     * @param timestamp the timestamp
-     * @param source    the event source
-     * @param args      the arguments
-     * @throws IOException if there is a dispatch error
+     * @param level          the monitor level to write
+     * @param entryTimestamp the timestamp
+     * @param buffer         the buffer to write into
+     * @return the number of bytes written
      */
-    void write(int index, MonitorLevel level, long timestamp, String source, String template, Object... args) throws IOException;
-
+    int writePrefix(MonitorLevel level, long entryTimestamp, ByteBuffer buffer);
 }

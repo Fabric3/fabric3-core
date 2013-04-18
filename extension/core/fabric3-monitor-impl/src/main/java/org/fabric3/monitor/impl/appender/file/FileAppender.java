@@ -56,9 +56,12 @@ public class FileAppender implements Appender {
     private FileOutputStream stream;
     private FileChannel fileChannel;
 
-    public FileAppender(File file, RollStrategy strategy) {
+    private boolean reliable;
+
+    public FileAppender(File file, RollStrategy strategy, boolean reliable) {
         this.file = file;
         this.strategy = strategy;
+        this.reliable = reliable;
     }
 
     public void start() throws FileNotFoundException {
@@ -75,6 +78,9 @@ public class FileAppender implements Appender {
     public void write(ByteBuffer buffer) throws IOException {
         roll();
         fileChannel. write(buffer);
+        if (reliable) {
+            fileChannel.force(false);
+        }
     }
 
     private void initializeChannel() throws FileNotFoundException {

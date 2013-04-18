@@ -48,6 +48,7 @@ import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.impl.physical.PhysicalMonitorDefinition;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
+import org.fabric3.monitor.spi.writer.EventWriter;
 
 /**
  *
@@ -59,14 +60,16 @@ public class MonitorBuilderTestCase extends TestCase {
         MonitorDestinationRegistry registry = EasyMock.createMock(MonitorDestinationRegistry.class);
         registry.register(EasyMock.isA(MonitorDestination.class));
 
+        EventWriter eventWriter = EasyMock.createMock(EventWriter.class);
+
         Appender appender = EasyMock.createMock(Appender.class);
 
         AppenderBuilder appenderBuilder = EasyMock.createMock(AppenderBuilder.class);
         EasyMock.expect(appenderBuilder.build(EasyMock.isA(PhysicalAppenderDefinition.class))).andReturn(appender);
 
-        EasyMock.replay(registry, appenderBuilder, appender);
+        EasyMock.replay(registry, appenderBuilder, eventWriter, appender);
 
-        MonitorBuilder builder = new MonitorBuilder(registry);
+        MonitorBuilder builder = new MonitorBuilder(registry, eventWriter);
 
         Map map = Collections.singletonMap(MockDefinition.class, appenderBuilder);
         builder.setAppenderBuilders(map);
@@ -75,11 +78,11 @@ public class MonitorBuilderTestCase extends TestCase {
         physicalDefinition.add(new MockDefinition());
         builder.build(physicalDefinition);
 
-        EasyMock.verify(registry, appenderBuilder, appender);
+        EasyMock.verify(registry, appenderBuilder, eventWriter, appender);
 
     }
 
-    private class MockDefinition extends  PhysicalAppenderDefinition {
+    private class MockDefinition extends PhysicalAppenderDefinition {
 
     }
 }

@@ -57,7 +57,7 @@ public class FileAppenderTestCase extends TestCase {
         EasyMock.expect(strategy.getBackup(file)).andReturn(backup);
         EasyMock.replay(strategy);
 
-        FileAppender appender = new FileAppender(file, strategy);
+        FileAppender appender = new FileAppender(file, strategy, false);
         try {
             appender.start();
 

@@ -38,7 +38,9 @@
 package org.fabric3.monitor.impl.destination;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
+
+import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.impl.router.MonitorEventEntry;
 
 /**
  * A destination for monitor events.
@@ -67,11 +69,21 @@ public interface MonitorDestination {
     void stop() throws IOException;
 
     /**
-     * Writes an event buffer to the destination.
+     * Writes the entry to the destination.
      *
-     * @param buffer the even buffer
-     * @throws IOException if there is an error writing the buffer
+     * @param entry the entry
+     * @throws IOException if there is a dispatch error
      */
-    void write(ByteBuffer buffer) throws IOException;
+    void write(MonitorEventEntry entry) throws IOException;
 
+    /**
+     * Writes the event data to a destination.
+     *
+     * @param level     the monitor level to write
+     * @param timestamp the timestamp
+     * @param source    the event source
+     * @param args      the arguments
+     * @throws IOException if there is a dispatch error
+     */
+    void write(MonitorLevel level, long timestamp, String source, String template, Object[] args) throws IOException;
 }

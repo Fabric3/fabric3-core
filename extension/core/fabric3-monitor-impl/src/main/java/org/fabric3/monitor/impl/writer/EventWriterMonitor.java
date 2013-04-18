@@ -35,59 +35,17 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.destination;
+package org.fabric3.monitor.impl.writer;
 
-import java.io.IOException;
-
-import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.monitor.impl.router.MonitorEventEntry;
+import org.fabric3.api.annotation.monitor.Warning;
 
 /**
- * Manages and dispatches to {@link MonitorDestination}s.
+ *
  */
-public interface MonitorDestinationRegistry {
+public interface EventWriterMonitor {
 
-    /**
-     * Registers a {@link MonitorDestination}.
-     *
-     * @param destination the destination
-     */
-    void register(MonitorDestination destination);
+    @Warning("Unknown timestamp type: {0}. Defaulting to formatted timestamps.")
+    void invalidTimestampType(String type);
 
-    /**
-     * Un-registers a monitor destination corresponding to the given name.
-     *
-     * @param name the destination name
-     * @return the un-registered name
-     */
-    MonitorDestination unregister(String name);
-
-    /**
-     * Returns the index for the destination corresponding to the given name.
-     *
-     * @param name the destination name
-     * @return the index
-     */
-    int getIndex(String name);
-
-    /**
-     * Dispatches the entry to a destination.
-     *
-     * @param entry the entry
-     * @throws IOException if there is a dispatch error
-     */
-    void write(MonitorEventEntry entry) throws IOException;
-
-    /**
-     * Dispatches event data to a destination.
-     *
-     * @param index     the destination index
-     * @param level     the monitor level to write
-     * @param timestamp the timestamp
-     * @param source    the event source
-     * @param args      the arguments
-     * @throws IOException if there is a dispatch error
-     */
-    void write(int index, MonitorLevel level, long timestamp, String source, String template, Object... args) throws IOException;
 
 }

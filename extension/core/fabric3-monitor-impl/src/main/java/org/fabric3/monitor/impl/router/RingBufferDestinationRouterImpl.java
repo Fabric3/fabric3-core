@@ -39,8 +39,6 @@ package org.fabric3.monitor.impl.router;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -56,11 +54,6 @@ import com.lmax.disruptor.dsl.ProducerType;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
-import org.fabric3.monitor.impl.writer.FormattingTimestampWriter;
-import org.fabric3.monitor.impl.writer.LongTimestampWriter;
-import org.fabric3.monitor.impl.writer.MonitorEntryWriter;
-import org.fabric3.monitor.impl.writer.NoOpTimestampWriter;
-import org.fabric3.monitor.impl.writer.TimestampWriter;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Init;
@@ -90,13 +83,7 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
     private long spinTimeoutNanos = 1000;
     private long yieldTimeoutNanos = 1000;
     private String phasedBlockingType = "lock";
-    private String timestampType = "formatted";
     private boolean enabled = false;  // true if the ring buffer (production mode) is enabled
-
-    private String pattern = "%d:%m:%Y %H:%i:%s.%F";
-    private TimeZone timeZone = TimeZone.getDefault();
-
-    private TimestampWriter timestampWriter;
 
     public RingBufferDestinationRouterImpl(@Reference ExecutorService executorService,
                                            @Reference MonitorDestinationRegistry registry,
@@ -114,16 +101,6 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
     @Property(required = false)
     public void setRingSize(int ringSize) {
         this.ringSize = ringSize;
-    }
-
-    @Property(required = false)
-    public void setPattern(String pattern) {
-        this.pattern = pattern;
-    }
-
-    @Property(required = false)
-    public void setTimeZone(String id) {
-        this.timeZone = TimeZone.getTimeZone(id);
     }
 
     @Property(required = false)
@@ -163,20 +140,13 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
         this.yieldTimeoutNanos = timeout;
     }
 
-    @Property(required = false)
-    public void setTimestampFormat(String type) {
-        this.timestampType = type;
-    }
-
     @Init
     public void init() throws FileNotFoundException {
-        initializeTimestampWriter();
-
         if (enabled) {
             WaitStrategy waitStrategy = createWaitStrategy();
             MonitorEventEntryFactory factory = new MonitorEventEntryFactory(capacity);
             disruptor = new Disruptor<MonitorEventEntry>(factory, ringSize, executorService, ProducerType.MULTI, waitStrategy);
-            MonitorEventHandler handler = new MonitorEventHandler(registry, timestampWriter);
+            MonitorEventHandler handler = new MonitorEventHandler(registry);
             disruptor.handleEventsWith(handler);
             disruptor.start();
         } else {
@@ -240,27 +210,12 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
         } else {
             // synchronize the write
             synchronized (this) {
-                ByteBuffer buffer = ByteBuffer.allocate(capacity);
-                MonitorEntryWriter.write(level, timestamp, template, buffer, timestampWriter, args);
                 try {
-                    registry.write(destinationIndex, buffer);
+                    registry.write(destinationIndex, level, timestamp, source, template, args);
                 } catch (IOException e) {
                     throw new ServiceRuntimeException(e);
                 }
             }
-        }
-    }
-
-    private void initializeTimestampWriter() {
-        if (timestampType.equals("formatted")) {
-            timestampWriter = new FormattingTimestampWriter(pattern, timeZone);
-        } else if (timestampType.equals("unformatted")) {
-            timestampWriter = new LongTimestampWriter();
-        } else if (timestampType.equals("none")) {
-            timestampWriter = new NoOpTimestampWriter();
-        } else {
-            timestampWriter = new FormattingTimestampWriter(pattern, timeZone);
-            monitor.invalidTimestampType(timestampType);
         }
     }
 

@@ -39,10 +39,14 @@ package org.fabric3.monitor.impl.destination;
 
 import java.nio.ByteBuffer;
 import java.util.Collections;
+import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.impl.router.MonitorEventEntry;
 import org.fabric3.monitor.spi.appender.Appender;
+import org.fabric3.monitor.spi.writer.EventWriter;
 
 /**
  *
@@ -50,20 +54,30 @@ import org.fabric3.monitor.spi.appender.Appender;
 public class MonitorDestinationImplTestCase extends TestCase {
 
     public void testWrite() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocate(1);
+        MonitorEventEntry entry = new MonitorEventEntry(25);
+        entry.setLevel(MonitorLevel.SEVERE);
+        entry.setTemplate("test");
+        long timestamp = System.currentTimeMillis();
+        entry.setEntryTimestamp(timestamp);
+
+        EventWriter eventWriter = EasyMock.createMock(EventWriter.class);
+        EasyMock.expect(eventWriter.writePrefix(EasyMock.eq(MonitorLevel.SEVERE), EasyMock.eq(timestamp), EasyMock.isA(ByteBuffer.class))).andReturn(10);
+        EasyMock.expect(eventWriter.writeTemplate(EasyMock.isA(MonitorEventEntry.class))).andReturn(10);
 
         Appender appender = EasyMock.createMock(Appender.class);
         appender.start();
-        appender.write(buffer);
+        appender.write(EasyMock.isA(ByteBuffer.class));
         appender.stop();
-        EasyMock.replay(appender);
 
-        MonitorDestinationImpl destination = new MonitorDestinationImpl("test", Collections.singletonList(appender));
+        EasyMock.replay(eventWriter, appender);
+
+        List<Appender> appenders = Collections.singletonList(appender);
+        MonitorDestinationImpl destination = new MonitorDestinationImpl("test", eventWriter, 2000, appenders);
         destination.start();
-        destination.write(buffer);
+        destination.write(entry);
         destination.stop();
 
-        EasyMock.verify(appender);
+        EasyMock.verify(eventWriter, appender);
 
     }
 }

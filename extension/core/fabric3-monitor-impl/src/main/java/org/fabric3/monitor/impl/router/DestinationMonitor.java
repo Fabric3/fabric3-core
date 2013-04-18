@@ -55,9 +55,6 @@ public interface DestinationMonitor {
     @Warning("The monitor subsystem was configured with an unknown mode: {0}. Defaulting to development mode.")
     void unknownMode(String mode);
 
-    @Warning("Unknown timestamp type: {0}. Defaulting to formatted timestamps.")
-    void invalidTimestampType(String type);
-
     @Debug("Blocking strategy enabled on monitor ring buffer")
     void blockingStrategy();
 

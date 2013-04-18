@@ -38,50 +38,75 @@
 package org.fabric3.monitor.impl.writer;
 
 import java.nio.ByteBuffer;
-import java.util.TimeZone;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.impl.router.MonitorEventEntry;
 
 /**
  *
  */
-public class MonitorEntryWriterTestCase extends TestCase {
+public class EventWriterImplTestCase extends TestCase {
+    private EventWriterImpl eventWriter;
+
     private long timestamp;
     private ByteBuffer buffer;
-    private FormattingTimestampWriter timestampWriter;
 
     public void testWriteString() throws Exception {
-        MonitorEntryWriter.write(MonitorLevel.SEVERE, timestamp, "This is a {0}", buffer, timestampWriter, new Object[]{"test"});
+        eventWriter.write(MonitorLevel.SEVERE, timestamp, "This is a {0}", buffer, new Object[]{"test"});
         String string = new String(buffer.array());
         assertTrue(string.contains("SEVERE"));
         assertTrue(string.contains("This is a test"));
     }
 
     public void testWriteNumeric() throws Exception {
-        MonitorEntryWriter.write(MonitorLevel.SEVERE, timestamp, "This is a {0}", buffer, timestampWriter, new Object[]{1});
+        eventWriter.write(MonitorLevel.SEVERE, timestamp, "This is a {0}", buffer, new Object[]{1});
         String string = new String(buffer.array());
         assertTrue(string.contains("SEVERE"));
         assertTrue(string.contains("This is a 1"));
     }
 
     public void testWriteBoolean() throws Exception {
-        MonitorEntryWriter.write(MonitorLevel.SEVERE, timestamp, "This is a {0}", buffer, timestampWriter, new Object[]{true});
+        eventWriter.write(MonitorLevel.SEVERE, timestamp, "This is a {0}", buffer, new Object[]{true});
         String string = new String(buffer.array());
         assertTrue(string.contains("SEVERE"));
         assertTrue(string.contains("This is a true"));
     }
 
     public void testEmptyTemplate() throws Exception {
-        MonitorEntryWriter.write(MonitorLevel.SEVERE, timestamp, null, buffer, timestampWriter, null);
+        eventWriter.write(MonitorLevel.SEVERE, timestamp, null, buffer, null);
         String string = new String(buffer.array());
         assertTrue(string.contains("SEVERE"));
     }
 
+    public void testWritePrefix() throws Exception {
+        eventWriter.writePrefix(MonitorLevel.SEVERE, timestamp, buffer);
+        String string = new String(buffer.array());
+        assertTrue(string.contains("SEVERE"));
+    }
+
+    public void testWriteTemplate() throws Exception {
+        MonitorEventEntry entry = new MonitorEventEntry(2000);
+        entry.setTemplate("This is a {0}");
+        entry.getEntries()[0].setObjectValue("test");
+        entry.setLimit(0);
+        int written = eventWriter.writeTemplate(entry);
+        entry.getBuffer().limit(written);
+        entry.getBuffer().flip();
+        byte[] bytes = new byte[written];
+        entry.getBuffer().get(bytes);
+        String string = new String(bytes);
+        assertTrue(string.contains("This is a test"));
+    }
+
     public void setUp() throws Exception {
         super.setUp();
+        EventWriterMonitor monitor = EasyMock.createNiceMock(EventWriterMonitor.class);
+        eventWriter = new EventWriterImpl(monitor);
+        eventWriter.init();
+
         timestamp = System.currentTimeMillis();
         buffer = ByteBuffer.allocate(200);
-        timestampWriter = new FormattingTimestampWriter("%d:%m:%Y %H:%i:%s.%F", TimeZone.getDefault());
     }
 }

@@ -55,15 +55,12 @@ import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
  */
 public class RingBufferDestinationRouterImplTestCase extends TestCase {
     private ExecutorService executorService;
-    private MonitorDestinationRegistry registry;
     private RingBufferDestinationRouterImpl router;
     private ByteBuffer buffer;
     private CountDownLatch latch;
 
     public void testRingBufferRoute() throws Exception {
         router.setMode("production");
-
-        registry.write(0, buffer);
 
         router.init();
         MonitorEventEntry entry = router.get();
@@ -78,8 +75,6 @@ public class RingBufferDestinationRouterImplTestCase extends TestCase {
     public void testSynchronousRoute() throws Exception {
         router.setMode("development");
 
-        registry.write(0, buffer);
-
         router.init();
         router.send(MonitorLevel.SEVERE, 0, System.currentTimeMillis(), "source", "this is a test {0}", "test");
         router.destroy();
@@ -92,7 +87,7 @@ public class RingBufferDestinationRouterImplTestCase extends TestCase {
         executorService = Executors.newCachedThreadPool();
 
         latch = new CountDownLatch(1);
-        registry = new MockRegistry(latch);
+        MonitorDestinationRegistry registry = new MockRegistry(latch);
 
         DestinationMonitor monitor = EasyMock.createNiceMock(DestinationMonitor.class);
         EasyMock.replay(monitor);
@@ -128,7 +123,11 @@ public class RingBufferDestinationRouterImplTestCase extends TestCase {
             throw new UnsupportedOperationException();
         }
 
-        public void write(int index, ByteBuffer buffer) throws IOException {
+        public void write(MonitorEventEntry entry) throws IOException {
+            latch.countDown();
+        }
+
+        public void write(int index, MonitorLevel level, long timestamp, String source, String template, Object... args) {
             latch.countDown();
         }
     }

@@ -48,9 +48,11 @@ import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.impl.physical.PhysicalMonitorDefinition;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
+import org.fabric3.monitor.spi.writer.EventWriter;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.resource.ResourceBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -59,6 +61,8 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class MonitorBuilder implements ResourceBuilder<PhysicalMonitorDefinition> {
     private MonitorDestinationRegistry registry;
+    private int capacity = 2000;
+    private EventWriter eventWriter;
     private Map<Class<?>, AppenderBuilder<?>> appenderBuilders;
 
     @Reference
@@ -66,8 +70,14 @@ public class MonitorBuilder implements ResourceBuilder<PhysicalMonitorDefinition
         this.appenderBuilders = appenderBuilders;
     }
 
-    public MonitorBuilder(@Reference MonitorDestinationRegistry registry) {
+    @Property(required = false)
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public MonitorBuilder(@Reference MonitorDestinationRegistry registry, @Reference EventWriter eventWriter) {
         this.registry = registry;
+        this.eventWriter = eventWriter;
     }
 
     @SuppressWarnings("unchecked")
@@ -83,7 +93,8 @@ public class MonitorBuilder implements ResourceBuilder<PhysicalMonitorDefinition
             appenders.add(appender);
         }
 
-        MonitorDestination destination = new MonitorDestinationImpl(definition.getName(), appenders);
+        String name = definition.getName();
+        MonitorDestination destination = new MonitorDestinationImpl(name, eventWriter, capacity, appenders);
         registry.register(destination);
     }
 

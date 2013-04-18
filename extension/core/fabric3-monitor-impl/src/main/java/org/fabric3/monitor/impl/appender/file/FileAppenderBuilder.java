@@ -67,10 +67,10 @@ public class FileAppenderBuilder implements AppenderBuilder<PhysicalFileAppender
 
         if (FileAppenderConstants.ROLL_STRATEGY_NONE.equals(rollType)) {
             RollStrategy strategy = new NoRollStrategy();
-            return new FileAppender(outputFile, strategy);
+            return new FileAppender(outputFile, strategy, false);
         } else if (FileAppenderConstants.ROLL_STRATEGY_SIZE.equals(rollType)) {
             RollStrategy strategy = new SizeRollStrategy(definition.getRollSize());
-            return new FileAppender(outputFile, strategy);
+            return new FileAppender(outputFile, strategy, false);
         } else {
             throw new BuilderException("Unknown roll type: " + rollType);
         }

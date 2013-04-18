@@ -24,16 +24,19 @@
         <property name="spinTimeoutNanos" source="$systemConfig/f3:monitor/@spin.timeout"/>
         <property name="yieldTimeoutNanos" source="$systemConfig/f3:monitor/@yield.timeout"/>
         <property name="phasedBlockingType" source="$systemConfig/f3:monitor/@phased.blocking.type"/>
-        <property name="timestampFormat" source="$systemConfig/f3:monitor/@timestamp"/>
-
-        <property name="pattern" source="$systemConfig/f3:monitor/@pattern"/>
-        <property name="timeZone" source="$systemConfig/f3:monitor/@time.zone"/>
-
     </component>
 
     <component name="MonitorDestinationRegistry">
         <f3:implementation.system class="org.fabric3.monitor.impl.destination.MonitorDestinationRegistryImpl"/>
         <property name="defaultAppenders" source="$systemConfig/f3:monitor/f3:appenders"/>
+        <property name="capacity" source="$systemConfig/f3:monitor/@capacity"/>
+    </component>
+
+    <component name="EventWriter">
+        <f3:implementation.system class="org.fabric3.monitor.impl.writer.EventWriterImpl"/>
+        <property name="timestampFormat" source="$systemConfig/f3:monitor/@timestamp"/>
+        <property name="pattern" source="$systemConfig/f3:monitor/@pattern"/>
+        <property name="timeZone" source="$systemConfig/f3:monitor/@time.zone"/>
     </component>
 
     <component name="AppenderFactoryImpl">
@@ -96,6 +99,7 @@
 
     <component name="MonitorBuilder" f3:key="org.fabric3.monitor.impl.physical.PhysicalMonitorDefinition">
         <f3:implementation.system class="org.fabric3.monitor.impl.builder.MonitorBuilder"/>
+        <property name="capacity" source="$systemConfig/f3:monitor/@capacity"/>
     </component>
 
 
