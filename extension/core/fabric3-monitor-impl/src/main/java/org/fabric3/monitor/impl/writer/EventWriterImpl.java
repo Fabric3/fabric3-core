@@ -152,7 +152,7 @@ public class EventWriterImpl implements EventWriter {
         } else if (timestampType.equals("unformatted")) {
             timestampWriter = new LongTimestampWriter();
         } else if (timestampType.equals("none")) {
-            timestampWriter = new NoOpTimestampWriter();
+            timestampWriter = new NullTimestampWriter();
         } else {
             timestampWriter = new FormattingTimestampWriter(pattern, timeZone);
             monitor.invalidTimestampType(timestampType);
