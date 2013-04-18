@@ -42,7 +42,7 @@ import java.nio.ByteBuffer;
 /**
  *
  */
-public class NullTimestampWriter implements TimestampWriter {
+public class NoOpTimestampWriter implements TimestampWriter {
 
     public int write(long value, ByteBuffer buffer) {
         return 0;
