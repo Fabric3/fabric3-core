@@ -30,7 +30,7 @@
         <f3:implementation.system class="org.fabric3.monitor.impl.destination.MonitorDestinationRegistryImpl"/>
     </component>
 
-    <component name="MonitorBuilder" f3:key="org.fabric3.monitor.impl.physical.PhysicalMonitorDefinition">
+    <component name="MonitorBuilder" f3:key="org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition">
         <f3:implementation.system class="org.fabric3.monitor.impl.builder.MonitorBuilder"/>
         <property name="capacity" source="$systemConfig/f3:monitor/@capacity"/>
         <property name="defaultAppenders" source="$systemConfig/f3:monitor/f3:appenders"/>

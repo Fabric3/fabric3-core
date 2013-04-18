@@ -35,11 +35,12 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.physical;
+package org.fabric3.monitor.spi.model.physical;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**

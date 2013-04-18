@@ -42,7 +42,7 @@ import java.util.Map;
 
 import org.fabric3.monitor.impl.model.MonitorResourceDefinition;
 import org.fabric3.monitor.impl.physical.PhysicalAppenderDefinition;
-import org.fabric3.monitor.impl.physical.PhysicalMonitorDefinition;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition;
 import org.fabric3.monitor.spi.appender.AppenderDefinition;
 import org.fabric3.monitor.spi.appender.AppenderGenerator;
 import org.fabric3.spi.generator.GenerationException;
