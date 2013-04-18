@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.monitor.impl.appender.factory.AppenderCreationException;
-import org.fabric3.monitor.impl.router.MonitorEventEntry;
+import org.fabric3.monitor.spi.event.MonitorEventEntry;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;

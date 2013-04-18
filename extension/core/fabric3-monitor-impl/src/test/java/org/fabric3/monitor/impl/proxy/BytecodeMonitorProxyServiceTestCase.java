@@ -42,8 +42,8 @@ import org.easymock.EasyMock;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.host.monitor.Monitorable;
-import org.fabric3.monitor.impl.router.MonitorEventEntry;
-import org.fabric3.monitor.impl.router.ParameterEntry;
+import org.fabric3.monitor.spi.event.MonitorEventEntry;
+import org.fabric3.monitor.spi.event.ParameterEntry;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 
 /**

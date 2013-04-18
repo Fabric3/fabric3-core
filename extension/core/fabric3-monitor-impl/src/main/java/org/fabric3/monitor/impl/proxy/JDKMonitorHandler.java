@@ -43,7 +43,7 @@ import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.Monitorable;
-import org.fabric3.monitor.impl.router.MonitorEventEntry;
+import org.fabric3.monitor.spi.event.MonitorEventEntry;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 import org.fabric3.spi.monitor.DispatchInfo;
 

@@ -38,6 +38,7 @@
 package org.fabric3.monitor.impl.router;
 
 import com.lmax.disruptor.EventFactory;
+import org.fabric3.monitor.spi.event.MonitorEventEntry;
 
 /**
  * Factory for creating {@link MonitorEventEntry}s.

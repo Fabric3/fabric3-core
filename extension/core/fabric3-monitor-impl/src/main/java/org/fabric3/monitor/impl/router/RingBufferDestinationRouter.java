@@ -38,6 +38,7 @@
 package org.fabric3.monitor.impl.router;
 
 import org.fabric3.host.monitor.DestinationRouter;
+import org.fabric3.monitor.spi.event.MonitorEventEntry;
 
 /**
  * Routes to a destination using a ring buffer.

@@ -54,6 +54,8 @@ import com.lmax.disruptor.dsl.ProducerType;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
+import org.fabric3.monitor.spi.event.MonitorEventEntry;
+import org.fabric3.monitor.spi.event.ParameterEntry;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Init;

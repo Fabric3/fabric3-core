@@ -40,7 +40,7 @@ package org.fabric3.monitor.spi.writer;
 import java.nio.ByteBuffer;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.monitor.impl.router.MonitorEventEntry;
+import org.fabric3.monitor.spi.event.MonitorEventEntry;
 
 /**
  * Writes monitor events to a buffer.

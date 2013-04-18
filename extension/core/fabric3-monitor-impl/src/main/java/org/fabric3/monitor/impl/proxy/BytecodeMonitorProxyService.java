@@ -48,8 +48,8 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.monitor.MonitorCreationException;
 import org.fabric3.host.monitor.MonitorProxyServiceExtension;
 import org.fabric3.host.monitor.Monitorable;
-import org.fabric3.monitor.impl.router.MonitorEventEntry;
-import org.fabric3.monitor.impl.router.ParameterEntry;
+import org.fabric3.monitor.spi.event.MonitorEventEntry;
+import org.fabric3.monitor.spi.event.ParameterEntry;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 import org.fabric3.spi.classloader.BytecodeClassLoader;
 import org.fabric3.spi.monitor.DispatchInfo;
@@ -729,7 +729,7 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         for (Class<?> paramType : paramTypes) {
             paramSignature.append(Type.getDescriptor(paramType));
         }
-        paramSignature.append("Lorg/fabric3/monitor/impl/router/MonitorEventEntry;)V");
+        paramSignature.append("L").append(MONITOR_EVENT_ENTRY).append(";)V");
         return paramSignature.toString();
     }
 

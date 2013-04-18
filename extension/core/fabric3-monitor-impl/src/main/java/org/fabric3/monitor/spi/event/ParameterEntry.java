@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.router;
+package org.fabric3.monitor.spi.event;
 
 /**
  * Holds a parameter of a method invocation. Acts as a slot to avoid object creation when passing primitives since type Object results in autoboxing.

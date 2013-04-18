@@ -49,6 +49,7 @@ import org.easymock.EasyMock;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.monitor.impl.destination.MonitorDestination;
 import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
+import org.fabric3.monitor.spi.event.MonitorEventEntry;
 
 /**
  *

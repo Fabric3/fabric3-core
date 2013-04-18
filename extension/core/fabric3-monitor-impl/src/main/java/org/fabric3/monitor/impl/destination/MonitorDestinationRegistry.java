@@ -40,7 +40,7 @@ package org.fabric3.monitor.impl.destination;
 import java.io.IOException;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.monitor.impl.router.MonitorEventEntry;
+import org.fabric3.monitor.spi.event.MonitorEventEntry;
 
 /**
  * Manages and dispatches to {@link MonitorDestination}s.
