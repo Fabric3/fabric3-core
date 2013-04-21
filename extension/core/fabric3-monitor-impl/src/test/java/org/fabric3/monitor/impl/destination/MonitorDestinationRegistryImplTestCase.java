@@ -39,6 +39,7 @@ package org.fabric3.monitor.impl.destination;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.monitor.spi.destination.MonitorDestination;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
 
 /**

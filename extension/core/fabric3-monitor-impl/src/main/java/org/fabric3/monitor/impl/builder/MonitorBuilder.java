@@ -37,97 +37,48 @@
 */
 package org.fabric3.monitor.impl.builder;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
-import org.fabric3.monitor.impl.appender.factory.AppenderCreationException;
-import org.fabric3.monitor.impl.appender.factory.AppenderFactory;
-import org.fabric3.monitor.impl.destination.MonitorDestination;
-import org.fabric3.monitor.impl.destination.MonitorDestinationImpl;
-import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
-import org.fabric3.monitor.spi.appender.PhysicalAppenderDefinition;
+import org.fabric3.monitor.spi.destination.MonitorDestinationBuilder;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition;
-import org.fabric3.monitor.spi.appender.Appender;
-import org.fabric3.monitor.spi.appender.AppenderBuilder;
-import org.fabric3.monitor.spi.writer.EventWriter;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.resource.ResourceBuilder;
 import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
-import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
 /**
  * Instantiates and registers or unregisters monitor destinations with the destination registry.
  */
 @EagerInit
 public class MonitorBuilder implements ResourceBuilder<PhysicalMonitorDefinition> {
-    private MonitorDestinationRegistry registry;
-    private EventWriter eventWriter;
-    private AppenderFactory appenderFactory;
-
-    private List<Appender> defaultAppenders = Collections.emptyList();
-    private int capacity = 2000;
-
-    private Map<Class<?>, AppenderBuilder<?>> appenderBuilders;
+    private Map<Class<?>, MonitorDestinationBuilder<?>> builders;
 
     @Reference
-    public void setAppenderBuilders(Map<Class<?>, AppenderBuilder<?>> appenderBuilders) {
-        this.appenderBuilders = appenderBuilders;
-    }
-
-    @Property(required = false)
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    @Property(required = false)
-    public void setDefaultAppenders(XMLStreamReader reader) throws AppenderCreationException, XMLStreamException {
-        defaultAppenders = appenderFactory.instantiate(reader);
-    }
-
-    public MonitorBuilder(@Reference MonitorDestinationRegistry registry, @Reference EventWriter eventWriter, @Reference AppenderFactory appenderFactory) {
-        this.registry = registry;
-        this.eventWriter = eventWriter;
-        this.appenderFactory = appenderFactory;
-    }
-
-    @Init
-    public void init() throws AppenderCreationException, IOException {
-        if (defaultAppenders.isEmpty()) {
-            defaultAppenders = appenderFactory.instantiateDefaultAppenders();
-        }
-        // register the default destination as index 0
-        MonitorDestination defaultDestination = new MonitorDestinationImpl(DEFAULT_DESTINATION, eventWriter, capacity, defaultAppenders);
-        defaultDestination.start();
-        registry.register(defaultDestination);
+    public void setBuilders(Map<Class<?>, MonitorDestinationBuilder<?>> builders) {
+        this.builders = builders;
     }
 
     @SuppressWarnings("unchecked")
     public void build(PhysicalMonitorDefinition definition) throws BuilderException {
-        // create the appenders for the destination
-        List<Appender> appenders = new ArrayList<Appender>();
-        for (PhysicalAppenderDefinition appenderDefinition : definition.getDefinitions()) {
-            AppenderBuilder builder = appenderBuilders.get(appenderDefinition.getClass());
-            if (builder == null) {
-                throw new BuilderException("Unknown appender type: " + definition.getClass());
-            }
-            Appender appender = builder.build(appenderDefinition);
-            appenders.add(appender);
-        }
-
-        String name = definition.getName();
-        MonitorDestination destination = new MonitorDestinationImpl(name, eventWriter, capacity, appenders);
-        registry.register(destination);
+        PhysicalMonitorDestinationDefinition destinationDefinition = definition.getDestinationDefinition();
+        MonitorDestinationBuilder builder = getBuilder(destinationDefinition);
+        builder.build(destinationDefinition);
     }
 
+    @SuppressWarnings("unchecked")
     public void remove(PhysicalMonitorDefinition definition) throws BuilderException {
-        registry.unregister(definition.getName());
+        PhysicalMonitorDestinationDefinition destinationDefinition = definition.getDestinationDefinition();
+        MonitorDestinationBuilder builder = getBuilder(destinationDefinition);
+        builder.remove(destinationDefinition);
     }
+
+    private MonitorDestinationBuilder getBuilder(PhysicalMonitorDestinationDefinition destinationDefinition) throws BuilderException {
+        MonitorDestinationBuilder builder = builders.get(destinationDefinition.getClass());
+        if (builder == null) {
+            throw new BuilderException("Unknown destination type: " + destinationDefinition.getClass().getName());
+        }
+        return builder;
+    }
+
 }

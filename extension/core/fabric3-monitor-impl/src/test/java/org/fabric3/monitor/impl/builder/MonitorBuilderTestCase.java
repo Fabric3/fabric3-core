@@ -42,14 +42,9 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.monitor.impl.appender.factory.AppenderFactory;
-import org.fabric3.monitor.impl.destination.MonitorDestination;
-import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
-import org.fabric3.monitor.spi.appender.PhysicalAppenderDefinition;
+import org.fabric3.monitor.spi.destination.MonitorDestinationBuilder;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition;
-import org.fabric3.monitor.spi.appender.Appender;
-import org.fabric3.monitor.spi.appender.AppenderBuilder;
-import org.fabric3.monitor.spi.writer.EventWriter;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
 
 /**
  *
@@ -58,33 +53,30 @@ public class MonitorBuilderTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
-        MonitorDestinationRegistry registry = EasyMock.createMock(MonitorDestinationRegistry.class);
-        registry.register(EasyMock.isA(MonitorDestination.class));
+        MonitorDestinationBuilder destinationBuilder = EasyMock.createMock(MonitorDestinationBuilder.class);
+        destinationBuilder.build(EasyMock.isA(MockDefinition.class));
+        EasyMock.replay(destinationBuilder);
 
-        EventWriter eventWriter = EasyMock.createMock(EventWriter.class);
+        MonitorBuilder builder = new MonitorBuilder();
 
-        Appender appender = EasyMock.createMock(Appender.class);
-
-        AppenderBuilder appenderBuilder = EasyMock.createMock(AppenderBuilder.class);
-        EasyMock.expect(appenderBuilder.build(EasyMock.isA(PhysicalAppenderDefinition.class))).andReturn(appender);
-
-        AppenderFactory appenderFactory = EasyMock.createMock(AppenderFactory.class);
-        EasyMock.replay(registry, appenderBuilder, eventWriter, appender, appenderFactory);
-
-        MonitorBuilder builder = new MonitorBuilder(registry, eventWriter, appenderFactory);
-
-        Map map = Collections.singletonMap(MockDefinition.class, appenderBuilder);
-        builder.setAppenderBuilders(map);
+        Map map = Collections.singletonMap(MockDefinition.class, destinationBuilder);
+        builder.setBuilders(map);
 
         PhysicalMonitorDefinition physicalDefinition = new PhysicalMonitorDefinition("test");
-        physicalDefinition.add(new MockDefinition());
+        physicalDefinition.setDestinationDefinition(new MockDefinition());
+
         builder.build(physicalDefinition);
 
-        EasyMock.verify(registry, appenderBuilder, eventWriter, appender, appenderFactory);
+        EasyMock.verify(destinationBuilder);
 
     }
 
-    private class MockDefinition extends PhysicalAppenderDefinition {
+    private class MockDefinition extends PhysicalMonitorDestinationDefinition {
 
+        private static final long serialVersionUID = -306254906595407459L;
+
+        public MockDefinition() {
+            super("test");
+        }
     }
 }

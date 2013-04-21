@@ -47,8 +47,9 @@ import java.util.Set;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.ModelObject;
-import org.fabric3.monitor.spi.appender.AppenderDefinition;
-import org.fabric3.monitor.impl.model.MonitorResourceDefinition;
+import org.fabric3.monitor.impl.model.type.DefaultMonitorDestinationDefinition;
+import org.fabric3.monitor.spi.model.type.AppenderDefinition;
+import org.fabric3.monitor.spi.model.type.MonitorResourceDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -61,7 +62,7 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- *
+ * Loads a monitor resource configuration.
  */
 @EagerInit
 public class MonitorResourceLoader extends AbstractValidatingTypeLoader<MonitorResourceDefinition> {
@@ -98,6 +99,8 @@ public class MonitorResourceLoader extends AbstractValidatingTypeLoader<MonitorR
         }
 
         MonitorResourceDefinition definition = new MonitorResourceDefinition(name);
+        DefaultMonitorDestinationDefinition destinationDefinition = new DefaultMonitorDestinationDefinition();
+        definition.setDestinationDefinition(destinationDefinition);
 
         Set<String> definedTypes = new HashSet<String>();
         while (true) {
@@ -115,7 +118,7 @@ public class MonitorResourceLoader extends AbstractValidatingTypeLoader<MonitorR
                                 continue;
                             }
                             definedTypes.add(type);
-                            definition.add(appenderDefinition);
+                            destinationDefinition.add(appenderDefinition);
 
                         } else {
                             throw new AssertionError("Unexpected type: " + modelObject);

@@ -43,7 +43,9 @@
         <module>fabric3-execution</module>
         <module>fabric3-writer</module>
         <module>fabric3-channel-disruptor</module>
+        <module>fabric3-monitor-spi</module>
         <module>fabric3-monitor-impl</module>
         <module>fabric3-monitor-log</module>
+        <module>fabric3-monitor-appender</module>
     </modules>
 </project>

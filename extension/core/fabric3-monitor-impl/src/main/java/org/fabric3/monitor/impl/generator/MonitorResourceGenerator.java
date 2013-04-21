@@ -37,14 +37,13 @@
 */
 package org.fabric3.monitor.impl.generator;
 
-import java.util.List;
 import java.util.Map;
 
-import org.fabric3.monitor.impl.model.MonitorResourceDefinition;
-import org.fabric3.monitor.spi.appender.PhysicalAppenderDefinition;
+import org.fabric3.monitor.spi.destination.MonitorDestinationGenerator;
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition;
-import org.fabric3.monitor.spi.appender.AppenderDefinition;
-import org.fabric3.monitor.spi.appender.AppenderGenerator;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
+import org.fabric3.monitor.spi.model.type.MonitorDestinationDefinition;
+import org.fabric3.monitor.spi.model.type.MonitorResourceDefinition;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
@@ -56,11 +55,11 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class MonitorResourceGenerator implements ResourceGenerator<MonitorResourceDefinition> {
-    private Map<Class<?>, AppenderGenerator<?>> appenderGenerators;
+    private Map<Class<?>, MonitorDestinationGenerator<?>> destinationGenerators;
 
     @Reference
-    public void setAppenderGenerators(Map<Class<?>, AppenderGenerator<?>> appenderGenerators) {
-        this.appenderGenerators = appenderGenerators;
+    public void setDestinationGenerators(Map<Class<?>, MonitorDestinationGenerator<?>> destinationGenerators) {
+        this.destinationGenerators = destinationGenerators;
     }
 
     @SuppressWarnings("unchecked")
@@ -69,20 +68,17 @@ public class MonitorResourceGenerator implements ResourceGenerator<MonitorResour
 
         PhysicalMonitorDefinition physicalDefinition = new PhysicalMonitorDefinition(resourceDefinition.getName());
 
-        List<AppenderDefinition> appenderDefinitions = resourceDefinition.getAppenderDefinitions();
-
-        for (AppenderDefinition definition : appenderDefinitions) {
-            AppenderGenerator generator = getAppenderGenerator(definition);
-            PhysicalAppenderDefinition physicalAppenderDefinition = generator.generateResource(definition);
-            physicalDefinition.add(physicalAppenderDefinition);
-        }
+        MonitorDestinationDefinition destinationDefinition =  resourceDefinition.getDestinationDefinition();
+        MonitorDestinationGenerator generator = getDestinationGenerator(destinationDefinition);
+        PhysicalMonitorDestinationDefinition physicalDestinationDefinition = generator.generateResource(destinationDefinition);
+        physicalDefinition.setDestinationDefinition(physicalDestinationDefinition);
         return physicalDefinition;
     }
 
-    private AppenderGenerator getAppenderGenerator(AppenderDefinition definition) throws GenerationException {
-        AppenderGenerator generator = appenderGenerators.get(definition.getClass());
+    private MonitorDestinationGenerator getDestinationGenerator(MonitorDestinationDefinition definition) throws GenerationException {
+        MonitorDestinationGenerator generator = destinationGenerators.get(definition.getClass());
         if (generator == null) {
-            throw new GenerationException("Unknown appender type: " + definition.getClass());
+            throw new GenerationException("Unknown monitor destination type: " + definition.getClass());
         }
         return generator;
     }

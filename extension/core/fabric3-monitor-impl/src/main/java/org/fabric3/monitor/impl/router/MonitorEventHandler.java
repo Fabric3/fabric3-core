@@ -38,7 +38,7 @@
 package org.fabric3.monitor.impl.router;
 
 import com.lmax.disruptor.EventHandler;
-import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
+import org.fabric3.monitor.spi.destination.MonitorDestinationRegistry;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
 
 /**

@@ -13,6 +13,13 @@
            name="MonitorImplementationExtension"
            autowire="true">
 
+    <component name="MonitorExtensionProvider">
+        <f3:implementation.system class="org.fabric3.monitor.impl.extension.ExtensionProvider"/>
+        <property name="capacity" source="$systemConfig/f3:monitor/@capacity"/>
+        <property name="overrideDefault" source="$systemConfig/f3:monitor/@override.default.destination"/>
+        <property name="defaultAppenders" source="$systemConfig/f3:monitor/f3:appenders"/>
+    </component>
+
 
     <component name="RingBufferDestinationRouter">
         <f3:implementation.system class="org.fabric3.monitor.impl.router.RingBufferDestinationRouterImpl"/>
@@ -32,8 +39,11 @@
 
     <component name="MonitorBuilder" f3:key="org.fabric3.monitor.spi.model.physical.PhysicalMonitorDefinition">
         <f3:implementation.system class="org.fabric3.monitor.impl.builder.MonitorBuilder"/>
+    </component>
+
+    <component name="DefaultMonitorDestinationBuilder" f3:key="org.fabric3.monitor.impl.model.physical.PhysicalDefaultMonitorDestinationDefinition">
+        <f3:implementation.system class="org.fabric3.monitor.impl.builder.DefaultMonitorDestinationBuilder"/>
         <property name="capacity" source="$systemConfig/f3:monitor/@capacity"/>
-        <property name="defaultAppenders" source="$systemConfig/f3:monitor/f3:appenders"/>
     </component>
 
     <component name="EventWriter">
@@ -43,62 +53,28 @@
         <property name="timeZone" source="$systemConfig/f3:monitor/@time.zone"/>
     </component>
 
-    <component name="AppenderFactoryImpl">
-        <f3:implementation.system class="org.fabric3.monitor.impl.appender.factory.AppenderFactoryImpl"/>
-    </component>
-
     <component name="SwitchingMonitorProxyServiceExtension">
         <f3:implementation.system class="org.fabric3.monitor.impl.proxy.SwitchingMonitorProxyServiceExtension"/>
         <property name="proxy" source="$systemConfig/f3:monitor/@proxy"/>
         <property name="mode" source="$systemConfig/f3:monitor/@mode"/>
     </component>
 
-    <wire source="DestinationRouter/destination" target="RingBufferDestinationRouter"/>
-
-    <wire source="MonitorProxyService/extension" target="SwitchingMonitorProxyServiceExtension"/>
-
-    <component name="ComponentAppenderLoader">
-        <f3:implementation.system class="org.fabric3.monitor.impl.appender.component.ComponentAppenderLoader"/>
-    </component>
-
-    <component name="ComponentAppenderGenerator" f3:key="org.fabric3.monitor.impl.appender.component.ComponentAppenderDefinition">
-        <f3:implementation.system class="org.fabric3.monitor.impl.appender.component.ComponentAppenderGenerator"/>
-    </component>
-
-    <component name="ComponentAppenderBuilder" f3:key="org.fabric3.monitor.impl.appender.component.PhysicalComponentAppenderDefinition">
-        <f3:implementation.system class="org.fabric3.monitor.impl.appender.component.ComponentAppenderBuilder"/>
-    </component>
-
-    <component name="ConsoleAppenderLoader">
-        <f3:implementation.system class="org.fabric3.monitor.impl.appender.console.ConsoleAppenderLoader"/>
-    </component>
-
-    <component name="ConsoleAppenderGenerator" f3:key="org.fabric3.monitor.impl.appender.console.ConsoleAppenderDefinition">
-        <f3:implementation.system class="org.fabric3.monitor.impl.appender.console.ConsoleAppenderGenerator"/>
-    </component>
-
-    <component name="ConsoleAppenderBuilder" f3:key="org.fabric3.monitor.impl.appender.console.PhysicalConsoleAppenderDefinition">
-        <f3:implementation.system class="org.fabric3.monitor.impl.appender.console.ConsoleAppenderBuilder"/>
-    </component>
-
-    <component name="FileAppenderLoader">
-        <f3:implementation.system class="org.fabric3.monitor.impl.appender.file.FileAppenderLoader"/>
-    </component>
-
-    <component name="FileAppenderGenerator" f3:key="org.fabric3.monitor.impl.appender.file.FileAppenderDefinition">
-        <f3:implementation.system class="org.fabric3.monitor.impl.appender.file.FileAppenderGenerator"/>
-    </component>
-
-    <component name="FileAppenderBuilder" f3:key="org.fabric3.monitor.impl.appender.file.PhysicalFileAppenderDefinition">
-        <f3:implementation.system class="org.fabric3.monitor.impl.appender.file.FileAppenderBuilder"/>
-    </component>
-
     <component name="MonitorResourceLoader">
         <f3:implementation.system class="org.fabric3.monitor.impl.introspection.MonitorResourceLoader"/>
     </component>
 
-    <component name="MonitorResourceGenerator" f3:key="org.fabric3.monitor.impl.model.MonitorResourceDefinition">
+    <component name="MonitorResourceGenerator" f3:key="org.fabric3.monitor.spi.model.type.MonitorResourceDefinition">
         <f3:implementation.system class="org.fabric3.monitor.impl.generator.MonitorResourceGenerator"/>
     </component>
+
+    <component name="DefaultMonitorDestinationGenerator" f3:key="org.fabric3.monitor.impl.model.type.DefaultMonitorDestinationDefinition">
+        <f3:implementation.system class="org.fabric3.monitor.impl.generator.DefaultMonitorDestinationGenerator"/>
+    </component>
+
+
+    <wire source="DestinationRouter/destination" target="RingBufferDestinationRouter"/>
+
+    <wire source="MonitorProxyService/extension" target="SwitchingMonitorProxyServiceExtension"/>
+
 
 </composite>

@@ -42,10 +42,10 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.monitor.impl.model.MonitorResourceDefinition;
-import org.fabric3.monitor.spi.appender.PhysicalAppenderDefinition;
-import org.fabric3.monitor.spi.appender.AppenderDefinition;
-import org.fabric3.monitor.spi.appender.AppenderGenerator;
+import org.fabric3.monitor.spi.destination.MonitorDestinationGenerator;
+import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
+import org.fabric3.monitor.spi.model.type.MonitorDestinationDefinition;
+import org.fabric3.monitor.spi.model.type.MonitorResourceDefinition;
 import org.fabric3.spi.model.instance.LogicalResource;
 
 /**
@@ -55,36 +55,35 @@ public class MonitorGeneratorTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
+        MonitorDestinationGenerator destinationGenerator = EasyMock.createMock(MonitorDestinationGenerator.class);
+        destinationGenerator.generateResource(EasyMock.isA(MockDefinition.class));
+        EasyMock.expectLastCall().andReturn(new MockPhysicalDefinition());
 
-        AppenderGenerator appenderGenerator = EasyMock.createMock(AppenderGenerator.class);
-        EasyMock.expect(appenderGenerator.generateResource(EasyMock.isA(AppenderDefinition.class))).andReturn(new MockPhysicalDefinition());
-
-        EasyMock.replay(appenderGenerator);
+        EasyMock.replay(destinationGenerator);
 
         MonitorResourceGenerator generator = new MonitorResourceGenerator();
+        Map map = Collections.singletonMap(MockDefinition.class, destinationGenerator);
+        generator.setDestinationGenerators(map);
 
-        Map map = Collections.singletonMap(MockDefinition.class, appenderGenerator);
-        generator.setAppenderGenerators(map);
-
-        MonitorResourceDefinition definition = new MonitorResourceDefinition("test");
-        definition.add(new MockDefinition());
-
-        LogicalResource<MonitorResourceDefinition> resource = new LogicalResource<MonitorResourceDefinition>(definition, null);
+        MockDefinition destinationDefinition = new MockDefinition();
+        MonitorResourceDefinition resourceDefinition = new MonitorResourceDefinition("test");
+        resourceDefinition.setDestinationDefinition(destinationDefinition);
+        LogicalResource<MonitorResourceDefinition> resource = new LogicalResource<MonitorResourceDefinition>(resourceDefinition, null);
 
         generator.generateResource(resource);
 
-        EasyMock.verify(appenderGenerator);
-
+        EasyMock.verify(destinationGenerator);
     }
 
-    private class MockDefinition extends AppenderDefinition {
+    private class MockDefinition extends MonitorDestinationDefinition {
+        private static final long serialVersionUID = -3620668496377933326L;
+    }
 
-        public MockDefinition() {
+    private class MockPhysicalDefinition extends PhysicalMonitorDestinationDefinition {
+        private static final long serialVersionUID = 6515557610052777779L;
+
+        public MockPhysicalDefinition() {
             super("test");
         }
-    }
-
-    private class MockPhysicalDefinition extends PhysicalAppenderDefinition {
-
     }
 }

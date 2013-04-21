@@ -96,6 +96,9 @@
                 <include>org.codehaus.fabric3:fabric3-contribution-scanner-war</include>
                 <include>org.codehaus.fabric3:fabric3-contribution-war</include>
                 <include>org.codehaus.fabric3:fabric3-web</include>
+                <include>org.codehaus.fabric3:fabric3-monitor-spi</include>
+                <include>org.codehaus.fabric3:fabric3-monitor-impl</include>
+                <include>org.codehaus.fabric3:fabric3-monitor-appender</include>
             </includes>
             <outputDirectory>fabric3/extensions</outputDirectory>
         </dependencySet>

@@ -47,8 +47,8 @@ import java.util.concurrent.TimeUnit;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.monitor.impl.destination.MonitorDestination;
-import org.fabric3.monitor.impl.destination.MonitorDestinationRegistry;
+import org.fabric3.monitor.spi.destination.MonitorDestination;
+import org.fabric3.monitor.spi.destination.MonitorDestinationRegistry;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
 
 /**
@@ -83,6 +83,7 @@ public class RingBufferDestinationRouterImplTestCase extends TestCase {
         assertTrue(latch.await(10, TimeUnit.SECONDS));
     }
 
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
         executorService = Executors.newCachedThreadPool();

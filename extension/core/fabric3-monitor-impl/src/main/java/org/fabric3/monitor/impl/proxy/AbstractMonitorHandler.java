@@ -42,7 +42,7 @@ import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 import org.fabric3.spi.monitor.DispatchInfo;
 
 /**
- *
+ * Base class for generated monitor proxies.
  */
 public abstract class AbstractMonitorHandler {
     protected RingBufferDestinationRouter router;
@@ -60,7 +60,5 @@ public abstract class AbstractMonitorHandler {
         this.source = monitorable.getName();
         this.infos = infos;
     }
-
-
 
 }

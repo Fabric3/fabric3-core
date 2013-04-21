@@ -44,8 +44,8 @@ import java.io.ByteArrayInputStream;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.model.type.ModelObject;
-import org.fabric3.monitor.impl.model.MonitorResourceDefinition;
-import org.fabric3.monitor.spi.appender.AppenderDefinition;
+import org.fabric3.monitor.spi.model.type.MonitorResourceDefinition;
+import org.fabric3.monitor.spi.model.type.AppenderDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -74,7 +74,7 @@ public class MonitorResourceLoaderTestCase extends TestCase {
         MonitorResourceDefinition definition = loader.load(reader, context);
 
         assertFalse(context.hasErrors());
-        assertFalse(definition.getAppenderDefinitions().isEmpty());
+        assertNotNull(definition.getDestinationDefinition());
 
         EasyMock.verify(loaderRegistry);
     }

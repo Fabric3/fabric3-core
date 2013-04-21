@@ -37,15 +37,9 @@
 */
 package org.fabric3.introspection.xml.template;
 
-import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
+import java.util.List;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -58,6 +52,11 @@ import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.xml.LocationAwareXMLStreamReader;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Parses template entries specified in the system configuration.
@@ -80,7 +79,7 @@ public class SystemConfigTemplateParser implements Fabric3EventListener<Extensio
 
     @Property(required = false)
     public void setTemplateConfig(XMLStreamReader reader) {
-        this.reader = new LocationAwareXMLStreamReader(reader, "System Configuration");
+        this.reader = new LocationAwareXMLStreamReader(reader, "system configuration");
     }
 
     @Init

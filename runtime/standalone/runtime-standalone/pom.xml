@@ -104,10 +104,21 @@ licensed under the Apache 2.0 license.
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-monitor-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-monitor-impl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-monitor-appender</artifactId>
             <version>${project.version}</version>
         </dependency>
 
