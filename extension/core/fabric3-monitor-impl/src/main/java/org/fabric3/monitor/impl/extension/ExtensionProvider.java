@@ -120,8 +120,6 @@ public class ExtensionProvider {
             defaultDestination.start();
             registry.register(defaultDestination);
             systemReader = null;
-
-            // FIXME catch error statements below
         } catch (AppenderCreationException e) {
             monitor.error(e);
         } catch (IOException e) {
