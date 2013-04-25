@@ -49,6 +49,7 @@ import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.SleepingWaitStrategy;
 import com.lmax.disruptor.TimeoutBlockingWaitStrategy;
 import com.lmax.disruptor.WaitStrategy;
+import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -226,6 +227,9 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
         if ("blocking".equalsIgnoreCase(strategyType)) {
             waitStrategy = new BlockingWaitStrategy();
             monitor.blockingStrategy();
+        } else if ("yielding".equalsIgnoreCase(strategyType)) {
+            waitStrategy = new YieldingWaitStrategy();
+            monitor.yieldingStrategy();
         } else if ("sleeping".equalsIgnoreCase(strategyType)) {
             waitStrategy = new SleepingWaitStrategy();
             monitor.sleepingStrategy();

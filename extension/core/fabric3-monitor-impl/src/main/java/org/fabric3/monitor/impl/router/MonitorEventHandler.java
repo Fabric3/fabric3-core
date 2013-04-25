@@ -59,16 +59,16 @@ public class MonitorEventHandler implements EventHandler<MonitorEventEntry> {
 
     public void onEvent(MonitorEventEntry entry, long sequence, boolean endOfBatch) throws Exception {
         registry.write(entry);
-        if (counter >= MIN) {
-            long time = System.nanoTime() - entry.getTimestampNanos();
-            elapsedTime = elapsedTime + time;
-        }
-        counter++;
-        if (counter == MAX) {
-            System.out.println("Time last event: " + (System.nanoTime() - entry.getTimestampNanos()));
-            System.out.println("Elapsed: " + elapsedTime);
-            System.out.println("Avg: " + (double) elapsedTime / (double) (MAX - MIN));
-        }
+//        if (counter >= MIN) {
+//            long time = System.nanoTime() - entry.getTimestampNanos();
+//            elapsedTime = elapsedTime + time;
+//        }
+//        counter++;
+//        if (counter == MAX) {
+//            System.out.println("Time last event: " + (System.nanoTime() - entry.getTimestampNanos()));
+//            System.out.println("Elapsed: " + elapsedTime);
+//            System.out.println("Avg: " + (double) elapsedTime / (double) (MAX - MIN));
+//        }
     }
 
 }

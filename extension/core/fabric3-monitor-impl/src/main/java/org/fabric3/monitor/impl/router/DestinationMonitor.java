@@ -58,6 +58,9 @@ public interface DestinationMonitor {
     @Debug("Blocking strategy enabled on monitor ring buffer")
     void blockingStrategy();
 
+    @Debug("Yielding strategy enabled on monitor ring buffer")
+    void yieldingStrategy();
+
     @Debug("Sleeping wait strategy enabled on monitor ring buffer")
     void sleepingStrategy();
 
