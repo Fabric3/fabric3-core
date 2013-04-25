@@ -37,18 +37,32 @@
 */
 package org.fabric3.monitor.impl.writer;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.nio.ByteBuffer;
 
 /**
- * Writes an Object to a ByteBuffer using Object.toString().
+ * Writes an Object to a ByteBuffer.
  */
 public final class ObjectWriter {
+    private static final byte[] NEWLINE = "\n".getBytes();
 
     private ObjectWriter() {
     }
 
     public static int write(Object object, ByteBuffer buffer) {
-        return CharSequenceWriter.write(object.toString(), buffer);
+        if (object instanceof Throwable) {
+            Throwable t = (Throwable) object;
+            ByteArrayOutputStream bas = new ByteArrayOutputStream();
+            PrintStream printStream = new PrintStream(bas);
+            t.printStackTrace(printStream);
+            byte[] bytes = bas.toByteArray();
+            buffer.put(NEWLINE);
+            buffer.put(bytes);
+            return bytes.length + NEWLINE.length;
+        } else {
+            return CharSequenceWriter.write(object.toString(), buffer);
+        }
     }
 
 }

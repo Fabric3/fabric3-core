@@ -79,7 +79,7 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
 
     private Disruptor<MonitorEventEntry> disruptor;
 
-    private int capacity = 2000;
+    private int capacity = 3072;
     private int ringSize = 65536;
     private String strategyType = "blocking";
     private long blockingTimeoutNanos = 1000;

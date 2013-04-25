@@ -63,8 +63,7 @@ public class DefaultMonitorDestinationBuilder implements MonitorDestinationBuild
     private MonitorDestinationRegistry registry;
     private EventWriter eventWriter;
 
-    //    private List<Appender> defaultAppenders = Collections.emptyList();
-    private int capacity = 2000;
+    private int capacity = 3072;
 
     private Map<Class<?>, AppenderBuilder<?>> appenderBuilders;
 

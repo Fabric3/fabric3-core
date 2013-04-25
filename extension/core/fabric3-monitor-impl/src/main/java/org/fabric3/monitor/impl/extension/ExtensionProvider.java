@@ -70,7 +70,7 @@ public class ExtensionProvider {
     private AppenderFactory appenderFactory;
     private ExtensionProviderMonitor monitor;
 
-    private int capacity = 2000;
+    private int capacity = 3072;
     private boolean overrideDefault;
 
     private LocationAwareXMLStreamReader systemReader;

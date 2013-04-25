@@ -128,19 +128,26 @@ public class EventWriterImpl implements EventWriter {
         ByteBuffer buffer = entry.getBuffer();
         int bytesWritten = 0;
         int counter = 0;
+        ParameterEntry[] entries = entry.getEntries();
         for (int i = 0; i < template.length(); i++) {
             char current = template.charAt(i);
             if ('{' == current) {
                 if (counter > entry.getLimit()) {
                     throw new ServiceRuntimeException("Monitor message contains more parameters than are supplied by the method interface: " + template);
                 }
-                ParameterEntry parameterEntry = entry.getEntries()[counter];
+                ParameterEntry parameterEntry = entries[counter];
                 bytesWritten = bytesWritten + writeParameter(parameterEntry, buffer);
                 i = i + 2;    // skip two places
                 counter++;
             } else {
                 bytesWritten++;
                 buffer.put((byte) current);
+            }
+        }
+        if (counter < entry.getLimit()) {
+            ParameterEntry last = entries[entry.getLimit() - 1];
+            if (ParameterEntry.Slot.OBJECT == last.getSlot() && last.getObjectValue(Object.class) instanceof Throwable) {
+                bytesWritten = bytesWritten + ObjectWriter.write(last.getObjectValue(Object.class), buffer);
             }
         }
         return bytesWritten;
@@ -158,7 +165,6 @@ public class EventWriterImpl implements EventWriter {
             monitor.invalidTimestampType(timestampType);
         }
     }
-
 
     private int writeTemplate(String template, Object[] args, ByteBuffer buffer) {
         if (template == null) {
@@ -183,7 +189,6 @@ public class EventWriterImpl implements EventWriter {
         }
         return bytesWritten;
     }
-
 
     private int writeParameter(ParameterEntry parameterEntry, ByteBuffer buffer) {
         int count = 0;
@@ -219,22 +224,20 @@ public class EventWriterImpl implements EventWriter {
         return count;
     }
 
-
     private int writeParameter(Object arg, ByteBuffer buffer) {
-          if (arg instanceof CharSequence) {
-              return CharSequenceWriter.write((CharSequence) arg, buffer);
-          } else if (arg instanceof Long) {
-              return LongWriter.write((Long) arg, buffer);
-          } else if (arg instanceof Integer) {
-              return IntWriter.write((Integer) arg, buffer);
-          } else if (arg instanceof Double) {
-              return DoubleWriter.write((Double) arg, buffer);
-          } else if (arg instanceof Boolean) {
-              return BooleanWriter.write((Boolean) arg, buffer);
-          } else {
-              return 0;
-          }
-      }
-
+        if (arg instanceof CharSequence) {
+            return CharSequenceWriter.write((CharSequence) arg, buffer);
+        } else if (arg instanceof Long) {
+            return LongWriter.write((Long) arg, buffer);
+        } else if (arg instanceof Integer) {
+            return IntWriter.write((Integer) arg, buffer);
+        } else if (arg instanceof Double) {
+            return DoubleWriter.write((Double) arg, buffer);
+        } else if (arg instanceof Boolean) {
+            return BooleanWriter.write((Boolean) arg, buffer);
+        } else {
+            return 0;
+        }
+    }
 
 }
