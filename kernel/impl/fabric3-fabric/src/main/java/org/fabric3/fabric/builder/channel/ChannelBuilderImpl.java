@@ -48,25 +48,24 @@ import org.fabric3.fabric.channel.ChannelImpl;
 import org.fabric3.fabric.channel.FanOutHandler;
 import org.fabric3.fabric.channel.ReplicationHandler;
 import org.fabric3.fabric.channel.ReplicationMonitor;
-import org.fabric3.fabric.channel.SyncFanOutHandler;
-import org.fabric3.fabric.model.physical.DefaultChannelDefinition;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.federation.ZoneChannelException;
 import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
-public class DefaultChannelBuilder implements ChannelBuilder<DefaultChannelDefinition> {
+public class ChannelBuilderImpl implements ChannelBuilder {
     private ExecutorService executorService;
     private ReplicationMonitor monitor;
     private ZoneTopologyService topologyService;
     private boolean replicationCapable;
 
-    public DefaultChannelBuilder(@Reference ExecutorService executorService, @Monitor ReplicationMonitor monitor) {
+    public ChannelBuilderImpl(@Reference ExecutorService executorService, @Monitor ReplicationMonitor monitor) {
         this.executorService = executorService;
         this.monitor = monitor;
     }
@@ -80,15 +79,10 @@ public class DefaultChannelBuilder implements ChannelBuilder<DefaultChannelDefin
         }
     }
 
-    public Channel build(DefaultChannelDefinition definition) throws BuilderException {
+    public Channel build(PhysicalChannelDefinition definition) throws BuilderException {
         URI uri = definition.getUri();
         QName deployable = definition.getDeployable();
-        FanOutHandler fanOutHandler;
-        if (definition.isSynchronous()) {
-            fanOutHandler = new SyncFanOutHandler();
-        } else {
-            fanOutHandler = new AsyncFanOutHandler(executorService);
-        }
+        FanOutHandler fanOutHandler = new AsyncFanOutHandler(executorService);
         Channel channel;
         if (definition.isReplicate() && replicationCapable) {
             String channelName = uri.toString();

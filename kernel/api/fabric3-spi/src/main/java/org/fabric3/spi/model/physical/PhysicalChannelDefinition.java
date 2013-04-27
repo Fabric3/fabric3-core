@@ -48,20 +48,19 @@ import java.io.Serializable;
 import java.net.URI;
 
 /**
- * Used to provision a channel on a runtime.
+ * Configuration to provision a channel on a runtime.
  */
-public abstract class PhysicalChannelDefinition implements Serializable {
+public class PhysicalChannelDefinition implements Serializable {
     private static final long serialVersionUID = 8681183877136491160L;
     private URI uri;
     private QName deployable;
-    private boolean synchronous;
     private boolean replicate;
     private PhysicalChannelBindingDefinition bindingDefinition;
+    private String type;
 
-    public PhysicalChannelDefinition(URI uri, QName deployable, boolean synchronous, boolean replicate) {
+    public PhysicalChannelDefinition(URI uri, QName deployable, boolean replicate) {
         this.uri = uri;
         this.deployable = deployable;
-        this.synchronous = synchronous;
         this.replicate = replicate;
     }
 
@@ -84,15 +83,6 @@ public abstract class PhysicalChannelDefinition implements Serializable {
     }
 
     /**
-     * Returns true if this channel synchronously dispatches events to consumers.
-     *
-     * @return true if this channel synchronously dispatches events to consumers.
-     */
-    public boolean isSynchronous() {
-        return synchronous;
-    }
-
-    /**
      * Returns true if the channel replicates events to all channel instances in a zone.
      *
      * @return true if the channel replicates events to all channel instances in a zone
@@ -101,13 +91,32 @@ public abstract class PhysicalChannelDefinition implements Serializable {
         return replicate;
     }
 
-
+    /**
+     * Returns the binding definition for the channel.
+     *
+     * @return the binding definition for the channel
+     */
     public PhysicalChannelBindingDefinition getBindingDefinition() {
         return bindingDefinition;
     }
 
+    /**
+     * Sets the channel binding definition.
+     *
+     * @param bindingDefinition the binding definition
+     */
     public void setBindingDefinition(PhysicalChannelBindingDefinition bindingDefinition) {
         this.bindingDefinition = bindingDefinition;
+    }
+
+    /**
+     * Returns the type of channel
+     *
+     * @return the type of chanel
+     */
+
+    public String getType() {
+        return type;
     }
 
 }

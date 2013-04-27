@@ -55,7 +55,6 @@ public class DefaultChannelGeneratorTestCase extends TestCase {
     public void testGenerate() throws Exception {
         ChannelDefinition channelDefinition = new ChannelDefinition("test", URI.create("contribution"));
         channelDefinition.addIntent(ChannelIntents.REPLICATE_INTENT);
-        channelDefinition.addIntent(ChannelIntents.SYNC_INTENT);
         LogicalChannel channel = new LogicalChannel(URI.create("test"), channelDefinition, null);
         QName deployable = new QName("test", "test");
         channel.setDeployable(deployable);
@@ -64,6 +63,5 @@ public class DefaultChannelGeneratorTestCase extends TestCase {
 
         assertEquals(deployable, definition.getDeployable());
         assertTrue(definition.isReplicate());
-        assertTrue(definition.isSynchronous());
     }
 }

@@ -47,11 +47,6 @@ import org.fabric3.host.Namespaces;
 public interface ChannelIntents {
 
     /**
-     * Indicates a channel must flow events synchronously for a given client connection.
-     */
-    QName SYNC_INTENT = new QName(Namespaces.F3, "synchronous");
-
-    /**
      * Indicates a channel must replicate events to all channel instances in a zone.
      */
     QName REPLICATE_INTENT = new QName(Namespaces.F3, "replication");

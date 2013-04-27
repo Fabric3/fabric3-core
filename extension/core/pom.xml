@@ -32,6 +32,8 @@
 
     <modules>
         <module>fabric3-async</module>
+        <module>fabric3-channel-impl</module>
+        <module>fabric3-channel-disruptor</module>
         <module>fabric3-contribution-scanner</module>
         <module>fabric3-jdk-proxy</module>
         <module>fabric3-bytecode-proxy</module>
@@ -42,7 +44,6 @@
         <module>fabric3-recovery</module>
         <module>fabric3-execution</module>
         <module>fabric3-writer</module>
-        <module>fabric3-channel-disruptor</module>
         <module>fabric3-monitor-spi</module>
         <module>fabric3-monitor-impl</module>
         <module>fabric3-monitor-log</module>

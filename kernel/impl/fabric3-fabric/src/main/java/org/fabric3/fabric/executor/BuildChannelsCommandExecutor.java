@@ -140,7 +140,7 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
     }
 
     private ChannelBuilder getBuilder(PhysicalChannelDefinition definition) throws ExecutionException {
-        ChannelBuilder<?> builder = channelBuilders.get(definition.getClass());
+        ChannelBuilder builder = channelBuilders.get(definition.getClass());
         if (builder == null) {
             throw new ExecutionException("Channel builder not found for type " + definition.getClass());
         }

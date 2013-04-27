@@ -44,7 +44,7 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 /**
  * Builds a channel.
  */
-public interface ChannelBuilder<T extends PhysicalChannelDefinition> {
+public interface ChannelBuilder {
 
     /**
      * Creates the channel from the definition.
@@ -53,5 +53,5 @@ public interface ChannelBuilder<T extends PhysicalChannelDefinition> {
      * @return the channel
      * @throws BuilderException if there is an error building the channel
      */
-    Channel build(T definition) throws BuilderException;
+    Channel build(PhysicalChannelDefinition definition) throws BuilderException;
 }

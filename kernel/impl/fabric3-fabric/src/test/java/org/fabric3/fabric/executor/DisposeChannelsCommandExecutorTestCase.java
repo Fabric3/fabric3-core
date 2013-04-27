@@ -43,14 +43,13 @@
  */
 package org.fabric3.fabric.executor;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.fabric.command.DisposeChannelsCommand;
 import org.fabric3.spi.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.channel.Channel;
@@ -68,7 +67,7 @@ public class DisposeChannelsCommandExecutorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testDisposeChannel() throws Exception {
-        PhysicalChannelDefinition definition = new MockDefinition();
+        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"), true);
         definition.setBindingDefinition(new MockBindingDefinition());
 
         CommandExecutorRegistry registry = EasyMock.createMock(CommandExecutorRegistry.class);
@@ -100,13 +99,6 @@ public class DisposeChannelsCommandExecutorTestCase extends TestCase {
         EasyMock.verify(channelManager, builder, registry, topologyService, channel);
     }
 
-    private class MockDefinition extends PhysicalChannelDefinition {
-        private static final long serialVersionUID = -809769047230911419L;
-
-        private MockDefinition() {
-            super(URI.create("test"), new QName("foo", "bar"), false, true);
-        }
-    }
 
     private class MockBindingDefinition extends PhysicalChannelBindingDefinition {
         private static final long serialVersionUID = -474926224717103363L;

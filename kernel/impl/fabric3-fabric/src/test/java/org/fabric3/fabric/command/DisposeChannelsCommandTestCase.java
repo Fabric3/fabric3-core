@@ -43,7 +43,6 @@ import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
-import org.fabric3.fabric.model.physical.DefaultChannelDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 public class DisposeChannelsCommandTestCase extends TestCase {
@@ -66,7 +65,7 @@ public class DisposeChannelsCommandTestCase extends TestCase {
         super.setUp();
         URI uri = URI.create("channel");
         QName deployable = new QName("test", "composite");
-        PhysicalChannelDefinition definition = new DefaultChannelDefinition(uri, deployable, false, false);
+        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(uri, deployable, false);
         definitions = Collections.singletonList(definition);
     }
 }

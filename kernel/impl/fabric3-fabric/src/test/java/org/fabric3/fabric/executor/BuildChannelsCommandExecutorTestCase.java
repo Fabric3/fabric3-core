@@ -68,7 +68,7 @@ public class BuildChannelsCommandExecutorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testBuildChannel() throws Exception {
-        PhysicalChannelDefinition definition = new MockDefinition();
+        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"), true);
         definition.setBindingDefinition(new MockBindingDefinition());
 
         CommandExecutorRegistry registry = EasyMock.createMock(CommandExecutorRegistry.class);
@@ -93,12 +93,11 @@ public class BuildChannelsCommandExecutorTestCase extends TestCase {
         BuildChannelsCommandExecutor executor = new BuildChannelsCommandExecutor(channelManager, null, registry);
 
         Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder> bindingBuilderMap
-                = Collections.<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder>singletonMap(MockBindingDefinition.class,
-                                                                                                                     bindingBuilder);
+                = Collections.<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder>singletonMap(MockBindingDefinition.class, bindingBuilder);
         executor.setBindingBuilders(bindingBuilderMap);
 
         Map<Class<? extends PhysicalChannelDefinition>, ChannelBuilder> channelBuilderMap
-                = Collections.<Class<? extends PhysicalChannelDefinition>, ChannelBuilder>singletonMap(MockDefinition.class, channelBuilder);
+                = Collections.<Class<? extends PhysicalChannelDefinition>, ChannelBuilder>singletonMap(PhysicalChannelDefinition.class, channelBuilder);
 
         executor.setChannelBuilders(channelBuilderMap);
 
@@ -106,14 +105,6 @@ public class BuildChannelsCommandExecutorTestCase extends TestCase {
         executor.execute(command);
 
         EasyMock.verify(channelManager, channelBuilder, channel, bindingBuilder, registry, topologyService, monitor);
-    }
-
-    private class MockDefinition extends PhysicalChannelDefinition {
-        private static final long serialVersionUID = -809769047230911419L;
-
-        private MockDefinition() {
-            super(URI.create("test"), new QName("foo", "bar"), false, true);
-        }
     }
 
     private class MockBindingDefinition extends PhysicalChannelBindingDefinition {
