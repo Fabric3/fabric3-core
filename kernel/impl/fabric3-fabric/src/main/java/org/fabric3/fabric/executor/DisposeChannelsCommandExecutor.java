@@ -43,60 +43,29 @@
  */
 package org.fabric3.fabric.executor;
 
-import java.net.URI;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.command.DisposeChannelsCommand;
 import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.component.ChannelBindingBuilder;
-import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelManager;
-import org.fabric3.spi.channel.RegistrationException;
+import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.federation.ZoneChannelException;
-import org.fabric3.spi.federation.ZoneTopologyService;
-import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Removes a set of channels defined in a composite on a runtime.
  */
 @EagerInit
 public class DisposeChannelsCommandExecutor implements CommandExecutor<DisposeChannelsCommand> {
-    private ChannelManager channelManager;
+    private ChannelBuilder channelBuilder;
     private CommandExecutorRegistry executorRegistry;
-    private ZoneTopologyService topologyService;
-    private boolean replicationCapable;
 
-    private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>>
-            builders = Collections.emptyMap();
-
-    @Reference(required = false)
-    public void setTopologyService(List<ZoneTopologyService> services) {
-        // use a collection to force reinjection
-        if (services != null && !services.isEmpty()) {
-            this.topologyService = services.get(0);
-            replicationCapable = topologyService.supportsDynamicChannels();
-        }
-    }
-
-    @Reference(required = false)
-    public void setBuilders(Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder<? extends PhysicalChannelBindingDefinition>> builders) {
-        this.builders = builders;
-    }
-
-    @Constructor
-    public DisposeChannelsCommandExecutor(@Reference ChannelManager channelManager, @Reference CommandExecutorRegistry executorRegistry) {
-        this.channelManager = channelManager;
+    public DisposeChannelsCommandExecutor(@Reference ChannelBuilder channelBuilder, @Reference CommandExecutorRegistry executorRegistry) {
+        this.channelBuilder = channelBuilder;
         this.executorRegistry = executorRegistry;
     }
 
@@ -109,44 +78,11 @@ public class DisposeChannelsCommandExecutor implements CommandExecutor<DisposeCh
         try {
             List<PhysicalChannelDefinition> definitions = command.getDefinitions();
             for (PhysicalChannelDefinition definition : definitions) {
-                URI uri = definition.getUri();
-                Channel channel = channelManager.unregister(uri);
-
-                if (definition.isReplicate() && replicationCapable) {
-                    String channelName = uri.toString();
-                    try {
-                        topologyService.closeChannel(channelName);
-                    } catch (ZoneChannelException e) {
-                        throw new ExecutionException(e);
-                    }
-                }
-                PhysicalChannelBindingDefinition bindingDefinition = definition.getBindingDefinition();
-                disposeBinding(channel, bindingDefinition);
-
+                channelBuilder.dispose(definition);
             }
-        } catch (RegistrationException e) {
+        } catch (BuilderException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private void disposeBinding(Channel channel, PhysicalChannelBindingDefinition bindingDefinition) throws ExecutionException {
-        if (bindingDefinition != null) {
-            ChannelBindingBuilder builder = getBuilder(bindingDefinition);
-            try {
-                builder.dispose(bindingDefinition, channel);
-            } catch (BuilderException e) {
-                throw new ExecutionException(e);
-            }
-        }
-    }
-
-    private ChannelBindingBuilder getBuilder(PhysicalChannelBindingDefinition bindingDefinition) throws ExecutionException {
-        ChannelBindingBuilder<?> builder = builders.get(bindingDefinition.getClass());
-        if (builder == null) {
-            throw new ExecutionException("Channel binding builder not found for type " + bindingDefinition.getClass());
-        }
-        return builder;
     }
 
 }

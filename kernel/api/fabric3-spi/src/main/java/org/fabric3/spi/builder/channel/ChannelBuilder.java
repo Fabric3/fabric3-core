@@ -54,4 +54,12 @@ public interface ChannelBuilder {
      * @throws BuilderException if there is an error building the channel
      */
     Channel build(PhysicalChannelDefinition definition) throws BuilderException;
+
+    /**
+     * Disposes a channel.
+     *
+     * @param definition the physical channel definition
+     * @throws BuilderException if there is an error disposing the channel
+     */
+    void dispose(PhysicalChannelDefinition definition) throws BuilderException;
 }

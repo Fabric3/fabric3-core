@@ -43,22 +43,14 @@
  */
 package org.fabric3.fabric.executor;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.channel.ChannelBuilder;
-import org.fabric3.spi.builder.component.ChannelBindingBuilder;
-import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelManager;
-import org.fabric3.spi.channel.RegistrationException;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -70,29 +62,13 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChannelsCommand> {
-    private ChannelManager channelManager;
+    private ChannelBuilder channelBuilder;
     private CommandExecutorRegistry executorRegistry;
 
-    private Map<Class<? extends PhysicalChannelDefinition>, ChannelBuilder> channelBuilders = Collections.emptyMap();
-
-    private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder> bindingBuilders = Collections.emptyMap();
-
     @Constructor
-    public BuildChannelsCommandExecutor(@Reference ChannelManager channelManager,
-                                        @Reference ExecutorService executorService,
-                                        @Reference CommandExecutorRegistry executorRegistry) {
-        this.channelManager = channelManager;
+    public BuildChannelsCommandExecutor(@Reference ChannelBuilder channelBuilder, @Reference CommandExecutorRegistry executorRegistry) {
+        this.channelBuilder = channelBuilder;
         this.executorRegistry = executorRegistry;
-    }
-
-    @Reference(required = false)
-    public void setBindingBuilders(Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder> builders) {
-        this.bindingBuilders = builders;
-    }
-
-    @Reference(required = false)
-    public void setChannelBuilders(Map<Class<? extends PhysicalChannelDefinition>, ChannelBuilder> channelBuilders) {
-        this.channelBuilders = channelBuilders;
     }
 
     @Init
@@ -105,46 +81,11 @@ public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChanne
         try {
             List<PhysicalChannelDefinition> definitions = command.getDefinitions();
             for (PhysicalChannelDefinition definition : definitions) {
-
-                Channel channel = getBuilder(definition).build(definition);
-
-                PhysicalChannelBindingDefinition bindingDefinition = definition.getBindingDefinition();
-                buildBinding(channel, bindingDefinition);
-                channelManager.register(channel);
+                channelBuilder.build(definition);
             }
-        } catch (RegistrationException e) {
-            throw new ExecutionException(e.getMessage(), e);
         } catch (BuilderException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private void buildBinding(Channel channel, PhysicalChannelBindingDefinition bindingDefinition) throws ExecutionException {
-        if (bindingDefinition != null) {
-            ChannelBindingBuilder builder = getBuilder(bindingDefinition);
-            try {
-                builder.build(bindingDefinition, channel);
-            } catch (BuilderException e) {
-                throw new ExecutionException(e);
-            }
-        }
-    }
-
-    private ChannelBindingBuilder getBuilder(PhysicalChannelBindingDefinition definition) throws ExecutionException {
-        ChannelBindingBuilder<?> builder = bindingBuilders.get(definition.getClass());
-        if (builder == null) {
-            throw new ExecutionException("Channel binding builder not found for type " + definition.getClass());
-        }
-        return builder;
-    }
-
-    private ChannelBuilder getBuilder(PhysicalChannelDefinition definition) throws ExecutionException {
-        ChannelBuilder builder = channelBuilders.get(definition.getClass());
-        if (builder == null) {
-            throw new ExecutionException("Channel builder not found for type " + definition.getClass());
-        }
-        return builder;
     }
 
 }
