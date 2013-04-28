@@ -66,10 +66,14 @@ import org.oasisopen.sca.annotation.Reference;
 public class BuildChannelCommandGenerator implements CommandGenerator {
 
     private int order;
+    private ChannelGenerator channelGenerator;
     private GeneratorRegistry generatorRegistry;
 
-    public BuildChannelCommandGenerator(@Property(name = "order") int order, @Reference GeneratorRegistry generatorRegistry) {
+    public BuildChannelCommandGenerator(@Property(name = "order") int order,
+                                        @Reference ChannelGenerator channelGenerator,
+                                        @Reference GeneratorRegistry generatorRegistry) {
         this.order = order;
+        this.channelGenerator = channelGenerator;
         this.generatorRegistry = generatorRegistry;
     }
 
@@ -93,8 +97,7 @@ public class BuildChannelCommandGenerator implements CommandGenerator {
         List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
         for (LogicalChannel channel : composite.getChannels()) {
             if (channel.getState() == LogicalState.NEW || !incremental) {
-                ChannelGenerator generator = generatorRegistry.getChannelGenerator(channel.getDefinition().getType());
-                PhysicalChannelDefinition definition = generator.generate(channel);
+                PhysicalChannelDefinition definition = channelGenerator.generate(channel);
                 generateBinding(channel, definition);
                 definitions.add(definition);
             }

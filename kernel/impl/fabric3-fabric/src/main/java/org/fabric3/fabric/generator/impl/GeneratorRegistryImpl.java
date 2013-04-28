@@ -55,7 +55,6 @@ import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.generator.BindingGenerator;
-import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.EventStreamHandlerGenerator;
@@ -76,7 +75,6 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     private Map<QName, EventStreamHandlerGenerator> handlerGenerators = new HashMap<QName, EventStreamHandlerGenerator>();
     private Map<Class<?>, ResourceReferenceGenerator<?>> resourceReferenceGenerators = new HashMap<Class<?>, ResourceReferenceGenerator<?>>();
     private Map<Class<?>, ResourceGenerator<?>> resourceGenerators = new HashMap<Class<?>, ResourceGenerator<?>>();
-    private Map<String, ChannelGenerator> channelGenerators = new HashMap<String, ChannelGenerator>();
 
     @Reference(required = false)
     public void setComponentGenerators(Map<Class<?>, ComponentGenerator<?>> componentGenerators) {
@@ -111,11 +109,6 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
     @Reference(required = false)
     public void setHandlerGenerators(Map<QName, EventStreamHandlerGenerator> handlerGenerators) {
         this.handlerGenerators = handlerGenerators;
-    }
-
-    @Reference(required = false)
-    public void setChannelGenerators(Map<String, ChannelGenerator> channelGenerators) {
-        this.channelGenerators = channelGenerators;
     }
 
     public <T extends Implementation<?>> void register(Class<T> clazz, ComponentGenerator<LogicalComponent<T>> generator) {
@@ -192,11 +185,4 @@ public class GeneratorRegistryImpl implements GeneratorRegistry {
         return generator;
     }
 
-    public ChannelGenerator getChannelGenerator(String type) throws GeneratorNotFoundException {
-        ChannelGenerator generator = channelGenerators.get(type);
-        if (generator == null) {
-            throw new GeneratorNotFoundException(type);
-        }
-        return generator;
-    }
 }

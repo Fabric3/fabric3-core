@@ -70,13 +70,12 @@ public class BuildChannelCommandGeneratorTestCase extends TestCase {
         EasyMock.expect(channelGenerator.generate(EasyMock.isA(LogicalChannel.class))).andReturn(definition);
 
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(registry.getChannelGenerator(EasyMock.isA(String.class))).andReturn(channelGenerator);
         registry.getConnectionBindingGenerator(MockBinding.class);
         EasyMock.expectLastCall().andReturn(bindingGenerator);
 
         EasyMock.replay(bindingGenerator, registry, channelGenerator);
 
-        BuildChannelCommandGenerator generator = new BuildChannelCommandGenerator(0, registry);
+        BuildChannelCommandGenerator generator = new BuildChannelCommandGenerator(0, channelGenerator, registry);
 
         LogicalCompositeComponent composite = createComposite();
 
@@ -98,13 +97,12 @@ public class BuildChannelCommandGeneratorTestCase extends TestCase {
         EasyMock.expect(channelGenerator.generate(EasyMock.isA(LogicalChannel.class))).andReturn(definition).times(2);
 
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(registry.getChannelGenerator(EasyMock.isA(String.class))).andReturn(channelGenerator).times(2);
         registry.getConnectionBindingGenerator(MockBinding.class);
         EasyMock.expectLastCall().andReturn(bindingGenerator);
 
         EasyMock.replay(bindingGenerator, registry, channelGenerator);
 
-        BuildChannelCommandGenerator generator = new BuildChannelCommandGenerator(0, registry);
+        BuildChannelCommandGenerator generator = new BuildChannelCommandGenerator(0, channelGenerator, registry);
 
         LogicalCompositeComponent composite = createComposite();
 

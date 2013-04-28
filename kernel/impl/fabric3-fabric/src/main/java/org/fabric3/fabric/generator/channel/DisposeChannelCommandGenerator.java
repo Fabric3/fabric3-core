@@ -42,7 +42,6 @@ import java.util.List;
 
 import org.fabric3.fabric.command.DisposeChannelsCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
-import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -59,11 +58,11 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class DisposeChannelCommandGenerator implements CommandGenerator {
-    private GeneratorRegistry generatorRegistry;
+    private ChannelGenerator channelGenerator;
     private int order;
 
-    public DisposeChannelCommandGenerator(@Reference GeneratorRegistry generatorRegistry, @Property(name = "order") int order) {
-        this.generatorRegistry = generatorRegistry;
+    public DisposeChannelCommandGenerator(@Reference ChannelGenerator channelGenerator, @Property(name = "order") int order) {
+        this.channelGenerator = channelGenerator;
         this.order = order;
     }
 
@@ -87,8 +86,7 @@ public class DisposeChannelCommandGenerator implements CommandGenerator {
         List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
         for (LogicalChannel channel : composite.getChannels()) {
             if (channel.getState() == LogicalState.MARKED) {
-                ChannelGenerator generator = generatorRegistry.getChannelGenerator(channel.getDefinition().getType());
-                PhysicalChannelDefinition definition = generator.generate(channel);
+                PhysicalChannelDefinition definition = channelGenerator.generate(channel);
                 definitions.add(definition);
             }
         }

@@ -153,7 +153,7 @@
         <f3:implementation.system class="org.fabric3.fabric.generator.utility.NullInterceptorGenerator"/>
     </component>
 
-    <component name="DefaultChannelGenerator" f3:key="default">
+    <component name="DefaultChannelGenerator">
         <f3:implementation.system class="org.fabric3.fabric.generator.channel.DefaultChannelGenerator"/>
     </component>
 

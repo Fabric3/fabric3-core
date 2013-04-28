@@ -109,6 +109,14 @@ public class GeneratorImpl implements Generator {
         this.commandGenerators = sortGenerators(commandGenerators);
     }
 
+    public GeneratorImpl(List<CommandGenerator> commandGenerators,
+                         ContributionCollator collator,
+                         ClassLoaderCommandGenerator classLoaderCommandGenerator,
+                         StartContextCommandGenerator startContextCommandGenerator,
+                         StopContextCommandGenerator stopContextCommandGenerator) {
+        this(commandGenerators, collator, classLoaderCommandGenerator, null, startContextCommandGenerator, stopContextCommandGenerator);
+    }
+
     /**
      * Lazily injected after bootstrap.
      *
@@ -154,12 +162,14 @@ public class GeneratorImpl implements Generator {
             }
         }
 
-        // generate commands for domain-level channels being deployed
-        for (LogicalChannel channel : domain.getChannels()) {
-            String zone = channel.getZone();
-            CompensatableCommand command = channelGenerator.generateBuild(channel, incremental);
-            if (command != null) {
-                deployment.addCommand(zone, command);
+        if (channelGenerator != null) {
+            // generate commands for domain-level channels being deployed
+            for (LogicalChannel channel : domain.getChannels()) {
+                String zone = channel.getZone();
+                CompensatableCommand command = channelGenerator.generateBuild(channel, incremental);
+                if (command != null) {
+                    deployment.addCommand(zone, command);
+                }
             }
         }
 
@@ -176,15 +186,16 @@ public class GeneratorImpl implements Generator {
             }
         }
 
-        // generate commands for domain-level channels being undeployed
-        for (LogicalChannel channel : domain.getChannels()) {
-            String zone = channel.getZone();
-            CompensatableCommand command = channelGenerator.generateDispose(channel, incremental);
-            if (command != null) {
-                deployment.addCommand(zone, command);
+        if (channelGenerator != null) {
+            // generate commands for domain-level channels being undeployed
+            for (LogicalChannel channel : domain.getChannels()) {
+                String zone = channel.getZone();
+                CompensatableCommand command = channelGenerator.generateDispose(channel, incremental);
+                if (command != null) {
+                    deployment.addCommand(zone, command);
+                }
             }
         }
-
         // generate commands for domain-level resources being undeployed
         if (resourceGenerator != null) {
             for (LogicalResource<?> resource : domain.getResources()) {
@@ -333,6 +344,5 @@ public class GeneratorImpl implements Generator {
         Collections.sort(sorted, generatorComparator);
         return sorted;
     }
-
 
 }

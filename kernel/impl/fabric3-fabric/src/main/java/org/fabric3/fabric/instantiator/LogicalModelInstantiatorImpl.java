@@ -37,13 +37,10 @@
 */
 package org.fabric3.fabric.instantiator;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Document;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -58,6 +55,9 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalResource;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
 
 /**
  *
@@ -77,6 +77,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     private PromotionResolutionService promotionResolutionService;
     private AutowireInstantiator autowireInstantiator;
 
+    @Constructor
     public LogicalModelInstantiatorImpl(@Reference CompositeComponentInstantiator compositeComponentInstantiator,
                                         @Reference AtomicComponentInstantiator atomicComponentInstantiator,
                                         @Reference WireInstantiator wireInstantiator,
@@ -93,6 +94,23 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         this.autowireNormalizer = autowireNormalizer;
         this.promotionResolutionService = promotionResolutionService;
         this.autowireInstantiator = autowireInstantiator;
+    }
+
+    public LogicalModelInstantiatorImpl(CompositeComponentInstantiator compositeComponentInstantiator,
+                                        AtomicComponentInstantiator atomicComponentInstantiator,
+                                        WireInstantiator wireInstantiator,
+                                        AutowireInstantiator autowireInstantiator,
+                                        PromotionNormalizer promotionNormalizer,
+                                        AutowireNormalizer autowireNormalizer,
+                                        PromotionResolutionService promotionResolutionService) {
+        this(compositeComponentInstantiator,
+             atomicComponentInstantiator,
+             wireInstantiator,
+             autowireInstantiator,
+             null,
+             promotionNormalizer,
+             autowireNormalizer,
+             promotionResolutionService);
     }
 
     public InstantiationContext include(Composite composite, LogicalCompositeComponent domain) {
@@ -173,10 +191,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
      * @param context   the instantiation context
      * @return the newly instantiated domain-level components
      */
-    private List<LogicalComponent<?>> instantiate(Composite composite,
-                                                  LogicalCompositeComponent domain,
-                                                  boolean synthetic,
-                                                  InstantiationContext context) {
+    private List<LogicalComponent<?>> instantiate(Composite composite, LogicalCompositeComponent domain, boolean synthetic, InstantiationContext context) {
         // instantiate the declared components
         Collection<ComponentDefinition<? extends Implementation<?>>> definitions = composite.getDeclaredComponents().values();
         List<LogicalComponent<?>> newComponents = new ArrayList<LogicalComponent<?>>(definitions.size());
@@ -195,18 +210,20 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
             wireInstantiator.instantiateReferenceWires(component, context);
         }
 
-        // instantiate channels
-        if (synthetic) {
-            for (Include include : composite.getIncludes().values()) {
-                // If it is a synthetic composite, included composites are the deployables.
-                // Synthetic composites are used to deploy multiple composites as a group. They include the composites (deployables).
-                // Adding the deployable name to domain-level components allows them to be managed as a group after they are deployed.
-                Composite included = include.getIncluded();
-                channelInstantiator.instantiateChannels(included, domain, context);
-            }
-        } else {
-            channelInstantiator.instantiateChannels(composite, domain, context);
+        if (channelInstantiator != null) {  // during bootstrap channel support is not available
+            // instantiate channels
+            if (synthetic) {
+                for (Include include : composite.getIncludes().values()) {
+                    // If it is a synthetic composite, included composites are the deployables.
+                    // Synthetic composites are used to deploy multiple composites as a group. They include the composites (deployables).
+                    // Adding the deployable name to domain-level components allows them to be managed as a group after they are deployed.
+                    Composite included = include.getIncluded();
+                    channelInstantiator.instantiateChannels(included, domain, context);
+                }
+            } else {
+                channelInstantiator.instantiateChannels(composite, domain, context);
 
+            }
         }
         return newComponents;
     }

@@ -62,9 +62,11 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGenerator {
+    private ChannelGenerator channelGenerator;
     private GeneratorRegistry generatorRegistry;
 
-    public DomainChannelCommandGeneratorImpl(@Reference GeneratorRegistry generatorRegistry) {
+    public DomainChannelCommandGeneratorImpl(@Reference ChannelGenerator channelGenerator, @Reference GeneratorRegistry generatorRegistry) {
+        this.channelGenerator = channelGenerator;
         this.generatorRegistry = generatorRegistry;
     }
 
@@ -102,8 +104,7 @@ public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGe
 
     @SuppressWarnings({"unchecked"})
     private void generateChannelDefinition(LogicalChannel channel, List<PhysicalChannelDefinition> definitions) throws GenerationException {
-        ChannelGenerator generator = generatorRegistry.getChannelGenerator(channel.getDefinition().getType());
-        PhysicalChannelDefinition definition = generator.generate(channel);
+        PhysicalChannelDefinition definition = channelGenerator.generate(channel);
 
         if (!channel.getBindings().isEmpty()) {
             // generate binding information

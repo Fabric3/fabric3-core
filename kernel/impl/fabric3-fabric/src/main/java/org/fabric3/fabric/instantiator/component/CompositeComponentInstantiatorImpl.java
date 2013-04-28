@@ -41,6 +41,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -69,8 +70,8 @@ import org.fabric3.spi.model.instance.LogicalService;
 /**
  * Instantiates a composite component in the logical representation of a domain. Child components will be recursively instantiated if they exist.
  * <p/>
- * Service and reference information configured as part of a <code>&lt;component&gt;</code> entry and component type will be merged into a single
- * logical artifact.
+ * Service and reference information configured as part of a <code>&lt;component&gt;</code> entry and component type will be merged into a single logical
+ * artifact.
  */
 public class CompositeComponentInstantiatorImpl extends AbstractComponentInstantiator implements CompositeComponentInstantiator {
 
@@ -84,12 +85,17 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         this.componentTypeOverride = componentTypeOverride;
     }
 
+    @Constructor
     public CompositeComponentInstantiatorImpl(@Reference AtomicComponentInstantiator atomicInstantiator,
                                               @Reference WireInstantiator wireInstantiator,
                                               @Reference ChannelInstantiator channelInstantiator) {
         this.atomicInstantiator = atomicInstantiator;
         this.wireInstantiator = wireInstantiator;
         this.channelInstantiator = channelInstantiator;
+    }
+
+    public CompositeComponentInstantiatorImpl(AtomicComponentInstantiator atomicInstantiator, WireInstantiator wireInstantiator) {
+        this(atomicInstantiator, wireInstantiator, null);
     }
 
     public LogicalComponent<CompositeImplementation> instantiate(ComponentDefinition<CompositeImplementation> definition,
@@ -111,7 +117,9 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
         instantiateCompositeReferences(component, composite);
         instantiateResources(component, composite);
         wireInstantiator.instantiateCompositeWires(composite, component, context);
-        channelInstantiator.instantiateChannels(composite, component, context);
+        if (channelInstantiator != null) {
+            channelInstantiator.instantiateChannels(composite, component, context);
+        }
         if (parent.getComponent(uri) != null) {
             DuplicateComponent error = new DuplicateComponent(uri, parent);
             context.addError(error);

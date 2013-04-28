@@ -50,7 +50,6 @@ import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.generator.BindingGenerator;
-import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.EventStreamHandlerGenerator;
@@ -60,8 +59,8 @@ import org.fabric3.spi.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
- * A registry for {@link ComponentGenerator}s, {@link BindingGenerator}s, {@link ConnectionBindingGenerator}s, and {@link InterceptorGenerator}s . Generators
- * are responsible for producing physical model objects that are provisioned to service nodes from their logical counterparts.
+ * A registry of generators. Generators are responsible for producing physical model objects that are provisioned to service nodes from their logical
+ * counterparts.
  */
 public interface GeneratorRegistry {
 
@@ -128,12 +127,4 @@ public interface GeneratorRegistry {
      */
     EventStreamHandlerGenerator getEventStreamHandlerGenerator(QName extensionName) throws GeneratorNotFoundException;
 
-    /**
-     * Returns the {@link ChannelGenerator} for the type.
-     *
-     * @param type the channel type
-     * @return the channel generator
-     * @throws GeneratorNotFoundException if no generator is registered for the type
-     */
-    ChannelGenerator getChannelGenerator(String type) throws GeneratorNotFoundException;
 }

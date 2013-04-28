@@ -53,7 +53,6 @@ import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.collector.CollectorImpl;
 import org.fabric3.fabric.command.AttachWireCommand;
 import org.fabric3.fabric.command.BuildComponentCommand;
-import org.fabric3.fabric.command.ChannelConnectionCommand;
 import org.fabric3.fabric.command.ConnectionCommand;
 import org.fabric3.fabric.command.StartComponentCommand;
 import org.fabric3.fabric.command.StartContextCommand;
@@ -65,7 +64,6 @@ import org.fabric3.fabric.domain.LocalDeployer;
 import org.fabric3.fabric.domain.RuntimeDomain;
 import org.fabric3.fabric.executor.AttachWireCommandExecutor;
 import org.fabric3.fabric.executor.BuildComponentCommandExecutor;
-import org.fabric3.fabric.executor.ChannelConnectionCommandExecutor;
 import org.fabric3.fabric.executor.CommandExecutorRegistryImpl;
 import org.fabric3.fabric.executor.ConnectionCommandExecutor;
 import org.fabric3.fabric.executor.ContextMonitor;
@@ -73,12 +71,6 @@ import org.fabric3.fabric.executor.StartComponentCommandExecutor;
 import org.fabric3.fabric.executor.StartContextCommandExecutor;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GeneratorRegistry;
-import org.fabric3.fabric.generator.channel.ConnectionGenerator;
-import org.fabric3.fabric.generator.channel.ConnectionGeneratorImpl;
-import org.fabric3.fabric.generator.channel.ConsumerCommandGenerator;
-import org.fabric3.fabric.generator.channel.DomainChannelCommandGenerator;
-import org.fabric3.fabric.generator.channel.DomainChannelCommandGeneratorImpl;
-import org.fabric3.fabric.generator.channel.ProducerCommandGenerator;
 import org.fabric3.fabric.generator.classloader.ClassLoaderCommandGenerator;
 import org.fabric3.fabric.generator.classloader.ClassLoaderCommandGeneratorImpl;
 import org.fabric3.fabric.generator.collator.ContributionCollator;
@@ -104,14 +96,12 @@ import org.fabric3.fabric.generator.wire.WireGeneratorImpl;
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.AutowireInstantiator;
 import org.fabric3.fabric.instantiator.AutowireNormalizer;
-import org.fabric3.fabric.instantiator.ChannelInstantiator;
 import org.fabric3.fabric.instantiator.CompositeComponentInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiatorImpl;
 import org.fabric3.fabric.instantiator.PromotionNormalizer;
 import org.fabric3.fabric.instantiator.PromotionResolutionService;
 import org.fabric3.fabric.instantiator.WireInstantiator;
-import org.fabric3.fabric.instantiator.channel.ChannelInstantiatorImpl;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
 import org.fabric3.fabric.instantiator.component.AutowireNormalizerImpl;
 import org.fabric3.fabric.instantiator.component.CompositeComponentInstantiatorImpl;
@@ -262,16 +252,12 @@ public class BootstrapAssemblyFactory {
         AtomicComponentInstantiator atomicInstantiator = new AtomicComponentInstantiatorImpl();
 
         WireInstantiator wireInstantiator = new WireInstantiatorImpl(matcher);
-        ChannelInstantiator channelInstantiator = new ChannelInstantiatorImpl();
 
-        CompositeComponentInstantiator compositeInstantiator = new CompositeComponentInstantiatorImpl(atomicInstantiator,
-                                                                                                      wireInstantiator,
-                                                                                                      channelInstantiator);
+        CompositeComponentInstantiator compositeInstantiator = new CompositeComponentInstantiatorImpl(atomicInstantiator, wireInstantiator);
         return new LogicalModelInstantiatorImpl(compositeInstantiator,
                                                 atomicInstantiator,
                                                 wireInstantiator,
                                                 autowireInstantiator,
-                                                channelInstantiator,
                                                 promotionNormalizer,
                                                 autowireNormalizer,
                                                 promotionResolutionService);
@@ -300,7 +286,7 @@ public class BootstrapAssemblyFactory {
             commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
             commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
             commandRegistry.register(ConnectionCommand.class, new ConnectionCommandExecutor(componentManager, commandRegistry));
-            commandRegistry.register(ChannelConnectionCommand.class, new ChannelConnectionCommandExecutor(commandRegistry));
+
         } catch (MonitorCreationException e) {
             throw new AssertionError(e);
         }
@@ -392,14 +378,13 @@ public class BootstrapAssemblyFactory {
         GeneratorRegistry generatorRegistry = createGeneratorRegistry();
         ClassLoaderCommandGenerator classLoaderGenerator = createClassLoaderGenerator();
         List<CommandGenerator> commandGenerators = createCommandGenerators(resolver, matcher, generatorRegistry);
-        DomainChannelCommandGenerator channelGenerator = new DomainChannelCommandGeneratorImpl(generatorRegistry);
 
         StopContextCommandGenerator stopContextGenerator = new StopContextCommandGeneratorImpl();
         StartContextCommandGenerator startContextGenerator = new StartContextCommandGeneratorImpl();
 
         ContributionCollator collator = new ContributionCollatorImpl(metaDataStore);
 
-        return new GeneratorImpl(commandGenerators, collator, classLoaderGenerator, channelGenerator, startContextGenerator, stopContextGenerator);
+        return new GeneratorImpl(commandGenerators, collator, classLoaderGenerator, startContextGenerator, stopContextGenerator);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -438,13 +423,6 @@ public class BootstrapAssemblyFactory {
         commandGenerators.add(new ReferenceCommandGenerator(wireGenerator, 2));
         commandGenerators.add(new BoundServiceCommandGenerator(wireGenerator, 2));
         commandGenerators.add(new ResourceReferenceCommandGenerator(wireGenerator, 2));
-
-        // eventing command generators
-        ConnectionGenerator connectionGenerator = new ConnectionGeneratorImpl(generatorRegistry, resolver);
-        ConsumerCommandGenerator consumerCommandGenerator = new ConsumerCommandGenerator(connectionGenerator, 2);
-        commandGenerators.add(consumerCommandGenerator);
-        ProducerCommandGenerator producerCommandGenerator = new ProducerCommandGenerator(connectionGenerator, 2);
-        commandGenerators.add(producerCommandGenerator);
 
         StartComponentCommandGenerator startGenerator = new StartComponentCommandGenerator(3);
         commandGenerators.add(startGenerator);

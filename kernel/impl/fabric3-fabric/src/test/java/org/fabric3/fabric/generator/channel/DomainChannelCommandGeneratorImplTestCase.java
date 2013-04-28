@@ -66,11 +66,10 @@ public class DomainChannelCommandGeneratorImplTestCase extends TestCase {
         ChannelGenerator channelGenerator = getChannelGenerator();
 
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(registry.getChannelGenerator(EasyMock.isA(String.class))).andReturn(channelGenerator);
 
         EasyMock.replay(registry, channelGenerator);
 
-        DomainChannelCommandGeneratorImpl generator = new DomainChannelCommandGeneratorImpl(registry);
+        DomainChannelCommandGeneratorImpl generator = new DomainChannelCommandGeneratorImpl(channelGenerator, registry);
         LogicalChannel channel = createChannel();
         BuildChannelsCommand command = generator.generateBuild(channel, true);
 
@@ -84,11 +83,10 @@ public class DomainChannelCommandGeneratorImplTestCase extends TestCase {
         ChannelGenerator channelGenerator = getChannelGenerator();
 
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(registry.getChannelGenerator(EasyMock.isA(String.class))).andReturn(channelGenerator);
 
         EasyMock.replay(registry, channelGenerator);
 
-        DomainChannelCommandGeneratorImpl generator = new DomainChannelCommandGeneratorImpl(registry);
+        DomainChannelCommandGeneratorImpl generator = new DomainChannelCommandGeneratorImpl(channelGenerator, registry);
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.PROVISIONED);
         BuildChannelsCommand command = generator.generateBuild(channel, false);
@@ -107,13 +105,12 @@ public class DomainChannelCommandGeneratorImplTestCase extends TestCase {
         EasyMock.expect(bindingGenerator.generateChannelBinding(EasyMock.isA(LogicalBinding.class))).andReturn(new MockPhysicalDefinition());
 
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(registry.getChannelGenerator(EasyMock.isA(String.class))).andReturn(channelGenerator);
         registry.getConnectionBindingGenerator(MockBinding.class);
         EasyMock.expectLastCall().andReturn(bindingGenerator);
 
         EasyMock.replay(registry, bindingGenerator, channelGenerator);
 
-        DomainChannelCommandGeneratorImpl generator = new DomainChannelCommandGeneratorImpl(registry);
+        DomainChannelCommandGeneratorImpl generator = new DomainChannelCommandGeneratorImpl(channelGenerator, registry);
 
         LogicalChannel channel = createChannel();
         LogicalBinding<MockBinding> binding = new LogicalBinding<MockBinding>(new MockBinding(), channel);
@@ -131,11 +128,10 @@ public class DomainChannelCommandGeneratorImplTestCase extends TestCase {
         ChannelGenerator channelGenerator = getChannelGenerator();
 
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(registry.getChannelGenerator(EasyMock.isA(String.class))).andReturn(channelGenerator);
 
         EasyMock.replay(registry, channelGenerator);
 
-        DomainChannelCommandGeneratorImpl generator = new DomainChannelCommandGeneratorImpl(registry);
+        DomainChannelCommandGeneratorImpl generator = new DomainChannelCommandGeneratorImpl(channelGenerator, registry);
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.MARKED);
         DisposeChannelsCommand command = generator.generateDispose(channel, true);
@@ -154,14 +150,13 @@ public class DomainChannelCommandGeneratorImplTestCase extends TestCase {
         EasyMock.expect(bindingGenerator.generateChannelBinding(EasyMock.isA(LogicalBinding.class))).andReturn(new MockPhysicalDefinition());
 
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(registry.getChannelGenerator(EasyMock.isA(String.class))).andReturn(channelGenerator);
 
         registry.getConnectionBindingGenerator(MockBinding.class);
         EasyMock.expectLastCall().andReturn(bindingGenerator);
 
         EasyMock.replay(registry, bindingGenerator, channelGenerator);
 
-        DomainChannelCommandGeneratorImpl generator = new DomainChannelCommandGeneratorImpl(registry);
+        DomainChannelCommandGeneratorImpl generator = new DomainChannelCommandGeneratorImpl(channelGenerator, registry);
 
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.MARKED);
@@ -178,19 +173,20 @@ public class DomainChannelCommandGeneratorImplTestCase extends TestCase {
 
     public void testNoGenerateLocalChannelBuild() throws Exception {
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
+        ChannelGenerator channelGenerator = EasyMock.createMock(ChannelGenerator.class);
 
-        EasyMock.replay(registry);
+        EasyMock.replay(registry, channelGenerator);
 
-        DomainChannelCommandGeneratorImpl generator = new DomainChannelCommandGeneratorImpl(registry);
+        DomainChannelCommandGeneratorImpl generator = new DomainChannelCommandGeneratorImpl(channelGenerator, registry);
 
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.PROVISIONED);
         assertNull(generator.generateBuild(channel, true));
-        EasyMock.verify(registry);
+        EasyMock.verify(registry, channelGenerator);
     }
 
     private ChannelGenerator getChannelGenerator() throws GenerationException {
-        ChannelGenerator channelGenerator = org.easymock.EasyMock.createMock(ChannelGenerator.class);
+        ChannelGenerator channelGenerator = EasyMock.createMock(ChannelGenerator.class);
         PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("channel"), new QName("test", "test"), false);
         EasyMock.expect(channelGenerator.generate(org.easymock.EasyMock.isA(LogicalChannel.class))).andReturn(definition);
         return channelGenerator;
