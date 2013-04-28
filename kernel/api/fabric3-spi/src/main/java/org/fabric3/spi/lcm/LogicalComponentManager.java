@@ -43,7 +43,7 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * Manages logical components in a domain. There is one LogicalComponentManager per domain. 
+ * Manages logical components in a domain. There is one LogicalComponentManager per domain.
  */
 public interface LogicalComponentManager {
 
@@ -55,8 +55,7 @@ public interface LogicalComponentManager {
     LogicalCompositeComponent getRootComponent();
 
     /**
-     * Replaces the root component in the domain. This is generally used during deployment to update the domain with a modified copy of the logical
-     * model.
+     * Replaces the root component in the domain. This is used during deployment to update the domain with a modified copy of the logical model.
      *
      * @param component the replacement
      */
