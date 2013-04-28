@@ -55,7 +55,7 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 /**
  *
  */
-public class ChannelBuilderImplTestCase extends TestCase {
+public class ChannelBuilderRegistryImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testBuildChannel() throws Exception {
@@ -76,12 +76,12 @@ public class ChannelBuilderImplTestCase extends TestCase {
 
         EasyMock.replay(channelManager, channel, bindingBuilder, monitor);
 
-        ChannelBuilderImpl channelBuilder = new ChannelBuilderImpl(channelManager, executorService, monitor);
+        ChannelBuilderRegistryImpl registry = new ChannelBuilderRegistryImpl(channelManager, executorService, monitor);
 
         Map bindingBuilderMap = Collections.singletonMap(MockBindingDefinition.class, bindingBuilder);
-        channelBuilder.setBindingBuilders(bindingBuilderMap);
+        registry.setBindingBuilders(bindingBuilderMap);
 
-        assertNotNull(channelBuilder.build(definition));
+        assertNotNull(registry.build(definition));
 
         EasyMock.verify(channelManager, channel, bindingBuilder, monitor);
     }

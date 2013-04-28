@@ -51,7 +51,6 @@ import org.fabric3.fabric.channel.FanOutHandler;
 import org.fabric3.fabric.channel.ReplicationHandler;
 import org.fabric3.fabric.channel.ReplicationMonitor;
 import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelManager;
@@ -65,7 +64,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  *
  */
-public class ChannelBuilderImpl implements ChannelBuilder {
+public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
     private ChannelManager channelManager;
     private ExecutorService executorService;
     private ReplicationMonitor monitor;
@@ -74,7 +73,7 @@ public class ChannelBuilderImpl implements ChannelBuilder {
 
     private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder> bindingBuilders = Collections.emptyMap();
 
-    public ChannelBuilderImpl(@Reference ChannelManager channelManager, @Reference ExecutorService executorService, @Monitor ReplicationMonitor monitor) {
+    public ChannelBuilderRegistryImpl(@Reference ChannelManager channelManager, @Reference ExecutorService executorService, @Monitor ReplicationMonitor monitor) {
         this.channelManager = channelManager;
         this.executorService = executorService;
         this.monitor = monitor;

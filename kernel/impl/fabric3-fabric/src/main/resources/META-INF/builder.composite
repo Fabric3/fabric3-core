@@ -49,8 +49,8 @@
         <f3:implementation.system class="org.fabric3.fabric.builder.channel.TypeEventFilterBuilder"/>
     </component>
 
-    <component name="ChannelBuilder" f3:key="org.fabric3.spi.model.physical.PhysicalChannelDefinition">
-        <f3:implementation.system class="org.fabric3.fabric.builder.channel.ChannelBuilderImpl"/>
+    <component name="ChannelBuilderRegistry">
+        <f3:implementation.system class="org.fabric3.fabric.builder.channel.ChannelBuilderRegistryImpl"/>
     </component>
 
 </composite>

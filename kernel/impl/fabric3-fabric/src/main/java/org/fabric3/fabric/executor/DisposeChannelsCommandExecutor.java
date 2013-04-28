@@ -45,9 +45,9 @@ package org.fabric3.fabric.executor;
 
 import java.util.List;
 
+import org.fabric3.fabric.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.fabric.command.DisposeChannelsCommand;
 import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
@@ -61,11 +61,11 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class DisposeChannelsCommandExecutor implements CommandExecutor<DisposeChannelsCommand> {
-    private ChannelBuilder channelBuilder;
+    private ChannelBuilderRegistry channelBuilderRegistry;
     private CommandExecutorRegistry executorRegistry;
 
-    public DisposeChannelsCommandExecutor(@Reference ChannelBuilder channelBuilder, @Reference CommandExecutorRegistry executorRegistry) {
-        this.channelBuilder = channelBuilder;
+    public DisposeChannelsCommandExecutor(@Reference ChannelBuilderRegistry channelBuilderRegistry, @Reference CommandExecutorRegistry executorRegistry) {
+        this.channelBuilderRegistry = channelBuilderRegistry;
         this.executorRegistry = executorRegistry;
     }
 
@@ -78,7 +78,7 @@ public class DisposeChannelsCommandExecutor implements CommandExecutor<DisposeCh
         try {
             List<PhysicalChannelDefinition> definitions = command.getDefinitions();
             for (PhysicalChannelDefinition definition : definitions) {
-                channelBuilder.dispose(definition);
+                channelBuilderRegistry.dispose(definition);
             }
         } catch (BuilderException e) {
             throw new ExecutionException(e.getMessage(), e);

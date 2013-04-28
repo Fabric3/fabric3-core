@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -34,47 +34,33 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.fabric.executor;
+*/
+package org.fabric3.fabric.builder.channel;
 
-import javax.xml.namespace.QName;
-import java.net.URI;
-import java.util.Collections;
-
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
-import org.fabric3.fabric.builder.channel.ChannelBuilderRegistry;
-import org.fabric3.fabric.command.BuildChannelsCommand;
+import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- *
+ * Builds a channel by dispatching to a {@link ChannelBuilder}
  */
-public class BuildChannelsCommandExecutorTestCase extends TestCase {
+public interface ChannelBuilderRegistry {
 
-    public void testBuildChannel() throws Exception {
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"), true);
+    /**
+     * Creates the channel from the definition.
+     *
+     * @param definition the physical channel definition
+     * @return the channel
+     * @throws BuilderException if there is an error building the channel
+     */
+    Channel build(PhysicalChannelDefinition definition) throws BuilderException;
 
-        Channel channel = EasyMock.createMock(Channel.class);
-
-        ChannelBuilderRegistry channelBuilderRegistry = EasyMock.createMock(ChannelBuilderRegistry.class);
-        EasyMock.expect(channelBuilderRegistry.build(EasyMock.isA(PhysicalChannelDefinition.class))).andReturn(channel);
-
-        EasyMock.replay(channelBuilderRegistry, channel);
-
-        BuildChannelsCommandExecutor executor = new BuildChannelsCommandExecutor(channelBuilderRegistry, null);
-
-        BuildChannelsCommand command = new BuildChannelsCommand(Collections.singletonList(definition));
-        executor.execute(command);
-
-        EasyMock.verify(channelBuilderRegistry, channel);
-    }
-
+    /**
+     * Disposes a channel.
+     *
+     * @param definition the physical channel definition
+     * @throws BuilderException if there is an error disposing the channel
+     */
+    void dispose(PhysicalChannelDefinition definition) throws BuilderException;
 }

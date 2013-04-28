@@ -49,8 +49,8 @@ import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.fabric.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.fabric.command.DisposeChannelsCommand;
-import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
@@ -64,17 +64,17 @@ public class DisposeChannelsCommandExecutorTestCase extends TestCase {
 
         Channel channel = EasyMock.createMock(Channel.class);
 
-        ChannelBuilder channelBuilder = EasyMock.createMock(ChannelBuilder.class);
-        channelBuilder.dispose(EasyMock.isA(PhysicalChannelDefinition.class));
+        ChannelBuilderRegistry channelBuilderRegistry = EasyMock.createMock(ChannelBuilderRegistry.class);
+        channelBuilderRegistry.dispose(EasyMock.isA(PhysicalChannelDefinition.class));
 
-        EasyMock.replay(channelBuilder, channel);
+        EasyMock.replay(channelBuilderRegistry, channel);
 
-        DisposeChannelsCommandExecutor executor = new DisposeChannelsCommandExecutor(channelBuilder, null);
+        DisposeChannelsCommandExecutor executor = new DisposeChannelsCommandExecutor(channelBuilderRegistry, null);
 
         DisposeChannelsCommand command = new DisposeChannelsCommand(Collections.singletonList(definition));
         executor.execute(command);
 
-        EasyMock.verify(channelBuilder, channel);
+        EasyMock.verify(channelBuilderRegistry, channel);
     }
 
 }
