@@ -37,18 +37,19 @@
 */
 package org.fabric3.spi.generator;
 
+import javax.xml.namespace.QName;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 /**
  * Holds metadata for intents and policy sets. Some intents and policy sets, such as role-based authorization, require specific configuration (e.g.
  * roles specified by the intent annotation on a component). Metadata is keyed by intent or policy set qualified name.
  */
 public class PolicyMetadata {
-    private Map<QName, Object> metadata = new HashMap<QName, Object>();
+    private Map<QName, Serializable> metadata = new HashMap<QName, Serializable>();
 
-    public void add(QName name, Object data) {
+    public void add(QName name, Serializable data) {
         metadata.put(name, data);
     }
 
@@ -69,7 +70,7 @@ public class PolicyMetadata {
      *
      * @return the metadata
      */
-    public Map<QName, Object> get() {
+    public Map<QName, Serializable> get() {
         return metadata;
     }
 
@@ -78,7 +79,7 @@ public class PolicyMetadata {
      *
      * @param metadata the metadata to add
      */
-    public void addAll(Map<QName, Object> metadata) {
+    public void addAll(Map<QName, Serializable> metadata) {
         this.metadata.putAll(metadata);
     }
 

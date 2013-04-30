@@ -35,11 +35,12 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.channel;
+package org.fabric3.channel.impl;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
+import org.fabric3.channel.handler.FanOutHandler;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;

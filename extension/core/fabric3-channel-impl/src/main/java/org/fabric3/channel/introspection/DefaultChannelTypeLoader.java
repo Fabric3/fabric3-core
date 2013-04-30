@@ -35,33 +35,20 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.generator.channel;
+package org.fabric3.channel.introspection;
 
-import javax.xml.namespace.QName;
-import java.net.URI;
+import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
 import org.fabric3.model.type.component.ChannelDefinition;
-import org.fabric3.spi.channel.ChannelIntents;
-import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.ChannelTypeLoader;
 
 /**
  *
  */
-public class DefaultChannelGeneratorTestCase extends TestCase {
-    private DefaultChannelGenerator generator = new DefaultChannelGenerator();
+public class DefaultChannelTypeLoader implements ChannelTypeLoader {
 
-    public void testGenerate() throws Exception {
-        ChannelDefinition channelDefinition = new ChannelDefinition("test", URI.create("contribution"));
-        channelDefinition.addIntent(ChannelIntents.REPLICATE_INTENT);
-        LogicalChannel channel = new LogicalChannel(URI.create("test"), channelDefinition, null);
-        QName deployable = new QName("test", "test");
-        channel.setDeployable(deployable);
-
-        PhysicalChannelDefinition definition = generator.generate(channel);
-
-        assertEquals(deployable, definition.getDeployable());
-        assertTrue(definition.isReplicate());
+    public void load(ChannelDefinition channelDefinition, XMLStreamReader reader, IntrospectionContext context) {
+        // no-op
     }
 }

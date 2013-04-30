@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2013 Metaform Systems
+ * Copyright (c) 2009-2012 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -35,28 +35,45 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.generator.channel;
+package org.fabric3.channel.handler;
 
-import javax.xml.namespace.QName;
-import java.net.URI;
+import java.util.concurrent.ExecutorService;
 
-import org.fabric3.spi.channel.ChannelIntents;
-import org.fabric3.spi.generator.ChannelGenerator;
-import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
-import org.oasisopen.sca.annotation.EagerInit;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
 
 /**
- * Generates a channel using the default implementation.
+ * Asynchronously broadcasts a received event to a collection of handlers.
  */
-@EagerInit
-public class DefaultChannelGenerator implements ChannelGenerator {
+public class AsyncFanOutHandler extends AbstractFanOutHandler {
+    private ExecutorService executorService;
 
-    public PhysicalChannelDefinition generate(LogicalChannel channel) throws GenerationException {
-        URI uri = channel.getUri();
-        QName deployable = channel.getDeployable();
-        boolean replicate = channel.getDefinition().getIntents().contains(ChannelIntents.REPLICATE_INTENT);
-        return new PhysicalChannelDefinition(uri, deployable, replicate);
+    public AsyncFanOutHandler(ExecutorService executorService) {
+        this.executorService = executorService;
+    }
+
+    public void handle(Object event) {
+        if (connections.isEmpty()) {
+            // no connections, skip scheduling work
+            return;
+        }
+        FanOutWork work = new FanOutWork(event);
+        executorService.execute(work);
+    }
+
+    private class FanOutWork implements Runnable {
+        private Object event;
+
+        private FanOutWork(Object event) {
+            this.event = event;
+        }
+
+        public void run() {
+            for (ChannelConnection connection : connections) {
+                for (EventStream stream : connection.getEventStreams()) {
+                    stream.getHeadHandler().handle(event);
+                }
+            }
+        }
     }
 }

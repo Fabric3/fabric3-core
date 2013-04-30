@@ -199,6 +199,12 @@ licensed under the Apache 2.0 license.
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-channel-impl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-async</artifactId>
             <version>${project.version}</version>
         </dependency>

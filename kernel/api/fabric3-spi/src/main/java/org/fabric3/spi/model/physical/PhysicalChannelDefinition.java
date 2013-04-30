@@ -56,12 +56,19 @@ public class PhysicalChannelDefinition implements Serializable {
     private QName deployable;
     private boolean replicate;
     private PhysicalChannelBindingDefinition bindingDefinition;
-    private String type;
+    private final String type;
+
+    private Serializable metadata;
 
     public PhysicalChannelDefinition(URI uri, QName deployable, boolean replicate) {
+        this(uri, deployable, replicate, "default");
+    }
+
+    public PhysicalChannelDefinition(URI uri, QName deployable, boolean replicate, String type) {
         this.uri = uri;
         this.deployable = deployable;
         this.replicate = replicate;
+        this.type = type;
     }
 
     /**
@@ -119,4 +126,22 @@ public class PhysicalChannelDefinition implements Serializable {
         return type;
     }
 
+    /**
+     * Sets the channel metadata.
+     *
+     * @param metadata the channel metadata
+     */
+    public void setMetadata(Serializable metadata) {
+        this.metadata = metadata;
+    }
+
+    /**
+     * Returns the channel metadata.
+     *
+     * @param type the channel metadata type
+     * @return the channel metadata or null if not found
+     */
+    public <T> T getMetadata(Class<T> type) {
+        return type.cast(metadata);
+    }
 }

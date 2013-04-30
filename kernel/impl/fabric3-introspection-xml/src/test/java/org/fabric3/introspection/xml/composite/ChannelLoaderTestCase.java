@@ -43,12 +43,13 @@
  */
 package org.fabric3.introspection.xml.composite;
 
+import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
-import javax.xml.stream.XMLStreamReader;
+import java.util.Collections;
+import java.util.Map;
 
 import junit.framework.TestCase;
-
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.MockXMLFactory;
@@ -56,6 +57,7 @@ import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.Property;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.ChannelTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.xml.XMLFactory;
@@ -83,6 +85,7 @@ public class ChannelLoaderTestCase extends TestCase {
         assertFalse(ctx.hasErrors());
     }
 
+    @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
         LoaderRegistry registry = new LoaderRegistryImpl(new MockXMLFactory());
@@ -94,11 +97,18 @@ public class ChannelLoaderTestCase extends TestCase {
         implLoader.setProperties(new Property("prop"));
         registry.registerLoader(MockImplementation.TYPE, implLoader);
         loader = new ChannelLoader(registry, helper);
+        Map map = Collections.singletonMap(ChannelDefinition.DEFAULT_TYPE, new MockChannelTypeLoader());
+        loader.setChannelTypeLoaders(map);
 
         XMLFactory factory = new MockXMLFactory();
         reader = factory.newInputFactoryInstance().createXMLStreamReader(new ByteArrayInputStream(XML.getBytes()));
         reader.nextTag();
         ctx = new DefaultIntrospectionContext(URI.create("parent"), getClass().getClassLoader(), null, "foo");
+    }
+
+    private class MockChannelTypeLoader implements ChannelTypeLoader {
+        public void load(ChannelDefinition channelDefinition, XMLStreamReader reader, IntrospectionContext context) {
+        }
     }
 
 }

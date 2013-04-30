@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -35,15 +35,27 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.channel;
+package org.fabric3.spi.introspection.xml;
 
-import org.fabric3.api.annotation.monitor.Severe;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
+
+import java.io.Serializable;
+
+import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- *
+ * Loads metadata for a channel type from an XML stream.
  */
-public interface ReplicationMonitor {
+public interface ChannelTypeLoader {
 
-    @Severe("Error replicating event")
-    void error(Throwable t);
+    /**
+     * Loads the data into {@link ChannelDefinition#addMetadata(QName, Serializable)}.
+     *
+     * @param channelDefinition the channel definition
+     * @param reader            the XML stream
+     * @param context           the current introspection context for reporting errors.
+     */
+    void load(ChannelDefinition channelDefinition, XMLStreamReader reader, IntrospectionContext context);
 }

@@ -43,27 +43,29 @@
  */
 package org.fabric3.introspection.xml.composite;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
+import java.util.Collections;
+import java.util.Map;
 
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.introspection.xml.common.BindingHelper;
 import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.spi.introspection.xml.ChannelTypeLoader;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
-
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.oasisopen.sca.Constants.SCA_NS;
@@ -79,15 +81,22 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
     private LoaderHelper loaderHelper;
     private boolean roundTrip;
 
+    private Map<String, ChannelTypeLoader> channelTypeLoaders = Collections.emptyMap();
+
     public ChannelLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         super(registry);
-        addAttributes("name", "requires");
+        addAttributes("name", "requires", "type");
         this.loaderHelper = loaderHelper;
     }
 
     @Property(required = false)
     public void setRoundTrip(boolean roundTrip) {
         this.roundTrip = roundTrip;
+    }
+
+    @Reference(required = false)
+    public void setChannelTypeLoaders(Map<String, ChannelTypeLoader> channelTypeLoaders) {
+        this.channelTypeLoaders = channelTypeLoaders;
     }
 
     public ChannelDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
@@ -101,7 +110,12 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
         }
 
         URI uri = context.getContributionUri();
-        ChannelDefinition definition = new ChannelDefinition(name, uri);
+        String channelType = reader.getAttributeValue(null, "type");
+        if (channelType == null) {
+            channelType = ChannelDefinition.DEFAULT_TYPE;
+        }
+
+        ChannelDefinition definition = new ChannelDefinition(name, uri, channelType);
 
         validateAttributes(reader, context, definition);
 
@@ -109,36 +123,43 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
             definition.enableRoundTrip();
         }
 
+        ChannelTypeLoader channelTypeLoader = channelTypeLoaders.get(channelType);
+        if (channelTypeLoader == null) {
+            context.addError(new InvalidValue("Invalid channel type", startLocation, definition));
+        } else {
+            channelTypeLoader.load(definition, reader, context);
+        }
+
         loaderHelper.loadPolicySetsAndIntents(definition, reader, context);
 
         while (true) {
             switch (reader.next()) {
-            case START_ELEMENT:
-                Location location = reader.getLocation();
+                case START_ELEMENT:
+                    Location location = reader.getLocation();
 
-                QName elementName = reader.getName();
-                ModelObject type = registry.load(reader, ModelObject.class, context);
-                if (type instanceof BindingDefinition) {
-                    BindingDefinition binding = (BindingDefinition) type;
-                    boolean check = BindingHelper.checkDuplicateNames(binding, definition.getBindings(), location, context);
-                    if (check) {
-                        definition.addBinding(binding);
+                    QName elementName = reader.getName();
+                    ModelObject type = registry.load(reader, ModelObject.class, context);
+                    if (type instanceof BindingDefinition) {
+                        BindingDefinition binding = (BindingDefinition) type;
+                        boolean check = BindingHelper.checkDuplicateNames(binding, definition.getBindings(), location, context);
+                        if (check) {
+                            definition.addBinding(binding);
+                        }
+                    } else if (type == null) {
+                        // no type, continue processing
+                        continue;
+                    } else {
+                        context.addError(new UnrecognizedElement(reader, location, definition));
+                        continue;
                     }
-                } else if (type == null) {
-                    // no type, continue processing
-                    continue;
-                } else {
-                    context.addError(new UnrecognizedElement(reader, location, definition));
-                    continue;
-                }
-                if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
-                    throw new AssertionError("Loader must position the cursor to the end element");
-                }
-            case END_ELEMENT:
-                elementName = reader.getName();
-                if (CHANNEL.equals(elementName)) {
-                    return definition;
-                }
+                    if (!reader.getName().equals(elementName) || reader.getEventType() != END_ELEMENT) {
+                        throw new AssertionError("Loader must position the cursor to the end element");
+                    }
+                case END_ELEMENT:
+                    elementName = reader.getName();
+                    if (CHANNEL.equals(elementName)) {
+                        return definition;
+                    }
             }
         }
     }

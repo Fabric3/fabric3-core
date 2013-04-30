@@ -35,31 +35,15 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.channel;
+package org.fabric3.channel.impl;
 
-import javax.xml.namespace.QName;
-
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
  *
  */
-public interface ChannelIntents {
+public interface ReplicationMonitor {
 
-    /**
-     * Indicates a channel must replicate events to all channel instances in a zone.
-     */
-    QName REPLICATE_INTENT = new QName(Namespaces.F3, "replication");
-
-    /**
-     * Indicates a channel must send events in a durable (persistent) fashion.
-     */
-    QName DURABLE_INTENT = new QName(Namespaces.F3, "durable");
-
-
-    /**
-     * Indicates a channel must send events in a durable (persistent) fashion.
-     */
-    QName NON_PERSISTENT_INTENT = new QName(Namespaces.F3, "nonPersistent");
-
+    @Severe("Error replicating event")
+    void error(Throwable t);
 }

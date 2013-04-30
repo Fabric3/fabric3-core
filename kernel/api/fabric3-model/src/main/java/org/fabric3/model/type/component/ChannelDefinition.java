@@ -44,11 +44,13 @@ import java.util.ArrayList;
  * A channel configuration in a composite.
  */
 public class ChannelDefinition extends BindableDefinition<Composite> {
+    public static final String DEFAULT_TYPE = "default";
+
     private static final long serialVersionUID = 8735705202863105855L;
 
     private String name;
     private URI contributionUri;
-    private String type = "default";
+    private String type = DEFAULT_TYPE;
 
     public ChannelDefinition(String name, URI contributionUri) {
         this.name = name;
@@ -87,4 +89,5 @@ public class ChannelDefinition extends BindableDefinition<Composite> {
     public String getType() {
         return type;
     }
+
 }

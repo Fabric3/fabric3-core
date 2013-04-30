@@ -40,16 +40,20 @@ package org.fabric3.fabric.channel;
 import java.net.URI;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import org.fabric3.spi.channel.Channel;
 
 /**
  *
  */
 public class ChannelManagerImplTestCase extends TestCase {
+    private static final URI CHANNEL_URI = URI.create("test");
+
+    private Channel channel;
 
     public void testDuplicateRegistration() throws Exception {
         ChannelManagerImpl manager = new ChannelManagerImpl();
-        URI uri = URI.create("test");
-        ChannelImpl channel = new ChannelImpl(uri, null, null);
+
         manager.register(channel);
         try {
             manager.register(channel);
@@ -61,19 +65,25 @@ public class ChannelManagerImplTestCase extends TestCase {
 
     public void testGetChannel() throws Exception {
         ChannelManagerImpl manager = new ChannelManagerImpl();
-        URI uri = URI.create("test");
-        ChannelImpl channel = new ChannelImpl(uri, null, null);
+
         manager.register(channel);
-        assertEquals(channel, manager.getChannel(uri));
+        assertEquals(channel, manager.getChannel(CHANNEL_URI));
     }
 
     public void testUnRegister() throws Exception {
         ChannelManagerImpl manager = new ChannelManagerImpl();
-        URI uri = URI.create("test");
-        ChannelImpl channel = new ChannelImpl(uri, null, null);
+
         manager.register(channel);
-        manager.unregister(uri);
+        manager.unregister(CHANNEL_URI);
         manager.register(channel);
+
     }
 
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        channel = EasyMock.createMock(Channel.class);
+        EasyMock.expect(channel.getUri()).andReturn(CHANNEL_URI).atLeastOnce();
+        EasyMock.replay(channel);
+    }
 }

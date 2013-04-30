@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2013 Metaform Systems
+ * Copyright (c) 2009-2012 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -35,54 +35,42 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.builder.channel;
+package org.fabric3.channel.handler;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
-import org.fabric3.spi.builder.channel.ChannelBuilder;
-import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- *
+ * Base FanOutHandler functionality.
  */
-public class ChannelBuilderRegistryImplTestCase extends TestCase {
-    private ChannelBuilderRegistryImpl registry;
-    private ChannelBuilder builder;
-    private PhysicalChannelDefinition definition;
-    private Channel channel;
+public abstract class AbstractFanOutHandler implements FanOutHandler {
+    protected List<ChannelConnection> connections = new CopyOnWriteArrayList<ChannelConnection>();
+    protected Map<URI, ChannelConnection> index = new HashMap<URI, ChannelConnection>();
 
-    public void testBuild() throws Exception {
-        EasyMock.expect(builder.build(definition)).andReturn(channel);
-        EasyMock.replay(builder, channel);
-
-        assertNotNull(registry.build(definition));
-
-        EasyMock.verify(builder, channel);
+    public synchronized void addConnection(URI uri, ChannelConnection connection) {
+        connections.add(connection);
+        index.put(uri, connection);
     }
 
-    public void testDispose() throws Exception {
-        builder.dispose(definition);
-        EasyMock.replay(builder);
-
-        registry.dispose(definition);
-
-        EasyMock.verify(builder);
+    public synchronized ChannelConnection removeConnection(URI uri) {
+        ChannelConnection connection = index.remove(uri);
+        connections.remove(connection);
+        return connection;
     }
 
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        registry = new ChannelBuilderRegistryImpl();
-        builder = EasyMock.createMock(ChannelBuilder.class);
-        registry.setBuilders(Collections.singletonMap("default", builder));
 
-        channel = EasyMock.createMock(Channel.class);
-
-        definition = new PhysicalChannelDefinition(URI.create("test"), new QName("test", "bar"), false);
+    public void setNext(EventStreamHandler next) {
+        throw new IllegalStateException("This handler must be the last one in the handler sequence");
     }
+
+    public EventStreamHandler getNext() {
+        return null;
+    }
+
 }

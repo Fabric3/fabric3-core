@@ -35,13 +35,13 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.channel;
+package org.fabric3.channel.handler;
 
 import java.io.Serializable;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
+import org.fabric3.channel.impl.ReplicationMonitor;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.EventWrapper;
 import org.fabric3.spi.federation.MessageException;

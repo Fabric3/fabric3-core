@@ -44,6 +44,7 @@
 package org.fabric3.model.type.component;
 
 import javax.xml.namespace.QName;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,8 +71,7 @@ public class Composite extends ComponentType implements PolicyAware {
     private Set<QName> intents = new LinkedHashSet<QName>();
     private Set<QName> policySets = new LinkedHashSet<QName>();
 
-    private Map<String, ComponentDefinition<? extends Implementation<?>>> components =
-            new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
+    private Map<String, ComponentDefinition<? extends Implementation<?>>> components = new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
     private Map<QName, Include> includes = new HashMap<QName, Include>();
     private List<WireDefinition> wires = new ArrayList<WireDefinition>();
     private Map<String, ChannelDefinition> channels = new HashMap<String, ChannelDefinition>();
@@ -81,13 +81,13 @@ public class Composite extends ComponentType implements PolicyAware {
     private Map<String, Property> propertiesView = new HashMap<String, Property>();
     private Map<String, ReferenceDefinition> referencesView = new HashMap<String, ReferenceDefinition>();
     private Map<String, AbstractService> servicesView = new HashMap<String, AbstractService>();
-    private Map<String, ComponentDefinition<? extends Implementation<?>>> componentsView =
-            new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
+    private Map<String, ComponentDefinition<? extends Implementation<?>>> componentsView
+            = new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
     private Map<String, ChannelDefinition> channelsView = new HashMap<String, ChannelDefinition>();
     private List<WireDefinition> wiresView = new ArrayList<WireDefinition>();
     private List<ResourceDefinition> resourcesView = new ArrayList<ResourceDefinition>();
 
-    private Map<QName, Object> metadata = new HashMap<QName, Object>();
+    private Map<QName, Serializable> metadata = new HashMap<QName, Serializable>();
     private List<Namespace> namespaces;
 
     // determines if this composite is a pointer. Pointers are references to composites that do not yet exist or have been deleted such
@@ -117,8 +117,7 @@ public class Composite extends ComponentType implements PolicyAware {
     }
 
     /**
-     * Returns the qualified name of this composite. The namespace portion of this name is the targetNamespace for other qualified names used in the
-     * composite.
+     * Returns the qualified name of this composite. The namespace portion of this name is the targetNamespace for other qualified names used in the composite.
      *
      * @return the qualified name of this composite
      */
@@ -382,7 +381,7 @@ public class Composite extends ComponentType implements PolicyAware {
         this.policySets = policySets;
     }
 
-    public void addMetadata(QName name, Object data) {
+    public void addMetadata(QName name, Serializable data) {
         metadata.put(name, data);
     }
 
@@ -390,7 +389,7 @@ public class Composite extends ComponentType implements PolicyAware {
         return type.cast(metadata.get(name));
     }
 
-    public Map<QName, Object> getMetadata() {
+    public Map<QName, Serializable> getMetadata() {
         return metadata;
     }
 
@@ -475,7 +474,6 @@ public class Composite extends ComponentType implements PolicyAware {
         return name.hashCode();
     }
 
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -492,6 +490,5 @@ public class Composite extends ComponentType implements PolicyAware {
     private <T> T cast(Object o) {
         return (T) o;
     }
-
 
 }

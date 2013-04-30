@@ -35,19 +35,18 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.channel;
+package org.fabric3.channel.handler;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 
 /**
  *
@@ -63,10 +62,10 @@ public class AsyncFanOutHandlerTestCase extends TestCase {
         Object event = new Object();
 
         EventStreamHandler handler1 = EasyMock.createMock(EventStreamHandler.class);
-        ChannelConnection connection1 = createConnection("handler1", handler1);
+        ChannelConnection connection1 = createConnection(handler1);
 
         EventStreamHandler handler2 = EasyMock.createMock(EventStreamHandler.class);
-        ChannelConnection connection2 = createConnection("handler2", handler2);
+        ChannelConnection connection2 = createConnection(handler2);
 
         handler.addConnection(URI.create("connection1"), connection1);
         handler.addConnection(URI.create("connection2"), connection2);
@@ -94,12 +93,13 @@ public class AsyncFanOutHandlerTestCase extends TestCase {
         return executorService;
     }
 
-    private ChannelConnection createConnection(String name, EventStreamHandler handler) {
-        PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition(name);
-        EventStream stream1 = new EventStreamImpl(definition);
-        stream1.addHandler(handler);
-        ChannelConnection connection = new ChannelConnectionImpl();
-        connection.addEventStream(stream1);
+    private ChannelConnection createConnection(EventStreamHandler handler) {
+        EventStream stream = EasyMock.createMock(EventStream.class);
+        EasyMock.expect(stream.getHeadHandler()).andReturn(handler);
+
+        ChannelConnection connection = EasyMock.createMock(ChannelConnection.class);
+        EasyMock.expect(connection.getEventStreams()).andReturn(Collections.singletonList(stream));
+        EasyMock.replay(stream, connection);
         return connection;
     }
 

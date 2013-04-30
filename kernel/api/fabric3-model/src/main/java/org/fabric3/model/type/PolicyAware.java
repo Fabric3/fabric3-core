@@ -43,9 +43,10 @@
  */
 package org.fabric3.model.type;
 
+import javax.xml.namespace.QName;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 /**
  * Indicates intents or policySet definitions may be associated with a type.
@@ -100,7 +101,7 @@ public interface PolicyAware {
      * @param name qualified name of the intent or policy
      * @param data the metadata
      */
-    void addMetadata(QName name, Object data);
+    void addMetadata(QName name, Serializable data);
 
     /**
      * Adds intent or policy metadata.
@@ -116,6 +117,6 @@ public interface PolicyAware {
      *
      * @return all policy-related metadata
      */
-    public Map<QName, Object> getMetadata();
+    public Map<QName, Serializable> getMetadata();
 
 }

@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -35,45 +35,36 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.channel;
+package org.fabric3.fabric.generator.channel;
 
-import java.util.concurrent.ExecutorService;
+import javax.xml.namespace.QName;
+import java.net.URI;
 
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
+import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.spi.channel.ChannelConstants;
+import org.fabric3.spi.generator.ChannelGenerator;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Asynchronously broadcasts a received event to a collection of handlers.
+ * Generates a channel using the default implementation.
  */
-public class AsyncFanOutHandler extends AbstractFanOutHandler {
-    private ExecutorService executorService;
+@EagerInit
+public class ChannelGeneratorImpl implements ChannelGenerator {
 
-    public AsyncFanOutHandler(ExecutorService executorService) {
-        this.executorService = executorService;
-    }
+    public PhysicalChannelDefinition generate(LogicalChannel channel) throws GenerationException {
+        URI uri = channel.getUri();
+        QName deployable = channel.getDeployable();
+        ChannelDefinition definition = channel.getDefinition();
+        String channelType = definition.getType();
+        boolean replicate = definition.getIntents().contains(ChannelConstants.REPLICATE_INTENT);
 
-    public void handle(Object event) {
-        if (connections.isEmpty()) {
-            // no connections, skip scheduling work
-            return;
-        }
-        FanOutWork work = new FanOutWork(event);
-        executorService.execute(work);
-    }
+        PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, replicate, channelType);
 
-    private class FanOutWork implements Runnable {
-        private Object event;
+        physicalDefinition.setMetadata(definition.getMetadata().get(ChannelConstants.METADATA));
 
-        private FanOutWork(Object event) {
-            this.event = event;
-        }
-
-        public void run() {
-            for (ChannelConnection connection : connections) {
-                for (EventStream stream : connection.getEventStreams()) {
-                    stream.getHeadHandler().handle(event);
-                }
-            }
-        }
+        return physicalDefinition;
     }
 }

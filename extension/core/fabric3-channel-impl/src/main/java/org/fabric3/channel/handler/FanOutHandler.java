@@ -35,37 +35,32 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.channel;
+package org.fabric3.channel.handler;
 
 import java.net.URI;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
-
 import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- *
+ * Broadcasts a received event to a collection of event stream handlers.
  */
-public class AbstractFanOutHandlerTestCase extends TestCase {
+public interface FanOutHandler extends EventStreamHandler {
 
-    public void testAddRemove() throws Exception {
+    /**
+     * Adds a connection containing the event streams.
+     *
+     * @param uri        the connection uri
+     * @param connection the connection
+     */
+    void addConnection(URI uri, ChannelConnection connection);
 
-        AbstractFanOutHandler handler = new AbstractFanOutHandler() {
-            public void handle(Object event) {
-                // no-op
-            }
-        };
-
-        ChannelConnection connection = EasyMock.createNiceMock(ChannelConnection.class);
-        EasyMock.replay(connection);
-
-        URI uri = URI.create("connection");
-        handler.addConnection(uri, connection);
-        assertEquals(connection, handler.removeConnection(uri));
-
-        EasyMock.verify(connection);
-    }
-
+    /**
+     * Removes a connection
+     *
+     * @param uri the connection uri
+     * @return the removed connection
+     */
+    ChannelConnection removeConnection(URI uri);
 
 }

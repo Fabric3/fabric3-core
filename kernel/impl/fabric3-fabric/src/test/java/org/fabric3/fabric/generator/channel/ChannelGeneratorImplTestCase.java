@@ -35,54 +35,33 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.builder.channel;
+package org.fabric3.fabric.generator.channel;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.Collections;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
-import org.fabric3.spi.builder.channel.ChannelBuilder;
-import org.fabric3.spi.channel.Channel;
+import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.spi.channel.ChannelConstants;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
  *
  */
-public class ChannelBuilderRegistryImplTestCase extends TestCase {
-    private ChannelBuilderRegistryImpl registry;
-    private ChannelBuilder builder;
-    private PhysicalChannelDefinition definition;
-    private Channel channel;
+public class ChannelGeneratorImplTestCase extends TestCase {
+    private ChannelGeneratorImpl generator = new ChannelGeneratorImpl();
 
-    public void testBuild() throws Exception {
-        EasyMock.expect(builder.build(definition)).andReturn(channel);
-        EasyMock.replay(builder, channel);
+    public void testGenerate() throws Exception {
+        ChannelDefinition channelDefinition = new ChannelDefinition("test", URI.create("contribution"));
+        channelDefinition.addIntent(ChannelConstants.REPLICATE_INTENT);
+        LogicalChannel channel = new LogicalChannel(URI.create("test"), channelDefinition, null);
+        QName deployable = new QName("test", "test");
+        channel.setDeployable(deployable);
 
-        assertNotNull(registry.build(definition));
+        PhysicalChannelDefinition definition = generator.generate(channel);
 
-        EasyMock.verify(builder, channel);
-    }
-
-    public void testDispose() throws Exception {
-        builder.dispose(definition);
-        EasyMock.replay(builder);
-
-        registry.dispose(definition);
-
-        EasyMock.verify(builder);
-    }
-
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        registry = new ChannelBuilderRegistryImpl();
-        builder = EasyMock.createMock(ChannelBuilder.class);
-        registry.setBuilders(Collections.singletonMap("default", builder));
-
-        channel = EasyMock.createMock(Channel.class);
-
-        definition = new PhysicalChannelDefinition(URI.create("test"), new QName("test", "bar"), false);
+        assertEquals(deployable, definition.getDeployable());
+        assertTrue(definition.isReplicate());
     }
 }

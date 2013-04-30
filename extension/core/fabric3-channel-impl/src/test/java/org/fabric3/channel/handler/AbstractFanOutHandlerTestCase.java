@@ -35,54 +35,36 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.channel;
+package org.fabric3.channel.handler;
 
-import java.io.Serializable;
+import java.net.URI;
 
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.EventWrapper;
-import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.MessageReceiver;
-import org.fabric3.spi.federation.ZoneTopologyService;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import org.fabric3.spi.channel.ChannelConnection;
 
 /**
- * Responsible for handling event replication in a zone. Specifically, replicates events to other channel instances and passes replicated events
- * through to downstream handlers.
+ *
  */
-public class ReplicationHandler implements EventStreamHandler, MessageReceiver {
-    private String channelName;
-    private ZoneTopologyService topologyService;
-    private EventStreamHandler next;
-    private ReplicationMonitor monitor;
+public class AbstractFanOutHandlerTestCase extends TestCase {
 
-    public ReplicationHandler(String channelName, ZoneTopologyService topologyService, ReplicationMonitor monitor) {
-        this.topologyService = topologyService;
-        this.channelName = channelName;
-        this.monitor = monitor;
-    }
+    public void testAddRemove() throws Exception {
 
-    public void setNext(EventStreamHandler next) {
-        this.next = next;
-    }
-
-    public EventStreamHandler getNext() {
-        return next;
-    }
-
-    public void handle(Object event) {
-        if (!(event instanceof EventWrapper) && event instanceof Serializable) {
-            // check for EventWrapper to avoid re-replicating an event that was just replicated
-            try {
-                topologyService.sendAsynchronous(channelName, (Serializable) event);
-            } catch (MessageException e) {
-                monitor.error(e);
+        AbstractFanOutHandler handler = new AbstractFanOutHandler() {
+            public void handle(Object event) {
+                // no-op
             }
-        }
-        // pass the object to the head stream handler
-        next.handle(event);
+        };
+
+        ChannelConnection connection = EasyMock.createNiceMock(ChannelConnection.class);
+        EasyMock.replay(connection);
+
+        URI uri = URI.create("connection");
+        handler.addConnection(uri, connection);
+        assertEquals(connection, handler.removeConnection(uri));
+
+        EasyMock.verify(connection);
     }
 
-    public void onMessage(Object event) {
-        next.handle(event);
-    }
+
 }

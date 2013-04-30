@@ -35,42 +35,39 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.channel;
+package org.fabric3.spi.channel;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
+import javax.xml.namespace.QName;
 
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.host.Namespaces;
 
 /**
- * Base FanOutHandler functionality.
+ *
  */
-public abstract class AbstractFanOutHandler implements FanOutHandler {
-    protected List<ChannelConnection> connections = new CopyOnWriteArrayList<ChannelConnection>();
-    protected Map<URI, ChannelConnection> index = new HashMap<URI, ChannelConnection>();
+public interface ChannelConstants {
 
-    public synchronized void addConnection(URI uri, ChannelConnection connection) {
-        connections.add(connection);
-        index.put(uri, connection);
-    }
+    /**
+     * Indicates a channel must replicate events to all channel instances in a zone.
+     */
+    QName REPLICATE_INTENT = new QName(Namespaces.F3, "replication");
 
-    public synchronized ChannelConnection removeConnection(URI uri) {
-        ChannelConnection connection = index.remove(uri);
-        connections.remove(connection);
-        return connection;
-    }
+    /**
+     * Indicates a channel must send events in a durable (persistent) fashion.
+     */
+    QName DURABLE_INTENT = new QName(Namespaces.F3, "durable");
 
+    /**
+     * Indicates a channel must send events in a durable (persistent) fashion.
+     */
+    QName NON_PERSISTENT_INTENT = new QName(Namespaces.F3, "nonPersistent");
 
-    public void setNext(EventStreamHandler next) {
-        throw new IllegalStateException("This handler must be the last one in the handler sequence");
-    }
+    /**
+     * The channel metadata key.
+     */
+    QName METADATA = new QName(Namespaces.F3, "metadata");
 
-    public EventStreamHandler getNext() {
-        return null;
-    }
-
+    /**
+     * The default channel type.
+     */
+    String DEFAULT_TYPE = "default";
 }

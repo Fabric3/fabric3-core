@@ -37,27 +37,12 @@
 */
 package org.fabric3.fabric.builder.channel;
 
-import javax.xml.namespace.QName;
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
-import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.fabric.channel.AsyncFanOutHandler;
-import org.fabric3.fabric.channel.ChannelImpl;
-import org.fabric3.fabric.channel.FanOutHandler;
-import org.fabric3.fabric.channel.ReplicationHandler;
-import org.fabric3.fabric.channel.ReplicationMonitor;
 import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.component.ChannelBindingBuilder;
+import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelManager;
-import org.fabric3.spi.channel.RegistrationException;
-import org.fabric3.spi.federation.ZoneChannelException;
-import org.fabric3.spi.federation.ZoneTopologyService;
-import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -65,102 +50,27 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
-    private ChannelManager channelManager;
-    private ExecutorService executorService;
-    private ReplicationMonitor monitor;
-    private ZoneTopologyService topologyService;
-    private boolean replicationCapable;
-
-    private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder> bindingBuilders = Collections.emptyMap();
-
-    public ChannelBuilderRegistryImpl(@Reference ChannelManager channelManager, @Reference ExecutorService executorService, @Monitor ReplicationMonitor monitor) {
-        this.channelManager = channelManager;
-        this.executorService = executorService;
-        this.monitor = monitor;
-    }
+    private Map<String, ChannelBuilder> builders = new HashMap<String, ChannelBuilder>();
 
     @Reference(required = false)
-    public void setTopologyService(List<ZoneTopologyService> services) {
-        // use a collection to force reinjection
-        if (services != null && !services.isEmpty()) {
-            this.topologyService = services.get(0);
-            replicationCapable = topologyService.supportsDynamicChannels();
-        }
-    }
-
-    @Reference(required = false)
-    public void setBindingBuilders(Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder> builders) {
-        this.bindingBuilders = builders;
+    public void setBuilders(Map<String, ChannelBuilder> builders) {
+        this.builders = builders;
     }
 
     public Channel build(PhysicalChannelDefinition definition) throws BuilderException {
-        URI uri = definition.getUri();
-        QName deployable = definition.getDeployable();
-        FanOutHandler fanOutHandler = new AsyncFanOutHandler(executorService);
-        Channel channel;
-        if (definition.isReplicate() && replicationCapable) {
-            String channelName = uri.toString();
-            ReplicationHandler replicationHandler = new ReplicationHandler(channelName, topologyService, monitor);
-            channel = new ChannelImpl(uri, deployable, replicationHandler, fanOutHandler);
-            try {
-                topologyService.openChannel(channelName, null, replicationHandler);
-            } catch (ZoneChannelException e) {
-                throw new BuilderException(e);
-            }
-        } else {
-            channel = new ChannelImpl(uri, deployable, fanOutHandler);
-        }
-
-        try {
-            PhysicalChannelBindingDefinition bindingDefinition = definition.getBindingDefinition();
-            buildBinding(channel, bindingDefinition);
-            channelManager.register(channel);
-        } catch (RegistrationException e) {
-            throw new BuilderException(e);
-        }
-
-        return channel;
+        ChannelBuilder builder = getBuilder(definition);
+        return builder.build(definition);
     }
 
     public void dispose(PhysicalChannelDefinition definition) throws BuilderException {
-        URI uri = definition.getUri();
-        try {
-            Channel channel = channelManager.unregister(uri);
-            if (definition.isReplicate() && replicationCapable) {
-                String channelName = uri.toString();
-                try {
-                    topologyService.closeChannel(channelName);
-                } catch (ZoneChannelException e) {
-                    throw new BuilderException(e);
-                }
-            }
-            disposeBinding(channel, definition.getBindingDefinition());
-        } catch (RegistrationException e) {
-            throw new BuilderException(e);
-        }
-
+        ChannelBuilder builder = getBuilder(definition);
+        builder.dispose(definition);
     }
 
-    @SuppressWarnings({"unchecked"})
-    private void buildBinding(Channel channel, PhysicalChannelBindingDefinition bindingDefinition) throws BuilderException {
-        if (bindingDefinition != null) {
-            ChannelBindingBuilder builder = getBuilder(bindingDefinition);
-            builder.build(bindingDefinition, channel);
-        }
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private void disposeBinding(Channel channel, PhysicalChannelBindingDefinition bindingDefinition) throws BuilderException {
-        if (bindingDefinition != null) {
-            ChannelBindingBuilder builder = getBuilder(bindingDefinition);
-            builder.dispose(bindingDefinition, channel);
-        }
-    }
-
-    private ChannelBindingBuilder getBuilder(PhysicalChannelBindingDefinition definition) throws BuilderException {
-        ChannelBindingBuilder<?> builder = bindingBuilders.get(definition.getClass());
+    private ChannelBuilder getBuilder(PhysicalChannelDefinition definition) throws BuilderException {
+        ChannelBuilder builder = builders.get(definition.getType());
         if (builder == null) {
-            throw new BuilderException("Channel binding builder not found for type " + definition.getClass());
+            throw new BuilderException("Channel builder not found for type " + definition.getType());
         }
         return builder;
     }

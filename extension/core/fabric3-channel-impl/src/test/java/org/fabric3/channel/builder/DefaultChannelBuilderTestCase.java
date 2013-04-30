@@ -35,54 +35,58 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.builder.channel;
+package org.fabric3.channel.builder;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.builder.channel.ChannelBuilder;
+import org.fabric3.channel.impl.ReplicationMonitor;
+import org.fabric3.spi.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.channel.Channel;
+import org.fabric3.spi.channel.ChannelManager;
+import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
  *
  */
-public class ChannelBuilderRegistryImplTestCase extends TestCase {
-    private ChannelBuilderRegistryImpl registry;
-    private ChannelBuilder builder;
-    private PhysicalChannelDefinition definition;
-    private Channel channel;
+public class DefaultChannelBuilderTestCase extends TestCase {
 
-    public void testBuild() throws Exception {
-        EasyMock.expect(builder.build(definition)).andReturn(channel);
-        EasyMock.replay(builder, channel);
+    @SuppressWarnings({"unchecked"})
+    public void testBuildChannel() throws Exception {
+        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"), true);
+        definition.setBindingDefinition(new MockBindingDefinition());
 
-        assertNotNull(registry.build(definition));
+        ChannelManager channelManager = EasyMock.createMock(ChannelManager.class);
+        channelManager.register(EasyMock.isA(Channel.class));
 
-        EasyMock.verify(builder, channel);
+        ReplicationMonitor monitor = EasyMock.createMock(ReplicationMonitor.class);
+
+        Channel channel = EasyMock.createMock(Channel.class);
+
+        ChannelBindingBuilder bindingBuilder = EasyMock.createMock(ChannelBindingBuilder.class);
+        bindingBuilder.build(EasyMock.isA(PhysicalChannelBindingDefinition.class), EasyMock.isA(Channel.class));
+
+        ExecutorService executorService = EasyMock.createMock(ExecutorService.class);
+
+        EasyMock.replay(channelManager, channel, bindingBuilder, monitor);
+
+        DefaultChannelBuilder builder = new DefaultChannelBuilder(channelManager, executorService, monitor);
+
+        Map bindingBuilderMap = Collections.singletonMap(MockBindingDefinition.class, bindingBuilder);
+        builder.setBindingBuilders(bindingBuilderMap);
+
+        assertNotNull(builder.build(definition));
+
+        EasyMock.verify(channelManager, channel, bindingBuilder, monitor);
     }
 
-    public void testDispose() throws Exception {
-        builder.dispose(definition);
-        EasyMock.replay(builder);
-
-        registry.dispose(definition);
-
-        EasyMock.verify(builder);
-    }
-
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        registry = new ChannelBuilderRegistryImpl();
-        builder = EasyMock.createMock(ChannelBuilder.class);
-        registry.setBuilders(Collections.singletonMap("default", builder));
-
-        channel = EasyMock.createMock(Channel.class);
-
-        definition = new PhysicalChannelDefinition(URI.create("test"), new QName("test", "bar"), false);
+    private class MockBindingDefinition extends PhysicalChannelBindingDefinition {
+        private static final long serialVersionUID = -474926224717103363L;
     }
 }

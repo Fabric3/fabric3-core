@@ -43,11 +43,12 @@
  */
 package org.fabric3.model.type;
 
+import javax.xml.namespace.QName;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 /**
  * Base class for types that intents and policySets may be associated with.
@@ -57,7 +58,7 @@ public abstract class AbstractPolicyAware<P extends ModelObject> extends ModelOb
 
     private Set<QName> intents = new LinkedHashSet<QName>();
     private Set<QName> policySets = new LinkedHashSet<QName>();
-    private Map<QName, Object> metadata = new HashMap<QName, Object>();
+    private Map<QName, Serializable> metadata = new HashMap<QName, Serializable>();
 
     public Set<QName> getIntents() {
         return intents;
@@ -91,7 +92,7 @@ public abstract class AbstractPolicyAware<P extends ModelObject> extends ModelOb
         this.policySets.addAll(policySets);
     }
 
-    public void addMetadata(QName name, Object data) {
+    public void addMetadata(QName name, Serializable data) {
         metadata.put(name, data);
     }
 
@@ -99,7 +100,7 @@ public abstract class AbstractPolicyAware<P extends ModelObject> extends ModelOb
         return type.cast(metadata.get(name));
     }
 
-    public Map<QName, Object> getMetadata() {
+    public Map<QName, Serializable> getMetadata() {
         return metadata;
     }
 }

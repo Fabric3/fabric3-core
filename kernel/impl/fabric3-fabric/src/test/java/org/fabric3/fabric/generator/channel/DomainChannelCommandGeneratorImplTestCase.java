@@ -46,7 +46,7 @@ import org.fabric3.fabric.command.BuildChannelsCommand;
 import org.fabric3.fabric.command.DisposeChannelsCommand;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.ChannelDefinition;
-import org.fabric3.spi.channel.ChannelIntents;
+import org.fabric3.spi.channel.ChannelConstants;
 import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
@@ -194,7 +194,7 @@ public class DomainChannelCommandGeneratorImplTestCase extends TestCase {
 
     private LogicalChannel createChannel() {
         ChannelDefinition definition = new ChannelDefinition("channel", URI.create("contribution"));
-        definition.addIntent(ChannelIntents.REPLICATE_INTENT);
+        definition.addIntent(ChannelConstants.REPLICATE_INTENT);
         return new LogicalChannel(URI.create("channel"), definition, null);
     }
 
