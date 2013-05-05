@@ -35,16 +35,16 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.channel.disruptor;
+package org.fabric3.channel.disruptor.impl;
 
-import com.lmax.disruptor.EventTranslatorOneArg;
+import com.lmax.disruptor.EventFactory;
 
 /**
- * Populates {@link RingBufferEvent}s with an event.
+ * Factory for {@link RingBufferEvent}s
  */
-public class RingBufferEventTranslator implements EventTranslatorOneArg<RingBufferEvent, Object> {
+public class RingBufferEventFactory implements EventFactory<RingBufferEvent> {
 
-    public void translateTo(RingBufferEvent bufferEvent, long sequence, Object event) {
-        bufferEvent.setEvent(event);
+    public RingBufferEvent newInstance() {
+        return new RingBufferEvent();
     }
 }

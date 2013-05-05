@@ -54,6 +54,8 @@ import org.oasisopen.sca.ServiceUnavailableException;
  * Dispatches from a proxy to a wire.
  */
 public class WireProxyDispatcher<B> implements ProxyDispatcher, ServiceReference<B> {
+    private static final long serialVersionUID = -3766594738137530257L;
+
     private Class<B> interfaze;
     private String callbackUri;
     private transient InvocationChain[] chains;

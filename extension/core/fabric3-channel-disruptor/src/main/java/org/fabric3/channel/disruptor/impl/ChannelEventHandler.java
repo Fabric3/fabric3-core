@@ -35,16 +35,28 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.channel.disruptor;
+package org.fabric3.channel.disruptor.impl;
 
-import com.lmax.disruptor.EventFactory;
+import java.util.List;
+
+import com.lmax.disruptor.EventHandler;
+import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.EventStream;
 
 /**
- * Factory for {@link RingBufferEvent}s
+ * Dispatches an event from the channel ring buffer to consumer streams.
  */
-public class RingBufferEventFactory implements EventFactory<RingBufferEvent> {
+public class ChannelEventHandler implements EventHandler<RingBufferEvent> {
+    private EventStream[] streamHandlers;
 
-    public RingBufferEvent newInstance() {
-        return new RingBufferEvent();
+    public ChannelEventHandler(ChannelConnection connection) {
+        List<EventStream> streams = connection.getEventStreams();
+        streamHandlers = streams.toArray(new EventStream[streams.size()]);
+    }
+
+    public void onEvent(RingBufferEvent event, long sequence, boolean endOfBatch) throws Exception {
+        for (EventStream stream : streamHandlers) {
+            stream.getHeadHandler().handle(event.getEvent());
+        }
     }
 }

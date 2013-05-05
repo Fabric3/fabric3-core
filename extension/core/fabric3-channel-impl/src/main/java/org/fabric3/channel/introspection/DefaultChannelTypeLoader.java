@@ -47,6 +47,11 @@ import org.fabric3.spi.introspection.xml.ChannelTypeLoader;
  *
  */
 public class DefaultChannelTypeLoader implements ChannelTypeLoader {
+    private static final String[] EMPTY = new String[0];
+
+    public String[] getAttributes() {
+        return EMPTY;
+    }
 
     public void load(ChannelDefinition channelDefinition, XMLStreamReader reader, IntrospectionContext context) {
         // no-op

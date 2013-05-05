@@ -107,6 +107,12 @@ public class ChannelLoaderTestCase extends TestCase {
     }
 
     private class MockChannelTypeLoader implements ChannelTypeLoader {
+        private final String[] EMPTY = new String[0];
+
+        public String[] getAttributes() {
+            return EMPTY;
+        }
+
         public void load(ChannelDefinition channelDefinition, XMLStreamReader reader, IntrospectionContext context) {
         }
     }

@@ -51,6 +51,13 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 public interface ChannelTypeLoader {
 
     /**
+     * Returns valid attribute names for validation.
+     *
+     * @return valid attribute names
+     */
+    String[] getAttributes();
+
+    /**
      * Loads the data into {@link ChannelDefinition#addMetadata(QName, Serializable)}.
      *
      * @param channelDefinition the channel definition
@@ -58,4 +65,5 @@ public interface ChannelTypeLoader {
      * @param context           the current introspection context for reporting errors.
      */
     void load(ChannelDefinition channelDefinition, XMLStreamReader reader, IntrospectionContext context);
+
 }

@@ -16,9 +16,12 @@
            name="DisruptorChannelExtension"
            autowire="true">
 
+    <component name="RingBufferChannelTypeLoader" f3:key="ring.buffer">
+        <f3:implementation.system class="org.fabric3.channel.disruptor.introspection.RingBufferChannelTypeLoader"/>
+    </component>
 
-    <component name="ProxyFactory">
-        <f3:implementation.system class="org.fabric3.implementation.bytecode.proxy.common.ProxyFactoryImpl"/>
+    <component name="RingBufferChannelBuilder">
+        <f3:implementation.system class="org.fabric3.channel.disruptor.builder.RingBufferChannelBuilder"/>
     </component>
 
 

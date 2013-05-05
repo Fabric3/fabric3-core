@@ -97,6 +97,9 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
     @Reference(required = false)
     public void setChannelTypeLoaders(Map<String, ChannelTypeLoader> channelTypeLoaders) {
         this.channelTypeLoaders = channelTypeLoaders;
+        for (ChannelTypeLoader channelTypeLoader : channelTypeLoaders.values()) {
+            addAttributes(channelTypeLoader.getAttributes());
+        }
     }
 
     public ChannelDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
