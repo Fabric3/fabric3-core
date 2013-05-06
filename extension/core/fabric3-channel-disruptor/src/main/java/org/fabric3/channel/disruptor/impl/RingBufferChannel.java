@@ -43,8 +43,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import com.lmax.disruptor.BatchEventProcessor;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.Sequence;
+import com.lmax.disruptor.SequenceBarrier;
+import com.lmax.disruptor.SequenceGroup;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -69,8 +73,10 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
     private Disruptor<RingBufferEvent> disruptor;
 
     private Map<URI, ChannelConnection> subscribers;
+    private Map<URI, Sequence> sequences;
 
     private int numberProducers;
+    private SequenceGroup sequenceGroup;
 
     public RingBufferChannel(URI uri, QName deployable, int size, WaitStrategy waitStrategy, ExecutorService executorService) {
         this.uri = uri;
@@ -79,6 +85,7 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
         this.waitStrategy = waitStrategy;
         this.executorService = executorService;
         subscribers = new HashMap<URI, ChannelConnection>();
+        sequences = new HashMap<URI, Sequence>();
     }
 
     public void start() {
@@ -90,7 +97,8 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
             handlers[i] = new ChannelEventHandler(connection);
         }
         disruptor.handleEventsWith(handlers);
-
+        sequenceGroup = new SequenceGroup();
+        disruptor.getRingBuffer().addGatingSequences(sequenceGroup);
         ringBuffer = disruptor.start();
     }
 
@@ -127,12 +135,30 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
     }
 
     public void subscribe(URI uri, ChannelConnection connection) {
-        subscribers.put(uri, connection);
+        if (ringBuffer == null) {
+            subscribers.put(uri, connection);
+        } else {
+            // ring buffer already started, add dynamically
+            ChannelEventHandler handler = new ChannelEventHandler(connection);
+            SequenceBarrier barrier = ringBuffer.newBarrier();
+            BatchEventProcessor<RingBufferEvent> processor = new BatchEventProcessor<RingBufferEvent>(ringBuffer, barrier, handler);
+            Sequence sequence = processor.getSequence();
+            sequenceGroup.addWhileRunning(ringBuffer, sequence);
+            executorService.execute(processor);
 
+            sequences.put(uri, sequence);
+            subscribers.put(uri, connection);
+        }
     }
 
     public ChannelConnection unsubscribe(URI uri) {
-        return subscribers.remove(uri);
+        ChannelConnection connection = subscribers.remove(uri);
+        Sequence sequence = sequences.get(uri);
+        if (sequence != null) {
+            // may be null if registered prior to channel start
+            sequenceGroup.remove(sequence);
+        }
+        return connection;
     }
 
     public void handle(Object event) {
