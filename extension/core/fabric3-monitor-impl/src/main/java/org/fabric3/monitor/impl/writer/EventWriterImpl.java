@@ -187,6 +187,10 @@ public class EventWriterImpl implements EventWriter {
                 buffer.put((byte) current);
             }
         }
+        if (args != null && counter < args.length) {
+            // case where an exception is passed as a param without a param {} marker
+            bytesWritten = bytesWritten + writeParameter(args[counter], buffer);
+        }
         return bytesWritten;
     }
 
@@ -236,7 +240,7 @@ public class EventWriterImpl implements EventWriter {
         } else if (arg instanceof Boolean) {
             return BooleanWriter.write((Boolean) arg, buffer);
         } else {
-            return 0;
+            return ObjectWriter.write(arg, buffer);
         }
     }
 
