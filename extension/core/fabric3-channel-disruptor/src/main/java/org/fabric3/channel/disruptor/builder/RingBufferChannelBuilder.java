@@ -40,7 +40,15 @@ package org.fabric3.channel.disruptor.builder;
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import com.lmax.disruptor.BlockingWaitStrategy;
+import com.lmax.disruptor.BusySpinWaitStrategy;
+import com.lmax.disruptor.PhasedBackoffWaitStrategy;
+import com.lmax.disruptor.SleepingWaitStrategy;
+import com.lmax.disruptor.TimeoutBlockingWaitStrategy;
+import com.lmax.disruptor.WaitStrategy;
+import com.lmax.disruptor.YieldingWaitStrategy;
 import org.fabric3.channel.disruptor.common.RingBufferData;
 import org.fabric3.channel.disruptor.impl.RingBufferChannel;
 import org.fabric3.spi.builder.BuilderException;
@@ -71,7 +79,9 @@ public class RingBufferChannelBuilder implements ChannelBuilder {
             RingBufferData data = definition.getMetadata(RingBufferData.class);
             int size = data.getRingSize();
 
-            RingBufferChannel channel = new RingBufferChannel(uri, deployable, size, null, executorService);
+            WaitStrategy strategy = createWaitStrategy(data);
+
+            RingBufferChannel channel = new RingBufferChannel(uri, deployable, size, strategy, executorService);
             channel.start();
             channelManager.register(channel);
             return channel;
@@ -87,4 +97,27 @@ public class RingBufferChannelBuilder implements ChannelBuilder {
         }
         channel.stop();
     }
+
+    private WaitStrategy createWaitStrategy(RingBufferData data) {
+        switch (data.getWaitStrategy()) {
+
+            case YIELDING:
+                return new YieldingWaitStrategy();
+            case SLEEPING:
+                return new SleepingWaitStrategy();
+            case BACKOFF:
+                if (RingBufferData.PhasedBlockingType.LOCK == data.getPhasedBlockingType()) {
+                    return PhasedBackoffWaitStrategy.withLock(data.getSpinTimeoutNanos(), data.getYieldTimeoutNanos(), TimeUnit.NANOSECONDS);
+                } else {
+                    return PhasedBackoffWaitStrategy.withSleep(data.getSpinTimeoutNanos(), data.getYieldTimeoutNanos(), TimeUnit.NANOSECONDS);
+                }
+            case SPIN:
+                return new BusySpinWaitStrategy();
+            case TIMEOUT:
+                return new TimeoutBlockingWaitStrategy(data.getBlockingTimeoutNanos(), TimeUnit.NANOSECONDS);
+            default:
+                return new BlockingWaitStrategy();
+        }
+    }
+
 }
