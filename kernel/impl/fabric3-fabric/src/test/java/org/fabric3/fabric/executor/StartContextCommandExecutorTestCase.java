@@ -50,6 +50,7 @@ import org.easymock.EasyMock;
 
 import org.fabric3.fabric.command.StartContextCommand;
 import org.fabric3.model.type.component.Scope;
+import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
@@ -72,17 +73,19 @@ public class StartContextCommandExecutorTestCase extends TestCase {
         EasyMock.expect(scopeRegistry.getScopeContainer(Scope.COMPOSITE)).andReturn(compositeContainer);
         EasyMock.expect(scopeRegistry.getScopeContainer(Scope.DOMAIN)).andReturn(domainContainer);
 
+        ChannelManager channelManager = EasyMock.createMock(ChannelManager.class);
+        channelManager.startContext(EasyMock.isA(QName.class));
 
         ContextMonitor monitor = EasyMock.createNiceMock(ContextMonitor.class);
 
-        EasyMock.replay(executorRegistry, scopeRegistry, compositeContainer, domainContainer, monitor);
+        EasyMock.replay(executorRegistry, scopeRegistry, compositeContainer, domainContainer, channelManager, monitor);
 
-        StartContextCommandExecutor executor = new StartContextCommandExecutor(executorRegistry, scopeRegistry, monitor);
+        StartContextCommandExecutor executor = new StartContextCommandExecutor(executorRegistry, scopeRegistry, channelManager, monitor);
         executor.init();
         StartContextCommand command = new StartContextCommand(new QName("test", "component"), true);
         executor.execute(command);
 
-        EasyMock.verify(executorRegistry, scopeRegistry, compositeContainer, domainContainer, monitor);
+        EasyMock.verify(executorRegistry, scopeRegistry, compositeContainer, domainContainer, channelManager, monitor);
 
     }
 

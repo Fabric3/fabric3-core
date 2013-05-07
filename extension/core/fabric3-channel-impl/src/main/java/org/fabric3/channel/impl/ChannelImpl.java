@@ -82,6 +82,14 @@ public class ChannelImpl implements Channel {
         return deployable;
     }
 
+    public void start() {
+        // no-op
+    }
+
+    public void stop() {
+        // no-op
+    }
+
     public void addHandler(EventStreamHandler handler) {
         if (headHandler == null) {
             headHandler = handler;

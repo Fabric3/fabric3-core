@@ -37,6 +37,7 @@
 */
 package org.fabric3.spi.channel;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 
 /**
@@ -68,5 +69,19 @@ public interface ChannelManager {
      * @throws RegistrationException if there is an error removing the channel
      */
     Channel unregister(URI uri) throws RegistrationException;
+
+    /**
+     * Starts channels contained in the given deployable composite.
+     *
+     * @param deployable the composite
+     */
+    void startContext(QName deployable);
+
+    /**
+     * Stops channels contained in the given deployable composite.
+     *
+     * @param deployable the composite
+     */
+    void stopContext(QName deployable);
 
 }

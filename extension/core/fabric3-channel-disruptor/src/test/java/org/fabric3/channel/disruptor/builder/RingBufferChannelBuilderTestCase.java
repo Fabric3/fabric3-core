@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -35,79 +35,61 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.channel;
+package org.fabric3.channel.disruptor.builder;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
+import java.util.concurrent.ExecutorService;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.channel.disruptor.common.RingBufferData;
 import org.fabric3.spi.channel.Channel;
+import org.fabric3.spi.channel.ChannelManager;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
  *
  */
-public class ChannelManagerImplTestCase extends TestCase {
-    private static final URI CHANNEL_URI = URI.create("test");
-    private static final QName DEPLOYABLE = new QName("test", "test");
+public class RingBufferChannelBuilderTestCase extends TestCase {
+    public static final QName DEPLOYABLE = new QName("test", "test");
+    public static final URI URI = java.net.URI.create("test");
 
-    private Channel channel;
-    private ChannelManagerImpl manager;
+    private RingBufferChannelBuilder builder;
+    private ChannelManager channelManager;
+    private PhysicalChannelDefinition definition;
 
-    public void testDuplicateRegistration() throws Exception {
-        EasyMock.expect(channel.getUri()).andReturn(CHANNEL_URI).times(2);
-        EasyMock.replay(channel);
+    public void testBuild() throws Exception {
+        channelManager.register(EasyMock.isA(Channel.class));
+        EasyMock.replay(channelManager);
 
-        manager.register(channel);
-        try {
-            manager.register(channel);
-            fail();
-        } catch (DuplicateChannelException e) {
-            // expected
-        }
+        Channel channel = builder.build(definition);
 
-        EasyMock.verify(channel);
+        assertEquals(URI, channel.getUri());
+        assertEquals(DEPLOYABLE, channel.getDeployable());
+        EasyMock.verify(channelManager);
     }
 
-    public void testGetChannel() throws Exception {
-        EasyMock.expect(channel.getUri()).andReturn(CHANNEL_URI);
-        EasyMock.replay(channel);
+    public void testDispose() throws Exception {
+        Channel channel = EasyMock.createMock(Channel.class);
+        EasyMock.expect(channelManager.unregister(URI)).andReturn(channel);
+        EasyMock.replay(channelManager);
 
-        manager.register(channel);
-        assertEquals(channel, manager.getChannel(CHANNEL_URI));
+        builder.dispose(definition);
 
-        EasyMock.verify(channel);
-    }
-
-    public void testUnRegister() throws Exception {
-        EasyMock.expect(channel.getUri()).andReturn(CHANNEL_URI).times(2);
-        EasyMock.replay(channel);
-
-        manager.register(channel);
-        manager.unregister(CHANNEL_URI);
-        manager.register(channel);
-
-        EasyMock.verify(channel);
-    }
-
-    public void testStartStopContext() throws Exception {
-        EasyMock.expect(channel.getUri()).andReturn(CHANNEL_URI);
-        EasyMock.expect(channel.getDeployable()).andReturn(DEPLOYABLE).times(2);
-        channel.start();
-        channel.stop();
-        EasyMock.replay(channel);
-
-        manager.register(channel);
-        manager.startContext(DEPLOYABLE);
-        manager.stopContext(DEPLOYABLE);
-
-        EasyMock.verify(channel);
+        EasyMock.verify(channelManager);
     }
 
     public void setUp() throws Exception {
         super.setUp();
-        manager = new ChannelManagerImpl();
+        ExecutorService executorService = EasyMock.createMock(ExecutorService.class);
+        EasyMock.replay(executorService);
 
-        channel = EasyMock.createMock(Channel.class);
+        channelManager = EasyMock.createMock(ChannelManager.class);
+
+        builder = new RingBufferChannelBuilder(channelManager, executorService);
+
+        definition = new PhysicalChannelDefinition(URI, DEPLOYABLE, false);
+        definition.setMetadata(new RingBufferData());
     }
 }

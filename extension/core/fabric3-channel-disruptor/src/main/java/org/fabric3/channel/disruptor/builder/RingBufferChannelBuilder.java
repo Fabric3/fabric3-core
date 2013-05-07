@@ -82,7 +82,6 @@ public class RingBufferChannelBuilder implements ChannelBuilder {
             WaitStrategy strategy = createWaitStrategy(data);
 
             RingBufferChannel channel = new RingBufferChannel(uri, deployable, size, strategy, executorService);
-            channel.start();
             channelManager.register(channel);
             return channel;
         } catch (RegistrationException e) {
@@ -91,16 +90,15 @@ public class RingBufferChannelBuilder implements ChannelBuilder {
     }
 
     public void dispose(PhysicalChannelDefinition definition) throws BuilderException {
-        RingBufferChannel channel = (RingBufferChannel) channelManager.getChannel(definition.getUri());
-        if (channel == null) {
-            throw new BuilderException("Channel not found: " + definition.getUri());
+        try {
+            channelManager.unregister(definition.getUri());
+        } catch (RegistrationException e) {
+            throw new BuilderException(e);
         }
-        channel.stop();
     }
 
     private WaitStrategy createWaitStrategy(RingBufferData data) {
         switch (data.getWaitStrategy()) {
-
             case YIELDING:
                 return new YieldingWaitStrategy();
             case SLEEPING:

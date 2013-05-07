@@ -37,6 +37,7 @@
 */
 package org.fabric3.fabric.channel;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -67,5 +68,21 @@ public class ChannelManagerImpl implements ChannelManager {
 
     public Channel unregister(URI uri) {
         return channels.remove(uri);
+    }
+
+    public void startContext(QName deployable) {
+        for (Channel channel : channels.values()) {
+            if (deployable.equals(channel.getDeployable())){
+                channel.start();
+            }
+        }
+    }
+
+    public void stopContext(QName deployable) {
+        for (Channel channel : channels.values()) {
+            if (deployable.equals(channel.getDeployable())){
+                channel.stop();
+            }
+        }
     }
 }

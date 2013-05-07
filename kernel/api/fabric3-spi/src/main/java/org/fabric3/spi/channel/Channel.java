@@ -37,8 +37,8 @@
 */
 package org.fabric3.spi.channel;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
 /**
  * An SCA event channel. Responsible for transmitting events from event sources to event sinks.
@@ -57,6 +57,16 @@ public interface Channel {
      * @return the deployable composite
      */
     QName getDeployable();
+
+    /**
+     * Initializes the channel.
+     */
+    void start();
+
+    /**
+     * Stops the channel and prepares it for un-deployment
+     */
+    void stop();
 
     /**
      * Adds a handler for transmitting events to the channel.

@@ -39,21 +39,20 @@ package org.fabric3.fabric.executor;
 
 import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.fabric.command.StopContextCommand;
 import org.fabric3.model.type.component.Scope;
+import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Stops a component context on a runtime.
@@ -61,14 +60,17 @@ import org.fabric3.spi.invocation.WorkContext;
 @EagerInit
 public class StopContextCommandExecutor implements CommandExecutor<StopContextCommand> {
     private CommandExecutorRegistry executorRegistry;
+    private ChannelManager channelManager;
     private ScopeContainer compositeScopeContainer;
     private ScopeContainer domainScopeContainer;
     private ContextMonitor monitor;
 
     public StopContextCommandExecutor(@Reference CommandExecutorRegistry executorRegistry,
                                       @Reference ScopeRegistry scopeRegistry,
+                                      @Reference ChannelManager channelManager,
                                       @Monitor ContextMonitor monitor) {
         this.executorRegistry = executorRegistry;
+        this.channelManager = channelManager;
         this.compositeScopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
         this.domainScopeContainer = scopeRegistry.getScopeContainer(Scope.DOMAIN);
         this.monitor = monitor;
@@ -88,11 +90,12 @@ public class StopContextCommandExecutor implements CommandExecutor<StopContextCo
                 // domain scope not available during bootstrap
                 domainScopeContainer.stopContext(deployable, workContext);
             }
-            if (monitor != null && command.isLog()) {
-                monitor.undeployed(deployable);
-            }
         } catch (ComponentException e) {
             throw new ExecutionException(e);
+        }
+        channelManager.stopContext(deployable);
+        if (monitor != null && command.isLog()) {
+            monitor.undeployed(deployable);
         }
     }
 

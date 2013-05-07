@@ -45,6 +45,7 @@ package org.fabric3.fabric.executor;
 
 import javax.xml.namespace.QName;
 
+import org.fabric3.spi.channel.ChannelManager;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -70,20 +71,23 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
     private ScopeContainer compositeScopeContainer;
     private ScopeContainer domainScopeContainer;
     private CommandExecutorRegistry commandExecutorRegistry;
+    private ChannelManager channelManager;
     private ContextMonitor monitor;
 
     @Constructor
     public StartContextCommandExecutor(@Reference CommandExecutorRegistry executorRegistry,
                                        @Reference ScopeRegistry scopeRegistry,
+                                       @Reference ChannelManager channelManager,
                                        @Monitor ContextMonitor monitor) {
         this.commandExecutorRegistry = executorRegistry;
+        this.channelManager = channelManager;
         this.compositeScopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
         this.domainScopeContainer = scopeRegistry.getScopeContainer(Scope.DOMAIN);
         this.monitor = monitor;
     }
 
     public StartContextCommandExecutor(ScopeRegistry scopeRegistry, @Monitor ContextMonitor monitor) {
-        this(null, scopeRegistry, monitor);
+        this(null, scopeRegistry, null, monitor);
     }
 
     @Init
@@ -100,13 +104,16 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
                 // domain scope not available during bootstrap
                 domainScopeContainer.startContext(deployable, workContext);
             }
-            if (command.isLog()) {
-                monitor.deployed(deployable);
-            }
         } catch (GroupInitializationException e) {
             throw new ExecutionException(e);
         } catch (ComponentException e) {
             throw new ExecutionException(e);
+        }
+        if (channelManager != null) {
+            channelManager.startContext(deployable);
+        }
+        if (command.isLog()) {
+            monitor.deployed(deployable);
         }
     }
 
