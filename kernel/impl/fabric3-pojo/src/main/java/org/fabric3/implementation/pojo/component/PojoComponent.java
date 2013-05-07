@@ -43,15 +43,16 @@
  */
 package org.fabric3.implementation.pojo.component;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.implementation.pojo.objectfactory.ComponentObjectFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
+import org.fabric3.implementation.pojo.objectfactory.ComponentObjectFactory;
+import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitException;
@@ -77,12 +78,9 @@ public abstract class PojoComponent implements ScopedComponent {
     private URI classLoaderId;
     private MonitorLevel level = MonitorLevel.INFO;
     private AtomicBoolean recreate = new AtomicBoolean(true);
+    private Object cachedInstance;
 
-    public PojoComponent(URI componentId,
-                         ImplementationManagerFactory factory,
-                         ScopeContainer scopeContainer,
-                         QName deployable,
-                         boolean eager) {
+    public PojoComponent(URI componentId, ImplementationManagerFactory factory, ScopeContainer scopeContainer, QName deployable, boolean eager) {
         this.uri = componentId;
         this.factory = factory;
         this.scopeContainer = scopeContainer;
@@ -96,6 +94,7 @@ public abstract class PojoComponent implements ScopedComponent {
 
     public void stop() throws ComponentException {
         implementationManager = null;
+        cachedInstance = null;
         scopeContainer.unregister(this);
     }
 
@@ -140,6 +139,9 @@ public abstract class PojoComponent implements ScopedComponent {
     }
 
     public Object getInstance(WorkContext workContext) throws InstanceLifecycleException {
+        if (cachedInstance != null) {
+            return cachedInstance;
+        }
         return scopeContainer.getInstance(this, workContext);
     }
 
@@ -151,7 +153,11 @@ public abstract class PojoComponent implements ScopedComponent {
         if (recreate.getAndSet(false)) {
             implementationManager = null;
         }
-        return getImplementationManager().newInstance(workContext);
+        Object instance = getImplementationManager().newInstance(workContext);
+        if (Scope.COMPOSITE == scopeContainer.getScope()) {
+            cachedInstance = instance;
+        }
+        return instance;
     }
 
     public ObjectFactory<Object> createObjectFactory() {
@@ -163,6 +169,7 @@ public abstract class PojoComponent implements ScopedComponent {
     }
 
     public void stopInstance(Object instance, WorkContext workContext) throws InstanceDestructionException {
+        cachedInstance = null;
         getImplementationManager().stop(instance, workContext);
     }
 
@@ -181,8 +188,7 @@ public abstract class PojoComponent implements ScopedComponent {
     /**
      * Sets an object factory.
      *
-     * @param injectable    the InjectableAttribute identifying the component reference, property or context artifact the object factory creates
-     *                      instances for
+     * @param injectable    the InjectableAttribute identifying the component reference, property or context artifact the object factory creates instances for
      * @param objectFactory the object factory
      */
     public void setObjectFactory(Injectable injectable, ObjectFactory<?> objectFactory) {
