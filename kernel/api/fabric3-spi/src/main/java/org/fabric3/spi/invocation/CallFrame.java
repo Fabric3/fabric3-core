@@ -102,7 +102,6 @@ public class CallFrame implements Serializable {
     }
 
     public String toString() {
-        return new StringBuilder().append("CallFrame [Callback URI: ").append(callbackUri).append(" Correlation ID: ").append(correlationId).append(
-                "]").toString();
+        return "CallFrame [Callback URI: " + callbackUri + " Correlation ID: " + correlationId + "]";
     }
 }
