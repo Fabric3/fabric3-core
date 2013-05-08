@@ -43,12 +43,11 @@
  */
 package org.fabric3.runtime.maven3.impl;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URL;
-import javax.xml.namespace.QName;
 
 import org.apache.maven.surefire.suite.SurefireTestSuite;
-
 import org.fabric3.fabric.runtime.AbstractRuntime;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.ContributionService;
@@ -65,7 +64,7 @@ import org.fabric3.runtime.maven.TestSuiteFactory;
 import org.fabric3.runtime.maven3.repository.Maven3Repository;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.invocation.WorkContext;
-
+import org.fabric3.spi.invocation.WorkContextTunnel;
 import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
 import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
 
@@ -91,7 +90,7 @@ public class Maven3RuntimeImpl extends AbstractRuntime implements MavenRuntime {
     }
 
     public void startContext(QName deployable) throws ContextStartException {
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
         try {
             getScopeContainer().startContext(deployable, workContext);
         } catch (ComponentException e) {

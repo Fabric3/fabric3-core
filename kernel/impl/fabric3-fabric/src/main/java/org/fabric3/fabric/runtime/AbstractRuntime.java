@@ -169,7 +169,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
 
     public void destroy() throws ShutdownException {
         // destroy system components
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
         scopeContainer.stopAllContexts(workContext);
         try {
             repository.shutdown();
@@ -187,16 +187,13 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
             return null;
         }
 
-        WorkContext workContext = new WorkContext();
-        WorkContext oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
+        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
         try {
             Object instance = component.getInstance(workContext);
             return service.cast(instance);
         } catch (InstanceLifecycleException e) {
             // this is an error with the runtime and not something that is recoverable
             throw new AssertionError(e);
-        } finally {
-            WorkContextTunnel.setThreadWorkContext(oldContext);
         }
     }
 

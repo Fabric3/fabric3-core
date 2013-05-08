@@ -68,9 +68,8 @@ public class NonTransactionalIntervalTask implements Task {
     }
 
     public long nextInterval() {
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
         workContext.addCallFrame(FRAME);
-        WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
 
         Object instance = null;
         try {
@@ -86,7 +85,6 @@ public class NonTransactionalIntervalTask implements Task {
             monitor.executeError(e);
             throw new InvocationRuntimeException(e);
         } finally {
-            WorkContextTunnel.setThreadWorkContext(oldWorkContext);
             if (instance != null) {
                 try {
                     component.releaseInstance(instance, workContext);

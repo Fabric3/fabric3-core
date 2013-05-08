@@ -40,14 +40,11 @@ package org.fabric3.implementation.spring.runtime.component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-import org.springframework.beans.BeansException;
-
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.springframework.beans.BeansException;
 
 /**
  * Invokes a target Spring bean. When the bean is invoked, the thread context classloader will be set to the classloader for the contribution that
@@ -68,7 +65,6 @@ public class SpringInvoker implements Interceptor {
     }
 
     public Message invoke(Message msg) {
-        WorkContext oldWorkContext = null;
         try {
             if (beanProxy == null) {
                 beanProxy = component.getBean(beanName);
@@ -76,8 +72,6 @@ public class SpringInvoker implements Interceptor {
                     throw new ServiceRuntimeException("Bean not found:" + beanName);
                 }
             }
-            WorkContext workContext = msg.getWorkContext();
-            oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
             Object body = msg.getBody();
             ClassLoader old = Thread.currentThread().getContextClassLoader();
             try {
@@ -99,8 +93,6 @@ public class SpringInvoker implements Interceptor {
         } catch (BeansException e) {
             // this should not happen at this point
             throw new InvocationRuntimeException("Error invoking bean: " + beanName, e);
-        } finally {
-            WorkContextTunnel.setThreadWorkContext(oldWorkContext);
         }
         return msg;
     }

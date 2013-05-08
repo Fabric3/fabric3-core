@@ -37,17 +37,16 @@
 */
 package org.fabric3.management.rest.runtime;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-
 import org.fabric3.api.Role;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Link;
@@ -55,7 +54,6 @@ import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.security.BasicSecuritySubject;
@@ -210,23 +208,17 @@ public class ResourceInvokerTestCase extends TestCase {
         EasyMock.verify(request, instance);
     }
 
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
         method = TestResource.class.getMethod("invoke");
         method.setAccessible(true);
 
-        WorkContext workContext = new WorkContext();
-        WorkContextTunnel.setThreadWorkContext(workContext);
-
         instance = EasyMock.createMock(TestResource.class);
 
     }
 
-    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        WorkContextTunnel.setThreadWorkContext(null);
     }
 
     private List<ResourceMapping> createMappings(Object instance, Method method, Set<Role> roles) {

@@ -53,32 +53,22 @@ public final class WorkContextTunnel {
     }
 
     /**
-     * Set the WorkContext for the current thread. The current work context is returned and must be restored after the invocation is complete. Typical
-     * usage is:
-     * <pre>
-     *   WorkContext old = WorkContextTunnel.setThreadWorkContext(newContext);
-     *   try {
-     *      ... invoke user code ...
-     *   } finally {
-     *      WorkContextTunnel.setThreadWorkContext(old);
-     *   }
-     * </pre>
-     *
-     * @param context the current work context to tunnel
-     * @return the current work context for the thread; this must be restored after the invocation is made
-     */
-    public static WorkContext setThreadWorkContext(WorkContext context) {
-        WorkContext old = CONTEXT.get();
-        CONTEXT.set(context);
-        return old;
-    }
-
-    /**
      * Returns the WorkContext for the current thread.
      *
      * @return the WorkContext for the current thread
      */
     public static WorkContext getThreadWorkContext() {
-        return CONTEXT.get();
+        WorkContext workContext = CONTEXT.get();
+        if (workContext == null) {
+            workContext = new WorkContext();
+            CONTEXT.set(workContext);
+        }
+        return workContext;
+    }
+
+    public static WorkContext getAndResetThreadWorkContext() {
+        WorkContext workContext = getThreadWorkContext();
+        workContext.reset();
+        return workContext;
     }
 }

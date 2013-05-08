@@ -46,6 +46,7 @@ package org.fabric3.fabric.executor;
 import javax.xml.namespace.QName;
 
 import org.fabric3.spi.channel.ChannelManager;
+import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -97,7 +98,7 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
 
     public void execute(StartContextCommand command) throws ExecutionException {
         QName deployable = command.getDeployable();
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
         try {
             compositeScopeContainer.startContext(deployable, workContext);
             if (domainScopeContainer != null) {

@@ -43,15 +43,9 @@
  */
 package org.fabric3.fabric.component.scope;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.RuntimeMode;
@@ -64,6 +58,12 @@ import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.federation.TopologyListener;
 import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Manages domain-scoped components. A domain scoped component has only one instance active in a domain. The active instance will be hosted by the
@@ -152,7 +152,7 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         // this runtime was elected leader, start the components
         synchronized (deferredContexts) {
             for (QName deployable : deferredContexts) {
-                WorkContext workContext = new WorkContext();
+                WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
                 try {
                     super.startContext(deployable, workContext);
                 } catch (GroupInitializationException e) {

@@ -9,6 +9,7 @@ import org.atmosphere.websocket.WebSocketEventListener;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextTunnel;
 
 public class WebSocketServiceListener implements WebSocketEventListener {
 
@@ -78,7 +79,7 @@ public class WebSocketServiceListener implements WebSocketEventListener {
         ChainPair chainPair = serviceManager.get(path);
 
         Object[] content = new Object[]{_message};
-        WorkContext context = new WorkContext();
+        WorkContext context = WorkContextTunnel.getAndResetThreadWorkContext();
         CallFrame frame = new CallFrame(chainPair.getCallbackUri(), uuid.toString());
         context.addCallFrame(frame);
         // As an optimization, we add the callframe twice instead of two different frames for representing the service call and the binding invocation 

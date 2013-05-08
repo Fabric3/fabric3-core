@@ -51,7 +51,6 @@ import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationRuntimeException;
 
@@ -105,7 +104,7 @@ public class InvokerInterceptor implements Interceptor {
         }
 
         try {
-            return invoke(msg, workContext, instance);
+            return invoke(msg, instance);
         } finally {
             try {
                 component.releaseInstance(instance, workContext);
@@ -118,13 +117,11 @@ public class InvokerInterceptor implements Interceptor {
     /**
      * Performs the invocation on the target component instance. If a target classloader is configured for the interceptor, it will be set as the TCCL.
      *
-     * @param msg         the messaging containing the invocation data
-     * @param workContext the current work context
-     * @param instance    the target component instance
+     * @param msg      the messaging containing the invocation data
+     * @param instance the target component instance
      * @return the response message
      */
-    private Message invoke(Message msg, WorkContext workContext, Object instance) {
-        WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
+    private Message invoke(Message msg, Object instance) {
         try {
             Object body = msg.getBody();
             if (targetTCCLClassLoader == null) {
@@ -142,8 +139,6 @@ public class InvokerInterceptor implements Interceptor {
             msg.setBodyWithFault(e.getCause());
         } catch (IllegalAccessException e) {
             throw new InvocationRuntimeException(e);
-        } finally {
-            WorkContextTunnel.setThreadWorkContext(oldWorkContext);
         }
         return msg;
     }

@@ -37,12 +37,6 @@
 */
 package org.fabric3.jmx.management;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.security.AccessControlContext;
-import java.security.AccessController;
-import java.util.Map;
-import java.util.Set;
 import javax.management.Attribute;
 import javax.management.AttributeNotFoundException;
 import javax.management.InvalidAttributeValueException;
@@ -50,6 +44,12 @@ import javax.management.MBeanException;
 import javax.management.MBeanInfo;
 import javax.management.ReflectionException;
 import javax.security.auth.Subject;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.util.Map;
+import java.util.Set;
 
 import org.fabric3.api.Role;
 import org.fabric3.spi.invocation.CallFrame;
@@ -94,8 +94,7 @@ public class OptimizedMBean<T> extends AbstractMBean {
         return invoke(method, null);
     }
 
-    public void setAttribute(Attribute attribute)
-            throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
+    public void setAttribute(Attribute attribute) throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
         MethodHolder holder = setters.get(attribute.getName());
         if (holder == null) {
             throw new AttributeNotFoundException(attribute.getName());
@@ -135,9 +134,8 @@ public class OptimizedMBean<T> extends AbstractMBean {
     }
 
     Object invoke(Method method, Object[] args) throws MBeanException, ReflectionException {
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
         workContext.addCallFrame(new CallFrame());
-        WorkContext oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
             T instance = objectFactory.getInstance();
             return method.invoke(instance, args);
@@ -153,8 +151,6 @@ public class OptimizedMBean<T> extends AbstractMBean {
             } else {
                 throw new ReflectionException(e);
             }
-        } finally {
-            WorkContextTunnel.setThreadWorkContext(oldContext);
         }
     }
 }

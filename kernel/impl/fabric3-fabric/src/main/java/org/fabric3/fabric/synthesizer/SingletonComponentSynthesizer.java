@@ -39,6 +39,7 @@ package org.fabric3.fabric.synthesizer;
 
 import java.net.URI;
 
+import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -120,7 +121,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             componentManager.register(physical);
             scopeContainer.register(physical);
             // initialize the component - needed for reinjection to work
-            WorkContext workContext = new WorkContext();
+            WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
             scopeContainer.getInstance(physical, workContext);
         } catch (RegistrationException e) {
             throw new ComponentRegistrationException(e);

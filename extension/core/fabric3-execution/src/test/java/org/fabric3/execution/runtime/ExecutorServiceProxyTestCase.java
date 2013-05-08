@@ -57,19 +57,14 @@ public class ExecutorServiceProxyTestCase extends TestCase {
         executorService.submit(delegate, null);
     }
 
-
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
         workContext = new WorkContext();
         executorService = new ExecutorServiceProxy(new MockExecutorService());
-        WorkContextTunnel.setThreadWorkContext(workContext);
     }
 
-    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        WorkContextTunnel.setThreadWorkContext(null);
     }
 
     private class MockCallable implements Callable<Object> {

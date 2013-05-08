@@ -37,6 +37,9 @@
 */
 package org.fabric3.management.rest.runtime;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -45,14 +48,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -77,6 +72,10 @@ import org.fabric3.spi.security.BasicAuthenticator;
 import org.fabric3.spi.security.NoCredentialsException;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -239,7 +238,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             return;
         }
         try {
-            WorkContext workContext = new WorkContext();
+            WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
             invoke(mapping, params, false, workContext);
         } catch (ResourceException e) {
             monitor.error("Error replicating resource request: " + mapping.getMethod(), e);
@@ -294,9 +293,9 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     /**
-     * Resolves the resource mapping for a request and handles it. An exact path match will be attempted first when resolving the mapping and, if not
-     * found, resolution will be done using the parent path. For example, a parameterized path such as /messages/message/1 will first attempt to
-     * resolve using the full path and if not found will resolve using /messages/message.
+     * Resolves the resource mapping for a request and handles it. An exact path match will be attempted first when resolving the mapping and, if not found,
+     * resolution will be done using the parent path. For example, a parameterized path such as /messages/message/1 will first attempt to resolve using the full
+     * path and if not found will resolve using /messages/message.
      *
      * @param verb     the HTTP verb
      * @param request  the current request
@@ -327,7 +326,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             }
             return;
         }
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
 
         if (!securityCheck(mapping, request, response, workContext)) {
             return;
@@ -383,8 +382,8 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     /**
-     * Resolves a mapping by walking a path hierarchy and matching against registered mappings. For example, resolution of the path /foo/bar/baz will
-     * be done in the following order: /foo/bar/baz; /foo/bar; and /foo.
+     * Resolves a mapping by walking a path hierarchy and matching against registered mappings. For example, resolution of the path /foo/bar/baz will be done in
+     * the following order: /foo/bar/baz; /foo/bar; and /foo.
      *
      * @param path     the path
      * @param mappings the registered mappings
@@ -494,7 +493,6 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
      * @throws ResourceException if an error invoking the resource occurs
      */
     private Object invoke(ResourceMapping mapping, Object[] params, boolean replicate, WorkContext workContext) throws ResourceException {
-        WorkContext oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
         ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
         try {
             Object instance = mapping.getInstance();
@@ -525,7 +523,6 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             monitor.error("Error replicating operation: " + mapping.getMethod(), e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
         } finally {
-            WorkContextTunnel.setThreadWorkContext(oldContext);
             Thread.currentThread().setContextClassLoader(oldLoader);
         }
     }
@@ -613,7 +610,6 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             monitor.error("Response was ", e);
         }
     }
-
 
     /**
      * Copies the current request to a serializable representation used during replication.

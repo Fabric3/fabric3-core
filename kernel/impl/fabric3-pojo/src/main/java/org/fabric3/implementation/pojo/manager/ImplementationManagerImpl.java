@@ -43,21 +43,20 @@
  */
 package org.fabric3.implementation.pojo.manager;
 
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
-
-import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  *
@@ -97,10 +96,8 @@ public class ImplementationManagerImpl implements ImplementationManager {
     }
 
     public Object newInstance(WorkContext workContext) throws ObjectCreationException {
-        // push the work context onto the thread when calling the user object
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(cl);
-        WorkContext oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
             Object instance = constructor.getInstance();
             if (injectors != null) {
@@ -110,7 +107,6 @@ public class ImplementationManagerImpl implements ImplementationManager {
             }
             return instance;
         } finally {
-            WorkContextTunnel.setThreadWorkContext(oldContext);
             Thread.currentThread().setContextClassLoader(oldCl);
         }
     }
@@ -118,32 +114,26 @@ public class ImplementationManagerImpl implements ImplementationManager {
     public void start(Object instance, WorkContext context) throws InstanceInitException {
         if (initInvoker != null) {
             ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
-            WorkContext oldWorkContext = WorkContextTunnel.getThreadWorkContext();
             try {
                 Thread.currentThread().setContextClassLoader(cl);
-                WorkContextTunnel.setThreadWorkContext(context);
                 initInvoker.invoke(instance);
             } catch (ObjectCallbackException e) {
                 throw new InstanceInitException("Error initializing instance for: " + componentUri, e);
             } finally {
                 Thread.currentThread().setContextClassLoader(oldCl);
-                WorkContextTunnel.setThreadWorkContext(oldWorkContext);
             }
         }
     }
 
     public void stop(Object instance, WorkContext context) throws InstanceDestructionException {
-        WorkContext oldWorkContext = WorkContextTunnel.getThreadWorkContext();
         try {
             if (destroyInvoker != null) {
                 ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
                 try {
                     Thread.currentThread().setContextClassLoader(cl);
-                    WorkContextTunnel.setThreadWorkContext(context);
                     destroyInvoker.invoke(instance);
                 } finally {
                     Thread.currentThread().setContextClassLoader(oldCl);
-                    WorkContextTunnel.setThreadWorkContext(oldWorkContext);
                 }
             }
         } catch (ObjectCallbackException e) {

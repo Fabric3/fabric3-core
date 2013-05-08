@@ -46,14 +46,12 @@ package org.fabric3.implementation.spring.runtime.component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-import org.springframework.beans.BeansException;
-
 import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.wire.InvocationRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.springframework.beans.BeansException;
 
 /**
  * Responsible for dispatching an event to a Spring bean.
@@ -84,7 +82,6 @@ public class SpringEventStreamHandler implements EventStreamHandler {
     }
 
     public void handle(Object event) {
-        WorkContext oldWorkContext = null;
         try {
             if (beanProxy == null) {
                 beanProxy = component.getBean(beanName);
@@ -92,8 +89,7 @@ public class SpringEventStreamHandler implements EventStreamHandler {
                     throw new ServiceRuntimeException("Bean not found:" + beanName);
                 }
             }
-            WorkContext workContext = new WorkContext();
-            oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
+            WorkContextTunnel.getAndResetThreadWorkContext();
             ClassLoader old = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(targetTCCLClassLoader);
@@ -114,8 +110,6 @@ public class SpringEventStreamHandler implements EventStreamHandler {
         } catch (BeansException e) {
             // this should not happen at this point
             throw new InvocationRuntimeException("Error invoking bean: " + beanName, e);
-        } finally {
-            WorkContextTunnel.setThreadWorkContext(oldWorkContext);
         }
     }
 

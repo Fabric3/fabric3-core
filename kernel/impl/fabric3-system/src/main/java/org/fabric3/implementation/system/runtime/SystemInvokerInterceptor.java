@@ -51,7 +51,6 @@ import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationRuntimeException;
 
@@ -87,17 +86,11 @@ public class SystemInvokerInterceptor implements Interceptor {
         }
 
         try {
-            WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
-            try {
-                msg.setBody(operation.invoke(instance, (Object[]) body));
-            } catch (InvocationTargetException e) {
-                msg.setBodyWithFault(e.getCause());
-            } catch (IllegalAccessException e) {
-                throw new InvocationRuntimeException(e);
-            } finally {
-                WorkContextTunnel.setThreadWorkContext(oldWorkContext);
-            }
-            return msg;
+            msg.setBody(operation.invoke(instance, (Object[]) body));
+        } catch (InvocationTargetException e) {
+            msg.setBodyWithFault(e.getCause());
+        } catch (IllegalAccessException e) {
+            throw new InvocationRuntimeException(e);
         } finally {
             try {
                 component.releaseInstance(instance, workContext);
@@ -105,5 +98,6 @@ public class SystemInvokerInterceptor implements Interceptor {
                 throw new InvocationRuntimeException(e);
             }
         }
+        return msg;
     }
 }

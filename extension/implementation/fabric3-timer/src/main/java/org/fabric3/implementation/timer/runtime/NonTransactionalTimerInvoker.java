@@ -58,7 +58,7 @@ public class NonTransactionalTimerInvoker implements Runnable {
 
     public void run() {
         // create a new work context
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
         CallFrame frame = new CallFrame();
         workContext.addCallFrame(frame);
         Object instance;
@@ -70,14 +70,11 @@ public class NonTransactionalTimerInvoker implements Runnable {
         }
 
         try {
-            WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
             try {
                 ((Runnable) instance).run();
             } catch (RuntimeException e) {
                 monitor.executeError(e);
                 throw e;
-            } finally {
-                WorkContextTunnel.setThreadWorkContext(oldWorkContext);
             }
         } finally {
             try {

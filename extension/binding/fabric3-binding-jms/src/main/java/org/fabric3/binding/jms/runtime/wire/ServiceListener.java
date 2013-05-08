@@ -43,13 +43,6 @@
  */
 package org.fabric3.binding.jms.runtime.wire;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.jms.BytesMessage;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -63,6 +56,13 @@ import javax.jms.TextMessage;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants;
 import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
@@ -74,6 +74,7 @@ import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.util.Base64;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.xml.XMLFactory;
@@ -330,7 +331,7 @@ public class ServiceListener implements MessageListener {
     @SuppressWarnings({"unchecked"})
     private WorkContext createWorkContext(Message request, String callbackUri) throws JmsBadMessageException {
         try {
-            WorkContext workContext = new WorkContext();
+            WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
             String encoded = request.getStringProperty("f3Context");
             if (encoded == null) {
                 // no callframe found, use a blank one

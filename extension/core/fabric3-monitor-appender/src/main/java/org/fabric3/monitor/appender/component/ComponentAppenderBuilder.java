@@ -50,6 +50,7 @@ import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -90,7 +91,7 @@ public class ComponentAppenderBuilder implements AppenderBuilder<PhysicalCompone
         }
 
         public void start() throws IOException {
-            WorkContext context = new WorkContext();
+            WorkContext context = WorkContextTunnel.getThreadWorkContext();
             try {
                 Object instance = atomicComponent.getInstance(context);
                 if (!(instance instanceof Appender)) {

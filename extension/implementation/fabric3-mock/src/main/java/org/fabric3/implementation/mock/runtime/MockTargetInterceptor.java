@@ -42,8 +42,6 @@ import java.lang.reflect.Method;
 
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
@@ -64,10 +62,8 @@ public class MockTargetInterceptor implements Interceptor {
     }
 
     public Message invoke(Message message) {
-        WorkContext old = WorkContextTunnel.getThreadWorkContext();
         try {
             Object[] args = (Object[]) message.getBody();
-            WorkContextTunnel.setThreadWorkContext(message.getWorkContext());
             Object ret = method.invoke(mock, args);
             Message out = new MessageImpl();
             out.setBody(ret);
@@ -77,14 +73,11 @@ public class MockTargetInterceptor implements Interceptor {
             throw new AssertionError(e);
         } catch (InvocationTargetException e) {
             throw new AssertionError(e);
-        } finally {
-            WorkContextTunnel.setThreadWorkContext(old);
         }
     }
 
     public void setNext(Interceptor next) {
         this.next = next;
     }
-
 
 }

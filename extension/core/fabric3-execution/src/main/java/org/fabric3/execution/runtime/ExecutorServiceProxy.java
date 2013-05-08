@@ -98,34 +98,36 @@ public class ExecutorServiceProxy implements ExecutorService {
     }
 
     private PropagatingRunnable createRunnable(Runnable runnable) {
-        WorkContext context = cloneContext();
-        return new PropagatingRunnable(runnable, context);
-    }
-
-    private <T> PropagatingCallable<T> createCallable(Callable<T> callable) {
-        WorkContext context = cloneContext();
-        return new PropagatingCallable<T>(callable, context);
-    }
-
-    private <T> WorkContext cloneContext() {
         WorkContext context = WorkContextTunnel.getThreadWorkContext();
-        WorkContext newContext = new WorkContext();
-
         List<CallFrame> stack = context.getCallFrameStack();
         if (stack != null && !stack.isEmpty()) {
             // clone the callstack to avoid multiple threads seeing changes
-            List<CallFrame> newStack = new ArrayList<CallFrame>(stack);
-            newContext.addCallFrames(newStack);
+            stack = new ArrayList<CallFrame>(stack);
         }
         Map<String, Object> headers = context.getHeaders();
         if (headers != null && !headers.isEmpty()) {
             // clone the headers to avoid multiple threads seeing changes
-            Map<String, Object> newHeaders = new HashMap<String, Object>(headers);
-            newContext.addHeaders(newHeaders);
+           headers = new HashMap<String, Object>(headers);
         }
         SecuritySubject subject = context.getSubject();
-        newContext.setSubject(subject);
-        return newContext;
+        return new PropagatingRunnable(runnable, stack, headers, subject);
     }
+
+    private <T> PropagatingCallable<T> createCallable(Callable<T> callable) {
+        WorkContext context = WorkContextTunnel.getThreadWorkContext();
+        List<CallFrame> stack = context.getCallFrameStack();
+        if (stack != null && !stack.isEmpty()) {
+            // clone the callstack to avoid multiple threads seeing changes
+            stack = new ArrayList<CallFrame>(stack);
+        }
+        Map<String, Object> headers = context.getHeaders();
+        if (headers != null && !headers.isEmpty()) {
+            // clone the headers to avoid multiple threads seeing changes
+           headers = new HashMap<String, Object>(headers);
+        }
+        SecuritySubject subject = context.getSubject();
+        return new PropagatingCallable<T>(callable, stack, headers, subject);
+    }
+
 
 }

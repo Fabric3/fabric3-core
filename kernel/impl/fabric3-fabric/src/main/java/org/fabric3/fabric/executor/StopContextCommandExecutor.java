@@ -50,6 +50,7 @@ import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -83,7 +84,7 @@ public class StopContextCommandExecutor implements CommandExecutor<StopContextCo
 
     public void execute(StopContextCommand command) throws ExecutionException {
         QName deployable = command.getDeployable();
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
         try {
             compositeScopeContainer.stopContext(deployable, workContext);
             if (domainScopeContainer != null) {

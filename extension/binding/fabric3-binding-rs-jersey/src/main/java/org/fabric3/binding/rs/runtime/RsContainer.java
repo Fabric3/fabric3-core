@@ -37,16 +37,16 @@
  */
 package org.fabric3.binding.rs.runtime;
 
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
@@ -119,15 +119,13 @@ public final class RsContainer extends HttpServlet {
             }
 
             ClassLoader old = Thread.currentThread().getContextClassLoader();
-            WorkContext oldContext = null;
             try {
                 Thread.currentThread().setContextClassLoader(classLoader);
-                WorkContext workContext = new WorkContext();
+                WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
                 workContext.setHeader("fabric3.httpRequest", req);
                 workContext.setHeader("fabric3.httpResponse", res);
                 CallFrame frame = new CallFrame();
                 workContext.addCallFrame(frame);
-                oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
                 servlet.service(req, res);
             } catch (ServletException se) {
                 se.printStackTrace();
@@ -140,7 +138,6 @@ public final class RsContainer extends HttpServlet {
                 throw new ServletException(t);
             } finally {
                 Thread.currentThread().setContextClassLoader(old);
-                WorkContextTunnel.setThreadWorkContext(oldContext);
             }
         } finally {
             serviceLock.unlock();

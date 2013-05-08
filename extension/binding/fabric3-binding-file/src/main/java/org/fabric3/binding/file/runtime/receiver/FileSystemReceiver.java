@@ -60,6 +60,7 @@ import org.fabric3.host.util.IOHelper;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
@@ -237,7 +238,7 @@ public class FileSystemReceiver implements Runnable {
 
     private Message dispatch(Object[] payload) {
         Message message = new MessageImpl();
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
         message.setWorkContext(workContext);
         message.setBody(payload);
         return interceptor.invoke(message);

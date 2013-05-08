@@ -53,9 +53,9 @@ import org.fabric3.api.SecuritySubject;
 
 /**
  * Tracks information associated with a request as it is processed by the runtime. Requests originate at a domain boundary (e.g. a service bound to a
- * transport). As a request is processed by a component providing the service, invocations to other services in the domain may be made. State
- * associated with each invocation is encapsulated in a CallFrame and is added to the call stack associated with the WorkContext. When an invocation
- * completes, its CallFrame is removed from the stack.
+ * transport). As a request is processed by a component providing the service, invocations to other services in the domain may be made. State associated with
+ * each invocation is encapsulated in a CallFrame and is added to the call stack associated with the WorkContext. When an invocation completes, its CallFrame is
+ * removed from the stack.
  * <p/>
  * This implementation is <em>not</em> thread safe.
  */
@@ -185,11 +185,25 @@ public class WorkContext implements Serializable {
         return headers;
     }
 
-    public void addHeaders(Map<String, Object> newheaders) {
+    /**
+     * Replaces the existing headers with the new headers.
+     *
+     * @param newHeaders the new headers
+     */
+    public void addHeaders(Map<String, Object> newHeaders) {
         if (headers == null) {
-            headers = newheaders;
+            headers = newHeaders;
             return;
         }
-        headers.putAll(newheaders);
+        headers.putAll(newHeaders);
+    }
+
+    /**
+     * Resets the work context so that it may be reused for another request.
+     */
+    public void reset() {
+        subject = null;
+        headers = null;
+        callStack = null;
     }
 }

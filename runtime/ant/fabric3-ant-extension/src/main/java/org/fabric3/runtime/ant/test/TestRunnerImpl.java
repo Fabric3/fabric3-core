@@ -39,6 +39,7 @@ package org.fabric3.runtime.ant.test;
 
 import java.util.Map;
 
+import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -83,7 +84,8 @@ public class TestRunnerImpl implements TestRunner {
         monitor.runningTest(name);
         for (InvocationChain chain : wire.getInvocationChains()) {
             String operationName = chain.getPhysicalOperation().getName();
-            WorkContext workContext = new WorkContext();
+            WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+
             CallFrame frame = new CallFrame();
             workContext.addCallFrame(frame);
 

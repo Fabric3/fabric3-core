@@ -84,7 +84,7 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
     }
 
     public void handle(Object event) {
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
         Object instance;
         try {
             instance = component.getInstance(workContext);
@@ -93,7 +93,7 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
         }
 
         try {
-            invoke(event, workContext, instance);
+            invoke(event, instance);
         } finally {
             try {
                 component.releaseInstance(instance, workContext);
@@ -107,11 +107,9 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
      * Performs the invocation on the target component instance. If a target classloader is configured for the interceptor, it will be set as the TCCL.
      *
      * @param event       the event
-     * @param workContext the current work context
      * @param instance    the target component instance
      */
-    private void invoke(Object event, WorkContext workContext, Object instance) {
-        WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
+    private void invoke(Object event, Object instance) {
         try {
             if (targetTCCLClassLoader == null) {
                 invoker.invoke(instance, event);
@@ -128,8 +126,6 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
             throw new InvocationRuntimeException(e);
         } catch (IllegalAccessException e) {
             throw new InvocationRuntimeException(e);
-        } finally {
-            WorkContextTunnel.setThreadWorkContext(oldWorkContext);
         }
     }
 

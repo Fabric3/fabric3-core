@@ -13,9 +13,8 @@ import org.fabric3.spi.invocation.WorkContextTunnel;
 public class PropagatingCallableTestCase extends TestCase {
 
     public void testPropagation() throws Exception {
-        WorkContext workContext = new WorkContext();
         MockCallable delegate = new MockCallable();
-        PropagatingCallable<Object> callable = new PropagatingCallable<Object>(delegate, workContext);
+        PropagatingCallable<Object> callable = new PropagatingCallable<Object>(delegate, null, null, null);
         callable.call();
     }
 

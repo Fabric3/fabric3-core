@@ -37,35 +37,31 @@
 */
 package org.fabric3.container.web.jetty;
 
-import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.HandlerWrapper;
-
 import org.fabric3.container.web.spi.WebRequestTunnel;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
- * Processes incoming requests for the web application context, adding a WorkContext to the thread so it is associated to user code in the web app.
+ * Processes incoming requests for the web application context, resetting the thread WorkContext so it is associated to user code in the web app.
  */
 public class WorkContextHandler extends HandlerWrapper {
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        WorkContext oldContext = null;
         try {
-            WorkContext workContext = new WorkContext();
+            WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
             CallFrame frame = new CallFrame();
             workContext.addCallFrame(frame);
-            oldContext = WorkContextTunnel.setThreadWorkContext(workContext);
             WebRequestTunnel.setRequest(request);
             super.handle(target, baseRequest, request, response);
         } finally {
-            WorkContextTunnel.setThreadWorkContext(oldContext);
             WebRequestTunnel.setRequest(null);
         }
     }

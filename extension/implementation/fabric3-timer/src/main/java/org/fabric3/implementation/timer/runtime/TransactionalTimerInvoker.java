@@ -70,7 +70,7 @@ public class TransactionalTimerInvoker implements Runnable {
 
     public void run() {
         // create a new work context
-        WorkContext workContext = new WorkContext();
+        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
         workContext.addCallFrame(FRAME);
         Object instance;
         try {
@@ -80,7 +80,6 @@ public class TransactionalTimerInvoker implements Runnable {
             throw new InvocationRuntimeException(e);
         }
 
-        WorkContext oldWorkContext = WorkContextTunnel.setThreadWorkContext(workContext);
         try {
             tm.begin();
             ((Runnable) instance).run();
@@ -114,7 +113,6 @@ public class TransactionalTimerInvoker implements Runnable {
             }
             throw new ServiceRuntimeException(e);
         } finally {
-            WorkContextTunnel.setThreadWorkContext(oldWorkContext);
             try {
                 component.releaseInstance(instance, workContext);
             } catch (InstanceDestructionException e) {

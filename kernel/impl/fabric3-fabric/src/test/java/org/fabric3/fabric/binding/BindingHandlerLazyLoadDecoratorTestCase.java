@@ -4,13 +4,11 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
  *
@@ -40,13 +38,10 @@ public class BindingHandlerLazyLoadDecoratorTestCase extends TestCase {
         componentManager = EasyMock.createMock(ComponentManager.class);
         decorator = new BindingHandlerLazyLoadDecorator<Object>(HANDLER_URI, componentManager);
         handler = EasyMock.createNiceMock(BindingHandler.class);
-        WorkContext workContext = new WorkContext();
-        WorkContextTunnel.setThreadWorkContext(workContext);
 
     }
 
     public void tearDown() throws Exception {
         super.tearDown();
-        WorkContextTunnel.setThreadWorkContext(null);
     }
 }
