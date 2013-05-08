@@ -42,6 +42,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.ChannelEvent;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
@@ -242,13 +243,18 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition("default");
         List<DataType<?>> types = consumer.getDefinition().getTypes();
         boolean typed = false;
+        boolean takesChannelEvent = false;
         for (DataType<?> dataType : types) {
             if (dataType instanceof JavaType) {
                 // for now only support Java contracts
                 if (!Object.class.equals(dataType.getLogical())) {
                     typed = true;
+                    if (ChannelEvent.class.isAssignableFrom(dataType.getPhysical())){
+                        takesChannelEvent = true;
+                    }
                 }
             }
+            definition.setChannelEvent(takesChannelEvent);
             definition.addEventType(dataType.getPhysical().getName());
         }
         if (typed) {

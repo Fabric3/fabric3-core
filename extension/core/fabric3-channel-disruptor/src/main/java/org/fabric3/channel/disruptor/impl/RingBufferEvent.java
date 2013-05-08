@@ -37,17 +37,28 @@
 */
 package org.fabric3.channel.disruptor.impl;
 
-/**
- * A holder for events in the channel ring buffer.
- */
-public class RingBufferEvent {
-    private Object event;
+import org.fabric3.api.ChannelEvent;
 
-    public Object getEvent() {
-        return event;
+/**
+ * A holder for events sent through a channel ring buffer.
+ */
+public class RingBufferEvent implements ChannelEvent {
+    private Object event;
+    private Object parsed;
+
+    public <T> T getEvent(Class<T> type) {
+        return type.cast(event);
     }
 
     public void setEvent(Object event) {
         this.event = event;
+    }
+
+    public <T> T getParsed(Class<T> type) {
+        return type.cast(parsed);
+    }
+
+    public void setParsed(Object parsed) {
+        this.parsed = parsed;
     }
 }

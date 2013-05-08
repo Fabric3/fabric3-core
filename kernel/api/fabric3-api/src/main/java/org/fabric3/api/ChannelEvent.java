@@ -35,39 +35,34 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.channel.disruptor.impl;
-
-import java.util.List;
-
-import com.lmax.disruptor.EventHandler;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
+package org.fabric3.api;
 
 /**
- * Dispatches an event from the channel ring buffer to consumer streams.
+ * A holder for events sent through a channel ring buffer.
+ * <p/>
+ * Sequenced consumers may use this as the event type to modify contents for consumers in a later sequence. For example, a consumer responsible for
+ * deserialization may set a parsed value using {@link #setParsed(Object)}.
  */
-public class ChannelEventHandler implements EventHandler<RingBufferEvent> {
-    private EventStream[] streamHandlers;
+public interface ChannelEvent {
 
-    public ChannelEventHandler(ChannelConnection connection) {
-        List<EventStream> streams = connection.getEventStreams();
-        streamHandlers = streams.toArray(new EventStream[streams.size()]);
-    }
+    /**
+     * Returns the raw event.
+     *
+     * @return the event
+     */
+    <T> T getEvent(Class<T> type);
 
-    public void onEvent(RingBufferEvent event, long sequence, boolean endOfBatch) throws Exception {
-        for (EventStream stream : streamHandlers) {
-            if (stream.getDefinition().isChannelEvent()) {
-                // consumer takes a channel event, send that
-                stream.getHeadHandler().handle(event);
-            } else {
-                // if the parsed value has been set, send that
-                Object parsed = event.getParsed(Object.class);
-                if (parsed != null) {
-                    stream.getHeadHandler().handle(parsed);
-                } else {
-                    stream.getHeadHandler().handle(event.getEvent(Object.class));
-                }
-            }
-        }
-    }
+    /**
+     * Returns the parsed event if applicable; otherwise null.
+     *
+     * @return the parsed event or null
+     */
+    <T> T getParsed(Class<T> type);
+
+    /**
+     * Sets the parsed event.
+     *
+     * @param parsed the event
+     */
+    void setParsed(Object parsed);
 }

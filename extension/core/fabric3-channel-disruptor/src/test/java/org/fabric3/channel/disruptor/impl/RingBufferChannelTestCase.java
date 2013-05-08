@@ -51,6 +51,7 @@ import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.PassThroughHandler;
+import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 
 /**
  *
@@ -67,6 +68,8 @@ public class RingBufferChannelTestCase extends TestCase {
         MockConsumer consumer = new MockConsumer();
 
         EventStream stream = EasyMock.createMock(EventStream.class);
+        PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition("test");
+        EasyMock.expect(stream.getDefinition()).andReturn(definition).atLeastOnce();
         EasyMock.expect(stream.getHeadHandler()).andReturn(consumer).atLeastOnce();
 
         ChannelConnection connection = EasyMock.createMock(ChannelConnection.class);

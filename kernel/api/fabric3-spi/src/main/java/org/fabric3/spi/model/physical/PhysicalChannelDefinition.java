@@ -47,6 +47,8 @@ import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.net.URI;
 
+import org.fabric3.spi.channel.ChannelConstants;
+
 /**
  * Configuration to provision a channel on a runtime.
  */
@@ -61,7 +63,7 @@ public class PhysicalChannelDefinition implements Serializable {
     private Serializable metadata;
 
     public PhysicalChannelDefinition(URI uri, QName deployable, boolean replicate) {
-        this(uri, deployable, replicate, "default");
+        this(uri, deployable, replicate, ChannelConstants.DEFAULT_TYPE);
     }
 
     public PhysicalChannelDefinition(URI uri, QName deployable, boolean replicate, String type) {

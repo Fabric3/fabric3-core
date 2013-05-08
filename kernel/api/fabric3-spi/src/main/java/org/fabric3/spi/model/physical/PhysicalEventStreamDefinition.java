@@ -47,6 +47,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fabric3.api.ChannelEvent;
+
 /**
  * Metadata for an event stream that transmits events.
  */
@@ -56,6 +58,7 @@ public class PhysicalEventStreamDefinition implements Serializable {
     private List<String> eventTypes = new ArrayList<String>();
     private List<PhysicalEventFilterDefinition> filters = new ArrayList<PhysicalEventFilterDefinition>();
     private List<PhysicalHandlerDefinition> handlers = new ArrayList<PhysicalHandlerDefinition>();
+    private boolean channelEvent;
 
     public PhysicalEventStreamDefinition(String name) {
         this.name = name;
@@ -115,12 +118,37 @@ public class PhysicalEventStreamDefinition implements Serializable {
         filters.add(definition);
     }
 
+    /**
+     * Returns the {@link PhysicalHandlerDefinition}s for the stream.
+     *
+     * @return handler definitions for the stream
+     */
     public List<PhysicalHandlerDefinition> getHandlers() {
         return handlers;
     }
 
+    /**
+     * Adds a {@link PhysicalHandlerDefinition} to the stream.
+     *
+     * @param definition the definition
+     */
     public void addHandlerDefinition(PhysicalHandlerDefinition definition) {
         handlers.add(definition);
     }
 
+    /**
+     * For consumer streams, sets if the event type should be a {@link ChannelEvent}.
+     *
+     * @param channelEvent true if the event type should be a {@link ChannelEvent}
+     */
+    public void setChannelEvent(boolean channelEvent) {
+        this.channelEvent = channelEvent;
+    }
+
+    /**
+     * Returns true if the event type should be a {@link ChannelEvent}.
+     */
+    public boolean isChannelEvent() {
+        return channelEvent;
+    }
 }
