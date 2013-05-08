@@ -47,7 +47,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.wire.InvocationRuntimeException;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -89,7 +89,7 @@ public class SpringEventStreamHandler implements EventStreamHandler {
                     throw new ServiceRuntimeException("Bean not found:" + beanName);
                 }
             }
-            WorkContextTunnel.getAndResetThreadWorkContext();
+            WorkContextCache.getAndResetThreadWorkContext();
             ClassLoader old = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(targetTCCLClassLoader);

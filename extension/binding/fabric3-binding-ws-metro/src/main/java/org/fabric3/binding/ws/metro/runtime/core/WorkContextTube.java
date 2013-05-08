@@ -45,7 +45,7 @@ import com.sun.xml.ws.api.pipe.helper.AbstractFilterTubeImpl;
 
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 
 /**
  * Populates invocation properties of an incoming request with a WorkContext. This is done so that the work context can be updated by other tubes, for
@@ -67,7 +67,7 @@ public class WorkContextTube extends AbstractFilterTubeImpl {
 
     @Override
     public NextAction processRequest(Packet request) {
-        WorkContext context = WorkContextTunnel.getAndResetThreadWorkContext();
+        WorkContext context = WorkContextCache.getAndResetThreadWorkContext();
         request.invocationProperties.put(MetroConstants.WORK_CONTEXT, context);
         return super.processRequest(request);
     }

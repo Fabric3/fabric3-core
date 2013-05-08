@@ -54,7 +54,7 @@ import java.util.Set;
 import org.fabric3.api.Role;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
@@ -134,7 +134,7 @@ public class OptimizedMBean<T> extends AbstractMBean {
     }
 
     Object invoke(Method method, Object[] args) throws MBeanException, ReflectionException {
-        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         workContext.addCallFrame(new CallFrame());
         try {
             T instance = objectFactory.getInstance();

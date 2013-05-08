@@ -64,7 +64,7 @@ import org.fabric3.spi.federation.ZoneChannelException;
 import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.security.AuthenticationException;
@@ -238,7 +238,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             return;
         }
         try {
-            WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+            WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
             invoke(mapping, params, false, workContext);
         } catch (ResourceException e) {
             monitor.error("Error replicating resource request: " + mapping.getMethod(), e);
@@ -326,7 +326,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             }
             return;
         }
-        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
 
         if (!securityCheck(mapping, request, response, workContext)) {
             return;

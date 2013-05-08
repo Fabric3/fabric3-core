@@ -49,7 +49,7 @@ import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -64,7 +64,7 @@ public class SOAPMessageHandlerAdapter implements SOAPHandler<SOAPMessageContext
 
     public boolean handleMessage(SOAPMessageContext smc) {
         Boolean outbound = (Boolean) smc.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getThreadWorkContext();
         workContext = (WorkContext) (workContext == null ? smc.get(MetroConstants.WORK_CONTEXT) : workContext);
         if (workContext == null) {
             throw new ServiceRuntimeException("Work context not set");

@@ -50,7 +50,7 @@ import java.util.Set;
 
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -67,7 +67,7 @@ public class CallbackTargetHandler implements SOAPHandler<SOAPMessageContext> {
     }
 
     public boolean handleMessage(SOAPMessageContext soapContext) {
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getThreadWorkContext();
         workContext = (WorkContext) (workContext == null ? soapContext.get(MetroConstants.WORK_CONTEXT) : workContext);
         if (workContext == null) {
             throw new ServiceRuntimeException("Work context not set");

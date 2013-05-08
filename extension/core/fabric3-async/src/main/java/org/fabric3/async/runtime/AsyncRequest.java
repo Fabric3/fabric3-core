@@ -44,7 +44,7 @@ import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
@@ -73,7 +73,7 @@ public class AsyncRequest implements Runnable {
     }
 
     public void run() {
-        WorkContext newWorkContext = WorkContextTunnel.getAndResetThreadWorkContext();
+        WorkContext newWorkContext = WorkContextCache.getAndResetThreadWorkContext();
         newWorkContext.addCallFrames(stack);
         newWorkContext.addHeaders(headers);
         newWorkContext.setSubject(subject);

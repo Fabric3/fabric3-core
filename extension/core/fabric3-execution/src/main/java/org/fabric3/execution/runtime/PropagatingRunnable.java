@@ -6,7 +6,7 @@ import java.util.Map;
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 
 /**
  * Propagates a work context to the current thread executing the delegate runnable.
@@ -25,7 +25,7 @@ public class PropagatingRunnable implements Runnable {
     }
 
     public void run() {
-        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         workContext.setSubject(subject);
         workContext.addHeaders(headers);
         workContext.addCallFrames(stack);

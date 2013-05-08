@@ -2,8 +2,7 @@ package org.fabric3.execution.runtime;
 
 import junit.framework.TestCase;
 
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 
 /**
  *
@@ -19,7 +18,7 @@ public class PropagatingRunnableTestCase extends TestCase {
     private class MockRunnable implements Runnable {
 
         public void run() {
-            assertNotNull(WorkContextTunnel.getThreadWorkContext());
+            assertNotNull(WorkContextCache.getThreadWorkContext());
         }
     }
 }

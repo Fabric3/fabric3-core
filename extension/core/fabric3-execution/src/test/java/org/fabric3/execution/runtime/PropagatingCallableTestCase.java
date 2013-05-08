@@ -4,8 +4,7 @@ import java.util.concurrent.Callable;
 
 import junit.framework.TestCase;
 
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 
 /**
  *
@@ -21,7 +20,7 @@ public class PropagatingCallableTestCase extends TestCase {
     private class MockCallable implements Callable<Object> {
 
         public Object call() throws Exception {
-            assertNotNull(WorkContextTunnel.getThreadWorkContext());
+            assertNotNull(WorkContextCache.getThreadWorkContext());
             return null;
         }
     }

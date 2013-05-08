@@ -74,7 +74,7 @@ import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.util.Base64;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.xml.XMLFactory;
@@ -331,7 +331,7 @@ public class ServiceListener implements MessageListener {
     @SuppressWarnings({"unchecked"})
     private WorkContext createWorkContext(Message request, String callbackUri) throws JmsBadMessageException {
         try {
-            WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+            WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
             String encoded = request.getStringProperty("f3Context");
             if (encoded == null) {
                 // no callframe found, use a blank one

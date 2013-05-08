@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Socket;
@@ -142,7 +142,7 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
     @SuppressWarnings({"unchecked"})
     protected WorkContext createWorkContext(byte[] header) {
         try {
-            WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+            WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
             if (header == null) {
                 // no callframe found, use a blank one
                 return workContext;

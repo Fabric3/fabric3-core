@@ -54,7 +54,7 @@ import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.security.BasicSecuritySubject;
 
@@ -152,7 +152,7 @@ public class ResourceInvokerTestCase extends TestCase {
         Set<Role> roles = Collections.singleton(new Role("admin"));
         List<ResourceMapping> mappings = createMappings(instance, method, roles);
 
-        WorkContextTunnel.getThreadWorkContext().setSubject(new BasicSecuritySubject("foo", "bar", roles));
+        WorkContextCache.getThreadWorkContext().setSubject(new BasicSecuritySubject("foo", "bar", roles));
 
         ResourceInvoker invoker = new ResourceInvoker(mappings, ManagementSecurity.AUTHORIZATION);
         HttpServletRequest request = createRequest();
@@ -172,7 +172,7 @@ public class ResourceInvokerTestCase extends TestCase {
         Set<Role> roles = Collections.emptySet();
         List<ResourceMapping> mappings = createMappings(instance, method, roles);
 
-        WorkContextTunnel.getThreadWorkContext().setSubject(new BasicSecuritySubject("foo", "bar", roles));
+        WorkContextCache.getThreadWorkContext().setSubject(new BasicSecuritySubject("foo", "bar", roles));
 
         ResourceInvoker invoker = new ResourceInvoker(mappings, ManagementSecurity.AUTHENTICATION);
         HttpServletRequest request = createRequest();
@@ -190,7 +190,7 @@ public class ResourceInvokerTestCase extends TestCase {
         Set<Role> roles = Collections.singleton(new Role("admin"));
         List<ResourceMapping> mappings = createMappings(instance, method, roles);
 
-        WorkContextTunnel.getThreadWorkContext().setSubject(new BasicSecuritySubject("foo", "bar", Collections.<Role>emptySet()));
+        WorkContextCache.getThreadWorkContext().setSubject(new BasicSecuritySubject("foo", "bar", Collections.<Role>emptySet()));
 
         ResourceInvoker invoker = new ResourceInvoker(mappings, ManagementSecurity.AUTHENTICATION);
         HttpServletRequest request = createRequest();

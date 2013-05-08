@@ -43,7 +43,7 @@ import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 import org.oasisopen.sca.ServiceReference;
@@ -79,7 +79,7 @@ public class WireProxyDispatcher<B> implements ProxyDispatcher, ServiceReference
 
         Interceptor headInterceptor = chain.getHeadInterceptor();
 
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getThreadWorkContext();
         CallFrame frame = initializeCallFrame(workContext);
         Message msg = new MessageImpl();
         msg.setBody(args);

@@ -53,7 +53,7 @@ import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
@@ -99,7 +99,7 @@ public class ResourceInvoker {
      */
     public Resource invoke(HttpServletRequest request) throws ResourceProcessingException, ResourceException {
         try {
-            WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+            WorkContext workContext = WorkContextCache.getThreadWorkContext();
             if (workContext == null) {
                 throw new AssertionError("Work context not set");
             }

@@ -38,7 +38,7 @@
 package org.fabric3.implementation.bytecode.proxy.wire;
 
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
@@ -52,7 +52,7 @@ public class OptimizedCallbackDispatcher extends AbstractCallbackDispatcher {
     }
 
     public Object _f3_invoke(int i, Object args) throws Throwable {
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getThreadWorkContext();
         // find the invocation chain for the invoked operation
         InvocationChain chain = chains[i];
         // find the invocation chain for the invoked operation

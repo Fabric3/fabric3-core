@@ -48,6 +48,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
@@ -57,7 +58,6 @@ import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 
@@ -105,7 +105,7 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
         Interceptor headInterceptor = chain.getHeadInterceptor();
         assert headInterceptor != null;
 
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getThreadWorkContext();
         CallFrame frame = initializeCallFrame(workContext);
         Message msg = new MessageImpl();
         msg.setBody(args);

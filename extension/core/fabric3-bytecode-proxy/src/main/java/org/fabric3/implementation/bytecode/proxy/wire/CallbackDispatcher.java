@@ -41,7 +41,7 @@ import java.util.Map;
 
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
@@ -66,7 +66,7 @@ public class CallbackDispatcher extends AbstractCallbackDispatcher {
     }
 
     public Object _f3_invoke(int i, Object args) throws Throwable {
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getThreadWorkContext();
         CallFrame frame = workContext.peekCallFrame();
         String callbackUri = frame.getCallbackUri();
 

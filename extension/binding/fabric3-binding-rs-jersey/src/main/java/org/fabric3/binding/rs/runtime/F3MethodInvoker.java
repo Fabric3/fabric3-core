@@ -9,13 +9,13 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import com.sun.jersey.spi.container.JavaMethodInvoker;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.BasicAuthenticator;
 import org.fabric3.spi.security.NoCredentialsException;
@@ -54,7 +54,7 @@ public class F3MethodInvoker implements JavaMethodInvoker {
         ResourceInstance resourceInstance = (ResourceInstance) instance;
         Map<String, InvocationChain> chains = resourceInstance.getChains();
         InvocationChain invocationChain = chains.get(method.getName());
-        WorkContext context = WorkContextTunnel.getThreadWorkContext();
+        WorkContext context = WorkContextCache.getThreadWorkContext();
 
         try {
 

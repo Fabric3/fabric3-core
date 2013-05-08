@@ -42,7 +42,7 @@ import java.util.Map;
 
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.spi.invocation.CallFrame;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.wire.InvocationChain;
@@ -86,7 +86,7 @@ public class CallbackWireObjectFactory<T> implements ObjectFactory<T> {
                 throw new ObjectCreationException(e);
             }
         } else {
-            CallFrame frame = WorkContextTunnel.getThreadWorkContext().peekCallFrame();
+            CallFrame frame = WorkContextCache.getThreadWorkContext().peekCallFrame();
             String callbackUri = frame.getCallbackUri();
             Map<Method, InvocationChain> mapping = (singleMapping != null) ? singleMapping : mappings.get(callbackUri);
             return interfaze.cast(proxyService.createCallbackProxy(interfaze, mapping));

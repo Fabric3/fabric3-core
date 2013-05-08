@@ -13,7 +13,7 @@ import java.util.concurrent.TimeoutException;
 import junit.framework.TestCase;
 
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 
 /**
  *
@@ -70,7 +70,7 @@ public class ExecutorServiceProxyTestCase extends TestCase {
     private class MockCallable implements Callable<Object> {
 
         public Object call() throws Exception {
-            WorkContext propagated = WorkContextTunnel.getThreadWorkContext();
+            WorkContext propagated = WorkContextCache.getThreadWorkContext();
             assertNotNull(propagated);
             assertFalse(workContext.equals(propagated));
             return null;
@@ -80,7 +80,7 @@ public class ExecutorServiceProxyTestCase extends TestCase {
     private class MockRunnable implements Runnable {
 
         public void run() {
-            WorkContext propagated = WorkContextTunnel.getThreadWorkContext();
+            WorkContext propagated = WorkContextCache.getThreadWorkContext();
             assertNotNull(propagated);
             assertFalse(workContext.equals(propagated));
         }

@@ -44,7 +44,7 @@ import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.InvocationRuntimeException;
 import org.fabric3.timer.spi.Task;
 
@@ -68,7 +68,7 @@ public class NonTransactionalIntervalTask implements Task {
     }
 
     public long nextInterval() {
-        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         workContext.addCallFrame(FRAME);
 
         Object instance = null;

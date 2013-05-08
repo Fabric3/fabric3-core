@@ -58,7 +58,7 @@ import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.federation.TopologyListener;
 import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -152,7 +152,7 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         // this runtime was elected leader, start the components
         synchronized (deferredContexts) {
             for (QName deployable : deferredContexts) {
-                WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+                WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
                 try {
                     super.startContext(deployable, workContext);
                 } catch (GroupInitializationException e) {

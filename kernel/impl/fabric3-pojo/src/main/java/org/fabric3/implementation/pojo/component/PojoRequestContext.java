@@ -39,24 +39,24 @@ package org.fabric3.implementation.pojo.component;
 
 import javax.security.auth.Subject;
 
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.ServiceReference;
 
 import org.fabric3.api.Fabric3RequestContext;
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
  *
  */
 public class PojoRequestContext implements Fabric3RequestContext {
     public Subject getSecuritySubject() {
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getThreadWorkContext();
         return workContext.getSubject().getJaasSubject();
     }
 
     public SecuritySubject getCurrentSubject() {
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getThreadWorkContext();
         return workContext.getSubject();
     }
 
@@ -78,17 +78,17 @@ public class PojoRequestContext implements Fabric3RequestContext {
     }
 
     public <T> T getHeader(Class<T> type, String name) {
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getThreadWorkContext();
         return workContext.getHeader(type, name);
     }
 
     public void setHeader(String name, Object value) {
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getThreadWorkContext();
         workContext.setHeader(name, value);
     }
 
     public void removeHeader(String name) {
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getThreadWorkContext();
         workContext.removeHeader(name);
     }
 }

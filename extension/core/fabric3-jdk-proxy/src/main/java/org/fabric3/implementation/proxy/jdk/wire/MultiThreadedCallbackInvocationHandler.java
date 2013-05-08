@@ -42,7 +42,7 @@ import java.util.Map;
 
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.InvocationChain;
 
 /**
@@ -72,7 +72,7 @@ public class MultiThreadedCallbackInvocationHandler<T> extends AbstractCallbackI
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        WorkContext workContext = WorkContextTunnel.getThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getThreadWorkContext();
         CallFrame frame = workContext.peekCallFrame();
         String callbackUri = frame.getCallbackUri();
 

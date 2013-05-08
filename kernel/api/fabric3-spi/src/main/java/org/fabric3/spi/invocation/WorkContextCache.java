@@ -44,12 +44,12 @@
 package org.fabric3.spi.invocation;
 
 /**
- * Class for tunneling a WorkContext through the invocation of user code.
+ * Cache of {@link WorkContext}s associated with runtime threads.
  */
-public final class WorkContextTunnel {
+public final class WorkContextCache {
     private static final ThreadLocal<WorkContext> CONTEXT = new ThreadLocal<WorkContext>();
 
-    private WorkContextTunnel() {
+    private WorkContextCache() {
     }
 
     /**
@@ -66,6 +66,11 @@ public final class WorkContextTunnel {
         return workContext;
     }
 
+    /**
+     * Resets and returns the WorkContext for the current thread.
+     *
+     * @return the WorkContext for the current thread
+     */
     public static WorkContext getAndResetThreadWorkContext() {
         WorkContext workContext = getThreadWorkContext();
         workContext.reset();

@@ -51,7 +51,7 @@ import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.InvocationRuntimeException;
 
 /**
@@ -84,7 +84,7 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
     }
 
     public void handle(Object event) {
-        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         Object instance;
         try {
             instance = component.getInstance(workContext);

@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 
 /**
  * Propagates a work context to the current thread executing the delegate callable.
@@ -26,7 +26,7 @@ public class PropagatingCallable<T> implements Callable<T> {
     }
 
     public T call() throws Exception {
-        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         workContext.setSubject(subject);
         workContext.addHeaders(headers);
         workContext.addCallFrames(stack);

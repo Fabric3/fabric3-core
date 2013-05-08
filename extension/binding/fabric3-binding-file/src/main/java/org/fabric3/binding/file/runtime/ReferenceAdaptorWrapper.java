@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 import org.fabric3.binding.file.api.ReferenceAdapter;
@@ -28,7 +28,7 @@ public class ReferenceAdaptorWrapper implements ReferenceAdapter {
     }
 
     private ReferenceAdapter getInstance() {
-        WorkContext context = WorkContextTunnel.getAndResetThreadWorkContext();
+        WorkContext context = WorkContextCache.getAndResetThreadWorkContext();
         try {
             Object instance = component.getInstance(context);
             if (!(instance instanceof ReferenceAdapter)) {

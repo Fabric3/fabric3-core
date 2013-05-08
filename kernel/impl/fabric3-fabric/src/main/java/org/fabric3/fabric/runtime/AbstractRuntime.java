@@ -82,7 +82,7 @@ import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.management.ManagementService;
 
@@ -169,7 +169,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
 
     public void destroy() throws ShutdownException {
         // destroy system components
-        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         scopeContainer.stopAllContexts(workContext);
         try {
             repository.shutdown();
@@ -187,7 +187,7 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
             return null;
         }
 
-        WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         try {
             Object instance = component.getInstance(workContext);
             return service.cast(instance);

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeoutException;
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 
 /**
  * Proxies an executor service to create {@link PropagatingCallable} and {@link PropagatingRunnable} wrappers that propagate the current work context
@@ -98,7 +98,7 @@ public class ExecutorServiceProxy implements ExecutorService {
     }
 
     private PropagatingRunnable createRunnable(Runnable runnable) {
-        WorkContext context = WorkContextTunnel.getThreadWorkContext();
+        WorkContext context = WorkContextCache.getThreadWorkContext();
         List<CallFrame> stack = context.getCallFrameStack();
         if (stack != null && !stack.isEmpty()) {
             // clone the callstack to avoid multiple threads seeing changes
@@ -114,7 +114,7 @@ public class ExecutorServiceProxy implements ExecutorService {
     }
 
     private <T> PropagatingCallable<T> createCallable(Callable<T> callable) {
-        WorkContext context = WorkContextTunnel.getThreadWorkContext();
+        WorkContext context = WorkContextCache.getThreadWorkContext();
         List<CallFrame> stack = context.getCallFrameStack();
         if (stack != null && !stack.isEmpty()) {
             // clone the callstack to avoid multiple threads seeing changes

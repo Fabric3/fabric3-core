@@ -54,7 +54,7 @@ import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 
@@ -75,7 +75,7 @@ public class SCATestSet implements SurefireTestSet {
             String operationName = chain.getPhysicalOperation().getName();
             reporterManager.testStarting(new ReportEntry(this, operationName, name));
             try {
-                WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+                WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
                 CallFrame frame = new CallFrame();
                 workContext.addCallFrame(frame);
 

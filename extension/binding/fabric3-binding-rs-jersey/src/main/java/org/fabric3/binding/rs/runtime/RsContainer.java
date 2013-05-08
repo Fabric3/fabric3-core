@@ -50,7 +50,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextTunnel;
+import org.fabric3.spi.invocation.WorkContextCache;
 
 /**
  * Manages resources defined in a deployable contribution.
@@ -121,7 +121,7 @@ public final class RsContainer extends HttpServlet {
             ClassLoader old = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(classLoader);
-                WorkContext workContext = WorkContextTunnel.getAndResetThreadWorkContext();
+                WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
                 workContext.setHeader("fabric3.httpRequest", req);
                 workContext.setHeader("fabric3.httpResponse", res);
                 CallFrame frame = new CallFrame();

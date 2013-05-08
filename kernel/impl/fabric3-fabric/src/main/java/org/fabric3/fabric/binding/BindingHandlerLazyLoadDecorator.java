@@ -3,6 +3,7 @@ package org.fabric3.fabric.binding;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 
@@ -12,7 +13,6 @@ import org.fabric3.spi.component.Component;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.WorkContextTunnel;
 
 /**
  * A {@link BindingHandler} decorator that resolves the target {@link BindingHandler} in a lazy fashion. Lazy loading is used to ensure the full
@@ -59,7 +59,7 @@ public class BindingHandlerLazyLoadDecorator<T> implements BindingHandler<T> {
         }
         try {
             // resolve the instance on every invocation so that stateless scoped components receive a new instance
-            return (BindingHandler<T>) delegate.getInstance(WorkContextTunnel.getThreadWorkContext());
+            return (BindingHandler<T>) delegate.getInstance(WorkContextCache.getThreadWorkContext());
         } catch (InstanceLifecycleException e) {
             throw new ServiceRuntimeException(e);
         }
