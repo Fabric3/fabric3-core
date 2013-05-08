@@ -46,7 +46,6 @@ package org.fabric3.implementation.pojo.manager;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
@@ -57,29 +56,26 @@ public interface ImplementationManager {
     /**
      * Creates a new instance of the component. All injected values must be set but any @Init methods must not have been invoked.
      *
-     * @param workContext the work context in which to create the instance
      * @return A new component instance
      * @throws ObjectCreationException if there was a problem creating the instance
      */
-    Object newInstance(WorkContext workContext) throws ObjectCreationException;
+    Object newInstance() throws ObjectCreationException;
 
     /**
      * Starts the instance, calling an @Init method if one is configured.
      *
      * @param instance the instance
-     * @param context  the work context
      * @throws InstanceInitException if there is an error when calling the initialization method
      */
-    void start(Object instance, WorkContext context) throws InstanceInitException;
+    void start(Object instance) throws InstanceInitException;
 
     /**
      * Stops the instance, calling an @Destroy method if one is configured.
      *
      * @param instance the instance
-     * @param context  the work context
      * @throws InstanceDestructionException if there is an error when calling the initialization method
      */
-    void stop(Object instance, WorkContext context) throws InstanceDestructionException;
+    void stop(Object instance) throws InstanceDestructionException;
 
     /**
      * Reinjects the instance with any updated references.

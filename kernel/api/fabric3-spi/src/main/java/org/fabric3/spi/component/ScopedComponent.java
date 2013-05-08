@@ -38,12 +38,11 @@
  */
 package org.fabric3.spi.component;
 
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 
 /**
- * A component whose implementation instances are managed by a {@link ScopeContainer}. This interface defines callbacks used by the scope container to
- * change the state of an implementation.
+ * A component whose implementation instances are managed by a {@link ScopeContainer}. This interface defines callbacks used by the scope container to change
+ * the state of an implementation.
  */
 public interface ScopedComponent extends AtomicComponent {
 
@@ -55,33 +54,29 @@ public interface ScopedComponent extends AtomicComponent {
     boolean isEagerInit();
 
     /**
-     * Create a new implementation instance, fully injected with all property and reference values. The instance's lifecycle callbacks must not have
-     * been called.
+     * Create a new implementation instance, fully injected with all property and reference values. The instance's lifecycle callbacks must not have been
+     * called.
      *
-     * @param workContext the work context in which to create the instance
      * @return a wrapper for a new implementation instance
      * @throws ObjectCreationException if there was a problem instantiating the implementation
      */
-    Object createInstance(WorkContext workContext) throws ObjectCreationException;
+    Object createInstance() throws ObjectCreationException;
 
     /**
      * Starts a component instance. If configured on the implementation, an initialization callback will be performed.
      *
-     * @param instance    the instance to start
-     * @param workContext the current work context
-     * @throws InstanceInitException
-     *          if there is an error initializing the instance
+     * @param instance the instance to start
+     * @throws InstanceInitException if there is an error initializing the instance
      */
-    void startInstance(Object instance, WorkContext workContext) throws InstanceInitException;
+    void startInstance(Object instance) throws InstanceInitException;
 
     /**
      * Stops a component instance. If configured on the implementation, a destruction callback will be performed.
      *
      * @param instance    the instance to start
-     * @param workContext the current work context
      * @throws InstanceDestructionException if there is an error stopping the instance
      */
-    void stopInstance(Object instance, WorkContext workContext) throws InstanceDestructionException;
+    void stopInstance(Object instance) throws InstanceDestructionException;
 
     /**
      * Reinjects the instance with updated references.

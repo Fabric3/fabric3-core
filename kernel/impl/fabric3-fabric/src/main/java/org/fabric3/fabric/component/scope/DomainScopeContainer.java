@@ -57,7 +57,6 @@ import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.federation.TopologyListener;
 import org.fabric3.spi.federation.ZoneTopologyService;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -66,11 +65,11 @@ import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
 /**
- * Manages domain-scoped components. A domain scoped component has only one instance active in a domain. The active instance will be hosted by the
- * zone leader. If a zone is clustered and the zone leader fails, clustered instances will be migrated to the newly elected leader and activated.
+ * Manages domain-scoped components. A domain scoped component has only one instance active in a domain. The active instance will be hosted by the zone leader.
+ * If a zone is clustered and the zone leader fails, clustered instances will be migrated to the newly elected leader and activated.
  * <p/>
- * During deployment, the container checks if the runtime is a zone leader. If it is, contexts will be started. Otherwise, they will be deferred until
- * the existing leader fails and the current host is elected zone leader.
+ * During deployment, the container checks if the runtime is a zone leader. If it is, contexts will be started. Otherwise, they will be deferred until the
+ * existing leader fails and the current host is elected zone leader.
  */
 @EagerInit
 @Service(names = {ScopeContainer.class, TopologyListener.class})
@@ -106,7 +105,7 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         super.stop();
     }
 
-    public void startContext(QName deployable, WorkContext workContext) throws GroupInitializationException {
+    public void startContext(QName deployable) throws GroupInitializationException {
         if (RuntimeMode.PARTICIPANT == info.getRuntimeMode() && topologyService == null) {
             return;
         } else if (RuntimeMode.PARTICIPANT == info.getRuntimeMode() && !topologyService.isZoneLeader()) {
@@ -117,22 +116,21 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
             return;
         }
         activated = true;
-        super.startContext(deployable, workContext);
+        super.startContext(deployable);
     }
 
-    public void stopContext(QName deployable, WorkContext workContext) {
+    public void stopContext(QName deployable) {
         synchronized (deferredContexts) {
             deferredContexts.remove(deployable);
         }
-        super.stopContext(deployable, workContext);
+        super.stopContext(deployable);
     }
 
-    @Override
-    public Object getInstance(ScopedComponent component, WorkContext workContext) throws InstanceLifecycleException {
+    public Object getInstance(ScopedComponent component) throws InstanceLifecycleException {
         if (topologyService != null && !activated) {
             throw new InstanceLifecycleException("Component instance not active: " + component.getUri());
         }
-        return super.getInstance(component, workContext);
+        return super.getInstance(component);
     }
 
     public void onJoin(String name) {
@@ -152,9 +150,9 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         // this runtime was elected leader, start the components
         synchronized (deferredContexts) {
             for (QName deployable : deferredContexts) {
-                WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
+                WorkContextCache.getAndResetThreadWorkContext();
                 try {
-                    super.startContext(deployable, workContext);
+                    super.startContext(deployable);
                 } catch (GroupInitializationException e) {
                     monitor.leaderElectionError(e);
                 }
@@ -164,11 +162,11 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
 
     }
 
-    public void stopAllContexts(WorkContext workContext) {
+    public void stopAllContexts() {
         synchronized (deferredContexts) {
             deferredContexts.clear();
         }
-        super.stopAllContexts(workContext);
+        super.stopAllContexts();
     }
 
 }

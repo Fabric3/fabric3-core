@@ -81,7 +81,6 @@ import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.management.ManagementService;
@@ -169,8 +168,8 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
 
     public void destroy() throws ShutdownException {
         // destroy system components
-        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
-        scopeContainer.stopAllContexts(workContext);
+        WorkContextCache.getAndResetThreadWorkContext();
+        scopeContainer.stopAllContexts();
         try {
             repository.shutdown();
         } catch (RepositoryException e) {
@@ -187,9 +186,9 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
             return null;
         }
 
-        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
+        WorkContextCache.getAndResetThreadWorkContext();
         try {
-            Object instance = component.getInstance(workContext);
+            Object instance = component.getInstance();
             return service.cast(instance);
         } catch (InstanceLifecycleException e) {
             // this is an error with the runtime and not something that is recoverable

@@ -50,7 +50,6 @@ import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationRuntimeException;
 
@@ -95,10 +94,9 @@ public class InvokerInterceptor implements Interceptor {
     }
 
     public Message invoke(Message msg) {
-        WorkContext workContext = msg.getWorkContext();
         Object instance;
         try {
-            instance = component.getInstance(workContext);
+            instance = component.getInstance();
         } catch (InstanceLifecycleException e) {
             throw new InvocationRuntimeException(e);
         }
@@ -107,7 +105,7 @@ public class InvokerInterceptor implements Interceptor {
             return invoke(msg, instance);
         } finally {
             try {
-                component.releaseInstance(instance, workContext);
+                component.releaseInstance(instance);
             } catch (ComponentException e) {
                 throw new InvocationRuntimeException(e);
             }

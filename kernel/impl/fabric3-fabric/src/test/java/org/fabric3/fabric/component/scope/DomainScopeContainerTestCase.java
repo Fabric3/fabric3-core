@@ -43,17 +43,15 @@
  */
 package org.fabric3.fabric.component.scope;
 
-import java.util.Collections;
 import javax.xml.namespace.QName;
+import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
-
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.federation.ZoneTopologyService;
-import org.fabric3.spi.invocation.WorkContext;
 
 /**
  *
@@ -62,23 +60,22 @@ public class DomainScopeContainerTestCase extends TestCase {
     private DomainScopeContainer scopeContainer;
     private ScopedComponent component;
     private Object instance;
-    private WorkContext workContext;
     private QName deployable;
     private HostInfo info;
 
     public void testSingleVMStart() throws Exception {
         EasyMock.expect(component.isEagerInit()).andReturn(true);
-        EasyMock.expect(component.createInstance(EasyMock.isA(WorkContext.class))).andReturn(instance);
+        EasyMock.expect(component.createInstance()).andReturn(instance);
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.VM).atLeastOnce();
 
-        component.startInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
-        component.stopInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
+        component.startInstance(EasyMock.isA(Object.class));
+        component.stopInstance(EasyMock.isA(Object.class));
 
         EasyMock.replay(component, info);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable, workContext);
-        scopeContainer.stopContext(deployable, workContext);
+        scopeContainer.startContext(deployable);
+        scopeContainer.stopContext(deployable);
         EasyMock.verify(component, info);
     }
 
@@ -89,17 +86,17 @@ public class DomainScopeContainerTestCase extends TestCase {
         scopeContainer.setTopologyService(Collections.singletonList(topologyService));
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
-        EasyMock.expect(component.createInstance(EasyMock.isA(WorkContext.class))).andReturn(instance);
+        EasyMock.expect(component.createInstance()).andReturn(instance);
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
 
-        component.startInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
-        component.stopInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
+        component.startInstance(EasyMock.isA(Object.class));
+        component.stopInstance(EasyMock.isA(Object.class));
 
         EasyMock.replay(component, info, topologyService);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable, workContext);
-        scopeContainer.stopContext(deployable, workContext);
+        scopeContainer.startContext(deployable);
+        scopeContainer.stopContext(deployable);
         EasyMock.verify(component, info, topologyService);
     }
 
@@ -115,8 +112,8 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, info, topologyService);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable, workContext);
-        scopeContainer.stopContext(deployable, workContext);
+        scopeContainer.startContext(deployable);
+        scopeContainer.stopContext(deployable);
         EasyMock.verify(component, info, topologyService);
     }
 
@@ -128,20 +125,20 @@ public class DomainScopeContainerTestCase extends TestCase {
         scopeContainer.setTopologyService(Collections.singletonList(topologyService));
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
-        EasyMock.expect(component.createInstance(EasyMock.isA(WorkContext.class))).andReturn(instance);
+        EasyMock.expect(component.createInstance()).andReturn(instance);
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
 
-        component.startInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
-        component.stopInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
+        component.startInstance(EasyMock.isA(Object.class));
+        component.stopInstance(EasyMock.isA(Object.class));
 
         EasyMock.replay(component, info, topologyService);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable, workContext);
+        scopeContainer.startContext(deployable);
 
         scopeContainer.onLeaderElected("runtime");
 
-        scopeContainer.stopContext(deployable, workContext);
+        scopeContainer.stopContext(deployable);
         EasyMock.verify(component, info, topologyService);
     }
 
@@ -157,11 +154,11 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, info, topologyService);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable, workContext);
+        scopeContainer.startContext(deployable);
         scopeContainer.stop();
 
         scopeContainer.start();
-        scopeContainer.startContext(deployable, workContext);
+        scopeContainer.startContext(deployable);
 
         EasyMock.verify(component, info, topologyService);
     }
@@ -173,18 +170,18 @@ public class DomainScopeContainerTestCase extends TestCase {
         scopeContainer.setTopologyService(Collections.singletonList(topologyService));
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
-        EasyMock.expect(component.createInstance(EasyMock.isA(WorkContext.class))).andReturn(instance);
+        EasyMock.expect(component.createInstance()).andReturn(instance);
 
-        component.startInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
-        component.stopInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
+        component.startInstance(EasyMock.isA(Object.class));
+        component.stopInstance(EasyMock.isA(Object.class));
 
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
 
         EasyMock.replay(component, info, topologyService);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable, workContext);
-        scopeContainer.stopAllContexts(workContext);
+        scopeContainer.startContext(deployable);
+        scopeContainer.stopAllContexts();
 
         EasyMock.verify(component, info, topologyService);
     }
@@ -196,18 +193,18 @@ public class DomainScopeContainerTestCase extends TestCase {
         scopeContainer.setTopologyService(Collections.singletonList(topologyService));
 
         EasyMock.expect(component.isEagerInit()).andReturn(true);
-        EasyMock.expect(component.createInstance(EasyMock.isA(WorkContext.class))).andReturn(instance);
+        EasyMock.expect(component.createInstance()).andReturn(instance);
 
-        component.startInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
-        component.stopInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
+        component.startInstance(EasyMock.isA(Object.class));
+        component.stopInstance(EasyMock.isA(Object.class));
 
         EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.PARTICIPANT).atLeastOnce();
 
         EasyMock.replay(component, info, topologyService);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable, workContext);
-        scopeContainer.stopContext(deployable, workContext);
+        scopeContainer.startContext(deployable);
+        scopeContainer.stopContext(deployable);
 
         EasyMock.verify(component, info, topologyService);
     }
@@ -215,7 +212,6 @@ public class DomainScopeContainerTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        workContext = new WorkContext();
         deployable = new QName("deployable");
 
         info = EasyMock.createMock(HostInfo.class);

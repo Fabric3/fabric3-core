@@ -73,8 +73,8 @@ public class NonTransactionalTimerInvokerTestCase extends TestCase {
 
         ScopeContainer container = EasyMock.createMock(ScopeContainer.class);
         EasyMock.expect(container.getScope()).andReturn(Scope.COMPOSITE);
-        EasyMock.expect(container.getInstance(EasyMock.isA(TimerComponent.class), EasyMock.isA(WorkContext.class))).andReturn(instance);
-        container.releaseInstance(EasyMock.isA(TimerComponent.class), EasyMock.eq(instance), EasyMock.isA(WorkContext.class));
+        EasyMock.expect(container.getInstance(EasyMock.isA(TimerComponent.class))).andReturn(instance);
+        container.releaseInstance(EasyMock.isA(TimerComponent.class), EasyMock.eq(instance));
 
         ImplementationManagerFactory factory = EasyMock.createMock(ImplementationManagerFactory.class);
         EasyMock.expect(factory.getImplementationClass()).andReturn((Class) TimerInstance.class);

@@ -66,7 +66,6 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
     private ServiceInvoker runtimeTargetInvoker;
 
     private IMocksControl control;
-    private WorkContext workContext;
     private Object instance;
     private AtomicComponent component;
     private Message message;
@@ -138,10 +137,9 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
     }
 
     public void testFailureGettingWrapperThrowsException() {
-        EasyMock.expect(message.getWorkContext()).andReturn(workContext);
         InstanceLifecycleException ex = new InstanceLifecycleException("test");
         try {
-            EasyMock.expect(component.getInstance(workContext)).andThrow(ex);
+            EasyMock.expect(component.getInstance()).andThrow(ex);
         } catch (ComponentException e) {
             throw new AssertionError();
         }
@@ -157,19 +155,17 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
     }
 
     private void mockCall(Object value, Object body) throws Exception {
-        EasyMock.expect(message.getWorkContext()).andReturn(workContext);
-        EasyMock.expect(component.getInstance(workContext)).andReturn(instance);
+        EasyMock.expect(component.getInstance()).andReturn(instance);
         EasyMock.expect(message.getBody()).andReturn(value);
         message.setBody(body);
-        component.releaseInstance(instance, workContext);
+        component.releaseInstance(instance);
     }
 
     private void mockFaultCall(Object value, Class<? extends Exception> fault) throws Exception {
-        EasyMock.expect(message.getWorkContext()).andReturn(workContext);
-        EasyMock.expect(component.getInstance(workContext)).andReturn(instance);
+        EasyMock.expect(component.getInstance()).andReturn(instance);
         EasyMock.expect(message.getBody()).andReturn(value);
         message.setBodyWithFault(EasyMock.isA(fault));
-        component.releaseInstance(instance, workContext);
+        component.releaseInstance(instance);
     }
 
     @SuppressWarnings("unchecked")
@@ -186,7 +182,6 @@ public class InvokerInterceptorBasicTestCase extends TestCase {
         assertNotNull(runtimeTargetInvoker);
 
         control = EasyMock.createStrictControl();
-        workContext = control.createMock(WorkContext.class);
         component = control.createMock(AtomicComponent.class);
         message = control.createMock(Message.class);
     }

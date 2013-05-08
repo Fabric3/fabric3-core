@@ -39,10 +39,6 @@ package org.fabric3.fabric.synthesizer;
 
 import java.net.URI;
 
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.host.domain.AssemblyException;
@@ -64,7 +60,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -75,7 +71,8 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.synthesize.ComponentRegistrationException;
 import org.fabric3.spi.synthesize.ComponentSynthesizer;
 import org.fabric3.spi.synthesize.InvalidServiceContractException;
-
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
 
 /**
@@ -121,8 +118,8 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             componentManager.register(physical);
             scopeContainer.register(physical);
             // initialize the component - needed for reinjection to work
-            WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
-            scopeContainer.getInstance(physical, workContext);
+            WorkContextCache.getAndResetThreadWorkContext();
+            scopeContainer.getInstance(physical);
         } catch (RegistrationException e) {
             throw new ComponentRegistrationException(e);
         } catch (AssemblyException e) {

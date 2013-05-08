@@ -59,7 +59,6 @@ import org.fabric3.spi.component.InstanceInitException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopedComponent;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.objectfactory.InjectionAttributes;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -138,22 +137,22 @@ public abstract class PojoComponent implements ScopedComponent {
         return eager;
     }
 
-    public Object getInstance(WorkContext workContext) throws InstanceLifecycleException {
+    public Object getInstance() throws InstanceLifecycleException {
         if (cachedInstance != null) {
             return cachedInstance;
         }
-        return scopeContainer.getInstance(this, workContext);
+        return scopeContainer.getInstance(this);
     }
 
-    public void releaseInstance(Object instance, WorkContext workContext) throws InstanceDestructionException {
-        scopeContainer.releaseInstance(this, instance, workContext);
+    public void releaseInstance(Object instance) throws InstanceDestructionException {
+        scopeContainer.releaseInstance(this, instance);
     }
 
-    public Object createInstance(WorkContext workContext) throws ObjectCreationException {
+    public Object createInstance() throws ObjectCreationException {
         if (recreate.getAndSet(false)) {
             implementationManager = null;
         }
-        Object instance = getImplementationManager().newInstance(workContext);
+        Object instance = getImplementationManager().newInstance();
         if (Scope.COMPOSITE == scopeContainer.getScope()) {
             cachedInstance = instance;
         }
@@ -164,13 +163,13 @@ public abstract class PojoComponent implements ScopedComponent {
         return new ComponentObjectFactory(this);
     }
 
-    public void startInstance(Object instance, WorkContext workContext) throws InstanceInitException {
-        getImplementationManager().start(instance, workContext);
+    public void startInstance(Object instance) throws InstanceInitException {
+        getImplementationManager().start(instance);
     }
 
-    public void stopInstance(Object instance, WorkContext workContext) throws InstanceDestructionException {
+    public void stopInstance(Object instance) throws InstanceDestructionException {
         cachedInstance = null;
-        getImplementationManager().stop(instance, workContext);
+        getImplementationManager().stop(instance);
     }
 
     public void reinject(Object instance) throws InstanceLifecycleException {

@@ -62,18 +62,16 @@ public interface AtomicComponent extends Component {
      * Returns a component instance for the current context. After an instance is used, it must be returned by calling {@link #releaseInstance(Object,
      * WorkContext)}.
      *
-     * @param workContext the work context
      * @return a component instance
      * @throws InstanceLifecycleException if there is an error returning an instance
      */
-    Object getInstance(WorkContext workContext) throws InstanceLifecycleException;
+    Object getInstance() throws InstanceLifecycleException;
 
     /**
      * Signals that an implementation has been released from use.
      *
      * @param instance    the instance
-     * @param workContext the work context
      * @throws InstanceDestructionException if there is an error releasing the component
      */
-    void releaseInstance(Object instance, WorkContext workContext) throws InstanceDestructionException;
+    void releaseInstance(Object instance) throws InstanceDestructionException;
 }

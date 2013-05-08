@@ -45,16 +45,10 @@ package org.fabric3.fabric.executor;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.channel.ChannelManager;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.fabric.command.StartContextCommand;
 import org.fabric3.model.type.component.Scope;
+import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.component.ScopeContainer;
@@ -62,7 +56,11 @@ import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextCache;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Starts a component context on a runtime.
@@ -98,12 +96,12 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
 
     public void execute(StartContextCommand command) throws ExecutionException {
         QName deployable = command.getDeployable();
-        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
+        WorkContextCache.getAndResetThreadWorkContext();
         try {
-            compositeScopeContainer.startContext(deployable, workContext);
+            compositeScopeContainer.startContext(deployable);
             if (domainScopeContainer != null) {
                 // domain scope not available during bootstrap
-                domainScopeContainer.startContext(deployable, workContext);
+                domainScopeContainer.startContext(deployable);
             }
         } catch (GroupInitializationException e) {
             throw new ExecutionException(e);

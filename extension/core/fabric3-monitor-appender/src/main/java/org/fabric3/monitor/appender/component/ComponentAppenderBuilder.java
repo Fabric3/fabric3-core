@@ -49,8 +49,6 @@ import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -91,9 +89,8 @@ public class ComponentAppenderBuilder implements AppenderBuilder<PhysicalCompone
         }
 
         public void start() throws IOException {
-            WorkContext context = WorkContextCache.getThreadWorkContext();
             try {
-                Object instance = atomicComponent.getInstance(context);
+                Object instance = atomicComponent.getInstance();
                 if (!(instance instanceof Appender)) {
                     throw new IOException("Component does not implement " + Appender.class.getName() + ": " + atomicComponent.getUri());
                 }

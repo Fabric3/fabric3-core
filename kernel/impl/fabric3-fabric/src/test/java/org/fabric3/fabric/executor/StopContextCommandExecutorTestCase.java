@@ -47,14 +47,12 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.fabric.command.StopContextCommand;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.invocation.WorkContext;
 
 /**
  *
@@ -66,9 +64,9 @@ public class StopContextCommandExecutorTestCase extends TestCase {
         executorRegistry.register(EasyMock.eq(StopContextCommand.class), EasyMock.isA(StopContextCommandExecutor.class));
 
         ScopeContainer compositeContainer = EasyMock.createMock(ScopeContainer.class);
-        compositeContainer.stopContext(EasyMock.isA(QName.class), EasyMock.isA(WorkContext.class));
+        compositeContainer.stopContext(EasyMock.isA(QName.class));
         ScopeContainer domainContainer = EasyMock.createMock(ScopeContainer.class);
-        domainContainer.stopContext(EasyMock.isA(QName.class), EasyMock.isA(WorkContext.class));
+        domainContainer.stopContext(EasyMock.isA(QName.class));
         ScopeRegistry scopeRegistry = EasyMock.createMock(ScopeRegistry.class);
         EasyMock.expect(scopeRegistry.getScopeContainer(Scope.COMPOSITE)).andReturn(compositeContainer);
         EasyMock.expect(scopeRegistry.getScopeContainer(Scope.DOMAIN)).andReturn(domainContainer);

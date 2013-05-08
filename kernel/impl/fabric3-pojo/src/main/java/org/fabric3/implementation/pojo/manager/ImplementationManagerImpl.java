@@ -52,7 +52,6 @@ import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
@@ -95,7 +94,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
         }
     }
 
-    public Object newInstance(WorkContext workContext) throws ObjectCreationException {
+    public Object newInstance() throws ObjectCreationException {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(cl);
         try {
@@ -111,7 +110,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
         }
     }
 
-    public void start(Object instance, WorkContext context) throws InstanceInitException {
+    public void start(Object instance) throws InstanceInitException {
         if (initInvoker != null) {
             ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
             try {
@@ -125,7 +124,7 @@ public class ImplementationManagerImpl implements ImplementationManager {
         }
     }
 
-    public void stop(Object instance, WorkContext context) throws InstanceDestructionException {
+    public void stop(Object instance) throws InstanceDestructionException {
         try {
             if (destroyInvoker != null) {
                 ClassLoader oldCl = Thread.currentThread().getContextClassLoader();

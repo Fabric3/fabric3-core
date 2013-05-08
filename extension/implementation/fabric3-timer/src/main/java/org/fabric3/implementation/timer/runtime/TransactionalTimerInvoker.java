@@ -74,7 +74,7 @@ public class TransactionalTimerInvoker implements Runnable {
         workContext.addCallFrame(FRAME);
         Object instance;
         try {
-            instance = component.getInstance(workContext);
+            instance = component.getInstance();
         } catch (InstanceLifecycleException e) {
             monitor.initError(e);
             throw new InvocationRuntimeException(e);
@@ -114,7 +114,7 @@ public class TransactionalTimerInvoker implements Runnable {
             throw new ServiceRuntimeException(e);
         } finally {
             try {
-                component.releaseInstance(instance, workContext);
+                component.releaseInstance(instance);
             } catch (InstanceDestructionException e) {
                 monitor.disposeError(e);
             }

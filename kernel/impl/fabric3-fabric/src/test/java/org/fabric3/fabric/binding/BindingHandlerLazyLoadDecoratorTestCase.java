@@ -8,7 +8,6 @@ import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.cm.ComponentManager;
 import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.WorkContext;
 
 /**
  *
@@ -24,7 +23,7 @@ public class BindingHandlerLazyLoadDecoratorTestCase extends TestCase {
 
     public void testLazyLoad() throws Exception {
         EasyMock.expect(componentManager.getComponent(HANDLER_URI)).andReturn(component);
-        EasyMock.expect(component.getInstance(EasyMock.isA(WorkContext.class))).andReturn(handler).times(2);
+        EasyMock.expect(component.getInstance()).andReturn(handler).times(2);
 
         EasyMock.replay(component, componentManager, handler);
         decorator.handleOutbound(EasyMock.createNiceMock(Message.class), new Object());

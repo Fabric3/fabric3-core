@@ -43,6 +43,7 @@
  */
 package org.fabric3.implementation.system.singleton;
 
+import javax.xml.namespace.QName;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -55,7 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.implementation.pojo.objectfactory.ArrayMultiplicityObjectFactory;
@@ -67,7 +67,6 @@ import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceInitException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopedComponent;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
@@ -145,11 +144,11 @@ public class SingletonComponent implements ScopedComponent {
         return true;
     }
 
-    public Object createInstance(WorkContext workContext) throws ObjectCreationException {
+    public Object createInstance() throws ObjectCreationException {
         return instance;
     }
 
-    public void releaseInstance(Object instance, WorkContext workContext) {
+    public void releaseInstance(Object instance) {
         // no-op
     }
 
@@ -157,10 +156,9 @@ public class SingletonComponent implements ScopedComponent {
         return new SingletonObjectFactory<Object>(instance);
     }
 
-    public Object getInstance(WorkContext workContext) {
+    public Object getInstance() {
         return instance;
     }
-
 
     public String getName() {
         return uri.toString();
@@ -174,11 +172,11 @@ public class SingletonComponent implements ScopedComponent {
         this.level = level;
     }
 
-    public void startInstance(Object instance, WorkContext workContext) throws InstanceInitException {
+    public void startInstance(Object instance) throws InstanceInitException {
         // no-op
     }
 
-    public void stopInstance(Object instance, WorkContext workContext) throws InstanceDestructionException {
+    public void stopInstance(Object instance) throws InstanceDestructionException {
         // no-op
     }
 
@@ -211,7 +209,7 @@ public class SingletonComponent implements ScopedComponent {
     }
 
     public void removeObjectFactory(Injectable injectable) {
-        for (Iterator<Map.Entry<ObjectFactory, Injectable>> iterator = reinjectionMappings.entrySet().iterator(); iterator.hasNext();) {
+        for (Iterator<Map.Entry<ObjectFactory, Injectable>> iterator = reinjectionMappings.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<ObjectFactory, Injectable> entry = iterator.next();
             if (injectable.equals(entry.getValue())) {
                 iterator.remove();

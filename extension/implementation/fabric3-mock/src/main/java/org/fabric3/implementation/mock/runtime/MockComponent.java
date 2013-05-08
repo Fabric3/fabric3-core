@@ -37,13 +37,12 @@
 */
 package org.fabric3.implementation.mock.runtime;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
@@ -77,7 +76,7 @@ public class MockComponent implements AtomicComponent {
         return objectFactory;
     }
 
-    public Object getInstance(WorkContext workContext) throws InstanceLifecycleException {
+    public Object getInstance() throws InstanceLifecycleException {
         try {
             return objectFactory.getInstance();
         } catch (ObjectCreationException e) {
@@ -85,7 +84,7 @@ public class MockComponent implements AtomicComponent {
         }
     }
 
-    public void releaseInstance(Object instance, WorkContext workContext) {
+    public void releaseInstance(Object instance) {
 
     }
 

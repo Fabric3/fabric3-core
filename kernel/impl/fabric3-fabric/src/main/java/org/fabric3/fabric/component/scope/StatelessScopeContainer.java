@@ -43,14 +43,9 @@
  */
 package org.fabric3.fabric.component.scope;
 
+import javax.xml.namespace.QName;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.model.type.component.Scope;
@@ -60,8 +55,11 @@ import org.fabric3.spi.component.InstanceInitException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopedComponent;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * A scope context which manages stateless atomic component instances in a non-pooled fashion.
@@ -85,29 +83,29 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         super.stop();
     }
 
-    public Object getInstance(ScopedComponent component, WorkContext workContext) throws InstanceLifecycleException {
+    public Object getInstance(ScopedComponent component) throws InstanceLifecycleException {
         try {
-            Object instance = component.createInstance(workContext);
-            component.startInstance(instance, workContext);
+            Object instance = component.createInstance();
+            component.startInstance(instance);
             return instance;
         } catch (ObjectCreationException e) {
             throw new InstanceInitException("Error creating instance for: " + component.getUri(), e);
         }
     }
 
-    public void releaseInstance(ScopedComponent component, Object instance, WorkContext workContext) throws InstanceDestructionException {
-        component.stopInstance(instance, workContext);
+    public void releaseInstance(ScopedComponent component, Object instance) throws InstanceDestructionException {
+        component.stopInstance(instance);
     }
 
     public List<Object> getActiveInstances(ScopedComponent component) {
         return Collections.emptyList();
     }
 
-    public void startContext(QName deployable, WorkContext workContext) throws GroupInitializationException {
+    public void startContext(QName deployable) throws GroupInitializationException {
         // no-op
     }
 
-    public void stopContext(QName deployable, WorkContext workContext) {
+    public void stopContext(QName deployable) {
         // no-op
     }
 

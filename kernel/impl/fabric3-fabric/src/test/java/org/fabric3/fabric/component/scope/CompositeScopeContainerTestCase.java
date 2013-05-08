@@ -48,10 +48,8 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.IMocksControl;
 import org.easymock.classextension.EasyMock;
-
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ScopedComponent;
-import org.fabric3.spi.invocation.WorkContext;
 
 /**
  *
@@ -62,7 +60,6 @@ public class CompositeScopeContainerTestCase extends TestCase {
     protected QName deployable;
     protected ScopedComponent component;
     protected Object instance;
-    private WorkContext workContext;
 
     public void testCorrectScope() {
         assertEquals(Scope.COMPOSITE, scopeContainer.getScope());
@@ -71,28 +68,28 @@ public class CompositeScopeContainerTestCase extends TestCase {
     public void testInstanceCreation() throws Exception {
 
         EasyMock.expect(component.isEagerInit()).andStubReturn(false);
-        EasyMock.expect(component.createInstance(workContext)).andReturn(instance);
-        component.startInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
+        EasyMock.expect(component.createInstance()).andReturn(instance);
+        component.startInstance(EasyMock.isA(Object.class));
         EasyMock.expect(component.getDeployable()).andStubReturn(deployable);
         control.replay();
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable, workContext);
-        assertSame(instance, scopeContainer.getInstance(component, workContext));
-        assertSame(instance, scopeContainer.getInstance(component, workContext));
+        scopeContainer.startContext(deployable);
+        assertSame(instance, scopeContainer.getInstance(component));
+        assertSame(instance, scopeContainer.getInstance(component));
         control.verify();
     }
 
     public void testEagerInit() throws Exception {
 
         EasyMock.expect(component.isEagerInit()).andStubReturn(true);
-        EasyMock.expect(component.createInstance(workContext)).andReturn(instance);
-        component.startInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
-        component.stopInstance(EasyMock.isA(Object.class), EasyMock.isA(WorkContext.class));
+        EasyMock.expect(component.createInstance()).andReturn(instance);
+        component.startInstance(EasyMock.isA(Object.class));
+        component.stopInstance(EasyMock.isA(Object.class));
         EasyMock.expect(component.getDeployable()).andStubReturn(deployable);
         control.replay();
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable, workContext);
-        scopeContainer.stopContext(deployable, workContext);
+        scopeContainer.startContext(deployable);
+        scopeContainer.stopContext(deployable);
         control.verify();
     }
 
@@ -100,7 +97,6 @@ public class CompositeScopeContainerTestCase extends TestCase {
         super.setUp();
         deployable = new QName("deployable");
         control = EasyMock.createStrictControl();
-        workContext = new WorkContext();
         component = control.createMock(ScopedComponent.class);
         instance = new Object();
         scopeContainer = new CompositeScopeContainer(EasyMock.createNiceMock(ScopeContainerMonitor.class));

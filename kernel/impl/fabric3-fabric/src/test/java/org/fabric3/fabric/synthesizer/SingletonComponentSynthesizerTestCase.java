@@ -41,8 +41,6 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.fabric.cm.ComponentManagerImpl;
 import org.fabric3.fabric.component.scope.CompositeScopeContainer;
 import org.fabric3.fabric.component.scope.ScopeContainerMonitor;
@@ -59,7 +57,7 @@ import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.spi.invocation.WorkContext;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -74,8 +72,12 @@ public class SingletonComponentSynthesizerTestCase extends TestCase {
     private ScopeContainer scopeContainer;
 
     public void testSynthesizeIntrospect() throws Exception {
-        SingletonComponentSynthesizer synthesizer =
-                new SingletonComponentSynthesizer(implementationProcessor, instantiator, lcm, componentManager, contractProcessor, scopeContainer);
+        SingletonComponentSynthesizer synthesizer = new SingletonComponentSynthesizer(implementationProcessor,
+                                                                                      instantiator,
+                                                                                      lcm,
+                                                                                      componentManager,
+                                                                                      contractProcessor,
+                                                                                      scopeContainer);
 
         synthesizer.registerComponent("component", TestService.class, new TestComponent(), true);
 
@@ -83,12 +85,16 @@ public class SingletonComponentSynthesizerTestCase extends TestCase {
         assertNotNull(lcm.getComponent(uri));
         AtomicComponent component = (AtomicComponent) componentManager.getComponent(uri);
         assertNotNull(component);
-        assertNotNull(component.getInstance(new WorkContext()));
+        assertNotNull(component.getInstance());
     }
 
     public void testSynthesizeNoIntrospect() throws Exception {
-        SingletonComponentSynthesizer synthesizer =
-                new SingletonComponentSynthesizer(implementationProcessor, instantiator, lcm, componentManager, contractProcessor, scopeContainer);
+        SingletonComponentSynthesizer synthesizer = new SingletonComponentSynthesizer(implementationProcessor,
+                                                                                      instantiator,
+                                                                                      lcm,
+                                                                                      componentManager,
+                                                                                      contractProcessor,
+                                                                                      scopeContainer);
 
         synthesizer.registerComponent("component", TestService.class, new TestComponent(), false);
 
@@ -96,10 +102,8 @@ public class SingletonComponentSynthesizerTestCase extends TestCase {
         assertNotNull(lcm.getComponent(uri));
         AtomicComponent component = (AtomicComponent) componentManager.getComponent(uri);
         assertNotNull(component);
-        WorkContext workContext = new WorkContext();
-        assertNotNull(component.getInstance(workContext));
+        assertNotNull(component.getInstance());
     }
-
 
     @Override
     protected void setUp() throws Exception {
@@ -120,7 +124,6 @@ public class SingletonComponentSynthesizerTestCase extends TestCase {
     private class TestComponent implements TestService {
         @Reference
         protected Object reference;
-
 
     }
 

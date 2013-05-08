@@ -45,8 +45,6 @@ package org.fabric3.implementation.pojo.objectfactory;
 
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
@@ -61,9 +59,8 @@ public class ComponentObjectFactory implements ObjectFactory<Object> {
     }
 
     public Object getInstance() throws ObjectCreationException {
-        WorkContext workContext = WorkContextCache.getThreadWorkContext();
         try {
-            return component.getInstance(workContext);
+            return component.getInstance();
         } catch (InstanceLifecycleException e) {
             throw new ObjectCreationException(e);
         }

@@ -73,7 +73,7 @@ public class NonTransactionalIntervalTask implements Task {
 
         Object instance = null;
         try {
-            instance = component.getInstance(workContext);
+            instance = component.getInstance();
             return (Long) method.invoke(instance);
         } catch (InstanceLifecycleException e) {
             monitor.executeError(e);
@@ -87,7 +87,7 @@ public class NonTransactionalIntervalTask implements Task {
         } finally {
             if (instance != null) {
                 try {
-                    component.releaseInstance(instance, workContext);
+                    component.releaseInstance(instance);
                 } catch (InstanceDestructionException e) {
                     monitor.executeError(e);
                 }

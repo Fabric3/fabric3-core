@@ -37,18 +37,16 @@
 */
 package org.fabric3.implementation.timer.runtime;
 
-import java.lang.reflect.Method;
 import javax.transaction.TransactionManager;
+import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.oasisopen.sca.ServiceRuntimeException;
-
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ScopeContainer;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.InvocationRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  *
@@ -138,8 +136,8 @@ public class TransactionalIntervalTaskTestCase extends TestCase {
     private TimerComponent createComponent(TimerInstance instance) throws Exception {
         ScopeContainer container = EasyMock.createMock(ScopeContainer.class);
         EasyMock.expect(container.getScope()).andReturn(Scope.COMPOSITE);
-        EasyMock.expect(container.getInstance(EasyMock.isA(TimerComponent.class), EasyMock.isA(WorkContext.class))).andReturn(instance);
-        container.releaseInstance(EasyMock.isA(TimerComponent.class), EasyMock.eq(instance), EasyMock.isA(WorkContext.class));
+        EasyMock.expect(container.getInstance(EasyMock.isA(TimerComponent.class))).andReturn(instance);
+        container.releaseInstance(EasyMock.isA(TimerComponent.class), EasyMock.eq(instance));
 
         ImplementationManagerFactory factory = EasyMock.createMock(ImplementationManagerFactory.class);
         EasyMock.expect(factory.getImplementationClass()).andReturn((Class) TimerInstance.class);

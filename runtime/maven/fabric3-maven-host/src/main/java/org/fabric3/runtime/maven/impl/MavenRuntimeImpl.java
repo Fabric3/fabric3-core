@@ -63,7 +63,6 @@ import org.fabric3.runtime.maven.ModuleContributionSource;
 import org.fabric3.runtime.maven.TestSuiteFactory;
 import org.fabric3.runtime.maven.repository.MavenRepository;
 import org.fabric3.spi.component.ComponentException;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
 import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
@@ -90,9 +89,9 @@ public class MavenRuntimeImpl extends AbstractRuntime implements MavenRuntime {
     }
 
     public void startContext(QName deployable) throws ContextStartException {
-        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
+        WorkContextCache.getAndResetThreadWorkContext();
         try {
-            getScopeContainer().startContext(deployable, workContext);
+            getScopeContainer().startContext(deployable);
         } catch (ComponentException e) {
             throw new ContextStartException(e);
         }

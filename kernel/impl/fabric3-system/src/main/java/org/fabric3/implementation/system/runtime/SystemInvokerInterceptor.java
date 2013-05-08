@@ -80,7 +80,7 @@ public class SystemInvokerInterceptor implements Interceptor {
         WorkContext workContext = msg.getWorkContext();
         Object instance;
         try {
-            instance = component.getInstance(workContext);
+            instance = component.getInstance();
         } catch (InstanceLifecycleException e) {
             throw new InvocationRuntimeException(e);
         }
@@ -93,7 +93,7 @@ public class SystemInvokerInterceptor implements Interceptor {
             throw new InvocationRuntimeException(e);
         } finally {
             try {
-                component.releaseInstance(instance, workContext);
+                component.releaseInstance(instance);
             } catch (InstanceDestructionException e) {
                 throw new InvocationRuntimeException(e);
             }

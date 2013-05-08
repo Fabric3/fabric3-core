@@ -49,7 +49,6 @@ import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -84,12 +83,12 @@ public class StopContextCommandExecutor implements CommandExecutor<StopContextCo
 
     public void execute(StopContextCommand command) throws ExecutionException {
         QName deployable = command.getDeployable();
-        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
+        WorkContextCache.getAndResetThreadWorkContext();
         try {
-            compositeScopeContainer.stopContext(deployable, workContext);
+            compositeScopeContainer.stopContext(deployable);
             if (domainScopeContainer != null) {
                 // domain scope not available during bootstrap
-                domainScopeContainer.stopContext(deployable, workContext);
+                domainScopeContainer.stopContext(deployable);
             }
         } catch (ComponentException e) {
             throw new ExecutionException(e);

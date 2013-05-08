@@ -46,10 +46,8 @@ package org.fabric3.fabric.component.scope;
 import junit.framework.TestCase;
 import org.easymock.IMocksControl;
 import org.easymock.classextension.EasyMock;
-
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ScopedComponent;
-import org.fabric3.spi.invocation.WorkContext;
 
 /**
  * Unit tests for the composite scope container
@@ -59,7 +57,6 @@ public class StatelessScopeContainerTestCase extends TestCase {
     private IMocksControl control;
     private ScopedComponent component;
     private Object instance;
-    private WorkContext workContext;
 
     public void testCorrectScope() {
         assertEquals(Scope.STATELESS, scopeContainer.getScope());
@@ -68,21 +65,21 @@ public class StatelessScopeContainerTestCase extends TestCase {
     public void testInstanceCreation() throws Exception {
         instance = new Object();
 
-        EasyMock.expect(component.createInstance(workContext)).andReturn(this.instance);
-        component.startInstance(this.instance, workContext);
-        EasyMock.expect(component.createInstance(workContext)).andReturn(instance);
-        component.startInstance(instance, workContext);
+        EasyMock.expect(component.createInstance()).andReturn(this.instance);
+        component.startInstance(this.instance);
+        EasyMock.expect(component.createInstance()).andReturn(instance);
+        component.startInstance(instance);
         control.replay();
 
-        assertSame(this.instance, scopeContainer.getInstance(component, workContext));
-        assertSame(instance, scopeContainer.getInstance(component, workContext));
+        assertSame(this.instance, scopeContainer.getInstance(component));
+        assertSame(instance, scopeContainer.getInstance(component));
         control.verify();
     }
 
     public void testReturnWrapper() throws Exception {
-        component.stopInstance(instance, workContext);
+        component.stopInstance(instance);
         control.replay();
-        scopeContainer.releaseInstance(component, instance, workContext);
+        scopeContainer.releaseInstance(component, instance);
         control.verify();
     }
 
@@ -92,7 +89,6 @@ public class StatelessScopeContainerTestCase extends TestCase {
         scopeContainer = new StatelessScopeContainer(EasyMock.createNiceMock(ScopeContainerMonitor.class));
 
         control = EasyMock.createStrictControl();
-        workContext = control.createMock(WorkContext.class);
         component = control.createMock(ScopedComponent.class);
         instance = new Object();
     }

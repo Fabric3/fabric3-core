@@ -43,12 +43,10 @@
  */
 package org.fabric3.spi.component;
 
-import java.util.List;
 import javax.xml.namespace.QName;
+import java.util.List;
 
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.invocation.WorkContext;
-
 
 /**
  * Manages the lifecycle and visibility component implementations instances.
@@ -79,41 +77,36 @@ public interface ScopeContainer {
     /**
      * Start a new, non-expiring context. The context will remain active until explicitly stopped.
      *
-     * @param deployable  the deployable to start the context for
-     * @param workContext the current WorkContext
+     * @param deployable the deployable to start the context for
      * @throws ComponentException if an exception starting the context was encountered
      */
-    void startContext(QName deployable, WorkContext workContext) throws ComponentException;
+    void startContext(QName deployable) throws ComponentException;
 
     /**
      * Stop the context associated with the current work context.
      *
-     * @param deployable  the deployable to start the context for
-     * @param workContext the current WorkContext
+     * @param deployable the deployable to start the context for
      * @throws ComponentException if there is an error stopping the context
      */
-    void stopContext(QName deployable, WorkContext workContext) throws ComponentException;
+    void stopContext(QName deployable) throws ComponentException;
 
     /**
      * Returns an instance associated with the current scope context, creating one if necessary
      *
-     * @param component   the component
-     * @param workContext the work context in which the instance should be obtained
+     * @param component the component
      * @return the instance
      * @throws InstanceLifecycleException if there was a problem instantiating the target instance
      */
-    Object getInstance(ScopedComponent component, WorkContext workContext) throws InstanceLifecycleException;
+    Object getInstance(ScopedComponent component) throws InstanceLifecycleException;
 
     /**
      * Return am instance after use (for example, after invoking the instance).
      *
-     *
-     * @param component   the component
-     * @param instance    the instance
-     * @param workContext the work context returning the instance
+     * @param component the component
+     * @param instance  the instance
      * @throws InstanceDestructionException if there was a problem returning the target instance
      */
-    void releaseInstance(ScopedComponent component, Object instance, WorkContext workContext) throws InstanceDestructionException;
+    void releaseInstance(ScopedComponent component, Object instance) throws InstanceDestructionException;
 
     /**
      * Returns a snapshot of the component instances that are active and currently managed by the scope container.

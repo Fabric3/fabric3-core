@@ -4,17 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.oasisopen.sca.ServiceRuntimeException;
-
 import org.fabric3.binding.file.api.ReferenceAdapter;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextCache;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
- * Delegates to a backing adaptor component. Instance creation is done lazily so that the instance is not accessed during the deployment build phase
- * before all wires have been attached. For example, a file binding may be attached before the adaptor wires are attached.
+ * Delegates to a backing adaptor component. Instance creation is done lazily so that the instance is not accessed during the deployment build phase before all
+ * wires have been attached. For example, a file binding may be attached before the adaptor wires are attached.
  */
 public class ReferenceAdaptorWrapper implements ReferenceAdapter {
     private AtomicComponent component;
@@ -28,9 +26,9 @@ public class ReferenceAdaptorWrapper implements ReferenceAdapter {
     }
 
     private ReferenceAdapter getInstance() {
-        WorkContext context = WorkContextCache.getAndResetThreadWorkContext();
+        WorkContextCache.getAndResetThreadWorkContext();
         try {
-            Object instance = component.getInstance(context);
+            Object instance = component.getInstance();
             if (!(instance instanceof ReferenceAdapter)) {
                 String componentName = component.getName();
                 throw new ServiceRuntimeException("File binding adaptor must implement " + ReferenceAdapter.class.getName() + ":" + componentName);

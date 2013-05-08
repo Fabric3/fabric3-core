@@ -63,7 +63,7 @@ public class NonTransactionalTimerInvoker implements Runnable {
         workContext.addCallFrame(frame);
         Object instance;
         try {
-            instance = component.getInstance(workContext);
+            instance = component.getInstance();
         } catch (InstanceLifecycleException e) {
             monitor.initError(e);
             throw new InvocationRuntimeException(e);
@@ -78,7 +78,7 @@ public class NonTransactionalTimerInvoker implements Runnable {
             }
         } finally {
             try {
-                component.releaseInstance(instance, workContext);
+                component.releaseInstance(instance);
             } catch (InstanceDestructionException e) {
                 monitor.disposeError(e);
                 //noinspection ThrowFromFinallyBlock

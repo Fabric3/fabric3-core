@@ -154,8 +154,8 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
 
         ImplementationManager implementationManager = provider.createManager();
         WorkContext workContext = new WorkContext();
-        Foo foo = (Foo) implementationManager.newInstance(workContext);
-        implementationManager.start(foo, workContext);
+        Foo foo = (Foo) implementationManager.newInstance();
+        implementationManager.start(foo);
 
         EasyMock.verify(intFactory, stringFactory, reflectionFactory);
     }
