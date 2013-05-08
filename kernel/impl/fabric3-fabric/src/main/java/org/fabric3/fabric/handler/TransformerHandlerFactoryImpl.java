@@ -46,7 +46,6 @@ import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.HandlerCreationException;
-import org.fabric3.spi.channel.NoTransformerException;
 import org.fabric3.spi.channel.TransformerHandlerFactory;
 import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
