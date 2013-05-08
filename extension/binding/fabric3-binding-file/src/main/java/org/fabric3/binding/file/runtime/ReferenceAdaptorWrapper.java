@@ -26,7 +26,6 @@ public class ReferenceAdaptorWrapper implements ReferenceAdapter {
     }
 
     private ReferenceAdapter getInstance() {
-        WorkContextCache.getAndResetThreadWorkContext();
         try {
             Object instance = component.getInstance();
             if (!(instance instanceof ReferenceAdapter)) {

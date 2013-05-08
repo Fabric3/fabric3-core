@@ -73,11 +73,11 @@ public class AsyncRequest implements Runnable {
     }
 
     public void run() {
-        WorkContext newWorkContext = WorkContextCache.getAndResetThreadWorkContext();
-        newWorkContext.addCallFrames(stack);
-        newWorkContext.addHeaders(headers);
-        newWorkContext.setSubject(subject);
-        message.setWorkContext(newWorkContext);
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
+        workContext.addCallFrames(stack);
+        workContext.addHeaders(headers);
+        workContext.setSubject(subject);
+        message.setWorkContext(workContext);
         Message ret = next.invoke(message);
         if (ret.isFault()) {
             // log the exception

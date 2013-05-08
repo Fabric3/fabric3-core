@@ -42,7 +42,6 @@ public class ServiceAdaptorWrapper implements ServiceAdapter {
     }
 
     private ServiceAdapter getInstance() {
-        WorkContextCache.getAndResetThreadWorkContext();
         try {
             Object instance = component.getInstance();
             if (!(instance instanceof ServiceAdapter)) {

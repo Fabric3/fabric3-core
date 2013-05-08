@@ -64,9 +64,9 @@ import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
- * Periodically scans a directory for new files. When a new file is detected, the service bound to the directory is invoked with expected data types
- * associated with each file. After an invocation completes, the detected file is either archived or deleted according to the configured {@link
- * Strategy} value. If an error is encountered, the file will be moved to the configured error location.
+ * Periodically scans a directory for new files. When a new file is detected, the service bound to the directory is invoked with expected data types associated
+ * with each file. After an invocation completes, the detected file is either archived or deleted according to the configured {@link Strategy} value. If an
+ * error is encountered, the file will be moved to the configured error location.
  * <p/>
  * This receiver is non-transactional but supports clustered locking through the use of file locks placed in the &lt;location&gt;/locks directory.
  */
@@ -202,6 +202,7 @@ public class FileSystemReceiver implements Runnable {
             return;
         }
         try {
+            WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
             Object[] payload;
             try {
                 payload = adapter.beforeInvoke(file);
@@ -212,7 +213,7 @@ public class FileSystemReceiver implements Runnable {
                 return;
             }
             try {
-                Message response = dispatch(payload);
+                Message response = dispatch(payload, workContext);
                 afterInvoke(file, payload);
                 if (response.isFault()) {
                     // the service threw an exception. this is interpreted as a bad file. Move the file to the error location
@@ -236,9 +237,8 @@ public class FileSystemReceiver implements Runnable {
         }
     }
 
-    private Message dispatch(Object[] payload) {
+    private Message dispatch(Object[] payload, WorkContext workContext) {
         Message message = new MessageImpl();
-        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         message.setWorkContext(workContext);
         message.setBody(payload);
         return interceptor.invoke(message);

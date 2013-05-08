@@ -186,7 +186,6 @@ public abstract class AbstractRuntime implements Fabric3Runtime, RuntimeServices
             return null;
         }
 
-        WorkContextCache.getAndResetThreadWorkContext();
         try {
             Object instance = component.getInstance();
             return service.cast(instance);

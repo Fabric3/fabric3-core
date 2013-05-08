@@ -118,7 +118,6 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             componentManager.register(physical);
             scopeContainer.register(physical);
             // initialize the component - needed for reinjection to work
-            WorkContextCache.getAndResetThreadWorkContext();
             scopeContainer.getInstance(physical);
         } catch (RegistrationException e) {
             throw new ComponentRegistrationException(e);

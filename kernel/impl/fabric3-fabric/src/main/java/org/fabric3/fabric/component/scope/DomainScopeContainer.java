@@ -91,7 +91,6 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         }
     }
 
-    @Override
     @Init
     public void start() {
         super.start();
