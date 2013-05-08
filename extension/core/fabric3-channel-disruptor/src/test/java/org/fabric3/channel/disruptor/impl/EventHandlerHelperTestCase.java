@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -35,39 +35,55 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.channel;
+package org.fabric3.channel.disruptor.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.NavigableMap;
 
+import com.lmax.disruptor.EventHandler;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 
 /**
- * Default implementation of a channel connection.
+ *
  */
-public class ChannelConnectionImpl implements ChannelConnection {
-    private int sequence;
-    private List<EventStream> streams = new ArrayList<EventStream>();
+public class EventHandlerHelperTestCase extends TestCase {
 
-    public ChannelConnectionImpl(int sequence) {
-        this.sequence = sequence;
+    public void testSort() throws Exception {
+        ChannelConnection conn1 = EasyMock.createMock(ChannelConnection.class);
+        EasyMock.expect(conn1.getSequence()).andReturn(0);
+        EasyMock.expect(conn1.getEventStreams()).andReturn(Collections.<EventStream>emptyList());
+
+        ChannelConnection conn2 = EasyMock.createMock(ChannelConnection.class);
+        EasyMock.expect(conn2.getSequence()).andReturn(1);
+        EasyMock.expect(conn2.getEventStreams()).andReturn(Collections.<EventStream>emptyList());
+
+        ChannelConnection conn3 = EasyMock.createMock(ChannelConnection.class);
+        EasyMock.expect(conn3.getSequence()).andReturn(2);
+        EasyMock.expect(conn3.getEventStreams()).andReturn(Collections.<EventStream>emptyList());
+
+        EasyMock.replay(conn1, conn2, conn3);
+
+        List<ChannelConnection> connections = new ArrayList<ChannelConnection>();
+        connections.add(conn1);
+        connections.add(conn2);
+        connections.add(conn3);
+
+        NavigableMap<Integer, List<EventHandler<RingBufferEvent>>> map = EventHandlerHelper.createAndSort(connections);
+        assertEquals(3, map.size());
+        int last = -1;
+
+        for (Map.Entry<Integer, List<EventHandler<RingBufferEvent>>> entry : map.entrySet()) {
+            assertTrue(last < entry.getKey());
+            last++;
+        }
+
+        EasyMock.verify(conn1, conn2, conn3);
     }
 
-    /**
-     * Returns the sequence this connection should be passed events from the channel.
-     *
-     * @return the sequence this connection should be passed events from the channel
-     */
-    public int getSequence() {
-        return sequence;
-    }
-
-    public void addEventStream(EventStream stream) {
-        streams.add(stream);
-    }
-
-    public List<EventStream> getEventStreams() {
-        return streams;
-    }
 }

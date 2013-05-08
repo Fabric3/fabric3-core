@@ -37,12 +37,10 @@
 */
 package org.fabric3.fabric.generator.channel;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
@@ -75,6 +73,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -157,6 +156,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         }
         // construct a local connection to the channel
         PhysicalConnectionSourceDefinition sourceDefinition = new ChannelSourceDefinition(channel.getUri());
+        sourceDefinition.setSequence(consumer.getDefinition().getSequence());
         sourceDefinition.setClassLoaderId(classLoaderId);
         return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
     }
@@ -171,6 +171,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         LogicalBinding<?> binding = channel.getBinding();
         ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
         PhysicalConnectionSourceDefinition sourceDefinition = bindingGenerator.generateConnectionSource(consumer, binding);
+        sourceDefinition.setSequence(consumer.getDefinition().getSequence());
         sourceDefinition.setClassLoaderId(classLoaderId);
         return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
     }

@@ -53,6 +53,13 @@ import java.util.List;
 public interface ChannelConnection {
 
     /**
+     * Returns the sequence this connection should receive events from a channel.
+     *
+     * @return the sequence
+     */
+    public int getSequence();
+
+    /**
      * Adds an event stream to the connection.
      *
      * @param stream the stream to add

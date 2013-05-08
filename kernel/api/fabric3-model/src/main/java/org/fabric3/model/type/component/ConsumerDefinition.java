@@ -52,6 +52,9 @@ import org.fabric3.model.type.contract.DataType;
  */
 public class ConsumerDefinition extends AbstractConsumer<ComponentType> {
     private static final long serialVersionUID = -4222312633353056234L;
+    public static final int NO_SEQUENCE = 0;
+
+    private int sequence = NO_SEQUENCE;
 
     /**
      * Constructor.
@@ -72,4 +75,21 @@ public class ConsumerDefinition extends AbstractConsumer<ComponentType> {
         super(name, types);
     }
 
+    /**
+     * Returns the sequence number the consumer should receive messages from a channel.
+     *
+     * @return the sequence number
+     */
+    public int getSequence() {
+        return sequence;
+    }
+
+    /**
+     * Sets the sequence number the consumer should receive messages from a channel.
+     *
+     * @param sequence the sequence number
+     */
+    public void setSequence(int sequence) {
+        this.sequence = sequence;
+    }
 }

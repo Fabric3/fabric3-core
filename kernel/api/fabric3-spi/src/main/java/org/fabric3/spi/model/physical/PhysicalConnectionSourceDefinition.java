@@ -43,16 +43,20 @@
  */
 package org.fabric3.spi.model.physical;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.net.URI;
-import javax.xml.namespace.QName;
 
 /**
  * Used to attach the source side of a channel connection. The source may be a producer, channel binding or channel.
  */
 public class PhysicalConnectionSourceDefinition implements Serializable {
     private static final long serialVersionUID = 3395589699751449558L;
+
+    public static final int NO_SEQUENCE = 0;
+
     private URI uri;
+    private int sequence = NO_SEQUENCE;
     private QName deployable;
     private URI classLoaderId;
 
@@ -66,6 +70,25 @@ public class PhysicalConnectionSourceDefinition implements Serializable {
     public void setUri(URI uri) {
         this.uri = uri;
     }
+
+    /**
+     * Returns the sequence a consumer should be passed events, if supported by the channel type.
+     *
+     * @return the sequence a consumer should be passed events, if supported by the channel type
+     */
+    public int getSequence() {
+        return sequence;
+    }
+
+    /**
+     * Sets the sequence a consumer should be passed events, if supported by the channel type.
+     *
+     * @param sequence the sequence a consumer should be passed events, if supported by the channel type.
+     */
+    public void setSequence(int sequence) {
+        this.sequence = sequence;
+    }
+
 
     public QName getDeployable() {
         return deployable;
@@ -82,6 +105,5 @@ public class PhysicalConnectionSourceDefinition implements Serializable {
     public void setClassLoaderId(URI classLoaderId) {
         this.classLoaderId = classLoaderId;
     }
-
 
 }

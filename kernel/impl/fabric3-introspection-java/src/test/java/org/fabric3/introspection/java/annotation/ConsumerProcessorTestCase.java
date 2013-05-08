@@ -47,12 +47,10 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.annotation.Consumer;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
-import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
@@ -60,20 +58,36 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 public class ConsumerProcessorTestCase extends TestCase {
     private ConsumerProcessor processor;
     private InjectingComponentType componentType;
+    private DefaultIntrospectionContext context;
 
     public void testMethod() throws Exception {
         Method method = TestClass.class.getDeclaredMethod("onEvent", String.class);
         Consumer annotation = method.getAnnotation(Consumer.class);
-        IntrospectionContext context = new DefaultIntrospectionContext();
         TypeMapping mapping = new TypeMapping();
         context.addTypeMapping(TestClass.class, mapping);
 
         processor.visitMethod(annotation, method, TestClass.class, componentType, context);
         assertEquals(0, context.getErrors().size());
+
         Map<String, ConsumerDefinition> consumers = componentType.getConsumers();
         ConsumerDefinition definition = consumers.get("onEvent");
         assertEquals(1, definition.getTypes().size());
         assertEquals(String.class, definition.getTypes().get(0).getPhysical());
+    }
+
+    public void testSequenceMethod() throws Exception {
+        Method method = TestClass.class.getDeclaredMethod("onSequenceEvent", String.class);
+        Consumer annotation = method.getAnnotation(Consumer.class);
+        TypeMapping mapping = new TypeMapping();
+        context.addTypeMapping(TestClass.class, mapping);
+
+        processor.visitMethod(annotation, method, TestClass.class, componentType, context);
+        assertEquals(0, context.getErrors().size());
+
+        Map<String, ConsumerDefinition> consumers = componentType.getConsumers();
+        ConsumerDefinition definition = consumers.get("onSequenceEvent");
+
+        assertEquals(2, definition.getSequence());
     }
 
     protected void setUp() throws Exception {
@@ -81,12 +95,19 @@ public class ConsumerProcessorTestCase extends TestCase {
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
         processor = new ConsumerProcessor(helper);
         componentType = new InjectingComponentType();
+
+        context = new DefaultIntrospectionContext();
     }
 
     public static class TestClass {
 
         @Consumer
         public void onEvent(String message) {
+
+        }
+
+        @Consumer(sequence = 2)
+        public void onSequenceEvent(String message) {
 
         }
 

@@ -70,6 +70,7 @@ public class RingBufferChannelTestCase extends TestCase {
         EasyMock.expect(stream.getHeadHandler()).andReturn(consumer).atLeastOnce();
 
         ChannelConnection connection = EasyMock.createMock(ChannelConnection.class);
+        EasyMock.expect(connection.getSequence()).andReturn(0);
         List<EventStream> eventStreams = Collections.singletonList(stream);
         EasyMock.expect(connection.getEventStreams()).andReturn(eventStreams);
 

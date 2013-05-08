@@ -40,6 +40,7 @@ package org.fabric3.channel.disruptor.impl;
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
@@ -51,6 +52,7 @@ import com.lmax.disruptor.SequenceBarrier;
 import com.lmax.disruptor.SequenceGroup;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.dsl.EventHandlerGroup;
 import com.lmax.disruptor.dsl.ProducerType;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
@@ -88,15 +90,22 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
         sequences = new HashMap<URI, Sequence>();
     }
 
+    @SuppressWarnings("unchecked")
     public void start() {
         ProducerType producerType = numberProducers > 1 ? ProducerType.MULTI : ProducerType.SINGLE;
         disruptor = new Disruptor<RingBufferEvent>(EVENT_FACTORY, size, executorService, producerType, waitStrategy);
-        EventHandler[] handlers = new EventHandler[subscribers.size()];
-        int i = 0;
-        for (ChannelConnection connection : subscribers.values()) {
-            handlers[i] = new ChannelEventHandler(connection);
+
+        Map<Integer, List<EventHandler<RingBufferEvent>>> sorted = EventHandlerHelper.createAndSort(subscribers.values());
+
+        EventHandlerGroup group = null;
+        for (List<EventHandler<RingBufferEvent>> handlers : sorted.values()) {
+            if (group == null) {
+                group = disruptor.handleEventsWith(handlers.toArray(new EventHandler[handlers.size()]));
+            } else {
+                group = group.then(handlers.toArray(new EventHandler[handlers.size()]));
+            }
         }
-        disruptor.handleEventsWith(handlers);
+
         sequenceGroup = new SequenceGroup();
         disruptor.getRingBuffer().addGatingSequences(sequenceGroup);
         ringBuffer = disruptor.start();

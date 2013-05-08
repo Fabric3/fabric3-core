@@ -159,7 +159,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
      */
     private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) throws BuilderException {
         ClassLoader loader = classLoaderRegistry.getClassLoader(definition.getTarget().getClassLoaderId());
-        ChannelConnection connection = new ChannelConnectionImpl();
+        ChannelConnection connection = new ChannelConnectionImpl(definition.getSource().getSequence());
         for (PhysicalEventStreamDefinition streamDefinition : definition.getEventStreams()) {
             EventStream stream = new EventStreamImpl(streamDefinition);
             addTransformer(streamDefinition, stream, loader);

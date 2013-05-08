@@ -37,20 +37,18 @@
 */
 package org.fabric3.binding.web.runtime.channel;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 
 import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereResource;
-import org.atmosphere.cpr.AtmosphereServlet;
 import org.atmosphere.cpr.AtmosphereResource.TRANSPORT;
-
 import org.fabric3.spi.channel.EventStream;
 
 /**
- * Implements GET semantics for the RESTful publish/subscribe where a GET will either result in the creation of a websocket connection for clients
- * that support it, or a suspended comet connection. Subsequent events published to the channel will be pushed to all subscribed clients.
+ * Implements GET semantics for the RESTful publish/subscribe where a GET will either result in the creation of a websocket connection for clients that support
+ * it, or a suspended comet connection. Subsequent events published to the channel will be pushed to all subscribed clients.
  */
 public class ChannelSubscriberImpl implements ChannelSubscriber {
     private long timeout;
@@ -60,7 +58,7 @@ public class ChannelSubscriberImpl implements ChannelSubscriber {
      * Constructor.
      *
      * @param stream  the event stream for the channel that is being subscribed to
-     * @param timeout the client connection timeout 
+     * @param timeout the client connection timeout
      */
     public ChannelSubscriberImpl(EventStream stream, long timeout) {
         streams.add(stream);
@@ -72,16 +70,20 @@ public class ChannelSubscriberImpl implements ChannelSubscriber {
         if (resource == null) {
             throw new IllegalStateException("Web binding extension not properly configured");
         }
-        if (resource.transport() == TRANSPORT.LONG_POLLING ) {
-        	request.setAttribute(ApplicationConfig.RESUME_ON_BROADCAST, Boolean.TRUE);
+        if (resource.transport() == TRANSPORT.LONG_POLLING) {
+            request.setAttribute(ApplicationConfig.RESUME_ON_BROADCAST, Boolean.TRUE);
             resource.suspend(timeout, false);
         } else {
-        	resource.suspend(timeout);
-        }        
+            resource.suspend(timeout);
+        }
     }
 
     public List<EventStream> getEventStreams() {
         return streams;
+    }
+
+    public int getSequence() {
+        return 0;
     }
 
     public void addEventStream(EventStream stream) {

@@ -48,9 +48,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.Consumer;
 import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.model.type.contract.DataType;
@@ -63,6 +60,8 @@ import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
 import org.fabric3.spi.model.type.java.Signature;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Introspects {@link Consumer} annotations.
@@ -76,14 +75,9 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
         this.helper = helper;
     }
 
-    public void visitMethod(Consumer annotation,
-                            Method method,
-                            Class<?> implClass,
-                            InjectingComponentType componentType,
-                            IntrospectionContext context) {
+    public void visitMethod(Consumer annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         if (method.getParameterTypes().length > 1) {
-            InvalidConsumerMethod failure =
-                    new InvalidConsumerMethod("Consumer method " + method + " has more than one parameter", method, componentType);
+            InvalidConsumerMethod failure = new InvalidConsumerMethod("Consumer method " + method + " has more than one parameter", method, componentType);
             context.addError(failure);
             return;
         }
@@ -93,6 +87,14 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
         String name = helper.getSiteName(method, annotation.value());
         Signature signature = new Signature(method);
         ConsumerDefinition definition = new ConsumerDefinition(name, types);
+
+        int sequence = annotation.sequence();
+        if (sequence < 0) {
+            context.addError(new InvalidConsumerMethod("Sequence number cannot be negative: " + method, method, componentType));
+        } else {
+            definition.setSequence(sequence);
+        }
+
         componentType.add(definition, signature);
     }
 

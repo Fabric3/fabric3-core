@@ -56,4 +56,10 @@ public @interface Consumer {
      */
     public abstract String value() default "";
 
+    /**
+     * Denotes the sequence in which a consumer should receive events from a channel.
+     *
+     * @return the sequence in which a consumer should receive events from a channel
+     */
+    public abstract int sequence() default 0;
 }

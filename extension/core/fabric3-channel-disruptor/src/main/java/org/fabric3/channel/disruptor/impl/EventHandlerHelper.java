@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -35,31 +35,43 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.web.runtime.channel;
+package org.fabric3.channel.disruptor.impl;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
-import org.fabric3.spi.channel.EventStream;
+import com.lmax.disruptor.EventHandler;
+import org.fabric3.spi.channel.ChannelConnection;
 
 /**
- * Denies subscription requests for a channel.
+ *
  */
-public class DenyChannelSubscriber implements ChannelSubscriber {
+public class EventHandlerHelper {
 
-    public void subscribe(HttpServletRequest request) throws PublishDeniedException {
-        throw new PublishDeniedException();
+    /**
+     * Creates event handlers from a collection of {@link ChannelConnection}s and returns a Map sorted by connection sequence value.
+     *
+     * @param connections the connections
+     * @return the sorted Map
+     */
+    public static NavigableMap<Integer, List<EventHandler<RingBufferEvent>>> createAndSort(Collection<ChannelConnection> connections) {
+        NavigableMap<Integer, List<EventHandler<RingBufferEvent>>> sorted = new TreeMap<Integer, List<EventHandler<RingBufferEvent>>>();
+
+        for (ChannelConnection connection : connections) {
+            Integer sequence = connection.getSequence();
+            List<EventHandler<RingBufferEvent>> handlers = sorted.get(sequence);
+            if (handlers == null) {
+                handlers = new ArrayList<EventHandler<RingBufferEvent>>();
+                sorted.put(sequence, handlers);
+            }
+            handlers.add(new ChannelEventHandler(connection));
+        }
+        return sorted;
     }
 
-    public List<EventStream> getEventStreams() {
-        return null;
+    private EventHandlerHelper() {
     }
-
-    public int getSequence() {
-        return 0;
-    }
-
-    public void addEventStream(EventStream stream) {
-    }
-
 }
