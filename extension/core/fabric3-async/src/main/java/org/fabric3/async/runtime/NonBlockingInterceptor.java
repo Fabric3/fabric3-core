@@ -97,7 +97,6 @@ public class NonBlockingInterceptor implements Interceptor {
      * A dummy message passed back on an invocation
      */
     private static class ImmutableMessage implements Message {
-        private static final long serialVersionUID = 3052431365744865746L;
 
         public Object getBody() {
             return null;
