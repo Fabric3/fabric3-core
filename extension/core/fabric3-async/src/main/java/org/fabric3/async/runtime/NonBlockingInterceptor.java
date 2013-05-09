@@ -117,6 +117,9 @@ public class NonBlockingInterceptor implements Interceptor {
             throw new UnsupportedOperationException();
         }
 
+        public void reset() {
+        }
+
         public boolean isFault() {
             return false;
         }
