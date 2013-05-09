@@ -37,27 +37,26 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Socket;
-
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.zeromq.ZMQ;
+import org.zeromq.ZMQ.Socket;
 
 /**
  * A {@link Receiver} that implements request-reply with no qualities of service.
  * <p/>
- * Since ZeroMQ requires the creating socket thread to receive messages, a polling thread is used for reading messages from the ZeroMQ socket. The
- * receiver listens for address updates (e.g. a sender coming online or going away). Since ZeroMQ does not implement disconnect semantics on a socket,
- * if an update is received the original socket will be closed and a new one created to connect to the update set of addresses.
+ * Since ZeroMQ requires the creating socket thread to receive messages, a polling thread is used for reading messages from the ZeroMQ socket. The receiver
+ * listens for address updates (e.g. a sender coming online or going away). Since ZeroMQ does not implement disconnect semantics on a socket, if an update is
+ * received the original socket will be closed and a new one created to connect to the update set of addresses.
  */
 @Management
 public class NonReliableRequestReplyReceiver extends AbstractReceiver implements Thread.UncaughtExceptionHandler {
@@ -102,24 +101,30 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
         executorService.execute(new Runnable() {
             public void run() {
                 WorkContext context = createWorkContext(contextHeader);
-                Message request = new MessageImpl();
-                request.setWorkContext(context);
-                int methodIndex = ByteBuffer.wrap(methodNumber).getInt();
-                Interceptor interceptor = interceptors[methodIndex];
-                request.setBody(body);
-
-                // invoke the service
-                Message response = interceptor.invoke(request);
-                Object responseBody = response.getBody();
-                if (!(responseBody instanceof byte[])) {
-                    throw new ServiceRuntimeException("Return value not serialized");
-                }
-
-                // queue the response
+                Message request = MessageCache.getAndResetMessage();
                 try {
-                    queue.put(new Response(clientId, (byte[]) responseBody));
-                } catch (InterruptedException e) {
-                    Thread.interrupted();
+                    request.setWorkContext(context);
+                    int methodIndex = ByteBuffer.wrap(methodNumber).getInt();
+                    Interceptor interceptor = interceptors[methodIndex];
+                    request.setBody(body);
+
+                    // invoke the service
+                    Message response = interceptor.invoke(request);
+                    Object responseBody = response.getBody();
+
+                    if (!(responseBody instanceof byte[])) {
+                        throw new ServiceRuntimeException("Return value not serialized");
+                    }
+
+                    // queue the response
+                    try {
+                        queue.put(new Response(clientId, (byte[]) responseBody));
+                    } catch (InterruptedException e) {
+                        Thread.interrupted();
+                    }
+                } finally {
+                    request.reset();
+                    context.reset();
                 }
 
             }
@@ -156,6 +161,5 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
             this.body = body;
         }
     }
-
 
 }

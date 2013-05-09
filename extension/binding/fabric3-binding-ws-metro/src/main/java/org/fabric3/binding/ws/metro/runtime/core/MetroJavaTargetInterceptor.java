@@ -37,19 +37,17 @@
  */
 package org.fabric3.binding.ws.metro.runtime.core;
 
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.soap.SOAPFaultException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
-import javax.xml.ws.WebServiceException;
-import javax.xml.ws.soap.SOAPFaultException;
-
-import org.oasisopen.sca.ServiceRuntimeException;
-import org.oasisopen.sca.ServiceUnavailableException;
 
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
  * Interceptor for invoking a JAX-WS proxy generated from a Java interface.  Used by invocation chains that dispatch to a web service endpoint defined
@@ -86,14 +84,13 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
     }
 
     public Message invoke(Message msg) {
-        Object[] payload = (Object[]) msg.getBody();
         Object proxy = createProxy();
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             // Metro stubs attempt to load classes using TCCL (e.g. StAX provider classes) that are visible to the extension classloader and not
             // visible to the application classloader.
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-            return invokeRetry(payload, proxy);
+            return invokeRetry(msg, proxy);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
@@ -102,12 +99,13 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
     /**
      * Invokes the web service proxy, retrying a configured number of times if the service is unavailable.
      *
-     * @param payload the web service in parameters
+     * @param msg theincoming message
      * @param proxy   the web service proxy
      * @return the web service out parameters or null
      */
-    private Message invokeRetry(Object[] payload, Object proxy) {
+    private Message invokeRetry(Message msg, Object proxy) {
         int retry = 0;
+        Object[] payload = (Object[]) msg.getBody();
         while (true) {
             try {
                 if (oneWay) {
@@ -115,7 +113,8 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
                     return NULL_RESPONSE;
                 } else {
                     Object ret = method.invoke(proxy, payload);
-                    return new MessageImpl(ret, false, null);
+                    msg.setBody(ret);
+                    return msg;
                 }
             } catch (WebServiceException e) {
                 if (e.getCause() instanceof SocketTimeoutException) {
@@ -142,7 +141,8 @@ public class MetroJavaTargetInterceptor extends AbstractMetroTargetInterceptor {
                         throw new ServiceRuntimeException(e);
                     }
                 } else {
-                    return new MessageImpl(e.getTargetException(), true, null);
+                    msg.setBodyWithFault(e.getTargetException());
+                    return msg;
                 }
             }
         }

@@ -40,7 +40,7 @@ package org.fabric3.implementation.bytecode.proxy.wire;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyDispatcher;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
@@ -61,14 +61,14 @@ public abstract class AbstractCallbackDispatcher implements ProxyDispatcher {
         Interceptor headInterceptor = chain.getHeadInterceptor();
 
         // send the invocation down the wire
-        Message msg = new MessageImpl();
-        msg.setBody(args);
-        msg.setWorkContext(workContext);
+        Message message = MessageCache.getAndResetMessage();
+        message.setBody(args);
+        message.setWorkContext(workContext);
         try {
             // dispatch the wire down the chain and get the response
-            Message resp;
+            Message response;
             try {
-                resp = headInterceptor.invoke(msg);
+                response = headInterceptor.invoke(message);
             } catch (ServiceUnavailableException e) {
                 // simply rethrow ServiceUnavailableExceptions
                 throw e;
@@ -78,13 +78,14 @@ public abstract class AbstractCallbackDispatcher implements ProxyDispatcher {
             }
 
             // handle response from the application, returning or throwing is as appropriate
-            Object body = resp.getBody();
-            if (resp.isFault()) {
+            Object body = response.getBody();
+            if (response.isFault()) {
                 throw (Throwable) body;
             } else {
                 return body;
             }
         } finally {
+            message.reset();
             // push the call frame for this component instance back onto the stack
             workContext.addCallFrame(frame);
         }

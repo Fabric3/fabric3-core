@@ -72,7 +72,7 @@ import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.invocation.CallFrame;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.util.Base64;
@@ -178,7 +178,9 @@ public class ServiceListener implements MessageListener {
         if (PayloadType.XML == payloadTypes.getInputType()) {
             payload = new Object[]{payload};
         }
-        org.fabric3.spi.invocation.Message inMessage = new MessageImpl(payload, false, workContext);
+        org.fabric3.spi.invocation.Message inMessage = MessageCache.getAndResetMessage();
+        inMessage.setWorkContext(workContext);
+        inMessage.setBody(payload);
 
         applyHandlers(request, inMessage);
 
@@ -187,6 +189,7 @@ public class ServiceListener implements MessageListener {
 
         if (oneWay) {
             // one-way message, return without waiting for a response
+            inMessage.reset();
             return;
         }
         Connection connection = null;
@@ -208,6 +211,8 @@ public class ServiceListener implements MessageListener {
             Message response = createMessage(responsePayload, responseSession, returnType);
             sendResponse(request, responseSession, outMessage, response);
         } finally {
+            inMessage.reset();
+            workContext.reset();
             if (responseSession != null) {
                 responseSession.close();
             }

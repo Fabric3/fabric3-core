@@ -37,13 +37,11 @@
 */
 package org.fabric3.tx;
 
-import javax.transaction.Status;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.wire.Interceptor;
@@ -89,7 +87,8 @@ public class TxInterceptorSuspendTestCase extends TestCase {
     }
 
     public void testSuspendOnFault() throws Exception {
-        Message fault = new MessageImpl("", true, null);
+        Message fault = new MessageImpl();
+        message.setBodyWithFault("");
         Transaction trx = EasyMock.createMock(Transaction.class);
         EasyMock.expect(tm.getTransaction()).andReturn(trx);
         EasyMock.expect(next.invoke(EasyMock.isA(Message.class))).andReturn(fault);

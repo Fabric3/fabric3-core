@@ -148,8 +148,8 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
         activated = true;
         // this runtime was elected leader, start the components
         synchronized (deferredContexts) {
+            WorkContextCache.getAndResetThreadWorkContext();
             for (QName deployable : deferredContexts) {
-                WorkContextCache.getAndResetThreadWorkContext();
                 try {
                     super.startContext(deployable);
                 } catch (GroupInitializationException e) {

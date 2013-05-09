@@ -119,9 +119,9 @@ public final class RsContainer extends HttpServlet {
             }
 
             ClassLoader old = Thread.currentThread().getContextClassLoader();
+            WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
             try {
                 Thread.currentThread().setContextClassLoader(classLoader);
-                WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
                 workContext.setHeader("fabric3.httpRequest", req);
                 workContext.setHeader("fabric3.httpResponse", res);
                 CallFrame frame = new CallFrame();
@@ -138,6 +138,7 @@ public final class RsContainer extends HttpServlet {
                 throw new ServletException(t);
             } finally {
                 Thread.currentThread().setContextClassLoader(old);
+                workContext.reset();
             }
         } finally {
             serviceLock.unlock();

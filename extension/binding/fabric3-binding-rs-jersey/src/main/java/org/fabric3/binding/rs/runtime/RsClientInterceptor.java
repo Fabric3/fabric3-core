@@ -37,21 +37,19 @@
 */
 package org.fabric3.binding.rs.runtime;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.net.URI;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-
-import org.oasisopen.sca.ServiceRuntimeException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.net.URI;
 
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.wire.Interceptor;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  *
@@ -63,16 +61,16 @@ public class RsClientInterceptor implements Interceptor {
         response = createResponseConfiguration(uri, interfaze, operName, classes);
     }
 
-    public Message invoke(Message m) {
-        Object[] args = (Object[]) m.getBody();
-        MessageImpl result;
+    public Message invoke(Message message) {
+        Object[] args = (Object[]) message.getBody();
         try {
-            result = new MessageImpl();
-            result.setBody(response.build(args));
+            Object body = response.build(args);
+            message.reset();
+            message.setBody(body);
         } catch (RuntimeException e) {
             throw new ServiceRuntimeException(e);
         }
-        return result;
+        return message;
     }
 
     public void setNext(Interceptor interceptor) {

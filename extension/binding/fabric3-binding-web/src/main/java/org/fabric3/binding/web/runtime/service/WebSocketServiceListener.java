@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.websocket.WebSocketEventListener;
-
 import org.fabric3.spi.invocation.CallFrame;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.Message;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 
@@ -79,15 +79,24 @@ public class WebSocketServiceListener implements WebSocketEventListener {
         ChainPair chainPair = serviceManager.get(path);
 
         Object[] content = new Object[]{_message};
-        WorkContext context = WorkContextCache.getAndResetThreadWorkContext();
-        CallFrame frame = new CallFrame(chainPair.getCallbackUri(), uuid.toString());
-        context.addCallFrame(frame);
-        // As an optimization, we add the callframe twice instead of two different frames for representing the service call and the binding invocation 
-        context.addCallFrame(frame);
-        MessageImpl message = new MessageImpl(content, false, context);
 
-        // Invoke the service and return a response using the broadcaster for this web socket
-        chainPair.getChain().getHeadInterceptor().invoke(message);
+        WorkContext context = WorkContextCache.getAndResetThreadWorkContext();
+        Message message = MessageCache.getAndResetMessage();
+
+        try {
+            CallFrame frame = new CallFrame(chainPair.getCallbackUri(), uuid.toString());
+            context.addCallFrame(frame);
+            // As an optimization, we add the callframe twice instead of two different frames for representing the service call and the binding invocation
+            context.addCallFrame(frame);
+            message.setWorkContext(context);
+            message.setBody(content);
+
+            // Invoke the service and return a response using the broadcaster for this web socket
+            chainPair.getChain().getHeadInterceptor().invoke(message);
+        } finally {
+            message.reset();
+            context.reset();
+        }
     }
 
 }

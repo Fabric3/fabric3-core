@@ -72,7 +72,6 @@ public class NonBlockingInterceptor implements Interceptor {
             // clone the callstack to avoid multiple threads seeing changes
             newStack = new ArrayList<CallFrame>(stack);
         }
-        msg.setWorkContext(null);
         Map<String, Object> newHeaders = null;
         Map<String, Object> headers = workContext.getHeaders();
         if (headers != null && !headers.isEmpty()) {
@@ -80,7 +79,8 @@ public class NonBlockingInterceptor implements Interceptor {
             newHeaders = new HashMap<String, Object>(headers);
         }
         SecuritySubject subject = workContext.getSubject();
-        AsyncRequest request = new AsyncRequest(next, msg, subject, newStack, newHeaders, monitor);
+        Object payload = msg.getBody();
+        AsyncRequest request = new AsyncRequest(next, payload, subject, newStack, newHeaders, monitor);
         executorService.execute(request);
         return RESPONSE;
     }

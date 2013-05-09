@@ -46,13 +46,11 @@ import java.util.List;
 import org.apache.commons.net.SocketFactory;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
-import org.oasisopen.sca.ServiceUnavailableException;
-
 import org.fabric3.binding.ftp.provision.FtpSecurity;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.transport.ftp.api.FtpConstants;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
  *
@@ -170,8 +168,9 @@ public class FtpTargetInterceptor implements Interceptor {
         } catch (IOException e) {
             throw new ServiceUnavailableException(e);
         }
-
-        return new MessageImpl();
+        // reset the message to return an empty response
+        msg.reset();
+        return msg;
     }
 
     public void setNext(Interceptor next) {

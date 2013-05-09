@@ -43,27 +43,25 @@
  */
 package org.fabric3.binding.ws.metro.runtime.core;
 
+import javax.xml.ws.WebServiceContext;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.ws.WebServiceContext;
 
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.server.Invoker;
-
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
 
-
 /**
- * Invoker that receives a web service invocation from the Metro transport layer and dispatches it through the interceptor chain to a target service
- * that accepts JAXB parameter types.
+ * Invoker that receives a web service invocation from the Metro transport layer and dispatches it through the interceptor chain to a target service that
+ * accepts JAXB parameter types.
  */
 public class JaxbInvoker extends Invoker {
     private Map<String, InvocationChain> chains = new HashMap<String, InvocationChain>();
@@ -87,16 +85,22 @@ public class JaxbInvoker extends Invoker {
             throw new AssertionError("Work context not set");
         }
 
-        Message input = new MessageImpl(args, false, workContext);
-        Interceptor head = chains.get(method.getName()).getHeadInterceptor();
+        Message input = MessageCache.getAndResetMessage();
+        try {
+            input.setWorkContext(workContext);
+            input.setBody(args);
+            Interceptor head = chains.get(method.getName()).getHeadInterceptor();
 
-        Message ret = head.invoke(input);
+            Message ret = head.invoke(input);
 
-        if (!ret.isFault()) {
-            return ret.getBody();
-        } else {
-            Throwable th = (Throwable) ret.getBody();
-            throw new InvocationTargetException(th);
+            if (!ret.isFault()) {
+                return ret.getBody();
+            } else {
+                Throwable th = (Throwable) ret.getBody();
+                throw new InvocationTargetException(th);
+            }
+        } finally {
+            input.reset();
         }
     }
 
@@ -106,6 +110,5 @@ public class JaxbInvoker extends Invoker {
     @Override
     public void start(WebServiceContext wsc) {
     }
-
 
 }

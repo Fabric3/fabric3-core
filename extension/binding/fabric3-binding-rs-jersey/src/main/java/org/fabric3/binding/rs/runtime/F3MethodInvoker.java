@@ -1,34 +1,32 @@
 package org.fabric3.binding.rs.runtime;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 import com.sun.jersey.spi.container.JavaMethodInvoker;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.oasisopen.sca.ServiceRuntimeException;
-
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.BasicAuthenticator;
 import org.fabric3.spi.security.NoCredentialsException;
 import org.fabric3.spi.security.NotAuthorizedException;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
-
+import org.oasisopen.sca.ServiceRuntimeException;
 import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 /**
- * Dispatches an invocation from Jersey to a component's interceptor chains. Replaces the default Jersey invoker which reflectively calls a method on
- * a Java instance. Optionally performs authentication.
+ * Dispatches an invocation from Jersey to a component's interceptor chains. Replaces the default Jersey invoker which reflectively calls a method on a Java
+ * instance. Optionally performs authentication.
  * <p/>
  * This instance assumes the resource instance is a Map of operation names to interceptor chains for the component.
  */
@@ -54,15 +52,18 @@ public class F3MethodInvoker implements JavaMethodInvoker {
         ResourceInstance resourceInstance = (ResourceInstance) instance;
         Map<String, InvocationChain> chains = resourceInstance.getChains();
         InvocationChain invocationChain = chains.get(method.getName());
-        WorkContext context = WorkContextCache.getThreadWorkContext();
+
+        WorkContext context = WorkContextCache.getThreadWorkContext();   // work context set previously in RsContainer
+        Message message = MessageCache.getAndResetMessage();
 
         try {
-
             if (resourceInstance.authenticate()) {
                 authenticate(context);
             }
 
-            Message message = new MessageImpl(args, false, context);
+            message.setWorkContext(context);
+            message.setBody(args);
+
             if (invocationChain != null) {
                 Interceptor headInterceptor = invocationChain.getHeadInterceptor();
                 Message ret = headInterceptor.invoke(message);
@@ -76,11 +77,13 @@ public class F3MethodInvoker implements JavaMethodInvoker {
             }
         } catch (RuntimeException e) {
             throw new InvocationTargetException(e);
+        } finally {
+            message.reset();
         }
     }
 
     private Object handleFault(Message ret) throws InvocationTargetException {
-        if (ret.getBody() instanceof ServiceRuntimeException){
+        if (ret.getBody() instanceof ServiceRuntimeException) {
             ServiceRuntimeException e = (ServiceRuntimeException) ret.getBody();
             if (e.getCause() instanceof NotAuthorizedException) {
                 // authorization exceptions need to be mapped to a client 403 response

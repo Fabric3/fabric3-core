@@ -41,7 +41,7 @@ package org.fabric3.implementation.bytecode.proxy.wire;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyDispatcher;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.Interceptor;
@@ -81,14 +81,14 @@ public class WireProxyDispatcher<B> implements ProxyDispatcher, ServiceReference
 
         WorkContext workContext = WorkContextCache.getThreadWorkContext();
         CallFrame frame = initializeCallFrame(workContext);
-        Message msg = new MessageImpl();
-        msg.setBody(args);
-        msg.setWorkContext(workContext);
+        Message message = MessageCache.getAndResetMessage();
+        message.setBody(args);
+        message.setWorkContext(workContext);
         try {
             // dispatch the invocation down the chain and get the response
-            Message resp;
+            Message response;
             try {
-                resp = headInterceptor.invoke(msg);
+                response = headInterceptor.invoke(message);
             } catch (ServiceUnavailableException e) {
                 // simply rethrow ServiceUnavailableExceptions
                 throw e;
@@ -101,8 +101,10 @@ public class WireProxyDispatcher<B> implements ProxyDispatcher, ServiceReference
             }
 
             // handle response from the application, returning or throwing an exception as appropriate
-            Object body = resp.getBody();
-            if (resp.isFault()) {
+            Object body = response.getBody();
+            boolean fault = response.isFault();
+
+            if (fault) {
                 throw (Throwable) body;
             } else {
                 return body;
@@ -112,6 +114,7 @@ public class WireProxyDispatcher<B> implements ProxyDispatcher, ServiceReference
                 // no callframe was created as the wire is unidrectional
                 workContext.popCallFrame();
             }
+            message.reset();
         }
 
     }

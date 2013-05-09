@@ -73,6 +73,7 @@ import com.sun.xml.wss.SecurityEnvironment;
 /**
  * Handles incoming HTTP requests and dispatches them to the Metro stack. Extends the Metro servlet and overrides the <code>getDelegate</code> method.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class MetroServlet extends WSServlet {
     private static final long serialVersionUID = -2581439830158433922L;
     private static final String MEX_SUFFIX = "/mex";

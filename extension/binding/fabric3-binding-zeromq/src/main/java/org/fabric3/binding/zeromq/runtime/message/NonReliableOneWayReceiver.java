@@ -34,25 +34,24 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import org.zeromq.ZMQ;
-
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
+import org.zeromq.ZMQ;
 
 /**
  * Implementation of a {@link Receiver} the implements one-way with no qualities of service.
  * <p/>
- * Since ZeroMQ requires the creating socket thread to receive messages, a polling thread is used for reading messages from the ZeroMQ socket. The
- * receiver listens for address updates (e.g. a sender coming online or going away). Since ZeroMQ does not implement disconnect semantics on a socket,
- * if an update is received the original socket will be closed and a new one created to connect to the updated set of addresses.
+ * Since ZeroMQ requires the creating socket thread to receive messages, a polling thread is used for reading messages from the ZeroMQ socket. The receiver
+ * listens for address updates (e.g. a sender coming online or going away). Since ZeroMQ does not implement disconnect semantics on a socket, if an update is
+ * received the original socket will be closed and a new one created to connect to the updated set of addresses.
  */
 @Management
 public class NonReliableOneWayReceiver extends AbstractReceiver implements Thread.UncaughtExceptionHandler {
@@ -80,7 +79,6 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
         this.executorService = executorService;
     }
 
-
     @Override
     protected boolean invoke(ZMQ.Socket socket) {
         final byte[] contextHeader = socket.recv(0);
@@ -93,10 +91,15 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
                 Interceptor interceptor = interceptors[methodIndex];
 
                 WorkContext context = createWorkContext(contextHeader);
-                Message request = new MessageImpl();
-                request.setWorkContext(context);
-                request.setBody(body);
-                interceptor.invoke(request);
+                Message request = MessageCache.getAndResetMessage();
+
+                try {
+                    request.setWorkContext(context);
+                    request.setBody(body);
+                    interceptor.invoke(request);
+                } finally {
+                    request.reset();
+                }
             }
         });
         return true;

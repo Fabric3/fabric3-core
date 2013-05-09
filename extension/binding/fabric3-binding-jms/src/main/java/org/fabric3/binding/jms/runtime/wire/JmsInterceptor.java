@@ -43,12 +43,6 @@
  */
 package org.fabric3.binding.jms.runtime.wire;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -64,12 +58,15 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-import org.oasisopen.sca.ServiceUnavailableException;
-
-import org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
+import org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants;
 import org.fabric3.binding.jms.spi.common.CorrelationScheme;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
@@ -79,6 +76,8 @@ import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.util.Base64;
 import org.fabric3.spi.wire.Interceptor;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
  * Dispatches an invocation to a destination.
@@ -198,7 +197,7 @@ public class JmsInterceptor implements Interceptor {
 
             if (!oneWay) {
                 // request-response, block on response
-                Message resp = receive(correlationId, session);
+                Message resp = receive(correlationId, session, message);
                 if (begun) {
                     tm.commit();
                 }
@@ -253,16 +252,17 @@ public class JmsInterceptor implements Interceptor {
      *
      * @param correlationId the id for correlating the response message
      * @param session       the session to perform the receive in
+     * @param message       the current message
      * @return the response message
      * @throws JMSException           if an error occurs in the JMS provider waiting for or processing the response
      * @throws JmsBadMessageException if an unrecoverable error such as a bad message type occurs waiting for or processing the response
      */
-    private Message receive(String correlationId, Session session) throws JMSException, JmsBadMessageException {
+    private Message receive(String correlationId, Session session, Message message) throws JMSException, JmsBadMessageException {
         javax.jms.Message resultMessage = responseListener.receive(correlationId, session, responseTimeout);
         if (resultMessage == null) {
             throw new ServiceUnavailableException("Timeout waiting for response to message: " + correlationId);
         }
-        Message response = new MessageImpl();
+
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             // set the context classloader to the application classloader so message types can be deserialized properly
@@ -270,15 +270,15 @@ public class JmsInterceptor implements Interceptor {
             Thread.currentThread().setContextClassLoader(classLoader);
             if (resultMessage.getBooleanProperty(JmsRuntimeConstants.FAULT_HEADER)) {
                 Object payload = MessageHelper.getPayload(resultMessage, payloadTypes.getFaultType());
-                response.setBodyWithFault(payload);
+                message.setBodyWithFault(payload);
             } else {
                 Object payload = MessageHelper.getPayload(resultMessage, payloadTypes.getOutputType());
-                response.setBody(payload);
+                message.setBody(payload);
             }
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
-        return response;
+        return message;
     }
 
     /**
@@ -294,27 +294,27 @@ public class JmsInterceptor implements Interceptor {
         Object[] payload = (Object[]) message.getBody();
         javax.jms.Message jmsMessage;
         switch (payloadTypes.getInputType()) {
-        case OBJECT:
-            jmsMessage = session.createObjectMessage(payload);
-            setRoutingHeaders(message, jmsMessage);
-            return jmsMessage;
-        case STREAM:
-            throw new UnsupportedOperationException("Not yet implemented");
-        case XML:
-        case TEXT:
-            if (payload.length != 1) {
-                throw new UnsupportedOperationException("Only single parameter operations are supported");
-            }
-            jmsMessage = session.createTextMessage((String) payload[0]);
-            setRoutingHeaders(message, jmsMessage);
-            return jmsMessage;
-        default:
-            if (payload.length != 1) {
-                throw new AssertionError("Bytes messages must have a single parameter");
-            }
-            jmsMessage = MessageHelper.createBytesMessage(session, payload[0], payloadTypes.getInputType());
-            setRoutingHeaders(message, jmsMessage);
-            return jmsMessage;
+            case OBJECT:
+                jmsMessage = session.createObjectMessage(payload);
+                setRoutingHeaders(message, jmsMessage);
+                return jmsMessage;
+            case STREAM:
+                throw new UnsupportedOperationException("Not yet implemented");
+            case XML:
+            case TEXT:
+                if (payload.length != 1) {
+                    throw new UnsupportedOperationException("Only single parameter operations are supported");
+                }
+                jmsMessage = session.createTextMessage((String) payload[0]);
+                setRoutingHeaders(message, jmsMessage);
+                return jmsMessage;
+            default:
+                if (payload.length != 1) {
+                    throw new AssertionError("Bytes messages must have a single parameter");
+                }
+                jmsMessage = MessageHelper.createBytesMessage(session, payload[0], payloadTypes.getInputType());
+                setRoutingHeaders(message, jmsMessage);
+                return jmsMessage;
         }
     }
 
@@ -377,6 +377,5 @@ public class JmsInterceptor implements Interceptor {
             }
         }
     }
-
 
 }

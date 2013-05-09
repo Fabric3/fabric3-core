@@ -48,8 +48,8 @@ import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 
 /**
- * Populates invocation properties of an incoming request with a WorkContext. This is done so that the work context can be updated by other tubes, for
- * example, with an authenticated SecuritySubject.
+ * Populates invocation properties of an incoming request with a WorkContext. This is done so that the work context can be updated by other tubes, for example,
+ * with an authenticated SecuritySubject.
  */
 public class WorkContextTube extends AbstractFilterTubeImpl {
 
@@ -68,8 +68,12 @@ public class WorkContextTube extends AbstractFilterTubeImpl {
     @Override
     public NextAction processRequest(Packet request) {
         WorkContext context = WorkContextCache.getAndResetThreadWorkContext();
-        request.invocationProperties.put(MetroConstants.WORK_CONTEXT, context);
-        return super.processRequest(request);
+        try {
+            request.invocationProperties.put(MetroConstants.WORK_CONTEXT, context);
+            return super.processRequest(request);
+        } finally {
+            context.reset();
+        }
     }
 
 }

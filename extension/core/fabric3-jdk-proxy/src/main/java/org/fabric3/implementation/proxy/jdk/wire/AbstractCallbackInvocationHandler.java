@@ -40,15 +40,14 @@ package org.fabric3.implementation.proxy.jdk.wire;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.oasisopen.sca.ServiceUnavailableException;
-
 import org.fabric3.spi.component.InstanceInvocationException;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
  * Abstract callback handler implementation. Concrete classes must implement a strategy for mapping the callback target chain for the invoked callback
@@ -77,14 +76,14 @@ public abstract class AbstractCallbackInvocationHandler<T> implements Invocation
         assert headInterceptor != null;
 
         // send the invocation down the wire
-        Message msg = new MessageImpl();
-        msg.setBody(args);
-        msg.setWorkContext(workContext);
+        Message message = MessageCache.getAndResetMessage();
+        message.setBody(args);
+        message.setWorkContext(workContext);
         try {
             // dispatch the wire down the chain and get the response
-            Message resp;
+            Message response;
             try {
-                resp = headInterceptor.invoke(msg);
+                response = headInterceptor.invoke(message);
             } catch (ServiceUnavailableException e) {
                 // simply rethrow ServiceUnavailableExceptions
                 throw e;
@@ -94,8 +93,9 @@ public abstract class AbstractCallbackInvocationHandler<T> implements Invocation
             }
 
             // handle response from the application, returning or throwing is as appropriate
-            Object body = resp.getBody();
-            if (resp.isFault()) {
+            Object body = response.getBody();
+            boolean fault = response.isFault();
+            if (fault) {
                 throw (Throwable) body;
             } else {
                 return body;
@@ -103,6 +103,7 @@ public abstract class AbstractCallbackInvocationHandler<T> implements Invocation
         } finally {
             // push the call frame for this component instance back onto the stack
             workContext.addCallFrame(frame);
+            message.reset();
         }
     }
 

@@ -51,15 +51,6 @@ public class MessageImpl implements Message {
     private boolean isFault;
     private WorkContext workContext;
 
-    public MessageImpl() {
-    }
-
-    public MessageImpl(Object body, boolean isFault, WorkContext workContext) {
-        this.body = body;
-        this.isFault = isFault;
-        this.workContext = workContext;
-    }
-
     public Object getBody() {
         return body;
     }

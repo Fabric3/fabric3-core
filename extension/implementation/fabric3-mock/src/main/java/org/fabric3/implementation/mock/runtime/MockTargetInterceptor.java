@@ -41,7 +41,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
@@ -65,10 +64,9 @@ public class MockTargetInterceptor implements Interceptor {
         try {
             Object[] args = (Object[]) message.getBody();
             Object ret = method.invoke(mock, args);
-            Message out = new MessageImpl();
-            out.setBody(ret);
-
-            return out;
+            message.reset();
+            message.setBody(ret);
+            return message;
         } catch (IllegalAccessException e) {
             throw new AssertionError(e);
         } catch (InvocationTargetException e) {

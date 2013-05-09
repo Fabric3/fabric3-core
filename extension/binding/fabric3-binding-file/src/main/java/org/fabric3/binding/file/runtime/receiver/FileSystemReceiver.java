@@ -58,7 +58,7 @@ import org.fabric3.binding.file.api.ServiceAdapter;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.host.util.IOHelper;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.Interceptor;
@@ -202,7 +202,6 @@ public class FileSystemReceiver implements Runnable {
             return;
         }
         try {
-            WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
             Object[] payload;
             try {
                 payload = adapter.beforeInvoke(file);
@@ -212,8 +211,11 @@ public class FileSystemReceiver implements Runnable {
                 handleError(file, e);
                 return;
             }
+            WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
+            Message message = MessageCache.getAndResetMessage();
             try {
-                Message response = dispatch(payload, workContext);
+                message.setWorkContext(workContext);
+                Message response = dispatch(payload, message);
                 afterInvoke(file, payload);
                 if (response.isFault()) {
                     // the service threw an exception. this is interpreted as a bad file. Move the file to the error location
@@ -231,15 +233,16 @@ public class FileSystemReceiver implements Runnable {
                 // an unexpected runtime error, try and close the resources and retry
                 afterInvoke(file, payload);
                 throw e;
+            } finally {
+                message.reset();
+                workContext.reset();
             }
         } finally {
             releaseLock(lockFile, fileLock, lockChannel);
         }
     }
 
-    private Message dispatch(Object[] payload, WorkContext workContext) {
-        Message message = new MessageImpl();
-        message.setWorkContext(workContext);
+    private Message dispatch(Object[] payload, Message message) {
         message.setBody(payload);
         return interceptor.invoke(message);
     }

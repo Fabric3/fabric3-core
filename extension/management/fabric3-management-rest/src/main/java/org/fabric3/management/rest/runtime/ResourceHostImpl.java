@@ -237,11 +237,13 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
             monitor.error("Mapping not found during zone broadcast: " + path);
             return;
         }
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         try {
-            WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
             invoke(mapping, params, false, workContext);
         } catch (ResourceException e) {
             monitor.error("Error replicating resource request: " + mapping.getMethod(), e);
+        } finally {
+            workContext.reset();
         }
     }
 
@@ -328,16 +330,18 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         }
         WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
 
-        if (!securityCheck(mapping, request, response, workContext)) {
-            return;
-        }
-
         try {
+            if (!securityCheck(mapping, request, response, workContext)) {
+                return;
+            }
+
             Object[] params = marshaller.deserialize(verb, request, mapping);
             Object value = invoke(mapping, params, true, workContext);
             respond(value, mapping, request, response);
         } catch (ResourceException e) {
             respondError(e, mapping, response);
+        } finally {
+            workContext.reset();
         }
     }
 

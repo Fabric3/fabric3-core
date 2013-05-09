@@ -43,6 +43,7 @@ import java.util.Map;
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.Interceptor;
@@ -51,21 +52,21 @@ import org.fabric3.spi.wire.Interceptor;
  * Encapsulates an invocation to be processed asynchronously.
  */
 public class AsyncRequest implements Runnable {
-    private final Interceptor next;
-    private final Message message;
+    private Interceptor next;
+    private Object payload;
     private SecuritySubject subject;
     private List<CallFrame> stack;
     private Map<String, Object> headers;
     private NonBlockingMonitor monitor;
 
     public AsyncRequest(Interceptor next,
-                        Message message,
+                        Object payload,
                         SecuritySubject subject,
                         List<CallFrame> stack,
                         Map<String, Object> headers,
                         NonBlockingMonitor monitor) {
         this.next = next;
-        this.message = message;
+        this.payload = payload;
         this.subject = subject;
         this.stack = stack;
         this.headers = headers;
@@ -77,19 +78,24 @@ public class AsyncRequest implements Runnable {
         workContext.addCallFrames(stack);
         workContext.addHeaders(headers);
         workContext.setSubject(subject);
+
+        Message message = MessageCache.getAndResetMessage();
+        message.setBody(payload);
         message.setWorkContext(workContext);
-        Message ret = next.invoke(message);
-        if (ret.isFault()) {
+
+        Message response = next.invoke(message);
+
+        if (response.isFault()) {
             // log the exception
-            monitor.onError((Throwable) ret.getBody());
+            monitor.onError((Throwable) response.getBody());
         }
+
+        message.reset();
+        workContext.reset();
     }
 
     public Interceptor getNext() {
         return next;
     }
 
-    public Message getMessage() {
-        return message;
-    }
 }

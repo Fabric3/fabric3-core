@@ -43,35 +43,33 @@
  */
 package org.fabric3.binding.ws.metro.runtime.core;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.WebServiceException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.sun.xml.ws.api.SOAPVersion;
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.server.Invoker;
 import com.sun.xml.ws.fault.SOAPFaultBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
-
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
- * Receives a web service invocation from the Metro transport layer and dispatches it through an interceptor chain to a target service that accepts
- * Document parameter types, avoiding JAXB deserialization.
+ * Receives a web service invocation from the Metro transport layer and dispatches it through an interceptor chain to a target service that accepts Document
+ * parameter types, avoiding JAXB deserialization.
  */
 public class DocumentInvoker extends Invoker {
     private Map<String, InvocationChain> chains = new HashMap<String, InvocationChain>();
@@ -101,38 +99,43 @@ public class DocumentInvoker extends Invoker {
     }
 
     public Object invoke(Packet packet, Method method, Object... args) throws InvocationTargetException {
+        if (args.length != 1) {
+            throw new UnsupportedOperationException("Illegal number of arguments");
+        }
+        if (!(args[0] instanceof SOAPMessage)) {
+            throw new UnsupportedOperationException("Expected SOAPMessage but was: " + args[0].getClass());
+        }
+
         // the work context is populated by the current tubeline
         WorkContext workContext = (WorkContext) packet.invocationProperties.get(MetroConstants.WORK_CONTEXT);
         if (workContext == null) {
             // programming error
             throw new AssertionError("Work context not set");
         }
-        Message input;
+        Message input = MessageCache.getAndResetMessage();
         try {
-            if (args.length != 1) {
-                throw new UnsupportedOperationException("Illegal number of arguments");
-            }
-            if (!(args[0] instanceof SOAPMessage)) {
-                throw new UnsupportedOperationException("Expected SOAPMessage but was: " + args[0].getClass());
-            }
             SOAPMessage soapMessage = (SOAPMessage) args[0];
             Node node = soapMessage.getSOAPBody().extractContentAsDocument();
-            input = new MessageImpl(node, false, workContext);
+
+            input.setWorkContext(workContext);
+            input.setBody(node);
+            String operationName = packet.getWSDLOperation().getLocalPart();
+            if (operationName == null) {
+                throw new AssertionError("No invocation chain found for WSDL operation: " + operationName);
+            }
+            Interceptor head = chains.get(operationName).getHeadInterceptor();
+            Message ret = head.invoke(input);
+
+            Object body = ret.getBody();
+            if (!ret.isFault()) {
+                return createResponse(body);
+            } else {
+                return createFault((Throwable) body);
+            }
         } catch (SOAPException e) {
             throw new InvocationTargetException(e);
-        }
-        String operationName = packet.getWSDLOperation().getLocalPart();
-        if (operationName == null) {
-            throw new AssertionError("No invocation chain found for WSDL operation: " + operationName);
-        }
-        Interceptor head = chains.get(operationName).getHeadInterceptor();
-        Message ret = head.invoke(input);
-
-        Object body = ret.getBody();
-        if (!ret.isFault()) {
-            return createResponse(body);
-        } else {
-            return createFault((Throwable) body);
+        } finally {
+            input.reset();
         }
     }
 
@@ -165,6 +168,5 @@ public class DocumentInvoker extends Invoker {
             throw new WebServiceException(e2);
         }
     }
-
 
 }

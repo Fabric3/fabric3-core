@@ -47,7 +47,7 @@ import java.util.Set;
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
 import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -69,11 +69,25 @@ public class SOAPMessageHandlerAdapter implements SOAPHandler<SOAPMessageContext
         if (workContext == null) {
             throw new ServiceRuntimeException("Work context not set");
         }
-        Message msg = new MessageImpl(smc.getMessage(), false, workContext);
         if (outbound) {
+            // reference proxy outbound or service invocation return
+            Message msg = MessageCache.getMessage();
+            if (msg.getWorkContext() == null) {
+                // service invocation return
+                msg.setBody(smc.getMessage());
+                msg.setWorkContext(workContext);
+            }
             delegateHandler.handleOutbound(msg, smc.getMessage());
         } else {
+            // reference proxy invocation return or service invocation
+            Message msg = MessageCache.getMessage();
+            if (msg.getWorkContext() == null) {
+                // reference proxy return
+                msg.setBody(smc.getMessage());
+                msg.setWorkContext(workContext);
+            }
             delegateHandler.handleInbound(smc.getMessage(), msg);
+            msg.reset();
         }
         return true;
     }

@@ -27,9 +27,13 @@ public class PropagatingCallable<T> implements Callable<T> {
 
     public T call() throws Exception {
         WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
-        workContext.setSubject(subject);
-        workContext.addHeaders(headers);
-        workContext.addCallFrames(stack);
-        return delegate.call();
+        try {
+            workContext.setSubject(subject);
+            workContext.addHeaders(headers);
+            workContext.addCallFrames(stack);
+            return delegate.call();
+        } finally {
+            workContext.reset();
+        }
     }
 }

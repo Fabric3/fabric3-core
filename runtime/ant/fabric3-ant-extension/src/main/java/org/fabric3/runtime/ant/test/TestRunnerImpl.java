@@ -39,18 +39,17 @@ package org.fabric3.runtime.ant.test;
 
 import java.util.Map;
 
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.runtime.ant.api.TestRunner;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
 import org.fabric3.test.spi.TestWireHolder;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -82,17 +81,17 @@ public class TestRunnerImpl implements TestRunner {
 
     public void execute(String name, Wire wire) {
         monitor.runningTest(name);
+        Message message = MessageCache.getAndResetMessage();
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         for (InvocationChain chain : wire.getInvocationChains()) {
             String operationName = chain.getPhysicalOperation().getName();
-            WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
 
             CallFrame frame = new CallFrame();
             workContext.addCallFrame(frame);
 
-            MessageImpl msg = new MessageImpl();
-            msg.setWorkContext(workContext);
+            message.setWorkContext(workContext);
             long start = System.currentTimeMillis();
-            Message response = chain.getHeadInterceptor().invoke(msg);
+            Message response = chain.getHeadInterceptor().invoke(message);
             long elapsed = (System.currentTimeMillis() - start) / 1000;
             if (response.isFault()) {
                 Throwable exception = (Throwable) response.getBody();
@@ -101,7 +100,8 @@ public class TestRunnerImpl implements TestRunner {
             } else {
                 monitor.passed(operationName, elapsed);
             }
-
+            message.reset();
+            workContext.reset();
         }
     }
 

@@ -26,9 +26,13 @@ public class PropagatingRunnable implements Runnable {
 
     public void run() {
         WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
-        workContext.setSubject(subject);
-        workContext.addHeaders(headers);
-        workContext.addCallFrames(stack);
-        delegate.run();
+        try {
+            workContext.setSubject(subject);
+            workContext.addHeaders(headers);
+            workContext.addCallFrames(stack);
+            delegate.run();
+        } finally {
+            workContext.reset();
+        }
     }
 }

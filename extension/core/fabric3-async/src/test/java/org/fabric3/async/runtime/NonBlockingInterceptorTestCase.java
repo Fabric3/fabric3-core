@@ -43,11 +43,11 @@ import java.util.concurrent.ExecutorService;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.Interceptor;
 
 /**
@@ -65,14 +65,8 @@ public class NonBlockingInterceptorTestCase extends TestCase {
         executorService.execute(EasyMock.isA(AsyncRequest.class));
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
-                AsyncRequest request =
-                        (AsyncRequest) EasyMock.getCurrentArguments()[0];
+                AsyncRequest request = (AsyncRequest) EasyMock.getCurrentArguments()[0];
                 request.run();
-                assertSame(next, request.getNext());
-                assertSame(message, request.getMessage());
-                WorkContext newWorkContext = message.getWorkContext();
-                assertNotSame(workContext, newWorkContext);
-                assertTrue(newWorkContext.getHeaders().containsKey("key"));
                 return null;
             }
         });
@@ -93,11 +87,32 @@ public class NonBlockingInterceptorTestCase extends TestCase {
         workContext.addHeaders(Collections.<String, Object>singletonMap("key", "value"));
 
         executorService = EasyMock.createMock(ExecutorService.class);
-        next = EasyMock.createMock(Interceptor.class);
-        EasyMock.expect(next.invoke(EasyMock.isA(Message.class))).andReturn(new MessageImpl());
-        EasyMock.replay(next);
+        next = new MockInterceptor(workContext);
         NonBlockingMonitor monitor = EasyMock.createNiceMock(NonBlockingMonitor.class);
         interceptor = new NonBlockingInterceptor(executorService, monitor);
         interceptor.setNext(next);
+    }
+
+    private class MockInterceptor implements Interceptor {
+        private WorkContext originalWorkContext;
+
+        public MockInterceptor(WorkContext workContext) {
+            originalWorkContext = workContext;
+        }
+
+        public Message invoke(Message msg) {
+            WorkContext workContext = WorkContextCache.getThreadWorkContext();
+            assertNotSame(originalWorkContext, workContext);
+            assertFalse(workContext.getHeaders().isEmpty());
+            msg.reset();
+            return msg;
+        }
+
+        public void setNext(Interceptor next) {
+        }
+
+        public Interceptor getNext() {
+            return null;
+        }
     }
 }

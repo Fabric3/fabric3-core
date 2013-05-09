@@ -151,6 +151,8 @@ public class OptimizedMBean<T> extends AbstractMBean {
             } else {
                 throw new ReflectionException(e);
             }
+        } finally {
+            workContext.reset();
         }
     }
 }

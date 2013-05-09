@@ -108,7 +108,8 @@ public class TxInterceptorTestCase extends TestCase {
     }
 
     public void testRollbackOnFault() throws Exception {
-        Message fault = new MessageImpl("", true, null);
+        Message fault = new MessageImpl();
+        fault.setBodyWithFault("");
         EasyMock.expect(tm.getTransaction()).andReturn(null);
         EasyMock.expect(next.invoke(EasyMock.isA(Message.class))).andReturn(fault);
         tm.begin();
@@ -143,7 +144,8 @@ public class TxInterceptorTestCase extends TestCase {
     }
 
     public void testNoRollbackOnFaultWhenNotBegun() throws Exception {
-        Message fault = new MessageImpl("", true, null);
+        Message fault = new MessageImpl();
+        fault.setBodyWithFault("");
         Transaction trx = EasyMock.createMock(Transaction.class);
         EasyMock.expect(tm.getTransaction()).andReturn(trx);
         EasyMock.expect(next.invoke(EasyMock.isA(Message.class))).andReturn(fault);

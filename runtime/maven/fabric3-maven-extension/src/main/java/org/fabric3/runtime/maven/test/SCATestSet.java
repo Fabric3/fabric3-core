@@ -49,10 +49,9 @@ import org.apache.maven.surefire.report.ReporterManager;
 import org.apache.maven.surefire.report.StackTraceWriter;
 import org.apache.maven.surefire.testset.SurefireTestSet;
 import org.apache.maven.surefire.testset.TestSetFailedException;
-
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
+import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.InvocationChain;
@@ -71,23 +70,24 @@ public class SCATestSet implements SurefireTestSet {
     }
 
     public void execute(ReporterManager reporterManager, ClassLoader loader) throws TestSetFailedException {
+        Message message = MessageCache.getAndResetMessage();
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         for (InvocationChain chain : wire.getInvocationChains()) {
             String operationName = chain.getPhysicalOperation().getName();
             reporterManager.testStarting(new ReportEntry(this, operationName, name));
             try {
-                WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
                 CallFrame frame = new CallFrame();
                 workContext.addCallFrame(frame);
 
-                MessageImpl msg = new MessageImpl();
-                msg.setWorkContext(workContext);
-                Message response = chain.getHeadInterceptor().invoke(msg);
+                message.setWorkContext(workContext);
+                Message response = chain.getHeadInterceptor().invoke(message);
                 if (response.isFault()) {
                     throw new TestSetFailedException(operationName, (Throwable) response.getBody());
                 }
 
                 reporterManager.testSucceeded(new ReportEntry(this, operationName, name));
-
+                message.reset();
+                workContext.reset();
             } catch (TestSetFailedException e) {
                 StackTraceWriter stw = new PojoStackTraceWriter(name, operationName, e.getCause());
                 reporterManager.testFailed(new ReportEntry(this, operationName, name, stw));
