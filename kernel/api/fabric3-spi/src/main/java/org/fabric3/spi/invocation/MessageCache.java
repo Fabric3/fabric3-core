@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -34,62 +34,40 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
+*/
 package org.fabric3.spi.invocation;
 
 /**
- * The default implementation of a message flowed through a wire during an invocation.
+ * Cache of {@link Message}s associated with runtime threads.
  */
-public class MessageImpl implements Message {
-    private Object body;
-    private boolean isFault;
-    private WorkContext workContext;
+public class MessageCache {
+    private static final ThreadLocal<Message> CONTEXT = new ThreadLocal<Message>();
 
-    public MessageImpl() {
+    private MessageCache() {
     }
 
-    public MessageImpl(Object body, boolean isFault, WorkContext workContext) {
-        this.body = body;
-        this.isFault = isFault;
-        this.workContext = workContext;
+    /**
+     * Returns the Message for the current thread.
+     *
+     * @return the Message for the current thread
+     */
+    public static Message getMessage() {
+        Message message = CONTEXT.get();
+        if (message == null) {
+            message = new MessageImpl();
+            CONTEXT.set(message);
+        }
+        return message;
     }
 
-    public Object getBody() {
-        return body;
+    /**
+     * Resets and returns the Message for the current thread.
+     *
+     * @return the Message for the current thread
+     */
+    public static Message getAndResetMessage() {
+        Message message = getMessage();
+        message.reset();
+        return message;
     }
-
-    public void setBody(Object body) {
-        this.isFault = false;
-        this.body = body;
-    }
-
-    public void setBodyWithFault(Object fault) {
-        this.isFault = true;
-        this.body = fault;
-    }
-
-    public boolean isFault() {
-        return isFault;
-    }
-
-    public WorkContext getWorkContext() {
-        return workContext;
-    }
-
-    public void setWorkContext(WorkContext workContext) {
-        this.workContext = workContext;
-    }
-
-    public void reset() {
-        body = null;
-        isFault = false;
-        workContext = null;
-    }
-
 }

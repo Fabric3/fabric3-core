@@ -90,4 +90,8 @@ public interface Message {
      */
     void setWorkContext(WorkContext workContext);
 
+    /**
+     * Resets the message making it available for reuse.
+     */
+    void reset();
 }
