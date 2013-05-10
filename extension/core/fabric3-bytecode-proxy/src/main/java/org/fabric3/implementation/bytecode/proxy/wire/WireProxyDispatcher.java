@@ -80,7 +80,11 @@ public class WireProxyDispatcher<B> implements ProxyDispatcher, ServiceReference
         Interceptor headInterceptor = chain.getHeadInterceptor();
 
         WorkContext workContext = WorkContextCache.getThreadWorkContext();
-        CallFrame frame = initializeCallFrame(workContext);
+
+        if (callbackUri != null) {
+            initializeCallFrame(workContext);
+        }
+
         Message message = MessageCache.getAndResetMessage();
         message.setBody(args);
         message.setWorkContext(workContext);
@@ -110,7 +114,7 @@ public class WireProxyDispatcher<B> implements ProxyDispatcher, ServiceReference
                 return body;
             }
         } finally {
-            if (frame != null) {
+            if (callbackUri != null) {
                 // no callframe was created as the wire is unidrectional
                 workContext.popCallFrame();
             }
@@ -120,21 +124,16 @@ public class WireProxyDispatcher<B> implements ProxyDispatcher, ServiceReference
     }
 
     /**
-     * Initializes and returns a CallFrame for the invocation if it is required. A CallFrame is required if the wire is bidrectional (i.e. there is a
-     * callback). It is not required if the wire is targeted to a unidirectional service. If not required, null is returned, thereby avoiding the
-     * overhead of creating and pushing a CallFrame onto the current WorkContext.
+     * Initializes and returns a CallFrame for the invocation if it is required. A CallFrame is required if the wire is bidrectional (i.e. there is a callback).
+     * It is not required if the wire is targeted to a unidirectional service. If not required, null is returned, thereby avoiding the overhead of creating and
+     * pushing a CallFrame onto the current WorkContext.
      *
      * @param workContext the current work context
-     * @return a CallFrame for the invocation or null if none is required.
      */
-    private CallFrame initializeCallFrame(WorkContext workContext) {
-        if (callbackUri == null) {
-            return null;
-        }
+    private void initializeCallFrame(WorkContext workContext) {
         // the wire is bidrectional so a callframe is required
         CallFrame frame = new CallFrame(callbackUri, null);
         workContext.addCallFrame(frame);
-        return frame;
     }
 
 }

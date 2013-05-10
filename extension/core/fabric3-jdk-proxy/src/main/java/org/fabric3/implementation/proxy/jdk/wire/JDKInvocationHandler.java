@@ -105,7 +105,11 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
         assert headInterceptor != null;
 
         WorkContext workContext = WorkContextCache.getThreadWorkContext();
-        CallFrame frame = initializeCallFrame(workContext);
+
+        if (callbackUri != null) {
+            initializeCallFrame(workContext);
+        }
+
         Message message = MessageCache.getAndResetMessage();
         message.setBody(args);
         message.setWorkContext(workContext);
@@ -134,7 +138,7 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
                 return body;
             }
         } finally {
-            if (frame != null) {
+            if (callbackUri != null) {
                 // no callframe was created as the wire is unidrectional
                 workContext.popCallFrame();
             }
@@ -153,16 +157,11 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
      * overhead of creating and pushing a CallFrame onto the current WorkContext.
      *
      * @param workContext the current work context
-     * @return a CallFrame for the invocation or null if none is required.
      */
-    private CallFrame initializeCallFrame(WorkContext workContext) {
-        if (callbackUri == null) {
-            return null;
-        }
+    private void initializeCallFrame(WorkContext workContext) {
         // the wire is bidrectional so a callframe is required
         CallFrame frame = new CallFrame(callbackUri, null);
         workContext.addCallFrame(frame);
-        return frame;
     }
 
     private Object handleProxyMethod(Method method, Object[] args) throws InstanceInvocationException {
