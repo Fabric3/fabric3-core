@@ -33,15 +33,9 @@ package org.fabric3.binding.zeromq.runtime.message;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.oasisopen.sca.ServiceRuntimeException;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Socket;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
@@ -50,8 +44,12 @@ import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.wire.InvocationChain;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.zeromq.ZMQ;
+import org.zeromq.ZMQ.Socket;
 
 /**
  *
@@ -157,12 +155,10 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
                 // Copy correlation information from incoming frame to new frame
                 // Note that the callback URI is set to the callback address of this service so its callback wire can be mapped in the case of a
                 // bidirectional service
-                Serializable id = previous.getCorrelationId(Serializable.class);
+                String id = previous.getCorrelationId();
                 String callback = previous.getCallbackUri();
                 CallFrame frame = new CallFrame(callback, id);
                 stack.add(frame);
-            } else {
-//                workContext.addCallFrame(CallFrame.STATELESS_FRAME);
             }
             return workContext;
         } catch (IOException e) {

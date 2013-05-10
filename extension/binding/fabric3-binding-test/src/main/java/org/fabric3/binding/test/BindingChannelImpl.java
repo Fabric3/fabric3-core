@@ -83,7 +83,7 @@ public class BindingChannelImpl implements BindingChannel {
             CallFrame previous = workContext.peekCallFrame();
             if (previous != null) {
                 // copy correlation information from incoming frame
-                Serializable id = previous.getCorrelationId(Serializable.class);
+                String id = previous.getCorrelationId();
                 String callbackUri = holder.getCallbackUri();
                 CallFrame frame = new CallFrame(callbackUri, id);
                 workContext.addCallFrame(frame);

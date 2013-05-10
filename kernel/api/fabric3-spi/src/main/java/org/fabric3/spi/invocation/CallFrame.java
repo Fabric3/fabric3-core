@@ -47,7 +47,7 @@ public class CallFrame implements Serializable {
     private static final long serialVersionUID = -6108279393891496098L;
 
     private String callbackUri;
-    private Serializable correlationId;
+    private String correlationId;
 
     /**
      * Constructor. Creates a CallFrame for an invocation to a bidirectional service.
@@ -56,7 +56,7 @@ public class CallFrame implements Serializable {
      * @param correlationId the key used to correlate the forward invocation with the target component implementation instance. For stateless targets,
      *                      the id may be null.
      */
-    public CallFrame(String callbackUri, Serializable correlationId) {
+    public CallFrame(String callbackUri, String correlationId) {
         this.callbackUri = callbackUri;
         this.correlationId = correlationId;
     }
@@ -73,11 +73,10 @@ public class CallFrame implements Serializable {
     /**
      * Returns the key used to correlate the forward invocation with the target component implementation instance or null if the target is stateless.
      *
-     * @param type the correlation id type.
      * @return the correlation id or null.
      */
-    public <T extends Serializable> T getCorrelationId(Class<T> type) {
-        return type.cast(correlationId);
+    public String getCorrelationId() {
+        return correlationId;
     }
 
     public String toString() {

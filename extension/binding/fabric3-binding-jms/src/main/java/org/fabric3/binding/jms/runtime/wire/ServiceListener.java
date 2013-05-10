@@ -339,7 +339,6 @@ public class ServiceListener implements MessageListener {
             WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
             String encoded = request.getStringProperty("f3Context");
             if (encoded == null) {
-                // no callframe found, use a blank one
                 return workContext;
             }
             ByteArrayInputStream bas = new ByteArrayInputStream(Base64.decode(encoded));
@@ -352,7 +351,7 @@ public class ServiceListener implements MessageListener {
                 // Copy correlation information from incoming frame to new frame
                 // Note that the callback URI is set to the callback address of this service so its callback wire can be mapped in the case of a
                 // bidirectional service
-                Serializable id = previous.getCorrelationId(Serializable.class);
+                String id = previous.getCorrelationId();
                 CallFrame frame = new CallFrame(callbackUri, id);
                 stack.add(frame);
             }
