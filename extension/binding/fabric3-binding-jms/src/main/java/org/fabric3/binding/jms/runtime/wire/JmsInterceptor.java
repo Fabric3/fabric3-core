@@ -325,6 +325,8 @@ public class JmsInterceptor implements Interceptor {
      * @throws JMSException if there is an error setting a header
      */
     private void setHeaders(javax.jms.Message message) throws JMSException {
+        // add the operation name being invoked
+        message.setStringProperty(JmsRuntimeConstants.OPERATION_HEADER, methodName);
         if (!oneWay) {
             message.setJMSReplyTo(responseListener.getDestination());
         }
@@ -357,9 +359,6 @@ public class JmsInterceptor implements Interceptor {
      * @throws IOException  if an error occurs serializing the routing information
      */
     private void setRoutingHeaders(Message message, javax.jms.Message jmsMessage) throws JMSException, IOException {
-        // add the operation name being invoked
-        jmsMessage.setObjectProperty("scaOperationName", methodName);
-
         // serialize the callframes
         List<CallFrame> stack = message.getWorkContext().getCallFrameStack();
         ByteArrayOutputStream bas = new ByteArrayOutputStream();

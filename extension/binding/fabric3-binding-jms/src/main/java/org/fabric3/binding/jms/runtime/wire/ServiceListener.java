@@ -95,7 +95,6 @@ public class ServiceListener implements MessageListener {
     private XMLInputFactory xmlInputFactory;
     private List<BindingHandler<Message>> handlers;
 
-
     public ServiceListener(WireHolder wireHolder,
                            Destination defaultResponseDestination,
                            ConnectionFactory responseFactory,
@@ -136,26 +135,26 @@ public class ServiceListener implements MessageListener {
 
             switch (inputType) {
 
-            case OBJECT:
-                if (payload != null && !payload.getClass().isArray()) {
+                case OBJECT:
+                    if (payload != null && !payload.getClass().isArray()) {
+                        payload = new Object[]{payload};
+                    }
+                    invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
+                    break;
+                case XML:
+                    invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
+                    break;
+                case TEXT:
+                    // non-encoded text
                     payload = new Object[]{payload};
-                }
-                invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
-                break;
-            case XML:
-                invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
-                break;
-            case TEXT:
-                // non-encoded text
-                payload = new Object[]{payload};
-                invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
-                break;
-            case STREAM:
-                throw new UnsupportedOperationException();
-            default:
-                payload = new Object[]{payload};
-                invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
-                break;
+                    invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
+                    break;
+                case STREAM:
+                    throw new UnsupportedOperationException();
+                default:
+                    payload = new Object[]{payload};
+                    invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
+                    break;
             }
         } catch (JMSException e) {
             // TODO This could be a temporary error and should be sent to a dead letter queue. For now, just log the error.
@@ -185,7 +184,6 @@ public class ServiceListener implements MessageListener {
         applyHandlers(request, inMessage);
 
         org.fabric3.spi.invocation.Message outMessage = interceptor.invoke(inMessage);
-
 
         if (oneWay) {
             // one-way message, return without waiting for a response
@@ -222,20 +220,18 @@ public class ServiceListener implements MessageListener {
         }
     }
 
-    private void sendResponse(Message request,
-                              Session responseSession,
-                              org.fabric3.spi.invocation.Message outMessage,
-                              Message response) throws JMSException, JmsBadMessageException {
+    private void sendResponse(Message request, Session responseSession, org.fabric3.spi.invocation.Message outMessage, Message response)
+            throws JMSException, JmsBadMessageException {
         CorrelationScheme correlationScheme = wireHolder.getCorrelationScheme();
         switch (correlationScheme) {
-        case CORRELATION_ID: {
-            response.setJMSCorrelationID(request.getJMSCorrelationID());
-            break;
-        }
-        case MESSAGE_ID: {
-            response.setJMSCorrelationID(request.getJMSMessageID());
-            break;
-        }
+            case CORRELATION_ID: {
+                response.setJMSCorrelationID(request.getJMSCorrelationID());
+                break;
+            }
+            case MESSAGE_ID: {
+                response.setJMSCorrelationID(request.getJMSMessageID());
+                break;
+            }
         }
         if (outMessage.isFault()) {
             response.setBooleanProperty(JmsRuntimeConstants.FAULT_HEADER, true);
@@ -255,39 +251,41 @@ public class ServiceListener implements MessageListener {
 
     private Message createMessage(Object payload, Session session, PayloadType payloadType) throws JMSException {
         switch (payloadType) {
-        case STREAM:
-            throw new UnsupportedOperationException("Stream message not yet supported");
-        case XML:
-        case TEXT:
-            if (payload != null && !(payload instanceof String)) {
-                // this should not happen
-                throw new IllegalArgumentException("Response payload is not a string: " + payload);
-            }
-            return session.createTextMessage((String) payload);
-        case OBJECT:
-            if (payload != null && !(payload instanceof Serializable)) {
-                // this should not happen
-                throw new IllegalArgumentException("Response payload is not serializable: " + payload);
-            }
-            return session.createObjectMessage((Serializable) payload);
-        default:
-            return MessageHelper.createBytesMessage(session, payload, payloadType);
+            case STREAM:
+                throw new UnsupportedOperationException("Stream message not yet supported");
+            case XML:
+            case TEXT:
+                if (payload != null && !(payload instanceof String)) {
+                    // this should not happen
+                    throw new IllegalArgumentException("Response payload is not a string: " + payload);
+                }
+                return session.createTextMessage((String) payload);
+            case OBJECT:
+                if (payload != null && !(payload instanceof Serializable)) {
+                    // this should not happen
+                    throw new IllegalArgumentException("Response payload is not serializable: " + payload);
+                }
+                return session.createObjectMessage((Serializable) payload);
+            default:
+                return MessageHelper.createBytesMessage(session, payload, payloadType);
         }
     }
 
     private InvocationChainHolder getHolder(Message message) throws JmsBadMessageException, JMSException {
-        String opName = message.getStringProperty(JmsRuntimeConstants.OPERATION_HEADER);
         List<InvocationChainHolder> chainHolders = wireHolder.getInvocationChains();
         if (chainHolders.size() == 1) {
             return chainHolders.get(0);
-        } else if (opName != null) {
+        } else if (onMessageHolder != null) {
+            return onMessageHolder;
+        }
+
+        String opName = message.getStringProperty(JmsRuntimeConstants.OPERATION_HEADER);
+        if (opName != null) {
             InvocationChainHolder chainHolder = invocationChainMap.get(opName);
             if (chainHolder == null) {
                 throw new JmsBadMessageException("Unable to match operation on the service contract: " + opName);
             }
             return chainHolder;
-        } else if (onMessageHolder != null) {
-            return onMessageHolder;
         } else {
             if (message instanceof TextMessage) {
                 TextMessage textMessage = (TextMessage) message;
@@ -328,8 +326,8 @@ public class ServiceListener implements MessageListener {
      * Creates a WorkContext for the request by deserializing the callframe stack
      *
      * @param request     the message received from the JMS transport
-     * @param callbackUri if the destination service for the message is bidirectional, the callback URI is the URI of the callback service for the
-     *                    client that is wired to it. Otherwise, it is null.
+     * @param callbackUri if the destination service for the message is bidirectional, the callback URI is the URI of the callback service for the client that
+     *                    is wired to it. Otherwise, it is null.
      * @return the work context
      * @throws JmsBadMessageException if an error is encountered deserializing the callframe
      */
@@ -372,6 +370,5 @@ public class ServiceListener implements MessageListener {
             }
         }
     }
-
 
 }
