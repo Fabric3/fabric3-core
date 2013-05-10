@@ -48,7 +48,6 @@ import java.util.Enumeration;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 
@@ -124,8 +123,6 @@ public final class RsContainer extends HttpServlet {
                 Thread.currentThread().setContextClassLoader(classLoader);
                 workContext.setHeader("fabric3.httpRequest", req);
                 workContext.setHeader("fabric3.httpResponse", res);
-                CallFrame frame = new CallFrame();
-                workContext.addCallFrame(frame);
                 servlet.service(req, res);
             } catch (ServletException se) {
                 se.printStackTrace();

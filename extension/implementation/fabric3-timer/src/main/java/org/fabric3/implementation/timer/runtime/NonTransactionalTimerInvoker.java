@@ -39,7 +39,6 @@ package org.fabric3.implementation.timer.runtime;
 
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.InvocationRuntimeException;
@@ -59,8 +58,6 @@ public class NonTransactionalTimerInvoker implements Runnable {
     public void run() {
         // create a new work context
         WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
-        CallFrame frame = new CallFrame();
-        workContext.addCallFrame(frame);
         Object instance;
         try {
             instance = component.getInstance();
@@ -84,6 +81,7 @@ public class NonTransactionalTimerInvoker implements Runnable {
                 //noinspection ThrowFromFinallyBlock
                 throw new InvocationRuntimeException(e);
             }
+            workContext.reset();
         }
 
     }

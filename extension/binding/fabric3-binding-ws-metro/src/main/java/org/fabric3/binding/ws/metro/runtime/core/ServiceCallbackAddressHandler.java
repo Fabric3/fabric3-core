@@ -52,7 +52,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -88,7 +87,6 @@ public class ServiceCallbackAddressHandler implements SOAPHandler<SOAPMessageCon
         if (workContext == null) {
             throw new ServiceRuntimeException("Work context not set");
         }
-        workContext.addCallFrame(CallFrame.STATELESS_FRAME);
 
         try {
 

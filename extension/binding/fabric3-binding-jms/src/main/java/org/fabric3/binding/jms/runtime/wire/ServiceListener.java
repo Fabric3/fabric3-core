@@ -355,8 +355,6 @@ public class ServiceListener implements MessageListener {
                 Serializable id = previous.getCorrelationId(Serializable.class);
                 CallFrame frame = new CallFrame(callbackUri, id);
                 stack.add(frame);
-            } else {
-                workContext.addCallFrame(CallFrame.STATELESS_FRAME);
             }
             return workContext;
         } catch (JMSException ex) {

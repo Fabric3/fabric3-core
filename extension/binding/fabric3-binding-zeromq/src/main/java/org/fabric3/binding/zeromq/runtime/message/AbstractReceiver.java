@@ -162,7 +162,7 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
                 CallFrame frame = new CallFrame(callback, id);
                 stack.add(frame);
             } else {
-                workContext.addCallFrame(CallFrame.STATELESS_FRAME);
+//                workContext.addCallFrame(CallFrame.STATELESS_FRAME);
             }
             return workContext;
         } catch (IOException e) {

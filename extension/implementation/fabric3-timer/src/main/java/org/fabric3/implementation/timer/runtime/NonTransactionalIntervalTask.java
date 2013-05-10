@@ -42,7 +42,6 @@ import java.lang.reflect.Method;
 
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.InvocationRuntimeException;
@@ -53,7 +52,6 @@ import org.fabric3.timer.spi.Task;
  * implementation.
  */
 public class NonTransactionalIntervalTask implements Task {
-    private static final CallFrame FRAME = new CallFrame();
     private TimerComponent component;
     private Method method;
     private Runnable delegate;
@@ -69,7 +67,6 @@ public class NonTransactionalIntervalTask implements Task {
 
     public long nextInterval() {
         WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
-        workContext.addCallFrame(FRAME);
 
         Object instance = null;
         try {
@@ -92,6 +89,7 @@ public class NonTransactionalIntervalTask implements Task {
                     monitor.executeError(e);
                 }
             }
+            workContext.reset();
         }
     }
 

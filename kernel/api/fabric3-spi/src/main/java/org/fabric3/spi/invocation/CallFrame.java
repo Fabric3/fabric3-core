@@ -46,11 +46,6 @@ import java.io.Serializable;
 public class CallFrame implements Serializable {
     private static final long serialVersionUID = -6108279393891496098L;
 
-    /**
-     * A frame for stateless, unidirectional invocations which can be used to avoid new object allocation
-     */
-    public static final CallFrame STATELESS_FRAME = new CallFrame();
-
     private String callbackUri;
     private Serializable correlationId;
 
@@ -89,16 +84,6 @@ public class CallFrame implements Serializable {
      */
     public <T extends Serializable> T getCorrelationId(Class<T> type) {
         return type.cast(correlationId);
-    }
-
-    /**
-     * Performs a deep copy of the CallFrame.
-     *
-     * @return the copied frame
-     */
-    public CallFrame copy() {
-        // data is immutable, return a shallow copy
-        return new CallFrame(callbackUri, correlationId);
     }
 
     public String toString() {

@@ -44,20 +44,17 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.oasisopen.sca.ServiceRuntimeException;
-
 import org.fabric3.spi.component.InstanceDestructionException;
 import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.InvocationRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Invokes a timer component instance within the context of a transaction when a trigger has fired.
  */
 public class TransactionalTimerInvoker implements Runnable {
-    private static final CallFrame FRAME = new CallFrame();
     private TimerComponent component;
     private TransactionManager tm;
     private InvokerMonitor monitor;
@@ -71,7 +68,6 @@ public class TransactionalTimerInvoker implements Runnable {
     public void run() {
         // create a new work context
         WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
-        workContext.addCallFrame(FRAME);
         Object instance;
         try {
             instance = component.getInstance();
@@ -118,6 +114,7 @@ public class TransactionalTimerInvoker implements Runnable {
             } catch (InstanceDestructionException e) {
                 monitor.disposeError(e);
             }
+            workContext.reset();
         }
 
     }

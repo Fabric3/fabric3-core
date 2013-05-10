@@ -45,7 +45,6 @@ import java.io.IOException;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.HandlerWrapper;
 import org.fabric3.container.web.spi.WebRequestTunnel;
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 
@@ -56,8 +55,6 @@ public class WorkContextHandler extends HandlerWrapper {
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         try {
-            CallFrame frame = new CallFrame();
-            workContext.addCallFrame(frame);
             WebRequestTunnel.setRequest(request);
             super.handle(target, baseRequest, request, response);
         } finally {

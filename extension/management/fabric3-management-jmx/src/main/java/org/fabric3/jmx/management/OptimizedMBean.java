@@ -135,7 +135,6 @@ public class OptimizedMBean<T> extends AbstractMBean {
 
     Object invoke(Method method, Object[] args) throws MBeanException, ReflectionException {
         WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
-        workContext.addCallFrame(new CallFrame());
         try {
             T instance = objectFactory.getInstance();
             return method.invoke(instance, args);
