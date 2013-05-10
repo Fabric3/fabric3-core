@@ -61,9 +61,9 @@ import org.fabric3.api.SecuritySubject;
  */
 public class WorkContext implements Serializable {
     private static final long serialVersionUID = 9108092492339191639L;
-    private SecuritySubject subject;
+    private transient SecuritySubject subject;
     private List<CallFrame> callStack;
-    private Map<String, Object> headers;
+    private transient Map<String, Object> headers;
 
     public void setSubject(SecuritySubject subject) {
         this.subject = subject;

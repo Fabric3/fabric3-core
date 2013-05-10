@@ -41,7 +41,6 @@ import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.runtime.ant.api.TestRunner;
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
@@ -85,9 +84,6 @@ public class TestRunnerImpl implements TestRunner {
         WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         for (InvocationChain chain : wire.getInvocationChains()) {
             String operationName = chain.getPhysicalOperation().getName();
-
-            CallFrame frame = new CallFrame();
-            workContext.addCallFrame(frame);
 
             message.setWorkContext(workContext);
             long start = System.currentTimeMillis();

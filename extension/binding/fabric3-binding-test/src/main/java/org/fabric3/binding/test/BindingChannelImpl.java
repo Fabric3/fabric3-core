@@ -81,11 +81,13 @@ public class BindingChannelImpl implements BindingChannel {
         WorkContext workContext = msg.getWorkContext();
         try {
             CallFrame previous = workContext.peekCallFrame();
-            // copy correlation information from incoming frame
-            Serializable id = previous.getCorrelationId(Serializable.class);
-            String callbackUri = holder.getCallbackUri();
-            CallFrame frame = new CallFrame(callbackUri, id);
-            workContext.addCallFrame(frame);
+            if (previous != null) {
+                // copy correlation information from incoming frame
+                Serializable id = previous.getCorrelationId(Serializable.class);
+                String callbackUri = holder.getCallbackUri();
+                CallFrame frame = new CallFrame(callbackUri, id);
+                workContext.addCallFrame(frame);
+            }
             return chain.getHeadInterceptor().invoke(msg);
         } finally {
             workContext.popCallFrame();

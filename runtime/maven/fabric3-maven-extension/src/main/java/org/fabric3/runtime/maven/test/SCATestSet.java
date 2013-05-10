@@ -49,7 +49,6 @@ import org.apache.maven.surefire.report.ReporterManager;
 import org.apache.maven.surefire.report.StackTraceWriter;
 import org.apache.maven.surefire.testset.SurefireTestSet;
 import org.apache.maven.surefire.testset.TestSetFailedException;
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
@@ -76,9 +75,6 @@ public class SCATestSet implements SurefireTestSet {
             String operationName = chain.getPhysicalOperation().getName();
             reporterManager.testStarting(new ReportEntry(this, operationName, name));
             try {
-                CallFrame frame = new CallFrame();
-                workContext.addCallFrame(frame);
-
                 message.setWorkContext(workContext);
                 Message response = chain.getHeadInterceptor().invoke(message);
                 if (response.isFault()) {
