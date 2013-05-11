@@ -50,8 +50,8 @@ import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
-import org.fabric3.spi.invocation.CallFrame;
-import org.fabric3.spi.invocation.CallFrameSerializer;
+import org.fabric3.spi.invocation.CallbackReference;
+import org.fabric3.spi.invocation.CallbackReferenceSerializer;
 import org.fabric3.spi.invocation.WorkContext;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
@@ -163,11 +163,11 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
      * @throws IOException if a serialization error is encountered
      */
     private byte[] serialize(WorkContext workContext) throws IOException {
-        List<CallFrame> stack = workContext.getCallFrameStack();
+        List<CallbackReference> stack = workContext.getCallbackReferences();
         if (stack == null || stack.isEmpty()) {
             return null;
         }
-        return CallFrameSerializer.serializeToBytes(stack);
+        return CallbackReferenceSerializer.serializeToBytes(stack);
     }
 
     /**

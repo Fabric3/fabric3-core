@@ -46,39 +46,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Serializes and (De)Serializes a {@link CallFrame} to a byte array or String.
+ * Serializes and (De)Serializes a {@link CallbackReference} to a byte array or String.
  */
-public class CallFrameSerializer {
+public class CallbackReferenceSerializer {
 
-    public static String serializeToString(List<CallFrame> frames) throws IOException {
+    public static String serializeToString(List<CallbackReference> references) throws IOException {
         StringBuilder builder = new StringBuilder();
-        //builder.append(frames.size());
-        for (CallFrame frame : frames) {
-            String correlationId = frame.getCorrelationId();
+        for (CallbackReference reference : references) {
+            String correlationId = reference.getCorrelationId();
             if (correlationId == null) {
                 builder.append(",");
             } else {
                 builder.append(correlationId).append(",");
             }
-            String callbackUri = frame.getCallbackUri();
+            String callbackUri = reference.getServiceUri();
             builder.append(callbackUri).append(",");
         }
         return builder.toString();
     }
 
-    public static byte[] serializeToBytes(List<CallFrame> frames) throws IOException {
+    public static byte[] serializeToBytes(List<CallbackReference> references) throws IOException {
         ByteArrayOutputStream bas = new ByteArrayOutputStream();
         DataOutputStream das = new DataOutputStream(bas);
-        das.writeInt(frames.size());
-        for (CallFrame frame : frames) {
-            String correlationId = frame.getCorrelationId();
+        das.writeInt(references.size());
+        for (CallbackReference reference : references) {
+            String correlationId = reference.getCorrelationId();
             if (correlationId == null) {
                 das.writeInt(0);
             } else {
                 das.writeInt(correlationId.length());
                 das.writeBytes(correlationId);
             }
-            String callbackUri = frame.getCallbackUri();
+            String callbackUri = reference.getServiceUri();
             das.writeInt(callbackUri.length());
             das.writeBytes(callbackUri);
         }
@@ -86,12 +85,12 @@ public class CallFrameSerializer {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static List<CallFrame> deserialize(byte[] bytes) throws IOException {
+    public static List<CallbackReference> deserialize(byte[] bytes) throws IOException {
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         DataInputStream dis = new DataInputStream(bis);
-        int numberOfFrames = dis.readInt();
-        List<CallFrame> frames = new ArrayList<CallFrame>(numberOfFrames);
-        while (numberOfFrames > 0) {
+        int number = dis.readInt();
+        List<CallbackReference> references = new ArrayList<CallbackReference>(number);
+        while (number > 0) {
             String correlationId = null;
             int correlationSize = dis.readInt();
             if (correlationSize > 0) {
@@ -106,22 +105,22 @@ public class CallFrameSerializer {
                 dis.read(uriBytes);
                 callbackUri = new String(uriBytes);
             }
-            frames.add(new CallFrame(callbackUri, correlationId));
-            numberOfFrames--;
+            references.add(new CallbackReference(callbackUri, correlationId));
+            number--;
         }
-        return frames;
+        return references;
     }
 
-    public static List<CallFrame> deserialize(String serialized) throws IOException {
-        List<CallFrame> frames = new ArrayList<CallFrame>();
+    public static List<CallbackReference> deserialize(String serialized) throws IOException {
+        List<CallbackReference> references = new ArrayList<CallbackReference>();
         String[] tokens = serialized.split(",");
         for (int i = 0; i < tokens.length; i = i + 2) {
             String callbackUri = tokens[i + 1];
             String correlationId = tokens[i].length() == 0 ? null : tokens[i];
-            frames.add(new CallFrame(callbackUri, correlationId));
+            references.add(new CallbackReference(callbackUri, correlationId));
         }
 
-        return frames;
+        return references;
     }
 
 }

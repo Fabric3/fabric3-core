@@ -40,38 +40,36 @@ package org.fabric3.spi.invocation;
 import java.io.Serializable;
 
 /**
- * Encapsulates information for a specific invocation that is made as part of a request entering the domain. Requests may have multiple associated
- * invocations as component implementations may invoke services on other components as a request is processed.
+ * A callback endpoint reference.
  */
-public class CallFrame implements Serializable {
+public class CallbackReference implements Serializable {
     private static final long serialVersionUID = -6108279393891496098L;
 
-    private String callbackUri;
+    private String uri;
     private String correlationId;
 
     /**
-     * Constructor. Creates a CallFrame for an invocation to a bidirectional service.
+     * Constructor.
      *
-     * @param callbackUri   the URI the caller of the current service can be called back on
-     * @param correlationId the key used to correlate the forward invocation with the target component implementation instance. For stateless targets,
-     *                      the id may be null.
+     * @param uri           the callback URI
+     * @param correlationId the correlation id. For stateless targets, the id may be null.
      */
-    public CallFrame(String callbackUri, String correlationId) {
-        this.callbackUri = callbackUri;
+    public CallbackReference(String uri, String correlationId) {
+        this.uri = uri;
         this.correlationId = correlationId;
     }
 
     /**
-     * Returns the URI of the callback service for the current invocation.
+     * Returns the callback URI.
      *
-     * @return the callback service URI or null if the invocation is to a unidirectional service.
+     * @return the callback URI
      */
-    public String getCallbackUri() {
-        return callbackUri;
+    public String getServiceUri() {
+        return uri;
     }
 
     /**
-     * Returns the key used to correlate the forward invocation with the target component implementation instance or null if the target is stateless.
+     * Returns the correlation id or null if the target is stateless.
      *
      * @return the correlation id or null.
      */
@@ -79,7 +77,4 @@ public class CallFrame implements Serializable {
         return correlationId;
     }
 
-    public String toString() {
-        return "CallFrame [Callback URI: " + callbackUri + " Correlation ID: " + correlationId + "]";
-    }
 }

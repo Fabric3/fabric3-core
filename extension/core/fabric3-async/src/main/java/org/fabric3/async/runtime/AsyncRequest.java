@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.CallbackReference;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
@@ -55,14 +55,14 @@ public class AsyncRequest implements Runnable {
     private Interceptor next;
     private Object payload;
     private SecuritySubject subject;
-    private List<CallFrame> stack;
+    private List<CallbackReference> stack;
     private Map<String, Object> headers;
     private NonBlockingMonitor monitor;
 
     public AsyncRequest(Interceptor next,
                         Object payload,
                         SecuritySubject subject,
-                        List<CallFrame> stack,
+                        List<CallbackReference> stack,
                         Map<String, Object> headers,
                         NonBlockingMonitor monitor) {
         this.next = next;
@@ -75,7 +75,7 @@ public class AsyncRequest implements Runnable {
 
     public void run() {
         WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
-        workContext.addCallFrames(stack);
+        workContext.addCallbackReferences(stack);
         workContext.addHeaders(headers);
         workContext.setSubject(subject);
 

@@ -69,8 +69,8 @@ import org.fabric3.binding.jms.spi.common.CorrelationScheme;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.spi.binding.handler.BindingHandler;
-import org.fabric3.spi.invocation.CallFrame;
-import org.fabric3.spi.invocation.CallFrameSerializer;
+import org.fabric3.spi.invocation.CallbackReference;
+import org.fabric3.spi.invocation.CallbackReferenceSerializer;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
 import org.fabric3.spi.wire.Interceptor;
@@ -217,7 +217,7 @@ public class JmsInterceptor implements Interceptor {
         } catch (JMSException e) {
             throw new ServiceRuntimeException("Unable to receive response", e);
         } catch (IOException e) {
-            throw new ServiceRuntimeException("Error serializing callframe", e);
+            throw new ServiceRuntimeException("Error serializing callback references", e);
         } catch (JmsBadMessageException e) {
             throw new ServiceRuntimeException("Unable to receive response", e);
         } catch (SystemException e) {
@@ -357,11 +357,11 @@ public class JmsInterceptor implements Interceptor {
      * @throws IOException  if an error occurs serializing the routing information
      */
     private void setRoutingHeaders(Message message, javax.jms.Message jmsMessage) throws JMSException, IOException {
-        List<CallFrame> stack = message.getWorkContext().getCallFrameStack();
+        List<CallbackReference> stack = message.getWorkContext().getCallbackReferences();
         if (stack == null || stack.isEmpty()) {
             return;
         }
-        jmsMessage.setObjectProperty(JmsRuntimeConstants.CONTEXT_HEADER, CallFrameSerializer.serializeToString(stack));
+        jmsMessage.setObjectProperty(JmsRuntimeConstants.CONTEXT_HEADER, CallbackReferenceSerializer.serializeToString(stack));
     }
 
     private void applyHandlers(Message message, javax.jms.Message jmsMessage) {

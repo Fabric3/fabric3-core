@@ -53,16 +53,14 @@ import org.fabric3.api.SecuritySubject;
 
 /**
  * Tracks information associated with a request as it is processed by the runtime. Requests originate at a domain boundary (e.g. a service bound to a
- * transport). As a request is processed by a component providing the service, invocations to other services in the domain may be made. State associated with
- * each invocation is encapsulated in a CallFrame and is added to the call stack associated with the WorkContext. When an invocation completes, its CallFrame is
- * removed from the stack.
+ * transport).
  * <p/>
- * This implementation is <em>not</em> thread safe.
+ * WorkContext instances are cached per runtime thread and reused. This implementation is <em>not</em> thread safe.
  */
 public class WorkContext implements Serializable {
     private static final long serialVersionUID = 9108092492339191639L;
     private transient SecuritySubject subject;
-    private List<CallFrame> callStack;
+    private List<CallbackReference> callStack;
     private transient Map<String, Object> headers;
 
     public void setSubject(SecuritySubject subject) {
@@ -79,36 +77,36 @@ public class WorkContext implements Serializable {
     }
 
     /**
-     * Adds a CallFrame to the invocation stack.
+     * Adds a {@link CallbackReference} to the work context.
      *
-     * @param frame the CallFrame to add
+     * @param callbackReference the callback reference to add
      */
-    public void addCallFrame(CallFrame frame) {
+    public void addCallbackReference(CallbackReference callbackReference) {
         if (callStack == null) {
-            callStack = new ArrayList<CallFrame>();
+            callStack = new ArrayList<CallbackReference>();
         }
-        callStack.add(frame);
+        callStack.add(callbackReference);
     }
 
     /**
-     * Adds a collection of CallFrames to the internal CallFrame stack.
+     * Adds a collection of {@link CallbackReference}s to the work context.
      *
-     * @param frames the collection of CallFrames to add
+     * @param callbackReferences the collection of callback references to add
      */
-    public void addCallFrames(List<CallFrame> frames) {
+    public void addCallbackReferences(List<CallbackReference> callbackReferences) {
         if (callStack == null) {
-            callStack = frames;
+            callStack = callbackReferences;
             return;
         }
-        callStack.addAll(frames);
+        callStack.addAll(callbackReferences);
     }
 
     /**
-     * Removes and returns the CallFrame associated with the previous request from the internal stack.
+     * Removes and returns the {@link CallbackReference} associated with the previous request from the internal stack.
      *
-     * @return the CallFrame.
+     * @return the callback reference
      */
-    public CallFrame popCallFrame() {
+    public CallbackReference popCallbackReference() {
         if (callStack == null || callStack.isEmpty()) {
             return null;
         }
@@ -116,11 +114,11 @@ public class WorkContext implements Serializable {
     }
 
     /**
-     * Returns but does not remove the CallFrame associated with the previous request from the internal stack.
+     * Returns but does not remove the {@link CallbackReference} associated with the previous request from the internal stack.
      *
-     * @return the CallFrame.
+     * @return the callback reference.
      */
-    public CallFrame peekCallFrame() {
+    public CallbackReference peekCallbackReference() {
         if (callStack == null || callStack.isEmpty()) {
             return null;
         }
@@ -128,12 +126,11 @@ public class WorkContext implements Serializable {
     }
 
     /**
-     * Returns the CallFrame stack.
+     * Returns the callback reference stack.
      *
-     * @return the CallFrame stack
+     * @return the stack
      */
-    public List<CallFrame> getCallFrameStack() {
-        // return a live list to avoid creation of a non-modifiable collection
+    public List<CallbackReference> getCallbackReferences() {
         return callStack;
     }
 

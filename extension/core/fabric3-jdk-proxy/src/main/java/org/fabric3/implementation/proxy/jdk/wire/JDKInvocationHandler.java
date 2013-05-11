@@ -49,7 +49,7 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.fabric3.spi.component.InstanceInvocationException;
-import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.CallbackReference;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
@@ -107,7 +107,7 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
         WorkContext workContext = WorkContextCache.getThreadWorkContext();
 
         if (callbackUri != null) {
-            initializeCallFrame(workContext);
+            initializeCallbackReference(workContext);
         }
 
         Message message = MessageCache.getAndResetMessage();
@@ -139,8 +139,7 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
             }
         } finally {
             if (callbackUri != null) {
-                // no callframe was created as the wire is unidrectional
-                workContext.popCallFrame();
+                workContext.popCallbackReference();
             }
             message.reset();
         }
@@ -151,16 +150,9 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
         return this;
     }
 
-    /**
-     * Initializes and returns a CallFrame for the invocation if it is required. A CallFrame is required if the wire is bidrectional (i.e. there is a
-     * callback). It is not required if the wire is targeted to a unidirectional service. If not required, null is returned, thereby avoiding the
-     * overhead of creating and pushing a CallFrame onto the current WorkContext.
-     *
-     * @param workContext the current work context
-     */
-    private void initializeCallFrame(WorkContext workContext) {
-        CallFrame frame = new CallFrame(callbackUri, null);
-        workContext.addCallFrame(frame);
+    private void initializeCallbackReference(WorkContext workContext) {
+        CallbackReference callbackReference = new CallbackReference(callbackUri, null);
+        workContext.addCallbackReference(callbackReference);
     }
 
     private Object handleProxyMethod(Method method, Object[] args) throws InstanceInvocationException {

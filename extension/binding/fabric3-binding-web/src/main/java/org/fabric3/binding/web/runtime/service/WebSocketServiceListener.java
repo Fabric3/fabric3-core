@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.websocket.WebSocketEventListener;
-import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.CallbackReference;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
@@ -84,10 +84,10 @@ public class WebSocketServiceListener implements WebSocketEventListener {
         Message message = MessageCache.getAndResetMessage();
 
         try {
-            CallFrame frame = new CallFrame(chainPair.getCallbackUri(), uuid.toString());
-            context.addCallFrame(frame);
-            // As an optimization, we add the callframe twice instead of two different frames for representing the service call and the binding invocation
-            context.addCallFrame(frame);
+            CallbackReference callbackReference = new CallbackReference(chainPair.getCallbackUri(), uuid.toString());
+            context.addCallbackReference(callbackReference);
+            // As an optimization, we add the callback twice instead of two different frames for representing the service call and the binding invocation
+            context.addCallbackReference(callbackReference);
             message.setWorkContext(context);
             message.setBody(content);
 

@@ -37,16 +37,15 @@
 */
 package org.fabric3.binding.test;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.fabric3.spi.invocation.CallbackReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.InvocationChain;
@@ -80,17 +79,17 @@ public class BindingChannelImpl implements BindingChannel {
         }
         WorkContext workContext = msg.getWorkContext();
         try {
-            CallFrame previous = workContext.peekCallFrame();
+            CallbackReference previous = workContext.peekCallbackReference();
             if (previous != null) {
-                // copy correlation information from incoming frame
+                // copy correlation information from incoming callbackReference
                 String id = previous.getCorrelationId();
                 String callbackUri = holder.getCallbackUri();
-                CallFrame frame = new CallFrame(callbackUri, id);
-                workContext.addCallFrame(frame);
+                CallbackReference callbackReference = new CallbackReference(callbackUri, id);
+                workContext.addCallbackReference(callbackReference);
             }
             return chain.getHeadInterceptor().invoke(msg);
         } finally {
-            workContext.popCallFrame();
+            workContext.popCallbackReference();
         }
     }
 

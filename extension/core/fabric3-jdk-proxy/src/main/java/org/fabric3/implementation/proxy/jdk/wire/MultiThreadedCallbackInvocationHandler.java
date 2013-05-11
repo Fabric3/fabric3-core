@@ -40,7 +40,7 @@ package org.fabric3.implementation.proxy.jdk.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.CallbackReference;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.InvocationChain;
@@ -48,8 +48,8 @@ import org.fabric3.spi.wire.InvocationChain;
 /**
  * Responsible for dispatching to a callback service from multi-threaded component instances such as composite scope components. Since callback proxies for
  * multi-threaded components may dispatch to multiple callback services, this implementation must determine the correct target service based on the current
- * CallFrame. For example, if clients A and A' implementing the same callback interface C invoke B, the callback proxy representing C must correctly dispatch
- * back to A and A'. This is done by recording the callback URI in the current CallFrame as the forward invoke is made.
+ * CallbackReference. For example, if clients A and A' implementing the same callback interface C invoke B, the callback proxy representing C must correctly
+ * dispatch back to A and A'. This is done by recording the callback URI as the forward invoke is made.
  */
 public class MultiThreadedCallbackInvocationHandler<T> extends AbstractCallbackInvocationHandler<T> {
     private Map<String, Map<Method, InvocationChain>> mappings;
@@ -73,8 +73,8 @@ public class MultiThreadedCallbackInvocationHandler<T> extends AbstractCallbackI
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         WorkContext workContext = WorkContextCache.getThreadWorkContext();
-        CallFrame frame = workContext.peekCallFrame();
-        String callbackUri = frame.getCallbackUri();
+        CallbackReference callbackReference = workContext.peekCallbackReference();
+        String callbackUri = callbackReference.getServiceUri();
 
         Map<Method, InvocationChain> chains = (singleMapping != null) ? singleMapping : mappings.get(callbackUri);
 

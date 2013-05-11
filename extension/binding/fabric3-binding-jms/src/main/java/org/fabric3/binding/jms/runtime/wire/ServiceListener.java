@@ -70,8 +70,8 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.spi.binding.handler.BindingHandler;
-import org.fabric3.spi.invocation.CallFrame;
-import org.fabric3.spi.invocation.CallFrameSerializer;
+import org.fabric3.spi.invocation.CallbackReference;
+import org.fabric3.spi.invocation.CallbackReferenceSerializer;
 import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
@@ -172,7 +172,7 @@ public class ServiceListener implements MessageListener {
                         OperationPayloadTypes payloadTypes,
                         boolean oneWay,
                         TransactionType transactionType) throws JMSException, JmsBadMessageException {
-        WorkContext workContext = createWorkContext(request, wireHolder.getCallbackUri());
+        WorkContext workContext = setWorkContext(request, wireHolder.getCallbackUri());
         if (PayloadType.XML == payloadTypes.getInputType()) {
             payload = new Object[]{payload};
         }
@@ -322,38 +322,38 @@ public class ServiceListener implements MessageListener {
     }
 
     /**
-     * Creates a WorkContext for the request by deserializing the callframe stack
+     * Sets the WorkContext for the request.
      *
      * @param request     the message received from the JMS transport
      * @param callbackUri if the destination service for the message is bidirectional, the callback URI is the URI of the callback service for the client that
      *                    is wired to it. Otherwise, it is null.
      * @return the work context
-     * @throws JmsBadMessageException if an error is encountered deserializing the callframe
+     * @throws JmsBadMessageException if an error is encountered setting the work context
      */
     @SuppressWarnings({"unchecked"})
-    private WorkContext createWorkContext(Message request, String callbackUri) throws JmsBadMessageException {
+    private WorkContext setWorkContext(Message request, String callbackUri) throws JmsBadMessageException {
         try {
             WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
             String encoded = request.getStringProperty(JmsRuntimeConstants.CONTEXT_HEADER);
             if (encoded == null) {
                 return workContext;
             }
-            List<CallFrame> stack = CallFrameSerializer.deserialize(encoded);
-            workContext.addCallFrames(stack);
-            CallFrame previous = workContext.peekCallFrame();
+            List<CallbackReference> stack = CallbackReferenceSerializer.deserialize(encoded);
+            workContext.addCallbackReferences(stack);
+            CallbackReference previous = workContext.peekCallbackReference();
             if (previous != null) {
-                // Copy correlation information from incoming frame to new frame
+                // Copy correlation information from incoming callbackReference to new callbackReference
                 // Note that the callback URI is set to the callback address of this service so its callback wire can be mapped in the case of a
                 // bidirectional service
                 String id = previous.getCorrelationId();
-                CallFrame frame = new CallFrame(callbackUri, id);
-                stack.add(frame);
+                CallbackReference callbackReference = new CallbackReference(callbackUri, id);
+                stack.add(callbackReference);
             }
             return workContext;
         } catch (JMSException ex) {
-            throw new JmsBadMessageException("Error deserializing callframe", ex);
+            throw new JmsBadMessageException("Error deserialing callback references", ex);
         } catch (IOException ex) {
-            throw new JmsBadMessageException("Error deserializing callframe", ex);
+            throw new JmsBadMessageException("Error deserializing callback references", ex);
         }
     }
 

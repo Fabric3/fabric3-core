@@ -40,8 +40,8 @@ import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
-import org.fabric3.spi.invocation.CallFrame;
-import org.fabric3.spi.invocation.CallFrameSerializer;
+import org.fabric3.spi.invocation.CallbackReference;
+import org.fabric3.spi.invocation.CallbackReferenceSerializer;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.Interceptor;
@@ -128,7 +128,7 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
     }
 
     /**
-     * Creates a WorkContext for the request by deserializing the callframe stack
+     * Creates a WorkContext for the request.
      * <p/>
      * client that is wired to it. Otherwise, it is null.
      *
@@ -136,29 +136,28 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
      * @return the work context
      */
     @SuppressWarnings({"unchecked"})
-    protected WorkContext createWorkContext(byte[] header) {
+    protected WorkContext setWorkContext(byte[] header) {
         try {
             WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
             if (header == null || header.length == 0) {
-                // no callframe found, use a blank one
                 return workContext;
             }
 
-            List<CallFrame> stack = CallFrameSerializer.deserialize(header);
-            workContext.addCallFrames(stack);
-            CallFrame previous = workContext.peekCallFrame();
+            List<CallbackReference> stack = CallbackReferenceSerializer.deserialize(header);
+            workContext.addCallbackReferences(stack);
+            CallbackReference previous = workContext.peekCallbackReference();
             if (previous != null) {
-                // Copy correlation information from incoming frame to new frame
+                // Copy correlation information from incoming callbackReference to new callbackReference
                 // Note that the callback URI is set to the callback address of this service so its callback wire can be mapped in the case of a
                 // bidirectional service
                 String id = previous.getCorrelationId();
-                String callback = previous.getCallbackUri();
-                CallFrame frame = new CallFrame(callback, id);
-                stack.add(frame);
+                String callback = previous.getServiceUri();
+                CallbackReference callbackReference = new CallbackReference(callback, id);
+                stack.add(callbackReference);
             }
             return workContext;
         } catch (IOException e) {
-            throw new ServiceRuntimeException("Error deserializing callframe", e);
+            throw new ServiceRuntimeException("Error deserializing callback references", e);
         }
     }
 

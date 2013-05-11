@@ -41,7 +41,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import org.fabric3.spi.component.InstanceInvocationException;
-import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.CallbackReference;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
@@ -67,10 +67,10 @@ public abstract class AbstractCallbackInvocationHandler<T> implements Invocation
     }
 
     protected Object invoke(InvocationChain chain, Object[] args, WorkContext workContext) throws Throwable {
-        // Pop the call frame as we move back in the request stack. When the invocation is made on the callback target, the same call frame state
-        // will be present as existed when the initial forward request to this proxy's instance was dispatched to. Consequently,
-        // CallFrame#getForwardCorrelaltionId() will return the correlation id for the callback target.
-        CallFrame frame = workContext.popCallFrame();
+        // Pop the call callback reference as we move back in the request stack. When the invocation is made on the callback target,
+        // the same call callback reference state will be present as existed when the initial forward request to this proxy's instance was dispatched to.
+        // Consequently, CallbackReference#getForwardCorrelaltionId() will return the correlation id for the callback target.
+        CallbackReference callbackReference = workContext.popCallbackReference();
 
         Interceptor headInterceptor = chain.getHeadInterceptor();
         assert headInterceptor != null;
@@ -101,8 +101,8 @@ public abstract class AbstractCallbackInvocationHandler<T> implements Invocation
                 return body;
             }
         } finally {
-            // push the call frame for this component instance back onto the stack
-            workContext.addCallFrame(frame);
+            // push the call callbackReference for this component instance back onto the stack
+            workContext.addCallbackReference(callbackReference);
             message.reset();
         }
     }
@@ -110,12 +110,10 @@ public abstract class AbstractCallbackInvocationHandler<T> implements Invocation
     protected Object handleProxyMethod(Method method) throws InstanceInvocationException {
         if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
             return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
-        } else if (method.getDeclaringClass().equals(Object.class)
-                && "equals".equals(method.getName())) {
+        } else if (method.getDeclaringClass().equals(Object.class) && "equals".equals(method.getName())) {
             // TODO implement
             throw new UnsupportedOperationException();
-        } else if (Object.class.equals(method.getDeclaringClass())
-                && "hashCode".equals(method.getName())) {
+        } else if (Object.class.equals(method.getDeclaringClass()) && "hashCode".equals(method.getName())) {
             return hashCode();
             // TODO better hash algorithm
         }

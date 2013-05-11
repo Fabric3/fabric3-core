@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import org.fabric3.spi.invocation.CallbackReference;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
@@ -77,7 +78,6 @@ import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
@@ -287,12 +287,12 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     }
 
     public void send(byte[] message, int index, WorkContext context, ZeroMQMetadata metadata) {
-        CallFrame frame = context.peekCallFrame();
-        if (frame == null) {
-            monitor.error("Callframe not found for callback");
+        CallbackReference callbackReference = context.peekCallbackReference();
+        if (callbackReference == null) {
+            monitor.error("Callback reference not found");
             return;
         }
-        String callback = frame.getCallbackUri();
+        String callback = callbackReference.getServiceUri();
         SenderHolder holder = senders.get(callback);
         if (holder == null) {
             holder = createSender(callback, true, metadata);

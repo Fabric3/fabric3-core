@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.CallbackReference;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 
@@ -99,10 +99,10 @@ public class ExecutorServiceProxy implements ExecutorService {
 
     private PropagatingRunnable createRunnable(Runnable runnable) {
         WorkContext context = WorkContextCache.getThreadWorkContext();
-        List<CallFrame> stack = context.getCallFrameStack();
+        List<CallbackReference> stack = context.getCallbackReferences();
         if (stack != null && !stack.isEmpty()) {
             // clone the callstack to avoid multiple threads seeing changes
-            stack = new ArrayList<CallFrame>(stack);
+            stack = new ArrayList<CallbackReference>(stack);
         }
         Map<String, Object> headers = context.getHeaders();
         if (headers != null && !headers.isEmpty()) {
@@ -115,10 +115,10 @@ public class ExecutorServiceProxy implements ExecutorService {
 
     private <T> PropagatingCallable<T> createCallable(Callable<T> callable) {
         WorkContext context = WorkContextCache.getThreadWorkContext();
-        List<CallFrame> stack = context.getCallFrameStack();
+        List<CallbackReference> stack = context.getCallbackReferences();
         if (stack != null && !stack.isEmpty()) {
             // clone the callstack to avoid multiple threads seeing changes
-            stack = new ArrayList<CallFrame>(stack);
+            stack = new ArrayList<CallbackReference>(stack);
         }
         Map<String, Object> headers = context.getHeaders();
         if (headers != null && !headers.isEmpty()) {

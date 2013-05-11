@@ -38,7 +38,7 @@
 package org.fabric3.implementation.bytecode.proxy.wire;
 
 import org.fabric3.implementation.bytecode.proxy.common.ProxyDispatcher;
-import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.CallbackReference;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
@@ -53,10 +53,10 @@ import org.oasisopen.sca.ServiceUnavailableException;
 public abstract class AbstractCallbackDispatcher implements ProxyDispatcher {
 
     protected Object invoke(InvocationChain chain, Object args, WorkContext workContext) throws Throwable {
-        // Pop the call frame as we move back in the request stack. When the invocation is made on the callback target, the same call frame state
-        // will be present as existed when the initial forward request to this proxy's instance was dispatched to. Consequently,
-        // CallFrame#getForwardCorrelaltionId() will return the correlation id for the callback target.
-        CallFrame frame = workContext.popCallFrame();
+        // Pop the callback reference as we move back in the request stack. When the invocation is made on the callback target, the same call callback reference
+        // state will be present as existed when the initial forward request to this proxy's instance was dispatched to. Consequently,
+        // CallbackReference#getForwardCorrelaltionId() will return the correlation id for the callback target.
+        CallbackReference callbackReference = workContext.popCallbackReference();
 
         Interceptor headInterceptor = chain.getHeadInterceptor();
 
@@ -86,8 +86,8 @@ public abstract class AbstractCallbackDispatcher implements ProxyDispatcher {
             }
         } finally {
             message.reset();
-            // push the call frame for this component instance back onto the stack
-            workContext.addCallFrame(frame);
+            // push the call callbackReference for this component instance back onto the stack
+            workContext.addCallbackReference(callbackReference);
         }
     }
 

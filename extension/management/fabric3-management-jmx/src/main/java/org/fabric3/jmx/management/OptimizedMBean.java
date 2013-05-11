@@ -52,7 +52,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.api.Role;
-import org.fabric3.spi.invocation.CallFrame;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
