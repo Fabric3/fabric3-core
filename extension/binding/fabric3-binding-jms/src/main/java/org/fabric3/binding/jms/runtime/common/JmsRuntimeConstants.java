@@ -16,6 +16,11 @@ public interface JmsRuntimeConstants {
     String FAULT_HEADER = "f3Fault";
 
     /**
+     * Header for storing callback context
+     */
+    String CONTEXT_HEADER = "f3Context";
+
+    /**
      * No caching of JMS objects
      */
     int CACHE_NONE = 0;

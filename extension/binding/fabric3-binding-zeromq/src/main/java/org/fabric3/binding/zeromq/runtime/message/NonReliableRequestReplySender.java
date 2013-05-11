@@ -30,9 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,23 +46,23 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-import org.oasisopen.sca.ServiceUnavailableException;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Socket;
-
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.CallFrameSerializer;
 import org.fabric3.spi.invocation.WorkContext;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceUnavailableException;
+import org.zeromq.ZMQ;
+import org.zeromq.ZMQ.Socket;
 
 /**
  * A {@link RequestReplySender} that provides no qualities of service.
  * <p/>
- * Since ZeroMQ requires the creating socket thread to dispatch messages, a looping thread is used for sending messages. Messages are provided to the
- * thread via a queue.
+ * Since ZeroMQ requires the creating socket thread to dispatch messages, a looping thread is used for sending messages. Messages are provided to the thread via
+ * a queue.
  */
 public class NonReliableRequestReplySender extends AbstractStatistics implements RequestReplySender, Thread.UncaughtExceptionHandler {
     private static final Callable<byte[]> CALLABLE = new Callable<byte[]>() {
@@ -157,14 +155,6 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
         thread.start();
     }
 
-//    private byte[] generateMessageId() {
-//        byte[] id = new byte[epoch.length + 8];
-//        ByteBuffer buffer = ByteBuffer.wrap(id);
-//        buffer.put(epoch);
-//        buffer.putLong(epoch.length, counter.getAndIncrement());
-//        return id;
-//    }
-
     /**
      * Serializes the work context.
      *
@@ -174,11 +164,10 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
      */
     private byte[] serialize(WorkContext workContext) throws IOException {
         List<CallFrame> stack = workContext.getCallFrameStack();
-        ByteArrayOutputStream bas = new ByteArrayOutputStream();
-        ObjectOutputStream stream = new ObjectOutputStream(bas);
-        stream.writeObject(stack);
-        stream.close();
-        return bas.toByteArray();
+        if (stack == null || stack.isEmpty()) {
+            return null;
+        }
+        return CallFrameSerializer.serializeToBytes(stack);
     }
 
     /**
@@ -224,17 +213,19 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
                     for (Request request : drained) {
                         Socket socket = multiplexer.get();
 
-                        // send the work context as a header
-                        socket.send(request.getWorkContext(), ZMQ.SNDMORE);
+                        socket.send(request.getPayload(), ZMQ.SNDMORE);
 
                         // serialize the operation index
                         int index = request.getIndex();
-                        if (index >= 0) {
-                            byte[] serializedIndex = ByteBuffer.allocate(4).putInt(index).array();
-                            socket.send(serializedIndex, ZMQ.SNDMORE);
-                        }
+                        byte[] serializedIndex = ByteBuffer.allocate(4).putInt(index).array();
 
-                        socket.send(request.getPayload(), 0);
+                        byte[] context = request.getWorkContext();
+                        if (context != null && context.length > 0) {
+                            socket.send(serializedIndex, ZMQ.SNDMORE);
+                            socket.send(context, 0);
+                        } else {
+                            socket.send(serializedIndex, 0);
+                        }
 
                         ZMQ.Poller poller = pollers.get(socket);
                         long val = poller.poll(pollTimeout);

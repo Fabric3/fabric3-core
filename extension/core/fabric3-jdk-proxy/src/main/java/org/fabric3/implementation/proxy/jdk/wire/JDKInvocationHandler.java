@@ -159,7 +159,6 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
      * @param workContext the current work context
      */
     private void initializeCallFrame(WorkContext workContext) {
-        // the wire is bidrectional so a callframe is required
         CallFrame frame = new CallFrame(callbackUri, null);
         workContext.addCallFrame(frame);
     }

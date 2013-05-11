@@ -58,7 +58,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -72,10 +71,10 @@ import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.CallFrameSerializer;
 import org.fabric3.spi.invocation.MessageCache;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.util.Base64;
 import org.fabric3.spi.wire.Interceptor;
 import org.fabric3.spi.xml.XMLFactory;
 
@@ -335,15 +334,12 @@ public class ServiceListener implements MessageListener {
     private WorkContext createWorkContext(Message request, String callbackUri) throws JmsBadMessageException {
         try {
             WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
-            String encoded = request.getStringProperty("f3Context");
+            String encoded = request.getStringProperty(JmsRuntimeConstants.CONTEXT_HEADER);
             if (encoded == null) {
                 return workContext;
             }
-            ByteArrayInputStream bas = new ByteArrayInputStream(Base64.decode(encoded));
-            ObjectInputStream stream = new ObjectInputStream(bas);
-            List<CallFrame> stack = (List<CallFrame>) stream.readObject();
+            List<CallFrame> stack = CallFrameSerializer.deserialize(encoded);
             workContext.addCallFrames(stack);
-            stream.close();
             CallFrame previous = workContext.peekCallFrame();
             if (previous != null) {
                 // Copy correlation information from incoming frame to new frame
@@ -357,8 +353,6 @@ public class ServiceListener implements MessageListener {
         } catch (JMSException ex) {
             throw new JmsBadMessageException("Error deserializing callframe", ex);
         } catch (IOException ex) {
-            throw new JmsBadMessageException("Error deserializing callframe", ex);
-        } catch (ClassNotFoundException ex) {
             throw new JmsBadMessageException("Error deserializing callframe", ex);
         }
     }

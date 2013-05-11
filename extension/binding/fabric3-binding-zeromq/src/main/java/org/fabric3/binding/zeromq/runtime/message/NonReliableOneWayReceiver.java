@@ -81,21 +81,29 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
 
     @Override
     protected boolean invoke(ZMQ.Socket socket) {
-        final byte[] contextHeader = socket.recv(0);
-        final byte[] methodNumber = socket.recv(0);
-        final byte[] body = socket.recv(0);
-
+        final byte[][] frames = new byte[3][];
+        int i = 1;
+        frames[0] = socket.recv(0);
+        while (socket.hasReceiveMore()) {
+            if (i > 2) {
+                monitor.error("Invalid message: received more than three frames");
+                return false;
+            }
+            frames[i] = socket.recv(0);
+            i++;
+        }
         executorService.submit(new Runnable() {
             public void run() {
-                int methodIndex = ByteBuffer.wrap(methodNumber).getInt();
-                Interceptor interceptor = interceptors[methodIndex];
-
-                WorkContext context = createWorkContext(contextHeader);
                 Message request = MessageCache.getAndResetMessage();
-
                 try {
+                    request.setBody(frames[0]);
+                    int methodIndex = ByteBuffer.wrap(frames[1]).getInt();
+                    WorkContext context = createWorkContext(frames[2]);;
+
                     request.setWorkContext(context);
-                    request.setBody(body);
+
+                    Interceptor interceptor = interceptors[methodIndex];
+
                     interceptor.invoke(request);
                 } finally {
                     request.reset();

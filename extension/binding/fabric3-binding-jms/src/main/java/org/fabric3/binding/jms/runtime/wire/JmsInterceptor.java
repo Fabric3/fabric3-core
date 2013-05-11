@@ -58,9 +58,7 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -72,9 +70,9 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.CallFrameSerializer;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageImpl;
-import org.fabric3.spi.util.Base64;
 import org.fabric3.spi.wire.Interceptor;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
@@ -359,14 +357,11 @@ public class JmsInterceptor implements Interceptor {
      * @throws IOException  if an error occurs serializing the routing information
      */
     private void setRoutingHeaders(Message message, javax.jms.Message jmsMessage) throws JMSException, IOException {
-        // serialize the callframes
         List<CallFrame> stack = message.getWorkContext().getCallFrameStack();
-        ByteArrayOutputStream bas = new ByteArrayOutputStream();
-        ObjectOutputStream stream = new ObjectOutputStream(bas);
-        stream.writeObject(stack);
-        stream.close();
-        String encoded = Base64.encode(bas.toByteArray());
-        jmsMessage.setStringProperty("f3Context", encoded);
+        if (stack == null || stack.isEmpty()) {
+            return;
+        }
+        jmsMessage.setObjectProperty(JmsRuntimeConstants.CONTEXT_HEADER, CallFrameSerializer.serializeToString(stack));
     }
 
     private void applyHandlers(Message message, javax.jms.Message jmsMessage) {

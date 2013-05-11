@@ -87,7 +87,6 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
         queue = new LinkedBlockingQueue<Response>();
     }
 
-    @Override
     protected boolean invoke(Socket socket) {
         // read the message
         final byte[] clientId = socket.recv(ZMQ.NOBLOCK);
@@ -95,18 +94,29 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
             // nothing was received, just return
             return false;
         }
-        final byte[] contextHeader = socket.recv(ZMQ.NOBLOCK);
-        final byte[] methodNumber = socket.recv(ZMQ.NOBLOCK);
-        final byte[] body = socket.recv(ZMQ.NOBLOCK);
+        final byte[][] frames = new byte[3][];
+        int i = 1;
+        frames[0] = socket.recv(0);
+        while (socket.hasReceiveMore()) {
+            if (i > 2) {
+                monitor.error("Invalid message: received more than three frames");
+                return false;
+            }
+            frames[i] = socket.recv(0);
+            i++;
+        }
         executorService.execute(new Runnable() {
             public void run() {
-                WorkContext context = createWorkContext(contextHeader);
                 Message request = MessageCache.getAndResetMessage();
                 try {
+
+                    request.setBody(frames[0]);
+                    int methodIndex = ByteBuffer.wrap(frames[1]).getInt();
+                    WorkContext context = createWorkContext(frames[2]);
+
                     request.setWorkContext(context);
-                    int methodIndex = ByteBuffer.wrap(methodNumber).getInt();
+
                     Interceptor interceptor = interceptors[methodIndex];
-                    request.setBody(body);
 
                     // invoke the service
                     Message response = interceptor.invoke(request);
@@ -124,7 +134,7 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
                     }
                 } finally {
                     request.reset();
-                    context.reset();
+                    //                    context.reset();
                 }
 
             }

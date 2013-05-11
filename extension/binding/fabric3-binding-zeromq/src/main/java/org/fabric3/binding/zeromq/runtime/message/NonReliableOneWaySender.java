@@ -30,9 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,22 +38,24 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.oasisopen.sca.ServiceRuntimeException;
-import org.zeromq.ZMQ;
-
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.CallFrameSerializer;
 import org.fabric3.spi.invocation.WorkContext;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.zeromq.ZMQ;
 
 /**
  *
  */
 @Management
 public class NonReliableOneWaySender extends AbstractStatistics implements OneWaySender, Thread.UncaughtExceptionHandler {
+    private static final byte[] EMPTY_BYTES = new byte[0];
+
     private String id;
     private List<SocketAddress> addresses;
     private MessagingMonitor monitor;
@@ -137,13 +137,12 @@ public class NonReliableOneWaySender extends AbstractStatistics implements OneWa
      */
     private byte[] serialize(WorkContext workContext) throws IOException {
         List<CallFrame> stack = workContext.getCallFrameStack();
-        ByteArrayOutputStream bas = new ByteArrayOutputStream();
-        ObjectOutputStream stream = new ObjectOutputStream(bas);
-        stream.writeObject(stack);
-        stream.close();
-        return bas.toByteArray();
-    }
+        if (stack == null || stack.isEmpty()) {
+            return null;
+        }
 
+        return CallFrameSerializer.serializeToBytes(stack);
+    }
 
     /**
      * Dispatches requests to the ZeroMQ socket.
@@ -190,17 +189,23 @@ public class NonReliableOneWaySender extends AbstractStatistics implements OneWa
                     for (Request request : drained) {
                         // serialize the work context as a header
                         ZMQ.Socket socket = multiplexer.get();
-                        socket.send(request.getWorkContext(), ZMQ.SNDMORE);
+
+                        // serialize the request payload
+                        socket.send(request.getPayload(), ZMQ.SNDMORE);
 
                         // serialize the operation index
                         int index = request.getIndex();
-                        if (index >= 0) {
-                            byte[] serializedIndex = ByteBuffer.allocate(4).putInt(index).array();
+                        byte[] context = request.getWorkContext();
+
+                        byte[] serializedIndex = ByteBuffer.allocate(4).putInt(index).array();
+
+                        if (context != null && context.length > 0) {
                             socket.send(serializedIndex, ZMQ.SNDMORE);
+                            socket.send(context, 0);
+                        } else {
+                            socket.send(serializedIndex, 0);
                         }
 
-                        // serialize the request payload
-                        socket.send(request.getPayload(), 0);
                         messagesProcessed.incrementAndGet();
                     }
                 } catch (RuntimeException e) {
@@ -249,6 +254,5 @@ public class NonReliableOneWaySender extends AbstractStatistics implements OneWa
         }
 
     }
-
 
 }

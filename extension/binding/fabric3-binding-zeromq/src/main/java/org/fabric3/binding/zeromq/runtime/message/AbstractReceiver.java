@@ -30,9 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,6 +41,7 @@ import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.invocation.CallFrame;
+import org.fabric3.spi.invocation.CallFrameSerializer;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.fabric3.spi.wire.Interceptor;
@@ -62,7 +61,6 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
 
     protected Interceptor[] interceptors;
     protected MessagingMonitor monitor;
-
 
     protected Receiver receiver;
     protected long pollTimeout;
@@ -141,15 +139,13 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
     protected WorkContext createWorkContext(byte[] header) {
         try {
             WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
-            if (header == null) {
+            if (header == null || header.length == 0) {
                 // no callframe found, use a blank one
                 return workContext;
             }
-            ByteArrayInputStream bas = new ByteArrayInputStream(header);
-            ObjectInputStream stream = new ObjectInputStream(bas);
-            List<CallFrame> stack = (List<CallFrame>) stream.readObject();
+
+            List<CallFrame> stack = CallFrameSerializer.deserialize(header);
             workContext.addCallFrames(stack);
-            stream.close();
             CallFrame previous = workContext.peekCallFrame();
             if (previous != null) {
                 // Copy correlation information from incoming frame to new frame
@@ -162,8 +158,6 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
             }
             return workContext;
         } catch (IOException e) {
-            throw new ServiceRuntimeException("Error deserializing callframe", e);
-        } catch (ClassNotFoundException e) {
             throw new ServiceRuntimeException("Error deserializing callframe", e);
         }
     }
@@ -181,9 +175,8 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
         private AtomicBoolean active = new AtomicBoolean(true);
 
         /**
-         * Signals to stops polling and close the receiver socket, if one is open. Note that the socket cannot be closed in this method, as it will be
-         * called on a different thread than {@link #run()}, which opened the socket. ZeroMQ requires a socket only be accessed by the thread that
-         * created it.
+         * Signals to stops polling and close the receiver socket, if one is open. Note that the socket cannot be closed in this method, as it will be called on
+         * a different thread than {@link #run()}, which opened the socket. ZeroMQ requires a socket only be accessed by the thread that created it.
          */
         public synchronized void stop() {
             active.set(false);
@@ -241,6 +234,5 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
         }
 
     }
-
 
 }
