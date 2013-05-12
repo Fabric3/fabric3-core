@@ -104,10 +104,10 @@ public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGe
 
     @SuppressWarnings({"unchecked"})
     private void generateChannelDefinition(LogicalChannel channel, List<PhysicalChannelDefinition> definitions) throws GenerationException {
-        PhysicalChannelDefinition definition = channelGenerator.generate(channel);
 
         if (!channel.getBindings().isEmpty()) {
             // generate binding information
+            PhysicalChannelDefinition definition;
             LogicalBinding<?> binding = channel.getBinding();
             if (!(binding.getDefinition() instanceof SCABinding)) {
                 // avoid generating SCABinding
@@ -117,11 +117,16 @@ public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGe
                 if (bindingDefinition == null) {
                     return;
                 }
+                definition = channelGenerator.generate(channel);
                 definition.setBindingDefinition(bindingDefinition);
+            } else {
+                definition = channelGenerator.generate(channel);
             }
+            definitions.add(definition);
+        } else {
+            PhysicalChannelDefinition definition = channelGenerator.generate(channel);
+            definitions.add(definition);
         }
-
-        definitions.add(definition);
     }
 
     @SuppressWarnings("unchecked")

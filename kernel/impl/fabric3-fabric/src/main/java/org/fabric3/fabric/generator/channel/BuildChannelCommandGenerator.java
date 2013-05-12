@@ -97,23 +97,26 @@ public class BuildChannelCommandGenerator implements CommandGenerator {
         List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
         for (LogicalChannel channel : composite.getChannels()) {
             if (channel.getState() == LogicalState.NEW || !incremental) {
-                PhysicalChannelDefinition definition = channelGenerator.generate(channel);
                 if (channel.isBound()) {
-                    PhysicalChannelBindingDefinition bindingDefinition = generateBinding(channel, definition);
+                    PhysicalChannelBindingDefinition bindingDefinition = generateBinding(channel);
                     // if the channel is bound and no binding definition was generated, the channel may be optimized away
                     if (bindingDefinition == null) {
                         continue;
                     }
+                    PhysicalChannelDefinition definition = channelGenerator.generate(channel);
                     definition.setBindingDefinition(bindingDefinition);
+                    definitions.add(definition);
+                } else {
+                    PhysicalChannelDefinition definition = channelGenerator.generate(channel);
+                    definitions.add(definition);
                 }
-                definitions.add(definition);
             }
         }
         return definitions;
     }
 
     @SuppressWarnings({"unchecked"})
-    private PhysicalChannelBindingDefinition generateBinding(LogicalChannel channel, PhysicalChannelDefinition definition) throws GenerationException {
+    private PhysicalChannelBindingDefinition generateBinding(LogicalChannel channel) throws GenerationException {
         LogicalBinding<?> binding = channel.getBinding();
         ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
         return bindingGenerator.generateChannelBinding(binding);
