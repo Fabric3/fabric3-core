@@ -47,7 +47,6 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
  */
 public class WireHolder {
     private List<InvocationChainHolder> chains;
-    private String callbackUri;
     private CorrelationScheme correlationScheme;
     private TransactionType transactionType;
 
@@ -55,19 +54,13 @@ public class WireHolder {
      * Constructor.
      *
      * @param chains            InvocationChains contained by the wire
-     * @param callbackUri       the callback URI or null if the wire is unidirectional
      * @param correlationScheme the correlation scheme if the wire uses request-response, otherwise null
      * @param transactionType   the transaction type if the wire uses request-response, otherwise null
      */
-    public WireHolder(List<InvocationChainHolder> chains, String callbackUri, CorrelationScheme correlationScheme, TransactionType transactionType) {
+    public WireHolder(List<InvocationChainHolder> chains, CorrelationScheme correlationScheme, TransactionType transactionType) {
         this.chains = chains;
-        this.callbackUri = callbackUri;
         this.correlationScheme = correlationScheme;
         this.transactionType = transactionType;
-    }
-
-    public String getCallbackUri() {
-        return callbackUri;
     }
 
     public CorrelationScheme getCorrelationScheme() {

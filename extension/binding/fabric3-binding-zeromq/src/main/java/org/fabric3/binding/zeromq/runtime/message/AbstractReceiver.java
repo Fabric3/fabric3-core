@@ -145,16 +145,6 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
 
             List<CallbackReference> stack = CallbackReferenceSerializer.deserialize(header);
             workContext.addCallbackReferences(stack);
-            CallbackReference previous = workContext.peekCallbackReference();
-            if (previous != null) {
-                // Copy correlation information from incoming callbackReference to new callbackReference
-                // Note that the callback URI is set to the callback address of this service so its callback wire can be mapped in the case of a
-                // bidirectional service
-                String id = previous.getCorrelationId();
-                String callback = previous.getServiceUri();
-                CallbackReference callbackReference = new CallbackReference(callback, id);
-                stack.add(callbackReference);
-            }
             return workContext;
         } catch (IOException e) {
             throw new ServiceRuntimeException("Error deserializing callback references", e);

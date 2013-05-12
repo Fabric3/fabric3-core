@@ -172,7 +172,7 @@ public class ServiceListener implements MessageListener {
                         OperationPayloadTypes payloadTypes,
                         boolean oneWay,
                         TransactionType transactionType) throws JMSException, JmsBadMessageException {
-        WorkContext workContext = setWorkContext(request, wireHolder.getCallbackUri());
+        WorkContext workContext = setWorkContext(request);
         if (PayloadType.XML == payloadTypes.getInputType()) {
             payload = new Object[]{payload};
         }
@@ -324,14 +324,13 @@ public class ServiceListener implements MessageListener {
     /**
      * Sets the WorkContext for the request.
      *
+     *
      * @param request     the message received from the JMS transport
-     * @param callbackUri if the destination service for the message is bidirectional, the callback URI is the URI of the callback service for the client that
-     *                    is wired to it. Otherwise, it is null.
      * @return the work context
      * @throws JmsBadMessageException if an error is encountered setting the work context
      */
     @SuppressWarnings({"unchecked"})
-    private WorkContext setWorkContext(Message request, String callbackUri) throws JmsBadMessageException {
+    private WorkContext setWorkContext(Message request) throws JmsBadMessageException {
         try {
             WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
             String encoded = request.getStringProperty(JmsRuntimeConstants.CONTEXT_HEADER);
@@ -340,15 +339,6 @@ public class ServiceListener implements MessageListener {
             }
             List<CallbackReference> stack = CallbackReferenceSerializer.deserialize(encoded);
             workContext.addCallbackReferences(stack);
-            CallbackReference previous = workContext.peekCallbackReference();
-            if (previous != null) {
-                // Copy correlation information from incoming callbackReference to new callbackReference
-                // Note that the callback URI is set to the callback address of this service so its callback wire can be mapped in the case of a
-                // bidirectional service
-                String id = previous.getCorrelationId();
-                CallbackReference callbackReference = new CallbackReference(callbackUri, id);
-                stack.add(callbackReference);
-            }
             return workContext;
         } catch (JMSException ex) {
             throw new JmsBadMessageException("Error deserialing callback references", ex);
