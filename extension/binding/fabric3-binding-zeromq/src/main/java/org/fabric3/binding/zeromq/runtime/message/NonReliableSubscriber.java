@@ -56,13 +56,12 @@ import org.fabric3.spi.channel.EventStreamHandler;
 /**
  * Implements a basic SUB server with no qualities of service.
  * <p/>
- * Since ZeroMQ requires the creating socket thread to receive messages, a polling thread is used for connecting to one or more publishers and
- * receiving messages. The subscriber listens for address updates (e.g. a publisher coming online or going away). Since ZeroMQ does not implement
- * disconnect semantics on a socket, if an update is received the original socket will be closed and a new one created to connect to the update set of
- * addresses.
+ * Since ZeroMQ requires the creating socket thread to receive messages, a polling thread is used for connecting to one or more publishers and receiving
+ * messages. The subscriber listens for address updates (e.g. a publisher coming online or going away). Since ZeroMQ does not implement disconnect semantics on
+ * a socket, if an update is received the original socket will be closed and a new one created to connect to the update set of addresses.
  */
 @Management
-public class NonReliableSubscriber extends AbstractStatistics implements Subscriber, AddressListener, Thread.UncaughtExceptionHandler {
+public class NonReliableSubscriber implements Subscriber, AddressListener, Thread.UncaughtExceptionHandler {
     private static final byte[] EMPTY_BYTES = new byte[0];
 
     private String id;
@@ -135,7 +134,6 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
         return list;
     }
 
-
     public void addConnection(URI subscriberId, ChannelConnection connection) {
         fanOutHandler.addConnection(subscriberId, connection);
         connectionCount.incrementAndGet();
@@ -186,7 +184,6 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
         thread.start();
     }
 
-
     /**
      * The message receiver. Responsible for creating socket connections to publishers and polling for messages.
      */
@@ -212,7 +209,6 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
 
         public void run() {
             try {
-                startStatistics();
                 while (active.get()) {
                     reconnect();
                     long val = poller.poll(pollTimeout);
@@ -237,10 +233,8 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
                         } else {
                             handler.handle(frames);
                         }
-                        messagesProcessed.incrementAndGet();
                     }
                 }
-                startTime = 0;
                 closeSocket();
             } catch (RuntimeException e) {
                 // exception, make sure the thread is rescheduled
@@ -281,6 +275,5 @@ public class NonReliableSubscriber extends AbstractStatistics implements Subscri
         }
 
     }
-
 
 }

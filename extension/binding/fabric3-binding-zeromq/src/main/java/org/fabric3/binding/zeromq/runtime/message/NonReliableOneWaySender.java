@@ -53,8 +53,7 @@ import org.zeromq.ZMQ;
  *
  */
 @Management
-public class NonReliableOneWaySender extends AbstractStatistics implements OneWaySender, Thread.UncaughtExceptionHandler {
-    private static final byte[] EMPTY_BYTES = new byte[0];
+public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExceptionHandler {
 
     private String id;
     private List<SocketAddress> addresses;
@@ -166,8 +165,6 @@ public class NonReliableOneWaySender extends AbstractStatistics implements OneWa
         }
 
         public void run() {
-            startStatistics();
-
             while (active.get()) {
                 try {
                     reconnect();
@@ -205,8 +202,6 @@ public class NonReliableOneWaySender extends AbstractStatistics implements OneWa
                         } else {
                             socket.send(serializedIndex, 0);
                         }
-
-                        messagesProcessed.incrementAndGet();
                     }
                 } catch (RuntimeException e) {
                     // exception, make sure the thread is rescheduled

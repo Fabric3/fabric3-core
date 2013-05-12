@@ -64,7 +64,7 @@ import org.zeromq.ZMQ.Socket;
  * Since ZeroMQ requires the creating socket thread to dispatch messages, a looping thread is used for sending messages. Messages are provided to the thread via
  * a queue.
  */
-public class NonReliableRequestReplySender extends AbstractStatistics implements RequestReplySender, Thread.UncaughtExceptionHandler {
+public class NonReliableRequestReplySender implements RequestReplySender, Thread.UncaughtExceptionHandler {
     private static final Callable<byte[]> CALLABLE = new Callable<byte[]>() {
         public byte[] call() throws Exception {
             return null;
@@ -192,7 +192,6 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
         }
 
         public void run() {
-            startStatistics();
             while (active.get()) {
                 try {
                     reconnect();
@@ -238,7 +237,6 @@ public class NonReliableRequestReplySender extends AbstractStatistics implements
                         }
                         byte[] response = socket.recv(0);
                         request.set(response);
-                        messagesProcessed.incrementAndGet();
                         request.run();
                     }
                 } catch (RuntimeException e) {

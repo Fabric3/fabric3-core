@@ -53,7 +53,7 @@ import org.zeromq.ZMQ.Socket;
 /**
  *
  */
-public abstract class AbstractReceiver extends AbstractStatistics implements Receiver, Thread.UncaughtExceptionHandler {
+public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExceptionHandler {
 
     protected ContextManager manager;
     protected SocketAddress address;
@@ -174,7 +174,6 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
         public void run() {
             try {
                 bind();
-                startStatistics();
                 while (active.get()) {
                     if (poller == null) {
                         // the socket or poller could not be created, abort
@@ -187,7 +186,6 @@ public abstract class AbstractReceiver extends AbstractStatistics implements Rec
                             continue;
                         }
                         response(socket);
-                        messagesProcessed.incrementAndGet();
                     }
                 }
                 // the socket must be closed here on this thread!

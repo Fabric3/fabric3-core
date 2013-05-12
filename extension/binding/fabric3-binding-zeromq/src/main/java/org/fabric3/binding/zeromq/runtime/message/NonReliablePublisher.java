@@ -37,9 +37,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Socket;
-
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.management.OperationType;
@@ -48,6 +45,8 @@ import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
+import org.zeromq.ZMQ;
+import org.zeromq.ZMQ.Socket;
 
 /**
  * Implements a basic PUB client with no qualities of service.
@@ -56,7 +55,7 @@ import org.fabric3.spi.host.Port;
  * the thread via a queue.
  */
 @Management
-public class NonReliablePublisher extends AbstractStatistics implements Publisher, Thread.UncaughtExceptionHandler {
+public class NonReliablePublisher implements Publisher, Thread.UncaughtExceptionHandler {
     private ContextManager manager;
     private SocketAddress address;
     private long pollTimeout;
@@ -142,8 +141,6 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
             address.getPort().bind(Port.TYPE.TCP);
             socket.bind(address.toProtocolString());
 
-            startStatistics();
-
             while (active.get()) {
                 try {
 
@@ -172,7 +169,6 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
                             monitor.error("Unknown object type:" + object.getClass().getName());
                         }
                     }
-                    messagesProcessed.incrementAndGet();
                 } catch (RuntimeException e) {
                     // exception, make sure the thread is rescheduled
                     manager.release(id);
@@ -183,7 +179,6 @@ public class NonReliablePublisher extends AbstractStatistics implements Publishe
                 }
 
             }
-            startTime = 0;
             if (socket != null) {
                 try {
                     socket.close();
