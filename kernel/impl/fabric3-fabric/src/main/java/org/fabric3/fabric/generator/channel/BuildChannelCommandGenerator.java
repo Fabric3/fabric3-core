@@ -98,7 +98,14 @@ public class BuildChannelCommandGenerator implements CommandGenerator {
         for (LogicalChannel channel : composite.getChannels()) {
             if (channel.getState() == LogicalState.NEW || !incremental) {
                 PhysicalChannelDefinition definition = channelGenerator.generate(channel);
-                generateBinding(channel, definition);
+                if (channel.isBound()) {
+                    PhysicalChannelBindingDefinition bindingDefinition = generateBinding(channel, definition);
+                    // if the channel is bound and no binding definition was generated, the channel may be optimized away
+                    if (bindingDefinition == null) {
+                        continue;
+                    }
+                    definition.setBindingDefinition(bindingDefinition);
+                }
                 definitions.add(definition);
             }
         }
@@ -106,14 +113,10 @@ public class BuildChannelCommandGenerator implements CommandGenerator {
     }
 
     @SuppressWarnings({"unchecked"})
-    private void generateBinding(LogicalChannel channel, PhysicalChannelDefinition definition) throws GenerationException {
-        if (channel.isBound()) {
-            // if the channel is configured with a binding, generate provisioning metadata for it
-            LogicalBinding<?> binding = channel.getBinding();
-            ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
-            PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding);
-            definition.setBindingDefinition(bindingDefinition);
-        }
+    private PhysicalChannelBindingDefinition generateBinding(LogicalChannel channel, PhysicalChannelDefinition definition) throws GenerationException {
+        LogicalBinding<?> binding = channel.getBinding();
+        ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
+        return bindingGenerator.generateChannelBinding(binding);
     }
 
     @SuppressWarnings("unchecked")

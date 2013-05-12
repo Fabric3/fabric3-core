@@ -113,6 +113,10 @@ public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGe
                 // avoid generating SCABinding
                 ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
                 PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding);
+                // if the channel is bound and no binding definition was generated, the channel may be optimized away
+                if (bindingDefinition == null) {
+                    return;
+                }
                 definition.setBindingDefinition(bindingDefinition);
             }
         }
