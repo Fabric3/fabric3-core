@@ -37,8 +37,8 @@
 */
 package org.fabric3.fabric.generator.wire;
 
-import java.util.List;
 import javax.xml.namespace.QName;
+import java.util.List;
 
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
@@ -49,8 +49,8 @@ import org.fabric3.spi.model.type.xsd.XSDComplexType;
 import org.fabric3.spi.model.type.xsd.XSDType;
 
 /**
- * Default implementation of the OperationResolver that resolves using the XML Schema type of the input parameters. Output parameters and faults are
- * not matched.
+ * Default implementation of the OperationResolver that resolves using the XML Schema type of the input parameters. Output parameters and faults are not
+ * matched.
  */
 public class OperationResolverImpl implements OperationResolver {
 
@@ -59,10 +59,8 @@ public class OperationResolverImpl implements OperationResolver {
         for (LogicalOperation target : targets) {
             Operation targetDefinition = target.getDefinition();
 
-
             // match on actual or mapped WSDL name
-            if (sourceDefinition.getName().equals(targetDefinition.getName())
-                    || sourceDefinition.getWsdlName().equals(targetDefinition.getWsdlName())) {
+            if (sourceDefinition.getName().equals(targetDefinition.getName()) || sourceDefinition.getWsdlName().equals(targetDefinition.getWsdlName())) {
                 List<DataType<?>> sourceInputTypes = sourceDefinition.getInputTypes();
                 List<DataType<?>> targetInputTypes = targetDefinition.getInputTypes();
                 DataType<?> sourceOutputType = sourceDefinition.getOutputType();
@@ -95,12 +93,13 @@ public class OperationResolverImpl implements OperationResolver {
                 }
             }
         }
-        throw new OperationNotFoundException("Target operation not found for: " + sourceDefinition.getName());
+        String sourceComponent = source.getParent().getParent().getUri().toString();
+        throw new OperationNotFoundException("Target operation not found for " + sourceDefinition.getName() + " on source component " + sourceComponent);
     }
 
     /**
-     * Attempts to match a XSD sequence against another type. This is triggered by JAXB when a sequence containing a single simple type is mapped to a
-     * single Java type as in:
+     * Attempts to match a XSD sequence against another type. This is triggered by JAXB when a sequence containing a single simple type is mapped to a single
+     * Java type as in:
      * <p/>
      * <pre>
      * &lt;xs:complexType name="chair_kind"&gt;
