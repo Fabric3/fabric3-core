@@ -97,6 +97,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
 
         ZMQ.Socket socket = EasyMock.createMock(ZMQ.Socket.class);
         socket.setLinger(0);
+        socket.setHWM(1000);
         socket.subscribe(EasyMock.isA(byte[].class));
         socket.connect(EasyMock.eq(ADDRESS.toProtocolString()));
         EasyMock.expect(socket.recv(0)).andStubAnswer(new IAnswer<byte[]>() {
@@ -302,6 +303,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
     private ZMQ.Socket createSocket(SocketAddress address) {
         ZMQ.Socket socket = EasyMock.createMock(ZMQ.Socket.class);
         socket.setLinger(0);
+        socket.setHWM(1000);
         socket.subscribe(EasyMock.isA(byte[].class));
         socket.connect(EasyMock.eq(address.toProtocolString()));
         EasyMock.expect(socket.recv(0)).andStubAnswer(new IAnswer<byte[]>() {

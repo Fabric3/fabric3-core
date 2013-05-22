@@ -52,6 +52,8 @@ public final class SocketHelper {
         socket.setLinger(0);
         if (metadata.getHighWater() > -1) {
             socket.setHWM(metadata.getHighWater());
+        } else {
+            socket.setHWM(1000);
         }
         if (metadata.getMulticastRate() > -1) {
             socket.setRate(metadata.getMulticastRate());

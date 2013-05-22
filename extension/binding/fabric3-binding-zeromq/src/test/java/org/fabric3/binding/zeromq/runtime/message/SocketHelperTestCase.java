@@ -45,6 +45,7 @@ public final class SocketHelperTestCase extends TestCase {
     private ZeroMQMetadata metadata;
 
     public void testSetNone() throws Exception {
+        socket.setHWM(1000);
         EasyMock.replay(socket);
 
         SocketHelper.configure(socket, metadata);
@@ -63,6 +64,7 @@ public final class SocketHelperTestCase extends TestCase {
     public void testMulticastRate() throws Exception {
         metadata.setMulticastRate(1);
         socket.setRate(1);
+        socket.setHWM(1000);
         EasyMock.replay(socket);
 
         SocketHelper.configure(socket, metadata);
@@ -71,6 +73,7 @@ public final class SocketHelperTestCase extends TestCase {
 
     public void testMulticastRecovery() throws Exception {
         metadata.setMulticastRecovery(1);
+        socket.setHWM(1000);
         socket.setRecoveryInterval(1);
         EasyMock.replay(socket);
 
@@ -80,6 +83,7 @@ public final class SocketHelperTestCase extends TestCase {
 
     public void testReceiveBuffer() throws Exception {
         metadata.setReceiveBuffer(1);
+        socket.setHWM(1000);
         socket.setReceiveBufferSize(1);
         EasyMock.replay(socket);
 
@@ -89,6 +93,7 @@ public final class SocketHelperTestCase extends TestCase {
 
     public void testSendBuffer() throws Exception {
         metadata.setSendBuffer(1);
+        socket.setHWM(1000);
         socket.setSendBufferSize(1);
         EasyMock.replay(socket);
 

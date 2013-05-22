@@ -74,6 +74,7 @@ public class NonReliablePublisherTestCase extends TestCase {
 
         ZMQ.Socket socket = EasyMock.createMock(ZMQ.Socket.class);
         socket.setLinger(0);
+        socket.setHWM(1000);
         socket.bind(ADDRESS.toProtocolString());
         EasyMock.expect(socket.send(message, 0)).andStubAnswer(new IAnswer<Boolean>() {
 

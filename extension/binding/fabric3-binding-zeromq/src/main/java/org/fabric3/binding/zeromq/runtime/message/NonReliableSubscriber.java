@@ -178,7 +178,6 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
     }
 
     private void schedule() {
-        // TODO use runtime thread pool
         Thread thread = new Thread(receiver);
         thread.setUncaughtExceptionHandler(this);
         thread.start();
