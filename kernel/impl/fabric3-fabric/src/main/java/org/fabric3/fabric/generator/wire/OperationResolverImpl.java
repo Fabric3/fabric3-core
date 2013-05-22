@@ -44,6 +44,7 @@ import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.spi.contract.OperationNotFoundException;
 import org.fabric3.spi.contract.OperationResolver;
+import org.fabric3.spi.model.instance.LogicalAttachPoint;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.type.xsd.XSDComplexType;
 import org.fabric3.spi.model.type.xsd.XSDType;
@@ -93,8 +94,13 @@ public class OperationResolverImpl implements OperationResolver {
                 }
             }
         }
-        String sourceComponent = source.getParent().getParent().getUri().toString();
-        throw new OperationNotFoundException("Target operation not found for " + sourceDefinition.getName() + " on source component " + sourceComponent);
+        LogicalAttachPoint parent = source.getParent();
+        if (parent != null) {
+            String sourceComponent = parent.getParent().getUri().toString();
+            throw new OperationNotFoundException("Target operation not found for " + sourceDefinition.getName() + " on source component " + sourceComponent);
+        } else {
+            throw new OperationNotFoundException("Target operation not found for " + sourceDefinition.getName());
+        }
     }
 
     /**
