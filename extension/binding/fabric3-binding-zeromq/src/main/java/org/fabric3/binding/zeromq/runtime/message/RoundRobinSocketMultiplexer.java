@@ -31,13 +31,13 @@
 package org.fabric3.binding.zeromq.runtime.message;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
@@ -64,7 +64,7 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
         this.manager = manager;
         this.socketType = socketType;
         this.metadata = metadata;
-        sockets = new ConcurrentLinkedHashMap.Builder<SocketAddress, ZMQ.Socket>().maximumWeightedCapacity(1000).build();
+        sockets = new HashMap<SocketAddress, ZMQ.Socket>();
     }
 
     public synchronized void update(List<SocketAddress> addresses) {

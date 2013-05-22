@@ -16,11 +16,6 @@
     <packaging>sca-contribution-jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
-            <artifactId>concurrentlinkedhashmap-lru</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-spi</artifactId>
             <version>${project.version}</version>
@@ -54,6 +49,7 @@
             <version>${woodstox.version}</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>
