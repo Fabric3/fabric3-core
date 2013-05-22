@@ -32,20 +32,17 @@ package org.fabric3.binding.zeromq.runtime.message;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
-import org.zeromq.ZMQ;
-
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
+import org.zeromq.ZMQ;
 
 /**
  * Implements a round-robin strategy for selecting an available socket from a collection of sockets.
@@ -55,9 +52,11 @@ import org.fabric3.spi.host.Port;
 public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
     private ContextManager manager;
     private int socketType;
-    private Map<SocketAddress, ZMQ.Socket> sockets;
-    private Iterator<ZMQ.Socket> iterator;
     private ZeroMQMetadata metadata;
+
+    private int index;
+    private ZMQ.Socket[] zmqSockets;
+    private Map<SocketAddress, ZMQ.Socket> sockets;
 
     private String seed = UUID.randomUUID().toString();
 
@@ -79,7 +78,6 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
                 address.getPort().bind(Port.TYPE.TCP);
                 socket.connect(addressString);
                 sockets.put(address, socket);
-                iterator = new SingletonIterator(socket);
             } else {
                 for (SocketAddress address : addresses) {
                     String addressString = address.toProtocolString();
@@ -90,7 +88,6 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
                     socket.connect(addressString);
                     sockets.put(address, socket);
                 }
-                iterator = sockets.values().iterator();
             }
         } else {
             Set<SocketAddress> intersection = new HashSet<SocketAddress>(addresses);
@@ -122,19 +119,16 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
                 sockets.put(address, socket);
             }
 
-            if (sockets.size() == 1) {
-                iterator = new SingletonIterator(sockets.values().iterator().next());
-            } else {
-                iterator = sockets.values().iterator();
-            }
         }
+        zmqSockets = new ZMQ.Socket[sockets.size()];
+        sockets.values().toArray(zmqSockets);
     }
 
     public ZMQ.Socket get() {
-        if (!hasNext()) {
-            throw new NoSuchElementException();
+        if (index == zmqSockets.length) {
+            index = 0;
         }
-        return iterator.next();
+        return zmqSockets[index++];
     }
 
     public Collection<ZMQ.Socket> getAll() {
@@ -142,7 +136,7 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
     }
 
     public boolean isAvailable() {
-        return !sockets.isEmpty();
+        return zmqSockets.length > 0;
     }
 
     public void close() {
@@ -155,34 +149,6 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
                 manager.release(getClass().getName() + ":" + seed + address.toProtocolString());
             }
 
-        }
-    }
-
-    private boolean hasNext() {
-        if (!iterator.hasNext()) {
-            // return to top of list
-            iterator = sockets.values().iterator();
-        }
-        return iterator.hasNext();
-    }
-
-    private class SingletonIterator implements Iterator<ZMQ.Socket> {
-        private ZMQ.Socket socket;
-
-        private SingletonIterator(ZMQ.Socket socket) {
-            this.socket = socket;
-        }
-
-        public boolean hasNext() {
-            return true;
-        }
-
-        public ZMQ.Socket next() {
-            return socket;
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException();
         }
     }
 

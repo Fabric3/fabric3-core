@@ -184,7 +184,6 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
                         queue.drainTo(drained);
                     }
                     for (Request request : drained) {
-                        // serialize the work context as a header
                         ZMQ.Socket socket = multiplexer.get();
 
                         // serialize the request payload
