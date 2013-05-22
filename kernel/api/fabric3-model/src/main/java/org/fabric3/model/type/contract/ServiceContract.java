@@ -147,7 +147,7 @@ public abstract class ServiceContract extends AbstractPolicyAware<ModelObject> {
 
     public String toString() {
         if (interfaceName != null) {
-            return new StringBuilder().append("ServiceContract[").append(interfaceName).append("]").toString();
+            return "ServiceContract[" + interfaceName + "]";
         } else {
             return super.toString();
         }
