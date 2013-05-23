@@ -54,6 +54,7 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.impl.common.MonitorConstants;
 import org.fabric3.monitor.spi.destination.MonitorDestinationRegistry;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
 import org.fabric3.monitor.spi.event.ParameterEntry;
@@ -79,7 +80,7 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
 
     private Disruptor<MonitorEventEntry> disruptor;
 
-    private int capacity = 3072;
+    private int capacity = MonitorConstants.DEFAULT_BUFFER_CAPACITY;
     private int ringSize = 65536;
     private String strategyType = "blocking";
     private long blockingTimeoutNanos = 1000;

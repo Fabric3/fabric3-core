@@ -35,44 +35,16 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.writer;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.nio.ByteBuffer;
+package org.fabric3.monitor.impl.common;
 
 /**
- * Writes an Object to a ByteBuffer.
+ * Monitor constants.
  */
-public final class ObjectWriter {
-    private static final byte[] NEWLINE = "\n".getBytes();
-    private static final byte[] TRUNCATED = "...".getBytes();
+public interface MonitorConstants {
 
-    private ObjectWriter() {
-    }
-
-    public static int write(Object object, ByteBuffer buffer) {
-        if (object instanceof Throwable) {
-            Throwable t = (Throwable) object;
-            ByteArrayOutputStream bas = new ByteArrayOutputStream();
-            PrintStream printStream = new PrintStream(bas);
-            t.printStackTrace(printStream);
-            byte[] bytes = bas.toByteArray();
-
-            int amount = buffer.capacity() - buffer.position();
-            if (amount < bytes.length + 1) {
-                // avoid buffer overflow
-                buffer.put(NEWLINE);
-                buffer.put(bytes, 0, amount - 5);
-                buffer.put(TRUNCATED);
-                return amount - 1;
-            }
-            buffer.put(NEWLINE);
-            buffer.put(bytes);
-            return bytes.length + NEWLINE.length;
-        } else {
-            return CharSequenceWriter.write(object.toString(), buffer);
-        }
-    }
+    /**
+     * Default buffer capacity for ring buffer entries.
+     */
+    int DEFAULT_BUFFER_CAPACITY = 5120;
 
 }

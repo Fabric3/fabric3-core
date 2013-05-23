@@ -44,6 +44,7 @@ import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.monitor.Severe;
+import org.fabric3.monitor.impl.common.MonitorConstants;
 import org.fabric3.monitor.impl.destination.DefaultMonitorDestination;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 import org.fabric3.monitor.spi.appender.Appender;
@@ -70,7 +71,7 @@ public class ExtensionProvider {
     private AppenderFactory appenderFactory;
     private ExtensionProviderMonitor monitor;
 
-    private int capacity = 3072;
+    private int capacity = MonitorConstants.DEFAULT_BUFFER_CAPACITY;
     private boolean overrideDefault;
 
     private LocationAwareXMLStreamReader systemReader;

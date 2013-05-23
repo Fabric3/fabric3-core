@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.monitor.impl.common.MonitorConstants;
 import org.fabric3.monitor.impl.destination.DefaultMonitorDestination;
 import org.fabric3.monitor.impl.model.physical.PhysicalDefaultMonitorDestinationDefinition;
 import org.fabric3.monitor.spi.appender.Appender;
@@ -63,7 +64,7 @@ public class DefaultMonitorDestinationBuilder implements MonitorDestinationBuild
     private MonitorDestinationRegistry registry;
     private EventWriter eventWriter;
 
-    private int capacity = 3072;
+    private int capacity = MonitorConstants.DEFAULT_BUFFER_CAPACITY;
 
     private Map<Class<?>, AppenderBuilder<?>> appenderBuilders;
 
