@@ -33,21 +33,21 @@ package org.fabric3.binding.zeromq.runtime.message;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.TestCase;
 import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
-import org.zeromq.ZMQ;
-
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.JDK7WorkaroundHelper;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
-import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
+import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.host.Port;
+import org.zeromq.ZMQ;
 
 /**
  *
@@ -100,6 +100,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
         socket.setHWM(1000);
         socket.subscribe(EasyMock.isA(byte[].class));
         socket.connect(EasyMock.eq(ADDRESS.toProtocolString()));
+        socket.close();
         EasyMock.expect(socket.recv(0)).andStubAnswer(new IAnswer<byte[]>() {
 
             public byte[] answer() throws Throwable {
@@ -108,7 +109,8 @@ public class NonReliableSubscriberTestCase extends TestCase {
         });
         EasyMock.expect(socket.hasReceiveMore()).andReturn(false).atLeastOnce();
 
-        AsyncFanOutHandler head = EasyMock.createMock(AsyncFanOutHandler.class);
+        EventStreamHandler head = EasyMock.createMock(EventStreamHandler.class);
+        head.setNext(EasyMock.isA(EventStreamHandler.class));
         head.handle(EasyMock.isA(Object.class));
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
 
@@ -130,12 +132,11 @@ public class NonReliableSubscriberTestCase extends TestCase {
         EasyMock.expectLastCall().anyTimes();
 
         ZMQ.Poller poller = EasyMock.createMock(ZMQ.Poller.class);
-        EasyMock.expect(poller.poll(1000000)).andReturn(1l);
+        EasyMock.expect(poller.poll(1000000)).andReturn(1l).atLeastOnce();
 
         EasyMock.expect(poller.register(socket, ZMQ.Poller.POLLIN)).andReturn(1);
 
         EasyMock.expect(context.poller()).andReturn(poller);
-
 
         MessagingMonitor monitor = EasyMock.createMock(MessagingMonitor.class);
 
@@ -147,7 +148,10 @@ public class NonReliableSubscriberTestCase extends TestCase {
         EasyMock.replay(manager);
 
         List<SocketAddress> addresses = Collections.singletonList(ADDRESS);
-        NonReliableSubscriber subscriber = new NonReliableSubscriber("", manager, addresses, head, metadata, 1000, monitor);
+
+        ExecutorService executorService = EasyMock.createMock(ExecutorService.class);
+
+        NonReliableSubscriber subscriber = new NonReliableSubscriber("", manager, addresses, head, executorService, metadata, 1000, monitor);
         subscriber.start();
 
         latch.await(10000, TimeUnit.MILLISECONDS);
@@ -162,7 +166,6 @@ public class NonReliableSubscriberTestCase extends TestCase {
         EasyMock.verify(manager);
     }
 
-
     public void testChangeAddress() throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
         final CountDownLatch latch2 = new CountDownLatch(2);
@@ -170,7 +173,8 @@ public class NonReliableSubscriberTestCase extends TestCase {
         ZMQ.Socket socket = createSocket(ADDRESS);
         ZMQ.Socket socket2 = createSocket(ADDRESS2);
 
-        AsyncFanOutHandler head = EasyMock.createMock(AsyncFanOutHandler.class);
+        EventStreamHandler head = EasyMock.createMock(EventStreamHandler.class);
+        head.setNext(EasyMock.isA(EventStreamHandler.class));
         head.handle(EasyMock.isA(Object.class));
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
 
@@ -183,7 +187,6 @@ public class NonReliableSubscriberTestCase extends TestCase {
                 return null;
             }
         });
-
 
         ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
         EasyMock.expect(context.socket(ZMQ.SUB)).andReturn(socket);
@@ -207,7 +210,6 @@ public class NonReliableSubscriberTestCase extends TestCase {
         EasyMock.expect(context.poller()).andReturn(poller);
         EasyMock.expect(context.poller()).andReturn(poller2);
 
-
         EasyMock.replay(monitor);
         EasyMock.replay(poller);
         EasyMock.replay(poller2);
@@ -218,7 +220,10 @@ public class NonReliableSubscriberTestCase extends TestCase {
         EasyMock.replay(manager);
 
         List<SocketAddress> addresses = Collections.singletonList(ADDRESS);
-        NonReliableSubscriber subscriber = new NonReliableSubscriber("", manager, addresses, head, metadata, 1000, monitor);
+
+        ExecutorService executorService = EasyMock.createMock(ExecutorService.class);
+
+        NonReliableSubscriber subscriber = new NonReliableSubscriber("", manager, addresses, head, executorService, metadata, 1000, monitor);
         subscriber.start();
 
         latch.await();
@@ -239,13 +244,13 @@ public class NonReliableSubscriberTestCase extends TestCase {
         EasyMock.verify(manager);
     }
 
-
     public void testRescheduleAfterUncheckedException() throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
 
         ZMQ.Socket socket = createSocket(ADDRESS);
 
-        AsyncFanOutHandler head = EasyMock.createStrictMock(AsyncFanOutHandler.class);
+        EventStreamHandler head = EasyMock.createStrictMock(EventStreamHandler.class);
+        head.setNext(EasyMock.isA(EventStreamHandler.class));
         head.handle(EasyMock.isA(Object.class));
         EasyMock.expectLastCall().andThrow(new RuntimeException());
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
@@ -255,7 +260,6 @@ public class NonReliableSubscriberTestCase extends TestCase {
                 return null;
             }
         });
-
 
         ZMQ.Context context = EasyMock.createMock(ZMQ.Context.class);
         EasyMock.expect(context.socket(ZMQ.SUB)).andReturn(socket);
@@ -275,7 +279,6 @@ public class NonReliableSubscriberTestCase extends TestCase {
 
         EasyMock.expect(context.poller()).andReturn(poller);
 
-
         MessagingMonitor monitor = EasyMock.createMock(MessagingMonitor.class);
 
         EasyMock.replay(monitor);
@@ -286,7 +289,10 @@ public class NonReliableSubscriberTestCase extends TestCase {
         EasyMock.replay(manager);
 
         List<SocketAddress> addresses = Collections.singletonList(ADDRESS);
-        NonReliableSubscriber subscriber = new NonReliableSubscriber("", manager, addresses, head, metadata, 1000, monitor);
+
+        ExecutorService executorService = EasyMock.createMock(ExecutorService.class);
+
+        NonReliableSubscriber subscriber = new NonReliableSubscriber("", manager, addresses, head, executorService, metadata, 1000, monitor);
         subscriber.start();
 
         latch.await();

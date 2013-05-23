@@ -30,18 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
-import org.zeromq.ZMQ;
-
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.runtime.SocketAddress;
-import org.fabric3.binding.zeromq.runtime.context.ContextManager;
-import org.fabric3.spi.host.Port;
 
 /**
  *
@@ -49,8 +38,8 @@ import org.fabric3.spi.host.Port;
 public class JDK7WorkaroundHelper {
 
     /**
-     * Workaround for Linux JDK7 where ZMQ.Context#construct is being called during the record phase by the context constructor. Since the method is
-     * protected, it cannot be set as expected. Ignores assertions related to this and throws others.
+     * Workaround for Linux JDK7 where ZMQ.Context#construct is being called during the record phase by the context constructor. Since the method is protected,
+     * it cannot be set as expected. Ignores assertions related to this and throws others.
      *
      * @param contexts the contexts to verify
      */
@@ -61,13 +50,12 @@ public class JDK7WorkaroundHelper {
                 EasyMock.verify(context);
             }
         } catch (AssertionError e) {
-            if (e.getMessage().contains("construct(0): expected: 1, actual: 0")
-                    || e.getMessage().contains("construct(EasyMock for class org.zeromq.ZMQ$Context, 0): expected: 1, actual: 0")) {
+            if (e.getMessage().contains("construct(0): expected: 1, actual: 0") || e.getMessage().contains(
+                    "construct(EasyMock for class org.zeromq.ZMQ$Context, 0): expected: 1, actual: 0")) {
                 return;
             }
             throw e;
         }
     }
-
 
 }

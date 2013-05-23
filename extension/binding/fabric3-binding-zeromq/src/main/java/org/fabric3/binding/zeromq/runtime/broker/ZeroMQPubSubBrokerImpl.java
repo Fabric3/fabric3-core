@@ -49,7 +49,6 @@ import org.fabric3.binding.zeromq.runtime.ZeroMQPubSubBroker;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.federation.AddressAnnouncement;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
-import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
 import org.fabric3.binding.zeromq.runtime.handler.PublisherHandler;
 import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
 import org.fabric3.binding.zeromq.runtime.message.NonReliablePublisher;
@@ -153,7 +152,9 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         Subscriber subscriber = subscribers.get(channelName);
         if (subscriber == null) {
             String id = subscriberId.toString();
+
             EventStreamHandler head = createSubscriberHandlers(connection, loader);
+
             List<SocketAddress> addresses;
 
             boolean refresh;
@@ -175,7 +176,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 refresh = true;
                 addresses = addressCache.getActiveAddresses(channelName);
             }
-            subscriber = new NonReliableSubscriber(id, manager, addresses, head, metadata, pollTimeout, monitor);
+            subscriber = new NonReliableSubscriber(id, manager, addresses, head, executorService, metadata, pollTimeout, monitor);
             subscriber.addConnection(subscriberId, connection);
             subscriber.start();
             if (refresh) {
@@ -333,8 +334,6 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 // single frame data
                 head = handlerFactory.createHandler(BYTES, dataType, loader);
             }
-            AsyncFanOutHandler fanOutHandler = new AsyncFanOutHandler(executorService);
-            head.setNext(fanOutHandler);
             return head;
         } catch (HandlerCreationException e) {
             throw new BrokerException(e);
@@ -391,6 +390,5 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
             return address;
         }
     }
-
 
 }

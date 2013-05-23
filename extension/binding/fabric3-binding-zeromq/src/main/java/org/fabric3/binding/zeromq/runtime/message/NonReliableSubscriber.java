@@ -34,12 +34,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Context;
-import org.zeromq.ZMQ.Socket;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
@@ -52,6 +49,9 @@ import org.fabric3.binding.zeromq.runtime.federation.AddressListener;
 import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStreamHandler;
+import org.zeromq.ZMQ;
+import org.zeromq.ZMQ.Context;
+import org.zeromq.ZMQ.Socket;
 
 /**
  * Implements a basic SUB server with no qualities of service.
@@ -94,6 +94,7 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
                                  ContextManager manager,
                                  List<SocketAddress> addresses,
                                  EventStreamHandler head,
+                                 ExecutorService executorService,
                                  ZeroMQMetadata metadata,
                                  long pollTimeout,
                                  MessagingMonitor monitor) {
@@ -104,8 +105,9 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
         this.metadata = metadata;
         this.pollTimeout = pollTimeout * 1000;  // convert milliseconds to microseconds used by ZeroMQ
         this.monitor = monitor;
-        EventStreamHandler current = handler;
-        setFanOutHandler(current);
+
+        fanOutHandler = new AsyncFanOutHandler(executorService);
+        head.setNext(fanOutHandler);
     }
 
     @ManagementOperation(type = OperationType.POST)
@@ -164,19 +166,6 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
         }
     }
 
-    private void setFanOutHandler(EventStreamHandler current) {
-        while (current != null) {
-            if (current instanceof AsyncFanOutHandler) {
-                fanOutHandler = (AsyncFanOutHandler) current;
-                break;
-            }
-            current = current.getNext();
-        }
-        if (fanOutHandler == null) {
-            throw new AssertionError("Fanout handler not added to subscriber");
-        }
-    }
-
     private void schedule() {
         Thread thread = new Thread(receiver);
         thread.setUncaughtExceptionHandler(this);
@@ -186,7 +175,7 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
     /**
      * The message receiver. Responsible for creating socket connections to publishers and polling for messages.
      */
-    private class SocketReceiver implements Runnable {
+    class SocketReceiver implements Runnable {
         private Socket socket;
         private ZMQ.Poller poller;
         private AtomicBoolean active = new AtomicBoolean(true);
