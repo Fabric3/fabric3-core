@@ -32,6 +32,7 @@ package org.fabric3.binding.zeromq.generator;
 
 import java.net.URI;
 
+import org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
@@ -73,8 +74,7 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
     }
 
     public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<ZeroMQBindingDefinition> binding) throws GenerationException {
-        // do nothing
-        return null;
+        return new ZeroMQChannelBindingDefinition();
     }
 
     private void setChannelName(LogicalBinding binding, ZeroMQMetadata metadata) {

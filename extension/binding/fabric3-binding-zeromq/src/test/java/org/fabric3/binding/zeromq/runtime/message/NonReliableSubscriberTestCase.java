@@ -33,7 +33,6 @@ package org.fabric3.binding.zeromq.runtime.message;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -110,7 +109,6 @@ public class NonReliableSubscriberTestCase extends TestCase {
         EasyMock.expect(socket.hasReceiveMore()).andReturn(false).atLeastOnce();
 
         EventStreamHandler head = EasyMock.createMock(EventStreamHandler.class);
-        head.setNext(EasyMock.isA(EventStreamHandler.class));
         head.handle(EasyMock.isA(Object.class));
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
 
@@ -149,9 +147,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
 
         List<SocketAddress> addresses = Collections.singletonList(ADDRESS);
 
-        ExecutorService executorService = EasyMock.createMock(ExecutorService.class);
-
-        NonReliableSubscriber subscriber = new NonReliableSubscriber("", manager, addresses, head, executorService, metadata, 1000, monitor);
+        NonReliableSubscriber subscriber = new NonReliableSubscriber("", manager, addresses, head, metadata, 1000, monitor);
         subscriber.start();
 
         latch.await(10000, TimeUnit.MILLISECONDS);
@@ -174,7 +170,6 @@ public class NonReliableSubscriberTestCase extends TestCase {
         ZMQ.Socket socket2 = createSocket(ADDRESS2);
 
         EventStreamHandler head = EasyMock.createMock(EventStreamHandler.class);
-        head.setNext(EasyMock.isA(EventStreamHandler.class));
         head.handle(EasyMock.isA(Object.class));
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
 
@@ -221,9 +216,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
 
         List<SocketAddress> addresses = Collections.singletonList(ADDRESS);
 
-        ExecutorService executorService = EasyMock.createMock(ExecutorService.class);
-
-        NonReliableSubscriber subscriber = new NonReliableSubscriber("", manager, addresses, head, executorService, metadata, 1000, monitor);
+        NonReliableSubscriber subscriber = new NonReliableSubscriber("", manager, addresses, head, metadata, 1000, monitor);
         subscriber.start();
 
         latch.await();
@@ -250,7 +243,6 @@ public class NonReliableSubscriberTestCase extends TestCase {
         ZMQ.Socket socket = createSocket(ADDRESS);
 
         EventStreamHandler head = EasyMock.createStrictMock(EventStreamHandler.class);
-        head.setNext(EasyMock.isA(EventStreamHandler.class));
         head.handle(EasyMock.isA(Object.class));
         EasyMock.expectLastCall().andThrow(new RuntimeException());
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
@@ -290,9 +282,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
 
         List<SocketAddress> addresses = Collections.singletonList(ADDRESS);
 
-        ExecutorService executorService = EasyMock.createMock(ExecutorService.class);
-
-        NonReliableSubscriber subscriber = new NonReliableSubscriber("", manager, addresses, head, executorService, metadata, 1000, monitor);
+        NonReliableSubscriber subscriber = new NonReliableSubscriber("", manager, addresses, head, metadata, 1000, monitor);
         subscriber.start();
 
         latch.await();

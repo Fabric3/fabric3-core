@@ -30,11 +30,9 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -46,8 +44,6 @@ import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.federation.AddressListener;
-import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
-import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
@@ -73,8 +69,6 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
     private ZeroMQMetadata metadata;
     private MessagingMonitor monitor;
 
-    private AsyncFanOutHandler fanOutHandler;
-
     private AtomicInteger connectionCount = new AtomicInteger();
 
     private SocketReceiver receiver;
@@ -94,7 +88,6 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
                                  ContextManager manager,
                                  List<SocketAddress> addresses,
                                  EventStreamHandler head,
-                                 ExecutorService executorService,
                                  ZeroMQMetadata metadata,
                                  long pollTimeout,
                                  MessagingMonitor monitor) {
@@ -105,9 +98,6 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
         this.metadata = metadata;
         this.pollTimeout = pollTimeout * 1000;  // convert milliseconds to microseconds used by ZeroMQ
         this.monitor = monitor;
-
-        fanOutHandler = new AsyncFanOutHandler(executorService);
-        head.setNext(fanOutHandler);
     }
 
     @ManagementOperation(type = OperationType.POST)
@@ -136,13 +126,11 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
         return list;
     }
 
-    public void addConnection(URI subscriberId, ChannelConnection connection) {
-        fanOutHandler.addConnection(subscriberId, connection);
+    public void incrementConnectionCount() {
         connectionCount.incrementAndGet();
     }
 
-    public void removeConnection(URI subscriberId) {
-        fanOutHandler.removeConnection(subscriberId);
+    public void decrementConnectionCount() {
         connectionCount.decrementAndGet();
     }
 

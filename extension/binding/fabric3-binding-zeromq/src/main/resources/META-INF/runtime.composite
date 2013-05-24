@@ -3,6 +3,10 @@
            xmlns:f3="urn:fabric3.org" targetNamespace="urn:fabric3.org"
            autowire="true" name="ZeroMQRuntimeExtension">
 
+    <component name="ZeroMQChannelBindingBuilder" f3:key="org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.builder.ZeroMQChannelBindingBuilder"/>
+    </component>
+
     <component name="ZeroMQConnectionTargetAttacher"
                f3:key="org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition">
         <f3:implementation.system class="org.fabric3.binding.zeromq.runtime.ZeroMQConnectionTargetAttacher"/>

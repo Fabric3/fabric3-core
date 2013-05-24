@@ -30,10 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import java.net.URI;
-
 import org.fabric3.binding.zeromq.runtime.federation.AddressListener;
-import org.fabric3.spi.channel.ChannelConnection;
 
 /**
  * Implementations receive messages on a ZeroMQ SUB socket. Qualities of service such as reliability may be provided by an implementation.
@@ -51,19 +48,14 @@ public interface Subscriber extends AddressListener {
     void stop();
 
     /**
-     * Adds a connection to a component consumer for dispatching received messages.
-     *
-     * @param subscriberId the consumer unique id
-     * @param connection   the connection
+     * Increments the connection count.
      */
-    void addConnection(URI subscriberId, ChannelConnection connection);
+    void incrementConnectionCount();
 
     /**
-     * Removes a connection to a component consumer for dispatching received messages.
-     *
-     * @param subscriberId the consumer unique id
+     * Decrements the connection count.
      */
-    void removeConnection(URI subscriberId);
+    void decrementConnectionCount();
 
     /**
      * True if this subscriber has active consumer connections.
