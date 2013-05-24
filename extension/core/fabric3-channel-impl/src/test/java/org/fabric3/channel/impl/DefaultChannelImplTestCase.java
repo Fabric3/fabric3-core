@@ -52,8 +52,8 @@ import org.fabric3.spi.channel.PassThroughHandler;
 /**
  * The default Channel implementation.
  */
-public class ChannelImplTestCase extends TestCase {
-    private ChannelImpl channel;
+public class DefaultChannelImplTestCase extends TestCase {
+    private DefaultChannelImpl channel;
     private FanOutHandler fanOutHandler;
 
     public void testAddRemoveHandler() throws Exception {
@@ -115,7 +115,7 @@ public class ChannelImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         fanOutHandler = EasyMock.createMock(FanOutHandler.class);
-        channel = new ChannelImpl(URI.create("channel"), new QName("test", "test"), fanOutHandler);
+        channel = new DefaultChannelImpl(URI.create("channel"), new QName("test", "test"), fanOutHandler);
     }
 
     private class BlockingHandler extends PassThroughHandler {

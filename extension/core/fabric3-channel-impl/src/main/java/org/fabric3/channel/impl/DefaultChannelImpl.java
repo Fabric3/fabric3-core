@@ -50,7 +50,7 @@ import org.fabric3.spi.channel.PassThroughHandler;
 /**
  * The default Channel implementation.
  */
-public class ChannelImpl implements Channel {
+public class DefaultChannelImpl implements Channel {
     private URI uri;
     private QName deployable;
     private EventStreamHandler headHandler;
@@ -58,7 +58,7 @@ public class ChannelImpl implements Channel {
     private EventStreamHandler inHandler;
     private FanOutHandler fanOutHandler;
 
-    public ChannelImpl(URI uri, QName deployable, FanOutHandler fanOutHandler) {
+    public DefaultChannelImpl(URI uri, QName deployable, FanOutHandler fanOutHandler) {
         this.uri = uri;
         this.deployable = deployable;
         inHandler = new PassThroughHandler();
@@ -66,7 +66,7 @@ public class ChannelImpl implements Channel {
         inHandler.setNext(this.fanOutHandler);
     }
 
-    public ChannelImpl(URI uri, QName deployable, EventStreamHandler inHandler, FanOutHandler fanOutHandler) {
+    public DefaultChannelImpl(URI uri, QName deployable, EventStreamHandler inHandler, FanOutHandler fanOutHandler) {
         this.uri = uri;
         this.deployable = deployable;
         this.inHandler = inHandler;

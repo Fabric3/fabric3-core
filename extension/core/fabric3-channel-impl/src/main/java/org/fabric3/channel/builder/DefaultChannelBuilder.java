@@ -48,7 +48,7 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.channel.handler.AsyncFanOutHandler;
 import org.fabric3.channel.handler.FanOutHandler;
 import org.fabric3.channel.handler.ReplicationHandler;
-import org.fabric3.channel.impl.ChannelImpl;
+import org.fabric3.channel.impl.DefaultChannelImpl;
 import org.fabric3.channel.impl.ReplicationMonitor;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.channel.ChannelBuilder;
@@ -103,14 +103,14 @@ public class DefaultChannelBuilder implements ChannelBuilder {
         if (definition.isReplicate() && replicationCapable) {
             String channelName = uri.toString();
             ReplicationHandler replicationHandler = new ReplicationHandler(channelName, topologyService, monitor);
-            channel = new ChannelImpl(uri, deployable, replicationHandler, fanOutHandler);
+            channel = new DefaultChannelImpl(uri, deployable, replicationHandler, fanOutHandler);
             try {
                 topologyService.openChannel(channelName, null, replicationHandler);
             } catch (ZoneChannelException e) {
                 throw new BuilderException(e);
             }
         } else {
-            channel = new ChannelImpl(uri, deployable, fanOutHandler);
+            channel = new DefaultChannelImpl(uri, deployable, fanOutHandler);
         }
 
         try {
