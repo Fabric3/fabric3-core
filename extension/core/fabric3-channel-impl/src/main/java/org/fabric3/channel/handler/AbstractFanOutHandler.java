@@ -39,9 +39,7 @@ package org.fabric3.channel.handler;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStreamHandler;
@@ -50,17 +48,17 @@ import org.fabric3.spi.channel.EventStreamHandler;
  * Base FanOutHandler functionality.
  */
 public abstract class AbstractFanOutHandler implements FanOutHandler {
-    protected List<ChannelConnection> connections = new CopyOnWriteArrayList<ChannelConnection>();
     protected Map<URI, ChannelConnection> index = new HashMap<URI, ChannelConnection>();
+    protected ChannelConnection[] connections = new ChannelConnection[0];
 
     public synchronized void addConnection(URI uri, ChannelConnection connection) {
-        connections.add(connection);
         index.put(uri, connection);
+        connections = index.values().toArray(new ChannelConnection[index.size()]);
     }
 
     public synchronized ChannelConnection removeConnection(URI uri) {
         ChannelConnection connection = index.remove(uri);
-        connections.remove(connection);
+        connections = index.values().toArray(new ChannelConnection[index.size()]);
         return connection;
     }
 

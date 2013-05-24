@@ -53,7 +53,7 @@ public class AsyncFanOutHandler extends AbstractFanOutHandler {
     }
 
     public void handle(Object event) {
-        if (connections.isEmpty()) {
+        if (connections.length == 0) {
             // no connections, skip scheduling work
             return;
         }
