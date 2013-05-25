@@ -52,7 +52,7 @@ import org.oasisopen.sca.annotation.EagerInit;
  * Generates a channel using the default implementation.
  */
 @EagerInit
-public class ChannelGeneratorImpl implements ChannelGenerator {
+public class DefaultChannelGenerator implements ChannelGenerator {
 
     public PhysicalChannelDefinition generate(LogicalChannel channel) throws GenerationException {
         URI uri = channel.getUri();
