@@ -48,6 +48,7 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.channel.handler.AsyncFanOutHandler;
 import org.fabric3.channel.handler.FanOutHandler;
 import org.fabric3.channel.handler.ReplicationHandler;
+import org.fabric3.channel.handler.SyncFanOutHandler;
 import org.fabric3.channel.impl.DefaultChannelImpl;
 import org.fabric3.channel.impl.ReplicationMonitor;
 import org.fabric3.spi.builder.BuilderException;
@@ -98,7 +99,16 @@ public class DefaultChannelBuilder implements ChannelBuilder {
     public Channel build(PhysicalChannelDefinition definition) throws BuilderException {
         URI uri = definition.getUri();
         QName deployable = definition.getDeployable();
-        FanOutHandler fanOutHandler = new AsyncFanOutHandler(executorService);
+
+        FanOutHandler fanOutHandler;
+        if (definition.getBindingDefinition() != null) {
+            // if a binding is set on the channel, make the channel synchronous since async behavior will be provided by the binding
+            fanOutHandler = new SyncFanOutHandler();
+        } else {
+            // the channel is local, have it implement asynchrony
+            fanOutHandler = new AsyncFanOutHandler(executorService);
+        }
+
         Channel channel;
         if (definition.isReplicate() && replicationCapable) {
             String channelName = uri.toString();

@@ -63,7 +63,7 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 public interface ComponentGenerator<C extends LogicalComponent<? extends Implementation<?>>> {
 
     /**
-     * Generates an {@link org.fabric3.spi.model.physical.PhysicalComponentDefinition} based on a {@link ComponentDefinition}. The resulting
+     * Generates an {@link PhysicalComponentDefinition} based on a {@link ComponentDefinition}. The resulting
      * PhysicalComponentDefinition is added to the PhysicalChangeSet associated with the current GeneratorContext.
      *
      * @param component the logical component to evaluate
