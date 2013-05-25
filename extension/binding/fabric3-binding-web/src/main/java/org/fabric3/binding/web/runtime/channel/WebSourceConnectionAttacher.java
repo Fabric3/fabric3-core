@@ -39,10 +39,6 @@ package org.fabric3.binding.web.runtime.channel;
 
 import java.net.URI;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.web.provision.WebConnectionSourceDefinition;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
@@ -52,6 +48,8 @@ import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches a consumer to a channel configured with the web binding. The connection to the channel is local since the web binding does not provide
@@ -64,8 +62,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
     public WebSourceConnectionAttacher(@Reference ChannelManager channelManager,
                                        @Reference BroadcasterManager broadcasterManager,
                                        @Reference PubSubManager pubSubManager,
-                                       @Reference ServletHost servletHost,
-                                       @Monitor ChannelMonitor monitor) {
+                                       @Reference ServletHost servletHost) {
         this.channelManager = channelManager;
     }
 
