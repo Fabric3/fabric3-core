@@ -37,9 +37,6 @@
 */
 package org.fabric3.fabric.channel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 
@@ -48,26 +45,18 @@ import org.fabric3.spi.channel.EventStream;
  */
 public class ChannelConnectionImpl implements ChannelConnection {
     private int sequence;
-    private List<EventStream> streams = new ArrayList<EventStream>();
+    private EventStream stream;
 
-    public ChannelConnectionImpl(int sequence) {
+    public ChannelConnectionImpl(EventStream stream, int sequence) {
+        this.stream = stream;
         this.sequence = sequence;
     }
 
-    /**
-     * Returns the sequence this connection should be passed events from the channel.
-     *
-     * @return the sequence this connection should be passed events from the channel
-     */
     public int getSequence() {
         return sequence;
     }
 
-    public void addEventStream(EventStream stream) {
-        streams.add(stream);
-    }
-
-    public List<EventStream> getEventStreams() {
-        return streams;
+    public EventStream getEventStream() {
+        return stream;
     }
 }

@@ -75,14 +75,12 @@ public class SpringTargetConnectionAttacher implements TargetConnectionAttacher<
         JavaType<?> type = target.getType();
         String consumerName = target.getMethodName();
         SpringEventStreamHandler handler = new SpringEventStreamHandler(beanName, consumerName, type, component);
-        for (EventStream stream : connection.getEventStreams()) {
-            stream.addHandler(handler);
-        }
+        EventStream stream = connection.getEventStream();
+        stream.addHandler(handler);
     }
 
     public void detach(PhysicalConnectionSourceDefinition source, SpringConnectionTargetDefinition target) throws ConnectionAttachException {
         // no-op
     }
-
 
 }

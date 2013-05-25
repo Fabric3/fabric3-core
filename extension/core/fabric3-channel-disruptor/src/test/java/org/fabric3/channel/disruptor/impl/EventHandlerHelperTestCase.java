@@ -38,7 +38,6 @@
 package org.fabric3.channel.disruptor.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -55,19 +54,20 @@ import org.fabric3.spi.channel.EventStream;
 public class EventHandlerHelperTestCase extends TestCase {
 
     public void testSort() throws Exception {
+        EventStream stream = EasyMock.createMock(EventStream.class);
         ChannelConnection conn1 = EasyMock.createMock(ChannelConnection.class);
         EasyMock.expect(conn1.getSequence()).andReturn(0);
-        EasyMock.expect(conn1.getEventStreams()).andReturn(Collections.<EventStream>emptyList());
+        EasyMock.expect(conn1.getEventStream()).andReturn(stream);
 
         ChannelConnection conn2 = EasyMock.createMock(ChannelConnection.class);
         EasyMock.expect(conn2.getSequence()).andReturn(1);
-        EasyMock.expect(conn2.getEventStreams()).andReturn(Collections.<EventStream>emptyList());
+        EasyMock.expect(conn2.getEventStream()).andReturn(stream);
 
         ChannelConnection conn3 = EasyMock.createMock(ChannelConnection.class);
         EasyMock.expect(conn3.getSequence()).andReturn(2);
-        EasyMock.expect(conn3.getEventStreams()).andReturn(Collections.<EventStream>emptyList());
+        EasyMock.expect(conn3.getEventStream()).andReturn(stream);
 
-        EasyMock.replay(conn1, conn2, conn3);
+        EasyMock.replay(conn1, conn2, conn3, stream);
 
         List<ChannelConnection> connections = new ArrayList<ChannelConnection>();
         connections.add(conn1);
@@ -83,7 +83,7 @@ public class EventHandlerHelperTestCase extends TestCase {
             last++;
         }
 
-        EasyMock.verify(conn1, conn2, conn3);
+        EasyMock.verify(conn1, conn2, conn3, stream);
     }
 
 }

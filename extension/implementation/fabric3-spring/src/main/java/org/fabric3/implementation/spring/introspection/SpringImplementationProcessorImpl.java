@@ -473,6 +473,11 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             return false;
         }
         ServiceContract contract = contractProcessor.introspect(interfaze, context, type);
+        if (contract.getOperations().size() != 1) {
+            String interfaceName = contract.getInterfaceName();
+            InvalidValue error = new InvalidValue("Producer interfaces must have one method: " + interfaceName, startLocation, type);
+            context.addError(error);
+        }
 
         ProducerDefinition definition = new ProducerDefinition(name, contract);
         type.add(definition);

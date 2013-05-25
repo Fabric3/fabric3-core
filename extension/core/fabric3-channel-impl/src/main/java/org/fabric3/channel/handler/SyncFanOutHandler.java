@@ -38,7 +38,6 @@
 package org.fabric3.channel.handler;
 
 import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
 
 /**
  * Broadcasts an event to multiple consumers on the same thread as the producer.
@@ -46,9 +45,7 @@ import org.fabric3.spi.channel.EventStream;
 public class SyncFanOutHandler extends AbstractFanOutHandler {
     public void handle(Object event) {
         for (ChannelConnection connection : connections) {
-            for (EventStream eventStream : connection.getEventStreams()) {
-                eventStream.getHeadHandler().handle(event);
-            }
+            connection.getEventStream().getHeadHandler().handle(event);
         }
     }
 }

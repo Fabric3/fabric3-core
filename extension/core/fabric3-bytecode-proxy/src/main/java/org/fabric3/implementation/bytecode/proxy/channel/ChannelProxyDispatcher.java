@@ -45,14 +45,14 @@ import org.fabric3.spi.channel.EventStreamHandler;
  * Dispatches to an {@link EventStreamHandler}s from a channel proxy based on the index of the proxy method invoked.
  */
 public class ChannelProxyDispatcher implements ProxyDispatcher {
-    private EventStreamHandler[] handlers;
+    private EventStreamHandler handler;
 
-    public void init(EventStreamHandler[] handlers) {
-        this.handlers = handlers;
+    public void init(EventStreamHandler handler) {
+        this.handler = handler;
     }
 
     public Object _f3_invoke(int index, Object param) throws Exception {
-        handlers[index].handle(param);
+        handler.handle(param);
         return null;
     }
 

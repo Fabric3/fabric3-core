@@ -37,16 +37,14 @@
 */
 package org.fabric3.fabric.generator.channel;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.w3c.dom.Element;
-
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
@@ -78,6 +76,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 import org.fabric3.spi.model.type.java.JavaClass;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -114,7 +113,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         assertNotNull(definition.getSource());
         assertNotNull(definition.getTarget());
         assertTrue(definition.getSource() instanceof ChannelSourceDefinition);
-        assertEquals(1, definition.getEventStreams().size());
+        assertNotNull(definition.getEventStream());
 
         EasyMock.verify(componentGenerator, handlerGenerator, generatorRegistry, resolver);
     }
@@ -131,8 +130,8 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         ConnectionBindingGenerator<?> bindingGenerator = EasyMock.createMock(ConnectionBindingGenerator.class);
         PhysicalConnectionSourceDefinition sourceDefinition = new PhysicalConnectionSourceDefinition();
-        EasyMock.expect(bindingGenerator.generateConnectionSource(EasyMock.isA(LogicalConsumer.class),
-                                                                  EasyMock.isA(LogicalBinding.class))).andReturn(sourceDefinition);
+        EasyMock.expect(bindingGenerator.generateConnectionSource(EasyMock.isA(LogicalConsumer.class), EasyMock.isA(LogicalBinding.class))).andReturn(
+                sourceDefinition);
 
         GeneratorRegistry generatorRegistry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.expect(generatorRegistry.getComponentGenerator(MockImplementation.class)).andReturn(componentGenerator);
@@ -154,7 +153,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         assertEquals(1, definitions.size());
         PhysicalChannelConnectionDefinition definition = definitions.get(0);
         assertNotNull(definition.getSource());
-        assertEquals(1, definition.getEventStreams().size());
+        assertNotNull(definition.getEventStream());
 
         EasyMock.verify(componentGenerator, handlerGenerator, bindingGenerator, generatorRegistry, resolver);
     }
@@ -190,7 +189,6 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
             // expected
         }
 
-
         EasyMock.verify(componentGenerator, handlerGenerator, generatorRegistry, resolver);
     }
 
@@ -216,7 +214,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         PhysicalChannelConnectionDefinition definition = definitions.get(0);
         assertNotNull(definition.getSource());
         assertTrue(definition.getTarget() instanceof ChannelTargetDefinition);
-        assertEquals(1, definition.getEventStreams().size());
+        assertNotNull(definition.getEventStream());
 
         EasyMock.verify(componentGenerator, generatorRegistry, resolver);
     }
@@ -230,8 +228,8 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         ConnectionBindingGenerator<?> bindingGenerator = EasyMock.createMock(ConnectionBindingGenerator.class);
         PhysicalConnectionTargetDefinition targetDefinition = new PhysicalConnectionTargetDefinition();
-        EasyMock.expect(bindingGenerator.generateConnectionTarget(EasyMock.isA(LogicalProducer.class),
-                                                                  EasyMock.isA(LogicalBinding.class))).andReturn(targetDefinition);
+        EasyMock.expect(bindingGenerator.generateConnectionTarget(EasyMock.isA(LogicalProducer.class), EasyMock.isA(LogicalBinding.class))).andReturn(
+                targetDefinition);
 
         GeneratorRegistry generatorRegistry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.expect(generatorRegistry.getComponentGenerator(MockImplementation.class)).andReturn(componentGenerator);
@@ -249,7 +247,7 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         assertEquals(1, definitions.size());
         PhysicalChannelConnectionDefinition definition = definitions.get(0);
         assertNotNull(definition.getSource());
-        assertEquals(1, definition.getEventStreams().size());
+        assertNotNull(definition.getEventStream());
 
         EasyMock.verify(componentGenerator, bindingGenerator, generatorRegistry, resolver);
     }

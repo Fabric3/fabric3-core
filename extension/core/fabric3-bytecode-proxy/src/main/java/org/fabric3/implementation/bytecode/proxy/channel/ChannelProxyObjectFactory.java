@@ -55,15 +55,15 @@ public class ChannelProxyObjectFactory<T> implements ObjectFactory<T> {
     private URI uri;
     private Class<T> interfaze;
     private Method[] methods;
-    private EventStreamHandler[] handlers;
+    private EventStreamHandler handler;
 
     private T proxy;
 
-    public ChannelProxyObjectFactory(URI uri, Class<T> interfaze, Method[] methods, EventStreamHandler[] handlers, ProxyFactory proxyFactory) {
+    public ChannelProxyObjectFactory(URI uri, Class<T> interfaze, Method method, EventStreamHandler handler, ProxyFactory proxyFactory) {
         this.uri = uri;
         this.interfaze = interfaze;
-        this.methods = methods;
-        this.handlers = handlers;
+        this.methods = new Method[]{method};
+        this.handler = handler;
         this.proxyFactory = proxyFactory;
     }
 
@@ -71,7 +71,7 @@ public class ChannelProxyObjectFactory<T> implements ObjectFactory<T> {
         try {
             if (proxy == null) {
                 proxy = proxyFactory.createProxy(uri, interfaze, methods, ChannelProxyDispatcher.class, false);
-                ((ChannelProxyDispatcher) proxy).init(handlers);
+                ((ChannelProxyDispatcher) proxy).init(handler);
             }
             return proxy;
         } catch (ProxyException e) {

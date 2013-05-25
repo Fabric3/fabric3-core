@@ -138,9 +138,8 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
 
     public void attach(ChannelConnection connection) {
         numberProducers++;
-        for (EventStream stream : connection.getEventStreams()) {
-            stream.getTailHandler().setNext(this);
-        }
+        EventStream stream = connection.getEventStream();
+        stream.getTailHandler().setNext(this);
     }
 
     public void subscribe(URI uri, ChannelConnection connection) {

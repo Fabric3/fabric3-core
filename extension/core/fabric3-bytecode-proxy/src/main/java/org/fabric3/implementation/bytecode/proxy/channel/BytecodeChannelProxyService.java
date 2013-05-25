@@ -40,19 +40,15 @@ package org.fabric3.implementation.bytecode.proxy.channel;
 
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.List;
 
 import org.fabric3.host.Names;
-import org.fabric3.implementation.bytecode.proxy.common.MethodSorter;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -61,11 +57,9 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class BytecodeChannelProxyService implements ChannelProxyServiceExtension {
     private ProxyFactory proxyFactory;
-    private ClassLoaderRegistry classLoaderRegistry;
 
-    public BytecodeChannelProxyService(@Reference ProxyFactory proxyFactory, @Reference ClassLoaderRegistry classLoaderRegistry) {
+    public BytecodeChannelProxyService(@Reference ProxyFactory proxyFactory) {
         this.proxyFactory = proxyFactory;
-        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public boolean isDefault() {
@@ -75,25 +69,17 @@ public class BytecodeChannelProxyService implements ChannelProxyServiceExtension
     public <T> ObjectFactory<T> createObjectFactory(Class<T> interfaze, ChannelConnection connection) throws ProxyCreationException {
         URI uri = getClassLoaderUri(interfaze);
 
-        Method[] methods = MethodSorter.sort(interfaze.getMethods());
-        EventStreamHandler[] handlers = new EventStreamHandler[methods.length];
-
-        try {
-            for (EventStream eventStream : connection.getEventStreams()) {
-                Method method = findMethod(interfaze, eventStream.getDefinition());
-                for (int i = 0; i < methods.length; i++) {
-                    if (method.equals(methods[i])) {
-                        handlers[i] = eventStream.getHeadHandler();
-                        break;
-                    }
-                }
-            }
-            return new ChannelProxyObjectFactory<T>(uri, interfaze, methods, handlers, proxyFactory);
-        } catch (ClassNotFoundException e) {
-            throw new ProxyCreationException(e);
-        } catch (NoSuchMethodException e) {
-            throw new ProxyCreationException(e);
+        Method[] methods = interfaze.getMethods();
+        if (methods.length > 1) {
+            throw new ProxyCreationException("Channel interface must have only one method: " + interfaze.getName());
+        } else if (methods.length == 0) {
+            throw new ProxyCreationException("Channel interface must have one method: " + interfaze.getName());
         }
+
+        EventStream stream = connection.getEventStream();
+        Method method = methods[0];
+        EventStreamHandler handler = stream.getHeadHandler();
+        return new ChannelProxyObjectFactory<T>(uri, interfaze, method, handler, proxyFactory);
     }
 
     private <T> URI getClassLoaderUri(Class<T> interfaze) {
@@ -101,25 +87,6 @@ public class BytecodeChannelProxyService implements ChannelProxyServiceExtension
             return Names.BOOT_CONTRIBUTION;
         }
         return ((MultiParentClassLoader) interfaze.getClassLoader()).getName();
-    }
-
-    /**
-     * Returns the matching method from the class for a given operation.
-     *
-     * @param clazz      the class to introspect
-     * @param definition the event stream to match
-     * @return a matching method
-     * @throws NoSuchMethodException  if a matching method is not found
-     * @throws ClassNotFoundException if a parameter type specified in the operation is not found
-     */
-    private Method findMethod(Class<?> clazz, PhysicalEventStreamDefinition definition) throws NoSuchMethodException, ClassNotFoundException {
-        String name = definition.getName();
-        List<String> eventTypes = definition.getEventTypes();
-        Class<?>[] types = new Class<?>[eventTypes.size()];
-        for (int i = 0; i < eventTypes.size(); i++) {
-            types[i] = classLoaderRegistry.loadClass(clazz.getClassLoader(), eventTypes.get(i));
-        }
-        return clazz.getMethod(name, types);
     }
 
 }

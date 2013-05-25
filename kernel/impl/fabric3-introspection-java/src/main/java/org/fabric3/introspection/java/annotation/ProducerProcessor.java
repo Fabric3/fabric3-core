@@ -45,11 +45,9 @@ package org.fabric3.introspection.java.annotation;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.Producer;
 import org.fabric3.model.type.component.ProducerDefinition;
@@ -63,6 +61,8 @@ import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Introspects {@link Producer} annotations.
@@ -82,20 +82,16 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<Producer> {
         String name = helper.getSiteName(field, annotation.value());
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
-        ProducerDefinition definition = createDefinition(name, type, implClass, componentType, context);
+        ProducerDefinition definition = createDefinition(name, type, implClass, componentType, field, context);
         componentType.add(definition, site);
     }
 
-    public void visitMethod(Producer annotation,
-                            Method method,
-                            Class<?> implClass,
-                            InjectingComponentType componentType,
-                            IntrospectionContext context) {
+    public void visitMethod(Producer annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
 
         String name = helper.getSiteName(method, annotation.value());
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
-        ProducerDefinition definition = createDefinition(name, type, implClass, componentType, context);
+        ProducerDefinition definition = createDefinition(name, type, implClass, componentType, method, context);
         componentType.add(definition, site);
     }
 
@@ -109,7 +105,7 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<Producer> {
         String name = helper.getSiteName(constructor, index, annotation.value());
         Type type = helper.getGenericType(constructor, index);
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
-        ProducerDefinition definition = createDefinition(name, type, implClass, componentType, context);
+        ProducerDefinition definition = createDefinition(name, type, implClass, componentType, constructor, context);
         componentType.add(definition, site);
     }
 
@@ -117,13 +113,18 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<Producer> {
                                                   Type type,
                                                   Class<?> implClass,
                                                   InjectingComponentType componentType,
+                                                  Member member,
                                                   IntrospectionContext context) {
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         Class<?> baseType = helper.getBaseType(type, typeMapping);
         ServiceContract contract = contractProcessor.introspect(baseType, implClass, context, componentType);
+        if (contract.getOperations().size() != 1) {
+            String interfaceName = contract.getInterfaceName();
+            InvalidProducerInterface error = new InvalidProducerInterface("Producer interfaces must have one method: " + interfaceName, member, componentType);
+            context.addError(error);
+        }
         // TODO handle policies
         return new ProducerDefinition(name, contract);
     }
-
 
 }

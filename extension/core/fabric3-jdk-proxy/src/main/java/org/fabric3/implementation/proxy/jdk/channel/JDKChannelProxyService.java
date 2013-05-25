@@ -43,9 +43,6 @@
  */
 package org.fabric3.implementation.proxy.jdk.channel;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.spi.channel.EventStream;
@@ -54,16 +51,6 @@ import org.fabric3.spi.channel.EventStream;
  * Creates channel proxies using JDK proxies.
  */
 public interface JDKChannelProxyService extends ChannelProxyServiceExtension {
-    /**
-     * Creates a proxy.
-     *
-     * @param interfaze the interface the proxy implements
-     * @param mappings  mappings from interface method to event streams contained in a channel connection
-     * @param <T>       the interface type
-     * @return the proxy
-     * @throws ProxyCreationException if there is an error creating the proxy
-     */
-    <T> T createProxy(Class<T> interfaze, Map<Method, EventStream> mappings) throws ProxyCreationException;
 
     /**
      * Creates an optimized proxy for an interface containing a single method which dispatches to an event stream.

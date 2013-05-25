@@ -41,7 +41,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 /**
- * An SCA event channel. Responsible for transmitting events from event sources to event sinks.
+ * An event channel. Responsible for transmitting events from producers to consumers.
  */
 public interface Channel {
     /**
@@ -59,7 +59,7 @@ public interface Channel {
     QName getDeployable();
 
     /**
-     * Initializes the channel.
+     * Initializes the channel to receive events.
      */
     void start();
 

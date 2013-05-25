@@ -37,8 +37,6 @@
 */
 package org.fabric3.channel.disruptor.impl;
 
-import java.util.List;
-
 import com.lmax.disruptor.EventHandler;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
@@ -47,26 +45,23 @@ import org.fabric3.spi.channel.EventStream;
  * Dispatches an event from the channel ring buffer to consumer streams.
  */
 public class ChannelEventHandler implements EventHandler<RingBufferEvent> {
-    private EventStream[] streamHandlers;
+    private EventStream stream;
 
     public ChannelEventHandler(ChannelConnection connection) {
-        List<EventStream> streams = connection.getEventStreams();
-        streamHandlers = streams.toArray(new EventStream[streams.size()]);
+        stream = connection.getEventStream();
     }
 
     public void onEvent(RingBufferEvent event, long sequence, boolean endOfBatch) throws Exception {
-        for (EventStream stream : streamHandlers) {
-            if (stream.getDefinition().isChannelEvent()) {
-                // consumer takes a channel event, send that
-                stream.getHeadHandler().handle(event);
+        if (stream.getDefinition().isChannelEvent()) {
+            // consumer takes a channel event, send that
+            stream.getHeadHandler().handle(event);
+        } else {
+            // if the parsed value has been set, send that
+            Object parsed = event.getParsed(Object.class);
+            if (parsed != null) {
+                stream.getHeadHandler().handle(parsed);
             } else {
-                // if the parsed value has been set, send that
-                Object parsed = event.getParsed(Object.class);
-                if (parsed != null) {
-                    stream.getHeadHandler().handle(parsed);
-                } else {
-                    stream.getHeadHandler().handle(event.getEvent(Object.class));
-                }
+                stream.getHeadHandler().handle(event.getEvent(Object.class));
             }
         }
     }

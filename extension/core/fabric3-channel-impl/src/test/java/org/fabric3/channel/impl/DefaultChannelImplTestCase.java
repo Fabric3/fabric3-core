@@ -39,7 +39,6 @@ package org.fabric3.channel.impl;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -103,7 +102,7 @@ public class DefaultChannelImplTestCase extends TestCase {
         EventStream stream = EasyMock.createMock(EventStream.class);
         EasyMock.expect(stream.getTailHandler()).andReturn(handler);
         ChannelConnection connection = EasyMock.createNiceMock(ChannelConnection.class);
-        EasyMock.expect(connection.getEventStreams()).andReturn(Collections.singletonList(stream));
+        EasyMock.expect(connection.getEventStream()).andReturn(stream);
 
         EasyMock.replay(handler, stream, connection);
         

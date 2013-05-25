@@ -128,9 +128,8 @@ public class DefaultChannelImpl implements Channel {
     }
 
     public void attach(ChannelConnection connection) {
-        for (EventStream stream : connection.getEventStreams()) {
-            stream.getTailHandler().setNext(inHandler);
-        }
+        EventStream stream = connection.getEventStream();
+        stream.getTailHandler().setNext(inHandler);
     }
 
     public void subscribe(URI uri, ChannelConnection connection) {

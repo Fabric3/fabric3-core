@@ -88,9 +88,8 @@ public class SystemTargetConnectionAttacher implements TargetConnectionAttacher<
         ConsumerInvoker invoker = reflectionFactory.createConsumerInvoker(method);
 
         InvokerEventStreamHandler handler = new InvokerEventStreamHandler(invoker, component, loader);
-        for (EventStream stream : connection.getEventStreams()) {
-            stream.addHandler(handler);
-        }
+        EventStream stream = connection.getEventStream();
+        stream.addHandler(handler);
     }
 
     public void detach(PhysicalConnectionSourceDefinition source, SystemConnectionTargetDefinition target) throws ConnectionAttachException {

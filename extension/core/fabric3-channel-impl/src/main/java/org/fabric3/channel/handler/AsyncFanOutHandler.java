@@ -70,9 +70,8 @@ public class AsyncFanOutHandler extends AbstractFanOutHandler {
 
         public void run() {
             for (ChannelConnection connection : connections) {
-                for (EventStream stream : connection.getEventStreams()) {
-                    stream.getHeadHandler().handle(event);
-                }
+                EventStream stream = connection.getEventStream();
+                stream.getHeadHandler().handle(event);
             }
         }
     }

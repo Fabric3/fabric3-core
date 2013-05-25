@@ -43,22 +43,18 @@
  */
 package org.fabric3.implementation.proxy.jdk.channel;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 
 /**
- * Creates a proxy for a channel connection that implements a specified interface.
+ * Creates a proxy for a channel connection that implements a specified interface with a single method.
  */
 public class ChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;
     private JDKChannelProxyService proxyService;
-    // the cache of proxy interface method to operation mappings
-    private Map<Method, EventStream> mappings;
+    private EventStream stream;
 
     private T proxy;
 
@@ -67,19 +63,19 @@ public class ChannelConnectionObjectFactory<T> implements ObjectFactory<T> {
      *
      * @param interfaze    the interface the proxy implements
      * @param proxyService the proxy creation service
-     * @param mappings     proxy method to channel handler mappings
+     * @param stream       the stream
      */
-    public ChannelConnectionObjectFactory(Class<T> interfaze, JDKChannelProxyService proxyService, Map<Method, EventStream> mappings) {
+    public ChannelConnectionObjectFactory(Class<T> interfaze, JDKChannelProxyService proxyService, EventStream stream) {
         this.interfaze = interfaze;
         this.proxyService = proxyService;
-        this.mappings = mappings;
+        this.stream = stream;
     }
 
     public T getInstance() throws ObjectCreationException {
         // as an optimization, only create one proxy since they are stateless
         if (proxy == null) {
             try {
-                proxy = interfaze.cast(proxyService.createProxy(interfaze, mappings));
+                proxy = interfaze.cast(proxyService.createProxy(interfaze, stream));
             } catch (ProxyCreationException e) {
                 throw new ObjectCreationException(e);
             }

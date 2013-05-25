@@ -147,8 +147,7 @@ public class ChannelConnectorImplTestCase extends TestCase {
         stream.addEventType("java.lang.Object");
         stream.addHandlerDefinition(new MockHandlerDefinition());
         stream.addFilterDefinition(new MockFilterDefinition());
-        List<PhysicalEventStreamDefinition> eventStreams = Collections.singletonList(stream);
-        return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStreams);
+        return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, stream);
     }
 
     private class MockSourceDefinition extends PhysicalConnectionSourceDefinition {

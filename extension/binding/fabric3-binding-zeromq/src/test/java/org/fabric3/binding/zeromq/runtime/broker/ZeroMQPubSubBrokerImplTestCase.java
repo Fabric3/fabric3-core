@@ -103,12 +103,28 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
         addressCache.subscribe(EasyMock.eq("endpoint"), EasyMock.isA(Subscriber.class));
         EasyMock.expectLastCall();
 
-        EasyMock.expect(connection.getEventStreams()).andReturn(Collections.<EventStream>emptyList());
+        EventStream stream = EasyMock.createMock(EventStream.class);
+        PhysicalEventStreamDefinition definition = EasyMock.createMock(PhysicalEventStreamDefinition.class);
+        EasyMock.expect(definition.getEventTypes()).andReturn(Collections.<String>emptyList());
+        EasyMock.expect(stream.getDefinition()).andReturn(definition);
+
+        EasyMock.expect(connection.getEventStream()).andReturn(stream);
 
         EasyMock.expect(handlerFactory.createHandler(EasyMock.isA(DataType.class), EasyMock.isA(DataType.class), EasyMock.isA(ClassLoader.class))).andReturn(
                 EasyMock.createNiceMock(AsyncFanOutHandler.class));
         EasyMock.replay(context);
-        EasyMock.replay(channelManager, manager, addressCache, executorService, monitor, connection, allocator, handlerFactory, info, managementService);
+        EasyMock.replay(definition);
+        EasyMock.replay(channelManager,
+                        manager,
+                        addressCache,
+                        stream,
+                        executorService,
+                        monitor,
+                        connection,
+                        allocator,
+                        handlerFactory,
+                        info,
+                        managementService);
 
         ZeroMQMetadata metadata = new ZeroMQMetadata();
         metadata.setChannelName("endpoint");
@@ -117,7 +133,17 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
         broker.unsubscribe(URI.create("subscriber"), metadata);
 
         JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
-        EasyMock.verify(channelManager, manager, addressCache, executorService, monitor, connection, allocator, handlerFactory, info, managementService);
+        EasyMock.verify(channelManager,
+                        manager,
+                        addressCache,
+                        stream,
+                        executorService,
+                        monitor,
+                        connection,
+                        allocator,
+                        handlerFactory,
+                        info,
+                        managementService);
     }
 
     public void testConnectRelease() throws Exception {
@@ -133,7 +159,7 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
         stream.addHandler(EasyMock.isA(EventStreamHandler.class));
         EasyMock.expectLastCall().times(2);
         ChannelConnection connection = EasyMock.createMock(ChannelConnection.class);
-        EasyMock.expect(connection.getEventStreams()).andReturn(Collections.singletonList(stream));
+        EasyMock.expect(connection.getEventStream()).andReturn(stream);
 
         addressCache.publish(EasyMock.isA(AddressAnnouncement.class));
         EasyMock.expectLastCall().times(2);

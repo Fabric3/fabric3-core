@@ -37,8 +37,6 @@
 */
 package org.fabric3.spi.channel;
 
-import java.util.List;
-
 /**
  * Contains one or more event streams for transmitting events to or from a channel. Channel connections may exist between:
  * <pre>
@@ -60,17 +58,10 @@ public interface ChannelConnection {
     public int getSequence();
 
     /**
-     * Adds an event stream to the connection.
+     * Returns the connection event stream.
      *
-     * @param stream the stream to add
+     * @return the connection event stream
      */
-    void addEventStream(EventStream stream);
-
-    /**
-     * Returns a list of event streams for the connection.
-     *
-     * @return a list of event streams for the connection
-     */
-    List<EventStream> getEventStreams();
+    EventStream getEventStream();
 
 }

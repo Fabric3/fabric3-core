@@ -43,38 +43,42 @@
  */
 package org.fabric3.implementation.proxy.jdk.channel;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.component.InstanceInvocationException;
 
 /**
  * Dispatches from a proxy to an {@link EventStream}.
  */
-public final class JDKEventHandler extends AbstractJDKEventHandler {
-    private Map<Method, EventStream> streams;
+public final class JDKEventHandler implements InvocationHandler {
+    private EventStream stream;
 
-    /**
-     * Constructor.
-     *
-     * @param streams the method to channel handler mappings
-     */
-    public JDKEventHandler(Map<Method, EventStream> streams) {
-        this.streams = streams;
+    public JDKEventHandler(EventStream stream) {
+        this.stream = stream;
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        EventStream stream = streams.get(method);
-        if (stream == null) {
-            return handleProxyMethod(method);
+        if (args == null || Object.class.equals(method.getDeclaringClass())) {
+            // events have at least one arg
+            handleProxyMethod(method);
+            return null;
         }
-        if (args != null) {
-            // unwrap the argument
-            stream.getHeadHandler().handle(args[0]);
-        } else {
-            stream.getHeadHandler().handle(args);
-        }
+        stream.getHeadHandler().handle(args[0]);
         return null;
+    }
+
+    private Object handleProxyMethod(Method method) throws InstanceInvocationException {
+        if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
+            return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
+        } else if (method.getDeclaringClass().equals(Object.class) && "equals".equals(method.getName())) {
+            throw new UnsupportedOperationException();
+        } else if (Object.class.equals(method.getDeclaringClass()) && "hashCode".equals(method.getName())) {
+            return hashCode();
+        }
+        String op = method.getName();
+        throw new InstanceInvocationException("Operation not configured: " + op);
     }
 
 }

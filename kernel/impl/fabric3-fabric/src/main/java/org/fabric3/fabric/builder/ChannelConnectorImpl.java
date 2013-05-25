@@ -70,14 +70,10 @@ import org.fabric3.spi.transform.TransformerRegistry;
  * Default ChannelConnector implementation.
  */
 public class ChannelConnectorImpl implements ChannelConnector {
-    private Map<Class<? extends PhysicalConnectionSourceDefinition>, SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>>
-            sourceAttachers;
-    private Map<Class<? extends PhysicalConnectionTargetDefinition>, TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>>
-            targetAttachers;
-    private Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>>
-            filterBuilders;
-    private Map<Class<? extends PhysicalHandlerDefinition>, EventStreamHandlerBuilder<? extends PhysicalHandlerDefinition>>
-            handlerBuilders;
+    private Map<Class<? extends PhysicalConnectionSourceDefinition>, SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>> sourceAttachers;
+    private Map<Class<? extends PhysicalConnectionTargetDefinition>, TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>> targetAttachers;
+    private Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>> filterBuilders;
+    private Map<Class<? extends PhysicalHandlerDefinition>, EventStreamHandlerBuilder<? extends PhysicalHandlerDefinition>> handlerBuilders;
 
     private ClassLoaderRegistry classLoaderRegistry;
     private TransformerRegistry transformerRegistry;
@@ -96,22 +92,26 @@ public class ChannelConnectorImpl implements ChannelConnector {
     }
 
     @Reference(required = false)
-    public void setSourceAttachers(Map<Class<? extends PhysicalConnectionSourceDefinition>, SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>> sourceAttachers) {
+    public void setSourceAttachers(Map<Class<? extends PhysicalConnectionSourceDefinition>,
+            SourceConnectionAttacher<? extends PhysicalConnectionSourceDefinition>> sourceAttachers) {
         this.sourceAttachers = sourceAttachers;
     }
 
     @Reference(required = false)
-    public void setTargetAttachers(Map<Class<? extends PhysicalConnectionTargetDefinition>, TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>> targetAttachers) {
+    public void setTargetAttachers(Map<Class<? extends PhysicalConnectionTargetDefinition>,
+            TargetConnectionAttacher<? extends PhysicalConnectionTargetDefinition>> targetAttachers) {
         this.targetAttachers = targetAttachers;
     }
 
     @Reference(required = false)
-    public void setFilterBuilders(Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>> filterBuilders) {
+    public void setFilterBuilders(Map<Class<? extends PhysicalEventFilterDefinition>, EventFilterBuilder<? extends PhysicalEventFilterDefinition>>
+                                              filterBuilders) {
         this.filterBuilders = filterBuilders;
     }
 
     @Reference(required = false)
-    public void setHandlerBuilders(Map<Class<? extends PhysicalHandlerDefinition>, EventStreamHandlerBuilder<? extends PhysicalHandlerDefinition>> handlerBuilders) {
+    public void setHandlerBuilders(Map<Class<? extends PhysicalHandlerDefinition>, EventStreamHandlerBuilder<? extends PhysicalHandlerDefinition>>
+                                               handlerBuilders) {
         this.handlerBuilders = handlerBuilders;
     }
 
@@ -159,15 +159,15 @@ public class ChannelConnectorImpl implements ChannelConnector {
      */
     private ChannelConnection createConnection(PhysicalChannelConnectionDefinition definition) throws BuilderException {
         ClassLoader loader = classLoaderRegistry.getClassLoader(definition.getTarget().getClassLoaderId());
-        ChannelConnection connection = new ChannelConnectionImpl(definition.getSource().getSequence());
-        for (PhysicalEventStreamDefinition streamDefinition : definition.getEventStreams()) {
-            EventStream stream = new EventStreamImpl(streamDefinition);
-            addTransformer(streamDefinition, stream, loader);
-            addFilters(streamDefinition, stream);
-            addHandlers(streamDefinition, stream);
-            connection.addEventStream(stream);
-        }
-        return connection;
+
+        PhysicalEventStreamDefinition streamDefinition = definition.getEventStream();
+        EventStream stream = new EventStreamImpl(streamDefinition);
+        addTransformer(streamDefinition, stream, loader);
+        addFilters(streamDefinition, stream);
+        addHandlers(streamDefinition, stream);
+        int sequence = definition.getSource().getSequence();
+
+        return new ChannelConnectionImpl(stream, sequence);
     }
 
     /**

@@ -39,8 +39,6 @@ package org.fabric3.channel.disruptor.impl;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 
@@ -74,8 +72,7 @@ public class RingBufferChannelTestCase extends TestCase {
 
         ChannelConnection connection = EasyMock.createMock(ChannelConnection.class);
         EasyMock.expect(connection.getSequence()).andReturn(0);
-        List<EventStream> eventStreams = Collections.singletonList(stream);
-        EasyMock.expect(connection.getEventStreams()).andReturn(eventStreams);
+        EasyMock.expect(connection.getEventStream()).andReturn(stream);
 
         EasyMock.replay(connection, stream);
 

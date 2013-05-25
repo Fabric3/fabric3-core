@@ -79,7 +79,7 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         JmsBindingMetadata metadata = target.getMetadata();
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
         HeadersDefinition headers = metadata.getHeaders();
-        boolean persistent = DeliveryMode.PERSISTENT == headers.getDeliveryMode()  || headers.getDeliveryMode() == null;
+        boolean persistent = DeliveryMode.PERSISTENT == headers.getDeliveryMode() || headers.getDeliveryMode() == null;
         Destination destination;
         ConnectionFactory connectionFactory;
         try {
@@ -89,11 +89,9 @@ public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<Jms
         } catch (JmsResolutionException e) {
             throw new ConnectionAttachException(e);
         }
-        for (EventStream stream : connection.getEventStreams()) {
-            JmsEventStreamHandler handler = new JmsEventStreamHandler(destination, connectionFactory, persistent);
-            stream.addHandler(handler);
-        }
-
+        EventStream stream = connection.getEventStream();
+        JmsEventStreamHandler handler = new JmsEventStreamHandler(destination, connectionFactory, persistent);
+        stream.addHandler(handler);
     }
 
     public void detach(PhysicalConnectionSourceDefinition source, JmsConnectionTargetDefinition target) throws ConnectionAttachException {

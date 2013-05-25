@@ -111,7 +111,13 @@ public class LogicalProducer extends LogicalInvocable {
         this.targets.addAll(targets);
     }
 
-    @Override
+    public LogicalOperation getStreamOperation() {
+        if (operations.size() != 1) {
+            throw new IllegalStateException("Invalid number of operations: " + operations.size());
+        }
+        return operations.get(0);
+    }
+
     public boolean equals(Object obj) {
 
         if (this == obj) {
@@ -127,7 +133,6 @@ public class LogicalProducer extends LogicalInvocable {
 
     }
 
-    @Override
     public int hashCode() {
         return getUri().hashCode();
     }

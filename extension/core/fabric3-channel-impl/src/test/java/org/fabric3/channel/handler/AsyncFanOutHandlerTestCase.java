@@ -38,7 +38,6 @@
 package org.fabric3.channel.handler;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 
 import junit.framework.TestCase;
@@ -98,7 +97,7 @@ public class AsyncFanOutHandlerTestCase extends TestCase {
         EasyMock.expect(stream.getHeadHandler()).andReturn(handler);
 
         ChannelConnection connection = EasyMock.createMock(ChannelConnection.class);
-        EasyMock.expect(connection.getEventStreams()).andReturn(Collections.singletonList(stream));
+        EasyMock.expect(connection.getEventStream()).andReturn(stream);
         EasyMock.replay(stream, connection);
         return connection;
     }

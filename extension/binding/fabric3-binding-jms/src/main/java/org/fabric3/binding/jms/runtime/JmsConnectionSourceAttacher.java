@@ -43,13 +43,10 @@
  */
 package org.fabric3.binding.jms.runtime;
 
-import java.net.URI;
-import java.util.List;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
-
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.jms.runtime.channel.EventStreamListener;
@@ -70,12 +67,12 @@ import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-
-import static org.fabric3.binding.jms.spi.common.CacheLevel.ADMINISTERED_OBJECTS;
-import static org.fabric3.binding.jms.spi.common.CacheLevel.CONNECTION;
+import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_ADMINISTERED_OBJECTS;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_NONE;
+import static org.fabric3.binding.jms.spi.common.CacheLevel.ADMINISTERED_OBJECTS;
+import static org.fabric3.binding.jms.spi.common.CacheLevel.CONNECTION;
 
 /**
  * Attaches a consumer to a JMS destination.
@@ -114,11 +111,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         try {
             ConnectionFactory connectionFactory = objects.getRequestFactory();
             Destination destination = objects.getRequestDestination();
-            List<EventStream> streams = connection.getEventStreams();
-            if (streams.size() != 1) {
-                throw new ConnectionAttachException("There must be a single event stream: " + streams.size());
-            }
-            EventStream stream = streams.get(0);
+            EventStream stream = connection.getEventStream();
             EventStreamListener listener = new EventStreamListener(sourceClassLoader, stream.getHeadHandler(), monitor);
             configuration.setClientId(clientId);
             configuration.setDestinationType(metadata.getDestination().geType());

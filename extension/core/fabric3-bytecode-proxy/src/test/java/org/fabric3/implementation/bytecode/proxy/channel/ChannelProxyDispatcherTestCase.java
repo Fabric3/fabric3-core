@@ -51,12 +51,11 @@ public class ChannelProxyDispatcherTestCase extends TestCase {
         EventStreamHandler handler = EasyMock.createMock(EventStreamHandler.class);
         handler.handle(EasyMock.isA(String.class));
 
-        EventStreamHandler[] handlers = {handler};
 
         EasyMock.replay(handler);
 
         ChannelProxyDispatcher dispatcher = new ChannelProxyDispatcher();
-        dispatcher.init(handlers);
+        dispatcher.init(handler);
 
         dispatcher._f3_invoke(0, "test");
 

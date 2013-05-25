@@ -35,32 +35,31 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  *
- */
-package org.fabric3.implementation.bytecode.proxy.common;
-
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
-import junit.framework.TestCase;
-
-/**
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
  *
  */
-public class MethodSorterTestCase extends TestCase {
+package org.fabric3.introspection.java.annotation;
 
-    public void testSort() throws Exception {
-        Method[] methods1 = MethodSorter.sort(ProxyInterface.class.getMethods());
-        Method[] methods2 = MethodSorter.sort(ProxyInterface.class.getMethods());
+import java.lang.reflect.Member;
 
-        assertTrue(Arrays.equals(methods1, methods2));
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
+
+/**
+ * Denotes an invalid producer interface.
+ */
+public class InvalidProducerInterface extends JavaValidationFailure {
+    private String message;
+
+    public InvalidProducerInterface(String message, Member member, InjectingComponentType componentType) {
+        super(member, componentType);
+        this.message = message;
     }
 
-    public interface ProxyInterface {
-
-        String invoke(String message);
-
-        String invoke(Object message);
-
+    public String getMessage() {
+        return message;
     }
-
 }

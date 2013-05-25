@@ -38,7 +38,6 @@
 package org.fabric3.binding.web.runtime.channel;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 import org.fabric3.spi.channel.EventStream;
 
@@ -51,15 +50,12 @@ public class DenyChannelSubscriber implements ChannelSubscriber {
         throw new PublishDeniedException();
     }
 
-    public List<EventStream> getEventStreams() {
+    public EventStream getEventStream() {
         return null;
     }
 
     public int getSequence() {
         return 0;
-    }
-
-    public void addEventStream(EventStream stream) {
     }
 
 }

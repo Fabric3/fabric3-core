@@ -38,56 +38,44 @@
  */
 package org.fabric3.implementation.bytecode.proxy.channel;
 
-import java.util.Collections;
-
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 
 /**
  * Implementation that delegates to a {@link ProxyFactory} to create channel proxies.
  */
 public class BytecodeChannelProxyServiceTestCase extends TestCase {
     private ProxyFactory proxyFactory;
-    private ClassLoaderRegistry classLoaderRegistry;
     private BytecodeChannelProxyService proxyService;
     private ChannelConnection connection;
     private EventStream eventStream;
 
     public void testTest() throws Exception {
-        EasyMock.replay(proxyFactory, classLoaderRegistry, connection, eventStream);
+        EasyMock.replay(proxyFactory, connection, eventStream);
 
         assertNotNull(proxyService.createObjectFactory(ProxyService.class, connection));
 
-        EasyMock.verify(proxyFactory, classLoaderRegistry, connection, eventStream);
+        EasyMock.verify(proxyFactory, connection, eventStream);
     }
 
     public void setUp() throws Exception {
         super.setUp();
 
         proxyFactory = EasyMock.createMock(ProxyFactory.class);
-        classLoaderRegistry = EasyMock.createMock(ClassLoaderRegistry.class);
-
-        classLoaderRegistry.loadClass(EasyMock.isA(ClassLoader.class), EasyMock.eq(String.class.getName()));
-        EasyMock.expectLastCall().andReturn(String.class);
 
         EventStreamHandler handler = EasyMock.createMock(EventStreamHandler.class);
 
         eventStream = EasyMock.createMock(EventStream.class);
         EasyMock.expect(eventStream.getHeadHandler()).andReturn(handler);
 
-        PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition("invoke");
-        definition.addEventType(String.class.getName());
-        EasyMock.expect(eventStream.getDefinition()).andReturn(definition);
         connection = EasyMock.createMock(ChannelConnection.class);
-        EasyMock.expect(connection.getEventStreams()).andReturn(Collections.singletonList(eventStream));
+        EasyMock.expect(connection.getEventStream()).andReturn(eventStream);
 
-        proxyService = new BytecodeChannelProxyService(proxyFactory, classLoaderRegistry);
+        proxyService = new BytecodeChannelProxyService(proxyFactory);
     }
 
     private interface ProxyService {

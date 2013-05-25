@@ -38,8 +38,6 @@
 package org.fabric3.binding.web.runtime.channel;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereResource;
@@ -52,7 +50,7 @@ import org.fabric3.spi.channel.EventStream;
  */
 public class ChannelSubscriberImpl implements ChannelSubscriber {
     private long timeout;
-    private List<EventStream> streams = new ArrayList<EventStream>();
+    private EventStream stream;
 
     /**
      * Constructor.
@@ -61,7 +59,7 @@ public class ChannelSubscriberImpl implements ChannelSubscriber {
      * @param timeout the client connection timeout
      */
     public ChannelSubscriberImpl(EventStream stream, long timeout) {
-        streams.add(stream);
+        this.stream = stream;
         this.timeout = timeout;
     }
 
@@ -78,16 +76,12 @@ public class ChannelSubscriberImpl implements ChannelSubscriber {
         }
     }
 
-    public List<EventStream> getEventStreams() {
-        return streams;
+    public EventStream getEventStream() {
+        return stream;
     }
 
     public int getSequence() {
         return 0;
-    }
-
-    public void addEventStream(EventStream stream) {
-        // no-op
     }
 
 }

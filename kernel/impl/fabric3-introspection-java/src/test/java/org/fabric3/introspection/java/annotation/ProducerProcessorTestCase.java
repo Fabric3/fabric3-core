@@ -45,13 +45,13 @@ package org.fabric3.introspection.java.annotation;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collections;
 
 import junit.framework.TestCase;
-
 import org.fabric3.api.annotation.Producer;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.component.Implementation;
+import org.fabric3.model.type.contract.Operation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -65,7 +65,7 @@ public class ProducerProcessorTestCase extends TestCase {
     private InjectingComponentType componentType;
 
     public void testMethod() throws Exception {
-        Method method = TestClass.class.getDeclaredMethod("setProducer", TestClass.class);
+        Method method = TestClass.class.getDeclaredMethod("setProducer", TestProducer.class);
         Producer annotation = method.getAnnotation(Producer.class);
         IntrospectionContext context = new DefaultIntrospectionContext();
         TypeMapping mapping = new TypeMapping();
@@ -103,22 +103,28 @@ public class ProducerProcessorTestCase extends TestCase {
     public static class TestClass {
 
         @Producer
-        public void setProducer(TestClass clazz) {
+        public void setProducer(TestProducer clazz) {
 
         }
 
         @Producer
-        public TestClass producer;
+        public TestProducer producer;
 
         @Producer("foo")
-        public TestClass producer2;
+        public TestProducer producer2;
 
+    }
+
+    public static interface TestProducer {
+
+        void send(String message);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
-        final JavaServiceContract contract = new JavaServiceContract(Implementation.class);
+        final JavaServiceContract contract = new JavaServiceContract(TestProducer.class);
+        contract.setOperations(Collections.singletonList(new Operation("test", null, null, null)));
 
         JavaContractProcessor contractProcessor = new JavaContractProcessor() {
 
