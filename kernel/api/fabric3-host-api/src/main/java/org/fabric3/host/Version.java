@@ -101,7 +101,7 @@ public class Version implements Comparable, Serializable {
     }
 
     /**
-     * Creates a version identifier from the specifed components.
+     * Creates a version identifier from the specified components.
      *
      * @param major     Major component of the version identifier.
      * @param minor     Minor component of the version identifier.
