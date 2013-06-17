@@ -15,11 +15,11 @@ Public License. See the accompanying license file for details.
               f3:description="REST management extension">
     <f3:requires.capability name="json" loaded="true"/>
     <f3:provides.capability name="management"/>
-    <import.java package="org.fabric3.spi.*" version="1.9.7"/>
+    <import.java package="org.fabric3.spi.*" version="2.0.0"/>
     <import.java package="org.codehaus.jackson.*" version="1.6.4"/>
 
-    <export.java package="org.fabric3.management.rest.spi" version="1.9.7"/>
-    <export.java package="org.fabric3.management.rest.model" version="1.9.7"/>
+    <export.java package="org.fabric3.management.rest.spi" version="2.0.0"/>
+    <export.java package="org.fabric3.management.rest.model" version="2.0.0"/>
 
     <deployable composite="f3:ManagementExtension"/>
     <deployable composite="f3:ManagementControllerExtension" modes="controller vm"/>
