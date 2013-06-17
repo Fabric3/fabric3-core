@@ -65,4 +65,12 @@ public interface ChannelEvent {
      * @param parsed the event
      */
     void setParsed(Object parsed);
+
+    /**
+     * Returns true if the event is an end of batch.
+     *
+     * @return true if the event is an end of batch.
+     */
+    boolean isEndOfBatch();
+
 }

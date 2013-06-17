@@ -53,7 +53,8 @@ public class ChannelEventHandler implements EventHandler<RingBufferEvent> {
 
     public void onEvent(RingBufferEvent event, long sequence, boolean endOfBatch) throws Exception {
         if (stream.getDefinition().isChannelEvent()) {
-            // consumer takes a channel event, send that
+            // consumer takes a channel event, send that, making sure to set the end-of-batch marker
+            event.setEndOfBatch(endOfBatch);
             stream.getHeadHandler().handle(event);
         } else {
             // if the parsed value has been set, send that

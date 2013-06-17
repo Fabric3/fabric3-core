@@ -45,6 +45,7 @@ import org.fabric3.api.ChannelEvent;
 public class RingBufferEvent implements ChannelEvent {
     private Object event;
     private Object parsed;
+    private boolean endOfBatch;
 
     public <T> T getEvent(Class<T> type) {
         return type.cast(event);
@@ -60,5 +61,13 @@ public class RingBufferEvent implements ChannelEvent {
 
     public void setParsed(Object parsed) {
         this.parsed = parsed;
+    }
+
+    public boolean isEndOfBatch() {
+        return endOfBatch;
+    }
+
+    public void setEndOfBatch(boolean endOfBatch) {
+        this.endOfBatch = endOfBatch;
     }
 }
