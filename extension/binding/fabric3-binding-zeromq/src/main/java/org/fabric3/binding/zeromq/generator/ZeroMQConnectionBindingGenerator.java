@@ -72,6 +72,10 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
                                                                        ChannelDeliveryType deliveryType) throws GenerationException {
         ZeroMQBindingDefinition definition = binding.getDefinition();
         URI targetUri = definition.getTargetUri();
+        if (targetUri == null) {
+            // no target uri specified, generate one as it is not used for the endpoint address
+            targetUri = producer.getUri();
+        }
         ZeroMQMetadata metadata = definition.getZeroMQMetadata();
         setChannelName(binding, metadata);
         boolean dedicatedThread = ChannelDeliveryType.ASYNCHRONOUS_WORKER == deliveryType;
