@@ -30,8 +30,6 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
@@ -39,6 +37,7 @@ import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -58,7 +57,8 @@ public class ZeroMQConnectionTargetAttacher implements TargetConnectionAttacher<
             ZeroMQMetadata metadata = target.getMetadata();
             String connectionId = source.getUri().toString();
             ClassLoader loader = registry.getClassLoader(target.getClassLoaderId());
-            broker.connect(connectionId, metadata, connection, loader);
+            boolean dedicatedThread = target.isDedicatedThread();
+            broker.connect(connectionId, metadata, dedicatedThread, connection, loader);
         } catch (BrokerException e) {
             throw new ConnectionAttachException(e);
         }

@@ -59,7 +59,8 @@ public interface ChannelBuilder {
      * Disposes a channel.
      *
      * @param definition the physical channel definition
+     * @param channel    the channel to dispose
      * @throws BuilderException if there is an error disposing the channel
      */
-    void dispose(PhysicalChannelDefinition definition) throws BuilderException;
+    void dispose(PhysicalChannelDefinition definition, Channel channel) throws BuilderException;
 }

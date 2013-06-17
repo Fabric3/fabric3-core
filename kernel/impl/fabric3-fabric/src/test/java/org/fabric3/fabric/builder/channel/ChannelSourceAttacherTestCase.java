@@ -41,6 +41,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
@@ -66,12 +67,12 @@ public class ChannelSourceAttacherTestCase extends TestCase {
         channel.subscribe(targetUri, connection);
         EasyMock.expectLastCall();
         EasyMock.expect(channel.unsubscribe(targetUri)).andReturn(connection);
-        EasyMock.expect(channelManager.getChannel(channelUri)).andReturn(channel).times(2);
+        EasyMock.expect(channelManager.getChannel(channelUri, ChannelSide.PRODUCER)).andReturn(channel).times(2);
 
         EasyMock.replay(channelManager, connection, channel);
         
         ChannelSourceAttacher attacher = new ChannelSourceAttacher(channelManager);
-        ChannelSourceDefinition source = new ChannelSourceDefinition(channelUri);
+        ChannelSourceDefinition source = new ChannelSourceDefinition(channelUri, ChannelSide.PRODUCER);
         MockPhysicalDefinition target = new MockPhysicalDefinition(targetUri);
 
         attacher.attach(source, target, connection);

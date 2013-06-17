@@ -54,8 +54,7 @@ import org.fabric3.channel.disruptor.impl.RingBufferChannel;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelManager;
-import org.fabric3.spi.channel.RegistrationException;
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -63,38 +62,28 @@ import org.oasisopen.sca.annotation.Reference;
  * Builds and disposes {@link RingBufferChannel}s.
  */
 public class RingBufferChannelBuilder implements ChannelBuilder {
-    private ChannelManager channelManager;
     private ExecutorService executorService;
 
-    public RingBufferChannelBuilder(@Reference ChannelManager channelManager, @Reference ExecutorService executorService) {
-        this.channelManager = channelManager;
+    public RingBufferChannelBuilder(@Reference ExecutorService executorService) {
         this.executorService = executorService;
     }
 
     public Channel build(PhysicalChannelDefinition definition) throws BuilderException {
-        try {
-            URI uri = definition.getUri();
-            QName deployable = definition.getDeployable();
+        URI uri = definition.getUri();
+        QName deployable = definition.getDeployable();
 
-            RingBufferData data = definition.getMetadata(RingBufferData.class);
-            int size = data.getRingSize();
+        RingBufferData data = definition.getMetadata(RingBufferData.class);
+        int size = data.getRingSize();
 
-            WaitStrategy strategy = createWaitStrategy(data);
+        WaitStrategy strategy = createWaitStrategy(data);
 
-            RingBufferChannel channel = new RingBufferChannel(uri, deployable, size, strategy, executorService);
-            channelManager.register(channel);
-            return channel;
-        } catch (RegistrationException e) {
-            throw new BuilderException(e);
-        }
+        ChannelSide channelSide = definition.getChannelSide();
+
+        return new RingBufferChannel(uri, deployable, size, strategy, channelSide, executorService);
     }
 
-    public void dispose(PhysicalChannelDefinition definition) throws BuilderException {
-        try {
-            channelManager.unregister(definition.getUri());
-        } catch (RegistrationException e) {
-            throw new BuilderException(e);
-        }
+    public void dispose(PhysicalChannelDefinition definition, Channel channel) throws BuilderException {
+        // no-op
     }
 
     private WaitStrategy createWaitStrategy(RingBufferData data) {

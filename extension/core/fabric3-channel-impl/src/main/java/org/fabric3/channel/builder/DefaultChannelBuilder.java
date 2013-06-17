@@ -55,8 +55,6 @@ import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelManager;
-import org.fabric3.spi.channel.RegistrationException;
 import org.fabric3.spi.federation.ZoneChannelException;
 import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
@@ -68,7 +66,6 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class DefaultChannelBuilder implements ChannelBuilder {
 
-    private ChannelManager channelManager;
     private ExecutorService executorService;
     private ReplicationMonitor monitor;
     private ZoneTopologyService topologyService;
@@ -76,8 +73,7 @@ public class DefaultChannelBuilder implements ChannelBuilder {
 
     private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder> bindingBuilders = Collections.emptyMap();
 
-    public DefaultChannelBuilder(@Reference ChannelManager channelManager, @Reference ExecutorService executorService, @Monitor ReplicationMonitor monitor) {
-        this.channelManager = channelManager;
+    public DefaultChannelBuilder(@Reference ExecutorService executorService, @Monitor ReplicationMonitor monitor) {
         this.executorService = executorService;
         this.monitor = monitor;
     }
@@ -113,43 +109,33 @@ public class DefaultChannelBuilder implements ChannelBuilder {
         if (definition.isReplicate() && replicationCapable) {
             String channelName = uri.toString();
             ReplicationHandler replicationHandler = new ReplicationHandler(channelName, topologyService, monitor);
-            channel = new DefaultChannelImpl(uri, deployable, replicationHandler, fanOutHandler);
+            channel = new DefaultChannelImpl(uri, deployable, replicationHandler, fanOutHandler, definition.getChannelSide());
             try {
                 topologyService.openChannel(channelName, null, replicationHandler);
             } catch (ZoneChannelException e) {
                 throw new BuilderException(e);
             }
         } else {
-            channel = new DefaultChannelImpl(uri, deployable, fanOutHandler);
+            channel = new DefaultChannelImpl(uri, deployable, fanOutHandler, definition.getChannelSide());
         }
 
-        try {
-            PhysicalChannelBindingDefinition bindingDefinition = definition.getBindingDefinition();
-            buildBinding(channel, bindingDefinition);
-            channelManager.register(channel);
-        } catch (RegistrationException e) {
-            throw new BuilderException(e);
-        }
+        PhysicalChannelBindingDefinition bindingDefinition = definition.getBindingDefinition();
+        buildBinding(channel, bindingDefinition);
 
         return channel;
     }
 
-    public void dispose(PhysicalChannelDefinition definition) throws BuilderException {
+    public void dispose(PhysicalChannelDefinition definition, Channel channel) throws BuilderException {
         URI uri = definition.getUri();
-        try {
-            Channel channel = channelManager.unregister(uri);
-            if (definition.isReplicate() && replicationCapable) {
-                String channelName = uri.toString();
-                try {
-                    topologyService.closeChannel(channelName);
-                } catch (ZoneChannelException e) {
-                    throw new BuilderException(e);
-                }
+        if (definition.isReplicate() && replicationCapable) {
+            String channelName = uri.toString();
+            try {
+                topologyService.closeChannel(channelName);
+            } catch (ZoneChannelException e) {
+                throw new BuilderException(e);
             }
-            disposeBinding(channel, definition.getBindingDefinition());
-        } catch (RegistrationException e) {
-            throw new BuilderException(e);
         }
+        disposeBinding(channel, definition.getBindingDefinition());
 
     }
 

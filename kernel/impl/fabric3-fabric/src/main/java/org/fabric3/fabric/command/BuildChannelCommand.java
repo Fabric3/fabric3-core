@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2013 Metaform Systems
+ * Copyright (c) 2009-2012 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -34,34 +34,52 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.fabric.generator.channel;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.fabric.command;
 
-import javax.xml.namespace.QName;
-import java.net.URI;
-
-import junit.framework.TestCase;
-import org.fabric3.model.type.component.ChannelDefinition;
-import org.fabric3.spi.channel.ChannelConstants;
-import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- *
+ * Instantiates a channel on a runtime.
  */
-public class DefaultChannelGeneratorTestCase extends TestCase {
-    private DefaultChannelGenerator generator = new DefaultChannelGenerator();
+public class BuildChannelCommand implements CompensatableCommand {
+    private static final long serialVersionUID = -7476738011193689990L;
+    private PhysicalChannelDefinition definition;
 
-    public void testGenerate() throws Exception {
-        ChannelDefinition channelDefinition = new ChannelDefinition("test", URI.create("contribution"));
-        channelDefinition.addIntent(ChannelConstants.REPLICATE_INTENT);
-        LogicalChannel channel = new LogicalChannel(URI.create("test"), channelDefinition, null);
-        QName deployable = new QName("test", "test");
-        channel.setDeployable(deployable);
-
-        PhysicalChannelDefinition definition = generator.generate(channel);
-
-        assertEquals(deployable, definition.getDeployable());
-        assertTrue(definition.isReplicate());
+    public BuildChannelCommand(PhysicalChannelDefinition definition) {
+        this.definition = definition;
     }
+
+    public DisposeChannelCommand getCompensatingCommand() {
+        return new DisposeChannelCommand(definition);
+    }
+
+    public PhysicalChannelDefinition getDefinition() {
+        return definition;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BuildChannelCommand that = (BuildChannelCommand) o;
+
+        return !(definition != null ? !definition.equals(that.definition) : that.definition != null);
+    }
+
+    public int hashCode() {
+        return (definition != null ? definition.hashCode() : 0);
+    }
+
 }

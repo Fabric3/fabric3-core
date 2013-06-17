@@ -45,12 +45,12 @@
         <f3:implementation.system class="org.fabric3.fabric.executor.DisposeComponentCommandExecutor"/>
     </component>
 
-    <component name="BuildChannelsCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.executor.BuildChannelsCommandExecutor"/>
+    <component name="BuildChannelCommandExecutor">
+        <f3:implementation.system class="org.fabric3.fabric.executor.BuildChannelCommandExecutor"/>
     </component>
 
-    <component name="DisposeChannelsCommandExecutor">
-        <f3:implementation.system class="org.fabric3.fabric.executor.DisposeChannelsCommandExecutor"/>
+    <component name="DisposeChannelCommandExecutor">
+        <f3:implementation.system class="org.fabric3.fabric.executor.DisposeChannelCommandExecutor"/>
     </component>
 
     <component name="WireAttachCommandExecutor">

@@ -45,7 +45,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.channel.disruptor.common.RingBufferData;
 import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelManager;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
@@ -56,28 +56,19 @@ public class RingBufferChannelBuilderTestCase extends TestCase {
     public static final URI URI = java.net.URI.create("test");
 
     private RingBufferChannelBuilder builder;
-    private ChannelManager channelManager;
     private PhysicalChannelDefinition definition;
 
     public void testBuild() throws Exception {
-        channelManager.register(EasyMock.isA(Channel.class));
-        EasyMock.replay(channelManager);
-
         Channel channel = builder.build(definition);
 
         assertEquals(URI, channel.getUri());
         assertEquals(DEPLOYABLE, channel.getDeployable());
-        EasyMock.verify(channelManager);
     }
 
     public void testDispose() throws Exception {
         Channel channel = EasyMock.createMock(Channel.class);
-        EasyMock.expect(channelManager.unregister(URI)).andReturn(channel);
-        EasyMock.replay(channelManager);
 
-        builder.dispose(definition);
-
-        EasyMock.verify(channelManager);
+        builder.dispose(definition, channel);
     }
 
     public void setUp() throws Exception {
@@ -85,11 +76,9 @@ public class RingBufferChannelBuilderTestCase extends TestCase {
         ExecutorService executorService = EasyMock.createMock(ExecutorService.class);
         EasyMock.replay(executorService);
 
-        channelManager = EasyMock.createMock(ChannelManager.class);
+        builder = new RingBufferChannelBuilder(executorService);
 
-        builder = new RingBufferChannelBuilder(channelManager, executorService);
-
-        definition = new PhysicalChannelDefinition(URI, DEPLOYABLE, false);
+        definition = new PhysicalChannelDefinition(URI, DEPLOYABLE, false, "ring.buffer", ChannelDeliveryType.ASYNCHRONOUS_WORKER);
         definition.setMetadata(new RingBufferData());
     }
 }

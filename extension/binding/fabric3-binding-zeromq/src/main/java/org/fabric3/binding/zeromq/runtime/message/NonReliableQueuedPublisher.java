@@ -55,7 +55,7 @@ import org.zeromq.ZMQ.Socket;
  * the thread via a queue.
  */
 @Management
-public class NonReliablePublisher implements Publisher, Thread.UncaughtExceptionHandler {
+public class NonReliableQueuedPublisher implements Publisher, Thread.UncaughtExceptionHandler {
     private ContextManager manager;
     private SocketAddress address;
     private long pollTimeout;
@@ -67,7 +67,7 @@ public class NonReliablePublisher implements Publisher, Thread.UncaughtException
 
     private LinkedBlockingQueue<Object> queue;
 
-    public NonReliablePublisher(ContextManager manager, SocketAddress address, ZeroMQMetadata metadata, long pollTimeout, MessagingMonitor monitor) {
+    public NonReliableQueuedPublisher(ContextManager manager, SocketAddress address, ZeroMQMetadata metadata, long pollTimeout, MessagingMonitor monitor) {
         this.manager = manager;
         this.address = address;
         this.pollTimeout = pollTimeout;

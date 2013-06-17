@@ -41,15 +41,18 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 public class ZeroMQConnectionTargetDefinition extends PhysicalConnectionTargetDefinition {
     private static final long serialVersionUID = -3528383965698203784L;
     private ZeroMQMetadata metadata;
+    private boolean dedicatedThread;
 
     /**
      * Constructor for a channel connection.
      *
-     * @param uri      the channel URI
-     * @param metadata the ZeroMQ metadata to configure the underlying socket
+     * @param uri             the channel URI
+     * @param metadata        the ZeroMQ metadata to configure the underlying socket
+     * @param dedicatedThread true if the ZeroMQ publisher will always be called on the same thread (e.g. from a ring buffer consumer)
      */
-    public ZeroMQConnectionTargetDefinition(URI uri, ZeroMQMetadata metadata) {
+    public ZeroMQConnectionTargetDefinition(URI uri, ZeroMQMetadata metadata, boolean dedicatedThread) {
         this.metadata = metadata;
+        this.dedicatedThread = dedicatedThread;
         setTargetUri(uri);
     }
 
@@ -57,4 +60,7 @@ public class ZeroMQConnectionTargetDefinition extends PhysicalConnectionTargetDe
         return metadata;
     }
 
+    public boolean isDedicatedThread() {
+        return dedicatedThread;
+    }
 }

@@ -57,8 +57,8 @@
         <f3:implementation.system class="org.fabric3.fabric.generator.classloader.ClassLoaderCommandGeneratorImpl"/>
     </component>
 
-    <component name="DomainChannelCommandGenerator">
-        <f3:implementation.system class="org.fabric3.fabric.generator.channel.DomainChannelCommandGeneratorImpl"/>
+    <component name="ChannelCommandGenerator">
+        <f3:implementation.system class="org.fabric3.fabric.generator.channel.ChannelCommandGeneratorImpl"/>
     </component>
 
     <component name="DomainResourceCommandGenerator">
@@ -88,11 +88,6 @@
 
     <component name="ComponentBuildCommandGenerator">
         <f3:implementation.system class="org.fabric3.fabric.generator.component.BuildComponentCommandGenerator"/>
-        <property name="order">2</property>
-    </component>
-
-    <component name="BuildChannelCommandGenerator">
-        <f3:implementation.system class="org.fabric3.fabric.generator.channel.BuildChannelCommandGenerator"/>
         <property name="order">2</property>
     </component>
 
@@ -131,11 +126,6 @@
         <property name="order">5</property>
     </component>
 
-    <component name="DisposeChannelCommandGenerator">
-        <f3:implementation.system class="org.fabric3.fabric.generator.channel.DisposeChannelCommandGenerator"/>
-        <property name="order">5</property>
-    </component>
-
     <component name="DisposeResourceCommandGenerator">
         <f3:implementation.system class="org.fabric3.fabric.generator.resource.DisposeResourceCommandGenerator"/>
         <property name="order">6</property>
@@ -153,8 +143,8 @@
         <f3:implementation.system class="org.fabric3.fabric.generator.utility.NullInterceptorGenerator"/>
     </component>
 
-    <component name="DefaultChannelGenerator">
-        <f3:implementation.system class="org.fabric3.fabric.generator.channel.DefaultChannelGenerator"/>
+    <component name="DefaultChannelGenerator" f3:key="default">
+        <f3:implementation.system class="org.fabric3.fabric.generator.channel.DefaultChannelGeneratorImpl"/>
     </component>
 
 </composite>

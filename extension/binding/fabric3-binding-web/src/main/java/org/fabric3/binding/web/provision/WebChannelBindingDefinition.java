@@ -44,6 +44,7 @@
 package org.fabric3.binding.web.provision;
 
 import org.fabric3.binding.web.common.OperationsAllowed;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 
 /**
@@ -55,6 +56,7 @@ public class WebChannelBindingDefinition extends PhysicalChannelBindingDefinitio
     private OperationsAllowed allowed;
 
     public WebChannelBindingDefinition(OperationsAllowed allowed) {
+        super(ChannelDeliveryType.DEFAULT);
         this.allowed = allowed;
     }
 

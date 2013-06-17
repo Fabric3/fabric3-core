@@ -40,18 +40,48 @@ package org.fabric3.spi.channel;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
+import org.fabric3.spi.model.physical.ChannelSide;
+
 /**
  * Manages channels on a runtime.
  */
 public interface ChannelManager {
 
     /**
-     * Returns the channel for the given URI or null if one does not exist.
+     * Returns the channel or null if one does not exist.
      *
      * @param uri the channel URI
+     * @param channelSide the channel side
      * @return the channel or null
      */
-    Channel getChannel(URI uri);
+    Channel getChannel(URI uri, ChannelSide channelSide);
+
+    /**
+     * Returns the channel and increments its use count or null if one does not exist.
+     *
+     * @param uri the channel URI
+     * @param channelSide the channel side
+     * @return the channel or null
+     */
+    Channel getAndIncrementChannel(URI uri, ChannelSide channelSide);
+
+    /**
+     * Returns the channel and decrements its use count or null if one does not exist.
+     *
+     * @param uri the channel URI
+     * @param channelSide the channel side
+     * @return the channel or null
+     */
+    Channel getAndDecrementChannel(URI uri, ChannelSide channelSide);
+
+    /**
+     * Returns the use count for the channel or -1 if the channel is not registered.
+     *
+     * @param uri the channel uri
+     * @param channelSide the channel side
+     * @return the use count
+     */
+    int getCount(URI uri, ChannelSide channelSide);
 
     /**
      * Registers a channel.
@@ -64,11 +94,12 @@ public interface ChannelManager {
     /**
      * Removes a channel for the given URI.
      *
-     * @param uri the uri
+     * @param uri         the uri
+     * @param channelSide the channel side
      * @return the channel or null
      * @throws RegistrationException if there is an error removing the channel
      */
-    Channel unregister(URI uri) throws RegistrationException;
+    Channel unregister(URI uri, ChannelSide channelSide) throws RegistrationException;
 
     /**
      * Starts channels contained in the given deployable composite.

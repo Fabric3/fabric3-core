@@ -43,6 +43,7 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.channel.Channel;
+import org.fabric3.spi.model.physical.ChannelSide;
 
 /**
  *
@@ -56,6 +57,7 @@ public class ChannelManagerImplTestCase extends TestCase {
 
     public void testDuplicateRegistration() throws Exception {
         EasyMock.expect(channel.getUri()).andReturn(CHANNEL_URI).times(2);
+        EasyMock.expect(channel.getChannelSide()).andReturn(ChannelSide.CONSUMER).times(2);
         EasyMock.replay(channel);
 
         manager.register(channel);
@@ -71,20 +73,39 @@ public class ChannelManagerImplTestCase extends TestCase {
 
     public void testGetChannel() throws Exception {
         EasyMock.expect(channel.getUri()).andReturn(CHANNEL_URI);
+        EasyMock.expect(channel.getChannelSide()).andReturn(ChannelSide.CONSUMER);
         EasyMock.replay(channel);
 
         manager.register(channel);
-        assertEquals(channel, manager.getChannel(CHANNEL_URI));
+        assertEquals(channel, manager.getChannel(CHANNEL_URI, ChannelSide.CONSUMER));
+
+        EasyMock.verify(channel);
+    }
+
+    public void testCount() throws Exception {
+        EasyMock.expect(channel.getUri()).andReturn(CHANNEL_URI);
+        EasyMock.expect(channel.getChannelSide()).andReturn(ChannelSide.CONSUMER);
+        EasyMock.replay(channel);
+
+        manager.register(channel);
+        assertEquals(1, manager.getCount(CHANNEL_URI, ChannelSide.CONSUMER));
+        assertEquals(-1, manager.getCount(CHANNEL_URI, ChannelSide.PRODUCER));
+        manager.getAndIncrementChannel(CHANNEL_URI, ChannelSide.CONSUMER);
+        assertEquals(2, manager.getCount(CHANNEL_URI, ChannelSide.CONSUMER));
+        manager.getAndDecrementChannel(CHANNEL_URI, ChannelSide.CONSUMER);
+        manager.getAndDecrementChannel(CHANNEL_URI, ChannelSide.CONSUMER);
+        assertEquals(0, manager.getCount(CHANNEL_URI, ChannelSide.CONSUMER));
 
         EasyMock.verify(channel);
     }
 
     public void testUnRegister() throws Exception {
         EasyMock.expect(channel.getUri()).andReturn(CHANNEL_URI).times(2);
+        EasyMock.expect(channel.getChannelSide()).andReturn(ChannelSide.CONSUMER).times(2);
         EasyMock.replay(channel);
 
         manager.register(channel);
-        manager.unregister(CHANNEL_URI);
+        manager.unregister(CHANNEL_URI, ChannelSide.CONSUMER);
         manager.register(channel);
 
         EasyMock.verify(channel);
@@ -92,6 +113,7 @@ public class ChannelManagerImplTestCase extends TestCase {
 
     public void testStartStopContext() throws Exception {
         EasyMock.expect(channel.getUri()).andReturn(CHANNEL_URI);
+        EasyMock.expect(channel.getChannelSide()).andReturn(ChannelSide.CONSUMER);
         EasyMock.expect(channel.getDeployable()).andReturn(DEPLOYABLE).times(2);
         channel.start();
         channel.stop();

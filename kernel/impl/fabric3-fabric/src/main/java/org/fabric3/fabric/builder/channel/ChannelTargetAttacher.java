@@ -39,16 +39,16 @@ package org.fabric3.fabric.builder.channel;
 
 import java.net.URI;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.ChannelManager;
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches the target side of a channel connection to a channel.
@@ -64,7 +64,7 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
     public void attach(PhysicalConnectionSourceDefinition source, ChannelTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
         URI uri = target.getTargetUri();
-        Channel channel = getChannel(uri);
+        Channel channel = getChannel(uri, target.getChannelSide());
         channel.attach(connection);
     }
 
@@ -72,8 +72,8 @@ public class ChannelTargetAttacher implements TargetConnectionAttacher<ChannelTa
         // no-op since channel do not maintain references to incoming handlers
     }
 
-    private Channel getChannel(URI uri) throws ChannelNotFoundException {
-        Channel channel = channelManager.getChannel(uri);
+    private Channel getChannel(URI uri, ChannelSide channelSide) throws ChannelNotFoundException {
+        Channel channel = channelManager.getChannel(uri, channelSide);
         if (channel == null) {
             throw new ChannelNotFoundException("Channel not found");
         }

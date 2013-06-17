@@ -40,7 +40,9 @@ package org.fabric3.fabric.generator.channel;
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -71,6 +73,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -105,9 +108,15 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         EasyMock.replay(componentGenerator, handlerGenerator, generatorRegistry, resolver);
 
         ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, resolver);
-        LogicalConsumer consumer = createConsumer("testChannel", false);
 
-        List<PhysicalChannelConnectionDefinition> definitions = generator.generateConsumer(consumer);
+        LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
+        LogicalChannel channel = createChannel(parent, false);
+        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<LogicalChannel, ChannelDeliveryType>();
+        channels.put(channel, ChannelDeliveryType.DEFAULT);
+
+        LogicalConsumer consumer = createConsumer(parent, "testChannel");
+
+        List<PhysicalChannelConnectionDefinition> definitions = generator.generateConsumer(consumer, channels);
         assertEquals(1, definitions.size());
         PhysicalChannelConnectionDefinition definition = definitions.get(0);
         assertNotNull(definition.getSource());
@@ -130,8 +139,9 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         ConnectionBindingGenerator<?> bindingGenerator = EasyMock.createMock(ConnectionBindingGenerator.class);
         PhysicalConnectionSourceDefinition sourceDefinition = new PhysicalConnectionSourceDefinition();
-        EasyMock.expect(bindingGenerator.generateConnectionSource(EasyMock.isA(LogicalConsumer.class), EasyMock.isA(LogicalBinding.class))).andReturn(
-                sourceDefinition);
+        EasyMock.expect(bindingGenerator.generateConnectionSource(EasyMock.isA(LogicalConsumer.class),
+                                                                  EasyMock.isA(LogicalBinding.class),
+                                                                  EasyMock.isA(ChannelDeliveryType.class))).andReturn(sourceDefinition);
 
         GeneratorRegistry generatorRegistry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.expect(generatorRegistry.getComponentGenerator(MockImplementation.class)).andReturn(componentGenerator);
@@ -147,49 +157,21 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         EasyMock.replay(componentGenerator, handlerGenerator, bindingGenerator, generatorRegistry, resolver);
 
         ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, resolver);
-        LogicalConsumer consumer = createConsumer("testChannel", true);
 
-        List<PhysicalChannelConnectionDefinition> definitions = generator.generateConsumer(consumer);
-        assertEquals(1, definitions.size());
+        LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
+        LogicalChannel channel = createChannel(parent, true);
+        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<LogicalChannel, ChannelDeliveryType>();
+        channels.put(channel, ChannelDeliveryType.DEFAULT);
+
+        LogicalConsumer consumer = createConsumer(parent, "testChannel");
+
+        List<PhysicalChannelConnectionDefinition> definitions = generator.generateConsumer(consumer, channels);
+        assertEquals(2, definitions.size());
         PhysicalChannelConnectionDefinition definition = definitions.get(0);
         assertNotNull(definition.getSource());
         assertNotNull(definition.getEventStream());
 
         EasyMock.verify(componentGenerator, handlerGenerator, bindingGenerator, generatorRegistry, resolver);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void testGenerateLocalConsumerChannelNotFound() throws Exception {
-        ComponentGenerator<LogicalComponent<MockImplementation>> componentGenerator = EasyMock.createMock(ComponentGenerator.class);
-        MockPhysicalConnectionTargetDefinition targetDefinition = new MockPhysicalConnectionTargetDefinition();
-        EasyMock.expect(componentGenerator.generateConnectionTarget(EasyMock.isA(LogicalConsumer.class))).andReturn(targetDefinition);
-
-        EventStreamHandlerGenerator handlerGenerator = EasyMock.createMock(EventStreamHandlerGenerator.class);
-        PhysicalHandlerDefinition handlerDefinition = new PhysicalHandlerDefinition();
-        EasyMock.expect(handlerGenerator.generate(EasyMock.isA(Element.class), EasyMock.isA(PolicyMetadata.class))).andReturn(handlerDefinition);
-
-        GeneratorRegistry generatorRegistry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(generatorRegistry.getComponentGenerator(MockImplementation.class)).andReturn(componentGenerator);
-        EasyMock.expect(generatorRegistry.getEventStreamHandlerGenerator(EasyMock.isA(QName.class))).andReturn(handlerGenerator);
-
-        MockPolicyResult result = createMockPolicy();
-
-        PolicyResolver resolver = EasyMock.createMock(PolicyResolver.class);
-        EasyMock.expect(resolver.resolvePolicies(EasyMock.isA(LogicalConsumer.class))).andReturn(result);
-
-        EasyMock.replay(componentGenerator, handlerGenerator, generatorRegistry, resolver);
-
-        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, resolver);
-        LogicalConsumer consumer = createConsumer("NotFound", false);
-
-        try {
-            generator.generateConsumer(consumer);
-            fail();
-        } catch (ChannelNotFoundException e) {
-            // expected
-        }
-
-        EasyMock.verify(componentGenerator, handlerGenerator, generatorRegistry, resolver);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -207,9 +189,15 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         EasyMock.replay(componentGenerator, generatorRegistry, resolver);
 
         ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, resolver);
-        LogicalProducer producer = createProducer("testChannel", false);
 
-        List<PhysicalChannelConnectionDefinition> definitions = generator.generateProducer(producer);
+        LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
+        LogicalChannel channel = createChannel(parent, false);
+        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<LogicalChannel, ChannelDeliveryType>();
+        channels.put(channel, ChannelDeliveryType.DEFAULT);
+
+        LogicalProducer producer = createProducer(parent, "testChannel");
+
+        List<PhysicalChannelConnectionDefinition> definitions = generator.generateProducer(producer, channels);
         assertEquals(1, definitions.size());
         PhysicalChannelConnectionDefinition definition = definitions.get(0);
         assertNotNull(definition.getSource());
@@ -228,8 +216,9 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
 
         ConnectionBindingGenerator<?> bindingGenerator = EasyMock.createMock(ConnectionBindingGenerator.class);
         PhysicalConnectionTargetDefinition targetDefinition = new PhysicalConnectionTargetDefinition();
-        EasyMock.expect(bindingGenerator.generateConnectionTarget(EasyMock.isA(LogicalProducer.class), EasyMock.isA(LogicalBinding.class))).andReturn(
-                targetDefinition);
+        EasyMock.expect(bindingGenerator.generateConnectionTarget(EasyMock.isA(LogicalProducer.class),
+                                                                  EasyMock.isA(LogicalBinding.class),
+                                                                  EasyMock.isA(ChannelDeliveryType.class))).andReturn(targetDefinition);
 
         GeneratorRegistry generatorRegistry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.expect(generatorRegistry.getComponentGenerator(MockImplementation.class)).andReturn(componentGenerator);
@@ -241,10 +230,15 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         EasyMock.replay(componentGenerator, bindingGenerator, generatorRegistry, resolver);
 
         ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, resolver);
-        LogicalProducer producer = createProducer("testChannel", true);
+        LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
+        LogicalChannel channel = createChannel(parent, true);
+        Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<LogicalChannel, ChannelDeliveryType>();
+        channels.put(channel, ChannelDeliveryType.DEFAULT);
 
-        List<PhysicalChannelConnectionDefinition> definitions = generator.generateProducer(producer);
-        assertEquals(1, definitions.size());
+        LogicalProducer producer = createProducer(parent, "testChannel");
+
+        List<PhysicalChannelConnectionDefinition> definitions = generator.generateProducer(producer, channels);
+        assertEquals(2, definitions.size());
         PhysicalChannelConnectionDefinition definition = definitions.get(0);
         assertNotNull(definition.getSource());
         assertNotNull(definition.getEventStream());
@@ -252,41 +246,9 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         EasyMock.verify(componentGenerator, bindingGenerator, generatorRegistry, resolver);
     }
 
-    public void testGenerateChanelNotFoundLocalProducer() throws Exception {
-        // Note this test should be updated to verify policy when the later is supported on producers
-        ComponentGenerator<LogicalComponent<MockImplementation>> componentGenerator = EasyMock.createMock(ComponentGenerator.class);
-        MockPhysicalConnectionSourceDefinition sourceDefinition = new MockPhysicalConnectionSourceDefinition();
-        EasyMock.expect(componentGenerator.generateConnectionSource(EasyMock.isA(LogicalProducer.class))).andReturn(sourceDefinition);
-
-        GeneratorRegistry generatorRegistry = EasyMock.createMock(GeneratorRegistry.class);
-        EasyMock.expect(generatorRegistry.getComponentGenerator(MockImplementation.class)).andReturn(componentGenerator);
-
-        PolicyResolver resolver = EasyMock.createMock(PolicyResolver.class);
-
-        EasyMock.replay(componentGenerator, generatorRegistry, resolver);
-
-        ConnectionGeneratorImpl generator = new ConnectionGeneratorImpl(generatorRegistry, resolver);
-        LogicalProducer producer = createProducer("NotThere", false);
-
-        try {
-            generator.generateProducer(producer);
-            fail();
-        } catch (ChannelNotFoundException e) {
-            //expected
-        }
-
-        EasyMock.verify(componentGenerator, generatorRegistry, resolver);
-    }
-
     @SuppressWarnings({"unchecked"})
-    private LogicalConsumer createConsumer(String channelName, boolean addBinding) {
-        LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
+    private LogicalConsumer createConsumer(LogicalCompositeComponent parent, String channelName) {
         LogicalComponent<?> component = createComponent(parent);
-        LogicalChannel channel = createChannel(parent);
-        if (addBinding) {
-            MockBinding binding = new MockBinding();
-            channel.addBinding(new LogicalBinding<MockBinding>(binding, channel));
-        }
 
         ConsumerDefinition consumerDefinition = new ConsumerDefinition("consumer");
         DataType<?> javaClass = new JavaClass<Object>(Object.class);
@@ -299,14 +261,8 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private LogicalProducer createProducer(String target, boolean addBinding) {
-        LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("composite"), null, null);
+    private LogicalProducer createProducer(LogicalCompositeComponent parent, String target) {
         LogicalComponent<?> component = createComponent(parent);
-        LogicalChannel channel = createChannel(parent);
-        if (addBinding) {
-            MockBinding binding = new MockBinding();
-            channel.addBinding(new LogicalBinding<MockBinding>(binding, channel));
-        }
 
         ProducerDefinition producerDefinition = new ProducerDefinition("producer");
         LogicalProducer producer = new LogicalProducer(URI.create("composite/component#producer"), producerDefinition, component);
@@ -320,10 +276,14 @@ public class ConnectionGeneratorImplTestCase extends TestCase {
         return producer;
     }
 
-    private LogicalChannel createChannel(LogicalCompositeComponent parent) {
+    private LogicalChannel createChannel(LogicalCompositeComponent parent, boolean addBinding) {
         ChannelDefinition channelDefinition = new ChannelDefinition("testChannel", URI.create("contribution"));
         LogicalChannel channel = new LogicalChannel(URI.create("testChannel"), channelDefinition, parent);
         parent.addChannel(channel);
+        if (addBinding) {
+            MockBinding binding = new MockBinding();
+            channel.addBinding(new LogicalBinding<MockBinding>(binding, channel));
+        }
         return channel;
     }
 

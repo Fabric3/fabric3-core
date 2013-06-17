@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -34,54 +34,46 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.fabric.command;
+*/
+package org.fabric3.fabric.generator.channel;
 
-import java.util.List;
+import java.net.URI;
 
-import org.fabric3.spi.command.CompensatableCommand;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.instance.LogicalInvocable;
 
 /**
- * Instantiates channels on a runtime.
+ *
  */
-public class BuildChannelsCommand implements CompensatableCommand {
-    private static final long serialVersionUID = -7476738011193689990L;
-    private List<PhysicalChannelDefinition> definitions;
+public class InvocableGeneratorHelper {
 
-    public BuildChannelsCommand(List<PhysicalChannelDefinition> definitions) {
-        this.definitions = definitions;
-    }
-
-    public DisposeChannelsCommand getCompensatingCommand() {
-        return new DisposeChannelsCommand(definitions);
-    }
-
-    public List<PhysicalChannelDefinition> getDefinitions() {
-        return definitions;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    /**
+     * Returns the channel in the invocable hierarchy.
+     *
+     * @param channelUri the channel uri
+     * @param invocable  the invocable
+     * @return the channel
+     * @throws ChannelNotFoundException if the channel is not found
+     */
+    public static LogicalChannel getChannelInHierarchy(URI channelUri, LogicalInvocable invocable) throws ChannelNotFoundException {
+        LogicalChannel channel = null;
+        LogicalCompositeComponent parent = invocable.getParent().getParent();
+        while (true) {
+            if (parent != null) {
+                channel = parent.getChannel(channelUri);
+                if (channel != null) {
+                    break;
+                }
+                parent = parent.getParent();
+            } else {
+                break;
+            }
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
+        if (channel == null) {
+            throw new ChannelNotFoundException("Channel not found: " + channelUri);
         }
-
-        BuildChannelsCommand that = (BuildChannelsCommand) o;
-
-        return !(definitions != null ? !definitions.equals(that.definitions) : that.definitions != null);
-    }
-
-    public int hashCode() {
-        return (definitions != null ? definitions.hashCode() : 0);
+        return channel;
     }
 
 }

@@ -38,10 +38,13 @@
 package org.fabric3.fabric.generator.channel;
 
 import java.util.List;
+import java.util.Map;
 
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
@@ -53,17 +56,21 @@ public interface ConnectionGenerator {
      * Generate event channel connection metadata from a logical producer.
      *
      * @param producer the logical producer
+     * @param channels the a map of channels and delivery semantics the consumer is connected to
      * @return the event channel connection metadata
      * @throws GenerationException if a generation error is encountered
      */
-    List<PhysicalChannelConnectionDefinition> generateProducer(LogicalProducer producer) throws GenerationException;
+    List<PhysicalChannelConnectionDefinition> generateProducer(LogicalProducer producer, Map<LogicalChannel, ChannelDeliveryType> channels)
+            throws GenerationException;
 
     /**
      * Generate event channel connection metadata from a logical consumer.
      *
      * @param consumer the logical consumer
+     * @param channels the a map of channels and delivery semantics the consumer is connected to
      * @return the event channel connection metadata
      * @throws GenerationException if a generation error is encountered
      */
-    List<PhysicalChannelConnectionDefinition> generateConsumer(LogicalConsumer consumer) throws GenerationException;
+    List<PhysicalChannelConnectionDefinition> generateConsumer(LogicalConsumer consumer, Map<LogicalChannel, ChannelDeliveryType> channels)
+            throws GenerationException;
 }

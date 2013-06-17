@@ -46,6 +46,7 @@ import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.PassThroughHandler;
+import org.fabric3.spi.model.physical.ChannelSide;
 
 /**
  * The default Channel implementation.
@@ -53,24 +54,28 @@ import org.fabric3.spi.channel.PassThroughHandler;
 public class DefaultChannelImpl implements Channel {
     private URI uri;
     private QName deployable;
+    private final ChannelSide channelSide;
+
     private EventStreamHandler headHandler;
     private EventStreamHandler tailHandler;
     private EventStreamHandler inHandler;
     private FanOutHandler fanOutHandler;
 
-    public DefaultChannelImpl(URI uri, QName deployable, FanOutHandler fanOutHandler) {
+    public DefaultChannelImpl(URI uri, QName deployable, FanOutHandler fanOutHandler, ChannelSide channelSide) {
         this.uri = uri;
         this.deployable = deployable;
+        this.channelSide = channelSide;
         inHandler = new PassThroughHandler();
         this.fanOutHandler = fanOutHandler;
         inHandler.setNext(this.fanOutHandler);
     }
 
-    public DefaultChannelImpl(URI uri, QName deployable, EventStreamHandler inHandler, FanOutHandler fanOutHandler) {
+    public DefaultChannelImpl(URI uri, QName deployable, EventStreamHandler inHandler, FanOutHandler fanOutHandler, ChannelSide channelSide) {
         this.uri = uri;
         this.deployable = deployable;
         this.inHandler = inHandler;
         this.fanOutHandler = fanOutHandler;
+        this.channelSide = channelSide;
         this.inHandler.setNext(fanOutHandler);
     }
 
@@ -138,5 +143,9 @@ public class DefaultChannelImpl implements Channel {
 
     public ChannelConnection unsubscribe(URI uri) {
         return fanOutHandler.removeConnection(uri);
+    }
+
+    public ChannelSide getChannelSide() {
+        return channelSide;
     }
 }

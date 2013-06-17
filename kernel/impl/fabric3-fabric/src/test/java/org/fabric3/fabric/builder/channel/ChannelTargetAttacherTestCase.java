@@ -41,15 +41,13 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.oasisopen.sca.annotation.EagerInit;
-
-import org.fabric3.fabric.model.physical.ChannelSourceDefinition;
 import org.fabric3.fabric.model.physical.ChannelTargetDefinition;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.ChannelManager;
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *
@@ -67,13 +65,13 @@ public class ChannelTargetAttacherTestCase extends TestCase {
         Channel channel = EasyMock.createMock((Channel.class));
         channel.attach(connection);
         EasyMock.expectLastCall();
-        EasyMock.expect(channelManager.getChannel(channelUri)).andReturn(channel);
+        EasyMock.expect(channelManager.getChannel(channelUri, ChannelSide.CONSUMER)).andReturn(channel);
 
         EasyMock.replay(channelManager, connection, channel);
-        
+
         ChannelTargetAttacher attacher = new ChannelTargetAttacher(channelManager);
         MockPhysicalDefinition source = new MockPhysicalDefinition(targetUri);
-        ChannelTargetDefinition target = new ChannelTargetDefinition(channelUri);
+        ChannelTargetDefinition target = new ChannelTargetDefinition(channelUri, ChannelSide.CONSUMER);
 
         attacher.attach(source, target, connection);
         attacher.detach(source, target);

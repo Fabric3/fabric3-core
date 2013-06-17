@@ -41,6 +41,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.fabric3.api.ChannelEvent;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
@@ -63,11 +64,11 @@ import org.fabric3.spi.generator.policy.PolicyResult;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
-import org.fabric3.spi.model.instance.LogicalInvocable;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -89,7 +90,8 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     }
 
     @SuppressWarnings({"unchecked"})
-    public List<PhysicalChannelConnectionDefinition> generateProducer(LogicalProducer producer) throws GenerationException {
+    public List<PhysicalChannelConnectionDefinition> generateProducer(LogicalProducer producer, Map<LogicalChannel, ChannelDeliveryType> channels)
+            throws GenerationException {
         List<PhysicalChannelConnectionDefinition> definitions = new ArrayList<PhysicalChannelConnectionDefinition>();
 
         LogicalComponent<?> component = producer.getParent();
@@ -100,21 +102,29 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
 
         PhysicalEventStreamDefinition eventStream = generate(producer.getStreamOperation());
 
-        for (URI uri : producer.getTargets()) {
-            LogicalChannel channel = getChannelInHierarchy(uri, producer);
-            PhysicalChannelConnectionDefinition definition;
+        for (Map.Entry<LogicalChannel, ChannelDeliveryType> entry : channels.entrySet()) {
+            LogicalChannel channel = entry.getKey();
             if (!channel.isBound()) {
-                definition = generateProducerConnection(producer, channel, sourceDefinition, classLoaderId, eventStream);
+                PhysicalChannelConnectionDefinition definition = generateProducerConnection(producer, channel, sourceDefinition, classLoaderId, eventStream);
+                definitions.add(definition);
             } else {
-                definition = generateProducerBinding(producer, channel, sourceDefinition, classLoaderId, eventStream);
+                PhysicalChannelConnectionDefinition producerDefinition = generateProducerConnection(producer,
+                                                                                                    channel,
+                                                                                                    sourceDefinition,
+                                                                                                    classLoaderId,
+                                                                                                    eventStream);
+                definitions.add(producerDefinition);
+                ChannelDeliveryType deliveryType = entry.getValue();
+                PhysicalChannelConnectionDefinition bindingDefinition = generateProducerBinding(producer, channel, deliveryType, classLoaderId, eventStream);
+                definitions.add(bindingDefinition);
             }
-            definitions.add(definition);
+
         }
         return definitions;
     }
 
-    @SuppressWarnings({"unchecked"})
-    public List<PhysicalChannelConnectionDefinition> generateConsumer(LogicalConsumer consumer) throws GenerationException {
+    public List<PhysicalChannelConnectionDefinition> generateConsumer(LogicalConsumer consumer, Map<LogicalChannel, ChannelDeliveryType> channels)
+            throws GenerationException {
         List<PhysicalChannelConnectionDefinition> definitions = new ArrayList<PhysicalChannelConnectionDefinition>();
         LogicalComponent<?> component = consumer.getParent();
 
@@ -127,32 +137,40 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         PhysicalEventStreamDefinition eventStream = generateEventStream(consumer);
 
         generatePolicy(consumer, eventStream);
-
-        for (URI uri : consumer.getSources()) {
-            LogicalChannel channel = getChannelInHierarchy(uri, consumer);
-            PhysicalChannelConnectionDefinition definition;
+        for (Map.Entry<LogicalChannel, ChannelDeliveryType> entry : channels.entrySet()) {
+            LogicalChannel channel = entry.getKey();
             if (!channel.isBound()) {
-                definition = generateConsumerConnection(consumer, channel, targetDefinition, classLoaderId, eventStream);
+                PhysicalChannelConnectionDefinition definition = generateConsumerConnection(consumer, channel, targetDefinition, classLoaderId, eventStream);
+                definitions.add(definition);
 
             } else {
-                definition = generateConsumerBinding(consumer, channel, targetDefinition, eventStream, classLoaderId);
+                PhysicalChannelConnectionDefinition consumerConnection = generateConsumerConnection(consumer,
+                                                                                                    channel,
+                                                                                                    targetDefinition,
+                                                                                                    classLoaderId,
+                                                                                                    eventStream);
+                definitions.add(consumerConnection);
+                ChannelDeliveryType deliveryType = entry.getValue();
+                PhysicalChannelConnectionDefinition bindingDefinition = generateConsumerBinding(consumer, channel, deliveryType, classLoaderId, eventStream);
+                definitions.add(bindingDefinition);
             }
-            definitions.add(definition);
+
         }
         return definitions;
+
     }
 
     private PhysicalChannelConnectionDefinition generateConsumerConnection(LogicalConsumer consumer,
                                                                            LogicalChannel channel,
                                                                            PhysicalConnectionTargetDefinition targetDefinition,
                                                                            URI classLoaderId,
-                                                                           PhysicalEventStreamDefinition eventStream) {
+                                                                           PhysicalEventStreamDefinition eventStream) throws GenerationException {
         // the channel does not have bindings, which means it is a local channel
         if (!channel.getZone().equals(consumer.getParent().getZone())) {
-            throw new AssertionError("Binding not configured on a channel where the producer is in a different zone");
+            throw new GenerationException("Binding not configured on a channel where the producer is in a different zone");
         }
         // construct a local connection to the channel
-        PhysicalConnectionSourceDefinition sourceDefinition = new ChannelSourceDefinition(channel.getUri());
+        PhysicalConnectionSourceDefinition sourceDefinition = new ChannelSourceDefinition(channel.getUri(), ChannelSide.CONSUMER);
         sourceDefinition.setSequence(consumer.getDefinition().getSequence());
         sourceDefinition.setClassLoaderId(classLoaderId);
         return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStream);
@@ -161,15 +179,17 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     @SuppressWarnings({"unchecked"})
     private PhysicalChannelConnectionDefinition generateConsumerBinding(LogicalConsumer consumer,
                                                                         LogicalChannel channel,
-                                                                        PhysicalConnectionTargetDefinition targetDefinition,
-                                                                        PhysicalEventStreamDefinition eventStream,
-                                                                        URI classLoaderId) throws GenerationException {
+                                                                        ChannelDeliveryType deliveryType,
+                                                                        URI classLoaderId,
+                                                                        PhysicalEventStreamDefinition eventStream) throws GenerationException {
         // use the bindings on the channel to create a consumer binding configuration
         LogicalBinding<?> binding = channel.getBinding();
         ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
-        PhysicalConnectionSourceDefinition sourceDefinition = bindingGenerator.generateConnectionSource(consumer, binding);
+        PhysicalConnectionSourceDefinition sourceDefinition = bindingGenerator.generateConnectionSource(consumer, binding, deliveryType);
         sourceDefinition.setSequence(consumer.getDefinition().getSequence());
         sourceDefinition.setClassLoaderId(classLoaderId);
+        ChannelTargetDefinition targetDefinition = new ChannelTargetDefinition(channel.getUri(), ChannelSide.CONSUMER);
+        targetDefinition.setClassLoaderId(classLoaderId);
         return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStream);
     }
 
@@ -177,11 +197,11 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
                                                                            LogicalChannel channel,
                                                                            PhysicalConnectionSourceDefinition sourceDefinition,
                                                                            URI classLoaderId,
-                                                                           PhysicalEventStreamDefinition eventStream) {
+                                                                           PhysicalEventStreamDefinition eventStream) throws GenerationException {
         if (!channel.getZone().equals(producer.getParent().getZone())) {
-            throw new AssertionError("Binding not configured on a channel where the producer is in a different zone");
+            throw new GenerationException("Binding not configured on a channel where the producer is in a different zone");
         }
-        PhysicalConnectionTargetDefinition targetDefinition = new ChannelTargetDefinition(channel.getUri());
+        PhysicalConnectionTargetDefinition targetDefinition = new ChannelTargetDefinition(channel.getUri(), ChannelSide.PRODUCER);
         targetDefinition.setClassLoaderId(classLoaderId);
         return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStream);
     }
@@ -189,13 +209,15 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
     @SuppressWarnings({"unchecked"})
     private PhysicalChannelConnectionDefinition generateProducerBinding(LogicalProducer producer,
                                                                         LogicalChannel channel,
-                                                                        PhysicalConnectionSourceDefinition sourceDefinition,
+                                                                        ChannelDeliveryType deliveryType,
                                                                         URI classLoaderId,
                                                                         PhysicalEventStreamDefinition eventStream) throws GenerationException {
         LogicalBinding<?> binding = channel.getBinding();
         ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
-        PhysicalConnectionTargetDefinition targetDefinition = bindingGenerator.generateConnectionTarget(producer, binding);
+        PhysicalConnectionTargetDefinition targetDefinition = bindingGenerator.generateConnectionTarget(producer, binding, deliveryType);
         targetDefinition.setClassLoaderId(classLoaderId);
+        ChannelSourceDefinition sourceDefinition = new ChannelSourceDefinition(channel.getUri(), ChannelSide.PRODUCER);
+        sourceDefinition.setClassLoaderId(classLoaderId);
         return new PhysicalChannelConnectionDefinition(sourceDefinition, targetDefinition, eventStream);
     }
 
@@ -253,26 +275,6 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
             definition.addFilterDefinition(typeFilter);
         }
         return definition;
-    }
-
-    private LogicalChannel getChannelInHierarchy(URI channelUri, LogicalInvocable invocable) throws GenerationException {
-        LogicalChannel channel = null;
-        LogicalCompositeComponent parent = invocable.getParent().getParent();
-        while (true) {
-            if (parent != null) {
-                channel = parent.getChannel(channelUri);
-                if (channel != null) {
-                    break;
-                }
-                parent = parent.getParent();
-            } else {
-                break;
-            }
-        }
-        if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found: " + channelUri);
-        }
-        return channel;
     }
 
     @SuppressWarnings("unchecked")

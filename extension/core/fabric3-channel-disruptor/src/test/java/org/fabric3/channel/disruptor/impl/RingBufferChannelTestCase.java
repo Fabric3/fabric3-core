@@ -49,6 +49,7 @@ import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.PassThroughHandler;
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 
 /**
@@ -61,6 +62,7 @@ public class RingBufferChannelTestCase extends TestCase {
                                                           new QName("test", "test"),
                                                           1024,
                                                           new BlockingWaitStrategy(),
+                                                          ChannelSide.CONSUMER,
                                                           Executors.newScheduledThreadPool(4));
 
         MockConsumer consumer = new MockConsumer();

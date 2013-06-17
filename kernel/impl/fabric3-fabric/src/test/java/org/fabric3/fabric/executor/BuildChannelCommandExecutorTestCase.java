@@ -45,33 +45,32 @@ package org.fabric3.fabric.executor;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.builder.channel.ChannelBuilderRegistry;
-import org.fabric3.fabric.command.DisposeChannelsCommand;
+import org.fabric3.fabric.command.BuildChannelCommand;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
  *
  */
-public class DisposeChannelsCommandExecutorTestCase extends TestCase {
+public class BuildChannelCommandExecutorTestCase extends TestCase {
 
-    public void testDisposeChannel() throws Exception {
+    public void testBuildChannel() throws Exception {
         PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"), true);
 
         Channel channel = EasyMock.createMock(Channel.class);
 
         ChannelBuilderRegistry channelBuilderRegistry = EasyMock.createMock(ChannelBuilderRegistry.class);
-        channelBuilderRegistry.dispose(EasyMock.isA(PhysicalChannelDefinition.class));
+        EasyMock.expect(channelBuilderRegistry.build(EasyMock.isA(PhysicalChannelDefinition.class))).andReturn(channel);
 
         EasyMock.replay(channelBuilderRegistry, channel);
 
-        DisposeChannelsCommandExecutor executor = new DisposeChannelsCommandExecutor(channelBuilderRegistry, null);
+        BuildChannelCommandExecutor executor = new BuildChannelCommandExecutor(channelBuilderRegistry, null);
 
-        DisposeChannelsCommand command = new DisposeChannelsCommand(Collections.singletonList(definition));
+        BuildChannelCommand command = new BuildChannelCommand(definition);
         executor.execute(command);
 
         EasyMock.verify(channelBuilderRegistry, channel);

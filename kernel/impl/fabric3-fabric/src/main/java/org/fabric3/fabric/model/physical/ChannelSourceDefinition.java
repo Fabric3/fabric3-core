@@ -39,6 +39,7 @@ package org.fabric3.fabric.model.physical;
 
 import java.net.URI;
 
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
@@ -46,8 +47,14 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
  */
 public class ChannelSourceDefinition extends PhysicalConnectionSourceDefinition {
     private static final long serialVersionUID = -345332613558717623L;
+    private ChannelSide channelSide;
 
-    public ChannelSourceDefinition(URI uri) {
+    public ChannelSourceDefinition(URI uri, ChannelSide channelSide) {
+        this.channelSide = channelSide;
         setUri(uri);
+    }
+
+    public ChannelSide getChannelSide() {
+        return channelSide;
     }
 }

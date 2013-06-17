@@ -37,12 +37,17 @@
 */
 package org.fabric3.binding.zeromq.provision;
 
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 
 /**
  *
  */
-public class ZeroMQChannelBindingDefinition extends PhysicalChannelBindingDefinition{
+public class ZeroMQChannelBindingDefinition extends PhysicalChannelBindingDefinition {
     private static final long serialVersionUID = -1325017876858246886L;
 
+    public ZeroMQChannelBindingDefinition(ChannelDeliveryType deliveryType) {
+        super(deliveryType);
+
+    }
 }

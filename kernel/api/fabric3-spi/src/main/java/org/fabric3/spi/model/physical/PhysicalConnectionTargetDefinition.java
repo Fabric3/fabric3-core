@@ -43,9 +43,9 @@
  */
 package org.fabric3.spi.model.physical;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.net.URI;
-import javax.xml.namespace.QName;
 
 /**
  * Used to attach the target side of a channel connection. The target may be a consumer, channel binding or channel.
@@ -79,6 +79,5 @@ public class PhysicalConnectionTargetDefinition implements Serializable {
     public void setClassLoaderId(URI classLoaderId) {
         this.classLoaderId = classLoaderId;
     }
-
 
 }

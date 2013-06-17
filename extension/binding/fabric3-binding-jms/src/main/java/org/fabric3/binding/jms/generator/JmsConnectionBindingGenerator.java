@@ -45,6 +45,7 @@ package org.fabric3.binding.jms.generator;
 
 import java.net.URI;
 
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -83,8 +84,9 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         this.provisioner = provisioner;
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer, LogicalBinding<JmsBindingDefinition> binding)
-            throws GenerationException {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,
+                                                                       LogicalBinding<JmsBindingDefinition> binding,
+                                                                       ChannelDeliveryType deliveryType) throws GenerationException {
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
         URI uri = consumer.getUri();
 
@@ -97,7 +99,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         generateIntents(binding, metadata);
 
         metadata.getDestination().setType(DestinationType.TOPIC);  // only use topics for channels
-        
+
         JmsConnectionSourceDefinition definition = new JmsConnectionSourceDefinition(uri, metadata);
         if (provisioner != null) {
             provisioner.generateConnectionSource(definition);
@@ -105,8 +107,9 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         return definition;
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer, LogicalBinding<JmsBindingDefinition> binding)
-            throws GenerationException {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
+                                                                       LogicalBinding<JmsBindingDefinition> binding,
+                                                                       ChannelDeliveryType deliveryType) throws GenerationException {
         URI uri = binding.getDefinition().getTargetUri();
         JmsBindingMetadata metadata = binding.getDefinition().getJmsMetadata().snapshot();
 
@@ -123,7 +126,8 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         return definition;
     }
 
-    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<JmsBindingDefinition> binding) throws GenerationException {
+    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<JmsBindingDefinition> binding, ChannelDeliveryType deliveryType)
+            throws GenerationException {
         // do nothing
         return null;
     }
@@ -139,8 +143,7 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
         if (binding.getDefinition().getIntents().contains(DURABLE_INTENT) || parent.getDefinition().getIntents().contains(DURABLE_INTENT)) {
             metadata.setDurable(true);
         }
-        if (binding.getDefinition().getIntents().contains(NON_PERSISTENT_INTENT)
-                || parent.getDefinition().getIntents().contains(NON_PERSISTENT_INTENT)) {
+        if (binding.getDefinition().getIntents().contains(NON_PERSISTENT_INTENT) || parent.getDefinition().getIntents().contains(NON_PERSISTENT_INTENT)) {
             metadata.getHeaders().setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         }
 

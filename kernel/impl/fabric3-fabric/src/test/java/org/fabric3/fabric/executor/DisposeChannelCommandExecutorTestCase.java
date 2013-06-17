@@ -43,47 +43,37 @@
  */
 package org.fabric3.fabric.executor;
 
-import java.util.List;
+import javax.xml.namespace.QName;
+import java.net.URI;
 
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import org.fabric3.fabric.builder.channel.ChannelBuilderRegistry;
-import org.fabric3.fabric.command.BuildChannelsCommand;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.executor.CommandExecutor;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.fabric.command.DisposeChannelCommand;
+import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Builds a set of channels defined in a composite on a runtime.
+ *
  */
-@EagerInit
-public class BuildChannelsCommandExecutor implements CommandExecutor<BuildChannelsCommand> {
-    private ChannelBuilderRegistry channelBuilderRegistry;
-    private CommandExecutorRegistry executorRegistry;
+public class DisposeChannelCommandExecutorTestCase extends TestCase {
 
-    public BuildChannelsCommandExecutor(@Reference ChannelBuilderRegistry channelBuilderRegistry, @Reference CommandExecutorRegistry executorRegistry) {
-        this.channelBuilderRegistry = channelBuilderRegistry;
-        this.executorRegistry = executorRegistry;
-    }
+    public void testDisposeChannel() throws Exception {
+        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"), true);
 
-    @Init
-    public void init() {
-        executorRegistry.register(BuildChannelsCommand.class, this);
-    }
+        Channel channel = EasyMock.createMock(Channel.class);
 
-    @SuppressWarnings("unchecked")
-    public void execute(BuildChannelsCommand command) throws ExecutionException {
-        try {
-            List<PhysicalChannelDefinition> definitions = command.getDefinitions();
-            for (PhysicalChannelDefinition definition : definitions) {
-                channelBuilderRegistry.build(definition);
-            }
-        } catch (BuilderException e) {
-            throw new ExecutionException(e.getMessage(), e);
-        }
+        ChannelBuilderRegistry channelBuilderRegistry = EasyMock.createMock(ChannelBuilderRegistry.class);
+        channelBuilderRegistry.dispose(EasyMock.isA(PhysicalChannelDefinition.class));
+
+        EasyMock.replay(channelBuilderRegistry, channel);
+
+        DisposeChannelCommandExecutor executor = new DisposeChannelCommandExecutor(channelBuilderRegistry, null);
+
+        DisposeChannelCommand command = new DisposeChannelCommand(definition);
+        executor.execute(command);
+
+        EasyMock.verify(channelBuilderRegistry, channel);
     }
 
 }

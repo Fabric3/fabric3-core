@@ -45,6 +45,7 @@ package org.fabric3.binding.web.generator;
 
 import java.net.URI;
 
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.binding.web.common.OperationsAllowed;
@@ -67,17 +68,22 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 @EagerInit
 public class WebConnectionBindingGenerator implements ConnectionBindingGenerator<WebBindingDefinition> {
 
-    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<WebBindingDefinition> binding) throws GenerationException {
+    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<WebBindingDefinition> binding, ChannelDeliveryType deliveryType)
+            throws GenerationException {
         OperationsAllowed allowed = binding.getDefinition().getAllowed();
         return new WebChannelBindingDefinition(allowed);
     }
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer, LogicalBinding<WebBindingDefinition> binding) {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,
+                                                                       LogicalBinding<WebBindingDefinition> binding,
+                                                                       ChannelDeliveryType deliveryType) {
         URI channelUri = binding.getParent().getUri();
         return new WebConnectionSourceDefinition(consumer.getUri(), channelUri);
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer, LogicalBinding<WebBindingDefinition> binding) {
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
+                                                                       LogicalBinding<WebBindingDefinition> binding,
+                                                                       ChannelDeliveryType deliveryType) {
         WebConnectionTargetDefinition definition = new WebConnectionTargetDefinition();
         URI channelUri = binding.getParent().getUri();
         definition.setTargetUri(channelUri);

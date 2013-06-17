@@ -48,9 +48,7 @@ import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.TransformerHandlerFactory;
@@ -93,12 +91,9 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
     private HostInfo info;
     private ZeroMQManagementService managementService;
     private TransformerHandlerFactory handlerFactory;
-    private ChannelManager channelManager;
 
     public void testSubscribeUnsubscribe() throws Exception {
-        EasyMock.expect(info.getDomain()).andReturn(URI.create("fabric3://domain"));
 
-        EasyMock.expect(channelManager.getChannel(URI.create("fabric3://domain/endpoint"))).andReturn(EasyMock.createNiceMock(Channel.class));
         EasyMock.expect(addressCache.getActiveAddresses("endpoint")).andReturn(Collections.singletonList(ADDRESS));
         addressCache.subscribe(EasyMock.eq("endpoint"), EasyMock.isA(Subscriber.class));
         EasyMock.expectLastCall();
@@ -107,24 +102,20 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
         PhysicalEventStreamDefinition definition = EasyMock.createMock(PhysicalEventStreamDefinition.class);
         EasyMock.expect(definition.getEventTypes()).andReturn(Collections.<String>emptyList());
         EasyMock.expect(stream.getDefinition()).andReturn(definition);
+        EventStreamHandler headHandler = EasyMock.createMock(EventStreamHandler.class);
 
-        EasyMock.expect(connection.getEventStream()).andReturn(stream);
+        EasyMock.expect(stream.getHeadHandler()).andReturn(headHandler);
+
+        EasyMock.expect(connection.getEventStream()).andReturn(stream).atLeastOnce();
 
         EasyMock.expect(handlerFactory.createHandler(EasyMock.isA(DataType.class), EasyMock.isA(DataType.class), EasyMock.isA(ClassLoader.class))).andReturn(
                 EasyMock.createNiceMock(AsyncFanOutHandler.class));
+
+        EasyMock.expect(context.socket(1)).andReturn(EasyMock.createNiceMock(ZMQ.Socket.class));
+
         EasyMock.replay(context);
         EasyMock.replay(definition);
-        EasyMock.replay(channelManager,
-                        manager,
-                        addressCache,
-                        stream,
-                        executorService,
-                        monitor,
-                        connection,
-                        allocator,
-                        handlerFactory,
-                        info,
-                        managementService);
+        EasyMock.replay(manager, addressCache, headHandler, stream, executorService, monitor, connection, allocator, handlerFactory, info, managementService);
 
         ZeroMQMetadata metadata = new ZeroMQMetadata();
         metadata.setChannelName("endpoint");
@@ -133,17 +124,7 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
         broker.unsubscribe(URI.create("subscriber"), metadata);
 
         JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
-        EasyMock.verify(channelManager,
-                        manager,
-                        addressCache,
-                        stream,
-                        executorService,
-                        monitor,
-                        connection,
-                        allocator,
-                        handlerFactory,
-                        info,
-                        managementService);
+        EasyMock.verify(manager, addressCache, stream, headHandler, executorService, monitor, connection, allocator, handlerFactory, info, managementService);
     }
 
     public void testConnectRelease() throws Exception {
@@ -167,13 +148,21 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
         EasyMock.expect(handlerFactory.createHandler(EasyMock.isA(DataType.class), EasyMock.isA(DataType.class), EasyMock.isA(ClassLoader.class))).andReturn(
                 EasyMock.createNiceMock(EventStreamHandler.class));
 
+        manager.reserve(EasyMock.isA(String.class));
+        EasyMock.expect(manager.getContext()).andReturn(context);
+        manager.release(EasyMock.isA(String.class));
+
+        EasyMock.expect(context.socket(1)).andReturn(EasyMock.createNiceMock(ZMQ.Socket.class));
+
+        port.bind(Port.TYPE.TCP);
+
         EasyMock.replay(context);
         EasyMock.replay(manager, addressCache, executorService, monitor, connection, allocator, handlerFactory, info, stream, port, managementService);
 
         ZeroMQMetadata metadata = new ZeroMQMetadata();
         metadata.setChannelName("channel");
 
-        broker.connect("id", metadata, connection, getClass().getClassLoader());
+        broker.connect("id", metadata, true, connection, getClass().getClassLoader());
         broker.release("id", metadata);
 
         JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(context);
@@ -202,9 +191,7 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
 
         handlerFactory = EasyMock.createMock(TransformerHandlerFactory.class);
 
-        channelManager = EasyMock.createMock(ChannelManager.class);
-
-        broker = new ZeroMQPubSubBrokerImpl(manager, addressCache, channelManager, allocator, handlerFactory, managementService, eventService, info, monitor);
+        broker = new ZeroMQPubSubBrokerImpl(manager, addressCache, allocator, handlerFactory, managementService, eventService, info, monitor);
 
     }
 }

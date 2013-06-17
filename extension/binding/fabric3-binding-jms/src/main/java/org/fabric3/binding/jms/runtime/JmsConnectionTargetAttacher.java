@@ -46,8 +46,6 @@ package org.fabric3.binding.jms.runtime;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.binding.jms.runtime.channel.JmsEventStreamHandler;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
@@ -60,8 +58,10 @@ import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches a producer to a JMS destination.
@@ -69,13 +69,14 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 public class JmsConnectionTargetAttacher implements TargetConnectionAttacher<JmsConnectionTargetDefinition> {
     private AdministeredObjectResolver resolver;
 
-    public JmsConnectionTargetAttacher(@Reference AdministeredObjectResolver resolver) {
+    public JmsConnectionTargetAttacher(@Reference AdministeredObjectResolver resolver, @Reference ChannelManager channelManager) {
         this.resolver = resolver;
     }
 
     public void attach(PhysicalConnectionSourceDefinition source, JmsConnectionTargetDefinition target, ChannelConnection connection)
             throws ConnectionAttachException {
-        // resolve the connection factories and destinations for the wire
+
+        // resolve the connection factories and destinations
         JmsBindingMetadata metadata = target.getMetadata();
         ConnectionFactoryDefinition connectionFactoryDefinition = metadata.getConnectionFactory();
         HeadersDefinition headers = metadata.getHeaders();

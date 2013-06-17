@@ -41,66 +41,45 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.model.physical;
+package org.fabric3.fabric.executor;
 
-import javax.xml.namespace.QName;
-import java.io.Serializable;
-import java.net.URI;
+import org.fabric3.fabric.builder.channel.ChannelBuilderRegistry;
+import org.fabric3.fabric.command.BuildChannelCommand;
+import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.executor.CommandExecutor;
+import org.fabric3.spi.executor.CommandExecutorRegistry;
+import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Used to attach the source side of a channel connection. The source may be a producer, channel binding or channel.
+ * Builds a channel defined in a composite on a runtime.
  */
-public class PhysicalConnectionSourceDefinition implements Serializable {
-    private static final long serialVersionUID = 3395589699751449558L;
+@EagerInit
+public class BuildChannelCommandExecutor implements CommandExecutor<BuildChannelCommand> {
+    private ChannelBuilderRegistry channelBuilderRegistry;
+    private CommandExecutorRegistry executorRegistry;
 
-    public static final int NO_SEQUENCE = 0;
-
-    private URI uri;
-    private int sequence = NO_SEQUENCE;
-    private QName deployable;
-    private URI classLoaderId;
-
-    public URI getUri() {
-        return uri;
+    public BuildChannelCommandExecutor(@Reference ChannelBuilderRegistry channelBuilderRegistry, @Reference CommandExecutorRegistry executorRegistry) {
+        this.channelBuilderRegistry = channelBuilderRegistry;
+        this.executorRegistry = executorRegistry;
     }
 
-    public void setUri(URI uri) {
-        this.uri = uri;
+    @Init
+    public void init() {
+        executorRegistry.register(BuildChannelCommand.class, this);
     }
 
-    /**
-     * Returns the sequence a consumer should be passed events, if supported by the channel type.
-     *
-     * @return the sequence a consumer should be passed events, if supported by the channel type
-     */
-    public int getSequence() {
-        return sequence;
-    }
-
-    /**
-     * Sets the sequence a consumer should be passed events, if supported by the channel type.
-     *
-     * @param sequence the sequence a consumer should be passed events, if supported by the channel type.
-     */
-    public void setSequence(int sequence) {
-        this.sequence = sequence;
-    }
-
-
-    public QName getDeployable() {
-        return deployable;
-    }
-
-    public void setDeployable(QName deployable) {
-        this.deployable = deployable;
-    }
-
-    public URI getClassLoaderId() {
-        return classLoaderId;
-    }
-
-    public void setClassLoaderId(URI classLoaderId) {
-        this.classLoaderId = classLoaderId;
+    @SuppressWarnings("unchecked")
+    public void execute(BuildChannelCommand command) throws ExecutionException {
+        try {
+            PhysicalChannelDefinition definition = command.getDefinition();
+            channelBuilderRegistry.build(definition);
+        } catch (BuilderException e) {
+            throw new ExecutionException(e.getMessage(), e);
+        }
     }
 
 }

@@ -50,15 +50,14 @@ import org.fabric3.binding.zeromq.runtime.federation.AddressAnnouncement;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
 import org.fabric3.binding.zeromq.runtime.handler.PublisherHandler;
 import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
-import org.fabric3.binding.zeromq.runtime.message.NonReliablePublisher;
+import org.fabric3.binding.zeromq.runtime.message.NonReliableQueuedPublisher;
+import org.fabric3.binding.zeromq.runtime.message.NonReliableSingleThreadPublisher;
 import org.fabric3.binding.zeromq.runtime.message.NonReliableSubscriber;
 import org.fabric3.binding.zeromq.runtime.message.Publisher;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.HandlerCreationException;
@@ -89,7 +88,6 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
 
     private ContextManager manager;
     private AddressCache addressCache;
-    private ChannelManager channelManager;
     private PortAllocator allocator;
     private TransformerHandlerFactory handlerFactory;
     private ZeroMQManagementService managementService;
@@ -105,7 +103,6 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
 
     public ZeroMQPubSubBrokerImpl(@Reference ContextManager manager,
                                   @Reference AddressCache addressCache,
-                                  @Reference ChannelManager channelManager,
                                   @Reference PortAllocator allocator,
                                   @Reference TransformerHandlerFactory handlerFactory,
                                   @Reference ZeroMQManagementService managementService,
@@ -114,7 +111,6 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                                   @Monitor MessagingMonitor monitor) throws UnknownHostException {
         this.manager = manager;
         this.addressCache = addressCache;
-        this.channelManager = channelManager;
         this.allocator = allocator;
         this.handlerFactory = handlerFactory;
         this.managementService = managementService;
@@ -151,17 +147,14 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
 
     public void subscribe(URI subscriberId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) throws BrokerException {
         String channelName = metadata.getChannelName();
-        Channel channel = channelManager.getChannel(URI.create(info.getDomain().toString() + "/" + channelName));
         Subscriber subscriber = subscribers.get(channelName);
         if (subscriber == null) {
             String id = subscriberId.toString();
 
             EventStreamHandler head = createSubscriberHandlers(connection, loader);
 
-            // attach the head handler going from the binding transport to the channel
-            channel.attach(head);
-            // subscribe the connection to the channel
-            channel.subscribe(subscriberId, connection);
+            // attach the head handler going from the binding transport to connection head handler
+            head.setNext(connection.getEventStream().getHeadHandler());
 
             List<SocketAddress> addresses;
 
@@ -196,7 +189,6 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
             managementService.register(channelName, subscriberId, subscriber);
         } else {
             subscriber.incrementConnectionCount();
-            channel.subscribe(subscriberId, connection);
         }
         String id = subscriberId.getPath().substring(1) + "/" + subscriberId.getFragment();
         monitor.onSubscribe(id);
@@ -218,7 +210,8 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         monitor.onUnsubscribe(id);
     }
 
-    public void connect(String connectionId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) throws BrokerException {
+    public void connect(String connectionId, ZeroMQMetadata metadata, boolean dedicatedThread, ChannelConnection connection, ClassLoader loader)
+            throws BrokerException {
         String channelName = metadata.getChannelName();
         PublisherHolder holder = publishers.get(channelName);
         if (holder == null) {
@@ -246,7 +239,12 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                     address = new SocketAddress(runtimeName, "tcp", hostAddress, port);
                 }
 
-                Publisher publisher = new NonReliablePublisher(manager, address, metadata, pollTimeout, monitor);
+                Publisher publisher;
+                if (dedicatedThread) {
+                    publisher = new NonReliableSingleThreadPublisher(manager, address, metadata);
+                } else {
+                    publisher = new NonReliableQueuedPublisher(manager, address, metadata, pollTimeout, monitor);
+                }
                 attachConnection(connection, publisher, loader);
 
                 AddressAnnouncement event = new AddressAnnouncement(channelName, AddressAnnouncement.Type.ACTIVATED, address);

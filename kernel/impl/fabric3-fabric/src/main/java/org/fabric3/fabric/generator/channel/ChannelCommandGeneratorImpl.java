@@ -37,11 +37,11 @@
 */
 package org.fabric3.fabric.generator.channel;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.xml.namespace.QName;
+import java.util.Map;
 
-import org.fabric3.fabric.command.BuildChannelsCommand;
-import org.fabric3.fabric.command.DisposeChannelsCommand;
+import org.fabric3.fabric.command.BuildChannelCommand;
+import org.fabric3.fabric.command.DisposeChannelCommand;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.BindingDefinition;
@@ -50,7 +50,8 @@ import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.instance.LogicalState;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.fabric3.spi.model.type.binding.SCABinding;
@@ -61,72 +62,55 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class DomainChannelCommandGeneratorImpl implements DomainChannelCommandGenerator {
-    private ChannelGenerator channelGenerator;
+public class ChannelCommandGeneratorImpl implements ChannelCommandGenerator {
+    private Map<String, ChannelGenerator> channelGenerators;
     private GeneratorRegistry generatorRegistry;
 
-    public DomainChannelCommandGeneratorImpl(@Reference ChannelGenerator channelGenerator, @Reference GeneratorRegistry generatorRegistry) {
-        this.channelGenerator = channelGenerator;
+    @Reference
+    public void setChannelGenerators(Map<String, ChannelGenerator> channelGenerators) {
+        this.channelGenerators = channelGenerators;
+    }
+
+    public ChannelCommandGeneratorImpl(@Reference GeneratorRegistry generatorRegistry) {
         this.generatorRegistry = generatorRegistry;
     }
 
-    public BuildChannelsCommand generateBuild(LogicalChannel channel, boolean incremental) throws GenerationException {
-        List<PhysicalChannelDefinition> definitions = createBuildDefinitions(channel, incremental);
-        if (definitions.isEmpty()) {
-            return null;
-        }
-        return new BuildChannelsCommand(definitions);
+    public BuildChannelCommand generateBuild(LogicalChannel channel, QName deployable, Direction direction) throws GenerationException {
+        PhysicalChannelDefinition definition = generateChannelDefinition(channel, deployable, direction);
+        return new BuildChannelCommand(definition);
     }
 
-    public DisposeChannelsCommand generateDispose(LogicalChannel channel, boolean incremental) throws GenerationException {
-        List<PhysicalChannelDefinition> definitions = createDisposeDefinitions(channel);
-        if (definitions.isEmpty()) {
-            return null;
-        }
-        return new DisposeChannelsCommand(definitions);
-    }
-
-    private List<PhysicalChannelDefinition> createBuildDefinitions(LogicalChannel channel, boolean incremental) throws GenerationException {
-        List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
-        if (channel.getState() == LogicalState.NEW || !incremental) {
-            generateChannelDefinition(channel, definitions);
-        }
-        return definitions;
-    }
-
-    private List<PhysicalChannelDefinition> createDisposeDefinitions(LogicalChannel channel) throws GenerationException {
-        List<PhysicalChannelDefinition> definitions = new ArrayList<PhysicalChannelDefinition>();
-        if (channel.getState() == LogicalState.MARKED) {
-            generateChannelDefinition(channel, definitions);
-        }
-        return definitions;
+    public DisposeChannelCommand generateDispose(LogicalChannel channel, QName deployable, Direction direction) throws GenerationException {
+        PhysicalChannelDefinition definition = generateChannelDefinition(channel, deployable, direction);
+        return new DisposeChannelCommand(definition);
     }
 
     @SuppressWarnings({"unchecked"})
-    private void generateChannelDefinition(LogicalChannel channel, List<PhysicalChannelDefinition> definitions) throws GenerationException {
+    private PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, Direction direction) throws GenerationException {
 
+        LogicalBinding<?> binding = channel.getBinding();
+        String type = channel.getDefinition().getType();
+        ChannelGenerator generator = channelGenerators.get(type);
+        if (generator == null) {
+            throw new GenerationException("Channel generator not found: " + type);
+        }
+        PhysicalChannelDefinition definition = generator.generate(channel, deployable);
         if (!channel.getBindings().isEmpty()) {
             // generate binding information
-            PhysicalChannelDefinition definition;
-            LogicalBinding<?> binding = channel.getBinding();
             if (!(binding.getDefinition() instanceof SCABinding)) {
                 // avoid generating SCABinding
                 ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
-                PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding);
-                // if the channel is bound and no binding definition was generated, the channel may be optimized away
-                if (bindingDefinition == null) {
-                    return;
-                }
-                definition = channelGenerator.generate(channel);
+                ChannelDeliveryType deliveryType = definition.getDeliveryType();
+                PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding, deliveryType);
                 definition.setBindingDefinition(bindingDefinition);
+                definition.setChannelSide(Direction.CONSUMER == direction ? ChannelSide.CONSUMER : ChannelSide.PRODUCER);
             } else {
-                definition = channelGenerator.generate(channel);
+                definition.setChannelSide(ChannelSide.COLLOCATED);
             }
-            definitions.add(definition);
         } else {
-            PhysicalChannelDefinition definition = channelGenerator.generate(channel);
-            definitions.add(definition);
+            definition.setChannelSide(ChannelSide.COLLOCATED);
         }
+        return definition;
     }
 
     @SuppressWarnings("unchecked")

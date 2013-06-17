@@ -44,10 +44,14 @@ import java.util.ListIterator;
 import org.fabric3.spi.command.CompensatableCommand;
 
 /**
- * Used to establish a event channel connection.
+ * Used to establish or dispose a channel connection. This may include provisioning the channel (or disposing it) to a runtime where the producer or consumer is
+ * hosted.
  */
 public class ChannelConnectionCommand implements CompensatableCommand {
     private static final long serialVersionUID = 8746788639966402901L;
+
+    private List<BuildChannelCommand> buildCommands;
+    private List<DisposeChannelCommand> disposeCommands;
 
     private List<AttachChannelConnectionCommand> attachCommands;
     private List<DetachChannelConnectionCommand> detachCommands;
@@ -55,28 +59,53 @@ public class ChannelConnectionCommand implements CompensatableCommand {
     public ChannelConnectionCommand() {
         attachCommands = new ArrayList<AttachChannelConnectionCommand>();
         detachCommands = new ArrayList<DetachChannelConnectionCommand>();
+        buildCommands = new ArrayList<BuildChannelCommand>();
+        disposeCommands = new ArrayList<DisposeChannelCommand>();
     }
 
     public ChannelConnectionCommand getCompensatingCommand() {
         // return the commands in reverse order
         ChannelConnectionCommand compensating = new ChannelConnectionCommand();
-        if (!attachCommands.isEmpty()){
-            ListIterator<AttachChannelConnectionCommand> iter = attachCommands.listIterator(attachCommands.size());
-            while(iter.hasPrevious()){
-                AttachChannelConnectionCommand command = iter.previous();
+
+        for (BuildChannelCommand command : buildCommands) {
+            compensating.addDisposeChannelCommand(command.getCompensatingCommand());
+        }
+        for (DisposeChannelCommand command : disposeCommands) {
+            compensating.addBuildChannelCommand(command.getCompensatingCommand());
+        }
+        if (!attachCommands.isEmpty()) {
+            ListIterator<AttachChannelConnectionCommand> iterator = attachCommands.listIterator(attachCommands.size());
+            while (iterator.hasPrevious()) {
+                AttachChannelConnectionCommand command = iterator.previous();
                 DetachChannelConnectionCommand compensatingCommand = command.getCompensatingCommand();
                 compensating.add(compensatingCommand);
             }
         }
-        if (!detachCommands.isEmpty()){
-            ListIterator<DetachChannelConnectionCommand> iter = detachCommands.listIterator(detachCommands.size());
-            while(iter.hasPrevious()){
-                DetachChannelConnectionCommand command = iter.previous();
+        if (!detachCommands.isEmpty()) {
+            ListIterator<DetachChannelConnectionCommand> iterator = detachCommands.listIterator(detachCommands.size());
+            while (iterator.hasPrevious()) {
+                DetachChannelConnectionCommand command = iterator.previous();
                 AttachChannelConnectionCommand compensatingCommand = command.getCompensatingCommand();
                 compensating.add(compensatingCommand);
             }
         }
         return compensating;
+    }
+
+    public List<BuildChannelCommand> getBuildChannelCommands() {
+        return buildCommands;
+    }
+
+    public void addBuildChannelCommand(BuildChannelCommand command) {
+        this.buildCommands.add(command);
+    }
+
+    public List<DisposeChannelCommand> getDisposeChannelCommands() {
+        return disposeCommands;
+    }
+
+    public void addDisposeChannelCommand(DisposeChannelCommand command) {
+        this.disposeCommands.add(command);
     }
 
     public List<AttachChannelConnectionCommand> getAttachCommands() {

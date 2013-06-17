@@ -39,24 +39,22 @@ package org.fabric3.fabric.command;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.Collections;
-import java.util.List;
 
 import junit.framework.TestCase;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
-public class BuildChannelsCommandTestCase extends TestCase {
-    private List<PhysicalChannelDefinition> definitions;
+public class DisposeChannelCommandTestCase extends TestCase {
+    private PhysicalChannelDefinition definition;
 
     public void testCompensatingCommand() throws Exception {
-        BuildChannelsCommand command = new BuildChannelsCommand(definitions);
-        DisposeChannelsCommand compensating = command.getCompensatingCommand();
-        assertEquals(definitions, compensating.getDefinitions());
+        DisposeChannelCommand command = new DisposeChannelCommand(definition);
+        BuildChannelCommand compensating = command.getCompensatingCommand();
+        assertEquals(definition, compensating.getDefinition());
     }
 
     public void testEquals() throws Exception {
-        BuildChannelsCommand command1 = new BuildChannelsCommand(definitions);
-        BuildChannelsCommand command2 = new BuildChannelsCommand(definitions);
+        DisposeChannelCommand command1 = new DisposeChannelCommand(definition);
+        DisposeChannelCommand command2 = new DisposeChannelCommand(definition);
         assertEquals(command1, command2);
     }
 
@@ -64,8 +62,7 @@ public class BuildChannelsCommandTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         URI uri = URI.create("channel");
-        QName name = new QName("test", "composite");
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(uri, name, false);
-        definitions = Collections.singletonList(definition);
+        QName deployable = new QName("test", "composite");
+        definition = new PhysicalChannelDefinition(uri, deployable, false);
     }
 }

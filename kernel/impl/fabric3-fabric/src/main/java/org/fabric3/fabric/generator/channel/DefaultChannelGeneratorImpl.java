@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -34,55 +34,37 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.fabric.executor;
+*/
+package org.fabric3.fabric.generator.channel;
 
-import java.util.List;
+import javax.xml.namespace.QName;
+import java.net.URI;
 
-import org.fabric3.fabric.builder.channel.ChannelBuilderRegistry;
-import org.fabric3.fabric.command.DisposeChannelsCommand;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.executor.CommandExecutor;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.spi.channel.ChannelConstants;
+import org.fabric3.spi.generator.ChannelGenerator;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Removes a set of channels defined in a composite on a runtime.
+ *
  */
 @EagerInit
-public class DisposeChannelsCommandExecutor implements CommandExecutor<DisposeChannelsCommand> {
-    private ChannelBuilderRegistry channelBuilderRegistry;
-    private CommandExecutorRegistry executorRegistry;
+public class DefaultChannelGeneratorImpl implements ChannelGenerator {
 
-    public DisposeChannelsCommandExecutor(@Reference ChannelBuilderRegistry channelBuilderRegistry, @Reference CommandExecutorRegistry executorRegistry) {
-        this.channelBuilderRegistry = channelBuilderRegistry;
-        this.executorRegistry = executorRegistry;
+    public PhysicalChannelDefinition generate(LogicalChannel channel, QName deployable) throws GenerationException {
+        URI uri = channel.getUri();
+        ChannelDefinition definition = channel.getDefinition();
+        String channelType = definition.getType();
+
+        boolean replicate = definition.getIntents().contains(ChannelConstants.REPLICATE_INTENT);
+
+        PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, replicate, channelType, ChannelDeliveryType.DEFAULT);
+        physicalDefinition.setMetadata(definition.getMetadata().get(ChannelConstants.METADATA));
+
+        return physicalDefinition;
     }
-
-    @Init
-    public void init() {
-        executorRegistry.register(DisposeChannelsCommand.class, this);
-    }
-
-    public void execute(DisposeChannelsCommand command) throws ExecutionException {
-        try {
-            List<PhysicalChannelDefinition> definitions = command.getDefinitions();
-            for (PhysicalChannelDefinition definition : definitions) {
-                channelBuilderRegistry.dispose(definition);
-            }
-        } catch (BuilderException e) {
-            throw new ExecutionException(e.getMessage(), e);
-        }
-    }
-
 }

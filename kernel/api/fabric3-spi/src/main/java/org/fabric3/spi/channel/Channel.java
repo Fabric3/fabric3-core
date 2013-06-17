@@ -40,8 +40,13 @@ package org.fabric3.spi.channel;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
+import org.fabric3.spi.model.physical.ChannelSide;
+
 /**
  * An event channel. Responsible for transmitting events from producers to consumers.
+ * <p/>
+ * A logical channel is divided into two physical channels on a runtime: one for receiving events from producers and transmitting them to a binding; and one for
+ * receiving events from a binding and transmitting them to consumers. If the channel is not bound, it is collocated and only one physical channel will exist.
  */
 public interface Channel {
     /**
@@ -111,5 +116,12 @@ public interface Channel {
      * @return the unsubscribed connection
      */
     ChannelConnection unsubscribe(URI uri);
+
+    /**
+     * Returns if the Channel receives producer events or sends events to consumers.
+     *
+     * @return if the Channel receives producer events or sends events to consumers
+     */
+    ChannelSide getChannelSide();
 
 }

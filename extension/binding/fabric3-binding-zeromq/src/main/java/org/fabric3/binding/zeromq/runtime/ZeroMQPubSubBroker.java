@@ -36,8 +36,8 @@ import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.spi.channel.ChannelConnection;
 
 /**
- * Responsible for managing local publishers and subscribers. Unlike brokers in traditional hub-and-spoke messaging architectures, implementations do
- * not receive or forward messages; rather, subscribers connect directly to publishers.
+ * Responsible for managing local publishers and subscribers. Unlike brokers in traditional hub-and-spoke messaging architectures, implementations do not
+ * receive or forward messages; rather, subscribers connect directly to publishers.
  */
 public interface ZeroMQPubSubBroker {
 
@@ -70,7 +70,8 @@ public interface ZeroMQPubSubBroker {
      * @param loader       the classloader for the event types being sent
      * @throws BrokerException if an error occurs removing the subscription
      */
-    void connect(String connectionId, ZeroMQMetadata metadata, ChannelConnection connection, ClassLoader loader) throws BrokerException;
+    void connect(String connectionId, ZeroMQMetadata metadata, boolean dedicatedThread, ChannelConnection connection, ClassLoader loader)
+            throws BrokerException;
 
     /**
      * Releases a publisher for a channel.

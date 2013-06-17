@@ -41,48 +41,142 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelManager;
+import org.fabric3.spi.model.physical.ChannelSide;
 
 /**
  * Default ChannelManager implementation.
  */
 public class ChannelManagerImpl implements ChannelManager {
-    private Map<URI, Channel> channels = new ConcurrentHashMap<URI, Channel>();
+    private Map<URI, Holder> collocatedChannels = new ConcurrentHashMap<URI, Holder>();
+    private Map<URI, Holder> producerChannels = new ConcurrentHashMap<URI, Holder>();
+    private Map<URI, Holder> consumerChannels = new ConcurrentHashMap<URI, Holder>();
 
-    public Channel getChannel(URI uri) {
-        if (uri == null) {
-            throw new IllegalArgumentException("Channel URI was null");
+    public Channel getChannel(URI uri, ChannelSide channelSide) {
+        checkUri(uri);
+        Holder holder = getHolder(uri, channelSide);
+        return holder != null ? holder.channel : null;
+    }
+
+    public Channel getAndIncrementChannel(URI uri, ChannelSide channelSide) {
+        checkUri(uri);
+        Holder holder = getHolder(uri, channelSide);
+        if (holder == null) {
+            return null;
         }
-        return channels.get(uri);
+        holder.counter.incrementAndGet();
+        return holder.channel;
+    }
+
+    public Channel getAndDecrementChannel(URI uri, ChannelSide channelSide) {
+        checkUri(uri);
+        Holder holder = getHolder(uri, channelSide);
+        if (holder == null) {
+            return null;
+        }
+        holder.counter.decrementAndGet();
+        return holder.channel;
+    }
+
+    public int getCount(URI uri, ChannelSide channelSide) {
+        checkUri(uri);
+        Holder holder = getHolder(uri, channelSide);
+        if (holder == null) {
+            return -1;
+        }
+        return holder.counter.get();
     }
 
     public void register(Channel channel) throws DuplicateChannelException {
-        URI uri = channel.getUri();
-        if (channels.containsKey(uri)) {
-            throw new DuplicateChannelException("Channel already exists: " + uri);
+        ChannelSide channelSide = channel.getChannelSide();
+        if (ChannelSide.COLLOCATED == channelSide) {
+            checkAndPut(channel, collocatedChannels);
+        } else if (ChannelSide.CONSUMER == channelSide) {
+            checkAndPut(channel, consumerChannels);
+        } else if (ChannelSide.PRODUCER == channelSide) {
+            checkAndPut(channel, producerChannels);
         }
-        channels.put(uri, channel);
     }
 
-    public Channel unregister(URI uri) {
-        return channels.remove(uri);
+    public Channel unregister(URI uri, ChannelSide channelSide) {
+        Holder holder = null;
+        switch (channelSide) {
+            case CONSUMER:
+                holder = consumerChannels.remove(uri);
+                break;
+            case PRODUCER:
+                holder = producerChannels.remove(uri);
+                break;
+            case COLLOCATED:
+                holder = collocatedChannels.remove(uri);
+                break;
+        }
+        if (holder == null) {
+            return null;
+        }
+        return holder.channel;
     }
 
     public void startContext(QName deployable) {
-        for (Channel channel : channels.values()) {
-            if (deployable.equals(channel.getDeployable())){
-                channel.start();
+        doStart(deployable, collocatedChannels);
+        doStart(deployable, consumerChannels);
+        doStart(deployable, producerChannels);
+    }
+
+    public void stopContext(QName deployable) {
+        doStop(deployable, producerChannels);
+        doStop(deployable, consumerChannels);
+        doStop(deployable, collocatedChannels);
+    }
+
+    private void checkUri(URI uri) {
+        if (uri == null) {
+            throw new IllegalArgumentException("Channel URI was null");
+        }
+    }
+
+    private Holder getHolder(URI uri, ChannelSide channelSide) {
+        Holder holder = ChannelSide.CONSUMER == channelSide ? consumerChannels.get(uri) : producerChannels.get(uri);
+        if (holder == null) {
+            holder = collocatedChannels.get(uri);
+        }
+        return holder;
+    }
+
+    private void checkAndPut(Channel channel, Map<URI, Holder> map) throws DuplicateChannelException {
+        URI uri = channel.getUri();
+        if (map.containsKey(uri)) {
+            throw new DuplicateChannelException("Channel already exists: " + uri);
+        }
+        map.put(uri, new Holder(channel));
+    }
+
+    private void doStart(QName deployable, Map<URI, Holder> map) {
+        for (Holder holder : map.values()) {
+            if (deployable.equals(holder.channel.getDeployable())) {
+                holder.channel.start();
             }
         }
     }
 
-    public void stopContext(QName deployable) {
-        for (Channel channel : channels.values()) {
-            if (deployable.equals(channel.getDeployable())){
-                channel.stop();
+    private void doStop(QName deployable, Map<URI, Holder> map) {
+        for (Holder holder : map.values()) {
+            if (deployable.equals(holder.channel.getDeployable())) {
+                holder.channel.stop();
             }
         }
+    }
+
+    private class Holder {
+        private Channel channel;
+        private AtomicInteger counter = new AtomicInteger(1);
+
+        private Holder(Channel channel) {
+            this.channel = channel;
+        }
+
     }
 }

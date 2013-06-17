@@ -58,19 +58,22 @@ public class PhysicalChannelDefinition implements Serializable {
     private QName deployable;
     private boolean replicate;
     private PhysicalChannelBindingDefinition bindingDefinition;
-    private final String type;
+    private String type;
+    private ChannelDeliveryType deliveryType;
+    private ChannelSide channelSide = ChannelSide.PRODUCER;
 
     private Serializable metadata;
 
     public PhysicalChannelDefinition(URI uri, QName deployable, boolean replicate) {
-        this(uri, deployable, replicate, ChannelConstants.DEFAULT_TYPE);
+        this(uri, deployable, replicate, ChannelConstants.DEFAULT_TYPE, ChannelDeliveryType.DEFAULT);
     }
 
-    public PhysicalChannelDefinition(URI uri, QName deployable, boolean replicate, String type) {
+    public PhysicalChannelDefinition(URI uri, QName deployable, boolean replicate, String type, ChannelDeliveryType deliveryType) {
         this.uri = uri;
         this.deployable = deployable;
         this.replicate = replicate;
         this.type = type;
+        this.deliveryType = deliveryType;
     }
 
     /**
@@ -129,6 +132,15 @@ public class PhysicalChannelDefinition implements Serializable {
     }
 
     /**
+     * Returns the channel delivery type
+     *
+     * @return the channel delivery type
+     */
+    public ChannelDeliveryType getDeliveryType() {
+        return deliveryType;
+    }
+
+    /**
      * Sets the channel metadata.
      *
      * @param metadata the channel metadata
@@ -146,4 +158,23 @@ public class PhysicalChannelDefinition implements Serializable {
     public <T> T getMetadata(Class<T> type) {
         return type.cast(metadata);
     }
+
+    /**
+     * Returns the side of a logical channel the physical channel implements.
+     *
+     * @return the side of a logical channel the physical channel implements
+     */
+    public ChannelSide getChannelSide() {
+        return channelSide;
+    }
+
+    /**
+     * Sets the side of a logical channel the physical channel implements.
+     *
+     * @param channelSide the side of a logical channel the physical channel implements
+     */
+    public void setChannelSide(ChannelSide channelSide) {
+        this.channelSide = channelSide;
+    }
+
 }

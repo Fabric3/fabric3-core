@@ -58,6 +58,7 @@ import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.model.physical.ChannelSide;
 
 /**
  * A channel implementation that uses a Disruptor ring buffer to dispatch to consumers.
@@ -70,7 +71,9 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
     private QName deployable;
     private int size;
     private WaitStrategy waitStrategy;
+    private ChannelSide channelSide;
     private ExecutorService executorService;
+
     private RingBuffer<RingBufferEvent> ringBuffer;
     private Disruptor<RingBufferEvent> disruptor;
 
@@ -80,11 +83,12 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
     private int numberProducers;
     private SequenceGroup sequenceGroup;
 
-    public RingBufferChannel(URI uri, QName deployable, int size, WaitStrategy waitStrategy, ExecutorService executorService) {
+    public RingBufferChannel(URI uri, QName deployable, int size, WaitStrategy waitStrategy, ChannelSide channelSide, ExecutorService executorService) {
         this.uri = uri;
         this.deployable = deployable;
         this.size = size;
         this.waitStrategy = waitStrategy;
+        this.channelSide = channelSide;
         this.executorService = executorService;
         subscribers = new HashMap<URI, ChannelConnection>();
         sequences = new HashMap<URI, Sequence>();
@@ -121,6 +125,10 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
 
     public QName getDeployable() {
         return deployable;
+    }
+
+    public ChannelSide getChannelSide() {
+        return channelSide;
     }
 
     public void addHandler(EventStreamHandler handler) {

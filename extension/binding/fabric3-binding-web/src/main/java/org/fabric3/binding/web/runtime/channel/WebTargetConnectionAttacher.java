@@ -39,6 +39,7 @@ package org.fabric3.binding.web.runtime.channel;
 
 import java.net.URI;
 
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -51,8 +52,8 @@ import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
- * Attaches a producer to a channel configured with the web binding. Since the web binding does not support native multicast, events are sent to a
- * channel locally which replicates the event across a zone.
+ * Attaches a producer to a channel configured with the web binding. Since the web binding does not support native multicast, events are sent to a channel
+ * locally which replicates the event across a zone.
  */
 @EagerInit
 public class WebTargetConnectionAttacher implements TargetConnectionAttacher<WebConnectionTargetDefinition> {
@@ -72,7 +73,7 @@ public class WebTargetConnectionAttacher implements TargetConnectionAttacher<Web
     }
 
     private Channel getChannel(URI uri) throws ChannelNotFoundException {
-        Channel channel = channelManager.getChannel(uri);
+        Channel channel = channelManager.getChannel(uri, ChannelSide.PRODUCER);
         if (channel == null) {
             throw new ChannelNotFoundException("Channel not found: " + uri);
         }

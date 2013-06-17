@@ -48,7 +48,7 @@ import org.fabric3.spi.host.Port;
 /**
  *
  */
-public class NonReliablePublisherTestCase extends TestCase {
+public class NonReliableQueuedPublisherTestCase extends TestCase {
     private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", new Port() {
         public String getName() {
             return null;
@@ -98,7 +98,7 @@ public class NonReliablePublisherTestCase extends TestCase {
 
         ZeroMQMetadata metadata = new ZeroMQMetadata();
 
-        NonReliablePublisher publisher = new NonReliablePublisher(manager, ADDRESS, metadata, 1000, monitor);
+        NonReliableQueuedPublisher publisher = new NonReliableQueuedPublisher(manager, ADDRESS, metadata, 1000, monitor);
         publisher.start();
         publisher.publish(message);
 

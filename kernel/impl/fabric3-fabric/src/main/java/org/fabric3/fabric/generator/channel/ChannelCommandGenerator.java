@@ -34,54 +34,45 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.fabric.command;
+*/
+package org.fabric3.fabric.generator.channel;
 
-import java.util.List;
+import javax.xml.namespace.QName;
 
-import org.fabric3.spi.command.CompensatableCommand;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.fabric.command.BuildChannelCommand;
+import org.fabric3.fabric.command.DisposeChannelCommand;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalChannel;
 
 /**
- * Removes channels on a runtime.
+ * Creates commands to build and dispose channels.
  */
-public class DisposeChannelsCommand implements CompensatableCommand {
-    private static final long serialVersionUID = -8414719811868296492L;
-    private List<PhysicalChannelDefinition> definitions;
-
-    public DisposeChannelsCommand(List<PhysicalChannelDefinition> definitions) {
-        this.definitions = definitions;
+public interface ChannelCommandGenerator {
+    enum Direction {
+        CONSUMER,
+        PRODUCER
     }
 
-    public BuildChannelsCommand getCompensatingCommand() {
-        return new BuildChannelsCommand(definitions);
-    }
+    /**
+     * Generates a build command.
+     *
+     * @param channel    the channel to build
+     * @param deployable the deployable this channel is provisioned for. This may be different than the deployable the channel is defined in as a producer or
+     *                   consumer may be connected to a channel from another composite.
+     * @return the command
+     * @throws GenerationException if a generation error is encountered
+     */
+    BuildChannelCommand generateBuild(LogicalChannel channel, QName deployable, Direction direction) throws GenerationException;
 
-    public List<PhysicalChannelDefinition> getDefinitions() {
-        return definitions;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        DisposeChannelsCommand that = (DisposeChannelsCommand) o;
-
-        return !(definitions != null ? !definitions.equals(that.definitions) : that.definitions != null);
-    }
-
-    public int hashCode() {
-        return (definitions != null ? definitions.hashCode() : 0);
-    }
+    /**
+     * Generates an dispose command.
+     *
+     * @param channel    the channel to remove
+     * @param deployable the deployable this channel is provisioned for. This may be different than the deployable the channel is defined in as a producer or
+     *                   consumer may be connected to a channel from another composite.
+     * @return the command
+     * @throws GenerationException if a generation error is encountered
+     */
+    DisposeChannelCommand generateDispose(LogicalChannel channel, QName deployable, Direction direction) throws GenerationException;
 
 }

@@ -47,6 +47,7 @@ import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
@@ -57,33 +58,37 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 public interface ConnectionBindingGenerator<BD extends BindingDefinition> {
 
     /**
-     * Generates metadata used to provision a binding transport when a channel is deployed. If provisioning is not required, this method may return
-     * null.
+     * Generates metadata used to provision a binding transport when a channel is deployed. If provisioning is not required, this method may return null.
      *
-     * @param binding the channel binding configuration
+     * @param binding      the channel binding configuration
+     * @param deliveryType the delivery type implemented by the channel this binding will connect to
      * @return the binding transport metadata or null if provisioning is not required
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<BD> binding) throws GenerationException;
+    PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<BD> binding, ChannelDeliveryType deliveryType) throws GenerationException;
 
     /**
      * Generates metadata used to attach a consumer to a channel binding transport.
      *
-     * @param consumer rhe consumer
-     * @param binding  the channel binding configuration
+     * @param consumer     rhe consumer
+     * @param binding      the channel binding configuration
+     * @param deliveryType the channel delivery semantics
      * @return the connection metadata
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer, LogicalBinding<BD> binding) throws GenerationException;
+    PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer, LogicalBinding<BD> binding, ChannelDeliveryType deliveryType)
+            throws GenerationException;
 
     /**
      * Generates metadata used to attach a producer to a channel binding transport.
      *
-     * @param producer the producer
-     * @param binding  the channel binding configuration
+     * @param producer     the producer
+     * @param binding      the channel binding configuration
+     * @param deliveryType the channel delivery semantics
      * @return the connection metadata
      * @throws GenerationException if an error occurs during the generation process
      */
-    PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer, LogicalBinding<BD> binding) throws GenerationException;
+    PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer, LogicalBinding<BD> binding, ChannelDeliveryType deliveryType)
+            throws GenerationException;
 
 }

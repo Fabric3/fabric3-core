@@ -41,40 +41,45 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.executor;
+package org.fabric3.fabric.command;
 
-import javax.xml.namespace.QName;
-import java.net.URI;
-import java.util.Collections;
-
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
-import org.fabric3.fabric.builder.channel.ChannelBuilderRegistry;
-import org.fabric3.fabric.command.BuildChannelsCommand;
-import org.fabric3.spi.channel.Channel;
+import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- *
+ * Removes a channel on a runtime.
  */
-public class BuildChannelsCommandExecutorTestCase extends TestCase {
+public class DisposeChannelCommand implements CompensatableCommand {
+    private static final long serialVersionUID = -8414719811868296492L;
+    private PhysicalChannelDefinition definition;
 
-    public void testBuildChannel() throws Exception {
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"), true);
+    public DisposeChannelCommand(PhysicalChannelDefinition definition) {
+        this.definition = definition;
+    }
 
-        Channel channel = EasyMock.createMock(Channel.class);
+    public BuildChannelCommand getCompensatingCommand() {
+        return new BuildChannelCommand(definition);
+    }
 
-        ChannelBuilderRegistry channelBuilderRegistry = EasyMock.createMock(ChannelBuilderRegistry.class);
-        EasyMock.expect(channelBuilderRegistry.build(EasyMock.isA(PhysicalChannelDefinition.class))).andReturn(channel);
+    public PhysicalChannelDefinition getDefinition() {
+        return definition;
+    }
 
-        EasyMock.replay(channelBuilderRegistry, channel);
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-        BuildChannelsCommandExecutor executor = new BuildChannelsCommandExecutor(channelBuilderRegistry, null);
+        DisposeChannelCommand that = (DisposeChannelCommand) o;
 
-        BuildChannelsCommand command = new BuildChannelsCommand(Collections.singletonList(definition));
-        executor.execute(command);
+        return !(definition != null ? !definition.equals(that.definition) : that.definition != null);
+    }
 
-        EasyMock.verify(channelBuilderRegistry, channel);
+    public int hashCode() {
+        return (definition != null ? definition.hashCode() : 0);
     }
 
 }

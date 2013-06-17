@@ -33,6 +33,7 @@ package org.fabric3.binding.zeromq.generator;
 import java.net.URI;
 
 import org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
@@ -55,8 +56,9 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 @EagerInit
 public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenerator<ZeroMQBindingDefinition> {
 
-    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer, LogicalBinding<ZeroMQBindingDefinition> binding)
-            throws GenerationException {
+    public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalConsumer consumer,
+                                                                       LogicalBinding<ZeroMQBindingDefinition> binding,
+                                                                       ChannelDeliveryType deliveryType) throws GenerationException {
         URI uri = consumer.getUri();
 
         ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
@@ -65,16 +67,21 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
 
     }
 
-    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer, LogicalBinding<ZeroMQBindingDefinition> binding)
-            throws GenerationException {
-        URI targetUri = binding.getDefinition().getTargetUri();
-        ZeroMQMetadata metadata = binding.getDefinition().getZeroMQMetadata();
+    public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalProducer producer,
+                                                                       LogicalBinding<ZeroMQBindingDefinition> binding,
+                                                                       ChannelDeliveryType deliveryType) throws GenerationException {
+        ZeroMQBindingDefinition definition = binding.getDefinition();
+        URI targetUri = definition.getTargetUri();
+        ZeroMQMetadata metadata = definition.getZeroMQMetadata();
         setChannelName(binding, metadata);
-        return new ZeroMQConnectionTargetDefinition(targetUri, metadata);
+        boolean dedicatedThread = ChannelDeliveryType.ASYNCHRONOUS_WORKER == deliveryType;
+
+        return new ZeroMQConnectionTargetDefinition(targetUri, metadata, dedicatedThread);
     }
 
-    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<ZeroMQBindingDefinition> binding) throws GenerationException {
-        return new ZeroMQChannelBindingDefinition();
+    public PhysicalChannelBindingDefinition generateChannelBinding(LogicalBinding<ZeroMQBindingDefinition> binding, ChannelDeliveryType deliveryType)
+            throws GenerationException {
+        return new ZeroMQChannelBindingDefinition(deliveryType);
     }
 
     private void setChannelName(LogicalBinding binding, ZeroMQMetadata metadata) {

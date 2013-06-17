@@ -48,7 +48,7 @@ import org.easymock.EasyMock;
 import org.fabric3.channel.impl.ReplicationMonitor;
 import org.fabric3.spi.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelManager;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
@@ -62,9 +62,6 @@ public class DefaultChannelBuilderTestCase extends TestCase {
         PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"), true);
         definition.setBindingDefinition(new MockBindingDefinition());
 
-        ChannelManager channelManager = EasyMock.createMock(ChannelManager.class);
-        channelManager.register(EasyMock.isA(Channel.class));
-
         ReplicationMonitor monitor = EasyMock.createMock(ReplicationMonitor.class);
 
         Channel channel = EasyMock.createMock(Channel.class);
@@ -74,19 +71,23 @@ public class DefaultChannelBuilderTestCase extends TestCase {
 
         ExecutorService executorService = EasyMock.createMock(ExecutorService.class);
 
-        EasyMock.replay(channelManager, channel, bindingBuilder, monitor);
+        EasyMock.replay(channel, bindingBuilder, monitor);
 
-        DefaultChannelBuilder builder = new DefaultChannelBuilder(channelManager, executorService, monitor);
+        DefaultChannelBuilder builder = new DefaultChannelBuilder(executorService, monitor);
 
         Map bindingBuilderMap = Collections.singletonMap(MockBindingDefinition.class, bindingBuilder);
         builder.setBindingBuilders(bindingBuilderMap);
 
         assertNotNull(builder.build(definition));
 
-        EasyMock.verify(channelManager, channel, bindingBuilder, monitor);
+        EasyMock.verify(channel, bindingBuilder, monitor);
     }
 
     private class MockBindingDefinition extends PhysicalChannelBindingDefinition {
         private static final long serialVersionUID = -474926224717103363L;
+
+        private MockBindingDefinition() {
+            super(ChannelDeliveryType.DEFAULT);
+        }
     }
 }

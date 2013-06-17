@@ -98,7 +98,7 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
                 try {
                     request.setBody(frames[0]);
                     int methodIndex = ByteBuffer.wrap(frames[1]).getInt();
-                    WorkContext context = setWorkContext(frames[2]);;
+                    WorkContext context = setWorkContext(frames[2]);
 
                     request.setWorkContext(context);
 

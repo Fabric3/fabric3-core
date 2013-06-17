@@ -47,6 +47,7 @@ import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.host.ServletHost;
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -82,7 +83,7 @@ public class WebSourceConnectionAttacher implements SourceConnectionAttacher<Web
     }
 
     private Channel getChannel(URI sourceUri) throws ChannelNotFoundException {
-        Channel channel = channelManager.getChannel(sourceUri);
+        Channel channel = channelManager.getChannel(sourceUri, ChannelSide.CONSUMER);
         if (channel == null) {
             throw new ChannelNotFoundException("Channel not found: " + sourceUri);
         }

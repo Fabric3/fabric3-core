@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -34,35 +34,34 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.spi.model.physical;
+*/
+package org.fabric3.fabric.generator.channel;
 
-import java.io.Serializable;
+import javax.xml.namespace.QName;
+import java.net.URI;
+
+import junit.framework.TestCase;
+import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.spi.channel.ChannelConstants;
+import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- * Used to provision a binding transport configured on a channel.
+ *
  */
-public abstract class PhysicalChannelBindingDefinition implements Serializable {
-    private static final long serialVersionUID = -448452657885276687L;
+public class DefaultChannelGeneratorImplTestCase extends TestCase {
+    private DefaultChannelGeneratorImpl generator = new DefaultChannelGeneratorImpl();
 
-    private ChannelDeliveryType deliveryType;
+    public void testGenerate() throws Exception {
+        ChannelDefinition channelDefinition = new ChannelDefinition("test", URI.create("contribution"));
+        channelDefinition.addIntent(ChannelConstants.REPLICATE_INTENT);
+        LogicalChannel channel = new LogicalChannel(URI.create("test"), channelDefinition, null);
+        QName deployable = new QName("test", "test");
+        channel.setDeployable(deployable);
 
-    protected PhysicalChannelBindingDefinition(ChannelDeliveryType deliveryType) {
-        this.deliveryType = deliveryType;
-    }
+        PhysicalChannelDefinition definition = generator.generate(channel, deployable);
 
-    /**
-     * Returns the {@link ChannelDeliveryType}.
-     *
-     * @return the delivery type
-     */
-    public ChannelDeliveryType getDeliveryType() {
-        return deliveryType;
+        assertEquals(deployable, definition.getDeployable());
+        assertTrue(definition.isReplicate());
     }
 }

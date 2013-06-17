@@ -37,31 +37,44 @@
 */
 package org.fabric3.fabric.generator.channel;
 
+import javax.xml.namespace.QName;
+import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
-
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
+import java.util.Map;
 
 import org.fabric3.fabric.command.AttachChannelConnectionCommand;
+import org.fabric3.fabric.command.BuildChannelCommand;
 import org.fabric3.fabric.command.ChannelConnectionCommand;
 import org.fabric3.fabric.command.DetachChannelConnectionCommand;
+import org.fabric3.fabric.command.DisposeChannelCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalState;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import static org.fabric3.fabric.generator.channel.ChannelCommandGenerator.Direction.CONSUMER;
 
 /**
- * Generates a command to establish or remove an event channel connection from a consumer.
+ * Generates a command to establish or remove an event channel connection from a consumer. Channel build and dispose commands will be generated for consumer
+ * sources.
  */
 public class ConsumerCommandGenerator implements CommandGenerator {
     private ConnectionGenerator connectionGenerator;
+    private ChannelCommandGenerator channelGenerator;
     private int order;
 
-    public ConsumerCommandGenerator(@Reference ConnectionGenerator connectionGenerator, @Property(name = "order") int order) {
+    public ConsumerCommandGenerator(@Reference ConnectionGenerator connectionGenerator,
+                                    @Reference ChannelCommandGenerator channelGenerator,
+                                    @Property(name = "order") int order) {
         this.connectionGenerator = connectionGenerator;
+        this.channelGenerator = channelGenerator;
         this.order = order;
     }
 
@@ -88,17 +101,32 @@ public class ConsumerCommandGenerator implements CommandGenerator {
 
     private void generateCommand(LogicalConsumer consumer, ChannelConnectionCommand command, boolean incremental) throws GenerationException {
         LogicalComponent<?> component = consumer.getParent();
+        QName deployable = consumer.getParent().getDeployable();
         if (LogicalState.MARKED == component.getState()) {
-            List<PhysicalChannelConnectionDefinition> definitions = connectionGenerator.generateConsumer(consumer);
+            Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<LogicalChannel, ChannelDeliveryType>();
+            for (URI uri : consumer.getSources()) {
+                LogicalChannel channel = InvocableGeneratorHelper.getChannelInHierarchy(uri, consumer);
+                DisposeChannelCommand disposeCommand = channelGenerator.generateDispose(channel, deployable, CONSUMER);
+                command.addDisposeChannelCommand(disposeCommand);
+                channels.put(channel, disposeCommand.getDefinition().getDeliveryType());
+            }
+            List<PhysicalChannelConnectionDefinition> definitions = connectionGenerator.generateConsumer(consumer, channels);
             for (PhysicalChannelConnectionDefinition definition : definitions) {
-                DetachChannelConnectionCommand channelConnectionCommand = new DetachChannelConnectionCommand(definition);
-                command.add(channelConnectionCommand);
+                DetachChannelConnectionCommand connectionCommand = new DetachChannelConnectionCommand(definition);
+                command.add(connectionCommand);
             }
         } else if (LogicalState.NEW == component.getState() || !incremental) {
-            List<PhysicalChannelConnectionDefinition> definitions = connectionGenerator.generateConsumer(consumer);
+            Map<LogicalChannel, ChannelDeliveryType> channels = new HashMap<LogicalChannel, ChannelDeliveryType>();
+            for (URI uri : consumer.getSources()) {
+                LogicalChannel channel = InvocableGeneratorHelper.getChannelInHierarchy(uri, consumer);
+                BuildChannelCommand buildCommand = channelGenerator.generateBuild(channel, deployable, CONSUMER);
+                command.addBuildChannelCommand(buildCommand);
+                channels.put(channel, buildCommand.getDefinition().getDeliveryType());
+            }
+            List<PhysicalChannelConnectionDefinition> definitions = connectionGenerator.generateConsumer(consumer, channels);
             for (PhysicalChannelConnectionDefinition definition : definitions) {
-                AttachChannelConnectionCommand channelConnectionCommand = new AttachChannelConnectionCommand(definition);
-                command.add(channelConnectionCommand);
+                AttachChannelConnectionCommand connectionCommand = new AttachChannelConnectionCommand(definition);
+                command.add(connectionCommand);
             }
         }
     }

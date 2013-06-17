@@ -50,13 +50,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GenerationType;
-import org.fabric3.fabric.generator.channel.DomainChannelCommandGenerator;
 import org.fabric3.fabric.generator.classloader.ClassLoaderCommandGenerator;
 import org.fabric3.fabric.generator.collator.ContributionCollator;
 import org.fabric3.fabric.generator.context.StartContextCommandGenerator;
@@ -68,10 +63,12 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.Generator;
-import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default Generator implementation.
@@ -87,7 +84,6 @@ public class GeneratorImpl implements Generator {
     private List<CommandGenerator> commandGenerators;
     private ContributionCollator collator;
     private ClassLoaderCommandGenerator classLoaderCommandGenerator;
-    private DomainChannelCommandGenerator channelGenerator;
     private StartContextCommandGenerator startContextCommandGenerator;
     private StopContextCommandGenerator stopContextCommandGenerator;
     private ExtensionGenerator extensionGenerator;
@@ -97,24 +93,14 @@ public class GeneratorImpl implements Generator {
     public GeneratorImpl(@Reference List<CommandGenerator> commandGenerators,
                          @Reference ContributionCollator collator,
                          @Reference ClassLoaderCommandGenerator classLoaderCommandGenerator,
-                         @Reference DomainChannelCommandGenerator channelGenerator,
                          @Reference StartContextCommandGenerator startContextCommandGenerator,
                          @Reference StopContextCommandGenerator stopContextCommandGenerator) {
         this.collator = collator;
         this.classLoaderCommandGenerator = classLoaderCommandGenerator;
-        this.channelGenerator = channelGenerator;
         this.startContextCommandGenerator = startContextCommandGenerator;
         this.stopContextCommandGenerator = stopContextCommandGenerator;
         // sort the command generators
         this.commandGenerators = sortGenerators(commandGenerators);
-    }
-
-    public GeneratorImpl(List<CommandGenerator> commandGenerators,
-                         ContributionCollator collator,
-                         ClassLoaderCommandGenerator classLoaderCommandGenerator,
-                         StartContextCommandGenerator startContextCommandGenerator,
-                         StopContextCommandGenerator stopContextCommandGenerator) {
-        this(commandGenerators, collator, classLoaderCommandGenerator, null, startContextCommandGenerator, stopContextCommandGenerator);
     }
 
     /**
@@ -162,17 +148,6 @@ public class GeneratorImpl implements Generator {
             }
         }
 
-        if (channelGenerator != null) {
-            // generate commands for domain-level channels being deployed
-            for (LogicalChannel channel : domain.getChannels()) {
-                String zone = channel.getZone();
-                CompensatableCommand command = channelGenerator.generateBuild(channel, incremental);
-                if (command != null) {
-                    deployment.addCommand(zone, command);
-                }
-            }
-        }
-
         for (CommandGenerator generator : commandGenerators) {
             for (LogicalComponent<?> component : sorted) {
                 CompensatableCommand command = generator.generate(component, incremental);
@@ -186,16 +161,6 @@ public class GeneratorImpl implements Generator {
             }
         }
 
-        if (channelGenerator != null) {
-            // generate commands for domain-level channels being undeployed
-            for (LogicalChannel channel : domain.getChannels()) {
-                String zone = channel.getZone();
-                CompensatableCommand command = channelGenerator.generateDispose(channel, incremental);
-                if (command != null) {
-                    deployment.addCommand(zone, command);
-                }
-            }
-        }
         // generate commands for domain-level resources being undeployed
         if (resourceGenerator != null) {
             for (LogicalResource<?> resource : domain.getResources()) {

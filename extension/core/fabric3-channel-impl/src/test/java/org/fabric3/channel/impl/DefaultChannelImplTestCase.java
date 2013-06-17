@@ -47,6 +47,7 @@ import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.PassThroughHandler;
+import org.fabric3.spi.model.physical.ChannelSide;
 
 /**
  * The default Channel implementation.
@@ -105,7 +106,7 @@ public class DefaultChannelImplTestCase extends TestCase {
         EasyMock.expect(connection.getEventStream()).andReturn(stream);
 
         EasyMock.replay(handler, stream, connection);
-        
+
         channel.attach(connection);
         EasyMock.verify(handler, stream, connection);
     }
@@ -114,7 +115,7 @@ public class DefaultChannelImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         fanOutHandler = EasyMock.createMock(FanOutHandler.class);
-        channel = new DefaultChannelImpl(URI.create("channel"), new QName("test", "test"), fanOutHandler);
+        channel = new DefaultChannelImpl(URI.create("channel"), new QName("test", "test"), fanOutHandler, ChannelSide.CONSUMER);
     }
 
     private class BlockingHandler extends PassThroughHandler {

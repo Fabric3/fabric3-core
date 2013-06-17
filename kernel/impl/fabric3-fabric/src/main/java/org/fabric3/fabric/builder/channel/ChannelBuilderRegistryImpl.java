@@ -37,12 +37,16 @@
 */
 package org.fabric3.fabric.builder.channel;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.channel.Channel;
+import org.fabric3.spi.channel.ChannelManager;
+import org.fabric3.spi.channel.RegistrationException;
+import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -50,7 +54,12 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
+    private ChannelManager channelManager;
     private Map<String, ChannelBuilder> builders = new HashMap<String, ChannelBuilder>();
+
+    public ChannelBuilderRegistryImpl(@Reference ChannelManager channelManager) {
+        this.channelManager = channelManager;
+    }
 
     @Reference(required = false)
     public void setBuilders(Map<String, ChannelBuilder> builders) {
@@ -58,13 +67,36 @@ public class ChannelBuilderRegistryImpl implements ChannelBuilderRegistry {
     }
 
     public Channel build(PhysicalChannelDefinition definition) throws BuilderException {
+        URI uri = definition.getUri();
+        ChannelSide channelSide = definition.getChannelSide();
+        Channel channel = channelManager.getAndIncrementChannel(uri, channelSide);
+        if (channel != null) {
+            return channel;
+        }
         ChannelBuilder builder = getBuilder(definition);
-        return builder.build(definition);
+        channel = builder.build(definition);
+        try {
+            channelManager.register(channel);
+            return channel;
+        } catch (RegistrationException e) {
+            throw new BuilderException(e);
+        }
     }
 
     public void dispose(PhysicalChannelDefinition definition) throws BuilderException {
         ChannelBuilder builder = getBuilder(definition);
-        builder.dispose(definition);
+        try {
+            URI uri = definition.getUri();
+            ChannelSide channelSide = definition.getChannelSide();
+            Channel channel = channelManager.getAndDecrementChannel(uri, channelSide);
+            if (channelManager.getCount(uri, channelSide) == 0) {
+                channelManager.unregister(uri, channelSide);
+                builder.dispose(definition, channel);
+            }
+
+        } catch (RegistrationException e) {
+            throw new BuilderException(e);
+        }
     }
 
     private ChannelBuilder getBuilder(PhysicalChannelDefinition definition) throws BuilderException {

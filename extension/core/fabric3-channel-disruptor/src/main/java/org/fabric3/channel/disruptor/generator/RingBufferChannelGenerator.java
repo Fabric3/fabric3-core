@@ -1,6 +1,6 @@
 /*
  * Fabric3
- * Copyright (c) 2009-2012 Metaform Systems
+ * Copyright (c) 2009-2013 Metaform Systems
  *
  * Fabric3 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -35,38 +35,37 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.generator.channel;
+package org.fabric3.channel.disruptor.generator;
 
-import org.fabric3.fabric.command.BuildChannelsCommand;
-import org.fabric3.fabric.command.DisposeChannelsCommand;
+import javax.xml.namespace.QName;
+import java.net.URI;
+
+import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.spi.channel.ChannelConstants;
+import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
+import static org.fabric3.spi.model.physical.ChannelDeliveryType.ASYNCHRONOUS_WORKER;
 
 /**
- * Creates commands to build and dispose domain-level channels. Domain-level channels are special-cased as they are not part of a deployed composite.
- * That is, they are contained by the domain composite, which is virtual.
+ *
  */
-public interface DomainChannelCommandGenerator {
+@EagerInit
+public class RingBufferChannelGenerator implements ChannelGenerator {
 
-    /**
-     * Generates a build command.
-     *
-     * @param channel     the channel to build
-     * @param incremental true if an incremental deployment is being performed
-     * @return the command
-     * @throws GenerationException if a generation error is encountered
-     */
-    BuildChannelsCommand generateBuild(LogicalChannel channel, boolean incremental) throws GenerationException;
+    public PhysicalChannelDefinition generate(LogicalChannel channel, QName deployable) throws GenerationException {
+        URI uri = channel.getUri();
+        ChannelDefinition definition = channel.getDefinition();
+        String channelType = definition.getType();
 
-    /**
-     * Generates an dispose command.
-     *
-     * @param channel     the channel to remove
-     * @param incremental true if an incremental deployment is being performed
-     * @return the command
-     * @throws GenerationException if a generation error is encountered
-     */
-    DisposeChannelsCommand generateDispose(LogicalChannel channel, boolean incremental) throws GenerationException;
+        boolean replicate = definition.getIntents().contains(ChannelConstants.REPLICATE_INTENT);
 
+        PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, replicate, channelType, ASYNCHRONOUS_WORKER);
+        physicalDefinition.setMetadata(definition.getMetadata().get(ChannelConstants.METADATA));
+
+        return physicalDefinition;
+    }
 
 }

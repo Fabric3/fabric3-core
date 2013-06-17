@@ -20,6 +20,10 @@
         <f3:implementation.system class="org.fabric3.channel.disruptor.introspection.RingBufferChannelTypeLoader"/>
     </component>
 
+    <component name="RingBufferChannelGenerator" f3:key="ring.buffer">
+        <f3:implementation.system class="org.fabric3.channel.disruptor.generator.RingBufferChannelGenerator"/>
+    </component>
+
     <component name="RingBufferChannelBuilder" f3:key="ring.buffer">
         <f3:implementation.system class="org.fabric3.channel.disruptor.builder.RingBufferChannelBuilder"/>
     </component>

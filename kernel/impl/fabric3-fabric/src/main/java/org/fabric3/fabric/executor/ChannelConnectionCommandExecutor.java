@@ -43,6 +43,8 @@
  */
 package org.fabric3.fabric.executor;
 
+import org.fabric3.fabric.command.BuildChannelCommand;
+import org.fabric3.fabric.command.DisposeChannelCommand;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -59,24 +61,36 @@ import org.fabric3.spi.executor.ExecutionException;
  */
 @EagerInit
 public class ChannelConnectionCommandExecutor implements CommandExecutor<ChannelConnectionCommand> {
-    private CommandExecutorRegistry commandExecutorRegistry;
+    private CommandExecutorRegistry executorRegistry;
 
-    public ChannelConnectionCommandExecutor(@Reference CommandExecutorRegistry commandExecutorRegistry) {
-        this.commandExecutorRegistry = commandExecutorRegistry;
+    public ChannelConnectionCommandExecutor(@Reference CommandExecutorRegistry executorRegistry) {
+        this.executorRegistry = executorRegistry;
     }
 
     @Init
     public void init() {
-        commandExecutorRegistry.register(ChannelConnectionCommand.class, this);
+        executorRegistry.register(ChannelConnectionCommand.class, this);
     }
 
     public void execute(ChannelConnectionCommand command) throws ExecutionException {
+
         // detach must be executed first so attachers can drop connections prior to adding new ones
         for (DetachChannelConnectionCommand detachCommand : command.getDetachCommands()) {
-            commandExecutorRegistry.execute(detachCommand);
+            executorRegistry.execute(detachCommand);
         }
+
+        for (DisposeChannelCommand disposeCommand : command.getDisposeChannelCommands()) {
+            executorRegistry.execute(disposeCommand);
+        }
+        if (command.getDisposeChannelCommands() != null) {
+        }
+
+        for (BuildChannelCommand buildCommand : command.getBuildChannelCommands()) {
+            executorRegistry.execute(buildCommand);
+        }
+
         for (AttachChannelConnectionCommand attachCommand : command.getAttachCommands()) {
-            commandExecutorRegistry.execute(attachCommand);
+            executorRegistry.execute(attachCommand);
         }
 
     }
