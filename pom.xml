@@ -51,10 +51,6 @@
 		<jetty.version>8.1.7.v20120910</jetty.version>
         <disruptor.version>3.0.0.beta3</disruptor.version>
 
-		<!-- if the Logback version changes, update the export added via BootExports.addExport() 
-			in Fabric3Server -->
-		<logback.version>1.0.0</logback.version>
-
 		<atomikos.version>3.7.0</atomikos.version>
 		<atomosphere.version>0.9.2</atomosphere.version>
 	</properties>
