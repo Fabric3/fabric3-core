@@ -43,19 +43,19 @@ import org.fabric3.spi.channel.EventWrapper;
 /**
  * Implements POST semantics for the publish/subscribe protocol, where data is sent as events to the channel.
  * <p/>
- * An event is read from the HTTP request body and stored as a string in an {@link EventWrapper}. XML (JAXB) and JSON are supported as content type
- * systems. It is the responsibility of consumers to deserialize the wrapper content into an expected Java type.
+ * An event is read from the HTTP request body and stored as a string in an {@link EventWrapper}. XML (JAXB) and JSON are supported as content type systems. It
+ * is the responsibility of consumers to deserialize the wrapper content into an expected Java type.
  */
 public class DefaultChannelPublisher implements ChannelPublisher, EventStreamHandler {
     private EventStreamHandler next;
 
-    public void handle(Object event) {
+    public void handle(Object event, boolean endOfBatch) {
         // pass the object to the head stream handler
-        next.handle(event);
+        next.handle(event, endOfBatch);
     }
 
     public void publish(EventWrapper wrapper) throws PublishException {
-        handle(wrapper);
+        handle(wrapper, true);
     }
 
     public void setNext(EventStreamHandler next) {

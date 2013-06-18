@@ -85,8 +85,8 @@ public class RingBufferChannelTestCase extends TestCase {
 
         channel.start();
 
-        producer.handle(new Object());
-        producer.handle(new Object());
+        producer.handle(new Object(), true);
+        producer.handle(new Object(), true);
 
         consumer.latch.await();
 
@@ -96,7 +96,7 @@ public class RingBufferChannelTestCase extends TestCase {
     private class MockConsumer implements EventStreamHandler {
         private CountDownLatch latch = new CountDownLatch(2);
 
-        public void handle(Object event) {
+        public void handle(Object event, boolean endOfBatch) {
             latch.countDown();
         }
 

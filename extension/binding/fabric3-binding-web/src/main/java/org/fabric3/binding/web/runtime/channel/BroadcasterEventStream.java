@@ -53,7 +53,7 @@ public class BroadcasterEventStream implements EventStream, EventStreamHandler {
         this.broadcaster = broadcaster;
     }
 
-    public void handle(Object event) {
+    public void handle(Object event, boolean endOfBatch) {
         broadcaster.broadcast(event);
     }
 
@@ -76,7 +76,6 @@ public class BroadcasterEventStream implements EventStream, EventStreamHandler {
     public void addHandler(int index, EventStreamHandler handler) {
         throw new UnsupportedOperationException();
     }
-
 
     public void setNext(EventStreamHandler next) {
         throw new UnsupportedOperationException();

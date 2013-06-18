@@ -43,8 +43,8 @@ package org.fabric3.spi.channel;
 public class PassThroughHandler implements EventStreamHandler {
     private EventStreamHandler next;
 
-    public void handle(Object event) {
-        next.handle(event);
+    public void handle(Object event, boolean endOfBatch) {
+        next.handle(event, endOfBatch);
     }
 
     public void setNext(EventStreamHandler next) {

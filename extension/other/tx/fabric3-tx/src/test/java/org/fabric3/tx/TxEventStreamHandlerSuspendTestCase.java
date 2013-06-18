@@ -57,12 +57,12 @@ public class TxEventStreamHandlerSuspendTestCase extends TestCase {
     public void testSuspend() throws Exception {
         Transaction trx = EasyMock.createMock(Transaction.class);
         EasyMock.expect(tm.getTransaction()).andReturn(trx);
-        next.handle(EasyMock.isA(Object.class));
+        next.handle(EasyMock.isA(Object.class), EasyMock.anyBoolean());
         EasyMock.expect(tm.suspend()).andReturn(trx);
         tm.resume(trx);
         EasyMock.replay(tm, next);
 
-        handler.handle(event);
+        handler.handle(event, true);
 
         EasyMock.verify(tm, next);
     }
@@ -70,14 +70,14 @@ public class TxEventStreamHandlerSuspendTestCase extends TestCase {
     public void testSuspendOnError() throws Exception {
         Transaction trx = EasyMock.createMock(Transaction.class);
         EasyMock.expect(tm.getTransaction()).andReturn(trx);
-        next.handle(EasyMock.isA(Object.class));
+        next.handle(EasyMock.isA(Object.class), EasyMock.anyBoolean());
         EasyMock.expectLastCall().andThrow(new MockException());
         EasyMock.expect(tm.suspend()).andReturn(trx);
         tm.resume(trx);
         EasyMock.replay(tm, next);
 
         try {
-            handler.handle(event);
+            handler.handle(event, true);
             fail();
         } catch (MockException e) {
             // expected
@@ -86,8 +86,6 @@ public class TxEventStreamHandlerSuspendTestCase extends TestCase {
         EasyMock.verify(tm, next);
     }
 
-
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
         tm = EasyMock.createMock(TransactionManager.class);
@@ -103,6 +101,5 @@ public class TxEventStreamHandlerSuspendTestCase extends TestCase {
 
         private static final long serialVersionUID = -1746683997765583218L;
     }
-
 
 }

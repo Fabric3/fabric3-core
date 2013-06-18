@@ -56,7 +56,7 @@ public class ReplicationHandlerTestCase extends TestCase {
     private EventStreamHandler next;
 
     public void testReplicationSerializable() throws Exception {
-        next.handle(EasyMock.notNull());
+        next.handle(EasyMock.notNull(), EasyMock.anyBoolean());
         topologyService.sendAsynchronous(EasyMock.eq("channel"), EasyMock.isA(MockEvent.class));
         EasyMock.replay(topologyService, monitor, next);
 
@@ -64,26 +64,26 @@ public class ReplicationHandlerTestCase extends TestCase {
         handler.setNext(next);
 
         Object event = new MockEvent();
-        handler.handle(event);
+        handler.handle(event, true);
 
         EasyMock.verify(topologyService, monitor, next);
     }
 
     public void testNoReplicationNotSerializable() throws Exception {
-        next.handle(EasyMock.notNull());
+        next.handle(EasyMock.notNull(), EasyMock.anyBoolean());
         EasyMock.replay(topologyService, monitor, next);
 
         ReplicationHandler handler = new ReplicationHandler("channel", topologyService, monitor);
         handler.setNext(next);
 
         Object event = new Object();
-        handler.handle(event);
+        handler.handle(event, true);
 
         EasyMock.verify(topologyService, monitor, next);
     }
 
     public void testNoReplicationEventWrapper() throws Exception {
-        next.handle(EasyMock.notNull());
+        next.handle(EasyMock.notNull(), EasyMock.anyBoolean());
         EasyMock.replay(topologyService, monitor, next);
 
         ReplicationHandler handler = new ReplicationHandler("channel", topologyService, monitor);
@@ -91,13 +91,13 @@ public class ReplicationHandlerTestCase extends TestCase {
 
         Object event = new MockEvent();
         EventWrapper wrapper = new EventWrapper(null, event);
-        handler.handle(wrapper);
+        handler.handle(wrapper, true);
 
         EasyMock.verify(topologyService, monitor, next);
     }
 
     public void testOnNext() throws Exception {
-        next.handle(EasyMock.notNull());
+        next.handle(EasyMock.notNull(), EasyMock.anyBoolean());
         EasyMock.replay(topologyService, monitor, next);
 
         ReplicationHandler handler = new ReplicationHandler("channel", topologyService, monitor);
@@ -111,7 +111,7 @@ public class ReplicationHandlerTestCase extends TestCase {
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown", "ThrowableResultOfMethodCallIgnored"})
     public void testReportReplicationError() throws Exception {
-        next.handle(EasyMock.notNull());
+        next.handle(EasyMock.notNull(), EasyMock.anyBoolean());
         topologyService.sendAsynchronous(EasyMock.eq("channel"), EasyMock.isA(MockEvent.class));
         EasyMock.expectLastCall().andThrow(new MessageException("error"));
 
@@ -122,7 +122,7 @@ public class ReplicationHandlerTestCase extends TestCase {
         handler.setNext(next);
 
         Object event = new MockEvent();
-        handler.handle(event);
+        handler.handle(event, true);
 
         EasyMock.verify(topologyService, monitor, next);
     }

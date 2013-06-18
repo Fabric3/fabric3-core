@@ -49,7 +49,7 @@ public class ChannelProxyObjectFactoryTestCase extends TestCase {
 
     public void testDispatch() throws Exception {
         EventStreamHandler handler = EasyMock.createMock(EventStreamHandler.class);
-        handler.handle(EasyMock.isA(String.class));
+        handler.handle(EasyMock.isA(String.class), EasyMock.anyBoolean());
 
         EasyMock.replay(handler);
 

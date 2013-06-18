@@ -82,7 +82,7 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
         return null;
     }
 
-    public void handle(Object event) {
+    public void handle(Object event, boolean endOfBatch) {
         WorkContextCache.getAndResetThreadWorkContext();
         Object instance;
         try {
@@ -105,8 +105,8 @@ public class InvokerEventStreamHandler implements EventStreamHandler {
     /**
      * Performs the invocation on the target component instance. If a target classloader is configured for the interceptor, it will be set as the TCCL.
      *
-     * @param event       the event
-     * @param instance    the target component instance
+     * @param event    the event
+     * @param instance the target component instance
      */
     private void invoke(Object event, Object instance) {
         try {

@@ -55,17 +55,17 @@ public class TransformerHandler implements EventStreamHandler {
      * Constructor.
      *
      * @param transformer the transformer
-     * @param loader    the event type classloader
+     * @param loader      the event type classloader
      */
     public TransformerHandler(Transformer<Object, Object> transformer, ClassLoader loader) {
         this.transformer = transformer;
         this.loader = loader;
     }
 
-    public void handle(Object event) {
+    public void handle(Object event, boolean endOfBatch) {
         try {
             Object o = transformer.transform(event, loader);
-            next.handle(o);
+            next.handle(o, endOfBatch);
         } catch (TransformationException e) {
             throw new ServiceRuntimeException(e);
         }

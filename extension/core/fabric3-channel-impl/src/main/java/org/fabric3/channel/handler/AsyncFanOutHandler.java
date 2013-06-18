@@ -52,7 +52,7 @@ public class AsyncFanOutHandler extends AbstractFanOutHandler {
         this.executorService = executorService;
     }
 
-    public void handle(Object event) {
+    public void handle(Object event, boolean endOfBatch) {
         if (connections.length == 0) {
             // no connections, skip scheduling work
             return;
@@ -71,7 +71,8 @@ public class AsyncFanOutHandler extends AbstractFanOutHandler {
         public void run() {
             for (ChannelConnection connection : connections) {
                 EventStream stream = connection.getEventStream();
-                stream.getHeadHandler().handle(event);
+                // force end of batch
+                stream.getHeadHandler().handle(event, true);
             }
         }
     }

@@ -45,7 +45,7 @@ public class PublisherHandler implements EventStreamHandler {
         this.publisher = publisher;
     }
 
-    public void handle(Object event) {
+    public void handle(Object event, boolean endOfBatch) {
         if ((event instanceof byte[])) {
             // single frame message
             publisher.publish((byte[]) event);

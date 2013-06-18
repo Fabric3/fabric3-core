@@ -57,7 +57,7 @@ public class FilterHandlerTestCase extends TestCase {
 
         FilterHandler handler = new FilterHandler(filter);
         handler.setNext(tailHandler);
-        handler.handle(new Object());
+        handler.handle(new Object(), true);
 
         EasyMock.verify(filter, tailHandler);
     }
@@ -67,12 +67,12 @@ public class FilterHandlerTestCase extends TestCase {
         EasyMock.expect(filter.filter(EasyMock.notNull())).andReturn(true);
 
         EventStreamHandler tailHandler = EasyMock.createMock(EventStreamHandler.class);
-        tailHandler.handle(EasyMock.notNull());
+        tailHandler.handle(EasyMock.notNull(), EasyMock.anyBoolean());
         EasyMock.replay(filter, tailHandler);
 
         FilterHandler handler = new FilterHandler(filter);
         handler.setNext(tailHandler);
-        handler.handle(new Object());
+        handler.handle(new Object(), true);
 
         EasyMock.verify(filter, tailHandler);
     }

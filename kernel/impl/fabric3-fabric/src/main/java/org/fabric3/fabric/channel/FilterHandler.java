@@ -51,9 +51,9 @@ public class FilterHandler implements EventStreamHandler {
         this.filter = filter;
     }
 
-    public void handle(Object event) {
+    public void handle(Object event, boolean endOfBatch) {
         if (filter.filter(event)) {
-            next.handle(event);
+            next.handle(event, endOfBatch);
         }
     }
 

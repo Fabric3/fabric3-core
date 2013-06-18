@@ -43,7 +43,6 @@
  */
 package org.fabric3.binding.jms.runtime.channel;
 
-import java.io.Serializable;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -52,11 +51,11 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-
-import org.oasisopen.sca.ServiceRuntimeException;
+import java.io.Serializable;
 
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.spi.channel.EventStreamHandler;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * A {@link EventStreamHandler} that dispatches an event to a JMS destination.
@@ -72,7 +71,7 @@ public class JmsEventStreamHandler implements EventStreamHandler {
         this.persistent = persistent;
     }
 
-    public void handle(Object event) {
+    public void handle(Object event, boolean endOfBatch) {
         if (!(event instanceof Serializable)) {
             throw new ServiceRuntimeException("Event type must be serializable: " + event.getClass().getName());
         }

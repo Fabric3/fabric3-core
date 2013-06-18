@@ -55,14 +55,14 @@ public class ChannelEventHandler implements EventHandler<RingBufferEvent> {
         if (stream.getDefinition().isChannelEvent()) {
             // consumer takes a channel event, send that, making sure to set the end-of-batch marker
             event.setEndOfBatch(endOfBatch);
-            stream.getHeadHandler().handle(event);
+            stream.getHeadHandler().handle(event, endOfBatch);
         } else {
             // if the parsed value has been set, send that
             Object parsed = event.getParsed(Object.class);
             if (parsed != null) {
-                stream.getHeadHandler().handle(parsed);
+                stream.getHeadHandler().handle(parsed, endOfBatch);
             } else {
-                stream.getHeadHandler().handle(event.getEvent(Object.class));
+                stream.getHeadHandler().handle(event.getEvent(Object.class), endOfBatch);
             }
         }
     }

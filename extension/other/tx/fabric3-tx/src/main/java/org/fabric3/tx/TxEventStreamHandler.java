@@ -52,7 +52,7 @@ public class TxEventStreamHandler extends AbstractTxSupport implements EventStre
         super(tm, action, monitor);
     }
 
-    public void handle(Object event) {
+    public void handle(Object event, boolean endOfBatch) {
         Transaction transaction = getTransaction();
 
         if (txAction == TxAction.BEGIN) {
@@ -64,7 +64,7 @@ public class TxEventStreamHandler extends AbstractTxSupport implements EventStre
         }
 
         try {
-            next.handle(event);
+            next.handle(event, endOfBatch);
         } catch (RuntimeException e) {
             if (txAction == TxAction.BEGIN && transaction == null) {
                 rollback();

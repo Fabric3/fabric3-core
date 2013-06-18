@@ -37,7 +37,6 @@
 */
 package org.fabric3.fabric.channel;
 
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -55,8 +54,8 @@ import org.fabric3.spi.transform.TransformerRegistry;
 /**
  * An {@link EventStreamHandler} that transforms wrapped events to a type expected by the consumer.
  * <p/>
- * If the event is not wrapped, no transformation is done. This implementation also lazily creates transformers and caches them for reuse as binding
- * contexts such as JAXB can be expensive to create.
+ * If the event is not wrapped, no transformation is done. This implementation also lazily creates transformers and caches them for reuse as binding contexts
+ * such as JAXB can be expensive to create.
  */
 public class TransformerHandler implements EventStreamHandler {
     private EventStreamHandler next;
@@ -74,7 +73,7 @@ public class TransformerHandler implements EventStreamHandler {
     }
 
     @SuppressWarnings({"unchecked"})
-    public void handle(Object event) {
+    public void handle(Object event, boolean endOfBatch) {
         if (event instanceof EventWrapper) {
             if (cache == null) {
                 cache = new ConcurrentHashMap<DataType<?>, Transformer<Object, Object>>();
@@ -100,7 +99,7 @@ public class TransformerHandler implements EventStreamHandler {
             }
             event = content;
         }
-        next.handle(event);
+        next.handle(event, endOfBatch);
     }
 
     public void setNext(EventStreamHandler next) {

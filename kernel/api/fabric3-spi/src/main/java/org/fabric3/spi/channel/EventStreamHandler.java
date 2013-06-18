@@ -45,9 +45,10 @@ public interface EventStreamHandler {
     /**
      * Process the event.
      *
-     * @param event the event.
+     * @param event      the event.
+     * @param endOfBatch flag to indicate if this is the last event in a batch from the channel
      */
-    void handle(Object event);
+    void handle(Object event, boolean endOfBatch);
 
     /**
      * Sets the next handler in the handler chain.

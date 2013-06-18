@@ -109,7 +109,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
         EasyMock.expect(socket.hasReceiveMore()).andReturn(false).atLeastOnce();
 
         EventStreamHandler head = EasyMock.createMock(EventStreamHandler.class);
-        head.handle(EasyMock.isA(Object.class));
+        head.handle(EasyMock.isA(Object.class), EasyMock.anyBoolean());
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
 
             public Object answer() throws Throwable {
@@ -170,7 +170,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
         ZMQ.Socket socket2 = createSocket(ADDRESS2);
 
         EventStreamHandler head = EasyMock.createMock(EventStreamHandler.class);
-        head.handle(EasyMock.isA(Object.class));
+        head.handle(EasyMock.isA(Object.class), EasyMock.anyBoolean());
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
 
             public Object answer() throws Throwable {
@@ -243,7 +243,7 @@ public class NonReliableSubscriberTestCase extends TestCase {
         ZMQ.Socket socket = createSocket(ADDRESS);
 
         EventStreamHandler head = EasyMock.createStrictMock(EventStreamHandler.class);
-        head.handle(EasyMock.isA(Object.class));
+        head.handle(EasyMock.isA(Object.class), EasyMock.anyBoolean());
         EasyMock.expectLastCall().andThrow(new RuntimeException());
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
 

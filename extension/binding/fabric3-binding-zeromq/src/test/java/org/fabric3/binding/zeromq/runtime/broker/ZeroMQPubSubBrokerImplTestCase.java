@@ -43,7 +43,6 @@ import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.federation.AddressAnnouncement;
 import org.fabric3.binding.zeromq.runtime.federation.AddressCache;
-import org.fabric3.binding.zeromq.runtime.handler.AsyncFanOutHandler;
 import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
 import org.fabric3.binding.zeromq.runtime.message.Subscriber;
 import org.fabric3.host.runtime.HostInfo;
@@ -109,7 +108,7 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
         EasyMock.expect(connection.getEventStream()).andReturn(stream).atLeastOnce();
 
         EasyMock.expect(handlerFactory.createHandler(EasyMock.isA(DataType.class), EasyMock.isA(DataType.class), EasyMock.isA(ClassLoader.class))).andReturn(
-                EasyMock.createNiceMock(AsyncFanOutHandler.class));
+                EasyMock.createNiceMock(EventStreamHandler.class));
 
         EasyMock.expect(context.socket(1)).andReturn(EasyMock.createNiceMock(ZMQ.Socket.class));
 

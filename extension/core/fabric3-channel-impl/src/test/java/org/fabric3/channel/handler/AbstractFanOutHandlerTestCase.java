@@ -51,7 +51,7 @@ public class AbstractFanOutHandlerTestCase extends TestCase {
     public void testAddRemove() throws Exception {
 
         AbstractFanOutHandler handler = new AbstractFanOutHandler() {
-            public void handle(Object event) {
+            public void handle(Object event, boolean endOfBatch) {
                 // no-op
             }
         };
@@ -65,6 +65,5 @@ public class AbstractFanOutHandlerTestCase extends TestCase {
 
         EasyMock.verify(connection);
     }
-
 
 }

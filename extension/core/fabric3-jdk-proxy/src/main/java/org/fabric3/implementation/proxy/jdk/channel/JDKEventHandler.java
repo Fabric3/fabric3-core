@@ -65,7 +65,7 @@ public final class JDKEventHandler implements InvocationHandler {
             handleProxyMethod(method);
             return null;
         }
-        stream.getHeadHandler().handle(args[0]);
+        stream.getHeadHandler().handle(args[0], true);
         return null;
     }
 

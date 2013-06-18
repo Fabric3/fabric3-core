@@ -57,7 +57,6 @@ import org.fabric3.spi.transform.TransformerRegistry;
 public class TransformerHandlerTestCase extends TestCase {
     private EventStreamHandler next;
 
-
     @SuppressWarnings({"unchecked"})
     public void testTransform() throws Exception {
         DataType<?> sourceType = new JsonType<String>(String.class, "{test}");
@@ -72,9 +71,9 @@ public class TransformerHandlerTestCase extends TestCase {
                                                 EasyMock.isA(List.class))).andReturn(transformer);
         EasyMock.expect(transformer.transform(EasyMock.isA(MockEvent.class), EasyMock.isA(ClassLoader.class))).andReturn(new Object()).times(2);
 
-        next.handle(EasyMock.notNull());
+        next.handle(EasyMock.notNull(), EasyMock.anyBoolean());
         EasyMock.expectLastCall().times(2);
-        
+
         EasyMock.replay(registry, next, transformer);
 
         TransformerHandler handler = new TransformerHandler((DataType<Object>) targetType, registry);
@@ -82,10 +81,10 @@ public class TransformerHandlerTestCase extends TestCase {
 
         Object event = new MockEvent();
         EventWrapper wrapper = new EventWrapper(sourceType, event);
-        handler.handle(wrapper);
+        handler.handle(wrapper, true);
 
         EventWrapper wrapper2 = new EventWrapper(sourceType, event);
-        handler.handle(wrapper2);
+        handler.handle(wrapper2, true);
 
         EasyMock.verify(registry, next, transformer);
     }
@@ -94,14 +93,14 @@ public class TransformerHandlerTestCase extends TestCase {
     public void testNoTransform() throws Exception {
         DataType<?> dataType = new JavaClass<String>(String.class);
         TransformerRegistry registry = EasyMock.createMock(TransformerRegistry.class);
-        next.handle(EasyMock.notNull());
+        next.handle(EasyMock.notNull(), EasyMock.anyBoolean());
 
         EasyMock.replay(registry, next);
 
         TransformerHandler handler = new TransformerHandler((DataType<Object>) dataType, registry);
         handler.setNext(next);
 
-        handler.handle(new Object());
+        handler.handle(new Object(), true);
 
         EasyMock.verify(registry, next);
     }

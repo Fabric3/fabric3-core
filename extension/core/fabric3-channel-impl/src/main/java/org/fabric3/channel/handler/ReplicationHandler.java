@@ -47,8 +47,8 @@ import org.fabric3.spi.federation.MessageReceiver;
 import org.fabric3.spi.federation.ZoneTopologyService;
 
 /**
- * Responsible for handling event replication in a zone. Specifically, replicates events to other channel instances and passes replicated events
- * through to downstream handlers.
+ * Responsible for handling event replication in a zone. Specifically, replicates events to other channel instances and passes replicated events through to
+ * downstream handlers.
  */
 public class ReplicationHandler implements EventStreamHandler, MessageReceiver {
     private String channelName;
@@ -70,7 +70,7 @@ public class ReplicationHandler implements EventStreamHandler, MessageReceiver {
         return next;
     }
 
-    public void handle(Object event) {
+    public void handle(Object event, boolean endOfBatch) {
         if (!(event instanceof EventWrapper) && event instanceof Serializable) {
             // check for EventWrapper to avoid re-replicating an event that was just replicated
             try {
@@ -80,10 +80,10 @@ public class ReplicationHandler implements EventStreamHandler, MessageReceiver {
             }
         }
         // pass the object to the head stream handler
-        next.handle(event);
+        next.handle(event, endOfBatch);
     }
 
     public void onMessage(Object event) {
-        next.handle(event);
+        next.handle(event, true);
     }
 }

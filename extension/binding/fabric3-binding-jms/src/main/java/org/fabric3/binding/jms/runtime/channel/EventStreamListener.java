@@ -73,10 +73,10 @@ public class EventStreamListener implements MessageListener {
             Thread.currentThread().setContextClassLoader(cl);
             if (request instanceof ObjectMessage) {
                 ObjectMessage message = (ObjectMessage) request;
-                handler.handle(message.getObject());
+                handler.handle(message.getObject(), true);
             } else if (request instanceof TextMessage) {
                 TextMessage message = (TextMessage) request;
-                handler.handle(new Object[]{message.getText()});
+                handler.handle(new Object[]{message.getText()}, true);
             } else {
                 String type = request.getClass().getName();
                 monitor.invalidMessageType(type);
@@ -88,6 +88,5 @@ public class EventStreamListener implements MessageListener {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
     }
-
 
 }

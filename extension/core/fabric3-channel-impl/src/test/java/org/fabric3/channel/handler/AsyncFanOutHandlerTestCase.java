@@ -69,12 +69,12 @@ public class AsyncFanOutHandlerTestCase extends TestCase {
         handler.addConnection(URI.create("connection1"), connection1);
         handler.addConnection(URI.create("connection2"), connection2);
 
-        handler1.handle(event);
-        handler2.handle(event);
+        handler1.handle(event, true);
+        handler2.handle(event, true);
 
         EasyMock.replay(executorService, handler1, handler2);
 
-        handler.handle(event);
+        handler.handle(event, true);
 
         EasyMock.verify(executorService, handler1, handler2);
     }

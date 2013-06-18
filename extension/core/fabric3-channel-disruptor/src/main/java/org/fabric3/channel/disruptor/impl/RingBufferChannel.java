@@ -177,7 +177,7 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
         return connection;
     }
 
-    public void handle(Object event) {
+    public void handle(Object event, boolean endOfBatch) {
         ringBuffer.publishEvent(TRANSLATOR, event);
     }
 

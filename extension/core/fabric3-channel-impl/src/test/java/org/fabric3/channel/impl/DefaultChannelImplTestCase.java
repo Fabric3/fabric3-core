@@ -57,7 +57,7 @@ public class DefaultChannelImplTestCase extends TestCase {
     private FanOutHandler fanOutHandler;
 
     public void testAddRemoveHandler() throws Exception {
-        fanOutHandler.handle(EasyMock.notNull());
+        fanOutHandler.handle(EasyMock.notNull(), EasyMock.anyBoolean());
         EasyMock.expectLastCall().times(2);
         EasyMock.replay(fanOutHandler);
 
@@ -72,12 +72,12 @@ public class DefaultChannelImplTestCase extends TestCase {
         channel.removeHandler(handler);
         handler.setClosed(true);
 
-        head.handle(new Object());
+        head.handle(new Object(), true);
 
         channel.removeHandler(handler2);
         handler2.setClosed(true);
 
-        head.handle(new Object());
+        head.handle(new Object(), true);
         EasyMock.verify(fanOutHandler);
     }
 
@@ -125,12 +125,11 @@ public class DefaultChannelImplTestCase extends TestCase {
             this.closed = closed;
         }
 
-        @Override
-        public void handle(Object event) {
+        public void handle(Object event, boolean endOfBatch) {
             if (closed) {
                 fail("Handler not properly removed");
             }
-            super.handle(event);
+            super.handle(event, true);
         }
     }
 }

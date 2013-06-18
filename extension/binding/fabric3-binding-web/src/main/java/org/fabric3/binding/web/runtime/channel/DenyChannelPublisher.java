@@ -50,7 +50,7 @@ public class DenyChannelPublisher implements ChannelPublisher {
         throw new PublishDeniedException();
     }
 
-    public void handle(Object event) {
+    public void handle(Object event, boolean endOfBatch) {
     }
 
     public void setNext(EventStreamHandler next) {

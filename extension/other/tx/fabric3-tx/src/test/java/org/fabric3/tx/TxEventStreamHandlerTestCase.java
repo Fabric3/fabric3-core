@@ -58,12 +58,12 @@ public class TxEventStreamHandlerTestCase extends TestCase {
     public void testBeginCommit() throws Exception {
         EasyMock.expect(tm.getTransaction()).andReturn(null);
         EasyMock.expect(tm.getStatus()).andReturn(Status.STATUS_ACTIVE);
-        next.handle(EasyMock.isA(Object.class));
+        next.handle(EasyMock.isA(Object.class), EasyMock.anyBoolean());
         tm.begin();
         tm.commit();
         EasyMock.replay(tm, next);
 
-        handler.handle(event);
+        handler.handle(event, true);
 
         EasyMock.verify(tm, next);
     }
@@ -71,24 +71,24 @@ public class TxEventStreamHandlerTestCase extends TestCase {
     public void testAlreadyBegunNoCommit() throws Exception {
         Transaction trx = EasyMock.createMock(Transaction.class);
         EasyMock.expect(tm.getTransaction()).andReturn(trx);
-        next.handle(EasyMock.isA(Object.class));
+        next.handle(EasyMock.isA(Object.class), EasyMock.anyBoolean());
         EasyMock.replay(trx, tm, next);
 
-        handler.handle(event);
+        handler.handle(event, true);
 
         EasyMock.verify(trx, tm, next);
     }
 
     public void testRollbackOnThrownException() throws Exception {
         EasyMock.expect(tm.getTransaction()).andReturn(null);
-        next.handle(EasyMock.isA(Object.class));
+        next.handle(EasyMock.isA(Object.class), EasyMock.anyBoolean());
         EasyMock.expectLastCall().andThrow(new MockException());
         tm.begin();
         tm.rollback();
         EasyMock.replay(tm, next);
 
         try {
-            handler.handle(event);
+            handler.handle(event, true);
             fail();
         } catch (MockException e) {
             // expected
@@ -97,16 +97,15 @@ public class TxEventStreamHandlerTestCase extends TestCase {
         EasyMock.verify(tm, next);
     }
 
-
     public void testNoRollbackOnThrownExceptionWhenNotBegun() throws Exception {
         Transaction trx = EasyMock.createMock(Transaction.class);
         EasyMock.expect(tm.getTransaction()).andReturn(trx);
-        next.handle(EasyMock.isA(Object.class));
+        next.handle(EasyMock.isA(Object.class), EasyMock.anyBoolean());
         EasyMock.expectLastCall().andThrow(new MockException());
         EasyMock.replay(trx, tm, next);
 
         try {
-            handler.handle(event);
+            handler.handle(event, true);
             fail();
         } catch (MockException e) {
             // expected
@@ -131,6 +130,5 @@ public class TxEventStreamHandlerTestCase extends TestCase {
 
         private static final long serialVersionUID = -1746683997765583218L;
     }
-
 
 }

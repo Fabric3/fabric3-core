@@ -205,9 +205,9 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
                             index++;
                         }
                         if (frames == null) {
-                            handler.handle(payload);
+                            handler.handle(payload, true);
                         } else {
-                            handler.handle(frames);
+                            handler.handle(frames, true);
                         }
                     }
                 }
