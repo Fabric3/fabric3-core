@@ -71,8 +71,8 @@ import org.oasisopen.sca.annotation.Reference;
  * ring buffer entries.
  */
 public class RingBufferDestinationRouterImpl implements RingBufferDestinationRouter {
-    public static final String PRODUCTION_MODE = "production";
-    private static final String DEVELOPMENT_MODE = "development";
+    public static final String ASYNCHRONOUS_MODE = "asynchronous";
+    private static final String SYNCHRONOUS_MODE = "synchronous";
 
     private ExecutorService executorService;
     private MonitorDestinationRegistry registry;
@@ -87,7 +87,7 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
     private long spinTimeoutNanos = 1000;
     private long yieldTimeoutNanos = 1000;
     private String phasedBlockingType = "lock";
-    private boolean enabled = false;  // true if the ring buffer (production mode) is enabled
+    private boolean enabled = false;  // true if the ring buffer (asynchronous mode) is enabled
 
     public RingBufferDestinationRouterImpl(@Reference ExecutorService executorService,
                                            @Reference MonitorDestinationRegistry registry,
@@ -109,9 +109,9 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
 
     @Property(required = false)
     public void setMode(String mode) {
-        if (PRODUCTION_MODE.equalsIgnoreCase(mode)) {
+        if (ASYNCHRONOUS_MODE.equalsIgnoreCase(mode)) {
             this.enabled = true;
-        } else if (DEVELOPMENT_MODE.equalsIgnoreCase(mode)) {
+        } else if (SYNCHRONOUS_MODE.equalsIgnoreCase(mode)) {
             this.enabled = false;
         } else {
             this.enabled = false;

@@ -61,7 +61,7 @@ public class RingBufferDestinationRouterImplTestCase extends TestCase {
     private CountDownLatch latch;
 
     public void testRingBufferRoute() throws Exception {
-        router.setMode("production");
+        router.setMode("asynchronous");
 
         router.init();
         MonitorEventEntry entry = router.get();
@@ -74,7 +74,7 @@ public class RingBufferDestinationRouterImplTestCase extends TestCase {
     }
 
     public void testSynchronousRoute() throws Exception {
-        router.setMode("development");
+        router.setMode("synchronous");
 
         router.init();
         router.send(MonitorLevel.SEVERE, 0, System.currentTimeMillis(), "source", "this is a test {0}", "test");

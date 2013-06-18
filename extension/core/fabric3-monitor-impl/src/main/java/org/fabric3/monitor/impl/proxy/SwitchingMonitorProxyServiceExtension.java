@@ -49,7 +49,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Switches between JDK and bytecode-generation for creating monitor proxies.
  */
 public class SwitchingMonitorProxyServiceExtension implements MonitorProxyServiceExtension {
-    public static final String PRODUCTION_MODE = "production";
+    public static final String ASYNCHRONOUS_MODE = "asynchronous";
 
     private RingBufferDestinationRouter router;
     private Monitorable monitorable;
@@ -66,9 +66,8 @@ public class SwitchingMonitorProxyServiceExtension implements MonitorProxyServic
 
     @Property(required = false)
     public void setMode(String mode) {
-        this.enabled = PRODUCTION_MODE.equalsIgnoreCase(mode);
+        this.enabled = ASYNCHRONOUS_MODE.equalsIgnoreCase(mode);
     }
-
 
     public SwitchingMonitorProxyServiceExtension(@Reference RingBufferDestinationRouter router, @Reference Monitorable monitorable) {
         this.router = router;
