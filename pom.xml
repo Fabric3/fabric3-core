@@ -85,6 +85,15 @@
 
 	<build>
 		<defaultGoal>install</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.fabric3</groupId>
+                <artifactId>fabric3-contribution-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>${project.version}</version>
+            </plugin>
+        </plugins>
+
 	</build>
 
 	<profiles>
