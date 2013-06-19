@@ -180,7 +180,11 @@ public class EventWriterImpl implements EventWriter {
                     throw new ServiceRuntimeException("Monitor message contains more parameters than are supplied by the method interface: " + template);
                 }
                 bytesWritten = bytesWritten + writeParameter(args[counter], buffer);
-                i = i + 2;    // skip two places
+                int skip = 0;
+                while (template.charAt(skip) != '}') {
+                    skip++;   // skip the formatting information contained in {..}
+                }
+                i = i + 2 + skip;    // skip two places in to account for { and }
                 counter++;
             } else {
                 bytesWritten++;
