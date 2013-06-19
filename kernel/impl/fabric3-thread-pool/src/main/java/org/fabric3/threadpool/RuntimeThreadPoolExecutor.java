@@ -37,6 +37,16 @@
 */
 package org.fabric3.threadpool;
 
+import java.util.List;
+import java.util.concurrent.AbstractExecutorService;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -47,16 +57,6 @@ import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
-
-import java.util.List;
-import java.util.concurrent.AbstractExecutorService;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Processes work using a delegate {@link ThreadPoolExecutor}. This executor records processing statistics as well as monitors for stalled threads.
@@ -71,10 +71,10 @@ import java.util.concurrent.atomic.AtomicLong;
         group = "kernel",
         description = "Manages the runtime thread pool")
 public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
-    private int coreSize = 20;
+    private int coreSize = 100;
     private long keepAliveTime = 60000;
     private boolean allowCoreThreadTimeOut = true;
-    private int maximumSize = 20;
+    private int maximumSize = 100;
     private int queueSize = 10000;
     private int stallThreshold = 600000;
     private boolean checkStalledThreads = true;
