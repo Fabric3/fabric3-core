@@ -58,17 +58,21 @@ import java.util.concurrent.ExecutorService;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.NCSARequestLog;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.RequestLogHandler;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.session.HashSessionIdManager;
 import org.eclipse.jetty.server.session.SessionHandler;
-import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlet.ServletMapping;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -135,7 +139,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     private String configuredHttpsHost;
 
     // log file attributes
-    private String logFilename;   //
+    private String logFilename;
     private boolean logExtended;
     private boolean logAppend;
     private int logRetainDays;
@@ -153,8 +157,8 @@ public class JettyServiceImpl implements JettyService, Transport {
     private boolean debug;
     private Server server;
     private ManagedServletHandler servletHandler;
-    private SelectChannelConnector httpConnector;
-    private SslSelectChannelConnector sslConnector;
+    private ServerConnector httpConnector;
+    private ServerConnector sslConnector;
 
     private ContextHandlerCollection rootHandler;
     private ManagedStatisticsHandler statisticsHandler;
@@ -325,17 +329,17 @@ public class JettyServiceImpl implements JettyService, Transport {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-            server = new Server();
+            server = new Server(createThreadPool());
             if (authenticationService != null) {
                 // setup authentication if the authentication service is available 
                 Fabric3LoginService loginService = new Fabric3LoginService(authenticationService);
                 server.addBean(loginService);
             }
-            initializeThreadPool();
-            initializeConnector();
+
+            initializeConnectors();
             initializeHandlers();
             server.setStopAtShutdown(true);
-            server.setSendServerVersion(sendServerVersion);
+
             monitor.startHttpListener(selectedHttp.getNumber());
             if (enableHttps) {
                 monitor.startHttpsListener(selectedHttps.getNumber());
@@ -561,7 +565,7 @@ public class JettyServiceImpl implements JettyService, Transport {
         rootHandler.removeHandler(handler);
     }
 
-    private void initializeConnector() throws IOException, JettyInitializationException {
+    private void initializeConnectors() throws IOException, JettyInitializationException {
         selectHttpPort();
         selectHttpsPort();
         selectedHttp.bind(Port.TYPE.TCP);
@@ -571,26 +575,47 @@ public class JettyServiceImpl implements JettyService, Transport {
             }
             selectedHttps.bind(Port.TYPE.TCP);
             // setup HTTP and HTTPS
-            String keystore = keyStoreManager.getKeyStoreLocation().getAbsolutePath();
+            String keyStore = keyStoreManager.getKeyStoreLocation().getAbsolutePath();
             String keyPassword = keyStoreManager.getKeyStorePassword();
             String trustStore = keyStoreManager.getTrustStoreLocation().getAbsolutePath();
             String trustPassword = keyStoreManager.getTrustStorePassword();
             String certPassword = keyStoreManager.getCertPassword();
-            httpConnector = new SelectChannelConnector();
+
+            HttpConfiguration httpConfig = new HttpConfiguration();
+            httpConfig.setSendServerVersion(sendServerVersion);
+            httpConfig.setSecurePort(selectedHttps.getNumber());
+            httpConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
             httpConnector.setPort(selectedHttp.getNumber());
-            sslConnector = new SslSelectChannelConnector();
-            sslConnector.setAllowRenegotiate(true);
+
+            SslContextFactory sslContextFactory = new SslContextFactory();
+            sslContextFactory.setRenegotiationAllowed(true);
+            sslContextFactory.setKeyStorePath(keyStore);
+            sslContextFactory.setKeyStorePassword(keyPassword);
+            sslContextFactory.setKeyManagerPassword(certPassword);
+            sslContextFactory.setTrustStorePath(trustStore);
+            sslContextFactory.setTrustStorePassword(trustPassword);
+            sslContextFactory.setExcludeCipherSuites("SSL_RSA_WITH_DES_CBC_SHA",
+                                                     "SSL_DHE_RSA_WITH_DES_CBC_SHA",
+                                                     "SSL_DHE_DSS_WITH_DES_CBC_SHA",
+                                                     "SSL_RSA_EXPORT_WITH_RC4_40_MD5",
+                                                     "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
+                                                     "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",
+                                                     "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA");
+            HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
+            httpsConfig.addCustomizer(new SecureRequestCustomizer());
+            HttpConnectionFactory factory = new HttpConnectionFactory(httpsConfig);
+            sslConnector = new ServerConnector(server, new SslConnectionFactory(sslContextFactory, "http/1.1"), factory);
+
             sslConnector.setPort(selectedHttps.getNumber());
+            server.addConnector(sslConnector);
             sslConnector.setHost(configuredHttpsHost);
-            sslConnector.setKeystore(keystore);
-            sslConnector.setKeyPassword(keyPassword);
-            sslConnector.setPassword(certPassword);
-            sslConnector.setTruststore(trustStore);
-            sslConnector.setTrustPassword(trustPassword);
+            sslConnector.setHost(configuredHttpsHost);
+
             server.setConnectors(new Connector[]{httpConnector, sslConnector});
         } else {
             // setup HTTP
-            httpConnector = new SelectChannelConnector();
+            HttpConfiguration httpConfig = new HttpConfiguration();
+            httpConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
             httpConnector.setPort(selectedHttp.getNumber());
             httpConnector.setSoLingerTime(-1);
             httpConnector.setHost(configuredHttpHost);
@@ -654,13 +679,8 @@ public class JettyServiceImpl implements JettyService, Transport {
         }
     }
 
-    private void initializeThreadPool() {
-        if (executorService == null) {
-            ExecutorThreadPool threadPool = new ExecutorThreadPool(100);
-            server.setThreadPool(threadPool);
-        } else {
-            server.setThreadPool(new Fabric3ThreadPool());
-        }
+    private ThreadPool createThreadPool() {
+        return executorService == null ? new ExecutorThreadPool(100) : new Fabric3ThreadPool();
     }
 
     private void initializeHandlers() {
@@ -758,6 +778,9 @@ public class JettyServiceImpl implements JettyService, Transport {
             return false;
         }
 
+        public void execute(Runnable work) {
+            executorService.execute(new JettyRunnable(work));
+        }
     }
 
     /**
