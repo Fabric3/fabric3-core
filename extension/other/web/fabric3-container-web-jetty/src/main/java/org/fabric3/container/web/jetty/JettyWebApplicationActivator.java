@@ -37,25 +37,21 @@
 */
 package org.fabric3.container.web.jetty;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.http.HttpSession;
 
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.oasisopen.sca.ComponentContext;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.container.web.spi.InjectingSessionListener;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
@@ -68,6 +64,9 @@ import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.objectfactory.Injector;
 import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.transport.jetty.JettyService;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Activates a web application in an embedded Jetty instance.
@@ -191,9 +190,8 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         return parentClassLoader;
     }
 
-    private WebAppContext createWebAppContext(String contextPath,
-                                              Map<String, List<Injector<?>>> injectors,
-                                              URL resolved, ClassLoader parentClassLoader) throws IOException {
+    private WebAppContext createWebAppContext(String contextPath, Map<String, List<Injector<?>>> injectors, URL resolved, ClassLoader parentClassLoader)
+            throws IOException {
         WebAppContext context = new ManagedWebAppContext(resolved.toExternalForm(), contextPath);
         context.setParentLoaderPriority(true);
         InjectingDecorator decorator = new InjectingDecorator(injectors);
@@ -201,7 +199,6 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
         WebAppClassLoader webAppClassLoader;
         webAppClassLoader = new WebAppClassLoader(parentClassLoader, context);
         context.setClassLoader(webAppClassLoader);
-        context.setHandler(new WorkContextHandler());
         return context;
     }
 
@@ -240,7 +237,6 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
     private String encodeName(String name) {
         return name.toLowerCase().replace('\n', ' ');
     }
-
 
     private static class Holder {
         private String contextPath;

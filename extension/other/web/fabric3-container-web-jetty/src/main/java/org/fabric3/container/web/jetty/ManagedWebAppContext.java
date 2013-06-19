@@ -43,10 +43,18 @@
  */
 package org.fabric3.container.web.jetty;
 
-import org.eclipse.jetty.webapp.WebAppContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.container.web.spi.WebRequestTunnel;
+import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.invocation.WorkContextCache;
 
 /**
  *
@@ -93,5 +101,16 @@ public class ManagedWebAppContext extends WebAppContext {
     @Override
     public String[] getVirtualHosts() {
         return super.getVirtualHosts();
+    }
+
+    public void doHandle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
+        try {
+            WebRequestTunnel.setRequest(request);
+            super.doHandle(target, baseRequest, request, response);
+        } finally {
+            WebRequestTunnel.setRequest(null);
+            workContext.reset();
+        }
     }
 }

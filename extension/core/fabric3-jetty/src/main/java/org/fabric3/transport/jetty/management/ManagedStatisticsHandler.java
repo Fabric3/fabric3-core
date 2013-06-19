@@ -43,16 +43,15 @@
  */
 package org.fabric3.transport.jetty.management;
 
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
-
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 
@@ -165,26 +164,6 @@ public class ManagedStatisticsHandler extends StatisticsHandler {
     @ManagementOperation(description = "The standard deviation of time (in milliseconds) of request handling")
     public double getDispatchedTimeStdDev() {
         return super.getDispatchedTimeStdDev();
-    }
-
-    @ManagementOperation(description = "The number of requests handled by this handler")
-    public int getSuspends() {
-        return super.getSuspends();
-    }
-
-    @ManagementOperation(description = "The number of requests currently suspended")
-    public int getSuspendsActive() {
-        return super.getSuspendsActive();
-    }
-
-    @ManagementOperation(description = "The maximum number of current suspended requests")
-    public int getSuspendsActiveMax() {
-        return super.getSuspendsActiveMax();
-    }
-
-    @ManagementOperation(description = "The number of requests that have been resumed")
-    public int getResumes() {
-        return super.getResumes();
     }
 
     @ManagementOperation(description = "The number of requests that expired while suspended")
