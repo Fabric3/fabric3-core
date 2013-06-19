@@ -37,57 +37,21 @@
 */
 package org.fabric3.binding.web.runtime.channel;
 
-import java.net.URI;
-
 import org.fabric3.binding.web.provision.WebConnectionSourceDefinition;
-import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.SourceConnectionAttacher;
-import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.ChannelManager;
-import org.fabric3.spi.host.ServletHost;
-import org.fabric3.spi.model.physical.ChannelSide;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Attaches a consumer to a channel configured with the web binding. The connection to the channel is local since the web binding does not provide native
- * multicast. Instead, a channel is connected to a web socket or comet connection and multiplexes events using local handlers.
+ * No-op attacher.
  */
-@EagerInit
 public class WebSourceConnectionAttacher implements SourceConnectionAttacher<WebConnectionSourceDefinition> {
-    private ChannelManager channelManager;
 
-    public WebSourceConnectionAttacher(@Reference ChannelManager channelManager,
-                                       @Reference BroadcasterManager broadcasterManager,
-                                       @Reference PubSubManager pubSubManager,
-                                       @Reference ServletHost servletHost) {
-        this.channelManager = channelManager;
-    }
-
-    public void attach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection)
-            throws ConnectionAttachException {
-        URI sourceUri = source.getUri();
-        URI channelUri = source.getChannelUri();
-        Channel channel = getChannel(channelUri);
-        channel.subscribe(sourceUri, connection);
+    public void attach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target, ChannelConnection connection) {
     }
 
     public void detach(WebConnectionSourceDefinition source, PhysicalConnectionTargetDefinition target) throws ConnectionAttachException {
-        URI sourceUri = source.getUri();
-        URI channelUri = source.getChannelUri();
-        Channel channel = getChannel(channelUri);
-        channel.unsubscribe(sourceUri);
-    }
-
-    private Channel getChannel(URI sourceUri) throws ChannelNotFoundException {
-        Channel channel = channelManager.getChannel(sourceUri, ChannelSide.CONSUMER);
-        if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found: " + sourceUri);
-        }
-        return channel;
     }
 
 }

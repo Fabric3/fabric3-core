@@ -37,47 +37,21 @@
 */
 package org.fabric3.binding.web.runtime.channel;
 
-import java.net.URI;
-
-import org.fabric3.spi.model.physical.ChannelSide;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.binding.web.provision.WebConnectionTargetDefinition;
 import org.fabric3.spi.builder.component.ConnectionAttachException;
 import org.fabric3.spi.builder.component.TargetConnectionAttacher;
-import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**
- * Attaches a producer to a channel configured with the web binding. Since the web binding does not support native multicast, events are sent to a channel
- * locally which replicates the event across a zone.
+ * No-op attacher
  */
-@EagerInit
 public class WebTargetConnectionAttacher implements TargetConnectionAttacher<WebConnectionTargetDefinition> {
-    private ChannelManager channelManager;
 
-    public WebTargetConnectionAttacher(@Reference ChannelManager channelManager) {
-        this.channelManager = channelManager;
-    }
-
-    public void attach(PhysicalConnectionSourceDefinition source, WebConnectionTargetDefinition target, ChannelConnection connection)
-            throws ChannelNotFoundException {
-        Channel channel = getChannel(target.getTargetUri());
-        channel.attach(connection);
+    public void attach(PhysicalConnectionSourceDefinition source, WebConnectionTargetDefinition target, ChannelConnection connection) {
     }
 
     public void detach(PhysicalConnectionSourceDefinition source, WebConnectionTargetDefinition target) throws ConnectionAttachException {
-    }
-
-    private Channel getChannel(URI uri) throws ChannelNotFoundException {
-        Channel channel = channelManager.getChannel(uri, ChannelSide.PRODUCER);
-        if (channel == null) {
-            throw new ChannelNotFoundException("Channel not found: " + uri);
-        }
-        return channel;
     }
 
 }
