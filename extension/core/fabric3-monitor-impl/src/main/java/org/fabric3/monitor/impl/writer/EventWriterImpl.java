@@ -184,7 +184,7 @@ public class EventWriterImpl implements EventWriter {
                 while (template.charAt(skip) != '}') {
                     skip++;   // skip the formatting information contained in {..}
                 }
-                i = i + 2 + skip;    // skip two places in to account for { and }
+                i = i+ skip;
                 counter++;
             } else {
                 bytesWritten++;
