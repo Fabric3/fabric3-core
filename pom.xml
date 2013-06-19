@@ -45,14 +45,14 @@
 		<jaxb.api.version>2.2-promoted-b50</jaxb.api.version>
 		<web.services.version>2.0.1</web.services.version>
 		<jax.rs.version>1.1.1</jax.rs.version>
-		<servlet.groupId>org.mortbay.jetty</servlet.groupId>
-		<servlet.artifactId>servlet-api</servlet.artifactId>
-		<servlet.version>3.0.20100224</servlet.version>
-		<jetty.version>8.1.7.v20120910</jetty.version>
+		<servlet.groupId>org.eclipse.jetty.orbit</servlet.groupId>
+		<servlet.artifactId>javax.servlet</servlet.artifactId>
+		<servlet.version>3.0.0.v201112011016</servlet.version>
+		<jetty.version>9.0.3.v20130506</jetty.version>
         <disruptor.version>3.0.0.beta3</disruptor.version>
 
 		<atomikos.version>3.7.0</atomikos.version>
-		<atomosphere.version>0.9.2</atomosphere.version>
+		<atmosphere.version>1.0.13</atmosphere.version>
 	</properties>
 
 	<dependencyManagement>

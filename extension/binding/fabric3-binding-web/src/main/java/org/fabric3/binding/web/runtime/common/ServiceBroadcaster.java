@@ -43,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereResource;
-import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.cpr.BroadcasterFuture;
 import org.atmosphere.cpr.DefaultBroadcaster;
 
@@ -57,17 +56,12 @@ public class ServiceBroadcaster extends DefaultBroadcaster {
     }
 
     @SuppressWarnings({"unchecked"})
-    protected void broadcast(AtmosphereResource resource, AtmosphereResourceEvent event) {
-        super.broadcast(resource, event);
-    }
-
-    @SuppressWarnings({"unchecked"})
     public <T> Future<T> broadcast(T msg) {
         msg = (T) filter(msg);
         if (msg == null) {
             return null;
         }
-        BroadcasterFuture<T> future = new BroadcasterFuture<T>(msg);
+        BroadcasterFuture<T> future = new BroadcasterFuture<T>(msg, this);
         future.done();
         push(new Entry(msg, null, future, true));
         return cast(future);
@@ -79,7 +73,7 @@ public class ServiceBroadcaster extends DefaultBroadcaster {
         if (msg == null) {
             return null;
         }
-        BroadcasterFuture<Object> future = new BroadcasterFuture<Object>(msg);
+        BroadcasterFuture<Object> future = new BroadcasterFuture<Object>(msg, this);
         future.done();
         push(new Entry(msg, r, future, true));
         return cast(future);
@@ -91,7 +85,7 @@ public class ServiceBroadcaster extends DefaultBroadcaster {
         if (msg == null) {
             return null;
         }
-        BroadcasterFuture<Object> future = new BroadcasterFuture<Object>(msg);
+        BroadcasterFuture<Object> future = new BroadcasterFuture<Object>(msg, this);
         future.done();
         push(new Entry(msg, subset, future, true));
         return cast(future);
@@ -109,6 +103,5 @@ public class ServiceBroadcaster extends DefaultBroadcaster {
     private <T> T cast(Object o) {
         return (T) o;
     }
-
 
 }
