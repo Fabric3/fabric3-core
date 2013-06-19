@@ -137,7 +137,11 @@ public class EventWriterImpl implements EventWriter {
                 }
                 ParameterEntry parameterEntry = entries[counter];
                 bytesWritten = bytesWritten + writeParameter(parameterEntry, buffer);
-                i = i + 2;    // skip two places
+                int skip = 0;
+                while (template.charAt(i + skip) != '}') {
+                    skip++;   // skip the formatting information contained in {..}
+                }
+                i = i + skip;
                 counter++;
             } else {
                 bytesWritten++;
@@ -181,10 +185,10 @@ public class EventWriterImpl implements EventWriter {
                 }
                 bytesWritten = bytesWritten + writeParameter(args[counter], buffer);
                 int skip = 0;
-                while (template.charAt(skip) != '}') {
+                while (template.charAt(i + skip) != '}') {
                     skip++;   // skip the formatting information contained in {..}
                 }
-                i = i+ skip;
+                i = i + skip;
                 counter++;
             } else {
                 bytesWritten++;
