@@ -166,8 +166,9 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
                                                                            URI classLoaderId,
                                                                            PhysicalEventStreamDefinition eventStream) throws GenerationException {
         // the channel does not have bindings, which means it is a local channel
-        if (!channel.getZone().equals(consumer.getParent().getZone())) {
-            throw new GenerationException("Binding not configured on a channel where the producer is in a different zone");
+        if (!channel.getZone().equals(consumer.getParent().getZone()) && !channel.isBound()) {
+            String name = channel.getDefinition().getName();
+            throw new GenerationException("Binding not configured on a channel where the consumer is in a different zone: " + name);
         }
         // construct a local connection to the channel
         PhysicalConnectionSourceDefinition sourceDefinition = new ChannelSourceDefinition(channel.getUri(), ChannelSide.CONSUMER);
@@ -198,8 +199,9 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
                                                                            PhysicalConnectionSourceDefinition sourceDefinition,
                                                                            URI classLoaderId,
                                                                            PhysicalEventStreamDefinition eventStream) throws GenerationException {
-        if (!channel.getZone().equals(producer.getParent().getZone())) {
-            throw new GenerationException("Binding not configured on a channel where the producer is in a different zone");
+        if (!channel.getZone().equals(producer.getParent().getZone()) && !channel.isBound()) {
+            String name = channel.getDefinition().getName();
+            throw new GenerationException("Binding not configured on a channel where the producer is in a different zone: " + name);
         }
         PhysicalConnectionTargetDefinition targetDefinition = new ChannelTargetDefinition(channel.getUri(), ChannelSide.PRODUCER);
         targetDefinition.setClassLoaderId(classLoaderId);
