@@ -124,6 +124,13 @@ public class LogFactoryOverride implements CustomLogFactory, Log {
         monitor.debug(msg);
     }
 
+    public void debug(String msg, Object... args) {
+        if (!isDebugEnabled()) {
+            return;
+        }
+        monitor.debug(msg);
+    }
+
     public void debug(String msg, Throwable throwable) {
         if (!isDebugEnabled()) {
             return;
@@ -136,6 +143,13 @@ public class LogFactoryOverride implements CustomLogFactory, Log {
             return;
         }
         monitor.severe(msg);
+    }
+
+    public void error(String format, Object... args) {
+        if (!isFatalEnabled()) {
+            return;
+        }
+        monitor.severe(format, args);
     }
 
     public void error(String msg, Throwable throwable) {
@@ -152,6 +166,13 @@ public class LogFactoryOverride implements CustomLogFactory, Log {
         monitor.severe(msg);
     }
 
+    public void fatal(String msg, Object... args) {
+        if (!isFatalEnabled()) {
+            return;
+        }
+        monitor.severe(msg, args);
+    }
+
     public void fatal(String msg, Throwable throwable) {
         if (!isFatalEnabled()) {
             return;
@@ -160,6 +181,13 @@ public class LogFactoryOverride implements CustomLogFactory, Log {
     }
 
     public void info(String msg) {
+        if (!isInfoEnabled()) {
+            return;
+        }
+        monitor.info(msg);
+    }
+
+    public void info(String msg, Object... args) {
         if (!isInfoEnabled()) {
             return;
         }
@@ -180,14 +208,14 @@ public class LogFactoryOverride implements CustomLogFactory, Log {
         monitor.trace(msg.toString());
     }
 
-    public void trace(Object msg, Throwable throwable) {
-        if (!isTraceEnabled() || msg == null) {
+    public void trace(String msg) {
+        if (!isTraceEnabled()) {
             return;
         }
-        monitor.trace(msg.toString(), throwable);
+        monitor.trace(msg);
     }
 
-    public void trace(String msg) {
+    public void trace(String msg, Object... args) {
         if (!isTraceEnabled()) {
             return;
         }
@@ -202,6 +230,13 @@ public class LogFactoryOverride implements CustomLogFactory, Log {
     }
 
     public void warn(String msg) {
+        if (!isWarnEnabled()) {
+            return;
+        }
+        monitor.warn(msg);
+    }
+
+    public void warn(String msg, Object... args) {
         if (!isWarnEnabled()) {
             return;
         }
