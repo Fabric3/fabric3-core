@@ -37,29 +37,27 @@
 */
 package org.fabric3.binding.activemq.broker;
 
+import javax.management.MBeanServer;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URI;
-import javax.management.MBeanServer;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.TransportConnector;
 import org.apache.activemq.store.amq.AMQPersistenceAdapter;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.spi.monitor.MonitorService;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Creates an embedded ActiveMQ broker.
@@ -80,7 +78,6 @@ public class BrokerEngine {
     private File dataDir;
     private BrokerConfiguration brokerConfiguration;
     private MonitorLevel monitorLevel = MonitorLevel.WARNING;
-    private MonitorService monitorService;
     private MBeanServer mBeanServer;
     private boolean disabled;
 
@@ -107,7 +104,6 @@ public class BrokerEngine {
     public void setJmsPort(int port) {
         this.jmsPort = port;
     }
-
 
     @Property(required = false)
     public void setMonitorLevel(String monitorLevel) {
@@ -222,6 +218,5 @@ public class BrokerEngine {
         }
 
     }
-
 
 }

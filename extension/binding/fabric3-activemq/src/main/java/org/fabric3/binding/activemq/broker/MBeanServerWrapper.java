@@ -37,10 +37,6 @@
 */
 package org.fabric3.binding.activemq.broker;
 
-import java.io.ObjectInputStream;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;
@@ -64,11 +60,14 @@ import javax.management.QueryExp;
 import javax.management.ReflectionException;
 import javax.management.StandardMBean;
 import javax.management.loading.ClassLoaderRepository;
+import java.io.ObjectInputStream;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.activemq.broker.jmx.BrokerView;
 import org.apache.activemq.broker.jmx.ConnectionView;
 import org.apache.activemq.broker.jmx.ConnectorView;
-import org.apache.activemq.broker.jmx.FTConnectorView;
 import org.apache.activemq.broker.jmx.JmsConnectorView;
 import org.apache.activemq.broker.jmx.NetworkBridgeView;
 import org.apache.activemq.broker.jmx.NetworkConnectorView;
@@ -318,14 +317,6 @@ public class MBeanServerWrapper implements MBeanServer {
             } catch (MalformedObjectNameException e) {
                 throw new MBeanRegistrationException(e);
             }
-        } else if (implementation instanceof FTConnectorView) {
-            try {
-                name = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=ActiveMQ, brokerName=" + brokerName
-                        + ", Type=MasterConnector");
-            } catch (MalformedObjectNameException e) {
-                throw new MBeanRegistrationException(e);
-            }
-
         } else if (implementation instanceof JmsConnectorView) {
             String connectorName = name.getKeyProperty("JmsConnectorName");
             try {
