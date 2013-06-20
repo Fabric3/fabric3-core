@@ -43,12 +43,16 @@
  */
 package org.fabric3.spi.model.type.java;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.Constructor;
 
 /**
  * Represents a constructor that is injected into when a component implementation instance is instantiated.
  */
-public class ConstructorInjectionSite extends InjectionSite {
+public class ConstructorInjectionSite extends InjectionSite implements Externalizable {
     private static final long serialVersionUID = -6543986170145816234L;
     private Signature signature;
     private int param;
@@ -63,6 +67,10 @@ public class ConstructorInjectionSite extends InjectionSite {
         super(signature.getParameterTypes().get(param));
         this.signature = signature;
         this.param = param;
+    }
+
+    public ConstructorInjectionSite() {
+        // ctor for deserialization
     }
 
     /**
@@ -88,8 +96,12 @@ public class ConstructorInjectionSite extends InjectionSite {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         ConstructorInjectionSite that = (ConstructorInjectionSite) o;
 
@@ -99,5 +111,15 @@ public class ConstructorInjectionSite extends InjectionSite {
 
     public int hashCode() {
         return 31 * signature.hashCode() + param;
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(signature);
+        out.writeInt(param);
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        signature = (Signature) in.readObject();
+        param = in.readInt();
     }
 }

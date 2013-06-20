@@ -58,6 +58,10 @@ public class InjectionSite extends ModelObject<InjectingComponentType> {
         this.type = type;
     }
 
+    protected InjectionSite() {
+        // required for deserialization
+    }
+
     /**
      * Returns the Java type being injected, i.e. the class name.
      *

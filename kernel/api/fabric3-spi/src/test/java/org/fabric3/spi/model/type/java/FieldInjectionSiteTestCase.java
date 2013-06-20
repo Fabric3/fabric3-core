@@ -34,72 +34,36 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
+*/
 package org.fabric3.spi.model.type.java;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Field;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import junit.framework.TestCase;
 
 /**
- * Represents a field that is injected into when a component implementation instance is instantiated.
+ *
  */
-public class FieldInjectionSite extends InjectionSite implements Externalizable {
-    private static final long serialVersionUID = -6502983302874808563L;
-    private String name;
+public class FieldInjectionSiteTestCase extends TestCase {
 
-    public FieldInjectionSite(Field field) {
-        super(field.getType().getName());
-        name = field.getName();
+    public void testExternalizable() throws Exception {
+        FieldInjectionSite site = new FieldInjectionSite(Foo.class.getField("test"));
+
+        ByteArrayOutputStream bas = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bas);
+        out.writeObject(site);
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(bas.toByteArray());
+        ObjectInputStream in = new ObjectInputStream(bis);
+
+        FieldInjectionSite deserialized = (FieldInjectionSite) in.readObject();
+        assertEquals(site.getName(), deserialized.getName());
     }
 
-    public FieldInjectionSite() {
-        // ctor for deserialization
-    }
-
-    /**
-     * Gets the name of the field.
-     *
-     * @return Site name.
-     */
-    public String getName() {
-        return name;
-    }
-
-    public String toString() {
-        return name;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        FieldInjectionSite that = (FieldInjectionSite) o;
-        return name.equals(that.name);
-
-    }
-
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(name);
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        name = (String) in.readObject();
+    public static class Foo {
+        public String test;
     }
 }

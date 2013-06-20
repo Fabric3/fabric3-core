@@ -43,12 +43,20 @@
  */
 package org.fabric3.spi.model.type.java;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
 /**
  * Represents a setter method that is injected into when a component implementation instance is instantiated.
+ * <p/>
+ * Note this class implements <code>Externalizable</code> to support deserialization of containing <code>HashMap</code>s. During deserialization, {@link
+ * #hashCode()} is called by the containing map before a <code>Signature</code> has been set, leading to a null pointer. Implement Externalizable avoids this by
+ * setting the Signature before <code>hashCode</code> is invoked.
  */
-public class MethodInjectionSite extends InjectionSite {
+public class MethodInjectionSite extends InjectionSite implements Externalizable {
     private static final long serialVersionUID = -2222837362065034249L;
     private Signature signature;
     private int param;
@@ -57,6 +65,10 @@ public class MethodInjectionSite extends InjectionSite {
         super(method.getParameterTypes()[param].getName());
         this.signature = new Signature(method);
         this.param = param;
+    }
+
+    public MethodInjectionSite() {
+        // ctor for deserialization
     }
 
     /**
@@ -84,8 +96,12 @@ public class MethodInjectionSite extends InjectionSite {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         MethodInjectionSite that = (MethodInjectionSite) o;
 
@@ -95,5 +111,15 @@ public class MethodInjectionSite extends InjectionSite {
 
     public int hashCode() {
         return signature.hashCode() * 31 + param;
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(signature);
+        out.writeInt(param);
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        signature = (Signature) in.readObject();
+        param = in.readInt();
     }
 }
