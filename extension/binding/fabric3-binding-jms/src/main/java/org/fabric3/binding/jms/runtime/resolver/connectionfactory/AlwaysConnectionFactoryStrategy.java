@@ -43,6 +43,7 @@
  */
 package org.fabric3.binding.jms.runtime.resolver.connectionfactory;
 
+import javax.jms.ConnectionFactory;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -51,9 +52,6 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.jms.ConnectionFactory;
-
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
@@ -64,6 +62,7 @@ import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryTemplateR
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Implementation that always attempts to create a connection factory.
@@ -92,6 +91,9 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
             if (className == null) {
                 if (creatorRegistry == null) {
                     throw new JmsResolutionException("A connection factory class was not specified for: " + name);
+                }
+                if (templateName == null) {
+                    throw new JmsResolutionException("A connection factory template must be specified");
                 }
                 ConnectionFactoryConfiguration configuration = registry.getTemplate(templateName);
                 if (configuration == null) {
@@ -124,7 +126,6 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
             throw new JmsResolutionException(e);
         }
     }
-
 
     private ConnectionFactory instantiate(String className, Map<String, String> props) throws JmsResolutionException {
         try {
