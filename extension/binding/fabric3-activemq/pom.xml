@@ -29,23 +29,27 @@ Public License. See the accompanying license file for details.
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-binding-jms</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-monitor-log</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.codehaus.fabric3.api</groupId>
             <artifactId>javax-jms</artifactId>
             <version>${jms.version}</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-broker</artifactId>
@@ -84,10 +88,6 @@ Public License. See the accompanying license file for details.
                     <artifactId>fusemq-leveldb</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.apache.activemq.protobuf</groupId>
-                    <artifactId>activemq-protobuf</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.fusesource.mqtt-client</groupId>
                     <artifactId>mqtt-client</artifactId>
                 </exclusion>
@@ -97,6 +97,7 @@ Public License. See the accompanying license file for details.
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-amq-store</artifactId>
@@ -116,6 +117,7 @@ Public License. See the accompanying license file for details.
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-kahadb-store</artifactId>
@@ -154,10 +156,6 @@ Public License. See the accompanying license file for details.
                     <artifactId>fusemq-leveldb</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.apache.activemq.protobuf</groupId>
-                    <artifactId>activemq-protobuf</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.fusesource.mqtt-client</groupId>
                     <artifactId>mqtt-client</artifactId>
                 </exclusion>
@@ -167,6 +165,7 @@ Public License. See the accompanying license file for details.
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-pool</artifactId>
@@ -188,15 +187,9 @@ Public License. See the accompanying license file for details.
                     <groupId>org.apache.camel</groupId>
                     <artifactId>camel-core</artifactId>
                 </exclusion>
-
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.activemq.protobuf</groupId>
-            <artifactId>activemq-protobuf</artifactId>
-            <version>1.1</version>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
