@@ -17,10 +17,7 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.jms" version="1.1.0"/>
     <import.java package="org.fabric3.spi.*" version="2.0.0"/>
     <import.java package="org.fabric3.binding.jms.spi.*" version="2.0.0"/>
-    <import.java package="com.atomikos.icatch" version="3.5.2"/>
-    <import.java package="com.atomikos.datasource.*" version="3.5.2"/>
-    <import.java package="com.atomikos.util" version="3.5.2"/>
-    <import.java package="com.atomikos.beans" version="3.5.2"/>
+    <import.java package="com.atomikos.*" version="3.8.0"/>
     <deployable composite="f3:AtomikosJmsExtension"/>
     <f3:provides name="jms"/>
     <f3:requires.capability name="transaction"/>

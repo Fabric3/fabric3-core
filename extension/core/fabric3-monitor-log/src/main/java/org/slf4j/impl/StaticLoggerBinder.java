@@ -53,6 +53,8 @@ import org.slf4j.spi.LoggerFactoryBinder;
 public class StaticLoggerBinder implements LoggerFactoryBinder, ILoggerFactory {
     public static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
 
+    private static final NoOpLogger NOOP_LOGGGER = new NoOpLogger();
+
     private static final Pattern PATTERN = Pattern.compile("\\.");
 
     public static StaticLoggerBinder getSingleton() {
@@ -69,6 +71,9 @@ public class StaticLoggerBinder implements LoggerFactoryBinder, ILoggerFactory {
 
     public Logger getLogger(String name) {
         MonitorService service = MonitorLocator.getServiceInstance();
+        if (service == null) {
+            return NOOP_LOGGGER;
+        }
         String[] tokens = PATTERN.split(name);
         if (tokens.length == 0) {
             return new MonitorLogger(name, MonitorLevel.WARNING);

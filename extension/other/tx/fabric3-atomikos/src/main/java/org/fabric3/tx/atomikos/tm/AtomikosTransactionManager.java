@@ -53,14 +53,10 @@ import java.util.Properties;
 import com.atomikos.icatch.config.UserTransactionService;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
 import com.atomikos.icatch.jta.TransactionManagerImp;
-import com.atomikos.icatch.system.Configuration;
-import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeRecover;
-import org.fabric3.spi.monitor.MonitorProxy;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
@@ -103,14 +99,9 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
 
     private long checkPointInterval = -1;
 
-    private MonitorLevel monitorLevel = MonitorLevel.WARNING;
-
-    private MonitorProxy monitorProxy;
-
-    public AtomikosTransactionManager(@Reference EventService eventService, @Reference HostInfo info, @Monitor MonitorProxy monitorProxy) {
+    public AtomikosTransactionManager(@Reference EventService eventService, @Reference HostInfo info) {
         this.eventService = eventService;
         this.info = info;
-        this.monitorProxy = monitorProxy;
     }
 
     @Property(required = false)
@@ -136,11 +127,6 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
     @Property(required = false)
     public void setCheckPointInterval(long checkPointInterval) {
         this.checkPointInterval = checkPointInterval;
-    }
-
-    @Property(required = false)
-    public void setMonitorLevel(String level) {
-        this.monitorLevel = MonitorLevel.valueOf(level);
     }
 
     @Init
@@ -173,9 +159,6 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
             properties.setProperty(CHECKPOINT_INTERVAL, Long.toString(checkPointInterval));
         }
 
-        // redirect logging
-        ConsoleMonitorRedirector redirector = new ConsoleMonitorRedirector(monitorProxy, monitorLevel);
-        Configuration.addConsole(redirector);
     }
 
     @Destroy

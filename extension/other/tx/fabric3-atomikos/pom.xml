@@ -59,6 +59,7 @@
             <scope>provided</scope>
         </dependency>
 
+
         <dependency>
             <groupId>javax.xml.stream</groupId>
             <artifactId>stax-api</artifactId>

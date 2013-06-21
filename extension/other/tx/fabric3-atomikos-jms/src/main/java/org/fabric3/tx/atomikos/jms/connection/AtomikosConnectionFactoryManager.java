@@ -38,25 +38,24 @@
 
 package org.fabric3.tx.atomikos.jms.connection;
 
+import javax.jms.ConnectionFactory;
+import javax.jms.XAConnectionFactory;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javax.jms.ConnectionFactory;
-import javax.jms.XAConnectionFactory;
 
 import com.atomikos.jms.AtomikosConnectionFactoryBean;
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.binding.jms.spi.runtime.manager.FactoryRegistrationException;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
- * Initializes JMS connection factories with the Atomikos pooling infrastructure. Note, only XAConnections are supported but both XA and nonXA
- * transactions may be used.
+ * Initializes JMS connection factories with the Atomikos pooling infrastructure. Note, only XAConnections are supported but both XA and nonXA transactions may
+ * be used.
  */
 @EagerInit
 public class AtomikosConnectionFactoryManager implements ConnectionFactoryManager {
@@ -120,7 +119,18 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
         if (beans.containsKey(name)) {
             throw new FactoryRegistrationException("Connection factory already exists: " + name);
         }
-        AtomikosConnectionFactoryBean bean = new AtomikosConnectionFactoryBean();
+
+        AtomikosConnectionFactoryBean bean;
+        // set TCCL as Atomikos uses it to load logging classes which are contained in its classloader (the current TCCL will be from the invoking thread and
+        // may not have visibility)
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            bean = new AtomikosConnectionFactoryBean();
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
+        }
+
         bean.setUniqueResourceName(name);
         bean.setXaConnectionFactory((XAConnectionFactory) factory);
         String transactionMode = properties.get(TRANSACTION_MODE);
@@ -196,7 +206,6 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
         return bean;
     }
 
-
     public ConnectionFactory unregister(String name) throws FactoryRegistrationException {
         AtomikosConnectionFactoryBean bean = beans.remove(name);
         if (bean == null) {
@@ -222,5 +231,5 @@ public class AtomikosConnectionFactoryManager implements ConnectionFactoryManage
     private String encodeName(String name) {
         return "transports/jms/pools/" + name.toLowerCase();
     }
-    
+
 }
