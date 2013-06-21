@@ -28,7 +28,7 @@ Public License. See the accompanying license file for details.
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.5.3-Final</version>
+            <version>4.2.2.Final</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.fabric3.api</groupId>
@@ -40,12 +40,6 @@ Public License. See the accompanying license file for details.
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-jmx</artifactId>
-            <version>3.5.3-Final</version>
         </dependency>
 
         <dependency>

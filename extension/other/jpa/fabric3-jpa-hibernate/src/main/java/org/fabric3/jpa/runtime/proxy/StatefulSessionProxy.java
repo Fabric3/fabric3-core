@@ -37,36 +37,42 @@
 */
 package org.fabric3.jpa.runtime.proxy;
 
-import java.io.Serializable;
-import java.sql.Connection;
 import javax.persistence.EntityManager;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
+import java.io.Serializable;
+import java.sql.Connection;
 
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
-import org.hibernate.EntityMode;
 import org.hibernate.Filter;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
+import org.hibernate.IdentifierLoadAccess;
+import org.hibernate.LobHelper;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
+import org.hibernate.NaturalIdLoadAccess;
 import org.hibernate.ReplicationMode;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.SharedSessionBuilder;
+import org.hibernate.SimpleNaturalIdLoadAccess;
+import org.hibernate.TypeHelper;
 import org.hibernate.UnknownProfileException;
+import org.hibernate.jdbc.ReturningWork;
 import org.hibernate.jdbc.Work;
 import org.hibernate.stat.SessionStatistics;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
- * An Hibernate Session proxy that delegates to a cached instance. This proxy is injected on stateless-scoped components. This proxy is
- * <strong>not</strong> safe to inject on composite-scoped implementations.
+ * An Hibernate Session proxy that delegates to a cached instance. This proxy is injected on stateless-scoped components. This proxy is <strong>not</strong>
+ * safe to inject on composite-scoped implementations.
  * <p/>
- * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the Session instance associated with the
- * current transaction context from the EntityManagerService. The proxy will cache the Session instance until the transaction completes (or aborts).
+ * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the Session instance associated with the current
+ * transaction context from the EntityManagerService. The proxy will cache the Session instance until the transaction completes (or aborts).
  */
 public class StatefulSessionProxy implements Session, HibernateProxy {
     private static final long serialVersionUID = 1955430345975268500L;
@@ -86,19 +92,14 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         session.persist(entity);
     }
 
+    public SharedSessionBuilder sessionWithOptions() {
+        initSession();
+        return session.sessionWithOptions();
+    }
+
     public void flush() {
         initSession();
         session.flush();
-    }
-
-    public EntityMode getEntityMode() {
-        initSession();
-        return session.getEntityMode();
-    }
-
-    public Session getSession(EntityMode entityMode) {
-        initSession();
-        return session.getSession(entityMode);
     }
 
     public void setFlushMode(FlushMode flushMode) {
@@ -124,11 +125,6 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
     public SessionFactory getSessionFactory() {
         initSession();
         return session.getSessionFactory();
-    }
-
-    public Connection connection() throws HibernateException {
-        initSession();
-        return session.connection();
     }
 
     public Connection close() throws HibernateException {
@@ -301,6 +297,9 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         session.refresh(object);
     }
 
+    public void refresh(String s, Object o) {
+    }
+
     public void refresh(Object object, LockMode lockMode) throws HibernateException {
         initSession();
         session.refresh(object, lockMode);
@@ -311,9 +310,17 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         session.refresh(o, lockOptions);
     }
 
+    public void refresh(String s, Object o, LockOptions lockOptions) {
+    }
+
     public LockMode getCurrentLockMode(Object object) throws HibernateException {
         initSession();
         return session.getCurrentLockMode(object);
+    }
+
+    public String getTenantIdentifier() {
+        initSession();
+        return session.getTenantIdentifier();
     }
 
     public org.hibernate.Transaction beginTransaction() throws HibernateException {
@@ -406,6 +413,36 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.getEntityName(object);
     }
 
+    public IdentifierLoadAccess byId(String s) {
+        initSession();
+        return session.byId(s);
+    }
+
+    public IdentifierLoadAccess byId(Class aClass) {
+        initSession();
+        return session.byId(aClass);
+    }
+
+    public NaturalIdLoadAccess byNaturalId(String s) {
+        initSession();
+        return session.byNaturalId(s);
+    }
+
+    public NaturalIdLoadAccess byNaturalId(Class aClass) {
+        initSession();
+        return session.byNaturalId(aClass);
+    }
+
+    public SimpleNaturalIdLoadAccess bySimpleNaturalId(String s) {
+        initSession();
+        return session.bySimpleNaturalId(s);
+    }
+
+    public SimpleNaturalIdLoadAccess bySimpleNaturalId(Class aClass) {
+        initSession();
+        return session.bySimpleNaturalId(aClass);
+    }
+
     public Filter enableFilter(String filterName) {
         initSession();
         return session.enableFilter(filterName);
@@ -441,14 +478,14 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         session.doWork(work);
     }
 
+    public <T> T doReturningWork(ReturningWork<T> tReturningWork) throws HibernateException {
+        initSession();
+        return session.doReturningWork(tReturningWork);
+    }
+
     public Connection disconnect() throws HibernateException {
         initSession();
         return session.disconnect();
-    }
-
-    public void reconnect() throws HibernateException {
-        initSession();
-        session.reconnect();
     }
 
     public void reconnect(Connection connection) throws HibernateException {
@@ -471,13 +508,22 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         session.disableFetchProfile(s);
     }
 
+    public TypeHelper getTypeHelper() {
+        initSession();
+        return session.getTypeHelper();
+    }
+
+    public LobHelper getLobHelper() {
+        initSession();
+        return session.getLobHelper();
+    }
+
     public void clearEntityManager() {
         session = null;
     }
 
     /**
-     * Initializes the delegated Session. If the persistence context is transaction-scoped, the Session associated with the current transaction will
-     * be used.
+     * Initializes the delegated Session. If the persistence context is transaction-scoped, the Session associated with the current transaction will be used.
      */
     private void initSession() {
         if (session != null) {

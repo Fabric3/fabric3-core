@@ -37,36 +37,42 @@
 */
 package org.fabric3.jpa.runtime.proxy;
 
-import java.io.Serializable;
-import java.sql.Connection;
 import javax.persistence.EntityManager;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
+import java.io.Serializable;
+import java.sql.Connection;
 
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
-import org.hibernate.EntityMode;
 import org.hibernate.Filter;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
+import org.hibernate.IdentifierLoadAccess;
+import org.hibernate.LobHelper;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
+import org.hibernate.NaturalIdLoadAccess;
 import org.hibernate.ReplicationMode;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.SharedSessionBuilder;
+import org.hibernate.SimpleNaturalIdLoadAccess;
+import org.hibernate.TypeHelper;
 import org.hibernate.UnknownProfileException;
+import org.hibernate.jdbc.ReturningWork;
 import org.hibernate.jdbc.Work;
 import org.hibernate.stat.SessionStatistics;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
- * An Hibernate Session proxy that delegates to a backing instance. This proxy is injected on composite-scoped components where more than one thread
- * may be accessing the proxy at a time.
+ * An Hibernate Session proxy that delegates to a backing instance. This proxy is injected on composite-scoped components where more than one thread may be
+ * accessing the proxy at a time.
  * <p/>
- * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the Session instance associated with the
- * current transaction context from the EntityManagerService.
+ * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the Session instance associated with the current
+ * transaction context from the EntityManagerService.
  */
 public class MultiThreadedSessionProxy implements Session, HibernateProxy {
     private static final long serialVersionUID = -4143261157740097948L;
@@ -84,16 +90,12 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         getSession().persist(entity);
     }
 
+    public SharedSessionBuilder sessionWithOptions() {
+        return getSession().sessionWithOptions();
+    }
+
     public void flush() {
         getSession().flush();
-    }
-
-    public EntityMode getEntityMode() {
-        return getSession().getEntityMode();
-    }
-
-    public Session getSession(EntityMode entityMode) {
-        return getSession().getSession(entityMode);
     }
 
     public void setFlushMode(FlushMode flushMode) {
@@ -114,10 +116,6 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
 
     public SessionFactory getSessionFactory() {
         return getSession().getSessionFactory();
-    }
-
-    public Connection connection() throws HibernateException {
-        return getSession().connection();
     }
 
     public Connection close() throws HibernateException {
@@ -256,6 +254,9 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         getSession().refresh(object);
     }
 
+    public void refresh(String s, Object o) {
+    }
+
     public void refresh(Object object, LockMode lockMode) throws HibernateException {
         getSession().refresh(object, lockMode);
     }
@@ -264,8 +265,15 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         getSession().refresh(o, lockOptions);
     }
 
+    public void refresh(String s, Object o, LockOptions lockOptions) {
+    }
+
     public LockMode getCurrentLockMode(Object object) throws HibernateException {
         return getSession().getCurrentLockMode(object);
+    }
+
+    public String getTenantIdentifier() {
+        return getSession().getTenantIdentifier();
     }
 
     public org.hibernate.Transaction beginTransaction() throws HibernateException {
@@ -340,6 +348,30 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         return getSession().getEntityName(object);
     }
 
+    public IdentifierLoadAccess byId(String s) {
+        return getSession().byId(s);
+    }
+
+    public IdentifierLoadAccess byId(Class aClass) {
+        return getSession().byId(aClass);
+    }
+
+    public NaturalIdLoadAccess byNaturalId(String s) {
+        return getSession().byNaturalId(s);
+    }
+
+    public NaturalIdLoadAccess byNaturalId(Class aClass) {
+        return getSession().byNaturalId(aClass);
+    }
+
+    public SimpleNaturalIdLoadAccess bySimpleNaturalId(String s) {
+        return getSession().bySimpleNaturalId(s);
+    }
+
+    public SimpleNaturalIdLoadAccess bySimpleNaturalId(Class aClass) {
+        return getSession().bySimpleNaturalId(aClass);
+    }
+
     public Filter enableFilter(String filterName) {
         return getSession().enableFilter(filterName);
     }
@@ -368,12 +400,12 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         getSession().doWork(work);
     }
 
-    public Connection disconnect() throws HibernateException {
-        return getSession().disconnect();
+    public <T> T doReturningWork(ReturningWork<T> tReturningWork) throws HibernateException {
+        return getSession().doReturningWork(tReturningWork);
     }
 
-    public void reconnect() throws HibernateException {
-        getSession().reconnect();
+    public Connection disconnect() throws HibernateException {
+        return getSession().disconnect();
     }
 
     public void reconnect(Connection connection) throws HibernateException {
@@ -392,9 +424,16 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         getSession().disableFetchProfile(s);
     }
 
+    public TypeHelper getTypeHelper() {
+        return getSession().getTypeHelper();
+    }
+
+    public LobHelper getLobHelper() {
+        return getSession().getLobHelper();
+    }
+
     /**
-     * Returns the delegated Session. If the persistence context is transaction-scoped, the Session associated with the current transaction will be
-     * used.
+     * Returns the delegated Session. If the persistence context is transaction-scoped, the Session associated with the current transaction will be used.
      *
      * @return the Session
      */
