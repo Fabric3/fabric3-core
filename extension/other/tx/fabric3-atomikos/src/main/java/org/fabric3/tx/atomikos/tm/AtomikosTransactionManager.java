@@ -175,18 +175,24 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
      */
     public void onEvent(RuntimeRecover event) {
         synchronized (TransactionManagerImp.class) {
-            tm = (TransactionManagerImp) TransactionManagerImp.getTransactionManager();
-            if (tm == null) {
-                uts = new UserTransactionServiceImp(properties);
-                uts.init(properties);
+            ClassLoader old = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
                 tm = (TransactionManagerImp) TransactionManagerImp.getTransactionManager();
-            }
-            if (timeout != -1) {
-                try {
-                    tm.setTransactionTimeout(timeout);
-                } catch (SystemException e) {
-                    e.printStackTrace();
+                if (tm == null) {
+                    uts = new UserTransactionServiceImp(properties);
+                    uts.init(properties);
+                    tm = (TransactionManagerImp) TransactionManagerImp.getTransactionManager();
                 }
+                if (timeout != -1) {
+                    try {
+                        tm.setTransactionTimeout(timeout);
+                    } catch (SystemException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } finally {
+                Thread.currentThread().setContextClassLoader(old);
             }
         }
     }
