@@ -58,7 +58,7 @@ import org.oasisopen.sca.annotation.Reference;
  * An {@link EntityManagerFactoryResolver} implementation that caches EntityManagerFactory instances.
  */
 public class CachingEntityManagerFactoryResolver implements EntityManagerFactoryResolver {
-    private static final String HIBERNATE_LOOKUP = "hibernate.transaction.manager_lookup_class";
+    private static final String HIBERNATE_LOOKUP = "hibernate.transaction.jta.platform";
 
     private PersistenceContextParser parser;
     private EntityManagerFactoryCache cache;

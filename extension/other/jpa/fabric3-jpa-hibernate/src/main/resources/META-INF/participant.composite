@@ -17,6 +17,10 @@ Public License. See the accompanying license file for details.
            name="HibernateParticipantExtension"
            autowire="true">
 
+    <component name="LogSetter">
+        <f3:implementation.system class="org.fabric3.jpa.runtime.LogSetter"/>
+    </component>
+
     <component name="DefaultEntityManagerFactoryCache">
         <f3:implementation.system class="org.fabric3.jpa.runtime.emf.DefaultEntityManagerFactoryCache"/>
     </component>

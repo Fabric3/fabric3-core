@@ -37,12 +37,11 @@
 */
 package org.fabric3.jpa.api;
 
-import java.util.Properties;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
 
-import org.hibernate.HibernateException;
-import org.hibernate.transaction.TransactionManagerLookup;
+import org.hibernate.service.jta.platform.internal.AbstractJtaPlatform;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -50,7 +49,8 @@ import org.oasisopen.sca.annotation.Reference;
  * Resolves a Fabric3 transaction manager for Hibernate.
  */
 @EagerInit
-public final class F3TransactionManagerLookup implements TransactionManagerLookup {
+public final class F3TransactionManagerLookup extends AbstractJtaPlatform {
+    private static final long serialVersionUID = 422525777190048472L;
     private static TransactionManager TM;
 
     @Reference
@@ -58,11 +58,11 @@ public final class F3TransactionManagerLookup implements TransactionManagerLooku
         F3TransactionManagerLookup.TM = transactionManager;
     }
 
-    public TransactionManager getTransactionManager(Properties properties) throws HibernateException {
+    protected TransactionManager locateTransactionManager() {
         return TM;
     }
 
-    public String getUserTransactionName() {
+    protected UserTransaction locateUserTransaction() {
         return null;
     }
 
