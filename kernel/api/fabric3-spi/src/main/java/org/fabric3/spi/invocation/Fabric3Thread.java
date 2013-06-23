@@ -35,29 +35,52 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.threadpool;
-
-import java.lang.Thread;
+package org.fabric3.spi.invocation;
 
 /**
- *
+ * A managed thread in a Fabric3 runtime that implements its own thread pooling. Not present in hosted environments that have external thread management.
  */
 public class Fabric3Thread extends Thread {
     private Message message;
     private WorkContext workContext;
 
+    public Fabric3Thread(ThreadGroup group, Runnable target, String name, long stackSize) {
+        super(group, target, name, stackSize);
+
+    }
+
+    /**
+     * Returns the message associated with the thread or null if one has not be assigned.
+     *
+     * @return the message associated with the thread or null
+     */
     public Message getMessage() {
         return message;
     }
 
+    /**
+     * Associates a message with the thread.
+     *
+     * @param message the message
+     */
     public void setMessage(Message message) {
         this.message = message;
     }
 
+    /**
+     * Returns the work context associated with the thread or null if one has not be assigned.
+     *
+     * @return the work context associated with the thread or null
+     */
     public WorkContext getWorkContext() {
         return workContext;
     }
 
+    /**
+     * Associates a work context with the thread.
+     *
+     * @param workContext the work context
+     */
     public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
     }
