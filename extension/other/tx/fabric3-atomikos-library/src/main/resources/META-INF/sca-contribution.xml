@@ -6,8 +6,6 @@
 Fabric3 is licensed under modified terms of the GNU General
 Public License. See the accompanying license file for details.
 
-
-    $Rev$ $Date$
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
@@ -20,6 +18,10 @@ Public License. See the accompanying license file for details.
           -->
     <import.java package="javax.jms" version="1.1.0"/>
     <export.java package="com.atomikos.*" version="3.8.0"/>
+
+    <!-- Needed for Atomikos logging -->
+    <import.java package="org.fabric3.spi.*" version="2.0.0"/>
+
     <f3:provides name="datasource"/>
     <f3:provides.capability name="transaction"/>
 </contribution>
