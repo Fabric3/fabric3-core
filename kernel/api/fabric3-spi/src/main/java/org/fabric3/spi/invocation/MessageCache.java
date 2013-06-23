@@ -39,6 +39,8 @@ package org.fabric3.spi.invocation;
 
 /**
  * Cache of {@link Message}s associated with runtime threads.
+ * <p/>
+ * On runtimes with managed thread pools, the cache uses {@link Fabric3Thread} to store the message; on other runtimes a thread local is used.
  */
 public class MessageCache {
     private static final ThreadLocal<Message> CONTEXT = new ThreadLocal<Message>();
@@ -52,12 +54,23 @@ public class MessageCache {
      * @return the Message for the current thread
      */
     public static Message getMessage() {
-        Message message = CONTEXT.get();
-        if (message == null) {
-            message = new MessageImpl();
-            CONTEXT.set(message);
+        Thread thread = Thread.currentThread();
+        if (thread instanceof Fabric3Thread) {
+            Fabric3Thread fabric3Thread = (Fabric3Thread) thread;
+            Message message = fabric3Thread.getMessage();
+            if (message == null) {
+                message = new MessageImpl();
+                fabric3Thread.setMessage(message);
+            }
+            return message;
+        } else {
+            Message message = CONTEXT.get();
+            if (message == null) {
+                message = new MessageImpl();
+                CONTEXT.set(message);
+            }
+            return message;
         }
-        return message;
     }
 
     /**

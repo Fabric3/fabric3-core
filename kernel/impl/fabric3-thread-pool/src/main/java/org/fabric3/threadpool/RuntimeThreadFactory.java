@@ -40,6 +40,8 @@ package org.fabric3.threadpool;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.fabric3.spi.invocation.Fabric3Thread;
+
 /**
  * Factory that returns named threads and sets an uncaught exception handler that forwards exceptions to a monitor.
  */
@@ -57,7 +59,7 @@ public class RuntimeThreadFactory implements ThreadFactory {
     }
 
     public Thread newThread(Runnable r) {
-        Thread thread = new Thread(group, r, prefix + number.getAndIncrement(), 0);
+        Thread thread = new Fabric3Thread(group, r, prefix + number.getAndIncrement(), 0);
         if (thread.isDaemon()) {
             thread.setDaemon(false);
         }

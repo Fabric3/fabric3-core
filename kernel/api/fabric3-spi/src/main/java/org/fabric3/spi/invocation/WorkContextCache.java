@@ -45,6 +45,8 @@ package org.fabric3.spi.invocation;
 
 /**
  * Cache of {@link WorkContext}s associated with runtime threads.
+ * <p/>
+ * On runtimes with managed thread pools, the cache uses {@link Fabric3Thread} to store the context; on other runtimes a thread local is used.
  */
 public final class WorkContextCache {
     private static final ThreadLocal<WorkContext> CONTEXT = new ThreadLocal<WorkContext>();
@@ -58,12 +60,23 @@ public final class WorkContextCache {
      * @return the WorkContext for the current thread
      */
     public static WorkContext getThreadWorkContext() {
-        WorkContext workContext = CONTEXT.get();
-        if (workContext == null) {
-            workContext = new WorkContext();
-            CONTEXT.set(workContext);
+        Thread thread = Thread.currentThread();
+        if (thread instanceof Fabric3Thread) {
+            Fabric3Thread fabric3Thread = (Fabric3Thread) thread;
+            WorkContext workContext = fabric3Thread.getWorkContext();
+            if (workContext == null) {
+                workContext = new WorkContext();
+                fabric3Thread.setWorkContext(workContext);
+            }
+            return workContext;
+        } else {
+            WorkContext workContext = CONTEXT.get();
+            if (workContext == null) {
+                workContext = new WorkContext();
+                CONTEXT.set(workContext);
+            }
+            return workContext;
         }
-        return workContext;
     }
 
     /**
