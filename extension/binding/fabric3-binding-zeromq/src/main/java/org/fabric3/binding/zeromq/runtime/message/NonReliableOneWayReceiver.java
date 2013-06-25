@@ -55,7 +55,6 @@ import org.zeromq.ZMQ;
  */
 @Management
 public class NonReliableOneWayReceiver extends AbstractReceiver implements Thread.UncaughtExceptionHandler {
-    private ExecutorService executorService;
 
     /**
      * Constructor.
@@ -65,7 +64,6 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
      * @param chains          the invocation chains for dispatching invocations
      * @param executorService the runtime executor service
      * @param metadata        metadata
-     * @param pollTimeout     timeout for polling operations in microseconds
      * @param monitor         the monitor
      */
     public NonReliableOneWayReceiver(ContextManager manager,
@@ -73,10 +71,8 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
                                      List<InvocationChain> chains,
                                      ExecutorService executorService,
                                      ZeroMQMetadata metadata,
-                                     long pollTimeout,
                                      MessagingMonitor monitor) {
-        super(manager, address, chains, ZMQ.PULL, pollTimeout, metadata, monitor);
-        this.executorService = executorService;
+        super(manager, address, chains, ZMQ.PULL, metadata, executorService, monitor);
     }
 
     @Override
@@ -113,7 +109,6 @@ public class NonReliableOneWayReceiver extends AbstractReceiver implements Threa
         return true;
     }
 
-    @Override
     protected void response(ZMQ.Socket socket) {
         // no-op
     }

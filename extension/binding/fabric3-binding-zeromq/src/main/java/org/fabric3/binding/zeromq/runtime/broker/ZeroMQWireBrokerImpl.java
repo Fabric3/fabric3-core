@@ -249,7 +249,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             boolean oneWay = isOneWay(chains, uri);
             Receiver receiver;
             if (oneWay) {
-                receiver = new NonReliableOneWayReceiver(manager, address, chains, executorService, metadata, pollTimeout, monitor);
+                receiver = new NonReliableOneWayReceiver(manager, address, chains, executorService, metadata, monitor);
             } else {
                 receiver = new NonReliableRequestReplyReceiver(manager, address, chains, executorService, pollTimeout, metadata, monitor);
             }

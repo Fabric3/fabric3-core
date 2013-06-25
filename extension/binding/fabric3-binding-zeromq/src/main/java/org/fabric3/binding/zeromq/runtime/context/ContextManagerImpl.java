@@ -33,6 +33,7 @@ package org.fabric3.binding.zeromq.runtime.context;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import org.fabric3.host.runtime.HostInfo;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -40,14 +41,15 @@ import org.oasisopen.sca.annotation.Reference;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 
-import org.fabric3.host.runtime.HostInfo;
-
 /**
  *
  */
 @EagerInit
 public class ContextManagerImpl implements ContextManager {
+    private static final byte[] EMPTY_BYTES = new byte[0];
+
     private Context context;
+    private ZMQ.Socket controlSocket;
 
     // client leases
     private Set<String> leases = new ConcurrentSkipListSet<String>();
@@ -60,6 +62,13 @@ public class ContextManagerImpl implements ContextManager {
 
     public Context getContext() {
         return context;
+    }
+
+    public ZMQ.Socket createControlSocket() {
+        ZMQ.Socket controlSocket = context.socket(ZMQ.SUB);
+        controlSocket.subscribe(EMPTY_BYTES);
+        controlSocket.connect("inproc://fabric3");
+        return controlSocket;
     }
 
     public void reserve(String id) {
@@ -75,21 +84,26 @@ public class ContextManagerImpl implements ContextManager {
 
     @Init
     public void init() {
-        // Windows requires the ZMQ library to be loaded as the JZMQ library is
-        // linked to it and Windows is unable to
-        // resolve it relative to the JZMQ library
+        // Windows requires the ZMQ library to be loaded as the JZMQ library is linked to it and Windows is unable to resolve it relative to the JZMQ library
         // System.loadLibrary("zmq");
-
         ZMQLibraryInitializer.loadLibrary(hostInfo);
+
         context = ZMQ.context(1);
+
+        controlSocket = context.socket(ZMQ.PUB);
+        controlSocket.bind("inproc://fabric3");
     }
 
     /**
-     * Closes the ZeroMQ context after all socket clients have released their locks. This guarantees the context will not be closed prior to all
-     * sockets being closed. Note that ZeroMQ requires sockets to be open, accessed and closed by the same thread.
+     * Closes the ZeroMQ context after all socket clients have released their locks. This guarantees the context will not be closed prior to all sockets being
+     * closed. Note that ZeroMQ requires sockets to be open, accessed and closed by the same thread.
      */
     @Destroy
     public void destroy() {
+        if (controlSocket != null) {
+            // send message for all listening sockets to close
+            controlSocket.send(new byte[0], 0);
+        }
         while (!leases.isEmpty()) {
             synchronized (termMonitor) {
                 if (leases.isEmpty()) {
@@ -102,14 +116,17 @@ public class ContextManagerImpl implements ContextManager {
                 }
             }
         }
+        if (controlSocket != null) {
+            controlSocket.close();
+        }
         context.term();
     }
 
     /**
-     * Initializes the ZeroMQ library on Windows and Linux. If the ZeroMQ Library is not initialized before the Context is created the loading of the
-     * library is delegated to the Operating System. This causes problems since then F3 can't control where to load the libraries from. To work around
-     * this problem we initialize ZeroMQ base library (libzmq.dll or libzmq.so) prior to the JZMQ (which happens when a Context is created). This
-     * workaround is currently tested on Windows and Linux.
+     * Initializes the ZeroMQ library on Windows and Linux. If the ZeroMQ Library is not initialized before the Context is created the loading of the library is
+     * delegated to the Operating System. This causes problems since then F3 can't control where to load the libraries from. To work around this problem we
+     * initialize ZeroMQ base library (libzmq.dll or libzmq.so) prior to the JZMQ (which happens when a Context is created). This workaround is currently tested
+     * on Windows and Linux.
      */
     protected enum ZMQLibraryInitializer {
         WINDOWS("libzmq"), LINUX("zmq"), OTHER("");
@@ -121,8 +138,8 @@ public class ContextManagerImpl implements ContextManager {
         }
 
         /**
-         * Uses the OperatingSystem information of the HostInfo to decide what library to load. On Windows the library name is "libzmq". On Linux the
-         * library name is "zmq".
+         * Uses the OperatingSystem information of the HostInfo to decide what library to load. On Windows the library name is "libzmq". On Linux the library
+         * name is "zmq".
          *
          * @param hostInfo Based on the OperatingSystem member the needed Library will be loaded.
          */
@@ -144,8 +161,9 @@ public class ContextManagerImpl implements ContextManager {
         }
 
         private void loadLibrary() {
-            if (!this.equals(OTHER))
+            if (!this.equals(OTHER)) {
                 System.loadLibrary(libName);
+            }
         }
     }
 }

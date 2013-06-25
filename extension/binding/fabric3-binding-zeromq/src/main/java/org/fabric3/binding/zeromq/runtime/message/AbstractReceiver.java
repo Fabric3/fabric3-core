@@ -33,6 +33,7 @@ package org.fabric3.binding.zeromq.runtime.message;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
@@ -57,37 +58,38 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
 
     protected ContextManager manager;
     protected SocketAddress address;
+    protected ExecutorService executorService;
+
     protected int socketType;
 
     protected Interceptor[] interceptors;
     protected MessagingMonitor monitor;
 
     protected Receiver receiver;
-    protected long pollTimeout;
     protected ZeroMQMetadata metadata;
     protected String id = getClass().getName() + ":" + UUID.randomUUID().toString();
 
     /**
      * Constructor.
      *
-     * @param manager     the ZeroMQ Context manager
-     * @param address     the address to receive messages on
-     * @param chains      the invocation chains for dispatching invocations
-     * @param metadata    metadata
-     * @param socketType  the socket type as defined by ZeroMQ
-     * @param pollTimeout timeout for polling operations in microseconds
-     * @param monitor     the monitor
+     * @param manager         the ZeroMQ Context manager
+     * @param address         the address to receive messages on
+     * @param chains          the invocation chains for dispatching invocations
+     * @param socketType      the socket type as defined by ZeroMQ
+     * @param metadata        metadata
+     * @param executorService the executor for scheduling work
+     * @param monitor         the monitor
      */
     public AbstractReceiver(ContextManager manager,
                             SocketAddress address,
                             List<InvocationChain> chains,
                             int socketType,
-                            long pollTimeout,
                             ZeroMQMetadata metadata,
+                            ExecutorService executorService,
                             MessagingMonitor monitor) {
         this.manager = manager;
         this.address = address;
-        this.pollTimeout = pollTimeout;
+        this.executorService = executorService;
         this.interceptors = new Interceptor[chains.size()];
         for (int i = 0, chainsSize = chains.size(); i < chainsSize; i++) {
             InvocationChain chain = chains.get(i);
@@ -122,9 +124,7 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
     }
 
     private void schedule() {
-        Thread thread = new Thread(receiver);
-        thread.setUncaughtExceptionHandler(this);
-        thread.start();
+        executorService.submit(receiver);
     }
 
     /**
@@ -160,6 +160,8 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
      */
     private class Receiver implements Runnable {
         private Socket socket;
+        private Socket controlSocket;
+
         private ZMQ.Poller poller;
         private AtomicBoolean active = new AtomicBoolean(true);
 
@@ -180,8 +182,19 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
                         monitor.error("Failed to initialize ZeroMQ socket, aborting receiver");
                         return;
                     }
-                    long val = poller.poll(pollTimeout);
+                    long val = poller.poll();
                     if (val > 0) {
+                        byte[] controlPayload = controlSocket.recv(ZMQ.NOBLOCK);
+                        if (controlPayload != null) {
+                            try {
+                                socket.close();
+                                controlSocket.close();
+                            } finally {
+                                manager.release(id);
+                            }
+                            return;
+                        }
+
                         if (!invoke(socket)) {
                             continue;
                         }
@@ -192,6 +205,7 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
                 if (socket != null) {
                     try {
                         socket.close();
+                        controlSocket.close();
                     } finally {
                         manager.release(id);
                     }
@@ -216,7 +230,11 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
             SocketHelper.configure(socket, metadata);
             address.getPort().bind(Port.TYPE.TCP);
             socket.bind(address.toProtocolString());
+
+            controlSocket = manager.createControlSocket();
+
             poller = manager.getContext().poller();
+            poller.register(controlSocket, ZMQ.Poller.POLLIN);
             poller.register(socket, ZMQ.Poller.POLLIN);
         }
 

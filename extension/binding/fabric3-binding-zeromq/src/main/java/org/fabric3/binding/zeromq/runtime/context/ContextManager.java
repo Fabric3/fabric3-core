@@ -30,13 +30,14 @@
  */
 package org.fabric3.binding.zeromq.runtime.context;
 
+import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 
 /**
  * Manages the ZeroMQ Context lifecycle.
  * <p/>
- * Note when sockets are created from the managed <code>Context</code>, clients must reserve a lease using {@link #reserve(String)}. When a socket is
- * closed, clients must call {@link #release(String)}.
+ * Note when sockets are created from the managed <code>Context</code>, clients must reserve a lease using {@link #reserve(String)}. When a socket is closed,
+ * clients must call {@link #release(String)}.
  */
 public interface ContextManager {
 
@@ -46,6 +47,13 @@ public interface ContextManager {
      * @return the active ZeroMQ context
      */
     Context getContext();
+
+    /**
+     * Creates and returns a connected socket for receiving control messages such as shutdown. Clients are responsible for closing the socket when finished.
+     *
+     * @return the control socket
+     */
+    ZMQ.Socket createControlSocket();
 
     /**
      * Reserves a socket lease. The context manager will not close the active ZeroMQ context on runtime shutdown until all leases have been released.

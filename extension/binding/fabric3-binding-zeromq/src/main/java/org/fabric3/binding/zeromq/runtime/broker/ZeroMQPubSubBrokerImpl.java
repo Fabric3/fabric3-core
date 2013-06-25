@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.zeromq.common.SocketAddressDefinition;
@@ -92,6 +93,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     private TransformerHandlerFactory handlerFactory;
     private ZeroMQManagementService managementService;
     private EventService eventService;
+    private ExecutorService executorService;
     private HostInfo info;
     private MessagingMonitor monitor;
     private String hostAddress;
@@ -107,6 +109,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                                   @Reference TransformerHandlerFactory handlerFactory,
                                   @Reference ZeroMQManagementService managementService,
                                   @Reference EventService eventService,
+                                  @Reference ExecutorService executorService,
                                   @Reference HostInfo info,
                                   @Monitor MessagingMonitor monitor) throws UnknownHostException {
         this.manager = manager;
@@ -115,6 +118,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         this.handlerFactory = handlerFactory;
         this.managementService = managementService;
         this.eventService = eventService;
+        this.executorService = executorService;
         this.info = info;
         this.monitor = monitor;
         this.hostAddress = InetAddress.getLocalHost().getHostAddress();
@@ -177,7 +181,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                 refresh = true;
                 addresses = addressCache.getActiveAddresses(channelName);
             }
-            subscriber = new NonReliableSubscriber(id, manager, addresses, head, metadata, pollTimeout, monitor);
+            subscriber = new NonReliableSubscriber(id, manager, addresses, head, metadata, executorService);
             subscriber.incrementConnectionCount();
             subscriber.start();
             if (refresh) {

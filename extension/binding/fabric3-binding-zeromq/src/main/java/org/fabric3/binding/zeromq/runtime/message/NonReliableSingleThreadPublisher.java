@@ -75,16 +75,13 @@ public class NonReliableSingleThreadPublisher implements Publisher {
 
     @ManagementOperation(type = OperationType.POST)
     public void stop() {
-        try {
-            if (socket != null) {
-                try {
-                    socket.close();
-                } finally {
-                    manager.release(id);
-                }
+        if (socket != null) {
+            try {
+                socket.close();
+            } finally {
+                socket = null;
+                manager.release(id);
             }
-        } finally {
-            socket = null;
         }
     }
 

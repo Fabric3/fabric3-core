@@ -60,8 +60,9 @@ import org.zeromq.ZMQ.Socket;
  */
 @Management
 public class NonReliableRequestReplyReceiver extends AbstractReceiver implements Thread.UncaughtExceptionHandler {
-    private ExecutorService executorService;
+    private static final Response SHUTDOWN = new Response(null, null);
     private LinkedBlockingQueue<Response> queue;
+    private final long pollTimeout;
 
     /**
      * Constructor.
@@ -81,8 +82,7 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
                                            long pollTimeout,
                                            ZeroMQMetadata metadata,
                                            MessagingMonitor monitor) {
-        super(manager, address, chains, ZMQ.XREP, pollTimeout, metadata, monitor);
-        this.executorService = executorService;
+        super(manager, address, chains, ZMQ.XREP, metadata, executorService, monitor);
         this.pollTimeout = pollTimeout;
         queue = new LinkedBlockingQueue<Response>();
     }
@@ -146,7 +146,8 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
     protected void response(Socket socket) {
         try {
             Response first = queue.poll(pollTimeout, TimeUnit.MICROSECONDS);
-            if (first == null) {
+            if (first == null || SHUTDOWN == first) {
+                // don't close socket in case of shutdown as it is handled in the superclass
                 return;
             }
             List<Response> drained = new ArrayList<Response>();
@@ -154,6 +155,9 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
             queue.drainTo(drained);
 
             for (Response response : drained) {
+                if (SHUTDOWN == response){
+                    return;
+                }
                 socket.send(response.clientId, ZMQ.SNDMORE);
                 socket.send(response.body, 0);
             }
@@ -162,7 +166,7 @@ public class NonReliableRequestReplyReceiver extends AbstractReceiver implements
         }
     }
 
-    private class Response {
+    private static class Response {
         private byte[] clientId;
         private byte[] body;
 

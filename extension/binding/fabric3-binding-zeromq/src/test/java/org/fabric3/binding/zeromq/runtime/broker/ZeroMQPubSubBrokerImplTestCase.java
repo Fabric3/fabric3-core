@@ -112,6 +112,8 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
 
         EasyMock.expect(context.socket(1)).andReturn(EasyMock.createNiceMock(ZMQ.Socket.class));
 
+        EasyMock.expect(executorService.submit(EasyMock.isA(Runnable.class))).andReturn(null);
+
         EasyMock.replay(context);
         EasyMock.replay(definition);
         EasyMock.replay(manager, addressCache, headHandler, stream, executorService, monitor, connection, allocator, handlerFactory, info, managementService);
@@ -190,7 +192,7 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
 
         handlerFactory = EasyMock.createMock(TransformerHandlerFactory.class);
 
-        broker = new ZeroMQPubSubBrokerImpl(manager, addressCache, allocator, handlerFactory, managementService, eventService, info, monitor);
+        broker = new ZeroMQPubSubBrokerImpl(manager, addressCache, allocator, handlerFactory, managementService, eventService, executorService, info, monitor);
 
     }
 }

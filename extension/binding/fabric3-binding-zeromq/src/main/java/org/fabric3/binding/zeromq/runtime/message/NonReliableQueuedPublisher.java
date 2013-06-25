@@ -51,11 +51,12 @@ import org.zeromq.ZMQ.Socket;
 /**
  * Implements a basic PUB client with no qualities of service.
  * <p/>
- * Since ZeroMQ requires the creating socket thread to dispatch messages, a looping thread is used for publishing messages. Messages are provided to
- * the thread via a queue.
+ * Since ZeroMQ requires the creating socket thread to dispatch messages, a looping thread is used for publishing messages. Messages are provided to the thread
+ * via a queue.
  */
 @Management
 public class NonReliableQueuedPublisher implements Publisher, Thread.UncaughtExceptionHandler {
+    private static final byte[] SHUTDOWN = new byte[0];
     private ContextManager manager;
     private SocketAddress address;
     private long pollTimeout;
@@ -90,6 +91,9 @@ public class NonReliableQueuedPublisher implements Publisher, Thread.UncaughtExc
             if (dispatcher != null) {
                 dispatcher.stop();
             }
+            queue.put(SHUTDOWN);
+        } catch (InterruptedException e) {
+            monitor.error(e);
         } finally {
             dispatcher = null;
         }
@@ -145,6 +149,9 @@ public class NonReliableQueuedPublisher implements Publisher, Thread.UncaughtExc
                 try {
 
                     Object value = queue.poll(pollTimeout, TimeUnit.MILLISECONDS);
+                    if (SHUTDOWN == value) {
+                        close(id);
+                    }
                     if (value == null) {
                         continue;
                     }
@@ -179,6 +186,10 @@ public class NonReliableQueuedPublisher implements Publisher, Thread.UncaughtExc
                 }
 
             }
+            close(id);
+        }
+
+        private void close(String id) {
             if (socket != null) {
                 try {
                     socket.close();
@@ -188,6 +199,5 @@ public class NonReliableQueuedPublisher implements Publisher, Thread.UncaughtExc
             }
         }
     }
-
 
 }

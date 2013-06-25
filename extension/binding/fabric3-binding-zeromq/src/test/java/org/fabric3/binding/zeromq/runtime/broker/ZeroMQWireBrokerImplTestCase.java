@@ -112,6 +112,8 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
                                                              EasyMock.isA(ClassLoader.class),
                                                              EasyMock.isA(ClassLoader.class))).andReturn(transformInterceptor);
 
+        EasyMock.expect(executorService.submit(EasyMock.isA(Runnable.class))).andReturn(null);
+
         EasyMock.replay(manager, addressCache, executorService, monitor, allocator, info, managementService, interceptorFactory);
 
         PhysicalOperationDefinition definition = new PhysicalOperationDefinition();

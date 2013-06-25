@@ -70,6 +70,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
             return null;
         }
     };
+    private static final Request SHUTDOWN = new Request(null, 0, null);
 
     private String id;
     private ContextManager manager;
@@ -111,6 +112,9 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
     public void stop() {
         try {
             dispatcher.stop();
+            queue.put(SHUTDOWN);
+        } catch (InterruptedException e) {
+            monitor.error(e);
         } finally {
             dispatcher = null;
         }
@@ -176,6 +180,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
     private class Dispatcher implements Runnable {
         private AtomicBoolean active = new AtomicBoolean(true);
         private AtomicBoolean doRefresh = new AtomicBoolean(true);
+        private Socket controlSocket;
 
         /**
          * Signals to closes the old socket and establish a new one when publisher addresses have changed in the domain.
@@ -199,6 +204,11 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
                     // handle pending requests
                     List<Request> drained = new ArrayList<Request>();
                     Request value = queue.poll(pollTimeout, TimeUnit.MICROSECONDS);
+                    if (SHUTDOWN == value) {
+                        multiplexer.close();
+                        controlSocket.close();
+                        return;
+                    }
                     // if no available socket, drop the message
                     if (!multiplexer.isAvailable()) {
                         monitor.dropMessage();
@@ -235,6 +245,15 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
                             request.run();
                             continue;
                         }
+                        byte[] controlPayload = controlSocket.recv(ZMQ.NOBLOCK);
+                        if (controlPayload != null) {
+                            multiplexer.close();
+                            if (controlSocket != null) {
+                                controlSocket.close();
+                            }
+                            return;
+                        }
+
                         byte[] response = socket.recv(0);
                         request.set(response);
                         request.run();
@@ -249,6 +268,10 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
 
             }
             multiplexer.close();
+            if (controlSocket != null) {
+                controlSocket.close();
+            }
+
         }
 
         /**
@@ -258,12 +281,17 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
             if (!doRefresh.getAndSet(false)) {
                 return;
             }
+            if (controlSocket == null) {
+                controlSocket = manager.createControlSocket();
+            }
+
             multiplexer.update(addresses);
             Collection<Socket> sockets = multiplexer.getAll();
             pollers.clear();
             for (Socket socket : sockets) {
                 ZMQ.Poller poller = manager.getContext().poller();
                 poller.register(socket, ZMQ.Poller.POLLIN);
+                poller.register(controlSocket, ZMQ.Poller.POLLIN);
                 pollers.put(socket, poller);
             }
         }
@@ -272,7 +300,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
     /**
      * A {@link Future} used to pass a request payload to the ZeroMQ socket thread and retrieve the invocation return value on completion.
      */
-    private class Request extends FutureTask<byte[]> {
+    private static class Request extends FutureTask<byte[]> {
         private byte[] payload;
         private byte[] workContext;
         private int index;

@@ -33,6 +33,7 @@ package org.fabric3.binding.zeromq.runtime.message;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -40,7 +41,6 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.management.OperationType;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.federation.AddressListener;
@@ -57,7 +57,7 @@ import org.zeromq.ZMQ.Socket;
  * a socket, if an update is received the original socket will be closed and a new one created to connect to the update set of addresses.
  */
 @Management
-public class NonReliableSubscriber implements Subscriber, AddressListener, Thread.UncaughtExceptionHandler {
+public class NonReliableSubscriber implements Subscriber, AddressListener {
     private static final byte[] EMPTY_BYTES = new byte[0];
 
     private String id;
@@ -65,9 +65,8 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
     private ContextManager manager;
     private List<SocketAddress> addresses;
     private EventStreamHandler handler;
-    private long pollTimeout;   // microseconds
     private ZeroMQMetadata metadata;
-    private MessagingMonitor monitor;
+    private ExecutorService executorService;
 
     private AtomicInteger connectionCount = new AtomicInteger();
 
@@ -76,35 +75,33 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
     /**
      * Constructor
      *
-     * @param id          the unique subscriber id, typically the consumer URI.
-     * @param manager     the ZeroMQ context manager
-     * @param addresses   the publisher addresses the subscriber must connect to
-     * @param head        the head handler for dispatching events
-     * @param metadata    subscriber metadata
-     * @param pollTimeout the timeout for polling operations in milliseconds
-     * @param monitor     the monitor
+     * @param id              the unique subscriber id, typically the consumer URI.
+     * @param manager         the ZeroMQ context manager
+     * @param addresses       the publisher addresses the subscriber must connect to
+     * @param head            the head handler for dispatching events
+     * @param metadata        subscriber metadata
+     * @param executorService the executor for scheduling work
      */
     public NonReliableSubscriber(String id,
                                  ContextManager manager,
                                  List<SocketAddress> addresses,
                                  EventStreamHandler head,
                                  ZeroMQMetadata metadata,
-                                 long pollTimeout,
-                                 MessagingMonitor monitor) {
+                                 ExecutorService executorService) {
         this.id = id;
         this.manager = manager;
         this.addresses = addresses;
         this.handler = head;
         this.metadata = metadata;
-        this.pollTimeout = pollTimeout * 1000;  // convert milliseconds to microseconds used by ZeroMQ
-        this.monitor = monitor;
+        this.executorService = executorService;
     }
 
     @ManagementOperation(type = OperationType.POST)
     public void start() {
         if (receiver == null) {
             receiver = new SocketReceiver();
-            schedule();
+            executorService.submit(receiver);
+
         }
     }
 
@@ -138,10 +135,6 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
         return connectionCount.get() > 0;
     }
 
-    public void uncaughtException(Thread t, Throwable e) {
-        monitor.error(e);
-    }
-
     public String getId() {
         return id;
     }
@@ -154,17 +147,13 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
         }
     }
 
-    private void schedule() {
-        Thread thread = new Thread(receiver);
-        thread.setUncaughtExceptionHandler(this);
-        thread.start();
-    }
-
     /**
      * The message receiver. Responsible for creating socket connections to publishers and polling for messages.
      */
     class SocketReceiver implements Runnable {
         private Socket socket;
+        private Socket controlSocket;
+
         private ZMQ.Poller poller;
         private AtomicBoolean active = new AtomicBoolean(true);
         private AtomicBoolean doRefresh = new AtomicBoolean(true);
@@ -187,8 +176,14 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
             try {
                 while (active.get()) {
                     reconnect();
-                    long val = poller.poll(pollTimeout);
+                    long val = poller.poll();
                     if (val > 0) {
+                        // check if the message is a control message; if so, shutdown (currently the only implemented message)
+                        byte[] controlPayload = controlSocket.recv(ZMQ.NOBLOCK);
+                        if (controlPayload != null) {
+                            closeSocket();
+                            return;
+                        }
                         byte[][] frames = null;
                         byte[] payload = socket.recv(0);
                         int index = 1;
@@ -214,7 +209,7 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
                 closeSocket();
             } catch (RuntimeException e) {
                 // exception, make sure the thread is rescheduled
-                schedule();
+                executorService.submit(this);
                 throw e;
             }
         }
@@ -236,7 +231,12 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
             for (SocketAddress address : addresses) {
                 socket.connect(address.toProtocolString());
             }
+
+            // establish a socket for receiving control messages
+            controlSocket = manager.createControlSocket();
+
             poller = context.poller();
+            poller.register(controlSocket, ZMQ.Poller.POLLIN);
             poller.register(socket, ZMQ.Poller.POLLIN);
         }
 
@@ -247,6 +247,9 @@ public class NonReliableSubscriber implements Subscriber, AddressListener, Threa
                 } finally {
                     manager.release(socketId);
                 }
+            }
+            if (controlSocket != null) {
+                controlSocket.close();
             }
         }
 

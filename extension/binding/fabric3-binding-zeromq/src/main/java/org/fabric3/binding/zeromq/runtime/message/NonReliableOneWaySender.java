@@ -54,7 +54,7 @@ import org.zeromq.ZMQ;
  */
 @Management
 public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExceptionHandler {
-
+    private static final Request SHUTDOWN = new Request(null, 0, null);
     private String id;
     private List<SocketAddress> addresses;
     private MessagingMonitor monitor;
@@ -89,6 +89,9 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
     public void stop() {
         try {
             dispatcher.stop();
+            queue.put(SHUTDOWN);
+        } catch (InterruptedException e) {
+            monitor.error(e);
         } finally {
             dispatcher = null;
         }
@@ -172,7 +175,10 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
                     // handle pending requests
                     List<Request> drained = new ArrayList<Request>();
                     Request value = queue.poll(pollTimeout, TimeUnit.MICROSECONDS);
-
+                    if (SHUTDOWN == value) {
+                        multiplexer.close();
+                        return;
+                    }
                     // if no available socket, drop the message
                     if (!multiplexer.isAvailable()) {
                         monitor.dropMessage();
@@ -184,6 +190,10 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
                         queue.drainTo(drained);
                     }
                     for (Request request : drained) {
+                        if (SHUTDOWN == request) {
+                            multiplexer.close();
+                            return;
+                        }
                         ZMQ.Socket socket = multiplexer.get();
 
                         // serialize the request payload
@@ -224,7 +234,7 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
         }
     }
 
-    private class Request {
+    private static class Request {
         private byte[] payload;
         private byte[] workContext;
         private int index;
