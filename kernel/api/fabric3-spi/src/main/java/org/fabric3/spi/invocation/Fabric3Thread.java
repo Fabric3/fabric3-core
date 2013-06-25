@@ -46,7 +46,6 @@ public class Fabric3Thread extends Thread {
 
     public Fabric3Thread(ThreadGroup group, Runnable target, String name, long stackSize) {
         super(group, target, name, stackSize);
-
     }
 
     /**
