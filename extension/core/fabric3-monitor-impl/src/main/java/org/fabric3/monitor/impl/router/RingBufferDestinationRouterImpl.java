@@ -146,16 +146,15 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
 
     @Init
     public void init() throws FileNotFoundException {
-        if (enabled) {
-            WaitStrategy waitStrategy = createWaitStrategy();
-            MonitorEventEntryFactory factory = new MonitorEventEntryFactory(capacity);
-            disruptor = new Disruptor<MonitorEventEntry>(factory, ringSize, executorService, ProducerType.MULTI, waitStrategy);
-            MonitorEventHandler handler = new MonitorEventHandler(registry);
-            disruptor.handleEventsWith(handler);
-            disruptor.start();
-        } else {
-            monitor.synchronousOutput();
+        if (!enabled) {
+            return;
         }
+        WaitStrategy waitStrategy = createWaitStrategy();
+        MonitorEventEntryFactory factory = new MonitorEventEntryFactory(capacity);
+        disruptor = new Disruptor<MonitorEventEntry>(factory, ringSize, executorService, ProducerType.MULTI, waitStrategy);
+        MonitorEventHandler handler = new MonitorEventHandler(registry);
+        disruptor.handleEventsWith(handler);
+        disruptor.start();
     }
 
     @Destroy

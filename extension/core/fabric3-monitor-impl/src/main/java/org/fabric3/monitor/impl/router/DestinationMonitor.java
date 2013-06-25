@@ -38,16 +38,12 @@
 package org.fabric3.monitor.impl.router;
 
 import org.fabric3.api.annotation.monitor.Debug;
-import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Warning;
 
 /**
  *
  */
 public interface DestinationMonitor {
-
-    @Info("Monitor is configured for synchronous output. Asynchronous output should be enabled on production systems.")
-    void synchronousOutput();
 
     @Warning("Unknown ring buffer strategy configured for the monitor subsystem: {0}. Defaulting to blocking strategy.")
     void invalidStrategy(String strategy);
