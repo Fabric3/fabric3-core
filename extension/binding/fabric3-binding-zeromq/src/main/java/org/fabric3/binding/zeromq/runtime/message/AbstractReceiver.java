@@ -144,6 +144,10 @@ public abstract class AbstractReceiver implements Receiver, Thread.UncaughtExcep
             }
 
             List<CallbackReference> stack = CallbackReferenceSerializer.deserialize(header);
+            // add the last callback twice as it will be needed when the callback is made back through the binding
+            if (!stack.isEmpty()) {
+                stack.add(stack.get(stack.size() - 1));
+            }
             workContext.addCallbackReferences(stack);
             return workContext;
         } catch (IOException e) {
