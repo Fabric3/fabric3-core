@@ -121,6 +121,7 @@
                 <include>org.codehaus.fabric3:fabric3-jgroups</include>
                 <include>org.codehaus.fabric3:fabric3-federation-jgroups</include>
                 <include>org.codehaus.fabric3:fabric3-monitor-spi</include>
+                <include>com.lmax:disruptor</include>
                 <include>org.codehaus.fabric3:fabric3-monitor-impl</include>
                 <include>org.codehaus.fabric3:fabric3-monitor-appender</include>
             </includes>

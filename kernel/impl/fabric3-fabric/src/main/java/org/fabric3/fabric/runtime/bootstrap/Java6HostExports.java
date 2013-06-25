@@ -214,6 +214,7 @@ public final class Java6HostExports {
         hostMap.put("javax.xml.crypto.dsig.keyinfo", "1.0");
         hostMap.put("javax.xml.crypto.dsig.spec", "0.0");
         hostMap.put("javax.xml.crypto.dsig.spec", "1.0");
+        hostMap.put("sun.misc", "0.0.0");
 
         // Commons annotations included
         hostMap.put("javax.annotation", "0.0");

@@ -20,7 +20,7 @@ Public License. See the accompanying license file for details.
     <artifactId>fabric3-channel-disruptor</artifactId>
     <name>Fabric3 Disruptor-Based Channels Extension</name>
     <description>Support for Disruptor-based channels</description>
-    <packaging>sca-contribution-jar</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
 
@@ -48,14 +48,5 @@ Public License. See the accompanying license file for details.
 
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.fabric3</groupId>
-                <artifactId>fabric3-contribution-plugin</artifactId>
-                <extensions>true</extensions>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

@@ -111,6 +111,12 @@ licensed under the Apache 2.0 license.
         </dependency>
 
         <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+            <version>${disruptor.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-monitor-impl</artifactId>
             <version>${project.version}</version>
