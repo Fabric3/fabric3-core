@@ -30,8 +30,6 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
-import java.net.URI;
-
 import org.fabric3.api.annotation.monitor.Debug;
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
