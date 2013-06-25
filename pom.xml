@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.codehaus.fabric3</groupId>
 		<artifactId>parent</artifactId>
-		<version>9</version>
+		<version>10</version>
 	</parent>
 	<groupId>org.codehaus.fabric3</groupId>
 	<artifactId>fabric3-core</artifactId>
@@ -103,22 +103,6 @@
 					<url>file:///opt/ci.repository.codehaus.org/</url>
 				</snapshotRepository>
 			</distributionManagement>
-		</profile>
-		<profile>
-			<id>release-profile</id>
-			<activation>
-				<property>
-					<name>performRelease</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-gpg-plugin</artifactId>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 		<profile>
 			<id>sources</id>
