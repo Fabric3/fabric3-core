@@ -52,7 +52,9 @@ public final class ObjectWriter {
     }
 
     public static int write(Object object, ByteBuffer buffer) {
-        if (object instanceof Throwable) {
+        if (object == null) {
+            return 0;
+        } else if (object instanceof Throwable) {
             Throwable t = (Throwable) object;
             ByteArrayOutputStream bas = new ByteArrayOutputStream();
             PrintStream printStream = new PrintStream(bas);
