@@ -185,6 +185,7 @@ public class Fabric3Task extends Task {
 
             Map<String, String> exportedPackages = new HashMap<String, String>();
             exportedPackages.put("org.fabric3.runtime.ant.api", Names.VERSION);
+            exportedPackages.put("org.junit", "4.11");
 
             URL systemComposite = new File(bootDir, "system.composite").toURI().toURL();
 

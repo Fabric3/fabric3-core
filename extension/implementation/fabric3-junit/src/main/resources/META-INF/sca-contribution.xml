@@ -20,5 +20,6 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.implementation.java.runtime" version="2.0.0"/>
     <import.java package="org.fabric3.implementation.java.generator" version="2.0.0"/>
     <import.java package="org.fabric3.test.spi" version="2.0.0"/>
+    <import.java package="org.junit" version="4.11"/>
     <deployable composite="f3:JUnitExtension"/>
 </contribution>

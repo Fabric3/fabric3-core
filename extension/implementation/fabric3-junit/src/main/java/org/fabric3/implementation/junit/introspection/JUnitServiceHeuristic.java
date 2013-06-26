@@ -45,8 +45,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
@@ -59,6 +57,8 @@ import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
+import org.junit.Test;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -128,7 +128,7 @@ public class JUnitServiceHeuristic implements HeuristicProcessor {
                 continue;
             }
             String name = method.getName();
-            if (name.length() < 5 || !name.startsWith("test")) {
+            if (!method.isAnnotationPresent(Test.class) && (name.length() < 5 || !name.startsWith("test"))) {
                 continue;
             }
             Operation operation = new Operation(name, INPUT_TYPE, OUTPUT_TYPE, FAULT_TYPE);

@@ -56,4 +56,9 @@ public interface TestConstants {
      * asynchronous communication.
      */
     URI TEST_LATCH_SERVICE = URI.create(DOMAIN + "/F3LatchService");
+
+    /**
+     * The JUnit version.
+     */
+    String JUNIT_VERSION = "4.11";
 }

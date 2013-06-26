@@ -125,6 +125,7 @@ public class MavenRuntimeBooter {
             Map<String, String> exportedPackages = new HashMap<String, String>();
             exportedPackages.put("org.fabric3.test.spi", Names.VERSION);
             exportedPackages.put("org.fabric3.runtime.maven", Names.VERSION);
+            exportedPackages.put("org.junit", TestConstants.JUNIT_VERSION);
 
             // process extensions
             List<ContributionSource> contributions = extensionHelper.processExtensions(extensions, repositories);

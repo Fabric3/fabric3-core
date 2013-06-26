@@ -34,22 +34,36 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.fabric.builder.classloader;
+*/
+package org.fabric3.implementation.junit.runtime;
+
+import org.fabric3.spi.invocation.Message;
+import org.fabric3.spi.wire.Interceptor;
 
 /**
- * Thrown when a parent classloader cannot be found
+ *
  */
-public class ClassLoaderNotFoundException extends ClassLoaderBuilderException {
-    private static final long serialVersionUID = 2497112487706288679L;
+public class ExpectedExceptionInterceptor implements Interceptor {
+    private Class<? extends Throwable> expected;
+    private Interceptor next;
 
-    public ClassLoaderNotFoundException(String message) {
-        super(message);
+    public ExpectedExceptionInterceptor(Class<? extends Throwable> expected) {
+        this.expected = expected;
+    }
+
+    public Message invoke(Message msg) {
+        Message ret = next.invoke(msg);
+        if (ret.isFault() && expected.equals(ret.getBody())) {
+            ret.setBody(null);
+        }
+        return ret;
+    }
+
+    public void setNext(Interceptor next) {
+        this.next = next;
+    }
+
+    public Interceptor getNext() {
+        return next;
     }
 }

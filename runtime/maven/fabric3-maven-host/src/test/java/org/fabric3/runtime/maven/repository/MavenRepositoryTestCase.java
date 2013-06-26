@@ -12,7 +12,7 @@ public class MavenRepositoryTestCase extends TestCase {
     public void testFind() throws Exception {
         MavenRepository repository = new MavenRepository();
         repository.init();
-        assertNotNull(repository.find(URI.create("junit:junit:3.8.1")));
+        assertNotNull(repository.find(URI.create("junit:junit:4.11")));
     }
 
 }

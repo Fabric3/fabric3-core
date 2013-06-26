@@ -39,16 +39,13 @@ package org.fabric3.implementation.junit.generator;
 
 import java.net.URI;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.implementation.java.generator.JavaGenerationHelper;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
-import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
+import org.fabric3.implementation.junit.provision.JUnitTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -72,6 +69,8 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -168,7 +167,7 @@ public class JUnitComponentGenerator implements ComponentGenerator<LogicalCompon
     }
 
     public PhysicalTargetDefinition generateTarget(LogicalService service, EffectivePolicy policy) throws GenerationException {
-        JavaTargetDefinition wireDefinition = new JavaTargetDefinition();
+        JUnitTargetDefinition wireDefinition = new JUnitTargetDefinition();
         wireDefinition.setUri(service.getUri());
         return wireDefinition;
     }

@@ -552,6 +552,13 @@ public class Fabric3ITestMojo extends AbstractMojo {
         dependency.setType("jar");
         extensions.add(dependency);
 
+        dependency = new Dependency();
+        dependency.setGroupId("junit");
+        dependency.setArtifactId("junit");
+        dependency.setVersion(TestConstants.JUNIT_VERSION);
+        dependency.setType("jar");
+        extensions.add(dependency);
+
         return extensions;
     }
 

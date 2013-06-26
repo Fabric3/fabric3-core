@@ -8,73 +8,75 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.codehaus.fabric3</groupId>
-		<artifactId>parent</artifactId>
-		<version>10</version>
-	</parent>
-	<groupId>org.codehaus.fabric3</groupId>
-	<artifactId>fabric3-core</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
-	<name>Fabric3 Core POM</name>
-	<description>Fabric3 Core POM.</description>
-	<packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.codehaus.fabric3</groupId>
+        <artifactId>parent</artifactId>
+        <version>10</version>
+    </parent>
+    <groupId>org.codehaus.fabric3</groupId>
+    <artifactId>fabric3-core</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <name>Fabric3 Core POM</name>
+    <description>Fabric3 Core POM.</description>
+    <packaging>pom</packaging>
 
-	<modules>
-		<module>kernel</module>
-		<module>extension</module>
-		<module>runtime</module>
-		<module>admin</module>
-		<module>profile</module>
-	</modules>
+    <modules>
+        <module>kernel</module>
+        <module>extension</module>
+        <module>runtime</module>
+        <module>admin</module>
+        <module>profile</module>
+    </modules>
 
-	<properties>
-		<fabric3.release.version>2.0.0</fabric3.release.version>
-		<sca.api.version>1.1.3</sca.api.version>
-		<jta.version>1.1.1</jta.version>
-		<jms.version>1.1.1</jms.version>
-		<annotations.version>1.0.1</annotations.version>
-		<stax.api.version>1.0-2</stax.api.version>
+    <properties>
+        <fabric3.release.version>2.0.0</fabric3.release.version>
+        <sca.api.version>1.1.3</sca.api.version>
+        <jta.version>1.1.1</jta.version>
+        <jms.version>1.1.1</jms.version>
+        <annotations.version>1.0.1</annotations.version>
+        <stax.api.version>1.0-2</stax.api.version>
 
-		<!-- if the Woodstox version changes, update BootExports entry -->
-		<woodstox.version>4.1.3</woodstox.version>
-		<jackson.version>1.6.4</jackson.version>
-		<jaxb.api.version>2.2-promoted-b50</jaxb.api.version>
-		<web.services.version>2.0.1</web.services.version>
-		<jax.rs.version>1.1.1</jax.rs.version>
-		<servlet.groupId>org.eclipse.jetty.orbit</servlet.groupId>
-		<servlet.artifactId>javax.servlet</servlet.artifactId>
-		<servlet.version>3.0.0.v201112011016</servlet.version>
-		<jetty.version>9.0.3.v20130506</jetty.version>
+        <!-- if the Woodstox version changes, update BootExports entry -->
+        <woodstox.version>4.1.3</woodstox.version>
+        <jackson.version>1.6.4</jackson.version>
+        <jaxb.api.version>2.2-promoted-b50</jaxb.api.version>
+        <web.services.version>2.0.1</web.services.version>
+        <jax.rs.version>1.1.1</jax.rs.version>
+        <servlet.groupId>org.eclipse.jetty.orbit</servlet.groupId>
+        <servlet.artifactId>javax.servlet</servlet.artifactId>
+        <servlet.version>3.0.0.v201112011016</servlet.version>
+        <jetty.version>9.0.3.v20130506</jetty.version>
         <disruptor.version>3.1.0</disruptor.version>
+        <!-- if the JUnit version changes, update the ITest Plugin TestConstants value  and the Ant Fabric3Task value-->
+        <junit.version>4.11</junit.version>
 
-		<atomikos.version>3.8.0</atomikos.version>
-		<atmosphere.version>1.0.13</atmosphere.version>
-	</properties>
+        <atomikos.version>3.8.0</atomikos.version>
+        <atmosphere.version>1.0.13</atmosphere.version>
+    </properties>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.9</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.easymock</groupId>
-				<artifactId>easymock</artifactId>
-				<version>3.1</version>
-				<scope>test</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>3.1</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 
-	<build>
-		<defaultGoal>install</defaultGoal>
+    <build>
+        <defaultGoal>install</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.fabric3</groupId>
@@ -84,47 +86,47 @@
             </plugin>
         </plugins>
 
-	</build>
+    </build>
 
-	<profiles>
-		<profile>
-			<id>bamboo</id>
-			<distributionManagement>
-				<snapshotRepository>
-					<uniqueVersion>true</uniqueVersion>
-					<id>fabric3-codehaus-ci</id>
-					<name>Snapshot repository available from Codehaus' Bamboo server</name>
-					<url>file:///opt/ci.repository.codehaus.org/</url>
-				</snapshotRepository>
-			</distributionManagement>
-		</profile>
-		<profile>
-			<id>sources</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>jar-no-fork</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+    <profiles>
+        <profile>
+            <id>bamboo</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <uniqueVersion>true</uniqueVersion>
+                    <id>fabric3-codehaus-ci</id>
+                    <name>Snapshot repository available from Codehaus' Bamboo server</name>
+                    <url>file:///opt/ci.repository.codehaus.org/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>sources</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
-	<scm>
+    <scm>
         <connection>scm:git:git@github.com:Fabric3/fabric3-core.git</connection>
         <developerConnection>scm:git:git@github.com:Fabric3/fabric3-core.git</developerConnection>
         <url>http://github.com/Fabric3/fabric3-core</url>
         <tag>HEAD</tag>
-	</scm>
+    </scm>
 
 </project>
