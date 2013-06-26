@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.JDK7WorkaroundHelper;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
@@ -109,8 +109,6 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
 
         EasyMock.expect(handlerFactory.createHandler(EasyMock.isA(DataType.class), EasyMock.isA(DataType.class), EasyMock.isA(ClassLoader.class))).andReturn(
                 EasyMock.createNiceMock(EventStreamHandler.class));
-
-        EasyMock.expect(context.socket(1)).andReturn(EasyMock.createNiceMock(ZMQ.Socket.class));
 
         EasyMock.expect(executorService.submit(EasyMock.isA(Runnable.class))).andReturn(null);
 

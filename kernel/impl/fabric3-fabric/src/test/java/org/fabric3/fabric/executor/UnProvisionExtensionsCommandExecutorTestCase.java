@@ -42,7 +42,7 @@ import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.fabric.command.UnProvisionExtensionsCommand;

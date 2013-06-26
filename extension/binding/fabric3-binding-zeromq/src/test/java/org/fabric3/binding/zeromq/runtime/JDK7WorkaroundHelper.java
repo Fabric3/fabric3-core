@@ -30,7 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 
 /**
  *

@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 import org.easymock.IAnswer;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.zeromq.ZMQ;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;

@@ -49,8 +49,8 @@ import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
+import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
 
 import org.fabric3.model.type.ModelObject;
 import org.fabric3.model.type.component.AbstractService;

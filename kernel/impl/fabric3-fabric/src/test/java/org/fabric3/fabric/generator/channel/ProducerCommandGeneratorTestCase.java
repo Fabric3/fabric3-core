@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.fabric3.fabric.command.BuildChannelCommand;
 import org.fabric3.fabric.command.ChannelConnectionCommand;
 import org.fabric3.fabric.command.DisposeChannelCommand;

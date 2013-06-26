@@ -47,14 +47,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-import org.easymock.classextension.EasyMock;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.wire.InvocationRuntimeException;
 
 public class InvokerInterceptorBasicTestCase extends TestCase {

@@ -42,7 +42,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.w3c.dom.Document;
 
 import org.fabric3.cache.infinispan.model.InfinispanCacheResourceDefinition;

@@ -51,7 +51,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 
 import org.fabric3.binding.zeromq.common.SocketAddressDefinition;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;

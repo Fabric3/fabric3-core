@@ -38,7 +38,7 @@
 package org.fabric3.fabric.builder.transform;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 
 import org.fabric3.fabric.interceptor.TransformerInterceptor;
 import org.fabric3.spi.invocation.Message;

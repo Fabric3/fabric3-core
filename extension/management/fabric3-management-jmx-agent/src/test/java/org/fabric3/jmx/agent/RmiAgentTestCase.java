@@ -22,7 +22,7 @@ import java.rmi.server.ExportException;
 import javax.management.MBeanServer;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;

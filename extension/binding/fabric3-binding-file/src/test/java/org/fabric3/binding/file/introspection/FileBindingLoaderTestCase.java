@@ -43,15 +43,14 @@
  */
 package org.fabric3.binding.file.introspection;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
-
+import org.easymock.EasyMock;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.binding.file.model.FileBindingDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;

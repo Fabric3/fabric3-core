@@ -54,7 +54,7 @@ Public License. See the accompanying license file for details.
 
         <dependency>
             <groupId>org.easymock</groupId>
-            <artifactId>easymockclassextension</artifactId>
+            <artifactId>easymock</artifactId>
             <scope>test</scope>
         </dependency>
 

@@ -43,7 +43,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.AutowireInstantiator;

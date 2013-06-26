@@ -44,7 +44,7 @@
 package org.fabric3.fabric.classloader;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 

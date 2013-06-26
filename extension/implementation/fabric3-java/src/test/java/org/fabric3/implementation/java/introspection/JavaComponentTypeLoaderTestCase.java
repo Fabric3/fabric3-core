@@ -79,10 +79,10 @@ public class JavaComponentTypeLoaderTestCase extends TestCase {
         super.setUp();
         ClassLoader cl = getClass().getClassLoader();
         IntrospectionHelper helper = EasyMock.createNiceMock(IntrospectionHelper.class);
-        EasyMock.expect(helper.loadClass(Simple.class.getName(), cl)).andStubReturn(Simple.class);
+        helper.loadClass(Simple.class.getName(), cl);
+        EasyMock.expectLastCall().andReturn(Simple.class);
         helper.resolveTypeParameters(Simple.class, null);
         EasyMock.replay(helper);
-
 
         context = EasyMock.createNiceMock(IntrospectionContext.class);
         EasyMock.expect(context.getClassLoader()).andStubReturn(cl);

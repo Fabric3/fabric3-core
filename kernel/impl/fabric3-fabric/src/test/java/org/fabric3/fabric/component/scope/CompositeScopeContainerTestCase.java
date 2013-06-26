@@ -47,7 +47,7 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.IMocksControl;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ScopedComponent;
 

@@ -40,7 +40,7 @@ package org.fabric3.fabric.synthesizer;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.fabric3.fabric.cm.ComponentManagerImpl;
 import org.fabric3.fabric.component.scope.CompositeScopeContainer;
 import org.fabric3.fabric.component.scope.ScopeContainerMonitor;

@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.w3c.dom.Document;
 
 import org.fabric3.fabric.interceptor.TransformerInterceptorFactoryImpl;

@@ -37,12 +37,12 @@
 */
 package org.fabric3.implementation.mock.runtime;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.easymock.ConstructorArgs;
 import org.easymock.EasyMock;
-import org.easymock.IAnswer;
-import org.easymock.IExpectationSetters;
 import org.easymock.IMocksControl;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -65,6 +65,12 @@ public class IMocksControlProxy implements IMocksControl {
         delegate.checkOrder(state);
     }
 
+    public void makeThreadSafe(boolean threadSafe) {
+    }
+
+    public void checkIsUsedInOneThread(boolean shouldBeUsedInOneThread) {
+    }
+
     public <T> T createMock(Class<T> toMock) {
         Object mock = mocks.get(toMock);
         if (mock == null) {
@@ -72,6 +78,26 @@ public class IMocksControlProxy implements IMocksControl {
             mocks.put(toMock, mock);
         }
         return toMock.cast(mock);
+    }
+
+    public <T> T createMock(String name, Class<T> toMock) {
+        return delegate.createMock(name, toMock);
+    }
+
+    public <T> T createMock(Class<T> toMock, Method... mockedMethods) {
+        return delegate.createMock(toMock, mockedMethods);
+    }
+
+    public <T> T createMock(Class<T> toMock, ConstructorArgs constructorArgs, Method... mockedMethods) {
+        return delegate.createMock(toMock, constructorArgs, mockedMethods);
+    }
+
+    public <T> T createMock(String name, Class<T> toMock, Method... mockedMethods) {
+        return delegate.createMock(name, toMock, mockedMethods);
+    }
+
+    public <T> T createMock(String name, Class<T> toMock, ConstructorArgs constructorArgs, Method... mockedMethods) {
+        return delegate.createMock(name, toMock, constructorArgs, mockedMethods);
     }
 
     public void replay() {
@@ -83,59 +109,17 @@ public class IMocksControlProxy implements IMocksControl {
         mocks.clear();
     }
 
+    public void resetToNice() {
+    }
+
+    public void resetToDefault() {
+    }
+
+    public void resetToStrict() {
+    }
+
     public void verify() {
         delegate.verify();
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public IExpectationSetters andAnswer(IAnswer answer) {
-        return delegate.andAnswer(answer);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public IExpectationSetters andReturn(Object value) {
-        return delegate.andReturn(value);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void andStubAnswer(IAnswer answer) {
-        delegate.andStubAnswer(answer);
-    }
-
-    public void andStubReturn(Object value) {
-        delegate.andStubReturn(value);
-    }
-
-    public void andStubThrow(Throwable throwable) {
-        delegate.andStubThrow(throwable);
-    }
-
-    public IExpectationSetters andThrow(Throwable throwable) {
-        return delegate.andThrow(throwable);
-    }
-
-    public IExpectationSetters anyTimes() {
-        return delegate.anyTimes();
-    }
-
-    public void asStub() {
-        delegate.asStub();
-    }
-
-    public IExpectationSetters atLeastOnce() {
-        return delegate.atLeastOnce();
-    }
-
-    public IExpectationSetters once() {
-        return delegate.once();
-    }
-
-    public IExpectationSetters times(int count) {
-        return delegate.times(count);
-    }
-
-    public IExpectationSetters times(int min, int max) {
-        return delegate.times(min, max);
     }
 
 }

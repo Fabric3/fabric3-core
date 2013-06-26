@@ -37,19 +37,18 @@
 */
 package org.fabric3.implementation.mock.introspection;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Loads implementation.mock from a composite. The XML fragment is expected to look like:
@@ -73,9 +72,9 @@ public class ImplementationMockLoader implements TypeLoader<ImplementationMock> 
     }
 
     /**
-     * Loads implementation.mock element from the SCDL.
+     * Loads implementation.mock element from a composite.
      *
-     * @param reader  StAX reader using which the scdl is loaded.
+     * @param reader  StAX reader using which the composite is loaded.
      * @param context Loader context containing contextual information.
      * @return An instance of mock implementation.
      */
