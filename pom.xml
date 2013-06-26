@@ -80,7 +80,7 @@
                 <groupId>org.codehaus.fabric3</groupId>
                 <artifactId>fabric3-contribution-plugin</artifactId>
                 <extensions>true</extensions>
-                <version>${project.version}</version>
+                <version>1.9.6</version>
             </plugin>
         </plugins>
 
