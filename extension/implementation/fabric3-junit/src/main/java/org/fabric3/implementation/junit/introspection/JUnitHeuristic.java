@@ -144,6 +144,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
                     return new Signature(method);
                 }
             }
+            implClass = implClass.getSuperclass();
         }
         return null;
     }

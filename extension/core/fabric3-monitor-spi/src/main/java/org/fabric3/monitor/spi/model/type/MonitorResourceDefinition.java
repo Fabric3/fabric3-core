@@ -62,6 +62,7 @@ public class MonitorResourceDefinition extends ResourceDefinition {
 
     public void setDestinationDefinition(MonitorDestinationDefinition destinationDefinition) {
         this.destinationDefinition = destinationDefinition;
+        this.destinationDefinition.setParent(this);
     }
 
 }

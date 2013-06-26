@@ -64,7 +64,7 @@ public class DefaultMonitorDestinationBuilderTestCase extends TestCase {
         EventWriter eventWriter = EasyMock.createMock(EventWriter.class);
 
         Appender appender = EasyMock.createMock(Appender.class);
-
+        appender.start();
         AppenderBuilder appenderBuilder = EasyMock.createMock(AppenderBuilder.class);
         EasyMock.expect(appenderBuilder.build(EasyMock.isA(PhysicalAppenderDefinition.class))).andReturn(appender);
 
