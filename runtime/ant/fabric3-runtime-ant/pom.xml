@@ -253,7 +253,7 @@ licensed under the Apache 2.0 license.
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>3.8.2</version>
+                <version>4.9</version>
                 <scope>compile</scope>
             </dependency>
         </dependencies>
