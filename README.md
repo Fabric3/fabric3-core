@@ -7,7 +7,7 @@ This repository hosts the Fabric3 runtime source. Information on Fabric3 can be 
 Building the Source
 ------------------------
 
-Requirements are JDK 6 and Maven 3.0.4+.
+Requirements are JDK 7 and Maven 3.0.4+.
 
 To build the source, execute:
 
