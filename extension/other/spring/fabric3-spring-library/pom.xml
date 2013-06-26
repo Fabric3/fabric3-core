@@ -21,9 +21,9 @@ Public License. See the accompanying license file for details.
     <packaging>sca-contribution-jar</packaging>
 
     <properties>
-        <org.springframework.version>3.1.1.RELEASE</org.springframework.version>
-        <org.spring.security.version>3.1.0.RELEASE</org.spring.security.version>
-        <org.spring.security.cas.version>3.0.7.RELEASE</org.spring.security.cas.version>
+        <org.springframework.version>3.2.3.RELEASE</org.springframework.version>
+        <org.spring.security.version>3.1.4.RELEASE</org.spring.security.version>
+        <org.spring.security.cas.version>3.0.8.RELEASE</org.spring.security.cas.version>
     </properties>
 
     <dependencies>
