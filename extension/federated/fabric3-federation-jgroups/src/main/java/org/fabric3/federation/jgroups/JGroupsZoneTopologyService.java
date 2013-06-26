@@ -46,24 +46,6 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
-import org.jgroups.Address;
-import org.jgroups.Channel;
-import org.jgroups.JChannel;
-import org.jgroups.MembershipListener;
-import org.jgroups.Message;
-import org.jgroups.View;
-import org.jgroups.blocks.MessageDispatcher;
-import org.jgroups.blocks.RequestOptions;
-import org.jgroups.blocks.ResponseMode;
-import org.jgroups.util.Rsp;
-import org.jgroups.util.RspList;
-import org.jgroups.util.UUID;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Element;
-
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -89,9 +71,27 @@ import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.federation.ControllerNotFoundException;
 import org.fabric3.spi.federation.MessageException;
 import org.fabric3.spi.federation.MessageReceiver;
+import org.fabric3.spi.federation.RemoteSystemException;
 import org.fabric3.spi.federation.TopologyListener;
 import org.fabric3.spi.federation.ZoneChannelException;
 import org.fabric3.spi.federation.ZoneTopologyService;
+import org.jgroups.Address;
+import org.jgroups.Channel;
+import org.jgroups.JChannel;
+import org.jgroups.MembershipListener;
+import org.jgroups.Message;
+import org.jgroups.View;
+import org.jgroups.blocks.MessageDispatcher;
+import org.jgroups.blocks.RequestOptions;
+import org.jgroups.blocks.ResponseMode;
+import org.jgroups.util.Rsp;
+import org.jgroups.util.RspList;
+import org.jgroups.util.UUID;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -143,8 +143,8 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     }
 
     /**
-     * Property to configure whether the runtime should attempt an update by querying a zone leader or the controller. In some topologies, the runtime
-     * may pull deployment information from a persistent store, which eliminates the need to update via a peer or the controller.
+     * Property to configure whether the runtime should attempt an update by querying a zone leader or the controller. In some topologies, the runtime may pull
+     * deployment information from a persistent store, which eliminates the need to update via a peer or the controller.
      *
      * @param synchronize true if the runtime should attempt an update (the default)
      */
@@ -298,7 +298,6 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         sendAsync(controller, command);
     }
 
-
     public void openChannel(String name, String configuration, MessageReceiver receiver) throws ZoneChannelException {
         if (channels.containsKey(name)) {
             throw new ZoneChannelException("Channel already open:" + name);
@@ -409,8 +408,8 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     }
 
     /**
-     * Attempts to update the runtime with the current set of deployments for the zone. The zone leader (i.e. oldest runtime in the zone) is queried
-     * for the deployment commands. If the zone leader is unavailable or has not been updated, the controller is queried.
+     * Attempts to update the runtime with the current set of deployments for the zone. The zone leader (i.e. oldest runtime in the zone) is queried for the
+     * deployment commands. If the zone leader is unavailable or has not been updated, the controller is queried.
      *
      * @throws MessageException if an error is encountered during update
      */
@@ -450,7 +449,12 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         monitor.updating(name);
         RuntimeUpdateCommand command = new RuntimeUpdateCommand(runtimeName, zoneName, null);
         Response response = send(address, command, defaultTimeout);
-        assert response instanceof RuntimeUpdateResponse;
+        if (response instanceof RemoteSystemException) {
+            RemoteSystemException exception = (RemoteSystemException) response;
+            throw new MessageException("Remote system exception from " + exception.getRuntimeName() + ": " + exception.getException().getMessage());
+        } else if (!(response instanceof RuntimeUpdateResponse)) {
+            throw new MessageException("Unknown response type: " + response.getClass());
+        }
         RuntimeUpdateResponse updateResponse = (RuntimeUpdateResponse) response;
         if (!updateResponse.isUpdated()) {
             // not updated, wait until a controller becomes available
