@@ -53,7 +53,7 @@ public class ExpectedExceptionInterceptor implements Interceptor {
 
     public Message invoke(Message msg) {
         Message ret = next.invoke(msg);
-        if (ret.isFault() && expected.equals(ret.getBody())) {
+        if (ret.isFault() && expected.equals(ret.getBody().getClass())) {
             ret.setBody(null);
         }
         return ret;

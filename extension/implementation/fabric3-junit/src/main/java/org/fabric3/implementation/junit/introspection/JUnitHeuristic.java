@@ -46,8 +46,6 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.model.type.component.Property;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
@@ -69,6 +67,9 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.fabric3.spi.model.type.java.Signature;
+import org.junit.After;
+import org.junit.Before;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -109,10 +110,18 @@ public class JUnitHeuristic implements HeuristicProcessor {
         }
 
         if (componentType.getInitMethod() == null) {
-            componentType.setInitMethod(getCallback(implClass, "setUp"));
+            Signature setUp = getCallback(implClass, "setUp");
+            if (setUp == null) {
+                setUp = getCallback(implClass, Before.class);
+            }
+            componentType.setInitMethod(setUp);
         }
         if (componentType.getDestroyMethod() == null) {
-            componentType.setDestroyMethod(getCallback(implClass, "tearDown"));
+            Signature tearDown = getCallback(implClass, "tearDown");
+            if (tearDown == null) {
+                tearDown = getCallback(implClass, After.class);
+            }
+            componentType.setDestroyMethod(tearDown);
         }
     }
 
@@ -123,6 +132,17 @@ public class JUnitHeuristic implements HeuristicProcessor {
                 return new Signature(callback);
             } catch (NoSuchMethodException e) {
                 implClass = implClass.getSuperclass();
+            }
+        }
+        return null;
+    }
+
+    private Signature getCallback(Class<?> implClass, Class<? extends Annotation> annotation) {
+        while (Object.class != implClass) {
+            for (Method method : implClass.getDeclaredMethods()) {
+                if (method.isAnnotationPresent(annotation)) {
+                    return new Signature(method);
+                }
             }
         }
         return null;
@@ -221,7 +241,6 @@ public class JUnitHeuristic implements HeuristicProcessor {
         }
     }
 
-
     private void processSite(InjectingComponentType componentType,
                              TypeMapping typeMapping,
                              String name,
@@ -232,18 +251,18 @@ public class JUnitHeuristic implements HeuristicProcessor {
                              IntrospectionContext context) {
         InjectableType type = helper.inferType(parameterType, typeMapping);
         switch (type) {
-        case PROPERTY:
-            addProperty(componentType, typeMapping, name, parameterType, site);
-            break;
-        case REFERENCE:
-            addReference(componentType, typeMapping, name, parameterType, site, annotations, context);
-            break;
-        case CALLBACK:
-            // ignore
-            break;
-        default:
-            context.addError(new UnknownInjectionType(site, type, componentType.getImplClass(), member, componentType));
-            break;
+            case PROPERTY:
+                addProperty(componentType, typeMapping, name, parameterType, site);
+                break;
+            case REFERENCE:
+                addReference(componentType, typeMapping, name, parameterType, site, annotations, context);
+                break;
+            case CALLBACK:
+                // ignore
+                break;
+            default:
+                context.addError(new UnknownInjectionType(site, type, componentType.getImplClass(), member, componentType));
+                break;
         }
     }
 
