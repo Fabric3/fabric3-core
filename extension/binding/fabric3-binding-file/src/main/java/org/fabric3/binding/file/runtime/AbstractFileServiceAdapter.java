@@ -37,41 +37,30 @@
 */
 package org.fabric3.binding.file.runtime;
 
-import java.io.BufferedInputStream;
-import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
-import org.fabric3.binding.file.api.InvalidDataException;
 import org.fabric3.binding.file.api.ServiceAdapter;
-import org.fabric3.host.util.IOHelper;
+import org.fabric3.host.util.FileHelper;
 
 /**
- * The default {@link ServiceAdapter} implementation that passes an InputStream to the target service.
+ *
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored"})
-public class DefaultServiceAdapter extends AbstractFileServiceAdapter {
+public abstract class AbstractFileServiceAdapter implements ServiceAdapter {
 
-    public Object[] beforeInvoke(File file) throws InvalidDataException {
-        FileInputStream fileStream = null;
-        try {
-            fileStream = new FileInputStream(file);
-            return new Object[]{new BufferedInputStream(fileStream)};
-        } catch (FileNotFoundException e) {
-            IOHelper.closeQuietly(fileStream);
-            throw new InvalidDataException(e);
-        }
+    public void error(File file, File errorDirectory, Exception e) throws IOException {
+        FileHelper.copyFile(file, new File(errorDirectory, file.getName()));
+        file.delete();
     }
 
-    public void afterInvoke(File file, Object[] payload) {
-        if (payload.length != 1) {
-            throw new AssertionError("Invalid payload length: " + payload.length);
-        }
-        if (!(payload[0] instanceof Closeable)) {
-            throw new AssertionError("Invalid payload type: " + payload[0]);
-        }
-        IOHelper.closeQuietly((Closeable) payload[0]);
+    public void delete(File file) {
+        file.delete();
     }
 
+    public void archive(File file, File archiveDirectory) throws IOException {
+        File destFile = new File(archiveDirectory, file.getName());
+        FileHelper.copyFile(file, destFile);
+        file.delete();
+    }
 }

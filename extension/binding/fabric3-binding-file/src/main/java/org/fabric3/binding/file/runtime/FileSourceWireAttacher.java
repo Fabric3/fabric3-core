@@ -70,6 +70,8 @@ import org.fabric3.spi.wire.Wire;
 @EagerInit
 public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSourceDefinition> {
     private static final ServiceAdapter ADAPTER = new DefaultServiceAdapter();
+    private static final ServiceAdapter JAF_ADAPTER = new DataHandlerServiceAdapter();
+
     private ReceiverManager receiverManager;
     private ClassLoaderRegistry registry;
     private ComponentManager manager;
@@ -107,8 +109,16 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
 
         long delay = source.getDelay();
 
-        ReceiverConfiguration configuration =
-                new ReceiverConfiguration(id, location, pattern, strategy, errorLocation, archiveLocation, interceptor, adapter, delay, monitor);
+        ReceiverConfiguration configuration = new ReceiverConfiguration(id,
+                                                                        location,
+                                                                        pattern,
+                                                                        strategy,
+                                                                        errorLocation,
+                                                                        archiveLocation,
+                                                                        interceptor,
+                                                                        adapter,
+                                                                        delay,
+                                                                        monitor);
         receiverManager.create(configuration);
     }
 
@@ -175,7 +185,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
         if (adapterClass == null) {
             URI adapterUri = source.getAdapterUri();
             if (adapterUri == null) {
-                return ADAPTER;
+                return source.isDataHandler() ? JAF_ADAPTER : ADAPTER;
             }
             Component component = manager.getComponent(adapterUri);
             if (component == null) {

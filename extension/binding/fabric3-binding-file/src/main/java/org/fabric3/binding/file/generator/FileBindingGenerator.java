@@ -30,14 +30,11 @@
  */
 package org.fabric3.binding.file.generator;
 
+import javax.activation.DataHandler;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.binding.file.model.FileBindingDefinition;
@@ -54,6 +51,9 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -79,6 +79,7 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
                                                       List<LogicalOperation> operations,
                                                       EffectivePolicy policy) throws GenerationException {
         validateServiceContract(contract);
+        boolean dataHandler = isDataHandler(contract);
         FileBindingDefinition definition = binding.getDefinition();
         String pattern = definition.getPattern();
         if (pattern == null) {
@@ -99,7 +100,7 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         if (delay == -1) {
             delay = defaultDelay;
         }
-        return new FileBindingSourceDefinition(uri, pattern, location, strategy, archiveLocation, errorLocation, adapterClass, adaptorUri, delay);
+        return new FileBindingSourceDefinition(uri, pattern, location, strategy, archiveLocation, errorLocation, adapterClass, adaptorUri, delay, dataHandler);
     }
 
     public FileBindingTargetDefinition generateTarget(LogicalBinding<FileBindingDefinition> binding,
@@ -166,6 +167,23 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
         }
     }
 
+    /**
+     * Determines if the contract takes the Java Activation Framework {@link DataHandler} type as a parameter.
+     *
+     * @param contract the contract
+     * @return true if the contract takes the Java Activation Framework {@link DataHandler} type as a parameter
+     */
+    private boolean isDataHandler(ServiceContract contract) {
+        for (Operation operation : contract.getOperations()) {
+            for (DataType<?> dataType : operation.getInputTypes()) {
+                if (DataHandler.class.isAssignableFrom(dataType.getPhysical())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private URI getAdaptorUri(FileBindingDefinition definition) throws GenerationException {
         String uri = definition.getAdapterUri();
         if (uri == null) {
@@ -177,6 +195,5 @@ public class FileBindingGenerator implements BindingGenerator<FileBindingDefinit
             throw new GenerationException(e);
         }
     }
-
 
 }

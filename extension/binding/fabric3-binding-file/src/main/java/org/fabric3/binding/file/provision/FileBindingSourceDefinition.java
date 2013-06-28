@@ -30,6 +30,7 @@
  */
 package org.fabric3.binding.file.provision;
 
+import javax.activation.DataHandler;
 import java.net.URI;
 
 import org.fabric3.binding.file.common.Strategy;
@@ -49,15 +50,18 @@ public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
     private URI adapterUri;
     private String pattern;
     private long delay;
+    private boolean dataHandler;
 
     public FileBindingSourceDefinition(URI uri,
-                                       String pattern, String location,
+                                       String pattern,
+                                       String location,
                                        Strategy strategy,
                                        String archiveLocation,
                                        String errorLocation,
                                        String adapterClass,
                                        URI adapterUri,
-                                       long delay) {
+                                       long delay,
+                                       boolean dataHandler) {
         this.pattern = pattern;
         this.location = location;
         this.strategy = strategy;
@@ -66,6 +70,7 @@ public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
         this.adapterClass = adapterClass;
         this.adapterUri = adapterUri;
         this.delay = delay;
+        this.dataHandler = dataHandler;
         setUri(uri);
     }
 
@@ -106,8 +111,7 @@ public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
     }
 
     /**
-     * The directory to place invalid files in. May be relative or absolute. If it is relative, it will be resolved against the runtime data
-     * directory
+     * The directory to place invalid files in. May be relative or absolute. If it is relative, it will be resolved against the runtime data directory
      *
      * @return the directory to place invalid files in
      */
@@ -140,5 +144,14 @@ public class FileBindingSourceDefinition extends PhysicalSourceDefinition {
      */
     public long getDelay() {
         return delay;
+    }
+
+    /**
+     * Returns true if the contract takes the Java Activation Framework {@link DataHandler} type as a parameter.
+     *
+     * @return true if the contract takes the Java Activation Framework {@link DataHandler} type as a parameter
+     */
+    public boolean isDataHandler() {
+        return dataHandler;
     }
 }

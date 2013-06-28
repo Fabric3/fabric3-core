@@ -37,29 +37,30 @@
 */
 package org.fabric3.binding.file.runtime;
 
-import java.io.BufferedInputStream;
-import java.io.Closeable;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.fabric3.binding.file.api.InvalidDataException;
 import org.fabric3.binding.file.api.ServiceAdapter;
 import org.fabric3.host.util.IOHelper;
 
 /**
- * The default {@link ServiceAdapter} implementation that passes an InputStream to the target service.
+ * A {@link ServiceAdapter} implementation that passes a DataHandler to the target service.
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored"})
-public class DefaultServiceAdapter extends AbstractFileServiceAdapter {
+public class DataHandlerServiceAdapter extends AbstractFileServiceAdapter {
 
     public Object[] beforeInvoke(File file) throws InvalidDataException {
-        FileInputStream fileStream = null;
         try {
-            fileStream = new FileInputStream(file);
-            return new Object[]{new BufferedInputStream(fileStream)};
-        } catch (FileNotFoundException e) {
-            IOHelper.closeQuietly(fileStream);
+            DataHandler dataHandler = new DataHandler(new CloseableDataSource(file));
+            return new Object[]{dataHandler};
+        } catch (IOException e) {
             throw new InvalidDataException(e);
         }
     }
@@ -68,10 +69,39 @@ public class DefaultServiceAdapter extends AbstractFileServiceAdapter {
         if (payload.length != 1) {
             throw new AssertionError("Invalid payload length: " + payload.length);
         }
-        if (!(payload[0] instanceof Closeable)) {
+        if (!(payload[0] instanceof DataHandler)) {
             throw new AssertionError("Invalid payload type: " + payload[0]);
         }
-        IOHelper.closeQuietly((Closeable) payload[0]);
+        DataHandler dataHandler = (DataHandler) payload[0];
+        try {
+            IOHelper.closeQuietly(dataHandler.getInputStream());
+        } catch (IOException e) {
+            // ignore as this will not happen
+        }
+    }
+
+    private class CloseableDataSource implements DataSource {
+        private InputStream inputStream;
+
+        private CloseableDataSource(File file) throws FileNotFoundException {
+            this.inputStream = new FileInputStream(file);
+        }
+
+        public InputStream getInputStream() {
+            return inputStream;
+        }
+
+        public OutputStream getOutputStream() throws IOException {
+            throw new UnsupportedOperationException();
+        }
+
+        public String getContentType() {
+            throw new UnsupportedOperationException();
+        }
+
+        public String getName() {
+            return getClass().getName();
+        }
     }
 
 }
