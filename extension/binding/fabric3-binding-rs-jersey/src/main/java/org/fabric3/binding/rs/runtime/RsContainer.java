@@ -38,155 +38,93 @@
 package org.fabric3.binding.rs.runtime;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.model.Resource;
+import org.glassfish.jersey.servlet.ServletContainer;
 
 /**
- * Manages resources defined in a deployable contribution.
+ * Dispatches to resources under a common binding URI path defined in a deployable contribution. Specifically, all binding.rs resources configured with the same
+ * URI.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public final class RsContainer extends HttpServlet {
     private static final long serialVersionUID = 1954697059021782141L;
 
-    private ClassLoader classLoader;
-    private Fabric3ProviderFactory providerFactory;
-
-    private RsServlet servlet;
+    private ServletContainer servlet;
     private ServletConfig servletConfig;
     private boolean reload = false;
-    private ReentrantReadWriteLock reloadRWLock = new ReentrantReadWriteLock();
-    private Lock reloadLock = reloadRWLock.readLock();
-    private Lock serviceLock = reloadRWLock.writeLock();
+    private List<Resource> resources;
 
-    public RsContainer(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-        this.providerFactory = new Fabric3ProviderFactory();
+    public RsContainer() {
+        this.resources = new ArrayList<Resource>();
         reload = true;
     }
 
-    public void addResource(Class<?> resource, Object instance) {
-        providerFactory.addResource(resource, instance);
+    public void addResource(Resource resource) {
+        resources.add(resource);
         reload = true;
     }
 
-    @Override
     public void init(ServletConfig config) {
-        servletConfig = new ServletConfigWrapper(config);
+        servletConfig = config;
     }
 
-    public void reload() throws ServletException {
-        try {
-            reloadLock.lock();
-            // Set the class loader to the runtime one so Jersey loads the
-            // ResourceConfig properly
-            ClassLoader old = Thread.currentThread().getContextClassLoader();
-            try {
-                Thread.currentThread().setContextClassLoader(classLoader);
-                servlet = new RsServlet(this.providerFactory);
-                servlet.init(servletConfig);
-            } catch (ServletException se) {
-                se.printStackTrace();
-                throw se;
-            } catch (Throwable t) {
-                ServletException se = new ServletException(t);
-                se.printStackTrace();
-                throw se;
-            } finally {
-                Thread.currentThread().setContextClassLoader(old);
-            }
-            reload = false;
-        } finally {
-            reloadLock.unlock();
-        }
-    }
-
-    @Override
     protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        reload();
+
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
         try {
-            serviceLock.lock();
-            if (reload) {
-                reload();
-            }
-
-            ClassLoader old = Thread.currentThread().getContextClassLoader();
-            WorkContext workContext = WorkContextCache.getAndResetThreadWorkContext();
-            try {
-                Thread.currentThread().setContextClassLoader(classLoader);
-                workContext.setHeader("fabric3.httpRequest", req);
-                workContext.setHeader("fabric3.httpResponse", res);
-                servlet.service(req, res);
-            } catch (ServletException se) {
-                se.printStackTrace();
-                throw se;
-            } catch (IOException ie) {
-                ie.printStackTrace();
-                throw ie;
-            } catch (Throwable t) {
-                t.printStackTrace();
-                throw new ServletException(t);
-            } finally {
-                Thread.currentThread().setContextClassLoader(old);
-                workContext.reset();
-            }
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            workContext.setHeader("fabric3.httpRequest", req);
+            workContext.setHeader("fabric3.httpResponse", res);
+            servlet.service(req, res);
+        } catch (ServletException se) {
+            se.printStackTrace();
+            throw se;
+        } catch (IOException ie) {
+            ie.printStackTrace();
+            throw ie;
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw new ServletException(t);
         } finally {
-            serviceLock.unlock();
+            Thread.currentThread().setContextClassLoader(old);
+            workContext.reset();
         }
     }
 
-    /**
-     * Wrapper class to add the Jersey resource class as a web app init parameter
-     */
-    public class ServletConfigWrapper implements ServletConfig {
-        private ServletConfig servletConfig;
-
-        public ServletConfigWrapper(ServletConfig servletConfig) {
-            this.servletConfig = servletConfig;
+    private void reload() throws ServletException {
+        if (!reload) {
+            return;
         }
-
-        public String getInitParameter(String name) {
-            if ("javax.ws.rs.Application".equals(name)) {
-                return Fabric3ResourceConfig.class.getName();
+        try {
+            // register contribution resources
+            ResourceConfig resourceConfig = new ResourceConfig();
+            for (Resource resource : resources) {
+                resourceConfig.registerResources(resource);
             }
-            return servletConfig.getInitParameter(name);
+            servlet = new ServletContainer(resourceConfig);
+            servlet.init(servletConfig);
+        } catch (ServletException se) {
+            se.printStackTrace();
+            throw se;
+        } catch (Throwable t) {
+            ServletException se = new ServletException(t);
+            se.printStackTrace();
+            throw se;
         }
-
-        public Enumeration<String> getInitParameterNames() {
-            final Enumeration<String> e = servletConfig.getInitParameterNames();
-            return new Enumeration<String>() {
-                boolean finished = false;
-
-                public boolean hasMoreElements() {
-                    return e.hasMoreElements() || !finished;
-                }
-
-                public String nextElement() {
-                    if (e.hasMoreElements()) {
-                        return e.nextElement();
-                    }
-                    if (!finished) {
-                        finished = true;
-                        return "javax.ws.rs.Application";
-                    }
-                    return null;
-                }
-            };
-        }
-
-        public ServletContext getServletContext() {
-            return servletConfig.getServletContext();
-        }
-
-        public String getServletName() {
-            return servletConfig.getServletName();
-        }
+        reload = false;
     }
+
 }

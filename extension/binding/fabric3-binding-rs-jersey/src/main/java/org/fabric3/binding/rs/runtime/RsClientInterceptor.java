@@ -63,12 +63,16 @@ public class RsClientInterceptor implements Interceptor {
 
     public Message invoke(Message message) {
         Object[] args = (Object[]) message.getBody();
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             Object body = response.build(args);
             message.reset();
             message.setBody(body);
         } catch (RuntimeException e) {
             throw new ServiceRuntimeException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
         return message;
     }
@@ -82,26 +86,31 @@ public class RsClientInterceptor implements Interceptor {
     }
 
     private RsClientResponse createResponseConfiguration(URI uri, Class<?> interfaze, String operation, Class<?>... args) throws Exception {
-        Method m = interfaze.getMethod(operation, args);
-        RsClientResponse cfg = new RsClientResponse(m.getReturnType(), uri);
-        cfg = cfg.
-                // Class level
-                withPath(interfaze.getAnnotation(Path.class)).
-                withProduces(interfaze.getAnnotation(Produces.class)).
-                withConsumes(interfaze.getAnnotation(Consumes.class)).
-                // Method level overriding
-                withAction(m.getAnnotation(PUT.class)).
-                withAction(m.getAnnotation(POST.class)).
-                withAction(m.getAnnotation(GET.class)).
-                withPath(m.getAnnotation(Path.class)).
-                withProduces(m.getAnnotation(Produces.class)).
-                withConsumes(m.getAnnotation(Consumes.class))
-        ;
-        Annotation[][] parameterAnnotations = m.getParameterAnnotations();
-        for (int i = 0; i < parameterAnnotations.length; i++) {
-            cfg.withParam(i, parameterAnnotations[i]);
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            Method m = interfaze.getMethod(operation, args);
+            RsClientResponse cfg = new RsClientResponse(m.getReturnType(), uri);
+            cfg = cfg.
+                    // Class level
+                            withPath(interfaze.getAnnotation(Path.class)).
+                    withProduces(interfaze.getAnnotation(Produces.class)).
+                    withConsumes(interfaze.getAnnotation(Consumes.class)).
+                    // Method level overriding
+                            withAction(m.getAnnotation(PUT.class)).
+                    withAction(m.getAnnotation(POST.class)).
+                    withAction(m.getAnnotation(GET.class)).
+                    withPath(m.getAnnotation(Path.class)).
+                    withProduces(m.getAnnotation(Produces.class)).
+                    withConsumes(m.getAnnotation(Consumes.class));
+            Annotation[][] parameterAnnotations = m.getParameterAnnotations();
+            for (int i = 0; i < parameterAnnotations.length; i++) {
+                cfg.withParam(i, parameterAnnotations[i]);
+            }
+            return cfg;
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
-        return cfg;
     }
 
 }

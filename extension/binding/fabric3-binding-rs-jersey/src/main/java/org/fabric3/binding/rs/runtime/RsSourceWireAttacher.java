@@ -37,18 +37,11 @@
 */
 package org.fabric3.binding.rs.runtime;
 
-import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.sun.jersey.server.impl.application.WebApplicationImpl;
-import com.sun.jersey.spi.container.JavaMethodInvokerFactory;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.rs.provision.AuthenticationType;
@@ -64,6 +57,11 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.security.BasicAuthenticator;
 import org.fabric3.spi.wire.InvocationChain;
 import org.fabric3.spi.wire.Wire;
+import org.glassfish.jersey.server.model.Resource;
+import org.glassfish.jersey.server.model.ResourceMethod;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -73,6 +71,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
     private ServletHost servletHost;
     private ClassLoaderRegistry classLoaderRegistry;
     private RsContainerManager containerManager;
+    private BasicAuthenticator authenticator;
     private RsWireAttacherMonitor monitor;
     private Level logLevel = Level.WARNING;
 
@@ -80,13 +79,12 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
                                 @Reference ClassLoaderRegistry registry,
                                 @Reference RsContainerManager containerManager,
                                 @Reference BasicAuthenticator authenticator,
-                                @Monitor RsWireAttacherMonitor monitor) {
+                                @Monitor RsWireAttacherMonitor monitor) throws NoSuchFieldException, IllegalAccessException {
         this.servletHost = servletHost;
         this.classLoaderRegistry = registry;
         this.containerManager = containerManager;
+        this.authenticator = authenticator;
         this.monitor = monitor;
-        // TODO make realm configurable
-        overrideDefaultInvoker(authenticator);
         setDebugLevel();
     }
 
@@ -99,7 +97,8 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         URI sourceUri = source.getUri();
         RsContainer container = containerManager.get(sourceUri);
         if (container == null) {
-            container = new RsContainer(getClass().getClassLoader());
+            // each resource defined with the same binding URI will be deployed to the same container
+            container = new RsContainer();
             containerManager.register(sourceUri, container);
             String mapping = creatingMappingUri(sourceUri);
             if (servletHost.isMappingRegistered(mapping)) {
@@ -126,8 +125,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         monitor.removedEndpoint(sourceUri);
     }
 
-    public void attachObjectFactory(RsSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target)
-            throws WiringException {
+    public void attachObjectFactory(RsSourceDefinition source, ObjectFactory<?> objectFactory, PhysicalTargetDefinition target) throws WiringException {
         throw new AssertionError();
     }
 
@@ -152,8 +150,41 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         }
 
         Class<?> interfaze = classLoader.loadClass(sourceDefinition.getRsClass());
-        ResourceInstance instance = new ResourceInstance(invocationChains, authenticate(sourceDefinition));
-        container.addResource(interfaze, instance);
+        boolean authenticate = authenticate(sourceDefinition);
+        F3ResourceHandler handler = new F3ResourceHandler(interfaze, invocationChains, authenticate, authenticator);
+
+        // Set the class loader to the runtime one so Jersey loads the Resource config properly
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            Resource resource = createResource(handler);
+            container.addResource(resource);
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
+        }
+    }
+
+    private Resource createResource(F3ResourceHandler handler) {
+        Resource template = Resource.from(handler.getInterface());
+        Resource.Builder resourceBuilder = Resource.builder(template.getPath());
+        for (ResourceMethod resourceMethod : template.getAllMethods()) {
+            createMethod(resourceBuilder, resourceMethod, handler);
+        }
+        for (Resource childTemplate : template.getChildResources()) {
+            Resource.Builder childResourceBuilder = Resource.builder(childTemplate.getPath());
+            for (ResourceMethod resourceMethod : childTemplate.getAllMethods()) {
+                createMethod(childResourceBuilder, resourceMethod, handler);
+            }
+            resourceBuilder.addChildResource(childResourceBuilder.build());
+        }
+        return resourceBuilder.build();
+    }
+
+    private void createMethod(Resource.Builder resourceBuilder, ResourceMethod template, F3ResourceHandler handler) {
+        ResourceMethod.Builder methodBuilder = resourceBuilder.addMethod(template.getHttpMethod());
+        methodBuilder.consumes(template.getConsumedTypes());
+        methodBuilder.produces(template.getProducedTypes());
+        methodBuilder.handledBy(handler, template.getInvocable().getHandlingMethod());
     }
 
     private boolean authenticate(RsSourceDefinition sourceDefinition) {
@@ -167,26 +198,8 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         return false;
     }
 
-    /**
-     * Overrides the default Jersey invoker which reflectively calls methods on a Java instance with one that passes an invocation down a component's
-     * invocation chain.
-     *
-     * @param authenticator the security authenticator
-     */
-    private void overrideDefaultInvoker(BasicAuthenticator authenticator) {
-        try {
-            Field field = JavaMethodInvokerFactory.class.getDeclaredField("defaultInstance");
-            field.setAccessible(true);
-            field.set(null, new F3MethodInvoker(authenticator));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void setDebugLevel() {
-        Logger logger = Logger.getLogger("com.sun.jersey");
+        Logger logger = Logger.getLogger("org.glassfish.jersey.");
         logger.setLevel(logLevel);
     }
 

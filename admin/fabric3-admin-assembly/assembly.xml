@@ -47,10 +47,11 @@
         <dependencySet>
             <includes>
                 <include>org.codehaus.fabric3:fabric3-admin-interpreter</include>
-                <include>org.codehaus.jackson:jackson-core-asl</include>
-                <include>org.codehaus.jackson:jackson-mapper-asl</include>
-                <include>org.codehaus.jackson:jackson-jaxrs</include>
-                <include>org.codehaus.jackson:jackson-xc</include>
+                <include>com.fasterxml.jackson.core:jackson-core</include>
+                <include>com.fasterxml.jackson.core:jackson-annotations</include>
+                <include>com.fasterxml.jackson.core:jackson-databind</include>
+                <include>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider</include>
+                <include>com.fasterxml.jackson.jaxrs:jackson-jaxrs-base</include>
                 <include>org.sonatype.jline:jline</include>
             </includes>
             <outputDirectory>lib</outputDirectory>
@@ -59,4 +60,6 @@
     </dependencySets>
 
 </assembly>
+
+        
 

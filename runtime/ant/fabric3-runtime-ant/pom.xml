@@ -159,7 +159,7 @@ licensed under the Apache 2.0 license.
 
         <dependency>
             <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
+            <artifactId>javax.ws.rs-api</artifactId>
             <version>${jax.rs.version}</version>
             <scope>runtime</scope>
         </dependency>

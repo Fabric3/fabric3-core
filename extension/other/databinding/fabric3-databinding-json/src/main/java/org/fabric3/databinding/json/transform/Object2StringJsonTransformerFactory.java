@@ -39,10 +39,9 @@ package org.fabric3.databinding.json.transform;
 
 import java.util.List;
 
-import org.codehaus.jackson.jaxrs.Annotations;
-import org.codehaus.jackson.jaxrs.MapperConfigurator;
-import org.codehaus.jackson.map.ObjectMapper;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.cfg.Annotations;
+import com.fasterxml.jackson.jaxrs.json.JsonMapperConfigurator;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.json.JsonType;
@@ -53,10 +52,10 @@ import org.fabric3.spi.transform.TransformerFactory;
  */
 public class Object2StringJsonTransformerFactory implements TransformerFactory {
     private final static Annotations[] DEFAULT_ANNOTATIONS = {Annotations.JACKSON, Annotations.JAXB};
-    private MapperConfigurator configurator;
+    private JsonMapperConfigurator configurator;
 
     public Object2StringJsonTransformerFactory() {
-        configurator = new MapperConfigurator(null, DEFAULT_ANNOTATIONS);
+        configurator = new JsonMapperConfigurator(null, DEFAULT_ANNOTATIONS);
     }
 
     public int getOrder() {

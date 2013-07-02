@@ -16,7 +16,7 @@ Public License. See the accompanying license file for details.
     <f3:requires.capability name="json" loaded="true"/>
     <f3:provides.capability name="management"/>
     <import.java package="org.fabric3.spi.*" version="2.0.0"/>
-    <import.java package="org.codehaus.jackson.*" version="1.6.4"/>
+    <import.java package="com.fasterxml.jackson.*" version="2.2.0"/>
 
     <export.java package="org.fabric3.management.rest.spi" version="2.0.0"/>
     <export.java package="org.fabric3.management.rest.model" version="2.0.0"/>

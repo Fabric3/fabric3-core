@@ -37,6 +37,10 @@
 */
 package org.fabric3.admin.interpreter.communication;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -53,15 +57,11 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.LinkedList;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
 
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.jaxrs.Annotations;
-import org.codehaus.jackson.jaxrs.MapperConfigurator;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.cfg.Annotations;
+import com.fasterxml.jackson.jaxrs.json.JsonMapperConfigurator;
 
 /**
  *
@@ -69,7 +69,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class DomainConnectionImpl implements DomainConnection {
     private static final String ADDRESS = "http://localhost:8180/management";
     private static final int TIMEOUT = 20000;
-    private static final Annotations[] DEFAULT_ANNOTATIONS = {Annotations.JACKSON, Annotations.JAXB};
+    private static final Annotations[] DEFAULT_ANNOTATIONS = {Annotations.JACKSON};
     private static final String KEY_STORE = "javax.net.ssl.keyStore";
     private static final String TRUST_STORE = "javax.net.ssl.trustStore";
 
@@ -82,7 +82,7 @@ public class DomainConnectionImpl implements DomainConnection {
     private SSLSocketFactory sslFactory;
 
     public DomainConnectionImpl() {
-        MapperConfigurator configurator = new MapperConfigurator(null, DEFAULT_ANNOTATIONS);
+        JsonMapperConfigurator configurator = new JsonMapperConfigurator(null, DEFAULT_ANNOTATIONS);
         mapper = configurator.getDefaultMapper();
         aliases = new LinkedList<String>();
         addresses = new LinkedList<String>();
@@ -277,8 +277,8 @@ public class DomainConnectionImpl implements DomainConnection {
     }
 
     /**
-     * Gets the installation directory based on the location of a class file. The installation directory is calculated by determining the path of the
-     * jar containing the given class file and returning its parent directory.
+     * Gets the installation directory based on the location of a class file. The installation directory is calculated by determining the path of the jar
+     * containing the given class file and returning its parent directory.
      *
      * @return directory where Fabric3 runtime is installed.
      * @throws IllegalStateException if the location could not be determined from the location of the class file
@@ -320,6 +320,5 @@ public class DomainConnectionImpl implements DomainConnection {
             throw new AssertionError(e);
         }
     }
-
 
 }

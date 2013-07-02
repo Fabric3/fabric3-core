@@ -51,7 +51,7 @@
                 <include>org.mortbay.jetty:jsp-api-2.1</include>
                 <include>org.codehaus.fabric3.api:javax-annotation</include>
                 <include>javax.xml.bind:jaxb-api-osgi</include>
-                <include>javax.ws.rs:jsr311-api</include>
+                <include>javax.ws.rs:javax.ws.rs-api</include>
                 <include>javax.xml.stream:stax-api</include>
                 <include>org.codehaus.woodstox:stax2-api</include>
                 <include>junit:junit</include>

@@ -8,7 +8,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import com.sun.jersey.spi.container.JavaMethodInvoker;
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.invocation.Message;
 import org.fabric3.spi.invocation.MessageCache;
@@ -25,39 +24,47 @@ import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 /**
- * Dispatches an invocation from Jersey to a component's interceptor chains. Replaces the default Jersey invoker which reflectively calls a method on a Java
- * instance. Optionally performs authentication.
+ * Dispatches an invocation from Jersey to a component's interceptor chains.
  * <p/>
  * This instance assumes the resource instance is a Map of operation names to interceptor chains for the component.
  */
-public class F3MethodInvoker implements JavaMethodInvoker {
+public class F3ResourceHandler {
     private static final String FABRIC3_SUBJECT = "fabric3.subject";
 
+    private Class<?> interfaze;
+    private Map<String, InvocationChain> chains;
+    private boolean authenticate;
     private BasicAuthenticator authenticator;
 
     /**
      * Constructor.
      *
+     * @param interfaze     the resource interface
+     * @param chains        the invocation chains
+     * @param authenticate  true if clients must authenticate
      * @param authenticator the authenticator to perform authentication with.
      */
-    public F3MethodInvoker(BasicAuthenticator authenticator) {
+    public F3ResourceHandler(Class<?> interfaze, Map<String, InvocationChain> chains, boolean authenticate, BasicAuthenticator authenticator) {
+        this.interfaze = interfaze;
+        this.chains = chains;
+        this.authenticate = authenticate;
         this.authenticator = authenticator;
     }
 
-    @SuppressWarnings({"unchecked"})
-    public Object invoke(Method method, Object instance, Object... args) throws InvocationTargetException, IllegalAccessException {
-        if (!(instance instanceof ResourceInstance)) {
-            throw new IllegalArgumentException("Resource instance must be a " + ResourceInstance.class);
-        }
-        ResourceInstance resourceInstance = (ResourceInstance) instance;
-        Map<String, InvocationChain> chains = resourceInstance.getChains();
-        InvocationChain invocationChain = chains.get(method.getName());
+    public Class<?> getInterface() {
+        return interfaze;
+    }
 
+    public Object invoke(Method method, Object[] args) throws Throwable {
+        InvocationChain invocationChain = chains.get(method.getName());
+        if (invocationChain == null) {
+            throw new ServiceRuntimeException("Unknown resource method: " + method.toString());
+        }
         WorkContext context = WorkContextCache.getThreadWorkContext();   // work context set previously in RsContainer
         Message message = MessageCache.getAndResetMessage();
 
         try {
-            if (resourceInstance.authenticate()) {
+            if (authenticate) {
                 authenticate(context);
             }
 

@@ -154,7 +154,7 @@ Public License. See the accompanying license file for details.
 
         <dependency>
             <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
+            <artifactId>javax.ws.rs-api</artifactId>
             <version>${jax.rs.version}</version>
             <scope>runtime</scope>
         </dependency>

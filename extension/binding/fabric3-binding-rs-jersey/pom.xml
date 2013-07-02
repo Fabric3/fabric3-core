@@ -27,9 +27,9 @@
     <packaging>sca-contribution-jar</packaging>
     <name>Fabric3 JAX-RS Jersey Binding Extension</name>
     <description>Support for exposing components as JAX-RS (REST) resources using the Jersey container</description>
-    
+
     <properties>
-      <jersey.version>1.11</jersey.version>
+        <jersey.version>2.0</jersey.version>
     </properties>
 
     <dependencies>
@@ -55,31 +55,35 @@
         </dependency>
 
         <dependency>
-            <groupId>com.sun.jersey</groupId>
+            <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-server</artifactId>
             <version>${jersey.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.ws.rs</groupId>
-                    <artifactId>jsr311-api</artifactId>
+                    <artifactId>javax.ws.rs-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-client</artifactId>
-			<version>${jersey.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-servlet</artifactId>
-			<version>${jersey.version}</version>
-		</dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
+            <artifactId>javax.ws.rs-api</artifactId>
             <version>${jax.rs.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${servlet.groupId}</groupId>

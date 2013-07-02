@@ -39,7 +39,7 @@ package org.fabric3.management.rest.model;
 
 import java.net.URL;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * A link to a resource.

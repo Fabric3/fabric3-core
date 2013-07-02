@@ -40,10 +40,9 @@ package org.fabric3.databinding.json.transform;
 import java.io.InputStream;
 import java.util.List;
 
-import org.codehaus.jackson.jaxrs.Annotations;
-import org.codehaus.jackson.jaxrs.MapperConfigurator;
-import org.codehaus.jackson.map.ObjectMapper;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.cfg.Annotations;
+import com.fasterxml.jackson.jaxrs.json.JsonMapperConfigurator;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.json.JsonType;
@@ -54,10 +53,10 @@ import org.fabric3.spi.transform.TransformerFactory;
  */
 public class Stream2ObjectJsonTransformerFactory implements TransformerFactory {
     private final static Annotations[] DEFAULT_ANNOTATIONS = {Annotations.JACKSON, Annotations.JAXB};
-    private MapperConfigurator configurator;
+    private JsonMapperConfigurator configurator;
 
     public Stream2ObjectJsonTransformerFactory() {
-        configurator = new MapperConfigurator(null, DEFAULT_ANNOTATIONS);
+        configurator = new JsonMapperConfigurator(null, DEFAULT_ANNOTATIONS);
     }
 
     public int getOrder() {
@@ -74,6 +73,5 @@ public class Stream2ObjectJsonTransformerFactory implements TransformerFactory {
         Class clazz = type.getPhysical();
         return new Stream2ObjectJsonTransformer(clazz, mapper);
     }
-
 
 }

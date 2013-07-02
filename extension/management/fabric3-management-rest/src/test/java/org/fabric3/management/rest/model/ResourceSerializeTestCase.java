@@ -39,10 +39,10 @@ package org.fabric3.management.rest.model;
 
 import java.net.URL;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.cfg.Annotations;
+import com.fasterxml.jackson.jaxrs.json.JsonMapperConfigurator;
 import junit.framework.TestCase;
-import org.codehaus.jackson.jaxrs.Annotations;
-import org.codehaus.jackson.jaxrs.MapperConfigurator;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  *
@@ -63,14 +63,14 @@ public final class ResourceSerializeTestCase extends TestCase {
         assertEquals("self", deserializedLink.getName());
         assertEquals("self", deserializedLink.getRel());
         assertEquals(href, deserializedLink.getHref());
-        assertEquals(1,deserialized.getProperties().size());
-        assertEquals("bar",deserialized.getProperties().get("foo"));
+        assertEquals(1, deserialized.getProperties().size());
+        assertEquals("bar", deserialized.getProperties().get("foo"));
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        MapperConfigurator configurator = new MapperConfigurator(null, DEFAULT_ANNOTATIONS);
+        JsonMapperConfigurator configurator = new JsonMapperConfigurator(null, DEFAULT_ANNOTATIONS);
         mapper = configurator.getDefaultMapper();
     }
 }
