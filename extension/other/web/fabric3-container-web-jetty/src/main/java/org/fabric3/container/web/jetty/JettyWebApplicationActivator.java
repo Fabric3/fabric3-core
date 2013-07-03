@@ -215,7 +215,11 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
     }
 
     private void export(WebAppContext context) throws ManagementException {
-        String webAppName = encodeName(context.getDisplayName());
+        String displayName = context.getDisplayName();
+        if (displayName == null) {
+            displayName = context.toString();
+        }
+        String webAppName = encodeName(displayName);
         managementService.export(webAppName, "webapps/" + webAppName, "web application", context);
         ServletHandler handler = context.getServletHandler();
         for (ServletHolder servletHolder : handler.getServlets()) {
@@ -225,7 +229,11 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
     }
 
     private void remove(WebAppContext context) throws ManagementException {
-        String webAppName = encodeName(context.getDisplayName());
+        String displayName = context.getDisplayName();
+        if (displayName == null) {
+            displayName = context.toString();
+        }
+        String webAppName = encodeName(displayName);
         managementService.remove(webAppName, "webapps/" + webAppName);
         ServletHandler handler = context.getServletHandler();
         for (ServletHolder servletHolder : handler.getServlets()) {
