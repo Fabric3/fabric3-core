@@ -9,7 +9,7 @@ Public License. See the accompanying license file for details.
 
 -->
 <!--
-    $Rev$ $Date$
+
 -->
 <schema targetNamespace="http://fabric3.org/xmlns/sca/2.0-alpha"
 		xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"

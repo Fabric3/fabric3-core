@@ -16,7 +16,7 @@
 
 -->
 <!--
-    $Rev$ $Date$
+
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:f3-core="urn:fabric3.org:core"

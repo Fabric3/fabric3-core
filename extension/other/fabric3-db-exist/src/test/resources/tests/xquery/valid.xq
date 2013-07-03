@@ -14,7 +14,7 @@
  distribution for the permitted and restricted uses of such software.
 :)
 (:
-    $Rev$ $Date$
+
 :)
 
 declare namespace echoQuery="http://fabric3.codehaus.org/xquery/test/query";

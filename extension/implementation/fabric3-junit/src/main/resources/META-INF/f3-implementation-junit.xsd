@@ -9,7 +9,7 @@ Public License. See the accompanying license file for details.
 
 -->
 <!--
-    $Rev$ $Date$
+
 -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
         targetNamespace="http://fabric3.org/xmlns/sca/2.0-alpha"

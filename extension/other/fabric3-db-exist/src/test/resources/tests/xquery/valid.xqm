@@ -14,7 +14,7 @@
  distribution for the permitted and restricted uses of such software.
 :)
 (:
-    $Rev$ $Date$
+
 :)
 
 module namespace echoModule="http://fabric3.codehaus.org/xquery/test/module";
