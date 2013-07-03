@@ -59,8 +59,8 @@ import sun.security.util.SecurityConstants;
 import org.fabric3.host.classloader.DelegatingResourceClassLoader;
 
 /**
- * A classloader implementation that supports a multi-parent hierarchy and extension resolution mechanism. Class resolution is performed in the
- * following order:
+ * A classloader implementation that supports a multi-parent hierarchy and extension resolution mechanism. Class resolution is performed in the following
+ * order:
  * <pre>
  * <ul>
  *   <li>Parents are searched. Parents will delegate to their classloader hierarchy.
@@ -68,10 +68,9 @@ import org.fabric3.host.classloader.DelegatingResourceClassLoader;
  *   <li>If a resource is not found, extension classloaders are searched. Extension classloaders will not delegate to their classloader hierarchy.
  * </ul>
  * </pre>
- * The extension mechanism allows classes to be dynamically loaded via Class.forName() and ClassLoader.loadClass(). This is used to accommodate
- * contributions and libraries that rely on Java reflection to add additional capabilities provided by another contribution. Since resolution is
- * performed dynamically, cycles between classloaders are supported where one classloader is a parent of the other and the former is an extension of
- * the latter.
+ * The extension mechanism allows classes to be dynamically loaded via Class.forName() and ClassLoader.loadClass(). This is used to accommodate contributions
+ * and libraries that rely on Java reflection to add additional capabilities provided by another contribution. Since resolution is performed dynamically, cycles
+ * between classloaders are supported where one classloader is a parent of the other and the former is an extension of the latter.
  * <p/>
  * Each classloader has a name that can be used to reference it in the runtime.
  */
@@ -107,7 +106,6 @@ public class MultiParentClassLoader extends DelegatingResourceClassLoader {
         }
         this.name = name;
     }
-
 
     /**
      * Add a resource URL to this classloader's classpath. The "createClassLoader" RuntimePermission is required.
@@ -195,6 +193,11 @@ public class MultiParentClassLoader extends DelegatingResourceClassLoader {
         return super.findResource(name);
     }
 
+    public Enumeration<URL> findExtensionResources(String name) throws IOException {
+        // look in our classpath
+        return super.findResources(name);
+    }
+
     protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         // look for already loaded classes
         Class<?> clazz = findLoadedClass(name);
@@ -227,7 +230,11 @@ public class MultiParentClassLoader extends DelegatingResourceClassLoader {
                             // check first to see if class is already loaded
                             clazz = extension.findLoadedClass(name);
                             if (clazz == null) {
-                                clazz = extension.findClass(name);
+                                try {
+                                    clazz = extension.findClass(name);
+                                } catch (ClassNotFoundException ex) {
+                                    // ignore
+                                }
                             }
                             if (clazz != null) {
                                 break;
@@ -288,6 +295,12 @@ public class MultiParentClassLoader extends DelegatingResourceClassLoader {
         Enumeration<URL> myResources = super.findResources(name);
         while (myResources.hasMoreElements()) {
             resources.add(myResources.nextElement());
+        }
+        for (MultiParentClassLoader extension : extensions) {
+            Enumeration<URL> extensionResources = extension.findExtensionResources(name);
+            while (extensionResources.hasMoreElements()) {
+                resources.add(extensionResources.nextElement());
+            }
         }
         return Collections.enumeration(resources);
     }
