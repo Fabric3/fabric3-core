@@ -63,6 +63,7 @@ public final class BootExports {
 
         // Third-party packages
         BOOT_EXPORTS.put("com.ctc.wstx.*", "4.1.3");
+        BOOT_EXPORTS.put("org.codehaus.stax2", "3.1.1");
     }
 
     private BootExports() {

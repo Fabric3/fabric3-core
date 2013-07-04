@@ -35,6 +35,7 @@
                 <include>javax.ws.rs:javax.ws.rs-api</include>
                 <include>javax.xml.stream:stax-api</include>
                 <include>org.codehaus.woodstox:stax2-api</include>
+                <include>org.codehaus.woodstox:woodstox-core-asl</include>
             </includes>
             <outputDirectory>fabric3/host</outputDirectory>
         </dependencySet>
@@ -54,10 +55,7 @@
                 <include>org.codehaus.fabric3:fabric3-contribution</include>
                 <include>org.codehaus.fabric3:fabric3-fabric</include>
                 <include>org.codehaus.fabric3:fabric3-system</include>
-                <!--<include>org.codehaus.fabric3:fabric3-thread-pool</include>-->
                 <include>jaxen:jaxen</include>
-                <include>org.codehaus.woodstox:woodstox-core-asl</include>
-
             </includes>
             <outputDirectory>fabric3/boot</outputDirectory>
         </dependencySet>
