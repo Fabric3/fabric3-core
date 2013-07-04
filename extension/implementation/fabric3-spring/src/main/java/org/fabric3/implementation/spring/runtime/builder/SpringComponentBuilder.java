@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.spring.runtime.builder;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -44,6 +45,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,10 +56,14 @@ import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
+import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spring.spi.ApplicationContextListener;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
 
 /**
  * Builds a {@link SpringComponent} from a physical definition. Each SpringComponent contains an application context hierarchy.
@@ -69,6 +75,9 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class SpringComponentBuilder implements ComponentBuilder<SpringComponentDefinition, SpringComponent> {
+    private static final String XSD_NS = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+    private static final QName XSD_BOOLEAN = new QName(XSD_NS, "boolean");
+    private static final QName XSD_INT = new QName(XSD_NS, "integer");
 
     private ClassLoaderRegistry classLoaderRegistry;
     private boolean validating = true;
@@ -115,9 +124,19 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         }
         URI componentUri = definition.getComponentUri();
         QName deployable = definition.getDeployable();
-        SCAApplicationContext parent = createParentContext(classLoader);
+
+        Map<String, Pair> properties = createProperties(definition);
+
+        SCAApplicationContext parent = createParentContext(classLoader, properties);
         Map<String, String> alias = definition.getDefaultReferenceMappings();
         return new SpringComponent(componentUri, deployable, parent, sources, classLoader, validating, alias);
+    }
+
+    public void dispose(SpringComponentDefinition definition, SpringComponent component) throws BuilderException {
+        for (ApplicationContextListener listener : listeners) {
+            SCAApplicationContext context = component.getParent();
+            listener.onDispose(context);
+        }
     }
 
     private void resolveDirectorySources(SpringComponentDefinition definition, ClassLoader classLoader, List<URL> sources) throws BuilderException {
@@ -139,24 +158,23 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
         }
     }
 
-    public void dispose(SpringComponentDefinition definition, SpringComponent component) throws BuilderException {
-        for (ApplicationContextListener listener : listeners) {
-            SCAApplicationContext context = component.getParent();
-            listener.onDispose(context);
-        }
-    }
-
     /**
      * Creates a parent application context populated with system components configured to be aliased as Spring beans.
      *
      * @param classLoader the context classloader
+     * @param properties  any defined property values keyed by name
      * @return the parent application context
      */
-    private SCAApplicationContext createParentContext(ClassLoader classLoader) {
+    private SCAApplicationContext createParentContext(ClassLoader classLoader, Map<String, Pair> properties) {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(classLoader);
             SCAApplicationContext parent = new SCAApplicationContext();
+            for (Map.Entry<String, Pair> entry : properties.entrySet()) {
+                String name = entry.getKey();
+                Pair pair = entry.getValue();
+                parent.add(name, pair.getType(), pair.getFactory());
+            }
             for (ApplicationContextListener listener : listeners) {
                 listener.onCreate(parent);
             }
@@ -179,6 +197,50 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
             }
         } catch (MalformedURLException e) {
             throw new BuilderException(e);
+        }
+    }
+
+    protected Map<String, Pair> createProperties(SpringComponentDefinition definition) throws BuilderException {
+        List<PhysicalPropertyDefinition> propertyDefinitions = definition.getPropertyDefinitions();
+        Map<String, Pair> values = new HashMap<String, Pair>();
+
+        for (PhysicalPropertyDefinition propertyDefinition : propertyDefinitions) {
+            String name = propertyDefinition.getName();
+            Document document = propertyDefinition.getValue();
+            String value = document.getElementsByTagName("value").item(0).getFirstChild().getNodeValue();
+            QName type = propertyDefinition.getType();
+            if (XSD_BOOLEAN.equals(type)) {
+                SingletonObjectFactory<Boolean> factory = new SingletonObjectFactory<Boolean>(Boolean.valueOf(value));
+                Pair pair = new Pair(Boolean.class, factory);
+                values.put(name, pair);
+            } else if (XSD_INT.equals(type)) {
+                SingletonObjectFactory<Integer> factory = new SingletonObjectFactory<Integer>(Integer.valueOf(value));
+                Pair pair = new Pair(Integer.class, factory);
+                values.put(name, pair);
+            } else {
+                SingletonObjectFactory<String> factory = new SingletonObjectFactory<String>(value);
+                Pair pair = new Pair(String.class, factory);
+                values.put(name, pair);
+            }
+        }
+        return values;
+    }
+
+    private class Pair {
+        private Class<?> type;
+        private ObjectFactory<?> factory;
+
+        private Pair(Class<?> type, ObjectFactory<?> factory) {
+            this.type = type;
+            this.factory = factory;
+        }
+
+        public Class<?> getType() {
+            return type;
+        }
+
+        public ObjectFactory<?> getFactory() {
+            return factory;
         }
     }
 

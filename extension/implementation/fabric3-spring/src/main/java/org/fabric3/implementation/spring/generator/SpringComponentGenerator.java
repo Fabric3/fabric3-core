@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.spring.generator;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -61,17 +62,20 @@ import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
+import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
+import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.oasisopen.sca.annotation.EagerInit;
+import org.w3c.dom.Document;
 
 /**
  * Generator for Spring components.
@@ -97,7 +101,9 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
 
         SpringComponentDefinition.LocationType locationType = SpringComponentDefinition.LocationType.valueOf(implementation.getLocationType().toString());
 
-        return new SpringComponentDefinition(uri, baseLocation, contextLocations, mappings, locationType);
+        SpringComponentDefinition physical = new SpringComponentDefinition(uri, baseLocation, contextLocations, mappings, locationType);
+        processPropertyValues(component, physical);
+        return physical;
     }
 
     public PhysicalSourceDefinition generateSource(LogicalReference reference, EffectivePolicy policy) throws GenerationException {
@@ -171,6 +177,20 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
             mappings.put(defaultStr, refName);
         }
         return mappings;
+    }
+
+    private void processPropertyValues(LogicalComponent<?> component, SpringComponentDefinition physical) {
+        for (LogicalProperty property : component.getAllProperties().values()) {
+            Document document = property.getValue();
+            if (document != null) {
+                String name = property.getName();
+                boolean many = property.isMany();
+                ComponentType componentType = component.getDefinition().getImplementation().getComponentType();
+                QName type = componentType.getProperties().get(property.getName()).getType();
+                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, document, many, type);
+                physical.setPropertyDefinition(definition);
+            }
+        }
     }
 
 }

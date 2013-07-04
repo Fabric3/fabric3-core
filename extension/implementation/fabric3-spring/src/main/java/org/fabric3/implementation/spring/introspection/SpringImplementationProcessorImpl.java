@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.spring.introspection;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
@@ -80,6 +81,11 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
     private static final QName PROPERTY = new QName(Constants.SCA_NS, "property");
     private static final QName PRODUCER = new QName(Constants.SCA_NS, "producer");
     private static final QName CONSUMER = new QName(Constants.SCA_NS, "consumer");
+
+    private static final String XSD_NS = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+    private static final QName XSD_STRING = new QName(XSD_NS, "string");
+    private static final QName XSD_BOOLEAN = new QName(XSD_NS, "boolean");
+    private static final QName XSD_INT = new QName(XSD_NS, "integer");
 
     private JavaContractProcessor contractProcessor;
     private final XMLInputFactory xmlInputFactory;
@@ -364,7 +370,6 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
      */
     private boolean processProperty(SpringComponentType type, XMLStreamReader reader, IntrospectionContext context) {
         Location startLocation = reader.getLocation();
-        // TODO handle types
         String name = reader.getAttributeValue(null, "name");
         if (name == null) {
             MissingAttribute failure = new MissingAttribute("A property name must be specified", startLocation);
@@ -376,7 +381,20 @@ public class SpringImplementationProcessorImpl implements SpringImplementationPr
             context.addError(failure);
             return false;
         }
+
         Property property = new Property(name);
+        property.setRequired(true);
+
+        String propertyType = reader.getAttributeValue(null, "type");
+
+        if (Integer.class.getName().equals(propertyType)) {
+            property.setType(XSD_INT);
+        } else if (Boolean.class.getName().equals(propertyType)) {
+            property.setType(XSD_BOOLEAN);
+        } else {
+            property.setType(XSD_STRING);
+        }
+
         type.add(property);
         return true;
     }

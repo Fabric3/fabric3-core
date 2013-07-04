@@ -37,6 +37,7 @@
 */
 package org.fabric3.spi.model.physical;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 
 import org.w3c.dom.Document;
@@ -49,11 +50,17 @@ public class PhysicalPropertyDefinition implements Serializable {
     private String name;
     private Document value;
     private boolean many;
+    private QName type;
 
     public PhysicalPropertyDefinition(String name, Document value, boolean many) {
+        this(name, value, many, null);
+    }
+
+    public PhysicalPropertyDefinition(String name, Document value, boolean many, QName type) {
         this.name = name;
         this.value = value;
         this.many = many;
+        this.type = type;
     }
 
     /**
@@ -81,5 +88,14 @@ public class PhysicalPropertyDefinition implements Serializable {
      */
     public boolean isMany() {
         return many;
+    }
+
+    /**
+     * Returns the optional type.
+     *
+     * @return the optional type
+     */
+    public QName getType() {
+        return type;
     }
 }
