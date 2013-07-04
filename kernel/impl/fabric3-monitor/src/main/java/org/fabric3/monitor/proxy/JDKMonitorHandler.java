@@ -56,12 +56,12 @@ public class JDKMonitorHandler implements InvocationHandler, MonitorChannel, Mon
     private int destinationIndex;
     private Monitorable monitorable;
     private String source;
-    private Map<String, DispatchInfo> infos;
+    private Map<Method, DispatchInfo> infos;
 
     private MonitorLevel level;
     private String template;
 
-    public JDKMonitorHandler(int destinationIndex, Monitorable monitorable, DestinationRouter router, Map<String, DispatchInfo> infos) {
+    public JDKMonitorHandler(int destinationIndex, Monitorable monitorable, DestinationRouter router, Map<Method, DispatchInfo> infos) {
         this.destinationIndex = destinationIndex;
         this.monitorable = monitorable;
         this.router = router;
@@ -85,7 +85,7 @@ public class JDKMonitorHandler implements InvocationHandler, MonitorChannel, Mon
             currentLevel = level;
             currentMessage = template;
         } else {
-            DispatchInfo info = infos.get(method.getName());
+            DispatchInfo info = infos.get(method);
             currentLevel = info.getLevel();
             currentMessage = info.getMessage();
         }

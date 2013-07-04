@@ -78,10 +78,10 @@ public class JDKMonitorProxyService implements MonitorProxyServiceExtension {
         }
         int destinationIndex = router.getDestinationIndex(destination);
         ClassLoader loader = type.getClassLoader();
-        Map<String, DispatchInfo> levels = new HashMap<String, DispatchInfo>();
+        Map<Method, DispatchInfo> levels = new HashMap<Method, DispatchInfo>();
         for (Method method : type.getMethods()) {
             DispatchInfo info = createDispatchInfo(type, loader, method);
-            levels.put(method.getName(), info);
+            levels.put(method, info);
         }
 
         JDKMonitorHandler handler = new JDKMonitorHandler(destinationIndex, monitorable, router, levels);

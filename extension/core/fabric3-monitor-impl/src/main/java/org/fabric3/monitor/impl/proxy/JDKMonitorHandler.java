@@ -56,7 +56,7 @@ public class JDKMonitorHandler implements InvocationHandler {
     private int destinationIndex;
     private Monitorable monitorable;
     private String source;
-    private Map<String, DispatchInfo> infos;
+    private Map<Method, DispatchInfo> infos;
 
     private MonitorLevel level;
     private String template;
@@ -64,7 +64,7 @@ public class JDKMonitorHandler implements InvocationHandler {
     public JDKMonitorHandler(int destinationIndex,
                              Monitorable monitorable,
                              RingBufferDestinationRouter router,
-                             Map<String, DispatchInfo> infos,
+                             Map<Method, DispatchInfo> infos,
                              boolean asyncEnabled) {
         this.destinationIndex = destinationIndex;
         this.monitorable = monitorable;
@@ -91,7 +91,7 @@ public class JDKMonitorHandler implements InvocationHandler {
             currentMessage = template;
         } else {
             // FIXME convert to index-based dispatch
-            DispatchInfo info = infos.get(method.getName());
+            DispatchInfo info = infos.get(method);
             currentLevel = info.getLevel();
             currentMessage = info.getMessage();
         }
