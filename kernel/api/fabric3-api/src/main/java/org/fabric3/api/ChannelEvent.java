@@ -73,4 +73,11 @@ public interface ChannelEvent {
      */
     boolean isEndOfBatch();
 
+    /**
+     * Returns the sequence number or -1 if not defined.
+     *
+     * @return the sequence number or -1
+     */
+    long getSequence();
+
 }

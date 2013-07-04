@@ -46,6 +46,7 @@ public class RingBufferEvent implements ChannelEvent {
     private Object event;
     private Object parsed;
     private boolean endOfBatch;
+    private long sequence =-1;
 
     public <T> T getEvent(Class<T> type) {
         return type.cast(event);
@@ -69,5 +70,13 @@ public class RingBufferEvent implements ChannelEvent {
 
     public void setEndOfBatch(boolean endOfBatch) {
         this.endOfBatch = endOfBatch;
+    }
+
+    public long getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(long sequence) {
+        this.sequence = sequence;
     }
 }
