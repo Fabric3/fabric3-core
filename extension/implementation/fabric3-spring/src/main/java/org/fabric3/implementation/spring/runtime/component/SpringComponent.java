@@ -47,6 +47,7 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -65,6 +66,7 @@ public class SpringComponent implements Component {
     private MonitorLevel level = MonitorLevel.INFO;
     private boolean validating;
     private Map<String, String> alias;
+    private List<BeanPostProcessor> processors;
 
     /**
      * Constructor.
@@ -76,6 +78,7 @@ public class SpringComponent implements Component {
      * @param classLoader the contribution classloader containing user-defined application classes and resources
      * @param validating  true if application context validation should be done
      * @param alias       bean aliases derived from the default attribute of an SCA reference tag
+     * @param processors  bean post processors
      */
     public SpringComponent(URI uri,
                            QName deployable,
@@ -83,7 +86,8 @@ public class SpringComponent implements Component {
                            List<URL> sources,
                            ClassLoader classLoader,
                            boolean validating,
-                           Map<String, String> alias) {
+                           Map<String, String> alias,
+                           List<BeanPostProcessor> processors) {
         this.uri = uri;
         this.deployable = deployable;
         this.parent = parent;
@@ -91,6 +95,7 @@ public class SpringComponent implements Component {
         this.classLoader = classLoader;
         this.validating = validating;
         this.alias = alias;
+        this.processors = processors;
     }
 
     public URI getUri() {
@@ -147,6 +152,9 @@ public class SpringComponent implements Component {
                 for (int i = 0; i < sources.size(); i++) {
                     URL url = sources.get(i);
                     resources[i] = new UrlResource(url);
+                }
+                for (BeanPostProcessor processor : processors) {
+                    applicationContext.getBeanFactory().addBeanPostProcessor(processor);
                 }
                 applicationContext.load(resources);
                 applicationContext.refresh();

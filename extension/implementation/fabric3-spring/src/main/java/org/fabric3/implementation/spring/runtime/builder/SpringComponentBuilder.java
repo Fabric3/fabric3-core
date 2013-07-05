@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.implementation.spring.provision.SpringComponentDefinition;
+import org.fabric3.implementation.spring.runtime.component.ContextAnnotationPostProcessor;
 import org.fabric3.implementation.spring.runtime.component.SCAApplicationContext;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.spi.builder.BuilderException;
@@ -63,6 +64,7 @@ import org.fabric3.spring.spi.ApplicationContextListener;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.w3c.dom.Document;
 
 /**
@@ -78,6 +80,8 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
     private static final String XSD_NS = XMLConstants.W3C_XML_SCHEMA_NS_URI;
     private static final QName XSD_BOOLEAN = new QName(XSD_NS, "boolean");
     private static final QName XSD_INT = new QName(XSD_NS, "integer");
+
+    private List<BeanPostProcessor> POST_PROCESSORS = Collections.<BeanPostProcessor>singletonList(new ContextAnnotationPostProcessor());
 
     private ClassLoaderRegistry classLoaderRegistry;
     private boolean validating = true;
@@ -129,7 +133,7 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
 
         SCAApplicationContext parent = createParentContext(classLoader, properties);
         Map<String, String> alias = definition.getDefaultReferenceMappings();
-        return new SpringComponent(componentUri, deployable, parent, sources, classLoader, validating, alias);
+        return new SpringComponent(componentUri, deployable, parent, sources, classLoader, validating, alias, POST_PROCESSORS);
     }
 
     public void dispose(SpringComponentDefinition definition, SpringComponent component) throws BuilderException {
