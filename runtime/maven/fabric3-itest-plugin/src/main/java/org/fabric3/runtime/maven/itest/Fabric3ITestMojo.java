@@ -261,7 +261,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        if (skip) {
+        if (skip || Boolean.parseBoolean(System.getProperty("maven.test.skip"))) {
             getLog().info("Skipping integration tests by user request.");
             return;
         }
