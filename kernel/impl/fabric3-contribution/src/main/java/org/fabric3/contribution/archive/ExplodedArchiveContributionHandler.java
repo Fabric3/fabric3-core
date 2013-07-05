@@ -39,13 +39,10 @@ package org.fabric3.contribution.archive;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.regex.Pattern;
-
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.stream.Source;
@@ -61,7 +58,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
-
+import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.spi.contribution.Constants.EXPLODED_CONTENT_TYPE;
 
 /**
@@ -83,8 +80,7 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
         }
         File file = new File(location.getFile());
         String contentType = contribution.getContentType();
-        return file.isDirectory()
-                && (file.getName().endsWith(".jar") || file.getName().endsWith(".zip") || EXPLODED_CONTENT_TYPE.equals(contentType));
+        return file.isDirectory() && (file.getName().endsWith(".jar") || file.getName().endsWith(".zip") || EXPLODED_CONTENT_TYPE.equals(contentType));
     }
 
     public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
@@ -149,8 +145,6 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                     action.process(contribution, contentType, entryUrl);
                 } catch (MalformedURLException e) {
                     throw new InstallException(e);
-                } catch (IOException e) {
-                    throw new InstallException(e);
                 } catch (ContentTypeResolutionException e) {
                     throw new InstallException(e);
                 }
@@ -169,6 +163,5 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
         }
         return false;
     }
-
 
 }
