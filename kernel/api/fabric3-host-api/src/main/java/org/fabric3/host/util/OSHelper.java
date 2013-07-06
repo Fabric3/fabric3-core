@@ -55,8 +55,8 @@ public final class OSHelper {
     public static String parseProcessor(String value) {
         value = value.toLowerCase();
 
-        if (value.startsWith("x86-64") || value.startsWith("amd64")) {
-            return "x86-64";
+        if (value.startsWith("x86_64") || value.startsWith("amd64")) {
+            return "x86_64";
         } else if (value.startsWith("x86") || value.startsWith("pentium")
                 || value.startsWith("i386") || value.startsWith("i486")
                 || value.startsWith("i586") || value.startsWith("i686")) {
