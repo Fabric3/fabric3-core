@@ -43,6 +43,7 @@ import org.fabric3.monitor.spi.model.type.AppenderDefinition;
  * Configuration for an appender component.
  */
 public class ComponentAppenderDefinition extends AppenderDefinition {
+    private static final long serialVersionUID = 7714169122565805386L;
     private String componentName;
 
     public ComponentAppenderDefinition(String componentName) {

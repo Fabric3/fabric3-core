@@ -43,6 +43,8 @@ import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
  * Configuration for a file appender.
  */
 public class PhysicalFileAppenderDefinition extends PhysicalAppenderDefinition {
+    private static final long serialVersionUID = 4239708371610267387L;
+
     private String fileName;
     private String rollType;
     private long rollSize;

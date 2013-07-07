@@ -43,6 +43,7 @@ import org.fabric3.monitor.spi.model.type.AppenderDefinition;
  * Configuration for a file appender.
  */
 public class FileAppenderDefinition extends AppenderDefinition {
+    private static final long serialVersionUID = 5722365491878642292L;
 
     private String fileName;
     private String rollType = FileAppenderConstants.ROLL_STRATEGY_NONE;
