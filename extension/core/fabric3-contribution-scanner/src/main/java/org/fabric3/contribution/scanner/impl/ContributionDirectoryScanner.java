@@ -82,15 +82,15 @@ import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeStart;
 
 /**
- * Periodically scans deployment directories for new, updated, or removed contributions. New contributions are added to the domain and any deployable
- * components activated. Updated components will trigger a redeployment. Removal will perform an undeployment.
+ * Scans deployment directories for contributions. In production mode, deployment directories will be scanned once at startup and any contained contributions
+ * will be deployed. In the default dynamic (non-production) mode, scanning will be periodic with support for adding, updating, and removing contributions.
  * <p/>
- * The scanner watches deployment directories at a fixed interval. Files are tracked as a {@link FileSystemResource}, which provides a consistent view
- * across various types such as jars and exploded directories. Unknown file types are ignored. At the specified interval, removed files are determined
- * by comparing the current directory contents with the contents from the previous pass. Changes or additions are also determined by comparing the
- * current directory state with that of the previous pass. Detected changes and additions are cached for the following interval. Detected changes and
- * additions from the previous interval are then compared using a timestamp to see if they have changed again. If so, they remain cached. If they have
- * not changed, they are processed, contributed via the ContributionService, and deployed in the domain.
+ * In dynamic mode, the scanner watches deployment directories at a fixed interval. Files are tracked as a {@link FileSystemResource}, which provides a
+ * consistent view across various types such as jars and exploded directories. Unknown file types are ignored. At the specified interval, removed files are
+ * determined by comparing the current directory contents with the contents from the previous pass. Changes or additions are also determined by comparing the
+ * current directory state with that of the previous pass. Detected changes and additions are cached for the following interval. Detected changes and additions
+ * from the previous interval are then compared using a timestamp to see if they have changed again. If so, they remain cached. If they have not changed, they
+ * are processed, contributed via the ContributionService, and deployed in the domain.
  */
 @EagerInit
 public class ContributionDirectoryScanner implements Runnable, Fabric3EventListener {
@@ -102,6 +102,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     private Domain domain;
     private List<File> paths;
     private long delay = 2000;
+    private boolean production = false;
 
     private ScheduledExecutorService executor;
     private Set<File> ignored = new HashSet<File>();
@@ -122,6 +123,11 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         this.tracker = tracker;
         paths = hostInfo.getDeployDirectories();
         this.monitor = monitor;
+    }
+
+    @Property(required = false)
+    public void setProduction(boolean production) {
+        this.production = production;
     }
 
     @Property(required = false)
@@ -164,8 +170,10 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 monitor.error(e);
             }
             notSeen.clear();
-            executor = Executors.newSingleThreadScheduledExecutor();
-            executor.scheduleWithFixedDelay(this, 10, delay, TimeUnit.MILLISECONDS);
+            if (!production) {
+                executor = Executors.newSingleThreadScheduledExecutor();
+                executor.scheduleWithFixedDelay(this, 10, delay, TimeUnit.MILLISECONDS);
+            }
         }
     }
 
@@ -280,8 +288,8 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 try {
                     domain.undeploy(artifactUri, false);
                 } catch (DeploymentException e) {
-                        monitor.error(e);
-                        return;
+                    monitor.error(e);
+                    return;
                 }
                 // if the resource has changed, wait until the next pass as updates may still be in progress
                 if (resource.isChanged()) {
@@ -437,7 +445,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
             index.put(file.getName(), file);
         }
 
-        for (Iterator<FileSystemResource> iterator = cache.values().iterator(); iterator.hasNext();) {
+        for (Iterator<FileSystemResource> iterator = cache.values().iterator(); iterator.hasNext(); ) {
             FileSystemResource entry = iterator.next();
             String name = entry.getName();
 
@@ -465,7 +473,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     }
 
     private synchronized void processIgnored() {
-        for (Iterator<File> iter = ignored.iterator(); iter.hasNext();) {
+        for (Iterator<File> iter = ignored.iterator(); iter.hasNext(); ) {
             File file = iter.next();
             if (!file.exists()) {
                 iter.remove();

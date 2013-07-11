@@ -20,6 +20,8 @@ Public License. See the accompanying license file for details.
     <component name="ContributionDirectoryScanner">
         <f3:implementation.system class="org.fabric3.contribution.scanner.impl.ContributionDirectoryScanner"/>
         <reference name="assembly" target="ApplicationDomain"/>
+        <property name="production" source="$systemConfig//f3:scanner/@production"/>
+        <property name="delay" source="$systemConfig//f3:scanner/@delay"/>
     </component>
 
     <component name="ContributionTracker">
