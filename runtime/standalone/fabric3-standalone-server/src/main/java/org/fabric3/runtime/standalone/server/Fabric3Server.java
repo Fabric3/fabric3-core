@@ -158,6 +158,12 @@ public class Fabric3Server implements Fabric3ServerMBean {
             // clear out the tmp directory
             FileHelper.cleanDirectory(hostInfo.getTempDir());
 
+            // clean if set
+            if (params.clean) {
+                File dataDir = BootstrapHelper.getDirectory(runtimeDir, "data");
+                FileHelper.cleanDirectory(dataDir);
+            }
+
             BootConfiguration configuration = new BootConfiguration();
 
             MBeanServer mbServer = MBeanServerFactory.createMBeanServer(DOMAIN);
@@ -266,6 +272,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
                 params.directory = new File(arg.substring(4));
             } else if (arg.startsWith("clone:")) {
                 params.clone = arg.substring(6);
+            } else if (arg.equals("clean")) {
+                params.clean = true;
             } else if (!arg.contains(":")) {
                 // assume this is the runtime name
                 params.name = arg;
@@ -284,6 +292,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
         String name;
         File directory;
         String clone;
+        public boolean clean;
     }
 
     public interface ServerMonitor {
