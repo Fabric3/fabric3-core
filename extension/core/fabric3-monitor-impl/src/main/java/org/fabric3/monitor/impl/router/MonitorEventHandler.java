@@ -45,30 +45,31 @@ import org.fabric3.monitor.spi.event.MonitorEventEntry;
  * Receives events from the ring buffer and dispatches to the {@link MonitorDestinationRegistry}.
  */
 public class MonitorEventHandler implements EventHandler<MonitorEventEntry> {
-    public static final int MIN = 100000;
-    public static final int MAX = 200000;
+    //public static final int MIN = 100000;
+    //public static final int MAX = 200000;
 
     private MonitorDestinationRegistry registry;
 
-    private int counter;
-    private long elapsedTime;
+    //private int counter;
+    //private long elapsedTime;
 
     public MonitorEventHandler(MonitorDestinationRegistry registry) {
         this.registry = registry;
     }
 
     public void onEvent(MonitorEventEntry entry, long sequence, boolean endOfBatch) throws Exception {
+        entry.setEndOfBatch(endOfBatch);
         registry.write(entry);
-//        if (counter >= MIN) {
-//            long time = System.nanoTime() - entry.getTimestampNanos();
-//            elapsedTime = elapsedTime + time;
-//        }
-//        counter++;
-//        if (counter == MAX) {
-//            System.out.println("Time last event: " + (System.nanoTime() - entry.getTimestampNanos()));
-//            System.out.println("Elapsed: " + elapsedTime);
-//            System.out.println("Avg: " + (double) elapsedTime / (double) (MAX - MIN));
-//        }
+        //        if (counter >= MIN) {
+        //            long time = System.nanoTime() - entry.getTimestampNanos();
+        //            elapsedTime = elapsedTime + time;
+        //        }
+        //        counter++;
+        //        if (counter == MAX) {
+        //            System.out.println("Time last event: " + (System.nanoTime() - entry.getTimestampNanos()));
+        //            System.out.println("Elapsed: " + elapsedTime);
+        //            System.out.println("Avg: " + (double) elapsedTime / (double) (MAX - MIN));
+        //        }
     }
 
 }

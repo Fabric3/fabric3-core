@@ -57,6 +57,7 @@ public class MonitorEventEntry {
     private MonitorLevel level;
     private int destinationIndex;
     private long entryTimestamp;
+    private boolean endOfBatch;
 
     /**
      * Constructor.
@@ -150,6 +151,24 @@ public class MonitorEventEntry {
      */
     public void setSequence(long sequence) {
         this.sequence = sequence;
+    }
+
+    /**
+     * Returns true if this event is an end-of-batch message.
+     *
+     * @return true if this event is an end-of-batch message
+     */
+    public boolean isEndOfBatch() {
+        return endOfBatch;
+    }
+
+    /**
+     * Sets if this event is an end-of-batch message.
+     *
+     * @param endOfBatch true if this event is an end-of-batch message
+     */
+    public void setEndOfBatch(boolean endOfBatch) {
+        this.endOfBatch = endOfBatch;
     }
 
     /**
