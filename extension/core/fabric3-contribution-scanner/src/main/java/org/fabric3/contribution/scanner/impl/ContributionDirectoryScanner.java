@@ -154,6 +154,9 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
 
     public void onEvent(Fabric3Event event) {
         if (event instanceof ExtensionsInitialized) {
+            if (paths == null) {
+                return;
+            }
             // process existing files in recovery mode
             List<File> files = new ArrayList<File>();
             for (File path : paths) {
@@ -178,6 +181,9 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
     }
 
     public synchronized void run() {
+        if (paths == null) {
+            return;
+        }
         List<File> files = new ArrayList<File>();
         for (File path : paths) {
             if (!path.isDirectory()) {
