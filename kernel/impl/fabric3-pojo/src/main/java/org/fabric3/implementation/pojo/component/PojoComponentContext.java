@@ -43,22 +43,27 @@
  */
 package org.fabric3.implementation.pojo.component;
 
+import java.io.File;
+import java.net.URI;
 import java.util.Collection;
 
-import org.oasisopen.sca.ComponentContext;
+import org.fabric3.api.Fabric3ComponentContext;
+import org.fabric3.host.runtime.HostInfo;
 import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 
 /**
  *
  */
-public class PojoComponentContext implements ComponentContext {
+public class PojoComponentContext implements Fabric3ComponentContext {
     private final PojoComponent component;
     private final PojoRequestContext requestContext;
+    private HostInfo info;
 
-    public PojoComponentContext(PojoComponent component, PojoRequestContext requestContext) {
+    public PojoComponentContext(PojoComponent component, PojoRequestContext requestContext, HostInfo info) {
         this.component = component;
         this.requestContext = requestContext;
+        this.info = info;
     }
 
     public String getURI() {
@@ -99,5 +104,25 @@ public class PojoComponentContext implements ComponentContext {
 
     public RequestContext getRequestContext() {
         return requestContext;
+    }
+
+    public String getRuntimeName() {
+        return info.getRuntimeName();
+    }
+
+    public URI getDomain() {
+        return info.getDomain();
+    }
+
+    public String getEnvironment() {
+        return info.getEnvironment();
+    }
+
+    public File getDataDirectory() {
+        return info.getDataDir();
+    }
+
+    public File getTempDirectory() {
+        return info.getTempDir();
     }
 }

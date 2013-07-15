@@ -210,7 +210,8 @@ public class BootstrapAssemblyFactory {
                                                                                 classLoaderRegistry,
                                                                                 scopeRegistry,
                                                                                 componentManager,
-                                                                                managementService);
+                                                                                managementService,
+                                                                                info);
         DeployerMonitor monitor;
         try {
             monitor = monitorService.createMonitor(DeployerMonitor.class);
@@ -267,7 +268,8 @@ public class BootstrapAssemblyFactory {
                                                                          ClassLoaderRegistry classLoaderRegistry,
                                                                          ScopeRegistry scopeRegistry,
                                                                          ComponentManager componentManager,
-                                                                         ManagementService managementService) {
+                                                                         ManagementService managementService,
+                                                                         HostInfo info) {
 
         DefaultTransformerRegistry transformerRegistry = createTransformerRegistry(classLoaderRegistry);
 
@@ -281,7 +283,8 @@ public class BootstrapAssemblyFactory {
                                                                                   scopeRegistry,
                                                                                   transformerRegistry,
                                                                                   classLoaderRegistry,
-                                                                                  managementService);
+                                                                                  managementService,
+                                                                                  info);
             commandRegistry.register(BuildComponentCommand.class, executor);
             commandRegistry.register(AttachWireCommand.class, new AttachWireCommandExecutor(connector));
             commandRegistry.register(StartComponentCommand.class, new StartComponentCommandExecutor(componentManager));
@@ -299,7 +302,8 @@ public class BootstrapAssemblyFactory {
                                                                               ScopeRegistry scopeRegistry,
                                                                               DefaultTransformerRegistry transformerRegistry,
                                                                               ClassLoaderRegistry classLoaderRegistry,
-                                                                              ManagementService managementService) {
+                                                                              ManagementService managementService,
+                                                                              HostInfo info) {
         Map<Class<?>, ComponentBuilder> builders = new HashMap<Class<?>, ComponentBuilder>();
 
         ArrayBuilder arrayBuilder = new ArrayBuilderImpl(transformerRegistry);
@@ -328,7 +332,8 @@ public class BootstrapAssemblyFactory {
                                                                     classLoaderRegistry,
                                                                     propertyBuilder,
                                                                     managementService,
-                                                                    helper);
+                                                                    helper,
+                                                                    info);
 
         builders.put(SystemComponentDefinition.class, builder);
         BuildComponentCommandExecutor executor = new BuildComponentCommandExecutor(componentManager);

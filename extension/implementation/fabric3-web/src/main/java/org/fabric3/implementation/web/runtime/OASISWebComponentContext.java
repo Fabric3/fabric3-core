@@ -37,27 +37,31 @@
 */
 package org.fabric3.implementation.web.runtime;
 
-import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.net.URI;
+import java.util.Collection;
 
-import org.oasisopen.sca.ComponentContext;
+import org.fabric3.api.Fabric3ComponentContext;
+import org.fabric3.container.web.spi.WebRequestTunnel;
+import org.fabric3.host.Fabric3RuntimeException;
+import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.container.web.spi.WebRequestTunnel;
-import org.fabric3.host.Fabric3RuntimeException;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-
 /**
  * Implementation of ComponentContext for Web components.
  */
-public class OASISWebComponentContext implements ComponentContext {
+public class OASISWebComponentContext implements Fabric3ComponentContext {
     private final WebComponent component;
+    private HostInfo info;
 
-    public OASISWebComponentContext(WebComponent component) {
+    public OASISWebComponentContext(WebComponent component, HostInfo info) {
         this.component = component;
+        this.info = info;
     }
 
     public String getURI() {
@@ -124,6 +128,26 @@ public class OASISWebComponentContext implements ComponentContext {
         return null;
     }
 
+    public String getRuntimeName() {
+        return info.getRuntimeName();
+    }
+
+    public URI getDomain() {
+        return info.getDomain();
+    }
+
+    public String getEnvironment() {
+        return info.getEnvironment();
+    }
+
+    public File getDataDirectory() {
+        return info.getDataDir();
+    }
+
+    public File getTempDirectory() {
+        return info.getTempDir();
+    }
+
     private HttpSession getSession() {
         HttpServletRequest request = WebRequestTunnel.getRequest();
         if (request == null) {
@@ -131,6 +155,5 @@ public class OASISWebComponentContext implements ComponentContext {
         }
         return request.getSession(true);  // force creation of session
     }
-
 
 }

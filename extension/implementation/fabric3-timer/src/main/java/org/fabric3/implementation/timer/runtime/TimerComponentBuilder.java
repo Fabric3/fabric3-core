@@ -37,19 +37,16 @@
 */
 package org.fabric3.implementation.timer.runtime;
 
-import java.net.URI;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
-import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
+import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
 import org.fabric3.implementation.timer.provision.TimerData;
@@ -61,6 +58,8 @@ import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.timer.spi.TimerService;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -85,7 +84,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
                                  @Reference IntrospectionHelper helper,
                                  @Reference HostInfo info,
                                  @Monitor InvokerMonitor monitor) {
-        super(classLoaderRegistry, propertyBuilder, managementService, helper);
+        super(classLoaderRegistry, propertyBuilder, managementService, helper, info);
         this.scopeRegistry = scopeRegistry;
         this.factoryBuilder = factoryBuilder;
         this.timerService = timerService;

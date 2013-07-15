@@ -37,21 +37,21 @@
 */
 package org.fabric3.implementation.web.runtime;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.container.web.spi.WebApplicationActivator;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Instantiates a web component on a runtime node.
@@ -60,14 +60,17 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinition, WebComponent> {
     private WebApplicationActivator activator;
     private InjectorFactory injectorFactory;
+    private HostInfo info;
     private WireProxyService proxyService;
 
     public WebComponentBuilder(@Reference WireProxyService proxyService,
                                @Reference WebApplicationActivator activator,
-                               @Reference InjectorFactory injectorFactory) {
+                               @Reference InjectorFactory injectorFactory,
+                               @Reference HostInfo info) {
         this.proxyService = proxyService;
         this.activator = activator;
         this.injectorFactory = injectorFactory;
+        this.info = info;
     }
 
     public WebComponent build(WebComponentDefinition definition) throws BuilderException {
@@ -88,7 +91,8 @@ public class WebComponentBuilder implements ComponentBuilder<WebComponentDefinit
                                 activator,
                                 proxyService,
                                 propertyFactories,
-                                injectorMappings);
+                                injectorMappings,
+                                info);
     }
 
     public void dispose(WebComponentDefinition definition, WebComponent component) throws BuilderException {

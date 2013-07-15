@@ -37,12 +37,10 @@
 */
 package org.fabric3.implementation.java.runtime;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
@@ -55,6 +53,8 @@ import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Builds a Java component from a physical definition.
@@ -69,8 +69,9 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
                                 @Reference ClassLoaderRegistry classLoaderRegistry,
                                 @Reference PropertyObjectFactoryBuilder propertyBuilder,
                                 @Reference ManagementService managementService,
-                                @Reference IntrospectionHelper helper) {
-        super(classLoaderRegistry, propertyBuilder, managementService, helper);
+                                @Reference IntrospectionHelper helper,
+                                @Reference HostInfo info) {
+        super(classLoaderRegistry, propertyBuilder, managementService, helper, info);
         this.scopeRegistry = scopeRegistry;
         this.factoryBuilder = factoryBuilder;
     }

@@ -47,11 +47,10 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
 
-import org.w3c.dom.Document;
-
+import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.implementation.pojo.component.PojoComponent;
 import org.fabric3.implementation.pojo.component.PojoComponentContext;
 import org.fabric3.implementation.pojo.component.PojoRequestContext;
-import org.fabric3.implementation.pojo.component.PojoComponent;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 import org.fabric3.model.type.contract.DataType;
@@ -74,6 +73,7 @@ import org.fabric3.spi.model.type.java.ManagementInfo;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.util.ParamTypes;
+import org.w3c.dom.Document;
 
 /**
  * Base class for component builders that create Java-based components.
@@ -81,17 +81,20 @@ import org.fabric3.spi.util.ParamTypes;
 public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, C extends Component> implements ComponentBuilder<PCD, C> {
     protected ClassLoaderRegistry classLoaderRegistry;
     protected IntrospectionHelper helper;
+    private HostInfo info;
     private PropertyObjectFactoryBuilder propertyBuilder;
     private ManagementService managementService;
 
     protected PojoComponentBuilder(ClassLoaderRegistry registry,
                                    PropertyObjectFactoryBuilder propertyBuilder,
                                    ManagementService managementService,
-                                   IntrospectionHelper helper) {
+                                   IntrospectionHelper helper,
+                                   HostInfo info) {
         this.classLoaderRegistry = registry;
         this.propertyBuilder = propertyBuilder;
         this.managementService = managementService;
         this.helper = helper;
+        this.info = info;
     }
 
     protected void createPropertyFactories(PCD definition, ImplementationManagerFactory factory) throws BuilderException {
@@ -144,7 +147,7 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
         PojoRequestContext requestContext = new PojoRequestContext();
         SingletonObjectFactory<PojoRequestContext> requestFactory = new SingletonObjectFactory<PojoRequestContext>(requestContext);
         factory.setObjectFactory(Injectable.OASIS_REQUEST_CONTEXT, requestFactory);
-        PojoComponentContext componentContext = new PojoComponentContext(component, requestContext);
+        PojoComponentContext componentContext = new PojoComponentContext(component, requestContext, info);
         SingletonObjectFactory<PojoComponentContext> componentFactory = new SingletonObjectFactory<PojoComponentContext>(componentContext);
         factory.setObjectFactory(Injectable.OASIS_COMPONENT_CONTEXT, componentFactory);
     }

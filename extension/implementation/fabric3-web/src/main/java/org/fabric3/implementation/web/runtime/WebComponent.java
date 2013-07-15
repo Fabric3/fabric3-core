@@ -37,18 +37,17 @@
 */
 package org.fabric3.implementation.web.runtime;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.ServiceReference;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.container.web.spi.WebApplicationActivationException;
 import org.fabric3.container.web.spi.WebApplicationActivator;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.spi.component.Component;
@@ -59,7 +58,7 @@ import org.fabric3.spi.objectfactory.ObjectCreationException;
 import org.fabric3.spi.objectfactory.ObjectFactory;
 import org.fabric3.spi.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.wire.Wire;
-
+import org.oasisopen.sca.ServiceReference;
 import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEXT_ATTRIBUTE;
 
 /**
@@ -77,6 +76,7 @@ public class WebComponent implements Component {
     private final WireProxyService proxyService;
     private final QName groupId;
     private final Map<String, ObjectFactory<?>> propertyFactories;
+    private HostInfo info;
     private final Map<String, ObjectFactory<?>> referenceFactories;
     private final URI archiveUri;
     private String contextUrl;
@@ -91,7 +91,8 @@ public class WebComponent implements Component {
                         WebApplicationActivator activator,
                         WireProxyService proxyService,
                         Map<String, ObjectFactory<?>> propertyFactories,
-                        Map<String, Map<String, InjectionSite>> injectorMappings) {
+                        Map<String, Map<String, InjectionSite>> injectorMappings,
+                        HostInfo info) {
         this.uri = uri;
         this.contextUrl = contextUrl;
         this.archiveUri = archiveUri;
@@ -102,6 +103,7 @@ public class WebComponent implements Component {
         this.proxyService = proxyService;
         this.groupId = deployable;
         this.propertyFactories = propertyFactories;
+        this.info = info;
         referenceFactories = new ConcurrentHashMap<String, ObjectFactory<?>>();
     }
 
@@ -134,11 +136,11 @@ public class WebComponent implements Component {
             Map<String, List<Injector<?>>> injectors = new HashMap<String, List<Injector<?>>>();
             injectorFactory.createInjectorMappings(injectors, siteMappings, referenceFactories, classLoader);
             injectorFactory.createInjectorMappings(injectors, siteMappings, propertyFactories, classLoader);
-            OASISWebComponentContext oasisContext = new OASISWebComponentContext(this);
+            OASISWebComponentContext oasisContext = new OASISWebComponentContext(this, info);
             Map<String, ObjectFactory<?>> contextFactories = new HashMap<String, ObjectFactory<?>>();
 
-            SingletonObjectFactory<org.oasisopen.sca.ComponentContext> oasisComponentContextFactory =
-                    new SingletonObjectFactory<org.oasisopen.sca.ComponentContext>(oasisContext);
+            SingletonObjectFactory<org.oasisopen.sca.ComponentContext> oasisComponentContextFactory
+                    = new SingletonObjectFactory<org.oasisopen.sca.ComponentContext>(oasisContext);
             contextFactories.put(OASIS_CONTEXT_ATTRIBUTE, oasisComponentContextFactory);
 
             injectorFactory.createInjectorMappings(injectors, siteMappings, contextFactories, classLoader);
@@ -216,6 +218,5 @@ public class WebComponent implements Component {
     public String toString() {
         return "[" + uri.toString() + "] in state [" + super.toString() + ']';
     }
-
 
 }
