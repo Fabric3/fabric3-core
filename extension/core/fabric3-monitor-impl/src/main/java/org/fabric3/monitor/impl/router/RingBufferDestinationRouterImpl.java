@@ -171,7 +171,7 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
     public MonitorEventEntry get() {
         RingBuffer<MonitorEventEntry> ringBuffer = disruptor.getRingBuffer();
         long sequence = ringBuffer.next();
-        MonitorEventEntry entry = ringBuffer.getPreallocated(sequence);
+        MonitorEventEntry entry = ringBuffer.get(sequence);
 
         entry.getBuffer().clear();
         for (ParameterEntry parameterEntry : entry.getEntries()) {
