@@ -58,8 +58,8 @@ import org.fabric3.spi.objectfactory.ObjectFactory;
 public class ProxyBeanFactory extends DefaultListableBeanFactory {
     private static final long serialVersionUID = -7196391297579217924L;
 
-    private Map<String, ObjectFactory> factories = new ConcurrentHashMap<String, ObjectFactory>();
-    private Map<String, BeanDefinition> definitions = new ConcurrentHashMap<String, BeanDefinition>();
+    private transient Map<String, ObjectFactory> factories = new ConcurrentHashMap<String, ObjectFactory>();
+    private transient Map<String, BeanDefinition> definitions = new ConcurrentHashMap<String, BeanDefinition>();
 
     public void add(String name, Class<?> type, ObjectFactory factory) {
         factories.put(name, factory);
