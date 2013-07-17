@@ -61,7 +61,6 @@ public class TimerComponentDomainScopeTestCase extends TestCase {
     private ZoneTopologyService topologyService;
     private TimerService timerService;
 
-
     public void testNotLeaderNoSchedule() throws Exception {
 
         topologyService.register(component);
@@ -115,7 +114,6 @@ public class TimerComponentDomainScopeTestCase extends TestCase {
 
         timerService = EasyMock.createMock(TimerService.class);
 
-
         InvokerMonitor monitor = EasyMock.createNiceMock(InvokerMonitor.class);
 
         ScopeContainer container = EasyMock.createNiceMock(ScopeContainer.class);
@@ -142,13 +140,13 @@ public class TimerComponentDomainScopeTestCase extends TestCase {
                                        null,
                                        topologyService,
                                        info,
-                                       monitor);
+                                       monitor,
+                                       true);
     }
 
     private interface TimerInstance extends Runnable {
         long nextInterval();
     }
-
 
 }
 

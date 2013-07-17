@@ -41,12 +41,10 @@ import javax.transaction.TransactionManager;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.oasisopen.sca.ServiceRuntimeException;
-
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ScopeContainer;
-import org.fabric3.spi.invocation.WorkContext;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  *
@@ -115,13 +113,12 @@ public class TransactionalTimerInvokerTestCase extends TestCase {
 
         EasyMock.replay(container, factory);
 
-        return new TimerComponent(null, null, null, TimerInstance.class, false, factory, container, null, null, null, null, null);
+        return new TimerComponent(null, null, null, TimerInstance.class, false, factory, container, null, null, null, null, null, true);
     }
 
     private interface TimerInstance extends Runnable {
         long nextInterval();
     }
-
 
 }
 

@@ -37,11 +37,11 @@
 */
 package org.fabric3.implementation.timer.runtime;
 
+import javax.transaction.TransactionManager;
+import javax.xml.namespace.QName;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.concurrent.ScheduledFuture;
-import javax.transaction.TransactionManager;
-import javax.xml.namespace.QName;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
@@ -66,6 +66,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
     private ScheduledFuture<?> future;
     private ZoneTopologyService topologyService;
     private InvokerMonitor monitor;
+    private boolean scheduleOnStart;
     private Scope scope;
     private HostInfo info;
     private ClassLoader classLoader;
@@ -83,7 +84,8 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
                           TransactionManager tm,
                           ZoneTopologyService topologyService,
                           HostInfo info,
-                          InvokerMonitor monitor) {
+                          InvokerMonitor monitor,
+                          boolean scheduleOnStart) {
         super(componentId, factory, scopeContainer, deployable, false);
         this.data = data;
         this.implementationClass = implementationClass;
@@ -91,6 +93,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
         this.timerService = timerService;
         this.topologyService = topologyService;
         this.monitor = monitor;
+        this.scheduleOnStart = scheduleOnStart;
         this.scope = scopeContainer.getScope();
         this.tm = tm;
         this.info = info;
@@ -108,7 +111,10 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
                 return;
             }
         }
-        schedule();
+        if (scheduleOnStart) {
+            // only schedule on start if the runtime has started. If the runtime has not yet started, {@link #schedule} will be called externally on start.
+            schedule();
+        }
     }
 
     public void stop() throws ComponentException {
@@ -141,7 +147,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
         schedule();
     }
 
-    private void schedule() {
+    public void schedule() {
         Runnable invoker;
         if (transactional) {
             invoker = new TransactionalTimerInvoker(this, tm, monitor);
@@ -152,18 +158,18 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
         long delay = data.getInitialDelay();
 
         switch (data.getType()) {
-        case FIXED_RATE:
-            future = timerService.scheduleAtFixedRate(name, invoker, delay, data.getFixedRate(), data.getTimeUnit());
-            break;
-        case INTERVAL:
-            future = timerService.scheduleWithFixedDelay(name, invoker, delay, data.getRepeatInterval(), data.getTimeUnit());
-            break;
-        case RECURRING:
-            scheduleRecurring(invoker);
-            break;
-        case ONCE:
-            future = timerService.schedule(data.getPoolName(), invoker, data.getFireOnce(), data.getTimeUnit());
-            break;
+            case FIXED_RATE:
+                future = timerService.scheduleAtFixedRate(name, invoker, delay, data.getFixedRate(), data.getTimeUnit());
+                break;
+            case INTERVAL:
+                future = timerService.scheduleWithFixedDelay(name, invoker, delay, data.getRepeatInterval(), data.getTimeUnit());
+                break;
+            case RECURRING:
+                scheduleRecurring(invoker);
+                break;
+            case ONCE:
+                future = timerService.schedule(data.getPoolName(), invoker, data.getFireOnce(), data.getTimeUnit());
+                break;
         }
     }
 

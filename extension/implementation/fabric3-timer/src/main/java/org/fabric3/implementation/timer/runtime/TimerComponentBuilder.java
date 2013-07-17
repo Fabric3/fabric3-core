@@ -40,6 +40,8 @@ package org.fabric3.implementation.timer.runtime;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;
@@ -54,6 +56,9 @@ import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
+import org.fabric3.spi.event.EventService;
+import org.fabric3.spi.event.Fabric3EventListener;
+import org.fabric3.spi.event.RuntimeStart;
 import org.fabric3.spi.federation.ZoneTopologyService;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
@@ -65,7 +70,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 @EagerInit
-public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDefinition, TimerComponent> {
+public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDefinition, TimerComponent> implements Fabric3EventListener<RuntimeStart> {
     private ScopeRegistry scopeRegistry;
     private ImplementationManagerFactoryBuilder factoryBuilder;
     private TimerService timerService;
@@ -73,6 +78,9 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
     private HostInfo info;
     private ZoneTopologyService topologyService;
     private InvokerMonitor monitor;
+
+    private List<TimerComponent> scheduleQueue;
+    private boolean runtimeStarted;
 
     public TimerComponentBuilder(@Reference ScopeRegistry scopeRegistry,
                                  @Reference ImplementationManagerFactoryBuilder factoryBuilder,
@@ -82,6 +90,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
                                  @Reference TransactionManager tm,
                                  @Reference ManagementService managementService,
                                  @Reference IntrospectionHelper helper,
+                                 @Reference EventService eventService,
                                  @Reference HostInfo info,
                                  @Monitor InvokerMonitor monitor) {
         super(classLoaderRegistry, propertyBuilder, managementService, helper, info);
@@ -91,6 +100,8 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
         this.tm = tm;
         this.info = info;
         this.monitor = monitor;
+        eventService.subscribe(RuntimeStart.class, this);
+        scheduleQueue = new ArrayList<TimerComponent>();
     }
 
     @Reference(required = false)
@@ -129,7 +140,12 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
                                                       tm,
                                                       topologyService,
                                                       info,
-                                                      monitor);
+                                                      monitor,
+                                                      runtimeStarted);
+        if (!runtimeStarted) {
+            // defer scheduling to after the runtime has started
+            scheduleQueue.add(component);
+        }
         buildContexts(component, factory);
         export(definition, classLoader, component);
         return component;
@@ -137,5 +153,14 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
 
     public void dispose(TimerComponentDefinition definition, TimerComponent component) throws BuilderException {
         dispose(definition);
+    }
+
+    public void onEvent(RuntimeStart event) {
+        // runtime has started, schedule any deferred components
+        runtimeStarted = true;
+        for (TimerComponent component : scheduleQueue) {
+            component.schedule();
+        }
+        scheduleQueue.clear();
     }
 }
