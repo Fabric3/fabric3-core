@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.fabric3.host.Namespaces;
+import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.model.type.definitions.Intent;
@@ -407,7 +409,11 @@ public class DefaultPolicyResolver implements PolicyResolver {
             PolicyMetadata metadata = policyResult.getMetadata(operation);
             metadata.addAll(targetOperation.getDefinition().getMetadata());
             // add metadata from implementation
-            metadata.addAll(targetOperation.getParent().getParent().getDefinition().getImplementation().getMetadata());
+            ComponentDefinition<? extends Implementation<?>> parentDefinition = targetOperation.getParent().getParent().getDefinition();
+            Implementation<?> parentImplementation = parentDefinition.getImplementation();
+            metadata.addAll(parentImplementation.getMetadata());
+            // add metadata from component type
+            metadata.addAll(parentImplementation.getComponentType().getMetadata());
             // important: use reference side operation as the key
             policyResult.addTargetPolicySets(operation, CollectionUtils.filter(policies, PROVIDED));
             policyResult.addInterceptedPolicySets(operation, CollectionUtils.filter(policies, INTERCEPTION));
