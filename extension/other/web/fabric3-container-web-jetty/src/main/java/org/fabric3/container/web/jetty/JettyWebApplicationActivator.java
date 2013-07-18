@@ -46,6 +46,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.jetty.servlet.ServletHandler;
@@ -217,7 +218,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
     private void export(WebAppContext context) throws ManagementException {
         String displayName = context.getDisplayName();
         if (displayName == null) {
-            displayName = context.toString();
+            displayName = UUID.randomUUID().toString();
         }
         String webAppName = encodeName(displayName);
         managementService.export(webAppName, "webapps/" + webAppName, "web application", context);
