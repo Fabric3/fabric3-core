@@ -45,9 +45,9 @@ import org.fabric3.spi.command.Response;
 import org.fabric3.spi.command.ResponseCommand;
 
 /**
- * Responsible for group communications within a domain zone. This service is present only on participant runtimes in a federated topology and
- * provides low-level communications between a participant and other runtimes (a participant or controller). Higher-level communications semantics
- * such as deployment can be layered over this service.
+ * Responsible for group communications within a domain zone. This service is present only on participant runtimes in a federated topology and provides
+ * low-level communications between a participant and other runtimes (a participant or controller). Higher-level communications semantics such as deployment can
+ * be layered over this service.
  */
 public interface ZoneTopologyService {
 
@@ -59,8 +59,7 @@ public interface ZoneTopologyService {
     boolean isZoneLeader();
 
     /**
-     * Returns true if the group communications infrastructure supports creation of channels using {@link #openChannel(String, String,
-     * MessageReceiver)}.
+     * Returns true if the group communications infrastructure supports creation of channels using {@link #openChannel(String, String, MessageReceiver)}.
      *
      * @return true if the group communications infrastructure supports creation of channels
      */
@@ -159,6 +158,14 @@ public interface ZoneTopologyService {
     void sendAsynchronousToController(Command command) throws MessageException;
 
     /**
+     * Returns true if the channel is open.
+     *
+     * @param name the channel name
+     * @return true if the channel is open
+     */
+    boolean isChannelOpen(String name);
+
+    /**
      * Opens a channel.
      *
      * @param name          the channel name
@@ -189,8 +196,8 @@ public interface ZoneTopologyService {
      * Asynchronously sends a message over the given channel to the specified runtime.
      *
      * @param runtimeName the runtime
-     * @param name    the channel name
-     * @param message the message
+     * @param name        the channel name
+     * @param message     the message
      * @throws MessageException if there is an error sending the message
      */
     void sendAsynchronous(String runtimeName, String name, Serializable message) throws MessageException;

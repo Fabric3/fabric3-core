@@ -298,6 +298,10 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         sendAsync(controller, command);
     }
 
+    public boolean isChannelOpen(String name) {
+        return channels.containsKey(name);
+    }
+
     public void openChannel(String name, String configuration, MessageReceiver receiver) throws ZoneChannelException {
         if (channels.containsKey(name)) {
             throw new ZoneChannelException("Channel already open:" + name);

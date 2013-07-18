@@ -37,13 +37,6 @@
 */
 package org.fabric3.runtime.weblogic.federation;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
 import javax.management.JMException;
 import javax.naming.Binding;
 import javax.naming.CommunicationException;
@@ -52,12 +45,15 @@ import javax.naming.InitialContext;
 import javax.naming.NameAlreadyBoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
+import java.io.IOException;
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
@@ -79,7 +75,11 @@ import org.fabric3.spi.federation.MessageReceiver;
 import org.fabric3.spi.federation.TopologyListener;
 import org.fabric3.spi.federation.ZoneChannelException;
 import org.fabric3.spi.federation.ZoneTopologyService;
-
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CONTEXT;
 import static org.fabric3.runtime.weblogic.federation.Constants.DYNAMIC_CHANNEL_CONTEXT;
 import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONTEXT;
@@ -107,6 +107,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     private String zoneName;
 
     private List<ChannelOpenRequest> channelRequests = new ArrayList<ChannelOpenRequest>();
+    private Set<String> openChannels = new HashSet<String>();
 
     public WebLogicZoneTopologyService(@Reference EventService eventService,
                                        @Reference SerializationService serializationService,
@@ -272,7 +273,15 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         throw new UnsupportedOperationException();
     }
 
+    public boolean isChannelOpen(String name) {
+        return openChannels.contains(name);
+    }
+
     public void openChannel(String name, String configuration, MessageReceiver receiver) throws ZoneChannelException {
+        if (isChannelOpen(name)) {
+            throw new ZoneChannelException("Channel already open: " + name);
+        }
+
         Context rootContext = null;
         Context dynamicChannelContext = null;
         RuntimeChannelImpl channel = new RuntimeChannelImpl(runtimeName, executorRegistry, serializationService, receiver, monitor);
@@ -280,6 +289,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
             rootContext = getRootContext();
             dynamicChannelContext = JndiHelper.getContext(DYNAMIC_CHANNEL_CONTEXT, rootContext);
             dynamicChannelContext.bind(name + ":" + runtimeName, channel);
+            openChannels.add(name);
         } catch (NameAlreadyBoundException e) {
             try {
                 dynamicChannelContext.rebind(name + ":" + runtimeName, channel);
@@ -306,6 +316,7 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
             rootContext = getRootContext();
             dynamicChannelContext = JndiHelper.getContext(DYNAMIC_CHANNEL_CONTEXT, rootContext);
             dynamicChannelContext.unbind(name + ":" + runtimeName);
+            openChannels.remove(name);
         } catch (CommunicationException e) {
             // Controller was not available. Ignore since the controller could have been shutdown before the participant
         } catch (NamingException e) {
@@ -489,7 +500,6 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         return true;
     }
 
-
     /**
      * Event listener that binds the runtime Channel to the JNDI tree when the JoinDomain event is fired.
      */
@@ -507,9 +517,9 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     }
 
     /**
-     * Used to asynchronously attempt to initialize and update the runtime if the controller is not available when it boots. This polling mechanism is
-     * required as WebLogic remote JNDI contexts do not implement EventContext to receive callbacks when a JNDI object changes (such as a controller
-     * channel becoming available).
+     * Used to asynchronously attempt to initialize and update the runtime if the controller is not available when it boots. This polling mechanism is required
+     * as WebLogic remote JNDI contexts do not implement EventContext to receive callbacks when a JNDI object changes (such as a controller channel becoming
+     * available).
      */
     private class Work implements Runnable {
 

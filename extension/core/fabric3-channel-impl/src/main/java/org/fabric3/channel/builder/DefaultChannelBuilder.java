@@ -110,10 +110,12 @@ public class DefaultChannelBuilder implements ChannelBuilder {
             String channelName = uri.toString();
             ReplicationHandler replicationHandler = new ReplicationHandler(channelName, topologyService, monitor);
             channel = new DefaultChannelImpl(uri, deployable, replicationHandler, fanOutHandler, definition.getChannelSide());
-            try {
-                topologyService.openChannel(channelName, null, replicationHandler);
-            } catch (ZoneChannelException e) {
-                throw new BuilderException(e);
+            if (!topologyService.isChannelOpen(channelName)) {
+                try {
+                    topologyService.openChannel(channelName, null, replicationHandler);
+                } catch (ZoneChannelException e) {
+                    throw new BuilderException(e);
+                }
             }
         } else {
             channel = new DefaultChannelImpl(uri, deployable, fanOutHandler, definition.getChannelSide());
