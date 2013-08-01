@@ -104,19 +104,15 @@ public class ArtifactHelper {
         List<Exclusion> exclusions = Collections.emptyList();
         Dependency dependency = new Dependency();
         dependency.setGroupId("org.codehaus.fabric3");
-        if (mavenVersion == 2) {
-            dependency.setArtifactId("fabric3-maven-host");
-        } else {
-            dependency.setArtifactId("fabric3-maven3-host");
-        }
+        dependency.setArtifactId("fabric3-maven3-host");
         dependency.setVersion(runtimeVersion);
         dependency.setExclusions(exclusions);
         return resolveArtifacts(dependency, Collections.<ArtifactRepository>emptySet(), true);
     }
 
     /**
-     * Calculates module dependencies based on the set of project artifacts. Module dependencies must be visible to implementation code in a composite
-     * and encompass project artifacts minus artifacts provided by the host classloader and those that are "provided scope".
+     * Calculates module dependencies based on the set of project artifacts. Module dependencies must be visible to implementation code in a composite and
+     * encompass project artifacts minus artifacts provided by the host classloader and those that are "provided scope".
      *
      * @param projectArtifacts the artifact set to determine module dependencies from
      * @param hostArtifacts    the set of host artifacts
@@ -169,8 +165,7 @@ public class ArtifactHelper {
      * @return the set of artifacts to be included in the host classloader
      * @throws MojoExecutionException if an error occurs calculating the transitive dependencies
      */
-    public Set<Artifact> calculateHostArtifacts(Set<Artifact> runtimeArtifacts, Dependency[] shared)
-            throws MojoExecutionException {
+    public Set<Artifact> calculateHostArtifacts(Set<Artifact> runtimeArtifacts, Dependency[] shared) throws MojoExecutionException {
 
         Set<Artifact> hostArtifacts = new HashSet<Artifact>();
         List<Exclusion> exclusions = Collections.emptyList();
@@ -236,8 +231,7 @@ public class ArtifactHelper {
         Set<ArtifactRepository> repositories = new HashSet<ArtifactRepository>();
         try {
             for (Dependency profile : profiles) {
-                Artifact artifact =
-                        artifactFactory.createArtifact(profile.getGroupId(), profile.getArtifactId(), profile.getVersion(), "compile", "jar");
+                Artifact artifact = artifactFactory.createArtifact(profile.getGroupId(), profile.getArtifactId(), profile.getVersion(), "compile", "jar");
                 ResolutionGroup resolutionGroup = metadataSource.retrieve(artifact, localRepository, remoteRepositories);
                 Set<Artifact> extensions = resolutionGroup.getArtifacts();
                 for (Artifact extension : extensions) {
@@ -280,8 +274,7 @@ public class ArtifactHelper {
      * @throws MojoExecutionException if unable to resolve any dependencies.
      */
     @SuppressWarnings({"unchecked"})
-    private Set<Artifact> resolveArtifacts(Dependency dependency, Set<ArtifactRepository> repositories, boolean transitive)
-            throws MojoExecutionException {
+    private Set<Artifact> resolveArtifacts(Dependency dependency, Set<ArtifactRepository> repositories, boolean transitive) throws MojoExecutionException {
         Set<Artifact> artifacts = new HashSet<Artifact>();
         if (dependency.getVersion() == null) {
             resolveVersion(dependency);
