@@ -77,7 +77,7 @@ public class FileAppender implements Appender {
 
     public void write(ByteBuffer buffer) throws IOException {
         roll();
-        fileChannel. write(buffer);
+        fileChannel.write(buffer);
         if (reliable) {
             fileChannel.force(false);
         }

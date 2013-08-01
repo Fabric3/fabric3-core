@@ -197,10 +197,6 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
         }
     }
 
-    public MonitorLevel getContributionLevel(String key) {
-        return contributionLevels.get(URI.create(key));
-    }
-
     public void onBuild(Component component, PhysicalComponentDefinition definition) {
         if (MonitorLevel.INFO != defaultLevel) {
             component.setLevel(defaultLevel);
