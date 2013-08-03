@@ -110,6 +110,14 @@
             <outputDirectory>fabric3/domain_lib</outputDirectory>
         </dependencySet>
 
+        <!-- copy modules that must be placed in the WebLogic server classpath -->
+        <dependencySet>
+            <includes>
+                <include>org.codehaus.fabric3.weblogic:fabric3-weblogic-host</include>
+            </includes>
+            <outputDirectory>fabric3/war</outputDirectory>
+        </dependencySet>
+
     </dependencySets>
 
 
