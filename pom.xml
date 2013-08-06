@@ -144,7 +144,18 @@
             </build>
         </profile>
     </profiles>
-
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <detectOfflineLinks>false</detectOfflineLinks>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
     <scm>
         <connection>scm:git:git@github.com:Fabric3/fabric3-core.git</connection>
         <developerConnection>scm:git:git@github.com:Fabric3/fabric3-core.git</developerConnection>
