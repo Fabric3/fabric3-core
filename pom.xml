@@ -32,6 +32,7 @@
     </modules>
 
     <properties>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
         <fabric3.release.version>2.0.0</fabric3.release.version>
         <sca.api.version>1.1.3</sca.api.version>
         <jta.version>1.1.1</jta.version>
@@ -84,6 +85,22 @@
                 <extensions>true</extensions>
                 <version>2.0.0</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <detectOfflineLinks>false</detectOfflineLinks>
+                </configuration>
+            </plugin>
         </plugins>
 
     </build>
@@ -120,42 +137,8 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>release-profile</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9</version>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <detectOfflineLinks>false</detectOfflineLinks>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9</version>
-                <configuration>
-                    <detectOfflineLinks>false</detectOfflineLinks>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
+     </profiles>
+
     <scm>
         <connection>scm:git:git@github.com:Fabric3/fabric3-core.git</connection>
         <developerConnection>scm:git:git@github.com:Fabric3/fabric3-core.git</developerConnection>
