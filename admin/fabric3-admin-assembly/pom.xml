@@ -82,10 +82,4 @@
         </plugins>
     </build>
 
-    <scm>
-        <connection>scm:svn:http://svn.codehaus.org/fabric3/modules/trunk/adminfabric3-admin-assembly</connection>
-        <developerConnection>scm:svn:https://svn.codehaus.org/fabric3/modules/trunk/admin/fabric3-admin-assembly</developerConnection>
-        <url>http://svn.fabric3.codehaus.org/browse/fabric3/modules/trunk/admin/fabric3-admin-assembly</url>
-    </scm>
-
 </project>
