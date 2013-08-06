@@ -121,7 +121,7 @@
             </build>
         </profile>
         <profile>
-            <id>release</id>
+            <id>release-profile</id>
             <build>
                 <plugins>
                     <plugin>
