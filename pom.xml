@@ -85,7 +85,13 @@
                 <version>2.0.0</version>
             </plugin>
         </plugins>
-
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>2.4</version>
+            </extension>
+        </extensions>
     </build>
 
     <profiles>
@@ -150,6 +156,20 @@
         </profile>
 
     </profiles>
+
+    <distributionManagement>
+        <repository>
+            <id>codehaus.org</id>
+            <name>Codehaus Central Repository</name>
+            <url>dav:https://dav.codehaus.org/repository/fabric3/</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>codehaus.org</id>
+            <name>Codehaus Central Development Repository</name>
+            <url>dav:https://dav.codehaus.org/snapshots.repository/fabric3/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <scm>
         <connection>scm:git:git@github.com:Fabric3/fabric3-core.git</connection>
