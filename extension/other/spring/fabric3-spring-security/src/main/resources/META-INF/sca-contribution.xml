@@ -13,8 +13,8 @@ Public License. See the accompanying license file for details.
               xmlns:f3="urn:fabric3.org"
               f3:description="Spring Security extension"
               f3:extension="true">
-    <import.java package="org.fabric3.spi.*" version="2.0.0"/>
-    <import.java package="org.fabric3.datasource.spi" version="2.0.0"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.0"/>
+    <import.java package="org.fabric3.datasource.spi" version="2.5.0"/>
     <import.java package="org.springframework.*"/>
     <import.java package="org.fabric3.spring.spi"/>
     <deployable composite="f3:SpringSecurityExtension"/>

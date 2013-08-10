@@ -18,8 +18,8 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.transaction" version="1.1.0"/>
     <import.java package="javax.transaction.xa" version="1.1.0"/>
     <import.java package="org.jgroups.*" version="3.0.0"/>
-    <import.java package="org.fabric3.spi.*" version="2.0.0"/>
-    <import.java package="org.fabric3.cache.spi" version="2.0.0"/>
+    <import.java package="org.fabric3.spi.*" version="2.5.0"/>
+    <import.java package="org.fabric3.cache.spi" version="2.5.0"/>
 
     <!-- required to load Infinispan configuration -->
     <f3:provides name="jaxb"/>
