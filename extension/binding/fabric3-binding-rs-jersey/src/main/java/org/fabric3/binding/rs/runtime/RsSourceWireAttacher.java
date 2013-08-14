@@ -114,6 +114,8 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         } catch (ClassNotFoundException e) {
             String name = source.getRsClass();
             throw new WireAttachException("Unable to load interface class " + name, sourceUri, null, e);
+        } catch (RsContainerException e) {
+            throw new WireAttachException("Error attaching source: " + sourceUri, e);
         }
     }
 
@@ -141,7 +143,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         return servletMapping;
     }
 
-    private void provision(RsSourceDefinition sourceDefinition, Wire wire, RsContainer container) throws ClassNotFoundException {
+    private void provision(RsSourceDefinition sourceDefinition, Wire wire, RsContainer container) throws ClassNotFoundException, RsContainerException {
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(sourceDefinition.getClassLoaderId());
         Map<String, InvocationChain> invocationChains = new HashMap<String, InvocationChain>();
         for (InvocationChain chain : wire.getInvocationChains()) {

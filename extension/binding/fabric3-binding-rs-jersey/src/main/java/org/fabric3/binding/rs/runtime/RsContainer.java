@@ -79,19 +79,17 @@ public final class RsContainer extends HttpServlet {
 
     private ServletContainer servlet;
     private ServletConfig servletConfig;
-    private boolean reload = false;
     private List<Resource> resources;
     private String path;
 
     public RsContainer(String path) {
         this.path = path;
         this.resources = new ArrayList<Resource>();
-        reload = true;
     }
 
-    public void addResource(Resource resource) {
+    public void addResource(Resource resource) throws RsContainerException {
         resources.add(resource);
-        reload = true;
+        reload();
     }
 
     public void init(ServletConfig config) {
@@ -99,8 +97,6 @@ public final class RsContainer extends HttpServlet {
     }
 
     protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        reload();
-
         req = new HttpServletRequestWrapper(req);
 
         ClassLoader old = Thread.currentThread().getContextClassLoader();
@@ -126,10 +122,7 @@ public final class RsContainer extends HttpServlet {
         }
     }
 
-    private void reload() throws ServletException {
-        if (!reload) {
-            return;
-        }
+    private void reload() throws RsContainerException {
         try {
             // register contribution resources
             ResourceConfig resourceConfig = new ResourceConfig();
@@ -138,15 +131,12 @@ public final class RsContainer extends HttpServlet {
             }
             servlet = new ServletContainer(resourceConfig);
             servlet.init(servletConfig);
-        } catch (ServletException se) {
-            se.printStackTrace();
-            throw se;
+        } catch (ServletException e) {
+            throw new RsContainerException(e);
         } catch (Throwable t) {
-            ServletException se = new ServletException(t);
-            se.printStackTrace();
-            throw se;
+            RsContainerException e = new RsContainerException(t);
+            throw e;
         }
-        reload = false;
     }
 
     /**
