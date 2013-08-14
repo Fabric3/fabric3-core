@@ -12,11 +12,11 @@ Public License. See the accompanying license file for details.
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
               f3:extension="true">
-    <import.java package="org.fabric3.spi.*" version="2.5.0"/>
-    <import.java package="org.fabric3.util.*" version="2.5.0"/>
-    <import.java package="org.fabric3.federation.jgroups.log" version="2.5.0"/>
-    <import.java package="org.fabric3.federation.deployment.command" version="2.5.0"/>
-    <import.java package="org.fabric3.federation.deployment.executor" version="2.5.0"/>
+    <import.java package="org.fabric3.spi.*" version="2.0.1"/>
+    <import.java package="org.fabric3.util.*" version="2.0.1"/>
+    <import.java package="org.fabric3.federation.jgroups.log" version="2.0.1"/>
+    <import.java package="org.fabric3.federation.deployment.command" version="2.0.1"/>
+    <import.java package="org.fabric3.federation.deployment.executor" version="2.0.1"/>
 
     <import.java package="org.jgroups.*" version="3.0.0"/>
 

@@ -18,10 +18,10 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.persistence" version="1.0.0"/>
     <import.java package="org.hibernate.*" version="4.2.2"/>
     <import.java package="javassist.util.proxy" version="3.4.0.GA"/>
-    <import.java package="org.fabric3.spi.*" version="2.5.0"/>
-    <import.java package="org.fabric3.resource.jndi.proxy.jdbc" version="2.5.0"/>
+    <import.java package="org.fabric3.spi.*" version="2.0.1"/>
+    <import.java package="org.fabric3.resource.jndi.proxy.jdbc" version="2.0.1"/>
     <import.java package="org.fabric3.datasource.spi"/>
-    <export.java package="org.fabric3.jpa.api" version="2.5.0"/>
+    <export.java package="org.fabric3.jpa.api" version="2.0.1"/>
     <f3:requires.capability name="transaction"/>
     <f3:provides.capability name="jpa"/>
     <f3:provides.capability name="hibernate"/>
