@@ -37,15 +37,6 @@
 */
 package org.fabric3.jpa.runtime.emf;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.JarURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
 import javax.persistence.spi.PersistenceUnitInfo;
@@ -55,12 +46,19 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.Reference;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.JarURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import org.fabric3.datasource.spi.DataSourceRegistry;
 import org.fabric3.spi.xml.XMLFactory;
-
+import org.oasisopen.sca.annotation.Reference;
 import static javax.persistence.spi.PersistenceUnitTransactionType.JTA;
 import static javax.persistence.spi.PersistenceUnitTransactionType.RESOURCE_LOCAL;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -79,7 +77,7 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
     }
 
     public List<PersistenceUnitInfo> parse(ClassLoader classLoader) throws PersistenceUnitException {
-        Enumeration<URL> urls = null;
+        Enumeration<URL> urls;
         try {
             urls = classLoader.getResources("META-INF/persistence.xml");
         } catch (IOException e) {
