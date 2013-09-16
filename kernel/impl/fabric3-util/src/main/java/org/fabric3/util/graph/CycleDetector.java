@@ -60,6 +60,12 @@ public interface CycleDetector<T> {
      */
     DirectedGraph<T> findCycleSubgraph(DirectedGraph<T> graph);
 
-    public List<Cycle<T>> findCycles(DirectedGraph<T> graph);
+    /**
+     * Finds and returns cycles in the graph.
+     *
+     * @param graph the graph
+     * @return found cycles or an empty collection
+     */
+    List<Cycle<T>> findCycles(DirectedGraph<T> graph);
 
 }
