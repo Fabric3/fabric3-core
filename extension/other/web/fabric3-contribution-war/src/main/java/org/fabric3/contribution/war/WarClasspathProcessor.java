@@ -43,6 +43,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,19 +51,18 @@ import java.util.Random;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.host.util.IOHelper;
+import org.fabric3.spi.contribution.archive.ClasspathProcessor;
+import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
+import org.fabric3.spi.model.os.Library;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.model.os.Library;
-import org.fabric3.spi.contribution.archive.ClasspathProcessor;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
-
 /**
- * Creates a classpath based on the contents of a WAR. Specifically, adds jars contained in WEB-INF/lib and classes in WEB-INF/classes to the
- * classpath.
+ * Creates a classpath based on the contents of a WAR. Specifically, adds jars contained in WEB-INF/lib and classes in WEB-INF/classes to the classpath.
  */
 @EagerInit
 public class WarClasspathProcessor implements ClasspathProcessor {
@@ -86,7 +86,6 @@ public class WarClasspathProcessor implements ClasspathProcessor {
         registry.unregister(this);
     }
 
-
     public boolean canProcess(URL url) {
         String name = url.getFile().toLowerCase();
         return name.endsWith(".war");
@@ -96,6 +95,10 @@ public class WarClasspathProcessor implements ClasspathProcessor {
         List<URL> classpath = new ArrayList<URL>();
         // add the the jar itself to the classpath
         classpath.add(url);
+
+        if (libraries.isEmpty() && !hasLibDirectory(new File(url.getFile()), "lib") && !hasLibDirectory(new File(url.getFile()), "classes")) {
+            return classpath;
+        }
 
         // add libraries from the jar
         addLibraries(classpath, url);
@@ -158,6 +161,25 @@ public class WarClasspathProcessor implements ClasspathProcessor {
             }
         } finally {
             is.close();
+        }
+    }
+
+    private boolean hasLibDirectory(File file, String dir) {
+        InputStream stream = null;
+        try {
+            URL jarUrl = new URL("jar:" + file.toURI().toURL().toExternalForm() + "!/WEB-INF/" + dir);
+            stream = jarUrl.openStream();
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        } finally {
+            try {
+                IOHelper.closeQuietly(stream);
+            } catch (NullPointerException e) {
+                // ignore will be thrown if the directory exists as the underlying stream is null
+            }
         }
     }
 

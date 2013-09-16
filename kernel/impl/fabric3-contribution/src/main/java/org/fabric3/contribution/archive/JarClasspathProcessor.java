@@ -44,6 +44,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -52,28 +53,27 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.oasisopen.sca.annotation.Property;
+import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.host.util.IOHelper;
+import org.fabric3.spi.contribution.archive.ClasspathProcessor;
+import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
+import org.fabric3.spi.model.os.Library;
+import org.fabric3.spi.model.os.OperatingSystemSpec;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.util.IOHelper;
-import org.fabric3.spi.model.os.Library;
-import org.fabric3.spi.model.os.OperatingSystemSpec;
-import org.fabric3.spi.contribution.archive.ClasspathProcessor;
-import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
-
 /**
- * Creates a classpath based on the contents of a jar by adding the jar and any zip/jar archives found in META-INF/lib to the classpath. This is dome
- * using one of two strategies. If the <code>$systemConfig//runtime/explode.jars</code> property is set to false (the default), embedded jars will be
- * copied to a temporary file, which is placed on the classpath using a jar: URL. If set to true, the contents of the embedded jar file will be
- * extracted to the filesystem and placed on the classpath using a file: URL instead.
+ * Creates a classpath based on the contents of a jar by adding the jar and any zip/jar archives found in META-INF/lib to the classpath. This is dome using one
+ * of two strategies. If the <code>$systemConfig//runtime/explode.jars</code> property is set to false (the default), embedded jars will be copied to a
+ * temporary file, which is placed on the classpath using a jar: URL. If set to true, the contents of the embedded jar file will be extracted to the filesystem
+ * and placed on the classpath using a file: URL instead.
  * <p/>
- * The extract option is designed to work around a bug on Windows where the Sun JVM acquires an OS read lock on jar files when accessing resources
- * from a jar: URL and does not release it. This results in holding open temporary file handles and not being able to delete those files until the JVM
- * terminates. This issue does not occur on Unix systems.
+ * The extract option is designed to work around a bug on Windows where the Sun JVM acquires an OS read lock on jar files when accessing resources from a jar:
+ * URL and does not release it. This results in holding open temporary file handles and not being able to delete those files until the JVM terminates. This
+ * issue does not occur on Unix systems.
  */
 @EagerInit
 public class JarClasspathProcessor implements ClasspathProcessor {
@@ -103,7 +103,6 @@ public class JarClasspathProcessor implements ClasspathProcessor {
         registry.unregister(this);
     }
 
-
     public boolean canProcess(URL url) {
         String name = url.getFile().toLowerCase();
         return name.endsWith(".jar") || name.endsWith(".zip") || name.endsWith("/classes") || name.endsWith("/classes/");
@@ -113,6 +112,10 @@ public class JarClasspathProcessor implements ClasspathProcessor {
         List<URL> classpath = new ArrayList<URL>();
         // add the the jar itself to the classpath
         classpath.add(jar);
+
+        if (libraries.isEmpty() && !hasLibDirectory(new File(jar.getFile()))) {
+            return classpath;
+        }
 
         File dir = hostInfo.getTempDir();
         InputStream is = jar.openStream();
@@ -239,6 +242,25 @@ public class JarClasspathProcessor implements ClasspathProcessor {
         }
     }
 
+    private boolean hasLibDirectory(File file) {
+        InputStream stream = null;
+        try {
+            URL jarUrl = new URL("jar:" + file.toURI().toURL().toExternalForm() + "!/META-INF/lib");
+            stream = jarUrl.openStream();
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        } finally {
+            try {
+                IOHelper.closeQuietly(stream);
+            } catch (NullPointerException e) {
+                // ignore will be thrown if the directory exists as the underlying stream is null
+            }
+        }
+    }
+
     private Set<String> resolveNativeLibraries(List<Library> libraries) {
         Set<String> paths = new HashSet<String>();
         for (Library library : libraries) {
@@ -251,6 +273,5 @@ public class JarClasspathProcessor implements ClasspathProcessor {
         }
         return paths;
     }
-
 
 }
