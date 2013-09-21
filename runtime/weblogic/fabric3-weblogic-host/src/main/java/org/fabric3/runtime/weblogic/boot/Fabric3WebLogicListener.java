@@ -253,7 +253,8 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             // boot the runtime
             coordinator = bootstrapService.createCoordinator(configuration);
-            coordinator.prepare();
+            coordinator.boot();
+            coordinator.load();
             context.setAttribute(RUNTIME_ATTRIBUTE, runtime);
 
             MonitorProxyService monitorService = runtime.getComponent(MonitorProxyService.class, MONITOR_FACTORY_URI);
@@ -287,7 +288,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             // If the deployment state is activated, start immediately. Otherwise, do so asynchronously.
             // Note that an MBean NotificationListener cannot be used as the WLS MBean does not emmit notifications.
             if (WLS_ACTIVATED_STATE == state) {
-                coordinator.joinAndStart();
+                coordinator.joinDomain();
                 monitor.started(runtimeMode.toString());
             } else {
                 Executors.newSingleThreadExecutor().submit(new Runnable() {
@@ -296,7 +297,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
                             try {
                                 int state = (Integer) mBeanServer.getAttribute(componentRuntime, "DeploymentState");
                                 if (WLS_ACTIVATED_STATE == state) {
-                                    coordinator.joinAndStart();
+                                    coordinator.joinDomain();
                                     monitor.started(runtimeMode.toString());
                                     return;
                                 }

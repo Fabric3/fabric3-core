@@ -34,25 +34,52 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host.runtime;
+*/
+package org.fabric3.api.node;
+
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 
 /**
+ * Bootstraps an interface to a service fabric.
  */
-public class ScanException extends InitializationException {
-    private static final long serialVersionUID = -8809402788313731400L;
+public class Bootstrap {
+    private static final String FABRIC_CLASS = "org.fabric3.node.DefaultFabric";
 
-    public ScanException(String message, Throwable cause) {
-        super(message, cause);
+    /**
+     * Bootstraps the fabric interface using the default configuration.
+     *
+     * @throws FabricException if an exception occurs during bootstrap
+     */
+    public static Fabric initialize() throws FabricException {
+        return initialize(null);
     }
 
-    public ScanException(String message) {
-        super(message);
+    /**
+     * Bootstraps the fabric interface using the provided configuration.
+     *
+     * @param url the system configuration
+     * @throws FabricException if an exception occurs during bootstrap
+     */
+    public static Fabric initialize(URL url) throws FabricException {
+        try {
+            Class<?> implClass = Class.forName(FABRIC_CLASS, true, Bootstrap.class.getClassLoader());
+            return (Fabric) implClass.getConstructor(URL.class).newInstance(url);
+        } catch (ClassNotFoundException e) {
+            // programming error
+            throw new FabricException(e);
+        } catch (IllegalAccessException e) {
+            // programming error
+            throw new FabricException(e);
+        } catch (InstantiationException e) {
+            // programming error
+            throw new FabricException(e);
+        } catch (NoSuchMethodException e) {
+            // programming error
+            throw new FabricException(e);
+        } catch (InvocationTargetException e) {
+            // programming error
+            throw new FabricException(e.getTargetException());
+        }
     }
 }

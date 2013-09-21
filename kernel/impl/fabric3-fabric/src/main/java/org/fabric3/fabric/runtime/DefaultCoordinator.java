@@ -64,8 +64,6 @@ import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeRecover;
 import org.fabric3.spi.event.RuntimeStart;
 import org.fabric3.spi.event.RuntimeStop;
-
-import static org.fabric3.fabric.runtime.FabricNames.EVENT_SERVICE_URI;
 import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
 import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
 import static org.fabric3.host.Names.RUNTIME_DOMAIN_SERVICE_URI;
@@ -88,14 +86,13 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     }
 
     public void start() throws InitializationException {
-        prepare();
-        joinAndStart();
+        boot();
+        load();
+        joinDomain();
     }
 
-    public void prepare() throws InitializationException {
-        // boot primordial services
+    public void boot() throws InitializationException {
         runtime.boot();
-
         Bootstrapper bootstrapper = new DefaultBootstrapper(configuration);
 
         // boot runtime domain
@@ -104,6 +101,9 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         // initialize core system components
         bootstrapper.bootSystem();
 
+    }
+
+    public void load() throws InitializationException {
         // load and initialize runtime extension components and the local runtime domain
         loadExtensions();
 
@@ -112,10 +112,9 @@ public class DefaultCoordinator implements RuntimeCoordinator {
 
         // initiate local runtime recovery
         recover(eventService);
-
     }
 
-    public void joinAndStart() {
+    public void joinDomain() {
         EventService eventService = runtime.getComponent(EventService.class);
         eventService.publish(new JoinDomain());
 
@@ -130,7 +129,6 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         state = RuntimeState.STARTED;
     }
 
-
     public void shutdown() throws ShutdownException {
         if (state == RuntimeState.STARTED) {
             EventService eventService = runtime.getComponent(EventService.class);
@@ -139,7 +137,6 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         }
         state = RuntimeState.SHUTDOWN;
     }
-
 
     /**
      * Loads runtime extensions.

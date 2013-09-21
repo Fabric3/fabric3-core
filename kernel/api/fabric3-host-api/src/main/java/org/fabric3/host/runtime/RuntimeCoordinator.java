@@ -56,29 +56,35 @@ public interface RuntimeCoordinator {
     RuntimeState getState();
 
     /**
-     * Prepares the runtime, synchronizes it with the domain, and places it in a state to receive requests. Equivalent to calling {@link #prepare()}
-     * and {@link #joinAndStart()}.
+     * Prepares the runtime, synchronizes it with the domain, and places it in a state to receive requests. Equivalent to calling {@link #boot()}, {@link
+     * #load()} and {@link #joinDomain()}.
      *
      * @throws InitializationException if an error occurs starting the runtime
      */
     void start() throws InitializationException;
 
     /**
-     * Prepares the runtime by performing bootstrap, extension initialization, and local recovery. Used in runtime hosts that require additional
-     * initialization steps prior to placing Fabric3 in a state to receive requests.
+     * Prepares the runtime by performing bootstrap.
      *
-     * @throws InitializationException if an error occurs preparing the runtime
+     * @throws InitializationException if an error occurs booting the runtime
      */
-    public void prepare() throws InitializationException;
+    void boot() throws InitializationException;
+
+    /**
+     * Loads extensions and performs local recovery.
+     *
+     * @throws InitializationException if an error occurs loading the runtime
+     */
+    void load() throws InitializationException;
 
     /**
      * Performs domain synchronization, domain recovery and places the runtime in a state to receive requests.
      */
-    public void joinAndStart();
+    void joinDomain();
 
     /**
-     * Shuts the runtime down, stopping it from receiving requests and detaching it from the domain. In-flight synchronous operations will be allowed
-     * to proceed to completion.
+     * Shuts the runtime down, stopping it from receiving requests and detaching it from the domain. In-flight synchronous operations will be allowed to proceed
+     * to completion.
      *
      * @throws ShutdownException if an error occurs shutting down the runtime
      */

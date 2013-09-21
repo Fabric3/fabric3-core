@@ -151,7 +151,9 @@ public final class BootstrapHelper {
                 }
             }
         });
-
+        if (jars == null) {
+            return new DelegatingResourceClassLoader(new URL[0], parent);
+        }
         URL[] urls = new URL[jars.length];
         for (int i = 0; i < jars.length; i++) {
             try {

@@ -20,21 +20,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
-        <artifactId>fabric3-core</artifactId>
+        <artifactId>fabric3-runtime-parent-pom</artifactId>
         <version>2.5.0-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
-    <artifactId>fabric3-runtime-parent-pom</artifactId>
-    <name>Fabric3 Runtime Parent POM</name>
-    <description>Fabric3 Runtime Parent POM.</description>
+    <artifactId>fabric3-runtime-node-parent-pom</artifactId>
+    <name>Fabric3 Node Parent POM</name>
+    <description>Fabric3 Node Parent POM.</description>
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>maven</module>
-		<module>standalone</module>
-		<module>tomcat</module>
-		<module>ant</module>
-		<module>weblogic</module>
-        <module>node</module>
+		<module>fabric3-node</module>
+        <module>fabric3-node-extensions</module>
+        <module>fabric3-node-distribution</module>
 	</modules>
 </project>

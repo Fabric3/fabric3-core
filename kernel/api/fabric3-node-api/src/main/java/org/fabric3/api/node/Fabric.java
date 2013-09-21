@@ -34,25 +34,42 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host.runtime;
+*/
+package org.fabric3.api.node;
 
 /**
+ * Main API for interfacing with a service fabric.
  */
-public class ScanException extends InitializationException {
-    private static final long serialVersionUID = -8809402788313731400L;
+public interface Fabric {
 
-    public ScanException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    /**
+     * Starts the connection to the fabric.
+     *
+     * @throws FabricException if there is an error connecting.
+     */
+    void start() throws FabricException;
 
-    public ScanException(String message) {
-        super(message);
-    }
+    /**
+     * Stops the connection to the fabric.
+     *
+     * @throws FabricException if there an error stopping the connection
+     */
+    void stop() throws FabricException;
+
+    /**
+     * Registers an instance as a system component. This method is typically called before {@link #start()}}.
+     *
+     * @param interfaze the service interface of the instance
+     * @param instance  the instance
+     * @throws FabricException if there is a registration error
+     */
+    <T> void registerSystemService(Class<T> interfaze, T instance) throws FabricException;
+
+    /**
+     * Returns the fabric domain
+     *
+     * @return the domain
+     */
+    Domain getDomain();
+
 }

@@ -34,25 +34,20 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host.runtime;
+*/
+package org.fabric3.api.node;
 
 /**
+ *
  */
-public class ScanException extends InitializationException {
-    private static final long serialVersionUID = -8809402788313731400L;
+public class FabricException extends RuntimeException {
+    private static final long serialVersionUID = 6334321742275083111L;
 
-    public ScanException(String message, Throwable cause) {
-        super(message, cause);
+    public FabricException(Throwable cause) {
+        super(cause);
     }
 
-    public ScanException(String message) {
+    public FabricException(String message) {
         super(message);
     }
 }

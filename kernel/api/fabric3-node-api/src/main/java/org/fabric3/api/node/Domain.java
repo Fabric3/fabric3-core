@@ -34,25 +34,55 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.host.runtime;
+*/
+package org.fabric3.api.node;
+
+import java.net.URL;
 
 /**
+ * The main API for accessing a service fabric domain.
  */
-public class ScanException extends InitializationException {
-    private static final long serialVersionUID = -8809402788313731400L;
+public interface Domain {
 
-    public ScanException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    /**
+     * Returns a proxy to the service with the given interface. The service may be local or remote depending on the deployment topology.
+     *
+     * @param interfaze the service interface.
+     * @return the service
+     */
+    <T> T getService(Class<T> interfaze);
 
-    public ScanException(String message) {
-        super(message);
-    }
+    /**
+     * Returns a proxy to a channel.
+     *
+     * @param interfaze the channel interface
+     * @param name      the channel name
+     * @return the channel
+     */
+    <T> T getChannel(Class<T> interfaze, String name);
+
+    /**
+     * Subscribes to receive events from a channel.
+     *
+     * @param interfaze the channel interface
+     * @param name      the channel name
+     * @param consumer  the consumer
+     */
+    void subscribe(Class<?> interfaze, String name, Object consumer);
+
+    /**
+     * Deploys a service endpoint.
+     *
+     * @param interfaze the service endpoint
+     * @param instance  the service instance
+     */
+    <T> void deploy(Class<T> interfaze, T instance);
+
+    /**
+     * Deploys a composite.
+     *
+     * @param composite the composite file
+     */
+    void deploy(URL composite);
+
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Fabric3
+ Copyright (c) 2009-2013 Metaform Systems
+
+ Fabric3 is licensed under modified terms of the GNU General
+ Public License. See the accompanying license file for details.
+
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
+           name="StandaloneSystemComposite"
+           autowire="true">
+
+    <include name="ThreadPoolComposite" scdlResource="META-INF/threadPool.composite"/>
+
+    <include name="ContributionComposite" scdlResource="META-INF/contribution.composite"/>
+
+    <include name="FabricComposite" scdlResource="META-INF/fabric.composite"/>
+
+    <include name="JavaIntrospectionComposite" scdlResource="META-INF/javaBootIntrospection.composite"/>
+
+    <include name="XMLIntrospectionComposite" scdlResource="META-INF/xmlIntrospection.composite"/>
+
+    <include name="PojoComposite" scdlResource="META-INF/pojoImplementation.composite"/>
+
+    <include name="JDKReflectionComposite" scdlResource="META-INF/jdkReflection.composite"/>
+
+    <include name="PolicyComposite" scdlResource="META-INF/policy.composite"/>
+
+    <include name="SystemImplementationComposite" scdlResource="META-INF/systemImplementation.composite"/>
+
+    <include name="SingletonImplementationComposite" scdlResource="META-INF/singletonImplementation.composite"/>
+
+    <include name="MonitorComposite" scdlResource="META-INF/monitor.composite"/>
+
+    <include name="MonitorConfigurationComposite" scdlResource="META-INF/configuration.composite"/>
+
+    <include name="TransformComposite" scdlResource="META-INF/transform.composite"/>
+
+    <component name="FSArtifactCache">
+        <f3:implementation.system class="org.fabric3.fabric.artifact.FSArtifactCache"/>
+    </component>
+
+</composite>
