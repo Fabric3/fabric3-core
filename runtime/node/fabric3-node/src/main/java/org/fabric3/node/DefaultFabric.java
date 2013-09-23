@@ -208,7 +208,7 @@ public class DefaultFabric implements Fabric {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void createDirectories() throws IOException {
         // clear out the tmp directory
-        if (!tempDirectory.exists()) {
+        if (tempDirectory.exists()) {
             FileHelper.cleanDirectory(tempDirectory);
         }
         tempDirectory.mkdirs();
