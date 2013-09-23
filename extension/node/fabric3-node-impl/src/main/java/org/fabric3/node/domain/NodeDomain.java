@@ -49,7 +49,6 @@ import org.oasisopen.sca.annotation.Reference;
 public class NodeDomain implements Domain {
     private InstanceDeployer deployer;
     private ServiceResolver serviceResolver;
-
     public NodeDomain(@Reference InstanceDeployer deployer, @Reference ServiceResolver serviceResolver) {
         this.deployer = deployer;
         this.serviceResolver = serviceResolver;
@@ -79,5 +78,6 @@ public class NodeDomain implements Domain {
     }
 
     public void deploy(URL composite) {
+
     }
 }
