@@ -35,54 +35,55 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.node;
+package org.fabric3.host.contribution;
 
+import java.net.URI;
 import java.net.URL;
 
+import org.fabric3.host.stream.Source;
+import org.fabric3.host.stream.UrlSource;
+
 /**
- * The main API for accessing a service fabric domain.
+ * A contribution artifact that is sourced from a URL.
  */
-public interface Domain {
+public class UrlContributionSource implements ContributionSource {
+    private URI uri;
+    private URL url;
+    private boolean persist;
+    private Source source;
 
-    /**
-     * Returns a proxy to the service with the given interface. The service may be local or remote depending on the deployment topology.
-     *
-     * @param interfaze the service interface.
-     * @return the service
-     */
-    <T> T getService(Class<T> interfaze);
+    public UrlContributionSource(URI uri, URL url, boolean persist) {
+        this.uri = uri;
+        this.url = url;
+        this.persist = persist;
+        this.source = new UrlSource(uri.toString(), url);
+    }
 
-    /**
-     * Returns a proxy to a channel.
-     *
-     * @param interfaze the channel interface
-     * @param name      the channel name
-     * @return the channel
-     */
-    <T> T getChannel(Class<T> interfaze, String name);
+    public URI getUri() {
+        return uri;
+    }
 
-    /**
-     * Subscribes to receive events from a channel.
-     *
-     * @param interfaze the channel interface
-     * @param name      the channel name
-     * @param consumer  the consumer
-     */
-    void subscribe(Class<?> interfaze, String name, Object consumer);
+    public boolean persist() {
+        return persist;
+    }
 
-    /**
-     * Deploys a service endpoint.
-     *
-     * @param interfaze the service endpoint
-     * @param instance  the service instance
-     */
-    <T> void deploy(Class<T> interfaze, T instance);
+    public boolean isExtension() {
+        return false;
+    }
 
-    /**
-     * Deploys an artifact such as a composite file or contribution to the domain.
-     *
-     * @param url the artifact URL
-     */
-    void deploy(URL url);
+    public Source getSource() {
+        return source;
+    }
 
+    public URL getLocation() {
+        return url;
+    }
+
+    public long getTimestamp() {
+        return 0;
+    }
+
+    public String getContentType() {
+        return null;
+    }
 }

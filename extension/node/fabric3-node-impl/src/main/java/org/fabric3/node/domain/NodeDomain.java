@@ -37,9 +37,17 @@
 */
 package org.fabric3.node.domain;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collections;
 
 import org.fabric3.api.node.Domain;
+import org.fabric3.host.contribution.ContributionNotFoundException;
+import org.fabric3.host.contribution.ContributionService;
+import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.contribution.StoreException;
+import org.fabric3.host.contribution.UrlContributionSource;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -49,17 +57,17 @@ import org.oasisopen.sca.annotation.Reference;
 public class NodeDomain implements Domain {
     private InstanceDeployer deployer;
     private ServiceResolver serviceResolver;
-    public NodeDomain(@Reference InstanceDeployer deployer, @Reference ServiceResolver serviceResolver) {
+    private ContributionService contributionService;
+    private org.fabric3.host.domain.Domain domain;
+
+    public NodeDomain(@Reference InstanceDeployer deployer,
+                      @Reference ServiceResolver serviceResolver,
+                      @Reference ContributionService contributionService,
+                      @Reference org.fabric3.host.domain.Domain domain) {
         this.deployer = deployer;
         this.serviceResolver = serviceResolver;
-    }
-
-    public <T> void deploy(Class<T> interfaze, T instance) {
-        try {
-            deployer.deploy(interfaze, instance);
-        } catch (DeploymentException e) {
-            throw new ServiceRuntimeException(e);
-        }
+        this.contributionService = contributionService;
+        this.domain = domain;
     }
 
     public <T> T getService(Class<T> interfaze) {
@@ -77,7 +85,31 @@ public class NodeDomain implements Domain {
     public void subscribe(Class<?> interfaze, String name, Object consumer) {
     }
 
-    public void deploy(URL composite) {
+    public <T> void deploy(Class<T> interfaze, T instance) {
+        try {
+            deployer.deploy(interfaze, instance);
+        } catch (DeploymentException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
 
+    public void deploy(URL url) {
+        try {
+            URI uri = url.toURI();
+            UrlContributionSource source = new UrlContributionSource(uri, url, false);
+            contributionService.store(source);
+            contributionService.install(uri);
+            domain.include(Collections.singletonList(uri));
+        } catch (URISyntaxException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (StoreException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (ContributionNotFoundException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (InstallException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (org.fabric3.host.domain.DeploymentException e) {
+            throw new ServiceRuntimeException(e);
+        }
     }
 }
