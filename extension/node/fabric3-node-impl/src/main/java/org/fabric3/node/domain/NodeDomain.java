@@ -79,7 +79,7 @@ public class NodeDomain implements Domain {
     }
 
     public <T> T getChannel(Class<T> interfaze, String name) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public void subscribe(Class<?> interfaze, String name, Object consumer) {
