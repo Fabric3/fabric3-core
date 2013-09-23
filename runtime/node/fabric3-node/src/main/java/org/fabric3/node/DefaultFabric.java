@@ -79,7 +79,8 @@ import org.w3c.dom.Document;
  */
 public class DefaultFabric implements Fabric {
     private static final File SYNTHETIC_DIRECTORY = new File("notfound");
-    public static final String SYSTEM_COMPOSITE = "META-INF/system.composite";
+    private static final String SYSTEM_COMPOSITE = "META-INF/system.composite";
+    private static final URI DOMAIN_URI = URI.create("fabric3://runtime/NodeDomain");
 
     private enum State {
         UNINITIALIZED, INITIALIZED, STARTED, STOPPED
@@ -199,7 +200,7 @@ public class DefaultFabric implements Fabric {
 
     public Domain getDomain() {
         if (domain == null) {
-            domain = runtime.getComponent(Domain.class);
+            domain = runtime.getComponent(Domain.class, DOMAIN_URI);
         }
         return domain;
     }

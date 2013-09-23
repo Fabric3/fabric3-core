@@ -52,6 +52,10 @@
         <f3:implementation.system class="org.fabric3.fabric.instantiator.promotion.PromotionResolutionServiceImpl"/>
     </component>
 
+    <component name="TypeAutowireResolver">
+        <f3:implementation.system class="org.fabric3.fabric.instantiator.wire.TypeAutowireResolver"/>
+    </component>
+
     <component name="AutowireInstantiator">
         <f3:implementation.system class="org.fabric3.fabric.instantiator.wire.AutowireInstantiatorImpl"/>
     </component>

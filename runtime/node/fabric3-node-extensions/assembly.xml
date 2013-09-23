@@ -19,7 +19,6 @@
         <format>jar</format>
     </formats>
 
-    <!-- include assembly files -->
     <fileSets>
         <fileSet>
             <directory>src/main</directory>
@@ -29,10 +28,9 @@
 
     <dependencySets>
 
-
-        <!-- copy extension modules to the extensions directory-->
         <dependencySet>
             <includes>
+                <include>org.codehaus.fabric3:fabric3-node-impl</include>
                 <include>org.codehaus.fabric3:fabric3-jdk-proxy</include>
                 <include>org.codehaus.fabric3:fabric3-channel-impl</include>
                 <include>org.codehaus.fabric3:fabric3-channel-disruptor</include>

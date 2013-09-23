@@ -34,43 +34,32 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.fabric.executor;
+*/
+package org.fabric3.node.nonmanaged;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
-
-import org.fabric3.spi.builder.Connector;
-import org.fabric3.fabric.command.AttachWireCommand;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
- *
+ * Used to attach a wire to non-managed code.
  */
-public class AttachWireCommandExecutorTestCase extends TestCase {
+public class NonManagedPhysicalSourceDefinition extends PhysicalSourceDefinition {
+    private static final long serialVersionUID = 7396732267029577588L;
+    private String interfaze;
+    private transient Object proxy;
 
-    public void testAttachExecute() throws Exception {
-        CommandExecutorRegistry executorRegistry = EasyMock.createMock(CommandExecutorRegistry.class);
-        Connector connector = EasyMock.createMock(Connector.class);
-        executorRegistry.register(EasyMock.eq(AttachWireCommand.class), EasyMock.isA(AttachWireCommandExecutor.class));
-        connector.connect(EasyMock.isA(PhysicalWireDefinition.class));
-        EasyMock.replay(executorRegistry, connector);
-
-        AttachWireCommandExecutor executor = new AttachWireCommandExecutor(executorRegistry, connector);
-        executor.init();
-        PhysicalWireDefinition definition = new PhysicalWireDefinition(null, null, null);
-        AttachWireCommand command = new AttachWireCommand();
-        command.setPhysicalWireDefinition(definition);
-        executor.execute(command);
-        EasyMock.verify(executorRegistry, connector);
-
+    public NonManagedPhysicalSourceDefinition(String interfaze) {
+        this.interfaze = interfaze;
     }
 
+    public String getInterface() {
+        return interfaze;
+    }
+
+    public Object getProxy() {
+        return proxy;
+    }
+
+    public void setProxy(Object proxy) {
+        this.proxy = proxy;
+    }
 }

@@ -47,7 +47,7 @@ import org.fabric3.contribution.generator.JavaContributionWireGenerator;
 import org.fabric3.contribution.generator.LocationContributionWireGenerator;
 import org.fabric3.contribution.wire.JavaContributionWire;
 import org.fabric3.contribution.wire.LocationContributionWire;
-import org.fabric3.fabric.builder.Connector;
+import org.fabric3.spi.builder.Connector;
 import org.fabric3.fabric.builder.ConnectorImpl;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.collector.CollectorImpl;
@@ -91,7 +91,8 @@ import org.fabric3.fabric.generator.wire.PhysicalOperationGenerator;
 import org.fabric3.fabric.generator.wire.PhysicalOperationGeneratorImpl;
 import org.fabric3.fabric.generator.wire.ReferenceCommandGenerator;
 import org.fabric3.fabric.generator.wire.ResourceReferenceCommandGenerator;
-import org.fabric3.fabric.generator.wire.WireGenerator;
+import org.fabric3.fabric.instantiator.wire.TypeAutowireResolver;
+import org.fabric3.spi.generator.WireGenerator;
 import org.fabric3.fabric.generator.wire.WireGeneratorImpl;
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.AutowireInstantiator;
@@ -246,7 +247,8 @@ public class BootstrapAssemblyFactory {
 
     private static LogicalModelInstantiator createLogicalModelGenerator(ContractMatcher matcher) {
         PromotionResolutionService promotionResolutionService = new PromotionResolutionServiceImpl();
-        AutowireInstantiator autowireInstantiator = new AutowireInstantiatorImpl(matcher);
+        TypeAutowireResolver resolver = new TypeAutowireResolver(matcher);
+        AutowireInstantiator autowireInstantiator = new AutowireInstantiatorImpl(resolver);
 
         PromotionNormalizer promotionNormalizer = new PromotionNormalizerImpl();
         AutowireNormalizer autowireNormalizer = new AutowireNormalizerImpl();

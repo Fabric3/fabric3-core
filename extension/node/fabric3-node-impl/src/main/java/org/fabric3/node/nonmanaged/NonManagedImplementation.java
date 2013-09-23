@@ -34,43 +34,23 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.fabric.executor;
+*/
+package org.fabric3.node.nonmanaged;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import javax.xml.namespace.QName;
 
-import org.fabric3.spi.builder.Connector;
-import org.fabric3.fabric.command.AttachWireCommand;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.host.Namespaces;
+import org.fabric3.model.type.component.Implementation;
+import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
- *
+ * Models non-managed code that is deployed as a component to a service fabric.
  */
-public class AttachWireCommandExecutorTestCase extends TestCase {
+public class NonManagedImplementation extends Implementation<InjectingComponentType> {
+    private static final long serialVersionUID = 8179450453871659967L;
+    private static final QName TYPE = new QName(Namespaces.F3, "NonManaged");
 
-    public void testAttachExecute() throws Exception {
-        CommandExecutorRegistry executorRegistry = EasyMock.createMock(CommandExecutorRegistry.class);
-        Connector connector = EasyMock.createMock(Connector.class);
-        executorRegistry.register(EasyMock.eq(AttachWireCommand.class), EasyMock.isA(AttachWireCommandExecutor.class));
-        connector.connect(EasyMock.isA(PhysicalWireDefinition.class));
-        EasyMock.replay(executorRegistry, connector);
-
-        AttachWireCommandExecutor executor = new AttachWireCommandExecutor(executorRegistry, connector);
-        executor.init();
-        PhysicalWireDefinition definition = new PhysicalWireDefinition(null, null, null);
-        AttachWireCommand command = new AttachWireCommand();
-        command.setPhysicalWireDefinition(definition);
-        executor.execute(command);
-        EasyMock.verify(executorRegistry, connector);
-
+    public QName getType() {
+        return TYPE;
     }
-
 }

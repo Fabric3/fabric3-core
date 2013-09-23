@@ -21,23 +21,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
-        <artifactId>fabric3-core</artifactId>
+        <artifactId>fabric3-extension-parent-pom</artifactId>
         <version>2.5.0-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
-    <artifactId>fabric3-extension-parent-pom</artifactId>
-    <name>Fabric3 Extension Parent POM</name>
-    <description>Fabric3 Extension Parent POM.</description>
+    <artifactId>fabric3-extension-node-parent-pom</artifactId>
+    <name>Fabric3 Extension Node Parent POM</name>
+    <description>Fabric3 Extension Node Parent POM.</description>
     <packaging>pom</packaging>
 
     <modules>
-        <module>core</module>
-        <module>binding</module>
-        <module>implementation</module>
-        <module>interface</module>
-        <module>other</module>
-        <module>federated</module>
-        <module>management</module>
-        <module>node</module>
+        <module>fabric3-node-impl</module>
     </modules>
 </project>

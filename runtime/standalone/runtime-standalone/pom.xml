@@ -28,6 +28,12 @@ licensed under the Apache 2.0 license.
     <description>Assembly distribution for Fabric3 Standalone Server.</description>
 
     <dependencies>
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-node-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- force fabric3-spi dependency as Maven calculates an earlier version in transitive dependency -->
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>

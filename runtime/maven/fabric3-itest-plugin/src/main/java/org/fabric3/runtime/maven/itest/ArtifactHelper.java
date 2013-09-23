@@ -209,6 +209,13 @@ public class ArtifactHelper {
         rsAPI.setVersion("2.0");
         hostArtifacts.addAll(resolveArtifacts(rsAPI, Collections.<ArtifactRepository>emptySet(), true));
 
+        // add Node API
+        Dependency nodeAPI = new Dependency();
+        nodeAPI.setGroupId("org.codehaus.fabric3");
+        nodeAPI.setArtifactId("fabric3-node-api");
+        nodeAPI.setVersion(version);
+        hostArtifacts.addAll(resolveArtifacts(nodeAPI, Collections.<ArtifactRepository>emptySet(), true));
+
         // add shared artifacts to the host classpath
         if (shared != null) {
             for (Dependency sharedDependency : shared) {

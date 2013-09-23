@@ -37,11 +37,10 @@
 */
 package org.fabric3.fabric.instantiator.wire;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
 import junit.framework.TestCase;
-
 import org.fabric3.fabric.contract.DefaultContractMatcher;
 import org.fabric3.fabric.contract.JavaContractMatcherExtension;
 import org.fabric3.fabric.instantiator.InstantiationContext;
@@ -57,6 +56,7 @@ import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.ReferenceDefinition;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.spi.instantiator.AutowireResolver;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -137,20 +137,18 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
         resolutionService.instantiate(composite, context);
     }
 
-
     protected void setUp() throws Exception {
         super.setUp();
         DefaultContractMatcher matcher = new DefaultContractMatcher();
         JavaContractMatcherExtension javaMatcher = new JavaContractMatcherExtension();
         matcher.addMatcherExtension(javaMatcher);
-        resolutionService = new AutowireInstantiatorImpl(matcher);
+        AutowireResolver resolver = new TypeAutowireResolver(matcher);
+        resolutionService = new AutowireInstantiatorImpl(resolver);
         URI domainUri = URI.create("fabric3://runtime");
         domain = new LogicalCompositeComponent(domainUri, null, null);
     }
 
-    private LogicalCompositeComponent createWiredComposite(LogicalCompositeComponent parent,
-                                                           Class<?> sourceClass,
-                                                           Class<?> targetClass) {
+    private LogicalCompositeComponent createWiredComposite(LogicalCompositeComponent parent, Class<?> sourceClass, Class<?> targetClass) {
         LogicalCompositeComponent composite = createComposite("composite", parent);
         LogicalComponent<?> source = createSourceAtomic(sourceClass, composite);
         composite.addComponent(source);
@@ -167,8 +165,7 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
         Composite type = new Composite(null);
         CompositeImplementation impl = new CompositeImplementation();
         impl.setComponentType(type);
-        ComponentDefinition<CompositeImplementation> definition =
-                new ComponentDefinition<CompositeImplementation>(parentUri.toString());
+        ComponentDefinition<CompositeImplementation> definition = new ComponentDefinition<CompositeImplementation>(parentUri.toString());
         definition.setImplementation(impl);
         return new LogicalCompositeComponent(parentUri, definition, parent);
     }
@@ -181,14 +178,12 @@ public class AutowireInstantiatorImplTestCase extends TestCase {
         type.add(referenceDefinition);
         MockAtomicImpl impl = new MockAtomicImpl();
         impl.setComponentType(type);
-        ComponentDefinition<MockAtomicImpl> definition =
-                new ComponentDefinition<MockAtomicImpl>(SOURCE_URI.toString());
+        ComponentDefinition<MockAtomicImpl> definition = new ComponentDefinition<MockAtomicImpl>(SOURCE_URI.toString());
         definition.setImplementation(impl);
         ComponentReference target = new ComponentReference(REFERENCE_URI.getFragment(), Multiplicity.ONE_ONE);
         target.setAutowire(Autowire.ON);
         definition.add(target);
-        LogicalComponent<?> component =
-                new LogicalComponent<MockAtomicImpl>(SOURCE_URI, definition, parent);
+        LogicalComponent<?> component = new LogicalComponent<MockAtomicImpl>(SOURCE_URI, definition, parent);
         LogicalReference logicalReference = new LogicalReference(REFERENCE_URI, referenceDefinition, component);
         component.addReference(logicalReference);
         return component;

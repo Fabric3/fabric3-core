@@ -10,23 +10,24 @@
  licensed under the Apache 2.0 license.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  
-  <parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-runtime-tomcat-parent-pom</artifactId>
         <version>2.5.0-SNAPSHOT</version>
-  </parent>
-  
-  <groupId>org.codehaus.fabric3.tomcat</groupId>
-  <artifactId>fabric3-tomcat-host</artifactId>
-  <name>Fabric3 Tomcat Runtime Host WAR</name>
-  <description>Fabric3 Tomcat Runtime Host WAR.</description>
-  
-  <packaging>war</packaging>  
-  
-  <dependencies>
+    </parent>
+
+    <groupId>org.codehaus.fabric3.tomcat</groupId>
+    <artifactId>fabric3-tomcat-host</artifactId>
+    <name>Fabric3 Tomcat Runtime Host WAR</name>
+    <description>Fabric3 Tomcat Runtime Host WAR.</description>
+
+    <packaging>war</packaging>
+
+    <dependencies>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>catalina</artifactId>
@@ -36,13 +37,19 @@
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-node-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-host-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
-  </dependencies>
-  
-   <build>
+
+    </dependencies>
+
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

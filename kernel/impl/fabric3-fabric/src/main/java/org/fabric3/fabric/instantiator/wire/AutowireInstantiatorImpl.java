@@ -37,11 +37,8 @@
 */
 package org.fabric3.fabric.instantiator.wire;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Reference;
+import java.util.List;
 
 import org.fabric3.fabric.instantiator.AutowireInstantiator;
 import org.fabric3.fabric.instantiator.InstantiationContext;
@@ -53,8 +50,7 @@ import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.model.type.component.Target;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.spi.contract.ContractMatcher;
-import org.fabric3.spi.contract.MatchResult;
+import org.fabric3.spi.instantiator.AutowireResolver;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -63,15 +59,16 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.type.binding.SCABinding;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Resolves unspecified reference targets using the SCA autowire algorithm. If a target is found, a corresponding LogicalWire will be created.
  */
 public class AutowireInstantiatorImpl implements AutowireInstantiator {
-    private ContractMatcher matcher;
+    private AutowireResolver resolver;
 
-    public AutowireInstantiatorImpl(@Reference ContractMatcher matcher) {
-        this.matcher = matcher;
+    public AutowireInstantiatorImpl(@Reference AutowireResolver resolver) {
+        this.resolver = resolver;
     }
 
     public void instantiate(LogicalComponent<?> component, InstantiationContext context) {
@@ -98,7 +95,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                 // Only resolve references that have not been resolved or ones that are multiplicities since the latter may be reinjected.
                 // Explicitly set the reference to unresolved, since if it was a multiplicity it may have been previously resolved.
                 reference.setResolved(false);
-                resolve(reference, parent, context);
+                resolveReference(reference, parent, context);
             }
         }
     }
@@ -121,7 +118,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         return scaTarget;
     }
 
-    private void resolve(LogicalReference logicalReference, LogicalCompositeComponent compositeComponent, InstantiationContext context) {
+    private void resolveReference(LogicalReference logicalReference, LogicalCompositeComponent compositeComponent, InstantiationContext context) {
 
         ComponentReference componentReference = logicalReference.getComponentReference();
         LogicalComponent<?> component = logicalReference.getParent();
@@ -136,7 +133,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
 
             Autowire autowire = component.getAutowire();
             if (autowire == Autowire.ON) {
-                resolveByType(compositeComponent, logicalReference, requiredContract);
+                instantiateWires(logicalReference, requiredContract, compositeComponent);
             }
 
         } else {
@@ -146,13 +143,13 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                 return;
             }
 
-            if (componentReference.getAutowire() == Autowire.ON
-                    || (componentReference.getAutowire() == Autowire.INHERITED && component.getAutowire() == Autowire.ON)) {
+            if (componentReference.getAutowire() == Autowire.ON || (componentReference.getAutowire() == Autowire.INHERITED
+                                                                    && component.getAutowire() == Autowire.ON)) {
                 AbstractReference referenceDefinition = logicalReference.getDefinition();
                 ServiceContract requiredContract = referenceDefinition.getServiceContract();
-                boolean resolved = resolveByType(component.getParent(), logicalReference, requiredContract);
+                boolean resolved = instantiateWires(logicalReference, requiredContract, component.getParent());
                 if (!resolved) {
-                    resolveByType(compositeComponent, logicalReference, requiredContract);
+                    instantiateWires(logicalReference, requiredContract, compositeComponent);
                 }
             }
         }
@@ -168,51 +165,16 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
     }
 
     /**
-     * Attempts to resolve a reference against a composite using the autowire matching algorithm. If the reference is resolved, a LogicalWire or set
-     * of LogicalWires is created.
+     * Attempts to resolve a reference against a composite using the autowire matching algorithm. If the reference is resolved, a LogicalWire or set of
+     * LogicalWires is created.
      *
-     * @param composite        the composite to resolve against
      * @param logicalReference the logical reference
      * @param contract         the contract to match against
+     * @param composite        the composite to resolve against
      * @return true if the reference has been resolved.
      */
-    private boolean resolveByType(LogicalCompositeComponent composite, LogicalReference logicalReference, ServiceContract contract) {
-        List<LogicalService> candidates = new ArrayList<LogicalService>();
-        Multiplicity refMultiplicity = logicalReference.getDefinition().getMultiplicity();
-        boolean multiplicity = Multiplicity.ZERO_N.equals(refMultiplicity) || Multiplicity.ONE_N.equals(refMultiplicity);
-        for (LogicalComponent<?> child : composite.getComponents()) {
-            if (logicalReference.getParent() == child) {
-                // don't wire to self
-                continue;
-            }
-            if (validKey(logicalReference, child)) {  // if the reference is keyed and the target does not have a key, skip
-                for (LogicalService service : child.getServices()) {
-                    ServiceContract targetContract = service.getServiceContract();
-                    if (targetContract == null) {
-                        // This is a programming error since a non-composite service must have a service contract
-                        throw new AssertionError("No service contract specified on service: " + service.getUri());
-                    }
-                    MatchResult result = matcher.isAssignableFrom(contract, targetContract, false);
-                    if (result.isAssignable()) {
-                        boolean intentsMatch = true;
-                        for (QName intent : logicalReference.getIntents()) {
-                            if (!service.getIntents().contains(intent)) {
-                                intentsMatch = false;
-                                break;
-                            }
-                        }
-                        if (intentsMatch) {
-                            candidates.add(service);
-                            break;
-                        }
-                    }
-                }
-            }
-            if (!candidates.isEmpty() && !multiplicity) {
-                // since the reference is to a single target and a candidate has been found, avoid iterating the remaining components
-                break;
-            }
-        }
+    private boolean instantiateWires(LogicalReference logicalReference, ServiceContract contract, LogicalCompositeComponent composite) {
+        List<LogicalService> candidates = resolver.resolve(logicalReference, contract, composite);
         if (candidates.isEmpty()) {
             return false;
         }
@@ -249,18 +211,4 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         return true;
     }
 
-    /**
-     * Returns true if the reference is not keyed, true if the reference is keyed and the target specifies a key, false if the reference is keyed and
-     * the target does not specify a key.
-     *
-     * @param logicalReference the logical reference
-     * @param target           the target
-     * @return true if the reference is not keyed, true if the reference is keyed and the target specifies a key, false if the reference is keyed and
-     *         the target does not specify a key
-     */
-    private boolean validKey(LogicalReference logicalReference, LogicalComponent<?> target) {
-        return !logicalReference.getDefinition().isKeyed()
-                || target.getDefinition().getKey() != null
-                || target.getDefinition().getComponentType().getKey() != null;
-    }
 }

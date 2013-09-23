@@ -49,6 +49,7 @@ import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Multiplicity;
 import org.fabric3.spi.binding.generator.CallbackBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.generator.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;

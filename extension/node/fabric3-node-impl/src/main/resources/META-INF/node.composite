@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (c) 2009-2013 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           name="NodeImplementationExtension"
+           targetNamespace="urn:fabric3.org"
+           autowire="true">
+
+
+    <component name="NodeDomain">
+        <f3:implementation.system class="org.fabric3.node.domain.NodeDomain"/>
+    </component>
+
+    <component name="InstanceDeployer">
+        <f3:implementation.system class="org.fabric3.node.domain.InstanceDeployerImpl"/>
+    </component>
+
+    <component name="ServiceResolver">
+        <f3:implementation.system class="org.fabric3.node.domain.ServiceResolverImpl"/>
+    </component>
+
+    <component name="NonManagedComponentGenerator" f3:key="org.fabric3.node.nonmanaged.NonManagedImplementation">
+        <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedComponentGenerator"/>
+    </component>
+
+    <component name="NonManagedComponentSourceWireAttacher" f3:key="org.fabric3.node.nonmanaged.NonManagedPhysicalSourceDefinition">
+        <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedComponentSourceWireAttacher"/>
+    </component>
+
+
+</composite>

@@ -47,6 +47,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.spi.builder.Connector;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Reference;
 

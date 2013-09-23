@@ -34,43 +34,50 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.fabric.executor;
+*/
+package org.fabric3.node.domain;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import java.net.URL;
 
-import org.fabric3.spi.builder.Connector;
-import org.fabric3.fabric.command.AttachWireCommand;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.fabric3.api.node.Domain;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
- *
+ * Default Node Domain implementation.
  */
-public class AttachWireCommandExecutorTestCase extends TestCase {
+public class NodeDomain implements Domain {
+    private InstanceDeployer deployer;
+    private ServiceResolver serviceResolver;
 
-    public void testAttachExecute() throws Exception {
-        CommandExecutorRegistry executorRegistry = EasyMock.createMock(CommandExecutorRegistry.class);
-        Connector connector = EasyMock.createMock(Connector.class);
-        executorRegistry.register(EasyMock.eq(AttachWireCommand.class), EasyMock.isA(AttachWireCommandExecutor.class));
-        connector.connect(EasyMock.isA(PhysicalWireDefinition.class));
-        EasyMock.replay(executorRegistry, connector);
-
-        AttachWireCommandExecutor executor = new AttachWireCommandExecutor(executorRegistry, connector);
-        executor.init();
-        PhysicalWireDefinition definition = new PhysicalWireDefinition(null, null, null);
-        AttachWireCommand command = new AttachWireCommand();
-        command.setPhysicalWireDefinition(definition);
-        executor.execute(command);
-        EasyMock.verify(executorRegistry, connector);
-
+    public NodeDomain(@Reference InstanceDeployer deployer, @Reference ServiceResolver serviceResolver) {
+        this.deployer = deployer;
+        this.serviceResolver = serviceResolver;
     }
 
+    public <T> void deploy(Class<T> interfaze, T instance) {
+        try {
+            deployer.deploy(interfaze, instance);
+        } catch (DeploymentException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    public <T> T getService(Class<T> interfaze) {
+        try {
+            return serviceResolver.resolve(interfaze);
+        } catch (ResolverException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    public <T> T getChannel(Class<T> interfaze, String name) {
+        return null;
+    }
+
+    public void subscribe(Class<?> interfaze, String name, Object consumer) {
+    }
+
+    public void deploy(URL composite) {
+    }
 }

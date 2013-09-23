@@ -57,6 +57,7 @@ import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.ResourceReferenceGenerator;
+import org.fabric3.spi.generator.WireGenerator;
 import org.fabric3.spi.generator.policy.PolicyResolver;
 import org.fabric3.spi.generator.policy.PolicyResult;
 import org.fabric3.spi.model.instance.LogicalBinding;

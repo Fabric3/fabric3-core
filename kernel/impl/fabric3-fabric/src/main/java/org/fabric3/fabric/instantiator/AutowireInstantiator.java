@@ -40,13 +40,13 @@ package org.fabric3.fabric.instantiator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
- * Instantiates logical wires using the SCA autowire algorithm for unconfigured references.
+ * Instantiates logical wires using the SCA autowire algorithm for un-configured references.
  */
 public interface AutowireInstantiator {
 
     /**
-     * Instantiates logical wires using autowire for unconfigured references of the component and its children. The component and its children will be
-     * updated with any instantiated wires.
+     * Instantiates logical wires using autowire for un-configured references of the component and its children. The component and its children will be updated
+     * with any instantiated wires.
      *
      * @param component the component
      * @param context   the instantiation context

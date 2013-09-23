@@ -34,38 +34,21 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.fabric.builder;
+*/
+package org.fabric3.spi.instantiator;
 
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import java.util.List;
+
+import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.instance.LogicalReference;
+import org.fabric3.spi.model.instance.LogicalService;
 
 /**
- * Creates wires between two components and between a component and a binding. Also handles disconnecting wires.
+ * Implements a resolution strategy for autowiring services.
  */
-public interface Connector {
+public interface AutowireResolver {
 
-    /**
-     * Creates a wire for a components and connects it to another component or binding. In the case of bindings, the wire may be connected to a
-     * binding source (for bound services) or to a binding target (for bound references).
-     *
-     * @param definition metadata describing the wire to create
-     * @throws BuilderException if an error creating the wire occurs
-     */
-    void connect(PhysicalWireDefinition definition) throws BuilderException;
+    List<LogicalService> resolve(LogicalReference logicalReference, ServiceContract contract, LogicalCompositeComponent composite);
 
-
-    /**
-     * Disconnects a wire between two components or a component and a binding.
-     *
-     * @param definition the metadata describing the wire to disconnect
-     * @throws BuilderException if an error disconnecting the wire occurs
-     */
-    void disconnect(PhysicalWireDefinition definition) throws BuilderException;
 }

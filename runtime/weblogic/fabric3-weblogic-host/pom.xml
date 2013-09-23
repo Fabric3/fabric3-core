@@ -28,6 +28,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-node-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.codehaus.fabric3.weblogic</groupId>
             <artifactId>fabric3-weblogic-api</artifactId>
             <version>${project.version}</version>
