@@ -28,6 +28,10 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.node.domain.ServiceResolverImpl"/>
     </component>
 
+    <component name="ChannelResolver">
+        <f3:implementation.system class="org.fabric3.node.domain.ChannelResolverImpl"/>
+    </component>
+
     <component name="NonManagedComponentGenerator" f3:key="org.fabric3.node.nonmanaged.NonManagedImplementation">
         <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedComponentGenerator"/>
     </component>

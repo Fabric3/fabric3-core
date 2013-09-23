@@ -57,15 +57,18 @@ import org.oasisopen.sca.annotation.Reference;
 public class NodeDomain implements Domain {
     private InstanceDeployer deployer;
     private ServiceResolver serviceResolver;
+    private ChannelResolver channelResolver;
     private ContributionService contributionService;
     private org.fabric3.host.domain.Domain domain;
 
     public NodeDomain(@Reference InstanceDeployer deployer,
                       @Reference ServiceResolver serviceResolver,
+                      @Reference ChannelResolver channelResolver,
                       @Reference ContributionService contributionService,
                       @Reference org.fabric3.host.domain.Domain domain) {
         this.deployer = deployer;
         this.serviceResolver = serviceResolver;
+        this.channelResolver = channelResolver;
         this.contributionService = contributionService;
         this.domain = domain;
     }
@@ -79,7 +82,11 @@ public class NodeDomain implements Domain {
     }
 
     public <T> T getChannel(Class<T> interfaze, String name) {
-        throw new UnsupportedOperationException();
+        try {
+            return channelResolver.resolve(interfaze, name);
+        } catch (ResolverException e) {
+            throw new ServiceRuntimeException(e);
+        }
     }
 
     public void subscribe(Class<?> interfaze, String name, Object consumer) {
