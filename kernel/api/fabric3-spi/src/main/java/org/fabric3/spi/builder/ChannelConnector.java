@@ -34,27 +34,36 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.spi.generator;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.spi.builder;
 
-import javax.xml.namespace.QName;
-
-import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 
 /**
- * Generates a physical channel definition for the logical channel.
+ * Establishes (and removes) event channel connections.
  */
-public interface ChannelGenerator {
+public interface ChannelConnector {
 
     /**
-     * Generate the definition.
+     * Establishes a channel connection from an event source (component producer, channel, or channel binding) to an event target (component consumer,
+     * channel, or channel binding).
      *
-     * @param channel    the logical channel
-     * @param deployable the deployable the channel is contained in
-     * @param direction  whether the channel will connect a consumer or producer
-     * @return the definition
-     * @throws GenerationException if there is a generation error
+     * @param definition the connection metadata
+     * @throws BuilderException if an error creating the connect is encountered
      */
-    PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException;
+    void connect(PhysicalChannelConnectionDefinition definition) throws BuilderException;
+
+    /**
+     * Removes a channel connection.
+     *
+     * @param definition the connection metadata
+     * @throws BuilderException if an error disconnecting is encountered
+     */
+    void disconnect(PhysicalChannelConnectionDefinition definition) throws BuilderException;
 }

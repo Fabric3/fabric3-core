@@ -65,7 +65,7 @@ public class NodeDomain implements Domain {
                       @Reference ServiceResolver serviceResolver,
                       @Reference ChannelResolver channelResolver,
                       @Reference ContributionService contributionService,
-                      @Reference org.fabric3.host.domain.Domain domain) {
+                      @Reference(name = "domain") org.fabric3.host.domain.Domain domain) {
         this.deployer = deployer;
         this.serviceResolver = serviceResolver;
         this.channelResolver = channelResolver;

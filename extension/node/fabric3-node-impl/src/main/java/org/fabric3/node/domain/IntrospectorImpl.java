@@ -35,36 +35,35 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.generator.channel;
+package org.fabric3.node.domain;
 
-import javax.xml.namespace.QName;
-import java.net.URI;
-
-import org.fabric3.model.type.component.ChannelDefinition;
-import org.fabric3.spi.channel.ChannelConstants;
-import org.fabric3.spi.generator.ChannelGenerator;
-import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
-import org.oasisopen.sca.annotation.EagerInit;
+import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
-@EagerInit
-public class DefaultChannelGeneratorImpl implements ChannelGenerator {
+public class IntrospectorImpl implements Introspector {
+    private JavaContractProcessor contractProcessor;
 
-    public PhysicalChannelDefinition generate(LogicalChannel channel, QName deployable) throws GenerationException {
-        URI uri = channel.getUri();
-        ChannelDefinition definition = channel.getDefinition();
-        String channelType = definition.getType();
-
-        boolean replicate = definition.getIntents().contains(ChannelConstants.REPLICATE_INTENT);
-
-        PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, replicate, channelType, ChannelDeliveryType.DEFAULT);
-        physicalDefinition.setMetadata(definition.getMetadata().get(ChannelConstants.METADATA));
-
-        return physicalDefinition;
+    public IntrospectorImpl(@Reference JavaContractProcessor contractProcessor) {
+        this.contractProcessor = contractProcessor;
     }
+
+    public <T> JavaServiceContract introspect(Class<T> interfaze) throws InterfaceException {
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+        JavaServiceContract contract = contractProcessor.introspect(interfaze, context);
+        StringBuilder builder = new StringBuilder();
+        if (context.hasErrors()) {
+            for (ValidationFailure failure : context.getErrors()) {
+                builder.append(failure.getMessage()).append("\n");
+            }
+            throw new InterfaceException(builder.toString());
+        }
+        return contract;
+    }
+
 }

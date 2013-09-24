@@ -18,18 +18,26 @@ Public License. See the accompanying license file for details.
 
     <component name="NodeDomain">
         <f3:implementation.system class="org.fabric3.node.domain.NodeDomain"/>
+        <reference name="domain" target="ApplicationDomain"/>
     </component>
 
     <component name="InstanceDeployer">
         <f3:implementation.system class="org.fabric3.node.domain.InstanceDeployerImpl"/>
+        <reference name="lcm" target="LogicalComponentManager"/>
+    </component>
+
+    <component name="Introspector">
+        <f3:implementation.system class="org.fabric3.node.domain.IntrospectorImpl"/>
     </component>
 
     <component name="ServiceResolver">
         <f3:implementation.system class="org.fabric3.node.domain.ServiceResolverImpl"/>
+        <reference name="lcm" target="LogicalComponentManager"/>
     </component>
 
     <component name="ChannelResolver">
         <f3:implementation.system class="org.fabric3.node.domain.ChannelResolverImpl"/>
+        <reference name="lcm" target="LogicalComponentManager"/>
     </component>
 
     <component name="NonManagedComponentGenerator" f3:key="org.fabric3.node.nonmanaged.NonManagedImplementation">
@@ -40,5 +48,8 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedComponentSourceWireAttacher"/>
     </component>
 
+    <component name="NonManagedConnectionSourceWireAttacher" f3:key="org.fabric3.node.nonmanaged.NonManagedPhysicalConnectionSourceDefinition">
+        <f3:implementation.system class="org.fabric3.node.nonmanaged.NonManagedConnectionSourceWireAttacher"/>
+    </component>
 
 </composite>

@@ -75,7 +75,8 @@ public class NonManagedComponentGenerator implements ComponentGenerator<LogicalC
     }
 
     public PhysicalConnectionSourceDefinition generateConnectionSource(LogicalProducer producer) throws GenerationException {
-        throw new UnsupportedOperationException();
+        String interfaze = producer.getServiceContract().getQualifiedInterfaceName();
+        return new NonManagedPhysicalConnectionSourceDefinition(interfaze);
     }
 
     public PhysicalConnectionTargetDefinition generateConnectionTarget(LogicalConsumer consumer) throws GenerationException {

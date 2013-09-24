@@ -35,26 +35,22 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.generator;
+package org.fabric3.node.domain;
 
-import javax.xml.namespace.QName;
-
-import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
- * Generates a physical channel definition for the logical channel.
+ * Introspects a Java service contract.
  */
-public interface ChannelGenerator {
+public interface Introspector {
 
     /**
-     * Generate the definition.
+     * Introspects the interface to produce a Java service contract.
      *
-     * @param channel    the logical channel
-     * @param deployable the deployable the channel is contained in
-     * @param direction  whether the channel will connect a consumer or producer
-     * @return the definition
-     * @throws GenerationException if there is a generation error
+     * @param interfaze the interface
+     * @return the contract
+     * @throws InterfaceException if there is an introspection error
      */
-    PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException;
+    <T> JavaServiceContract introspect(Class<T> interfaze) throws InterfaceException;
+
 }

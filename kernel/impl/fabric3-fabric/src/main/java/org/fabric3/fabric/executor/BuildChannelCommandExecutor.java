@@ -43,7 +43,7 @@
  */
 package org.fabric3.fabric.executor;
 
-import org.fabric3.fabric.builder.channel.ChannelBuilderRegistry;
+import org.fabric3.spi.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.fabric.command.BuildChannelCommand;
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.executor.CommandExecutor;

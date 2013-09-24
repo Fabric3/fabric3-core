@@ -34,37 +34,27 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.fabric.builder;
+*/
+package org.fabric3.spi.generator;
 
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
+import javax.xml.namespace.QName;
+
+import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
 /**
- * Establishes (and removes) event channel connections.
+ * Generates metadata used to provision a channel to a runtime.
  */
-public interface ChannelConnector {
+public interface ChannelGeneratorExtension {
 
     /**
-     * Establishes a channel connection from an event source (component producer, channel, or channel binding) to an event target (component consumer,
-     * channel, or channel binding).
+     * Generates a {@link PhysicalChannelDefinition} for the channel.
      *
-     * @param definition the connection metadata
-     * @throws BuilderException if an error creating the connect is encountered
+     * @param channel    the logical channel to generate
+     * @param deployable the deployable this channel is being provisioned under. This may be different than the deployable where the channel is defined, e.g. if
+     *                   the channel is provisioned for a producer or consumer in another deployable
+     * @return the physical channel definition
+     * @throws GenerationException if there is an error generating the channel
      */
-    void connect(PhysicalChannelConnectionDefinition definition) throws BuilderException;
-
-    /**
-     * Removes a channel connection.
-     *
-     * @param definition the connection metadata
-     * @throws BuilderException if an error disconnecting is encountered
-     */
-    void disconnect(PhysicalChannelConnectionDefinition definition) throws BuilderException;
+    PhysicalChannelDefinition generate(LogicalChannel channel, QName deployable) throws GenerationException;
 }

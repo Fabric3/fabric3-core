@@ -43,6 +43,7 @@ import java.util.Map;
 
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.channel.ChannelBuilder;
+import org.fabric3.spi.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.channel.RegistrationException;

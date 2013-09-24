@@ -40,6 +40,7 @@ package org.fabric3.fabric.builder;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.spi.builder.ChannelConnector;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.channel.ChannelConnectionImpl;

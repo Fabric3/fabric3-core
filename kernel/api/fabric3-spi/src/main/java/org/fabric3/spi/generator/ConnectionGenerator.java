@@ -35,12 +35,11 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.generator.channel;
+package org.fabric3.spi.generator;
 
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;

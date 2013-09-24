@@ -69,8 +69,8 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class InstanceDeployerImpl implements InstanceDeployer {
-    private static final QName SYNTHETIC_DEPLOYABLE = new QName(Namespaces.F3, "SyntheticDeployable");
-    private static final Composite SYNTHETIC_COMPOSITE = new Composite(new QName(Namespaces.F3, "SyntheticComposite"));
+    private static final QName SYNTHETIC_DEPLOYABLE = new QName(Namespaces.SYNTHESIZED, "SyntheticDeployable");
+    private static final Composite SYNTHETIC_COMPOSITE = new Composite(new QName(Namespaces.SYNTHESIZED, "SyntheticComposite"));
 
     private JavaContractProcessor contractProcessor;
     private LogicalComponentManager lcm;
@@ -78,7 +78,7 @@ public class InstanceDeployerImpl implements InstanceDeployer {
     private ScopeContainer scopeContainer;
 
     public InstanceDeployerImpl(@Reference JavaContractProcessor contractProcessor,
-                                @Reference LogicalComponentManager lcm,
+                                @Reference(name = "lcm") LogicalComponentManager lcm,
                                 @Reference AutowireResolver autowireResolver,
                                 @Reference WireGenerator wireGenerator,
                                 @Reference ComponentManager cm,
@@ -147,6 +147,5 @@ public class InstanceDeployerImpl implements InstanceDeployer {
             throw new DeploymentException(e);
         }
     }
-
 
 }

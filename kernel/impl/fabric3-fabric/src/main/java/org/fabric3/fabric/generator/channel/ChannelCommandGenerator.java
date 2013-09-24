@@ -41,6 +41,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.fabric.command.BuildChannelCommand;
 import org.fabric3.fabric.command.DisposeChannelCommand;
+import org.fabric3.spi.generator.ChannelDirection;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;
 
@@ -48,10 +49,6 @@ import org.fabric3.spi.model.instance.LogicalChannel;
  * Creates commands to build and dispose channels.
  */
 public interface ChannelCommandGenerator {
-    enum Direction {
-        CONSUMER,
-        PRODUCER
-    }
 
     /**
      * Generates a build command.
@@ -62,7 +59,7 @@ public interface ChannelCommandGenerator {
      * @return the command
      * @throws GenerationException if a generation error is encountered
      */
-    BuildChannelCommand generateBuild(LogicalChannel channel, QName deployable, Direction direction) throws GenerationException;
+    BuildChannelCommand generateBuild(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException;
 
     /**
      * Generates an dispose command.
@@ -73,6 +70,6 @@ public interface ChannelCommandGenerator {
      * @return the command
      * @throws GenerationException if a generation error is encountered
      */
-    DisposeChannelCommand generateDispose(LogicalChannel channel, QName deployable, Direction direction) throws GenerationException;
+    DisposeChannelCommand generateDispose(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException;
 
 }

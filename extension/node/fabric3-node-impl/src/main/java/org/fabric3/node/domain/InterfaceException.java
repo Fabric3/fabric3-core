@@ -35,26 +35,16 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.generator;
-
-import javax.xml.namespace.QName;
-
-import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+package org.fabric3.node.domain;
 
 /**
- * Generates a physical channel definition for the logical channel.
+ *
  */
-public interface ChannelGenerator {
+public class InterfaceException extends ResolverException {
+    private static final long serialVersionUID = -920225279945374537L;
 
-    /**
-     * Generate the definition.
-     *
-     * @param channel    the logical channel
-     * @param deployable the deployable the channel is contained in
-     * @param direction  whether the channel will connect a consumer or producer
-     * @return the definition
-     * @throws GenerationException if there is a generation error
-     */
-    PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException;
+    public InterfaceException(String message) {
+        super(message);
+    }
+
 }

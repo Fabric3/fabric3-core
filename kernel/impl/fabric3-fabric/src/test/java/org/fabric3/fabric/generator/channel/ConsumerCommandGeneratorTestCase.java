@@ -50,6 +50,8 @@ import org.fabric3.fabric.command.ChannelConnectionCommand;
 import org.fabric3.fabric.command.DisposeChannelCommand;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ConsumerDefinition;
+import org.fabric3.spi.generator.ChannelDirection;
+import org.fabric3.spi.generator.ConnectionGenerator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -102,7 +104,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.expect(channelGenerator.generateBuild(EasyMock.isA(LogicalChannel.class),
                                                        EasyMock.isA(QName.class),
-                                                       EasyMock.isA(ChannelCommandGenerator.Direction.class))).andReturn(buildChannelCommand);
+                                                       EasyMock.isA(ChannelDirection.class))).andReturn(buildChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
         ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator, 0);
@@ -126,7 +128,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.expect(channelGenerator.generateBuild(EasyMock.isA(LogicalChannel.class),
                                                        EasyMock.isA(QName.class),
-                                                       EasyMock.isA(ChannelCommandGenerator.Direction.class))).andReturn(buildChannelCommand);
+                                                       EasyMock.isA(ChannelDirection.class))).andReturn(buildChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
         ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator, 0);
@@ -147,7 +149,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.expect(channelGenerator.generateDispose(EasyMock.isA(LogicalChannel.class),
                                                          EasyMock.isA(QName.class),
-                                                         EasyMock.isA(ChannelCommandGenerator.Direction.class))).andReturn(disposeChannelCommand);
+                                                         EasyMock.isA(ChannelDirection.class))).andReturn(disposeChannelCommand);
 
         EasyMock.replay(connectionGenerator, channelGenerator);
 
@@ -173,7 +175,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.expect(channelGenerator.generateBuild(EasyMock.isA(LogicalChannel.class),
                                                        EasyMock.isA(QName.class),
-                                                       EasyMock.isA(ChannelCommandGenerator.Direction.class))).andReturn(buildChannelCommand);
+                                                       EasyMock.isA(ChannelDirection.class))).andReturn(buildChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
         ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator, 0);
@@ -198,7 +200,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.expect(channelGenerator.generateDispose(EasyMock.isA(LogicalChannel.class),
                                                          EasyMock.isA(QName.class),
-                                                         EasyMock.isA(ChannelCommandGenerator.Direction.class))).andReturn(disposeChannelCommand);
+                                                         EasyMock.isA(ChannelDirection.class))).andReturn(disposeChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
         ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator, 0);

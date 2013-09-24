@@ -35,26 +35,36 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.generator;
+package org.fabric3.fabric.generator.channel;
 
 import javax.xml.namespace.QName;
+import java.net.URI;
 
+import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.spi.channel.ChannelConstants;
+import org.fabric3.spi.generator.ChannelGeneratorExtension;
+import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Generates a physical channel definition for the logical channel.
+ *
  */
-public interface ChannelGenerator {
+@EagerInit
+public class DefaultChannelGeneratorExtensionImpl implements ChannelGeneratorExtension {
 
-    /**
-     * Generate the definition.
-     *
-     * @param channel    the logical channel
-     * @param deployable the deployable the channel is contained in
-     * @param direction  whether the channel will connect a consumer or producer
-     * @return the definition
-     * @throws GenerationException if there is a generation error
-     */
-    PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException;
+    public PhysicalChannelDefinition generate(LogicalChannel channel, QName deployable) throws GenerationException {
+        URI uri = channel.getUri();
+        ChannelDefinition definition = channel.getDefinition();
+        String channelType = definition.getType();
+
+        boolean replicate = definition.getIntents().contains(ChannelConstants.REPLICATE_INTENT);
+
+        PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, replicate, channelType, ChannelDeliveryType.DEFAULT);
+        physicalDefinition.setMetadata(definition.getMetadata().get(ChannelConstants.METADATA));
+
+        return physicalDefinition;
+    }
 }

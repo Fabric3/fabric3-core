@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.builder.channel;
+package org.fabric3.spi.builder.channel;
 
 import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.channel.ChannelBuilder;

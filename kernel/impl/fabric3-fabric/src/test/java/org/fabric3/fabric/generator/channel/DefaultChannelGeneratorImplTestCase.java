@@ -50,7 +50,7 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
  *
  */
 public class DefaultChannelGeneratorImplTestCase extends TestCase {
-    private DefaultChannelGeneratorImpl generator = new DefaultChannelGeneratorImpl();
+    private DefaultChannelGeneratorExtensionImpl generator = new DefaultChannelGeneratorExtensionImpl();
 
     public void testGenerate() throws Exception {
         ChannelDefinition channelDefinition = new ChannelDefinition("test", URI.create("contribution"));

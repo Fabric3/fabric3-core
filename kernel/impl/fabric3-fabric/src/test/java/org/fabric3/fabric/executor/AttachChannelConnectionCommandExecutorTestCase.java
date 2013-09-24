@@ -46,7 +46,7 @@ package org.fabric3.fabric.executor;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.fabric.builder.ChannelConnector;
+import org.fabric3.spi.builder.ChannelConnector;
 import org.fabric3.fabric.command.AttachChannelConnectionCommand;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;

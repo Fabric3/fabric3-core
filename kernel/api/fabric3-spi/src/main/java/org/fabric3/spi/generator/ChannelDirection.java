@@ -37,24 +37,10 @@
 */
 package org.fabric3.spi.generator;
 
-import javax.xml.namespace.QName;
-
-import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
-
 /**
- * Generates a physical channel definition for the logical channel.
+ * Specifies if the physical channel instance is for a consumer or producer.
  */
-public interface ChannelGenerator {
-
-    /**
-     * Generate the definition.
-     *
-     * @param channel    the logical channel
-     * @param deployable the deployable the channel is contained in
-     * @param direction  whether the channel will connect a consumer or producer
-     * @return the definition
-     * @throws GenerationException if there is a generation error
-     */
-    PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException;
+public enum ChannelDirection {
+    CONSUMER,
+    PRODUCER
 }

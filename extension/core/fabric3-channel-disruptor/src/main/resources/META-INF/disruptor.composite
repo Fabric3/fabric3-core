@@ -21,7 +21,7 @@
     </component>
 
     <component name="RingBufferChannelGenerator" f3:key="ring.buffer">
-        <f3:implementation.system class="org.fabric3.channel.disruptor.generator.RingBufferChannelGenerator"/>
+        <f3:implementation.system class="org.fabric3.channel.disruptor.generator.RingBufferChannelGeneratorExtension"/>
     </component>
 
     <component name="RingBufferChannelBuilder" f3:key="ring.buffer">

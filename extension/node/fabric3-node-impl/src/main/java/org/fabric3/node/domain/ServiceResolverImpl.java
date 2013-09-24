@@ -44,7 +44,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.host.Names;
 import org.fabric3.host.Namespaces;
-import org.fabric3.host.failure.ValidationFailure;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.Composite;
@@ -56,8 +55,6 @@ import org.fabric3.spi.builder.Connector;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.WireGenerator;
 import org.fabric3.spi.instantiator.AutowireResolver;
-import org.fabric3.spi.introspection.DefaultIntrospectionContext;
-import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -73,9 +70,9 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class ServiceResolverImpl implements ServiceResolver {
-    private static final QName SYNTHETIC_DEPLOYABLE = new QName(Namespaces.F3, "Synthetic");
+    private static final QName SYNTHETIC_DEPLOYABLE = new QName(Namespaces.SYNTHESIZED, "Synthetic");
 
-    private JavaContractProcessor contractProcessor;
+    private Introspector introspector;
     private LogicalComponentManager lcm;
     private AutowireResolver autowireResolver;
     private WireGenerator wireGenerator;
@@ -83,12 +80,12 @@ public class ServiceResolverImpl implements ServiceResolver {
     private AtomicInteger idCounter = new AtomicInteger();
 
     public ServiceResolverImpl(@Reference InstanceDeployer deployer,
-                               @Reference JavaContractProcessor contractProcessor,
-                               @Reference LogicalComponentManager lcm,
+                               @Reference Introspector introspector,
+                               @Reference(name = "lcm") LogicalComponentManager lcm,
                                @Reference AutowireResolver autowireResolver,
                                @Reference WireGenerator wireGenerator,
                                @Reference Connector connector) {
-        this.contractProcessor = contractProcessor;
+        this.introspector = introspector;
         this.lcm = lcm;
         this.autowireResolver = autowireResolver;
         this.wireGenerator = wireGenerator;
@@ -112,7 +109,7 @@ public class ServiceResolverImpl implements ServiceResolver {
     }
 
     private <T> LogicalWire createWire(Class<T> interfaze) throws ResolverException {
-        JavaServiceContract contract = introspectInterface(interfaze);
+        JavaServiceContract contract = introspector.introspect(interfaze);
 
         LogicalReference logicalReference = createReference(contract);
 
@@ -134,7 +131,8 @@ public class ServiceResolverImpl implements ServiceResolver {
         String name = "Synthetic" + id;
         URI componentUri = URI.create(domainComponent.getUri().toString() + "/" + name);
         URI referenceUri = URI.create(componentUri.toString() + "#reference");
-        Composite composite = new Composite(new QName(Namespaces.F3, "SyntheticComposite" + id));
+        QName qName = new QName(Namespaces.SYNTHESIZED, "SyntheticComposite" + id);
+        Composite composite = new Composite(qName);
 
         ComponentDefinition<NonManagedImplementation> componentDefinition = new ComponentDefinition<NonManagedImplementation>(name);
         componentDefinition.setParent(composite);
@@ -152,19 +150,6 @@ public class ServiceResolverImpl implements ServiceResolver {
 
         logicalComponent.addReference(logicalReference);
         return logicalReference;
-    }
-
-    private <T> JavaServiceContract introspectInterface(Class<T> interfaze) throws ResolverException {
-        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
-        JavaServiceContract contract = contractProcessor.introspect(interfaze, context);
-        StringBuilder builder = new StringBuilder();
-        if (context.hasErrors()) {
-            for (ValidationFailure failure : context.getErrors()) {
-                builder.append(failure.getMessage()).append("\n");
-            }
-            throw new ResolverException(builder.toString());
-        }
-        return contract;
     }
 
 }

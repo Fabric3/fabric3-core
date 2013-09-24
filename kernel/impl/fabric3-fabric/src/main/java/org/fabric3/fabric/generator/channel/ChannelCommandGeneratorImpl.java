@@ -38,23 +38,14 @@
 package org.fabric3.fabric.generator.channel;
 
 import javax.xml.namespace.QName;
-import java.util.Map;
 
 import org.fabric3.fabric.command.BuildChannelCommand;
 import org.fabric3.fabric.command.DisposeChannelCommand;
-import org.fabric3.fabric.generator.GeneratorNotFoundException;
-import org.fabric3.fabric.generator.GeneratorRegistry;
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.spi.generator.ChannelDirection;
 import org.fabric3.spi.generator.ChannelGenerator;
-import org.fabric3.spi.generator.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
-import org.fabric3.spi.model.physical.ChannelSide;
-import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
-import org.fabric3.spi.model.type.binding.SCABinding;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -63,59 +54,20 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class ChannelCommandGeneratorImpl implements ChannelCommandGenerator {
-    private Map<String, ChannelGenerator> channelGenerators;
-    private GeneratorRegistry generatorRegistry;
+    private ChannelGenerator channelGenerator;
 
-    @Reference
-    public void setChannelGenerators(Map<String, ChannelGenerator> channelGenerators) {
-        this.channelGenerators = channelGenerators;
+    public ChannelCommandGeneratorImpl(@Reference ChannelGenerator channelGenerator) {
+        this.channelGenerator = channelGenerator;
     }
 
-    public ChannelCommandGeneratorImpl(@Reference GeneratorRegistry generatorRegistry) {
-        this.generatorRegistry = generatorRegistry;
-    }
-
-    public BuildChannelCommand generateBuild(LogicalChannel channel, QName deployable, Direction direction) throws GenerationException {
-        PhysicalChannelDefinition definition = generateChannelDefinition(channel, deployable, direction);
+    public BuildChannelCommand generateBuild(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException {
+        PhysicalChannelDefinition definition = channelGenerator.generateChannelDefinition(channel, deployable, direction);
         return new BuildChannelCommand(definition);
     }
 
-    public DisposeChannelCommand generateDispose(LogicalChannel channel, QName deployable, Direction direction) throws GenerationException {
-        PhysicalChannelDefinition definition = generateChannelDefinition(channel, deployable, direction);
+    public DisposeChannelCommand generateDispose(LogicalChannel channel, QName deployable, ChannelDirection direction) throws GenerationException {
+        PhysicalChannelDefinition definition = channelGenerator.generateChannelDefinition(channel, deployable, direction);
         return new DisposeChannelCommand(definition);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private PhysicalChannelDefinition generateChannelDefinition(LogicalChannel channel, QName deployable, Direction direction) throws GenerationException {
-
-        LogicalBinding<?> binding = channel.getBinding();
-        String type = channel.getDefinition().getType();
-        ChannelGenerator generator = channelGenerators.get(type);
-        if (generator == null) {
-            throw new GenerationException("Channel generator not found: " + type);
-        }
-        PhysicalChannelDefinition definition = generator.generate(channel, deployable);
-        if (!channel.getBindings().isEmpty()) {
-            // generate binding information
-            if (!(binding.getDefinition() instanceof SCABinding)) {
-                // avoid generating SCABinding
-                ConnectionBindingGenerator bindingGenerator = getGenerator(binding);
-                ChannelDeliveryType deliveryType = definition.getDeliveryType();
-                PhysicalChannelBindingDefinition bindingDefinition = bindingGenerator.generateChannelBinding(binding, deliveryType);
-                definition.setBindingDefinition(bindingDefinition);
-                definition.setChannelSide(Direction.CONSUMER == direction ? ChannelSide.CONSUMER : ChannelSide.PRODUCER);
-            } else {
-                definition.setChannelSide(ChannelSide.COLLOCATED);
-            }
-        } else {
-            definition.setChannelSide(ChannelSide.COLLOCATED);
-        }
-        return definition;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T extends BindingDefinition> ConnectionBindingGenerator<T> getGenerator(LogicalBinding<T> binding) throws GeneratorNotFoundException {
-        return (ConnectionBindingGenerator<T>) generatorRegistry.getConnectionBindingGenerator(binding.getDefinition().getClass());
     }
 
 }

@@ -56,6 +56,7 @@ import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;
+import org.fabric3.spi.generator.ConnectionGenerator;
 import org.fabric3.spi.generator.EventStreamHandlerGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.PolicyMetadata;
