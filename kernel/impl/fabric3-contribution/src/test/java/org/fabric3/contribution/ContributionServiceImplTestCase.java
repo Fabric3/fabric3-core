@@ -43,16 +43,15 @@
  */
 package org.fabric3.contribution;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.host.contribution.ContributionLockedException;
 import org.fabric3.host.contribution.ContributionOrder;
 import org.fabric3.host.contribution.ContributionSource;
@@ -426,7 +425,7 @@ public class ContributionServiceImplTestCase extends TestCase {
 
         contributionUri = URI.create("contribution");
         URL locationUrl = new URL("file://test");
-        contribution = new Contribution(contributionUri, null, locationUrl, 1, "application/xml", false);
+        contribution = new Contribution(contributionUri, null, locationUrl, 1, "application/xml", true);
         deployableName = new QName("test", "composite");
         deployable = new Deployable(deployableName);
         contribution.getManifest().addDeployable(deployable);

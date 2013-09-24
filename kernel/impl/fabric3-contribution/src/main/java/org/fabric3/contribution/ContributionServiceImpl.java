@@ -43,6 +43,7 @@
  */
 package org.fabric3.contribution;
 
+import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -53,13 +54,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.contribution.ArtifactValidationFailure;
+import org.fabric3.host.contribution.ContributionAlreadyInstalledException;
 import org.fabric3.host.contribution.ContributionLockedException;
 import org.fabric3.host.contribution.ContributionNotFoundException;
 import org.fabric3.host.contribution.ContributionOrder;
@@ -81,7 +79,6 @@ import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.host.contribution.ContributionAlreadyInstalledException;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.contribution.ContributionState;
@@ -96,6 +93,8 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.validation.InvalidContributionException;
 import org.fabric3.spi.introspection.validation.ValidationUtils;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default ContributionService implementation.
@@ -234,7 +233,9 @@ public class ContributionServiceImpl implements ContributionService {
         }
         metaDataStore.remove(uri);
         try {
-            getRepository().remove(uri);
+            if (contribution.isPersistent()) {
+                getRepository().remove(uri);
+            }
         } catch (RepositoryException e) {
             throw new RemoveException("Error removing contribution archive", e);
         }
@@ -430,7 +431,6 @@ public class ContributionServiceImpl implements ContributionService {
         }
         return order;
     }
-
 
     /**
      * Resolves a contribution by its URI.

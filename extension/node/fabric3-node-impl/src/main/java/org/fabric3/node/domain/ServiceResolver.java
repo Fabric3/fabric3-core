@@ -43,7 +43,7 @@ package org.fabric3.node.domain;
 public interface ServiceResolver {
 
     /**
-     * Resolves the service and returns a wire proxy to it.
+     * Resolves the service using autowire and returns a wire proxy to it.
      *
      * @param interfaze the service interface
      * @return the wire proxy

@@ -46,7 +46,9 @@ import org.fabric3.api.node.Domain;
 import org.fabric3.host.contribution.ContributionNotFoundException;
 import org.fabric3.host.contribution.ContributionService;
 import org.fabric3.host.contribution.InstallException;
+import org.fabric3.host.contribution.RemoveException;
 import org.fabric3.host.contribution.StoreException;
+import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.host.contribution.UrlContributionSource;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Reference;
@@ -92,9 +94,20 @@ public class NodeDomain implements Domain {
     public void subscribe(Class<?> interfaze, String name, Object consumer) {
     }
 
+    public void unsubscribe(Class<?> interfaze, String name, Object consumer) {
+    }
+
     public <T> void deploy(Class<T> interfaze, T instance) {
         try {
             deployer.deploy(interfaze, instance);
+        } catch (DeploymentException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    public <T> void undeploy(Class<T> interfaze, T instance) {
+        try {
+            deployer.undeploy(interfaze, instance);
         } catch (DeploymentException e) {
             throw new ServiceRuntimeException(e);
         }
@@ -116,6 +129,25 @@ public class NodeDomain implements Domain {
         } catch (InstallException e) {
             throw new ServiceRuntimeException(e);
         } catch (org.fabric3.host.domain.DeploymentException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    public void undeploy(URL url) {
+        try {
+            URI uri = url.toURI();
+            domain.undeploy(uri, true);
+            contributionService.uninstall(uri);
+            contributionService.remove(uri);
+        } catch (URISyntaxException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (ContributionNotFoundException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (org.fabric3.host.domain.DeploymentException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (UninstallException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (RemoveException e) {
             throw new ServiceRuntimeException(e);
         }
     }

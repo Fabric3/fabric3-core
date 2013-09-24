@@ -71,6 +71,15 @@ public interface Domain {
     void subscribe(Class<?> interfaze, String name, Object consumer);
 
     /**
+     * Un-subscribes a consumer from receiving events from a channel.
+     *
+     * @param interfaze the channel interface
+     * @param name      the channel name
+     * @param consumer  the consumer
+     */
+    void unsubscribe(Class<?> interfaze, String name, Object consumer);
+
+    /**
      * Deploys a service endpoint.
      *
      * @param interfaze the service endpoint
@@ -79,10 +88,25 @@ public interface Domain {
     <T> void deploy(Class<T> interfaze, T instance);
 
     /**
+     * Un-deploys a service endpoint.
+     *
+     * @param interfaze the service endpoint
+     * @param instance  the service instance
+     */
+    <T> void undeploy(Class<T> interfaze, T instance);
+
+    /**
      * Deploys an artifact such as a composite file or contribution to the domain.
      *
      * @param url the artifact URL
      */
     void deploy(URL url);
+
+    /**
+     * Un-deploys an artifact such as a composite file or contribution from the domain.
+     *
+     * @param url the artifact URL
+     */
+    void undeploy(URL url);
 
 }

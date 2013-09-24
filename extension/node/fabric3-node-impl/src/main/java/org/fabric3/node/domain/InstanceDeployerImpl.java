@@ -97,6 +97,19 @@ public class InstanceDeployerImpl implements InstanceDeployer {
         buildComponent(logicalComponent, instance);
     }
 
+    @SuppressWarnings("SuspiciousMethodCalls")
+    public <T> void undeploy(Class<T> interfaze, T instance) throws DeploymentException {
+        LogicalCompositeComponent domainComponent = lcm.getRootComponent();
+        String name = interfaze.getSimpleName();
+        URI componentUri = URI.create(domainComponent.getUri().toString() + "/" + name);
+        domainComponent.getComponents().remove(componentUri);
+        try {
+            cm.unregister(componentUri);
+        } catch (RegistrationException e) {
+            throw new DeploymentException(e);
+        }
+    }
+
     private <T> JavaServiceContract introspectInterface(Class<T> interfaze) throws DeploymentException {
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
         JavaServiceContract contract = contractProcessor.introspect(interfaze, context);

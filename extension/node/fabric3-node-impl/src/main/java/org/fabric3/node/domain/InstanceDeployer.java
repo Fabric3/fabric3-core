@@ -45,10 +45,19 @@ public interface InstanceDeployer {
     /**
      * Deploy the instance.
      *
-     * @param interfaze the service interface implemented by the instance.
+     * @param interfaze the service interface implemented by the instance
      * @param instance  the instance
      * @throws DeploymentException if there is a deployment error
      */
     <T> void deploy(Class<T> interfaze, T instance) throws DeploymentException;
+
+    /**
+     * Un-deploys an instance.
+     *
+     * @param interfaze the service interface implemented by the instance
+     * @param instance  the instance
+     * @throws DeploymentException if there is a un-deployment error
+     */
+    <T> void undeploy(Class<T> interfaze, T instance) throws DeploymentException;
 
 }
