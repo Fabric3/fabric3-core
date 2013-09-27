@@ -37,22 +37,17 @@
 */
 package org.fabric3.contribution.manifest;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
-import javax.xml.namespace.QName;
-import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.contribution.Deployable;
@@ -69,7 +64,10 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
 import org.fabric3.spi.introspection.xml.UnrecognizedElement;
 import org.fabric3.spi.model.os.Library;
-
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.fabric3.host.Namespaces.F3;
 import static org.oasisopen.sca.Constants.SCA_NS;
@@ -242,6 +240,8 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
                     runtimeModes.add(RuntimeMode.PARTICIPANT);
                 } else if ("vm".equals(mode)) {
                     runtimeModes.add(RuntimeMode.VM);
+                } else if ("node".equals(mode)) {
+                    runtimeModes.add(RuntimeMode.NODE);
                 } else {
                     runtimeModes = Deployable.DEFAULT_MODES;
                     Location location = reader.getLocation();

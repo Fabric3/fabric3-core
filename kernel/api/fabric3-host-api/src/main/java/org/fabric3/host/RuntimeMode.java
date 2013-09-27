@@ -43,5 +43,6 @@ package org.fabric3.host;
 public enum RuntimeMode {
     CONTROLLER,
     PARTICIPANT,
-    VM
+    VM,
+    NODE
 }

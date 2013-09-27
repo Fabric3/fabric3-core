@@ -244,6 +244,8 @@ public class SystemConfigLoader {
             String name = node.getAttribute("mode");
             if ("controller".equalsIgnoreCase(name)) {
                 return RuntimeMode.CONTROLLER;
+            } else if ("node".equalsIgnoreCase(name)) {
+                return RuntimeMode.NODE;
             } else if ("participant".equalsIgnoreCase(name)) {
                 return RuntimeMode.PARTICIPANT;
             }

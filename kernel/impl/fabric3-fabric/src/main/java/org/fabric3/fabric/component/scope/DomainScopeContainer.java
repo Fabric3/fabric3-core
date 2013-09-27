@@ -105,9 +105,9 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
     }
 
     public void startContext(QName deployable) throws GroupInitializationException {
-        if (RuntimeMode.PARTICIPANT == info.getRuntimeMode() && topologyService == null) {
+        if ((RuntimeMode.PARTICIPANT == info.getRuntimeMode() || RuntimeMode.NODE == info.getRuntimeMode()) && topologyService == null) {
             return;
-        } else if (RuntimeMode.PARTICIPANT == info.getRuntimeMode() && !topologyService.isZoneLeader()) {
+        } else if ((RuntimeMode.PARTICIPANT == info.getRuntimeMode() || RuntimeMode.NODE == info.getRuntimeMode()) && !topologyService.isZoneLeader()) {
             // defer instantiation until this node becomes zone leader
             synchronized (deferredContexts) {
                 deferredContexts.add(deployable);

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="urn:fabric3.org">
+    <runtime mode="node" port.range="8080-8181"/>
+</config>

@@ -117,6 +117,8 @@ public class DefaultBootstrapService implements BootstrapService {
             runtimeName = domainName.getAuthority() + ":controller:" + runtimeId;
         } else if (RuntimeMode.PARTICIPANT == mode) {
             runtimeName = domainName.getAuthority() + ":participant:" + zoneName + ":" + runtimeId;
+        } else if (RuntimeMode.NODE == mode) {
+            runtimeName = domainName.getAuthority() + ":node:" + zoneName + ":" + runtimeId;
         } else {
             runtimeName = "vm";
         }

@@ -37,11 +37,11 @@
 */
 package org.fabric3.host.contribution;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import org.fabric3.host.RuntimeMode;
 
@@ -58,6 +58,7 @@ public class Deployable implements Serializable {
         DEFAULT_MODES.add(RuntimeMode.VM);
         DEFAULT_MODES.add(RuntimeMode.CONTROLLER);
         DEFAULT_MODES.add(RuntimeMode.PARTICIPANT);
+        DEFAULT_MODES.add(RuntimeMode.NODE);
     }
 
     private QName name;

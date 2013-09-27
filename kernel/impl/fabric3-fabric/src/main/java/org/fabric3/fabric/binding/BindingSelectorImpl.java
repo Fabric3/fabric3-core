@@ -37,16 +37,11 @@
 */
 package org.fabric3.fabric.binding;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
@@ -61,13 +56,16 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
-
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
 
 /**
- * Selects a binding provider by delegating to a BindingSelectionStrategy configured for the domain. For each wire, if a remote service has an
- * explicit binding, its configuration will be used to construct the reference binding. If a service does not have an explicit binding, the wire uses
- * binding.sca. The BindingSelector will select an appropriate remote transport and create binding configuration for both sides of the wire.
+ * Selects a binding provider by delegating to a BindingSelectionStrategy configured for the domain. For each wire, if a remote service has an explicit binding,
+ * its configuration will be used to construct the reference binding. If a service does not have an explicit binding, the wire uses binding.sca. The
+ * BindingSelector will select an appropriate remote transport and create binding configuration for both sides of the wire.
  */
 @EagerInit
 public class BindingSelectorImpl implements BindingSelector {
@@ -109,7 +107,7 @@ public class BindingSelectorImpl implements BindingSelector {
     }
 
     public void selectBindings(LogicalCompositeComponent domain) throws BindingSelectionException {
-        if (RuntimeMode.CONTROLLER != info.getRuntimeMode() || disable) {
+        if ((RuntimeMode.CONTROLLER != info.getRuntimeMode() && RuntimeMode.NODE != info.getRuntimeMode()) || disable) {
             // there are no remote wires when the domain is contained withing a single VM (including Participant mode, which has a runtime domain)
             return;
         }
