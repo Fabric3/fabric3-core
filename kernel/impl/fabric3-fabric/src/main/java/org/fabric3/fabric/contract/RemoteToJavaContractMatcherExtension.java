@@ -35,36 +35,38 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.model.type.remote;
 
-import java.util.List;
+package org.fabric3.fabric.contract;
 
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.spi.contract.ContractMatcherExtension;
+import org.fabric3.spi.contract.MatchResult;
+import org.fabric3.spi.model.type.java.JavaServiceContract;
+import org.fabric3.spi.model.type.remote.RemoteServiceContract;
 
 /**
- * An interface of a service hosted in a remote process.
+ * Compares a {@link RemoteServiceContract} and {@link JavaServiceContract} for compatibility.
  */
-public class RemoteServiceContract extends ServiceContract {
-    private static final long serialVersionUID = 8902926932952586699L;
+public class RemoteToJavaContractMatcherExtension implements ContractMatcherExtension<RemoteServiceContract, JavaServiceContract> {
 
-    private String interfaceName;
-    private List<String> superTypes;
-
-    public RemoteServiceContract(String interfaceName, List<String> superTypes) {
-        this.interfaceName = interfaceName;
-        this.superTypes = superTypes;
+    public Class<RemoteServiceContract> getSource() {
+        return RemoteServiceContract.class;
     }
 
-    public String getQualifiedInterfaceName() {
-        return interfaceName;
+    public Class<JavaServiceContract> getTarget() {
+        return JavaServiceContract.class;
     }
 
-    /**
-     * Returns the super types of the contract type starting with the top type in the hierarchy.
-     *
-     * @return the super types of the contract type
-     */
-    public List<String> getSuperTypes() {
-        return superTypes;
+    public MatchResult isAssignableFrom(RemoteServiceContract source, JavaServiceContract target, boolean reportErrors) {
+        String sourceName = source.getQualifiedInterfaceName();
+        if (sourceName.equals(target.getQualifiedInterfaceName())) {
+            return MatchResult.MATCH;
+        }
+        for (String interfaze : target.getInterfaces()) {
+            if (sourceName.equals(interfaze)) {
+                return MatchResult.MATCH;
+            }
+        }
+        return MatchResult.NO_MATCH;
     }
+
 }

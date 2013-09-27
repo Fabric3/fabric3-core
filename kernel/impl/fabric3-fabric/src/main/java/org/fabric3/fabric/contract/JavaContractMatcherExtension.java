@@ -42,13 +42,13 @@ import org.fabric3.spi.contract.ContractMatcherExtension;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.fabric3.spi.model.type.java.Signature;
+import static org.fabric3.spi.contract.MatchResult.MATCH;
+import static org.fabric3.spi.contract.MatchResult.NO_MATCH;
 
 /**
  * Compares JavaServiceContracts for compatibility.
  */
 public class JavaContractMatcherExtension implements ContractMatcherExtension<JavaServiceContract, JavaServiceContract> {
-    private static final MatchResult MATCH = new MatchResult(true);
-    private static final MatchResult NO_MATCH = new MatchResult(false);
 
     public Class<JavaServiceContract> getSource() {
         return JavaServiceContract.class;

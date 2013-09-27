@@ -37,14 +37,13 @@
 */
 package org.fabric3.fabric.instantiator.wire;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.fabric.instantiator.AmbiguousService;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.ServiceNotFound;
@@ -176,10 +175,9 @@ public class WireInstantiatorImplTestCase extends TestCase {
     public void testIncompatibleContracts() throws Exception {
         // replace matcher
         matcher = EasyMock.createMock(ContractMatcher.class);
-        MatchResult result = new MatchResult(false);
-        EasyMock.expect(matcher.isAssignableFrom(EasyMock.isA(ServiceContract.class),
-                                                 EasyMock.isA(ServiceContract.class),
-                                                 EasyMock.anyBoolean())).andReturn(result);
+
+        EasyMock.expect(matcher.isAssignableFrom(EasyMock.isA(ServiceContract.class), EasyMock.isA(ServiceContract.class), EasyMock.anyBoolean())).andReturn(
+                MatchResult.NO_MATCH);
         EasyMock.replay(matcher);
         createCompositeWithWire();
         LogicalComponent<?> logicalComponent = createLogicalComponent();
@@ -306,10 +304,8 @@ public class WireInstantiatorImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         matcher = EasyMock.createMock(ContractMatcher.class);
-        MatchResult result = new MatchResult(true);
-        EasyMock.expect(matcher.isAssignableFrom(EasyMock.isA(ServiceContract.class),
-                                                 EasyMock.isA(ServiceContract.class),
-                                                 EasyMock.anyBoolean())).andReturn(result);
+        EasyMock.expect(matcher.isAssignableFrom(EasyMock.isA(ServiceContract.class), EasyMock.isA(ServiceContract.class), EasyMock.anyBoolean())).andReturn(
+                MatchResult.MATCH);
 
         context = new InstantiationContext();
     }

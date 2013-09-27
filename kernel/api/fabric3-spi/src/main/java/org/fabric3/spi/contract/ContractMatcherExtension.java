@@ -59,8 +59,8 @@ public interface ContractMatcherExtension<S extends ServiceContract, T extends S
     Class<T> getTarget();
 
     /**
-     * Determines if two <code>ServiceContract</code> are compatible for wiring. Some interface languages, such as Java, allow for inheritance. In
-     * these cases, compatibility will include checking if the source contract is a super type of the target contract.
+     * Determines if two <code>ServiceContract</code>s are compatible for wiring. Some interface languages, such as Java, allow for inheritance. In these cases,
+     * compatibility will include checking if the source contract is a super type of the target contract.
      *
      * @param source       the source contract. Typically, this is the contract specified by a component reference.
      * @param target       the target contract. Typically this is the contract specified by a service.

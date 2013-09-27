@@ -41,6 +41,9 @@ package org.fabric3.spi.contract;
  * The result of a contract matching operation.
  */
 public class MatchResult {
+    public static final MatchResult MATCH = new MatchResult(true);
+    public static final MatchResult NO_MATCH = new MatchResult(false);
+
     private boolean assignable;
     private String error;
 

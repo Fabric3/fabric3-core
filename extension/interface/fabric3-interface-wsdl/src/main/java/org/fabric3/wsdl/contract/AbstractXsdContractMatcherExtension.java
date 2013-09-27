@@ -48,13 +48,13 @@ import org.fabric3.spi.contract.ContractMatcherExtension;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.model.type.xsd.XSDComplexType;
 import org.fabric3.spi.model.type.xsd.XSDType;
+import static org.fabric3.spi.contract.MatchResult.MATCH;
+import static org.fabric3.spi.contract.MatchResult.NO_MATCH;
 
 /**
  * An abstract ContractMatcher that uses XML Schema to match contracts specified with different type systems.
  */
 public abstract class AbstractXsdContractMatcherExtension<S extends ServiceContract, T extends ServiceContract> implements ContractMatcherExtension<S, T> {
-    private static final MatchResult MATCH = new MatchResult(true);
-    private static final MatchResult NO_MATCH = new MatchResult(false);
 
     protected MatchResult matchContract(ServiceContract source, ServiceContract target, boolean reportErrors) {
         if (source == target) {
