@@ -43,11 +43,11 @@
  */
 package org.fabric3.spi.model.instance;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentDefinition;
@@ -136,7 +136,7 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     }
 
     /**
-     * Returns the autowire value based on the component autowire inheritence hierarchy.
+     * Returns the autowire value based on the component autowire inheritance hierarchy.
      *
      * @return the autowire value
      */
@@ -145,7 +145,7 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     }
 
     /**
-     * Sets the autowire value  based on the component autowire inheritence hierarchy.
+     * Sets the autowire value  based on the component autowire inheritance hierarchy.
      *
      * @param autowire the autowire value
      */
