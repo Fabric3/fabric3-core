@@ -35,31 +35,23 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.model.type.java;
+package org.fabric3.spi.model.type.remote;
 
-import javax.xml.namespace.QName;
-
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.model.type.contract.ServiceContract;
 
 /**
- * An abstract Java type. For generic types, the physical type will be the raw type.
- * <p/>
- * For generic types, the logical type will contain resolved generic parameters. This allows for stronger type checking during wiring as resolved
- * generic parameter types can be used for type checking. For non-generic types, the physical and logical types will be the same.
+ * An interface of a service hosted in a remote process.
  */
-public abstract class JavaType<T> extends DataType<T> {
-    private static final long serialVersionUID = 9025728312058285754L;
-    private QName xsdType;
+public class RemoteServiceContract extends ServiceContract {
+    private static final long serialVersionUID = 8902926932952586699L;
 
-    public JavaType(Class<?> physical, T logical) {
-        super(physical, logical);
+    private String interfaceName;
+
+    public RemoteServiceContract(String interfaceName) {
+        this.interfaceName = interfaceName;
     }
 
-    public QName getXsdType() {
-        return xsdType;
-    }
-
-    public void setXsdType(QName xsdType) {
-        this.xsdType = xsdType;
+    public String getQualifiedInterfaceName() {
+        return interfaceName;
     }
 }
