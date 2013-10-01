@@ -50,10 +50,10 @@ import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.plan.DeploymentPlan;
 
 /**
- * Allocator that selects zones for a collection of components using deployment plan mappings.
+ * Allocator that selects zones for a collection of components using deployment plan mappings. Used in controller runtimes.
  */
 @EagerInit
-public class DefaultAllocator implements Allocator {
+public class ControllerAllocator implements Allocator {
 
     public void allocate(LogicalComponent<?> component, DeploymentPlan plan) throws AllocationException {
         if (LogicalComponent.LOCAL_ZONE.equals(component.getZone())) {

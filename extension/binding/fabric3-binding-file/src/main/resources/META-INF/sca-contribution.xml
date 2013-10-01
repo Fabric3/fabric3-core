@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
 
     <f3:provides.capability name="file.binding"/>
 
-    <deployable composite="f3:FileBindingControllerExtension" modes="controller vm"/>
-    <deployable composite="f3:FileBindingRuntimeExtension" modes="participant vm"/>
+    <deployable composite="f3:FileBindingControllerExtension" modes="controller node vm"/>
+    <deployable composite="f3:FileBindingRuntimeExtension" modes="participant node vm"/>
 
 </contribution>

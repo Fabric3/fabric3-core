@@ -47,24 +47,30 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jgroups.Address;
-import org.jgroups.View;
-import org.jgroups.util.UUID;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.fabric3.spi.federation.MessageException;
+import org.jgroups.Address;
+import org.jgroups.View;
+import org.jgroups.util.UUID;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
 public class JGroupsHelperImpl implements JGroupsHelper {
     private ClassLoaderRegistry classLoaderRegistry;
+    private String runtimeType = "participant";
 
     public JGroupsHelperImpl(@Reference ClassLoaderRegistry classLoaderRegistry) {
         this.classLoaderRegistry = classLoaderRegistry;
+    }
+
+    @Property(required = false)
+    public void setRuntimeType(String runtimeType) {
+        this.runtimeType = runtimeType;
     }
 
     // domain:controller:id
@@ -86,11 +92,11 @@ public class JGroupsHelperImpl implements JGroupsHelper {
             if (name == null) {
                 return null;
             }
-            int pos = name.indexOf(":participant:");
+            int pos = name.indexOf(":" + runtimeType + ":");
             if (pos < 0) {
                 continue;
             }
-            name = name.substring(pos + 13);
+            name = name.substring(pos + runtimeType.length() + 2);
             name = name.substring(0, name.indexOf(":"));
             if (zoneName.equals(name)) {
                 return address;
@@ -106,11 +112,11 @@ public class JGroupsHelperImpl implements JGroupsHelper {
             if (name == null) {
                 continue;
             }
-            int pos = name.indexOf(":participant");
+            int pos = name.indexOf(":" + runtimeType);
             if (pos < 0) {
                 continue;
             }
-            if (name.substring(pos + 12).startsWith(":" + zoneName + ":")) {
+            if (name.substring(pos + runtimeType.length() + 1).startsWith(":" + zoneName + ":")) {
                 runtimes.add(address);
             }
         }
@@ -122,11 +128,11 @@ public class JGroupsHelperImpl implements JGroupsHelper {
         if (name == null) {
             return null;
         }
-        int pos = name.indexOf(":participant:");
+        int pos = name.indexOf(":" + runtimeType + ":");
         if (pos < 0) {
             return null;
         }
-        return name.substring(pos + 13, name.lastIndexOf(":"));
+        return name.substring(pos + runtimeType.length() + 2, name.lastIndexOf(":"));
     }
 
     public Address getRuntimeAddress(String runtimeName, View view) {

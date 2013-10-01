@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (c) 2009-2013 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
+           name="FederationNodeExtension"
+           autowire="true">
+
+    <component name="DomainSnapshotCommandExecutor">
+        <f3:implementation.system class="org.fabric3.federation.node.executor.DomainSnapshotCommandExecutor"/>
+        <reference name="lcm" target="LogicalComponentManager"/>
+    </component>
+
+    <component name="DeploymentSnapshotCommandExecutor">
+        <f3:implementation.system class="org.fabric3.federation.node.executor.DeploymentSnapshotCommandExecutor"/>
+    </component>
+
+    <component name="SnapshotDeployListener">
+        <f3:implementation.system class="org.fabric3.federation.node.deploy.SnapshotDeployListener"/>
+        <reference name="lcm" target="LogicalComponentManager"/>
+    </component>
+
+    <component name="DomainMergeService">
+        <f3:implementation.system class="org.fabric3.federation.node.merge.DomainMergeServiceImpl"/>
+        <reference name="lcm" target="LogicalComponentManager"/>
+    </component>
+</composite>

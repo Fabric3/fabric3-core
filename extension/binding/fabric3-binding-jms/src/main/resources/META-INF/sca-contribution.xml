@@ -24,8 +24,8 @@ Public License. See the accompanying license file for details.
     <export.java package="org.fabric3.binding.jms.model" version="2.5.0"/>
     <export.java package="org.fabric3.binding.jms.spi.*" version="2.5.0"/>
 
-    <deployable composite="f3:JmsControllerExtension" modes="controller vm"/>
-    <deployable composite="f3:JmsRuntimeExtension" modes="participant vm"/>
+    <deployable composite="f3:JmsControllerExtension" modes="controller node vm"/>
+    <deployable composite="f3:JmsRuntimeExtension" modes="participant node vm"/>
 
     <f3:requires.capability name="transaction"/>
     <f3:provides name="jms"/>

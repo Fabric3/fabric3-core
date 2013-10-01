@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Fabric3
+Copyright (c) 2009-2013 Metaform Systems
+
+Fabric3 is licensed under modified terms of the GNU General
+Public License. See the accompanying license file for details.
+
+
+
+
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:f3="urn:fabric3.org"
+           targetNamespace="urn:fabric3.org"
+           name="JGroupsFederationNodeExtension"
+           autowire="true">
+
+
+    <component name="NodeDomainTopologyService">
+        <f3:implementation.system class="org.fabric3.federation.jgroups.NodeDomainTopologyService"/>
+        <property name="zoneName" source="$systemConfig//f3:federation/f3:zoneName"/>
+        <property name="channelConfig" source="$systemConfig//f3:federation/f3:config"/>
+        <property name="defaultTimeout" source="$systemConfig//f3:federation/@timeout"/>
+        <!--<property name="transportMetadata" source="$systemConfig//f3:federation/f3:transport/*"/>-->
+        <property name="defaultBindAddress" source="$systemConfig/f3:runtime/@host.address"/>
+    </component>
+
+    <component name="JGroupsHelper">
+        <f3:implementation.system class="org.fabric3.federation.jgroups.JGroupsHelperImpl"/>
+        <property name="runtimeType">node</property>
+    </component>
+
+</composite>

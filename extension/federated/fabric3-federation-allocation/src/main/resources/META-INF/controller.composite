@@ -13,12 +13,12 @@ Public License. See the accompanying license file for details.
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:f3="urn:fabric3.org"
            targetNamespace="urn:fabric3.org"
-           name="FederatedAllocatorExtension"
+           name="FederatedControllerAllocatorExtension"
            autowire="true">
 
     <!-- The allocator will be reinjected into the DistributedDomain -->
-    <component name="DefaultAllocator">
-        <f3:implementation.system class="org.fabric3.federation.allocator.DefaultAllocator"/>
+    <component name="ControllerAllocator">
+        <f3:implementation.system class="org.fabric3.federation.allocator.ControllerAllocator"/>
     </component>
 
 </composite>

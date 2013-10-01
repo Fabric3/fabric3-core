@@ -24,7 +24,7 @@ Public License. See the accompanying license file for details.
     <!-- required to load Infinispan configuration -->
     <f3:provides name="jaxb"/>
 
-    <deployable composite="f3:InfinispanControllerExtension" modes="controller vm"/>
-    <deployable composite="f3:InfinispanParticipantExtension" modes="participant vm"/>
+    <deployable composite="f3:InfinispanControllerExtension" modes="controller node vm"/>
+    <deployable composite="f3:InfinispanParticipantExtension" modes="participant node vm"/>
 
 </contribution>

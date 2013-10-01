@@ -46,8 +46,6 @@ package org.fabric3.fabric.domain;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.fabric.executor.ExecutorNotFoundException;
 import org.fabric3.host.domain.DeploymentException;
@@ -62,8 +60,7 @@ import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.generator.DeploymentUnit;
-
-import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * A Deployer that sends DeploymentUnits to the local runtime instance.
@@ -82,7 +79,8 @@ public class LocalDeployer implements Deployer {
     }
 
     public void deploy(DeploymentPackage deploymentPackage) throws DeploymentException {
-        DeploymentUnit unit = deploymentPackage.getCurrentDeployment().getDeploymentUnit(LOCAL_ZONE);
+
+        DeploymentUnit unit = deploymentPackage.getCurrentDeployment().getDeploymentUnit();
         List<CompensatableCommand> provisionCommands = unit.getProvisionCommands();
         execute(provisionCommands);
 

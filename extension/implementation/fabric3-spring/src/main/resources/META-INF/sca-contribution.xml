@@ -23,7 +23,7 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.spring.spi"/>
     <import.java package="org.fabric3.datasource.spi"/>
 
-    <deployable composite="f3:SpringControllerExtension" modes="controller vm"/>
-    <deployable composite="f3:SpringParticipantExtension" modes="participant vm"/>
+    <deployable composite="f3:SpringControllerExtension" modes="controller node vm"/>
+    <deployable composite="f3:SpringParticipantExtension" modes="participant node vm"/>
     <f3:provides name="spring-library"/>
 </contribution>

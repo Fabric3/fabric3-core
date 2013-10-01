@@ -27,6 +27,6 @@ Public License. See the accompanying license file for details.
     <export.java package="org.fabric3.implementation.timer.model" version="2.5.0"/>
     <export.java package="org.fabric3.implementation.timer.provision" version="2.5.0"/>
 
-    <deployable composite="f3:TimerControllerExtension" modes="controller vm"/>
-    <deployable composite="f3:TimerParticipantExtension" modes="participant vm"/>
+    <deployable composite="f3:TimerControllerExtension" modes="controller node vm"/>
+    <deployable composite="f3:TimerParticipantExtension" modes="participant node vm"/>
 </contribution>

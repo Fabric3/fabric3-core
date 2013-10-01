@@ -17,7 +17,7 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.resource.spi" version="2.5.0"/>
     <export.java package="org.fabric3.cache.spi" version="2.5.0"/>
 
-    <deployable composite="f3:CacheControllerExtension" modes="controller vm"/>
-    <deployable composite="f3:CacheParticipantExtension" modes="participant vm"/>
+    <deployable composite="f3:CacheControllerExtension" modes="controller node vm"/>
+    <deployable composite="f3:CacheParticipantExtension" modes="participant node vm"/>
 
 </contribution>

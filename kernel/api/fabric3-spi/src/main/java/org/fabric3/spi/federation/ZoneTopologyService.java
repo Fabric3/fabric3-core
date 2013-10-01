@@ -116,6 +116,7 @@ public interface ZoneTopologyService {
      * @param command     the command
      * @throws MessageException if an error occurs sending the message
      */
+    @Deprecated
     void sendAsynchronous(String runtimeName, Command command) throws MessageException;
 
     /**
@@ -137,6 +138,7 @@ public interface ZoneTopologyService {
      * @return the responses
      * @throws MessageException if an error occurs sending the message
      */
+    @Deprecated
     List<Response> sendSynchronous(ResponseCommand command, long timeout) throws MessageException;
 
     /**
@@ -155,6 +157,7 @@ public interface ZoneTopologyService {
      * @param command the command
      * @throws MessageException if an error occurs sending the message
      */
+    @Deprecated
     void sendAsynchronousToController(Command command) throws MessageException;
 
     /**

@@ -50,7 +50,14 @@ Public License. See the accompanying license file for details.
              <version>${project.version}</version>
              <scope>provided</scope>
          </dependency>
-        
+
+        <dependency>
+             <groupId>org.codehaus.fabric3</groupId>
+             <artifactId>fabric3-federation-node</artifactId>
+             <version>${project.version}</version>
+             <scope>provided</scope>
+         </dependency>
+
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>

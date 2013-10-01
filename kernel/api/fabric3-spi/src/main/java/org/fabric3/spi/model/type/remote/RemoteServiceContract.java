@@ -47,7 +47,6 @@ import org.fabric3.model.type.contract.ServiceContract;
 public class RemoteServiceContract extends ServiceContract {
     private static final long serialVersionUID = 8902926932952586699L;
 
-    private String interfaceName;
     private List<String> superTypes;
 
     public RemoteServiceContract(String interfaceName, List<String> superTypes) {

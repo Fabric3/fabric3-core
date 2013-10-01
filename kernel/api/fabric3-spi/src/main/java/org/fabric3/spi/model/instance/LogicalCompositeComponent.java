@@ -153,6 +153,15 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
     }
 
     /**
+     * Removes a child component with the given URI.
+     *
+     * @param uri the child component URI
+     */
+    public void removeComponent(URI uri) {
+        components.remove(uri);
+    }
+
+    /**
      * Adds a child component
      *
      * @param component the child component to add
@@ -178,6 +187,15 @@ public class LogicalCompositeComponent extends LogicalComponent<CompositeImpleme
      */
     public LogicalChannel getChannel(URI uri) {
         return channels.get(uri);
+    }
+
+    /**
+     * Removes a channel with the given URI.
+     *
+     * @param uri the channel URI
+     */
+    public void removeChannel(URI uri) {
+        channels.remove(uri);
     }
 
     /**

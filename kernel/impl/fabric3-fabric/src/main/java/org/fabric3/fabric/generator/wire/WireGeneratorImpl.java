@@ -93,8 +93,7 @@ public class WireGeneratorImpl implements WireGenerator {
         this.operationGenerator = operationGenerator;
     }
 
-    public <T extends BindingDefinition> PhysicalWireDefinition generateBoundService(LogicalBinding<T> binding, URI callbackUri)
-            throws GenerationException {
+    public <T extends BindingDefinition> PhysicalWireDefinition generateBoundService(LogicalBinding<T> binding, URI callbackUri) throws GenerationException {
         checkService(binding);
         LogicalService service = (LogicalService) binding.getParent();
         LogicalComponent<?> component = service.getLeafComponent();
@@ -269,15 +268,15 @@ public class WireGeneratorImpl implements WireGenerator {
     }
 
     private boolean isLocal(LogicalWire wire) {
-        // at this point an SCA binding can only exist for local wires since SCA bindings for remote wires will have been replaced
-        // with concrete bindings
-        return (wire.getSourceBinding() == null || wire.getSourceBinding().getDefinition() instanceof SCABinding)
-                && (wire.getTargetBinding() == null || wire.getTargetBinding().getDefinition() instanceof SCABinding);
+        String sourceZone = wire.getSource().getParent().getZone();
+        String targetZone = wire.getTarget().getParent().getZone();
+        return sourceZone.equals(targetZone) && (wire.getSourceBinding() == null || wire.getSourceBinding().getDefinition() instanceof SCABinding) && (
+                wire.getTargetBinding() == null || wire.getTargetBinding().getDefinition() instanceof SCABinding);
+
     }
 
     /**
-     * Generates a physical wire definition for a wire that is not bound to a remote transport - i.e. it is between two components hosted in the same
-     * runtime.
+     * Generates a physical wire definition for a wire that is not bound to a remote transport - i.e. it is between two components hosted in the same runtime.
      *
      * @param wire the logical wire
      * @return the physical wire definition
@@ -334,21 +333,19 @@ public class WireGeneratorImpl implements WireGenerator {
         QName sourceDeployable = source.getDeployable();
         QName targetDeployable = target.getDeployable();
 
-        PhysicalWireDefinition pwd =
-                new PhysicalWireDefinition(sourceDefinition, sourceDeployable, targetDefinition, targetDeployable, operations);
-        boolean optimizable =
-                sourceDefinition.isOptimizable() && targetDefinition.isOptimizable() && checkOptimization(referenceContract, operations);
+        PhysicalWireDefinition pwd = new PhysicalWireDefinition(sourceDefinition, sourceDeployable, targetDefinition, targetDeployable, operations);
+        boolean optimizable = sourceDefinition.isOptimizable() && targetDefinition.isOptimizable() && checkOptimization(referenceContract, operations);
         pwd.setOptimizable(optimizable);
         return pwd;
     }
 
     /**
-     * Generates a physical wire definition for a wire that is bound to a remote transport - i.e. it is between two components hosted in different
-     * runtime processes.
+     * Generates a physical wire definition for a wire that is bound to a remote transport - i.e. it is between two components hosted in different runtime
+     * processes.
      * <p/>
-     * The source metadata is generated using a component generator for the reference parent. The target metadata is generated using the reference
-     * binding. Note that metadata for the service-side binding is not generated since the service endpoint will either be provisioned previously from
-     * another deployable composite or when metadata for the bound service is created by another generator.
+     * The source metadata is generated using a component generator for the reference parent. The target metadata is generated using the reference binding. Note
+     * that metadata for the service-side binding is not generated since the service endpoint will either be provisioned previously from another deployable
+     * composite or when metadata for the bound service is created by another generator.
      *
      * @param wire the logical wire
      * @return the physical wire definition
@@ -385,8 +382,10 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate metadata to attach the physical wire to the target transport (which is the reference binding)
         List<LogicalOperation> sourceOperations = reference.getOperations();
-        PhysicalTargetDefinition targetDefinition =
-                targetGenerator.generateServiceBindingTarget(serviceBinding, serviceContract, sourceOperations, targetPolicy);
+        PhysicalTargetDefinition targetDefinition = targetGenerator.generateServiceBindingTarget(serviceBinding,
+                                                                                                 serviceContract,
+                                                                                                 sourceOperations,
+                                                                                                 targetPolicy);
         targetDefinition.setClassLoaderId(source.getDefinition().getContributionUri());
         if (callbackContract != null) {
             // if there is a callback wire associated with this forward wire, calculate its URI
@@ -468,8 +467,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate metadata to attach the physical callback wire to the source transport
         BindingGenerator bindingGenerator = getGenerator(referenceBinding);
-        PhysicalSourceDefinition sourceDefinition =
-                bindingGenerator.generateSource(referenceBinding, referenceCallbackContract, operations, targetPolicy);
+        PhysicalSourceDefinition sourceDefinition = bindingGenerator.generateSource(referenceBinding, referenceCallbackContract, operations, targetPolicy);
         URI contributionUri = target.getDefinition().getContributionUri();
         sourceDefinition.setClassLoaderId(contributionUri);
 
@@ -483,8 +481,7 @@ public class WireGeneratorImpl implements WireGenerator {
         return new PhysicalWireDefinition(sourceDefinition, targetDefinition, physicalOperations);
     }
 
-    private <S extends LogicalComponent<?>> URI generateCallbackUri(S source, ServiceContract contract, String referenceName)
-            throws GenerationException {
+    private <S extends LogicalComponent<?>> URI generateCallbackUri(S source, ServiceContract contract, String referenceName) throws GenerationException {
         LogicalService candidate = null;
         for (LogicalService entry : source.getServices()) {
             MatchResult result = matcher.isAssignableFrom(contract, entry.getServiceContract(), false);
@@ -496,9 +493,8 @@ public class WireGeneratorImpl implements WireGenerator {
         if (candidate == null) {
             String name = contract.getInterfaceName();
             URI uri = source.getUri();
-            throw new CallbackServiceNotFoundException("Callback service not found: "
-                                                               + name + " on component: " + uri + " originating from reference :" + referenceName,
-                                                       name);
+            throw new CallbackServiceNotFoundException(
+                    "Callback service not found: " + name + " on component: " + uri + " originating from reference :" + referenceName, name);
         }
         return URI.create(source.getUri().toString() + "#" + candidate.getDefinition().getName());
     }

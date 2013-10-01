@@ -22,6 +22,6 @@ Public License. See the accompanying license file for details.
     <export.java package="org.fabric3.management.rest.model" version="2.5.0"/>
 
     <deployable composite="f3:ManagementExtension"/>
-    <deployable composite="f3:ManagementControllerExtension" modes="controller vm"/>
+    <deployable composite="f3:ManagementControllerExtension" modes="controller node vm"/>
 
 </contribution>

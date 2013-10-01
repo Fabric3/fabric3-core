@@ -50,11 +50,11 @@ import java.util.Set;
 
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CompensatableCommand;
+import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
- * Used to deploy composites to the domain. Deployments contain 1..N {@link DeploymentUnit}s which are provisioned to zones in the domain. A
- * DeploymentUnit is composed of 1..N {@link Command}s, which are executed on a participant runtime to perform tasks such as creating a component or
- * wire.
+ * Used to deploy composites to the domain. Deployments contain 1..N {@link DeploymentUnit}s which are provisioned to zones in the domain. A DeploymentUnit is
+ * composed of 1..N {@link Command}s, which are executed on a participant runtime to perform tasks such as creating a component or wire.
  */
 public class Deployment {
     private String id;
@@ -101,6 +101,15 @@ public class Deployment {
 
     public Set<String> getZones() {
         return units.keySet();
+    }
+
+    public DeploymentUnit getDeploymentUnit() {
+        if (units.isEmpty()) {
+            DeploymentUnit unit = new DeploymentUnit();
+            units.put(LogicalComponent.LOCAL_ZONE, unit);
+            return unit;
+        }
+        return units.values().iterator().next();
     }
 
     public DeploymentUnit getDeploymentUnit(String zone) {

@@ -26,6 +26,6 @@ Public License. See the accompanying license file for details.
     <f3:provides.capability name="jpa"/>
     <f3:provides.capability name="hibernate"/>
 
-    <deployable composite="f3:HibernateControllerExtension" modes = "controller vm"/>
-    <deployable composite="f3:HibernateParticipantExtension" modes = "participant vm"/>
+    <deployable composite="f3:HibernateControllerExtension" modes = "controller node vm"/>
+    <deployable composite="f3:HibernateParticipantExtension" modes = "participant node vm"/>
 </contribution>

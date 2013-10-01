@@ -14,5 +14,5 @@ Public License. See the accompanying license file for details.
               f3:description="WAR scanner extension"
               f3:extension="true">
     <import.java package="org.fabric3.contribution.scanner.spi" version="2.5.0"/>
-    <deployable composite="f3:WarContributionScannerExtension" modes="controller vm"/>
+    <deployable composite="f3:WarContributionScannerExtension" modes="controller node vm"/>
 </contribution>

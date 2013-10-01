@@ -43,21 +43,48 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.jgroups.Address;
 import org.jgroups.View;
 import org.jgroups.ViewId;
 import org.jgroups.util.UUID;
-
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
 
 /**
  *
  */
 public class JGroupsHelperImplTestCase extends TestCase {
     JGroupsHelperImpl helper;
-    
+
     org.jgroups.stack.IpAddress coord_addr = new org.jgroups.stack.IpAddress(9999);
 
+    public void testZoneName() throws Exception {
+        helper.setRuntimeType("node");
+        UUID address = UUID.randomUUID();
+        UUID.add(address, "domain:node:zone1:1");
+
+        assertEquals("zone1", helper.getZoneName(address));
+    }
+
+    public void testZoneLeaderNodeNaming() throws Exception {
+        helper.setRuntimeType("node");
+        ViewId id = new ViewId(coord_addr, 123);
+        List<Address> members = new ArrayList<Address>();
+        UUID address1 = UUID.randomUUID();
+        UUID.add(address1, "domain:node:zone1:1");
+        UUID address2 = UUID.randomUUID();
+        UUID.add(address2, "domain:node:zone1:2");
+        UUID address3 = UUID.randomUUID();
+        UUID.add(address3, "domain:node:zone2:3");
+        members.add(address1);
+        members.add(address2);
+        members.add(address3);
+        View view = new View(id, members);
+
+        Address zone1Leader = helper.getZoneLeader("zone1", view);
+        Address zone2Leader = helper.getZoneLeader("zone2", view);
+        assertEquals(address1, zone1Leader);
+        assertEquals(address3, zone2Leader);
+    }
 
     public void testZoneLeader() throws Exception {
         ViewId id = new ViewId(coord_addr, 123);
@@ -77,6 +104,28 @@ public class JGroupsHelperImplTestCase extends TestCase {
         Address zone2Leader = helper.getZoneLeader("zone2", view);
         assertEquals(address1, zone1Leader);
         assertEquals(address3, zone2Leader);
+    }
+
+    public void testRuntimeAddressesInZoneNodeNaming() throws Exception {
+        helper.setRuntimeType("node");
+        ViewId id = new ViewId(coord_addr, 123);
+        List<Address> members = new ArrayList<Address>();
+        UUID address1 = UUID.randomUUID();
+        UUID.add(address1, "domain:node:zone1:1");
+        UUID address2 = UUID.randomUUID();
+        UUID.add(address2, "domain:node:zone1:2");
+        UUID address3 = UUID.randomUUID();
+        UUID.add(address3, "domain:node:zone2:3");
+        members.add(address1);
+        members.add(address2);
+        members.add(address3);
+        View view = new View(id, members);
+
+        List<Address> addresses = helper.getRuntimeAddressesInZone("zone1", view);
+        assertEquals(2, addresses.size());
+        for (Address leader : addresses) {
+            assertTrue(leader.equals(address1) || leader.equals(address2));
+        }
     }
 
     public void testRuntimeAddressesInZone() throws Exception {
@@ -117,7 +166,6 @@ public class JGroupsHelperImplTestCase extends TestCase {
         assertEquals(1, newRuntimes.size());
         assertEquals(address2, newRuntimes.iterator().next());
     }
-
 
     public void testNewRuntimesOnBootstrap() throws Exception {
         ViewId newId = new ViewId(coord_addr, 456);
@@ -205,8 +253,8 @@ public class JGroupsHelperImplTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        helper = new JGroupsHelperImpl(EasyMock.createNiceMock(ClassLoaderRegistry.class));
+        ClassLoaderRegistry registry = EasyMock.createNiceMock(ClassLoaderRegistry.class);
+        helper = new JGroupsHelperImpl(registry);
     }
-
 
 }

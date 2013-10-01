@@ -14,6 +14,6 @@ Public License. See the accompanying license file for details.
               f3:extension="true">
     <import.java package="org.fabric3.spi.*" version="2.5.0"/>
     <import.java package="org.fabric3.resource.spi" version="2.5.0"/>
-    <deployable composite="f3:ExecutionControllerExtension" modes="controller vm"/>
-    <deployable composite="f3:ExecutionParticipantExtension" modes="participant vm"/>
+    <deployable composite="f3:ExecutionControllerExtension" modes="controller node vm"/>
+    <deployable composite="f3:ExecutionParticipantExtension" modes="participant node vm"/>
 </contribution>

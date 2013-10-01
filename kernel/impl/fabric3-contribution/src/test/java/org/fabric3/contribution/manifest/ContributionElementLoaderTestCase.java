@@ -37,14 +37,13 @@
 */
 package org.fabric3.contribution.manifest;
 
-import java.io.ByteArrayInputStream;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.contribution.Deployable;
 import org.fabric3.spi.contribution.Capability;
@@ -70,7 +69,7 @@ public class ContributionElementLoaderTestCase extends TestCase {
             "              f3:description='JMS extension'>" +
             "    <import.java package='javax.transaction' version='1.1.0'/>" +
             "    <export.java package='org.fabric3.binding.jms.spi.common' version='1.8'/>" +
-            "    <deployable composite='f3:ControllerExtension' environments='production staging' modes='controller vm'/>" +
+            "    <deployable composite='f3:ControllerExtension' environments='production staging' modes='controller node vm'/>" +
             "    <f3:provides name='some-extension'/>" +
             "    <f3:requires.capability name='some-required-capability'/>" +
             "    <f3:provides.capability name='some-provided-capability'/>" +

@@ -18,6 +18,6 @@ Public License. See the accompanying license file for details.
     <import.java package="org.fabric3.resource.spi" version="2.5.0"/>
     <export.java package="org.fabric3.datasource.spi" version="2.5.0"/>
     <deployable composite="f3:DataSourceRegistryExtension"/>
-    <deployable composite="f3:DataSourceControllerExtension" modes="controller vm"/>
-    <deployable composite="f3:DataSourceParticipantExtension" modes="participant vm"/>
+    <deployable composite="f3:DataSourceControllerExtension" modes="controller node vm"/>
+    <deployable composite="f3:DataSourceParticipantExtension" modes="participant node vm"/>
 </contribution>
