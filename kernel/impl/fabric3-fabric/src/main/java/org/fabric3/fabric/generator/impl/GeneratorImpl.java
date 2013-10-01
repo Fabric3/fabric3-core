@@ -66,6 +66,7 @@ import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.type.remote.RemoteImplementation;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -150,6 +151,9 @@ public class GeneratorImpl implements Generator {
 
         for (CommandGenerator generator : commandGenerators) {
             for (LogicalComponent<?> component : sorted) {
+                if (component.getDefinition().getImplementation() instanceof RemoteImplementation) {
+                    continue;
+                }
                 CompensatableCommand command = generator.generate(component, incremental);
                 if (command != null) {
                     String zone = component.getZone();

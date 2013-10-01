@@ -72,6 +72,7 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.type.binding.SCABinding;
+import org.fabric3.spi.model.type.remote.RemoteServiceContract;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -395,7 +396,7 @@ public class WireGeneratorImpl implements WireGenerator {
 
         // generate the metadata for interceptors that are attached to wire invocation chains, e.g. policy implemented by an interceptor
         Set<PhysicalOperationDefinition> physicalOperations;
-        if (referenceContract.getClass().equals(serviceContract.getClass())) {
+        if (referenceContract.getClass().equals(serviceContract.getClass()) || serviceContract instanceof RemoteServiceContract) {
             physicalOperations = operationGenerator.generateOperations(sourceOperations, true, policyResult);
         } else {
             List<LogicalOperation> targetOperations = service.getOperations();

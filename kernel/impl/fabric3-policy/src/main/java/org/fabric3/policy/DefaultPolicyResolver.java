@@ -71,6 +71,7 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.type.binding.LocalBindingDefinition;
 import org.fabric3.spi.model.type.binding.RemoteBindingDefinition;
+import org.fabric3.spi.model.type.remote.RemoteImplementation;
 import org.fabric3.util.closure.Closure;
 import org.fabric3.util.closure.CollectionUtils;
 import org.oasisopen.sca.annotation.Reference;
@@ -400,7 +401,7 @@ public class DefaultPolicyResolver implements PolicyResolver {
         policyResult.addTargetPolicySets(operation, CollectionUtils.filter(policies, PROVIDED));
         policyResult.addInterceptedPolicySets(operation, CollectionUtils.filter(policies, INTERCEPTION));
 
-        if (target != null) {
+        if (target != null && !(target.getDefinition().getImplementation() instanceof RemoteImplementation)) {
             Bindable parent = targetBinding.getParent();
             // resolve policies using the target (as opposed to source) operation so target implementation policies are included
             LogicalOperation targetOperation = matchOperation(operation, parent);
