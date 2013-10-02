@@ -40,13 +40,14 @@ package org.fabric3.spi.binding.provider;
 import javax.xml.namespace.QName;
 
 import org.fabric3.spi.model.instance.LogicalChannel;
+import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
  * Implementations are responsible for configuring a concrete binding for an inter-process (remote) wire or channel that uses binding.sca.
  * <p/>
- * For a given wire or chanel, a variety of transport protocols may potentially be used for the concrete binding. Which provider is selected depends
- * on the algorithm in-force in a particular domain. For example, a domain may use a weighted algorithm where a particular provider is preferred.
+ * For a given wire or chanel, a variety of transport protocols may potentially be used for the concrete binding. Which provider is selected depends on the
+ * algorithm in-force in a particular domain. For example, a domain may use a weighted algorithm where a particular provider is preferred.
  */
 public interface BindingProvider {
 
@@ -61,12 +62,20 @@ public interface BindingProvider {
      * Determines if this binding provider can be used as a remote transport for a wire. Implementations must take into account required intents.
      *
      * @param wire the wire
-     * @return if the binding provider can wire from the source to target.
+     * @return if the binding provider can wire from the source to target
      */
     BindingMatchResult canBind(LogicalWire wire);
 
     /**
-     * Determines if this binding provider can be used as a remote transport for channel.
+     * Determines if this binding provider can be used as a remote transport for a service. Implementations must take into account required intents.
+     *
+     * @param service the service
+     * @return if the binding provider can bind the service
+     */
+    BindingMatchResult canBind(LogicalService service);
+
+    /**
+     * Determines if this binding provider can be used as a remote transport for the channel.
      *
      * @param channel the channel
      * @return if the binding provider can be used
@@ -80,6 +89,14 @@ public interface BindingProvider {
      * @throws BindingSelectionException if some error is encountered that inhibits binding configuration from being generated
      */
     void bind(LogicalWire wire) throws BindingSelectionException;
+
+    /**
+     * Configures binding information for a service.
+     *
+     * @param service the service
+     * @throws BindingSelectionException if some error is encountered that inhibits binding configuration from being generated
+     */
+    void bind(LogicalService service) throws BindingSelectionException;
 
     /**
      * Configures binding information for a channel.

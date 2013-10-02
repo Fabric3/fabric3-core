@@ -37,10 +37,8 @@
  */
 package org.fabric3.binding.zeromq.provider;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.Property;
+import java.net.URI;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
@@ -53,7 +51,9 @@ import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.fabric3.spi.model.type.remote.RemoteServiceContract;
 import org.fabric3.spi.util.UriHelper;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * A binding.sca provider that uses ZeroMQ as the underlying transport.
@@ -107,8 +107,40 @@ public class ZeroMQBindingProvider implements BindingProvider {
         return !enabled ? NO_MATCH : MATCH;
     }
 
+    public BindingMatchResult canBind(LogicalService service) {
+        return !enabled ? NO_MATCH : MATCH;
+    }
+
     public BindingMatchResult canBind(LogicalChannel channel) {
         return !enabled ? NO_MATCH : MATCH;
+    }
+
+    public void bind(LogicalService service) {
+        if (!bindTarget(service)) {
+            return;
+        }
+        QName deployable = service.getParent().getDeployable();
+
+        ZeroMQMetadata metadata = createMetadata();
+        ZeroMQBindingDefinition serviceDefinition = new ZeroMQBindingDefinition("binding.zeromq", metadata);
+        LogicalBinding<ZeroMQBindingDefinition> serviceBinding = new LogicalBinding<ZeroMQBindingDefinition>(serviceDefinition, service, deployable);
+        serviceBinding.setAssigned(true);
+        service.addBinding(serviceBinding);
+
+        // check if the interface is bidirectional
+        ServiceContract targetContract = service.getDefinition().getServiceContract();
+        if (targetContract.getCallbackContract() != null) {
+            // setup callback bindings
+            ZeroMQMetadata callbackMetadata = createMetadata();
+
+            ZeroMQBindingDefinition callbackServiceDefinition = new ZeroMQBindingDefinition("binding.zeromq.callback", callbackMetadata);
+            LogicalBinding<ZeroMQBindingDefinition> callbackServiceBinding = new LogicalBinding<ZeroMQBindingDefinition>(callbackServiceDefinition,
+                                                                                                                         service,
+                                                                                                                         deployable);
+            callbackServiceBinding.setAssigned(true);
+            service.addCallbackBinding(callbackServiceBinding);
+        }
+
     }
 
     public void bind(LogicalWire wire) throws BindingSelectionException {
@@ -120,17 +152,19 @@ public class ZeroMQBindingProvider implements BindingProvider {
 
         // setup the forward binding
         ZeroMQBindingDefinition referenceDefinition = new ZeroMQBindingDefinition("binding.zeromq", metadata);
-        LogicalBinding<ZeroMQBindingDefinition> referenceBinding =
-                new LogicalBinding<ZeroMQBindingDefinition>(referenceDefinition, source, deployable);
+        LogicalBinding<ZeroMQBindingDefinition> referenceBinding = new LogicalBinding<ZeroMQBindingDefinition>(referenceDefinition, source, deployable);
         referenceDefinition.setTargetUri(URI.create(UriHelper.getBaseName(target.getUri())));
         referenceBinding.setAssigned(true);
         source.addBinding(referenceBinding);
 
+        boolean bindTarget = bindTarget(target);
 
-        ZeroMQBindingDefinition serviceDefinition = new ZeroMQBindingDefinition("binding.zeromq", metadata);
-        LogicalBinding<ZeroMQBindingDefinition> serviceBinding = new LogicalBinding<ZeroMQBindingDefinition>(serviceDefinition, target, deployable);
-        serviceBinding.setAssigned(true);
-        target.addBinding(serviceBinding);
+        if (bindTarget) {
+            ZeroMQBindingDefinition serviceDefinition = new ZeroMQBindingDefinition("binding.zeromq", metadata);
+            LogicalBinding<ZeroMQBindingDefinition> serviceBinding = new LogicalBinding<ZeroMQBindingDefinition>(serviceDefinition, target, deployable);
+            serviceBinding.setAssigned(true);
+            target.addBinding(serviceBinding);
+        }
 
         // check if the interface is bidirectional
         ServiceContract targetContract = target.getDefinition().getServiceContract();
@@ -139,16 +173,20 @@ public class ZeroMQBindingProvider implements BindingProvider {
             ZeroMQMetadata callbackMetadata = createMetadata();
 
             ZeroMQBindingDefinition callbackReferenceDefinition = new ZeroMQBindingDefinition("binding.zeromq.callback", callbackMetadata);
-            LogicalBinding<ZeroMQBindingDefinition> callbackReferenceBinding =
-                    new LogicalBinding<ZeroMQBindingDefinition>(callbackReferenceDefinition, source, deployable);
+            LogicalBinding<ZeroMQBindingDefinition> callbackReferenceBinding = new LogicalBinding<ZeroMQBindingDefinition>(callbackReferenceDefinition,
+                                                                                                                           source,
+                                                                                                                           deployable);
             callbackReferenceBinding.setAssigned(true);
             source.addCallbackBinding(callbackReferenceBinding);
 
-            ZeroMQBindingDefinition callbackServiceDefinition = new ZeroMQBindingDefinition("binding.zeromq.callback", callbackMetadata);
-            LogicalBinding<ZeroMQBindingDefinition> callbackServiceBinding =
-                    new LogicalBinding<ZeroMQBindingDefinition>(callbackServiceDefinition, target, deployable);
-            callbackServiceBinding.setAssigned(true);
-            target.addCallbackBinding(callbackServiceBinding);
+            if (bindTarget) {
+                ZeroMQBindingDefinition callbackServiceDefinition = new ZeroMQBindingDefinition("binding.zeromq.callback", callbackMetadata);
+                LogicalBinding<ZeroMQBindingDefinition> callbackServiceBinding = new LogicalBinding<ZeroMQBindingDefinition>(callbackServiceDefinition,
+                                                                                                                             target,
+                                                                                                                             deployable);
+                callbackServiceBinding.setAssigned(true);
+                target.addCallbackBinding(callbackServiceBinding);
+            }
         }
     }
 
@@ -160,6 +198,24 @@ public class ZeroMQBindingProvider implements BindingProvider {
         channel.addBinding(binding);
     }
 
+    /**
+     * Determines if the target should be bound, i.e. if it has not already been bound by binding.sca or is remote (and not hosted on the current runtime).
+     *
+     * @param target the target
+     * @return true if the target should be bound
+     */
+    private boolean bindTarget(LogicalService target) {
+        if (target.getServiceContract() instanceof RemoteServiceContract) {
+            return false;
+        }
+        for (LogicalBinding<?> binding : target.getBindings()) {
+            if (binding.isAssigned()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private ZeroMQMetadata createMetadata() {
         ZeroMQMetadata metadata = new ZeroMQMetadata();
         metadata.setHighWater(highWater);
@@ -169,6 +225,5 @@ public class ZeroMQBindingProvider implements BindingProvider {
         metadata.setSendBuffer(sendBuffer);
         return metadata;
     }
-
 
 }

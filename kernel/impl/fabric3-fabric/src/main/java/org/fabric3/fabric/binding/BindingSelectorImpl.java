@@ -129,6 +129,7 @@ public class BindingSelectorImpl implements BindingSelector {
      * @throws BindingSelectionException if an error occurs selecting a binding
      */
     private void selectBindings(LogicalComponent<?> component) throws BindingSelectionException {
+        // bind remote wires
         for (LogicalReference reference : component.getReferences()) {
             for (LogicalWire wire : reference.getWires()) {
                 LogicalService targetService = wire.getTarget();
@@ -142,6 +143,20 @@ public class BindingSelectorImpl implements BindingSelector {
                         continue;
                     }
                     selectBinding(wire);
+                }
+            }
+        }
+
+        // on a node runtime bind all domain level, remotable services that are not explicitly configured with a binding
+        if (RuntimeMode.NODE == info.getRuntimeMode()) {
+            for (LogicalService service : component.getServices()) {
+                if (service.getBindings().isEmpty() && service.getLeafService().getServiceContract().isRemotable()) {
+                    for (BindingProvider provider : providers) {
+                        BindingMatchResult result = provider.canBind(service);
+                        if (result.isMatch()) {
+                            provider.bind(service);
+                        }
+                    }
                 }
             }
         }

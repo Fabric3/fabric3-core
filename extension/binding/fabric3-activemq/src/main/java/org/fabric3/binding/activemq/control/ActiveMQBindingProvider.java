@@ -37,13 +37,9 @@
 */
 package org.fabric3.binding.activemq.control;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Set;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Property;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
@@ -66,6 +62,9 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.oasisopen.sca.Constants;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * Implements binding.sca using ActiveMQ.
@@ -144,6 +143,14 @@ public class ActiveMQBindingProvider implements BindingProvider {
         return new BindingMatchResult(true, getType());
     }
 
+    public BindingMatchResult canBind(LogicalService service) {
+        if (!enabled) {
+            return NO_MATCH;
+        }
+        // TODO handle must provide intents
+        return new BindingMatchResult(true, getType());
+    }
+
     public void bind(LogicalWire wire) throws BindingSelectionException {
         LogicalReference source = wire.getSource().getLeafReference();
         LogicalService target = wire.getTarget().getLeafService();
@@ -188,6 +195,10 @@ public class ActiveMQBindingProvider implements BindingProvider {
             callbackReferenceDefinition.setGeneratedTargetUri(createCallbackUri(source));
             callbackServiceDefinition.setGeneratedTargetUri(createCallbackUri(source));
         }
+    }
+
+    public void bind(LogicalService service) throws BindingSelectionException {
+        throw new UnsupportedOperationException();
     }
 
     private boolean isRequestResponse(ServiceContract targetContract) {

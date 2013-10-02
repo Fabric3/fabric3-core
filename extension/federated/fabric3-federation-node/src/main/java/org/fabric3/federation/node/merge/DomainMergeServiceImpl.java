@@ -52,6 +52,8 @@ import org.oasisopen.sca.annotation.Reference;
 public class DomainMergeServiceImpl implements DomainMergeService {
     private LogicalComponentManager lcm;
 
+    private String zoneName = "default.zone";
+
     public DomainMergeServiceImpl(@Reference(name = "lcm") LogicalComponentManager lcm) {
         this.lcm = lcm;
     }
@@ -59,6 +61,7 @@ public class DomainMergeServiceImpl implements DomainMergeService {
     public void merge(LogicalCompositeComponent snapshot) {
         LogicalCompositeComponent domain = lcm.getRootComponent();
         for (LogicalComponent<?> component : snapshot.getComponents()) {
+
             if (LogicalState.NEW == component.getState()) {
                 component.setState(LogicalState.PROVISIONED);
                 domain.addComponent(component);
