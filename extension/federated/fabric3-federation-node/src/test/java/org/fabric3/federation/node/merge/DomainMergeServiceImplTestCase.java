@@ -41,6 +41,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
@@ -94,6 +95,21 @@ public class DomainMergeServiceImplTestCase extends TestCase {
 
     }
 
+    public void testDoNoMergeFromSameZone() throws Exception {
+        EasyMock.expect(lcm.getRootComponent()).andReturn(domain);
+        EasyMock.replay(lcm);
+
+        for (LogicalComponent<?> component : snapshot.getComponents()) {
+            component.setZone("zone0");
+        }
+        mergeService.merge(snapshot);
+
+        EasyMock.verify(lcm);
+
+        assertTrue(domain.getComponents().isEmpty());
+
+    }
+
     public void testDrop() throws Exception {
         EasyMock.expect(lcm.getRootComponent()).andReturn(domain);
 
@@ -114,8 +130,14 @@ public class DomainMergeServiceImplTestCase extends TestCase {
         super.setUp();
         createDomain();
         createSnapshot();
+
         lcm = EasyMock.createMock(LogicalComponentManager.class);
-        mergeService = new DomainMergeServiceImpl(lcm);
+
+        HostInfo info = EasyMock.createMock(HostInfo.class);
+        EasyMock.expect(info.getZoneName()).andReturn("zone0");
+        EasyMock.replay(info);
+
+        mergeService = new DomainMergeServiceImpl(lcm, info);
     }
 
     private void createDomain() {

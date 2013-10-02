@@ -39,6 +39,7 @@ package org.fabric3.federation.node.merge;
 
 import java.util.Iterator;
 
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -54,14 +55,18 @@ public class DomainMergeServiceImpl implements DomainMergeService {
 
     private String zoneName;
 
-    public DomainMergeServiceImpl(@Reference(name = "lcm") LogicalComponentManager lcm) {
+    public DomainMergeServiceImpl(@Reference(name = "lcm") LogicalComponentManager lcm, @Reference HostInfo info) {
         this.lcm = lcm;
+        this.zoneName = info.getZoneName();
     }
 
     public void merge(LogicalCompositeComponent snapshot) {
         LogicalCompositeComponent domain = lcm.getRootComponent();
         for (LogicalComponent<?> component : snapshot.getComponents()) {
-
+            if (zoneName.equals(component.getZone())) {
+                // do not merge components for the current zone
+                continue;
+            }
             if (LogicalState.NEW == component.getState()) {
                 component.setState(LogicalState.PROVISIONED);
                 domain.addComponent(component);
@@ -70,6 +75,10 @@ public class DomainMergeServiceImpl implements DomainMergeService {
             }
         }
         for (LogicalChannel channel : snapshot.getChannels()) {
+            if (zoneName.equals(channel.getZone())) {
+                // do not merge channels for the current zone
+                continue;
+            }
             if (LogicalState.NEW == channel.getState()) {
                 channel.setState(LogicalState.PROVISIONED);
                 domain.addChannel(channel);
