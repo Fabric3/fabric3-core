@@ -60,7 +60,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
-import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
+import static org.fabric3.host.Names.LOCAL_ZONE;
 
 /**
  * Selects a binding provider by delegating to a BindingSelectionStrategy configured for the domain. For each wire, if a remote service has an explicit binding,

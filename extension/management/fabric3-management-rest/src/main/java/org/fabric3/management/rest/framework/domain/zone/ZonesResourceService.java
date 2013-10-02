@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
+import org.fabric3.host.Names;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -53,7 +54,6 @@ import org.fabric3.management.rest.model.Link;
 import org.fabric3.spi.federation.DomainTopologyService;
 import org.fabric3.spi.federation.RuntimeInstance;
 import org.fabric3.spi.federation.Zone;
-import org.fabric3.spi.model.instance.LogicalComponent;
 
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 import static org.fabric3.spi.federation.FederationConstants.HTTP_HOST_METADATA;
@@ -86,7 +86,7 @@ public class ZonesResourceService {
     private Set<Link> createLocalZoneLink(HttpServletRequest request) {
         StringBuffer requestUrl = request.getRequestURL();
         URL zoneUrl = ResourceHelper.createUrl(requestUrl.substring(0, requestUrl.toString().indexOf("/management/") + 12) + "zone");
-        Link link = new Link(LogicalComponent.LOCAL_ZONE, EDIT_LINK, zoneUrl);
+        Link link = new Link(Names.LOCAL_ZONE, EDIT_LINK, zoneUrl);
         return Collections.singleton(link);
     }
 

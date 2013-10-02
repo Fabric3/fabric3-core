@@ -43,9 +43,10 @@
  */
 package org.fabric3.spi.model.instance;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
+import org.fabric3.host.Names;
 import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.spi.model.type.binding.SCABinding;
 
@@ -55,11 +56,9 @@ import org.fabric3.spi.model.type.binding.SCABinding;
 public class LogicalChannel extends Bindable {
     private static final long serialVersionUID = -1098943196013754799L;
 
-    public static final String LOCAL_ZONE = "LocalZone";
-
     private ChannelDefinition definition;
 
-    private String zone = LOCAL_ZONE;
+    private String zone = Names.LOCAL_ZONE;
     private QName deployable;
     private LogicalState state = LogicalState.NEW;
 

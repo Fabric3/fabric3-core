@@ -46,7 +46,7 @@ package org.fabric3.host;
 import java.net.URI;
 
 /**
- * Defines URIs of well-known runtime components and contributions available through the host API.
+ * Defines well-known names for contributions, component URIs and zones.
  */
 public interface Names {
 
@@ -68,5 +68,5 @@ public interface Names {
 
     URI RUNTIME_DOMAIN_SERVICE_URI = URI.create(RUNTIME_NAME + "/RuntimeDomain");
 
-
+    String LOCAL_ZONE = "LocalZone";
 }

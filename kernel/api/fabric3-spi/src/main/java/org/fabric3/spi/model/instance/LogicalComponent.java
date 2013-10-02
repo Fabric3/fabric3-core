@@ -49,6 +49,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fabric3.host.Names;
 import org.fabric3.model.type.component.Autowire;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Implementation;
@@ -59,8 +60,6 @@ import org.fabric3.model.type.component.Implementation;
 public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArtifact<LogicalCompositeComponent> {
     private static final long serialVersionUID = -3520150701040845117L;
 
-    public static final String LOCAL_ZONE = "LocalZone";
-
     private URI uri;
     private ComponentDefinition<I> definition;
     private Map<String, LogicalProperty> properties = new HashMap<String, LogicalProperty>();
@@ -69,7 +68,7 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     private Map<String, LogicalProducer> producers = new HashMap<String, LogicalProducer>();
     private Map<String, LogicalConsumer> consumers = new HashMap<String, LogicalConsumer>();
     private Map<String, LogicalResourceReference<?>> resourceReferences = new HashMap<String, LogicalResourceReference<?>>();
-    private String zone = LOCAL_ZONE;
+    private String zone = Names.LOCAL_ZONE;
     private QName deployable;
     private Autowire autowire;
     private LogicalState state = LogicalState.NEW;

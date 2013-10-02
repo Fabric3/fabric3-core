@@ -48,9 +48,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.fabric3.host.Names;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CompensatableCommand;
-import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
  * Used to deploy composites to the domain. Deployments contain 1..N {@link DeploymentUnit}s which are provisioned to zones in the domain. A DeploymentUnit is
@@ -106,7 +106,7 @@ public class Deployment {
     public DeploymentUnit getDeploymentUnit() {
         if (units.isEmpty()) {
             DeploymentUnit unit = new DeploymentUnit();
-            units.put(LogicalComponent.LOCAL_ZONE, unit);
+            units.put(Names.LOCAL_ZONE, unit);
             return unit;
         }
         return units.values().iterator().next();

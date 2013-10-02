@@ -57,7 +57,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.generator.Deployment;
 
-import static org.fabric3.spi.model.instance.LogicalComponent.LOCAL_ZONE;
+import static org.fabric3.host.Names.LOCAL_ZONE;
 
 /**
  *

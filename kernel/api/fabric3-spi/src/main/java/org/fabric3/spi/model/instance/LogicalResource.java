@@ -45,6 +45,7 @@ package org.fabric3.spi.model.instance;
 
 import javax.xml.namespace.QName;
 
+import org.fabric3.host.Names;
 import org.fabric3.model.type.component.ResourceDefinition;
 
 /**
@@ -56,7 +57,7 @@ public class LogicalResource<R extends ResourceDefinition> extends LogicalScaArt
     private R definition;
     private LogicalState state = LogicalState.NEW;
     private QName deployable;
-    private String zone = "LocalZone";
+    private String zone = Names.LOCAL_ZONE;
 
     /**
      * Constructor.
@@ -127,7 +128,6 @@ public class LogicalResource<R extends ResourceDefinition> extends LogicalScaArt
         this.zone = zone;
     }
 
-    @Override
     public boolean equals(Object obj) {
 
         if (this == obj) {
@@ -143,10 +143,8 @@ public class LogicalResource<R extends ResourceDefinition> extends LogicalScaArt
 
     }
 
-    @Override
     public int hashCode() {
         return definition.hashCode();
     }
-
 
 }

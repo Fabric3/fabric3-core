@@ -39,6 +39,7 @@ package org.fabric3.federation.allocator;
 
 import javax.xml.namespace.QName;
 
+import org.fabric3.host.Names;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.spi.allocator.AllocationException;
@@ -56,7 +57,7 @@ import org.fabric3.spi.plan.DeploymentPlan;
 public class ControllerAllocator implements Allocator {
 
     public void allocate(LogicalComponent<?> component, DeploymentPlan plan) throws AllocationException {
-        if (LogicalComponent.LOCAL_ZONE.equals(component.getZone())) {
+        if (Names.LOCAL_ZONE.equals(component.getZone())) {
             if (component instanceof LogicalCompositeComponent) {
                 LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
                 for (LogicalComponent<?> child : composite.getComponents()) {

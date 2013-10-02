@@ -37,6 +37,7 @@
 */
 package org.fabric3.federation.allocator;
 
+import org.fabric3.host.Names;
 import org.fabric3.spi.allocator.AllocationException;
 import org.fabric3.spi.allocator.Allocator;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -60,7 +61,7 @@ public class NodeAllocator implements Allocator {
     }
 
     public void allocate(LogicalComponent<?> component, DeploymentPlan plan) throws AllocationException {
-        if (LogicalComponent.LOCAL_ZONE.equals(component.getZone())) {
+        if (Names.LOCAL_ZONE.equals(component.getZone())) {
             if (component instanceof LogicalCompositeComponent) {
                 LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
                 for (LogicalComponent<?> child : composite.getComponents()) {
