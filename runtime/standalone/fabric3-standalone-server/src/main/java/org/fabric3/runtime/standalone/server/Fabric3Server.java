@@ -146,6 +146,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             // create the HostInfo and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName,
+                                                               zoneName,
                                                                mode,
                                                                domainName,
                                                                environment,

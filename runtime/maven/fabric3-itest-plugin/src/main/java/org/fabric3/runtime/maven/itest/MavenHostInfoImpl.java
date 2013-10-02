@@ -49,6 +49,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
+import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.os.OperatingSystem;
 import org.fabric3.runtime.maven.MavenHostInfo;
@@ -77,6 +78,10 @@ public class MavenHostInfoImpl implements MavenHostInfo {
 
     public String getRuntimeName() {
         return "maven";
+    }
+
+    public String getZoneName() {
+        return Names.DEFAULT_ZONE;
     }
 
     public String getEnvironment() {

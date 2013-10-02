@@ -55,6 +55,7 @@ import org.fabric3.host.os.OperatingSystem;
  */
 public class DefaultHostInfo implements HostInfo {
     private String runtimeName;
+    private String zoneName;
     private RuntimeMode runtimeMode;
     private String environment;
     private URI domain;
@@ -75,6 +76,7 @@ public class DefaultHostInfo implements HostInfo {
      * Constructor.
      *
      * @param runtimeName       the runtime name
+     * @param zoneName          the zone name
      * @param runtimeMode       the mode the runtime is started in
      * @param environment       the runtime environment type
      * @param domain            the SCA domain this runtime belongs to
@@ -90,6 +92,7 @@ public class DefaultHostInfo implements HostInfo {
      * @param javaEEXAEnabled   true if the host is a Java EE XA-enabled container
      */
     public DefaultHostInfo(String runtimeName,
+                           String zoneName,
                            RuntimeMode runtimeMode,
                            String environment,
                            URI domain,
@@ -104,6 +107,7 @@ public class DefaultHostInfo implements HostInfo {
                            OperatingSystem operatingSystem,
                            boolean javaEEXAEnabled) {
         this.runtimeName = runtimeName;
+        this.zoneName = zoneName;
         this.runtimeMode = runtimeMode;
         this.environment = environment;
         this.domain = domain;
@@ -122,6 +126,10 @@ public class DefaultHostInfo implements HostInfo {
 
     public String getRuntimeName() {
         return runtimeName;
+    }
+
+    public String getZoneName() {
+        return zoneName;
     }
 
     public RuntimeMode getRuntimeMode() {

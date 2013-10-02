@@ -102,7 +102,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     private static final int NOT_UPDATED = -1;
     private static final int UPDATED = 1;
 
-    private String zoneName = "default.zone";
+    private String zoneName;
     private Element channelConfig;
     private JChannel domainChannel;
     private Fabric3EventListener<JoinDomain> joinListener;
@@ -125,11 +125,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
                                       @Reference JGroupsHelper helper,
                                       @Monitor TopologyServiceMonitor monitor) {
         super(info, executorRegistry, eventService, executor, helper, monitor);
-    }
-
-    @Property(required = false)
-    public void setZoneName(String zoneName) {
-        this.zoneName = zoneName;
+        zoneName = info.getZoneName();
     }
 
     @Property(required = false)

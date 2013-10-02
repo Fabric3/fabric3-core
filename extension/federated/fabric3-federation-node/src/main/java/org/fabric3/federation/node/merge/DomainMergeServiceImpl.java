@@ -52,7 +52,7 @@ import org.oasisopen.sca.annotation.Reference;
 public class DomainMergeServiceImpl implements DomainMergeService {
     private LogicalComponentManager lcm;
 
-    private String zoneName = "default.zone";
+    private String zoneName;
 
     public DomainMergeServiceImpl(@Reference(name = "lcm") LogicalComponentManager lcm) {
         this.lcm = lcm;

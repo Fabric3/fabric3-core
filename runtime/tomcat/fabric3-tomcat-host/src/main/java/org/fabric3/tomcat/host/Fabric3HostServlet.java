@@ -192,7 +192,7 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
             List<File> deployDirs = bootstrapService.parseDeployDirectories(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = createHostInfo(runtimeName, mode, domainName, environment, runtimeDir, configDir, extensionsDir, deployDirs, false);
+            HostInfo hostInfo = createHostInfo(runtimeName, zoneName, mode, domainName, environment, runtimeDir, configDir, extensionsDir, deployDirs, false);
 
             // clear out the tmp directory
             if (firstInitTime) {

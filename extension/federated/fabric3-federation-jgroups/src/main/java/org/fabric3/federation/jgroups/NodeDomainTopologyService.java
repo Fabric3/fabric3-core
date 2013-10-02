@@ -108,7 +108,7 @@ public class NodeDomainTopologyService extends AbstractTopologyService implement
 
     private long timeout = 10000;
 
-    private String zoneName = "default.zone";
+    private String zoneName;
 
     private DomainMergeService mergeService;
 
@@ -121,11 +121,7 @@ public class NodeDomainTopologyService extends AbstractTopologyService implement
                                      @Monitor TopologyServiceMonitor monitor) {
         super(info, executorRegistry, eventService, executor, helper, monitor);
         this.mergeService = mergeService;
-    }
-
-    @Property(required = false)
-    public void setZoneName(String zoneName) {
-        this.zoneName = zoneName;
+        this.zoneName = info.getZoneName();
     }
 
     @Property(required = false)

@@ -205,6 +205,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             // create the HostInfo and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo(runtimeName,
+                                                               Names.DEFAULT_ZONE,
                                                                runtimeMode,
                                                                domainName,
                                                                environment,

@@ -51,9 +51,9 @@ import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.os.OperatingSystem;
 
 /**
- * Interface that provides information on the host environment. This allows the runtime to access information about the environment in which it is
- * running. The implementation of this interface is provided to the runtime by the host during initialization. Hosts will generally extend this
- * interface to provide additional information.
+ * Interface that provides information on the host environment. This allows the runtime to access information about the environment in which it is running. The
+ * implementation of this interface is provided to the runtime by the host during initialization. Hosts will generally extend this interface to provide
+ * additional information.
  */
 public interface HostInfo {
 
@@ -63,6 +63,13 @@ public interface HostInfo {
      * @return the unique runtime name
      */
     String getRuntimeName();
+
+    /**
+     * Returns the name of the zone this runtime is a member of.
+     *
+     * @return the zone name
+     */
+    String getZoneName();
 
     /**
      * Returns the mode the runtime is booted in.
@@ -163,8 +170,8 @@ public interface HostInfo {
     OperatingSystem getOperatingSystem();
 
     /**
-     * Returns true if the host environment is a Java EE container with XA-enabled. May be used by extensions that need to be aware they are running
-     * in an XA-enabled container when creating resources (e.g. JMS transacted sessions).
+     * Returns true if the host environment is a Java EE container with XA-enabled. May be used by extensions that need to be aware they are running in an
+     * XA-enabled container when creating resources (e.g. JMS transacted sessions).
      *
      * @return true if the host environment is a Java EE container with XA-enabled
      */

@@ -40,6 +40,8 @@ package org.fabric3.federation.allocator;
 import java.net.URI;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -70,8 +72,11 @@ public class NodeAllocatorTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
-        allocator = new NodeAllocator();
-        allocator.setZoneName("zone1");
+        HostInfo info = EasyMock.createMock(HostInfo.class);
+        EasyMock.expect(info.getZoneName()).andReturn("zone1");
+        EasyMock.replay(info);
+
+        allocator = new NodeAllocator(info);
 
         composite = new LogicalCompositeComponent(URI.create("test"), null, null);
         LogicalComponent<?> component = new LogicalComponent(URI.create("test/child"), null, composite);

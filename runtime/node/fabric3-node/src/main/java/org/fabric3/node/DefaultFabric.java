@@ -136,7 +136,7 @@ public class DefaultFabric implements Fabric {
             URL systemComposite = getClass().getClassLoader().getResource(SYSTEM_COMPOSITE);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = createHostInfo(runtimeName, mode, domainName, environment);
+            HostInfo hostInfo = createHostInfo(runtimeName, zoneName, mode, domainName, environment);
 
             RuntimeConfiguration runtimeConfig = new RuntimeConfiguration(hostInfo, null, router);
 
@@ -234,7 +234,7 @@ public class DefaultFabric implements Fabric {
 
     }
 
-    public HostInfo createHostInfo(String runtimeName, RuntimeMode mode, URI domainName, String environment) throws IOException {
+    public HostInfo createHostInfo(String runtimeName, String zoneName, RuntimeMode mode, URI domainName, String environment) throws IOException {
 
         File runtimeDirectory = getRuntimeDirectory(mode);
 
@@ -243,6 +243,7 @@ public class DefaultFabric implements Fabric {
         OperatingSystem os = BootstrapHelper.getOperatingSystem();
 
         return new DefaultHostInfo(runtimeName,
+                                   zoneName,
                                    mode,
                                    environment,
                                    domainName,

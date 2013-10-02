@@ -35,6 +35,13 @@ Public License. See the accompanying license file for details.
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+
+        <dependency>
+             <groupId>org.easymock</groupId>
+             <artifactId>easymock</artifactId>
+         </dependency>
+
     </dependencies>
+
 
 </project>

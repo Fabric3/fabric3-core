@@ -43,25 +43,25 @@
  */
 package org.fabric3.fabric.domain;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.easymock.IMocksControl;
-
 import org.fabric3.fabric.binding.BindingSelector;
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.collector.CollectorImpl;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.fabric.lcm.LogicalComponentManagerImpl;
+import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.domain.DeploymentException;
@@ -130,8 +130,7 @@ public class DistributedDomainVMTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testIncludeUris() throws Exception {
         IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
-        EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(),
-                                             EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
+        EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
         policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean());
         bindingSelector.selectBindings(EasyMock.isA(LogicalCompositeComponent.class));
@@ -230,7 +229,6 @@ public class DistributedDomainVMTestCase extends TestCase {
         deployer.deploy(EasyMock.isA(DeploymentPackage.class));
         EasyMock.expectLastCall().times(2);
 
-
         PolicyRegistry policyRegistry = control.createMock(PolicyRegistry.class);
         Set<PolicySet> set = new HashSet<PolicySet>();
         set.add(new PolicySet(new QName("foo", "bar"), null, null, null, null, null, null, null));
@@ -260,7 +258,6 @@ public class DistributedDomainVMTestCase extends TestCase {
         // simulate a deployment exception
         EasyMock.expectLastCall().andThrow(new DeploymentException());
 
-
         PolicyRegistry policyRegistry = control.createMock(PolicyRegistry.class);
         Set<PolicySet> set = new HashSet<PolicySet>();
         set.add(new PolicySet(new QName("foo", "bar"), null, null, null, null, null, null, null));
@@ -285,8 +282,7 @@ public class DistributedDomainVMTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testRecover() throws Exception {
         IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
-        EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(),
-                                             EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
+        EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
         policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean());
         bindingSelector.selectBindings(EasyMock.isA(LogicalCompositeComponent.class));
@@ -297,7 +293,7 @@ public class DistributedDomainVMTestCase extends TestCase {
 
         control.replay();
 
-        Map<QName,String> deployables = Collections.singletonMap(DEPLOYABLE, "fabric3.synthetic");
+        Map<QName, String> deployables = Collections.singletonMap(DEPLOYABLE, "fabric3.synthetic");
         DomainJournal journal = new DomainJournal(Collections.<URI>emptyList(), deployables);
         domain.recover(journal);
 
@@ -332,12 +328,25 @@ public class DistributedDomainVMTestCase extends TestCase {
         control.verify();
     }
 
-
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         URI uri = URI.create("fabric3://domain");
-        HostInfo info = new DefaultHostInfo("runtime", RuntimeMode.VM, null, uri, null, null, null, null, null, null, null, null, null, false);
+        HostInfo info = new DefaultHostInfo("runtime",
+                                            Names.DEFAULT_ZONE,
+                                            RuntimeMode.VM,
+                                            null,
+                                            uri,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            false);
 
         control = EasyMock.createControl();
         MetaDataStore store = control.createMock(MetaDataStore.class);
@@ -354,18 +363,8 @@ public class DistributedDomainVMTestCase extends TestCase {
         bindingSelector = control.createMock(BindingSelector.class);
         deployer = control.createMock(Deployer.class);
         Collector collector = new CollectorImpl();
-        domain = new DistributedDomain(store,
-                                       lcm,
-                                       generator,
-                                       instantiator,
-                                       policyAttacher,
-                                       bindingSelector,
-                                       deployer,
-                                       collector,
-                                       helper,
-                                       info);
+        domain = new DistributedDomain(store, lcm, generator, instantiator, policyAttacher, bindingSelector, deployer, collector, helper, info);
         domain.setTransactional(true);     // set transactional mode
-
 
         contribution = DomainTestCaseHelper.createContribution(store);
         componentDefinition = new ComponentDefinition("component");

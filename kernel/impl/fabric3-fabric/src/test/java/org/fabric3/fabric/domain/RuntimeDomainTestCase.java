@@ -43,21 +43,21 @@
  */
 package org.fabric3.fabric.domain;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.easymock.IMocksControl;
-
 import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.collector.CollectorImpl;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.fabric.lcm.LogicalComponentManagerImpl;
+import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.DefaultHostInfo;
 import org.fabric3.host.runtime.HostInfo;
@@ -116,8 +116,7 @@ public class RuntimeDomainTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testIncludeUris() throws Exception {
         IAnswer<InstantiationContext> answer = DomainTestCaseHelper.createAnswer(componentDefinition);
-        EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(),
-                                             EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
+        EasyMock.expect(instantiator.include((List<Composite>) EasyMock.notNull(), EasyMock.isA(LogicalCompositeComponent.class))).andStubAnswer(answer);
 
         policyAttacher.attachPolicies(EasyMock.isA(LogicalCompositeComponent.class), EasyMock.anyBoolean());
 
@@ -185,7 +184,21 @@ public class RuntimeDomainTestCase extends TestCase {
         MetaDataStore store = control.createMock(MetaDataStore.class);
 
         URI uri = URI.create("fabric3://domain");
-        HostInfo info = new DefaultHostInfo("runtime", RuntimeMode.VM, null, uri, null, null, null, null, null, null, null, null, null, false);
+        HostInfo info = new DefaultHostInfo("runtime",
+                                            Names.DEFAULT_ZONE,
+                                            RuntimeMode.VM,
+                                            null,
+                                            uri,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            false);
         ContributionHelperImpl helper = new ContributionHelperImpl(store, info);
 
         lcm = new LogicalComponentManagerImpl(info);
@@ -203,6 +216,5 @@ public class RuntimeDomainTestCase extends TestCase {
         composite = DomainTestCaseHelper.createComposite(contribution, componentDefinition, store);
 
     }
-
 
 }

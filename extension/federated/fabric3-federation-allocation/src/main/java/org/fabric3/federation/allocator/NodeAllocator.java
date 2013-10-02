@@ -38,6 +38,7 @@
 package org.fabric3.federation.allocator;
 
 import org.fabric3.host.Names;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.allocator.AllocationException;
 import org.fabric3.spi.allocator.Allocator;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -46,18 +47,17 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.plan.DeploymentPlan;
 import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Handles allocation on node runtimes.
  */
 @EagerInit
 public class NodeAllocator implements Allocator {
-    private String zoneName = "default.zone";
+    private String zoneName;
 
-    @Property(required = false)
-    public void setZoneName(String zoneName) {
-        this.zoneName = zoneName;
+    public NodeAllocator(@Reference HostInfo info) {
+        zoneName = info.getZoneName();
     }
 
     public void allocate(LogicalComponent<?> component, DeploymentPlan plan) throws AllocationException {

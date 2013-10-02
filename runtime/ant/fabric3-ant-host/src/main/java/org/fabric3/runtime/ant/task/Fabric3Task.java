@@ -164,6 +164,7 @@ public class Fabric3Task extends Task {
 
             // create the HostInfo and runtime
             HostInfo hostInfo = BootstrapHelper.createHostInfo("ant",
+                                                               Names.DEFAULT_ZONE,
                                                                RuntimeMode.VM,
                                                                domainName,
                                                                environment,

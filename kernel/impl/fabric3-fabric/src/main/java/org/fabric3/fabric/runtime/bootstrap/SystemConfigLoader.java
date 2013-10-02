@@ -57,6 +57,7 @@ import java.util.List;
 import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.host.Environment;
+import org.fabric3.host.Names;
 import org.fabric3.host.Namespaces;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.ParseException;
@@ -74,7 +75,6 @@ import org.xml.sax.SAXException;
  */
 public class SystemConfigLoader {
     private static final URI DEFAULT_DOMAIN = URI.create("fabric3://domain");
-    private static final String DEFAULT_ZONE = "default.zone";
     private DocumentLoader loader;
 
     public SystemConfigLoader() {
@@ -224,7 +224,7 @@ public class SystemConfigLoader {
             }
             return name;
         } else if (nodes.getLength() == 0) {
-            return DEFAULT_ZONE;
+            return Names.DEFAULT_ZONE;
         }
         throw new ParseException("Invalid system configuration: more than one <runtime> element specified");
     }

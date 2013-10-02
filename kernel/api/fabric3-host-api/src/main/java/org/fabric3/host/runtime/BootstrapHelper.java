@@ -190,6 +190,7 @@ public final class BootstrapHelper {
      * Creates the HostInfo for a runtime.
      *
      * @param runtimeName       the runtime name
+     * @param zoneName          the zone name
      * @param runtimeMode       the runtime boot mode
      * @param domainName        the name of the domain the runtime is part of
      * @param environment       the runtime environment
@@ -202,6 +203,7 @@ public final class BootstrapHelper {
      * @throws IOException if there is an error accessing a host info directory
      */
     public static HostInfo createHostInfo(String runtimeName,
+                                          String zoneName,
                                           RuntimeMode runtimeMode,
                                           URI domainName,
                                           String environment,
@@ -231,6 +233,7 @@ public final class BootstrapHelper {
         OperatingSystem os = getOperatingSystem();
 
         return new DefaultHostInfo(runtimeName,
+                                   zoneName,
                                    runtimeMode,
                                    environment,
                                    domainName,
