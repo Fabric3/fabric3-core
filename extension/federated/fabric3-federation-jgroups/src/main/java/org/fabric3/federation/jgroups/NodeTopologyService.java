@@ -39,6 +39,7 @@ package org.fabric3.federation.jgroups;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +101,6 @@ public class NodeTopologyService extends AbstractTopologyService implements Doma
     private RuntimeStopEventListener stopListener;
     private View previousView;
     private List<TopologyListener> topologyListeners = new ArrayList<TopologyListener>();
-    private Map<String, Map<String, String>> transportMetadata = new ConcurrentHashMap<String, Map<String, String>>();
     private Map<String, Map<String, RuntimeInstance>> runtimes = new ConcurrentHashMap<String, Map<String, RuntimeInstance>>();
     private Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>();
 
@@ -188,10 +188,6 @@ public class NodeTopologyService extends AbstractTopologyService implements Doma
     }
 
     public String getTransportMetaData(String zone, String transport) {
-        Map<String, String> zoneCache = transportMetadata.get(zone);
-        if (zoneCache != null) {
-            return zoneCache.get(transport);
-        }
         return null;
     }
 
@@ -444,7 +440,7 @@ public class NodeTopologyService extends AbstractTopologyService implements Doma
     }
 
     /**
-     * Membership listener that tracks transport metadata for zones in the domain.
+     * Listener that tracks changes to domain membership.
      */
     private class DomainMembershipListener implements MembershipListener {
 
@@ -452,35 +448,50 @@ public class NodeTopologyService extends AbstractTopologyService implements Doma
             Set<Address> newZoneLeaders = helper.getNewZoneLeaders(previousView, newView);
             Set<Address> newRuntimes = helper.getNewRuntimes(previousView, newView);
             previousView = newView;
+            if (newZoneLeaders.isEmpty() && newRuntimes.isEmpty()) {
+                return;
+            }
+            for (Address address : newRuntimes) {
+                String newRuntime = UUID.get(address);
+                String zoneName = helper.getZoneName(address);
+                if (zoneName == null) {
+                    continue;
+                }
+                Map<String, RuntimeInstance> zones = runtimes.get(zoneName);
+                if (zones == null) {
+                    zones = new HashMap<String, RuntimeInstance>();
+                    runtimes.put(zoneName, zones);
+                }
+                for (TopologyListener listener : topologyListeners) {
+                    listener.onJoin(newRuntime);
+                }
+            }
+            for (Address address : newZoneLeaders) {
+                String newZoneLeader = UUID.get(address);
+                for (TopologyListener listener : topologyListeners) {
+                    listener.onLeaderElected(newZoneLeader);
+                }
+            }
         }
 
         public void suspect(Address suspected) {
-            String zoneName = helper.getZoneName(suspected);
-            if (zoneName == null) {
+            String suspectedRuntime = UUID.get(suspected);
+            String suspectedZone = helper.getZoneName(suspected);
+            if (suspectedZone == null) {
                 return;
-            }
-            String runtimeName = UUID.get(suspected);
-            monitor.runtimeRemoved(runtimeName);
-            // Member is suspected. If it is a zone leader, remove it from the logical model and the metadata from the cache
-            View view = domainChannel.getView();
-            if (view == null) {
-                return;
-            }
-            if (suspected.equals(helper.getZoneLeader(zoneName, view))) {
-                transportMetadata.remove(zoneName);
-                mergeService.drop(zoneName);
-            }
-            Map<String, RuntimeInstance> instances = runtimes.get(zoneName);
-            if (instances != null) {
-                instances.remove(runtimeName);
-                if (instances.isEmpty()) {
-                    runtimes.remove(zoneName);
-                }
-            }
-            for (TopologyListener listener : topologyListeners) {
-                listener.onLeave(runtimeName);
             }
 
+            Map<String, RuntimeInstance> instances = runtimes.get(suspectedZone);
+            if (instances != null) {
+                instances.remove(suspectedRuntime);
+                if (instances.isEmpty()) {
+                    runtimes.remove(suspectedZone);
+                }
+            }
+
+            for (TopologyListener listener : topologyListeners) {
+                listener.onLeave(suspectedRuntime);
+            }
         }
 
         public void block() {
