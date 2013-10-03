@@ -38,11 +38,13 @@
  */
 package org.fabric3.spi.host;
 
+import java.io.Serializable;
+
 /**
  * A reserved port on a runtime. After reserving a port, clients must release the port lock prior to binding a socket to the port using {@link
  * #bind(Port.TYPE)}.
  */
-public interface Port {
+public interface Port extends Serializable {
 
     public enum TYPE {
         TCP, UDP

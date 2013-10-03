@@ -39,7 +39,6 @@
 package org.fabric3.fabric.host;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 
@@ -48,7 +47,7 @@ import org.fabric3.spi.host.Port;
 /**
  *
  */
-public class PortImpl implements Port, Serializable {
+public class PortImpl implements Port {
     private static final long serialVersionUID = -708646870372177434L;
     private String name;
     private int number;
