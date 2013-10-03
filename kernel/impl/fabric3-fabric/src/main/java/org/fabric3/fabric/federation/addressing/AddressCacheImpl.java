@@ -94,15 +94,18 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
 
     @Init
     public void init() throws MessageException {
-
         eventService.subscribe(JoinDomainCompleted.class, this);
-        topologyService.register(this);
+        if (topologyService != null) {
+            topologyService.register(this);
+        }
     }
 
     @Destroy
     public void destroy() throws ZoneChannelException {
-        topologyService.closeChannel(qualifiedChannelName);
-        topologyService.deregister(this);
+        if (topologyService != null) {
+            topologyService.closeChannel(qualifiedChannelName);
+            topologyService.deregister(this);
+        }
     }
 
     public List<SocketAddress> getActiveAddresses(String endpointId) {
@@ -207,9 +210,11 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
      */
     public void onEvent(JoinDomainCompleted event) {
         try {
-            topologyService.openChannel(qualifiedChannelName, null, this);
-            AddressRequest request = new AddressRequest(info.getRuntimeName());
-            topologyService.sendAsynchronous(qualifiedChannelName, request);
+            if (topologyService != null) {
+                topologyService.openChannel(qualifiedChannelName, null, this);
+                AddressRequest request = new AddressRequest(info.getRuntimeName());
+                topologyService.sendAsynchronous(qualifiedChannelName, request);
+            }
         } catch (ZoneChannelException e) {
             monitor.error(e);
         } catch (MessageException e) {
