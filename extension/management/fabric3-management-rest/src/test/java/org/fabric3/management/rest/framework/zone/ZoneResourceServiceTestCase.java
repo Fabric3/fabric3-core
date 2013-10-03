@@ -46,14 +46,13 @@ import org.easymock.EasyMock;
 
 import org.fabric3.api.Role;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.management.rest.framework.zone.ZoneResourceService;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.runtime.ManagementMonitor;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
-import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.ZoneTopologyService;
 
 /**
  *

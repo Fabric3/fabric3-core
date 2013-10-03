@@ -30,7 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import org.fabric3.binding.zeromq.runtime.federation.AddressListener;
+import org.fabric3.spi.federation.addressing.AddressListener;
 
 /**
  * Implementations receive messages on a ZeroMQ SUB socket. Qualities of service such as reliability may be provided by an implementation.

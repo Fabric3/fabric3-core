@@ -20,7 +20,5 @@ Public License. See the accompanying license file for details.
 
     <deployable composite="f3:ZeroMQControllerExtension" modes="controller vm node"/>
     <deployable composite="f3:ZeroMQRuntimeExtension" modes="participant vm node"/>
-    <deployable composite="f3:ZeroMQVMExtension" modes="vm"/>
-    <deployable composite="f3:ZeroMQParticipantExtension" modes="participant node"/>
 
 </contribution>

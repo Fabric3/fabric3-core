@@ -35,30 +35,20 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation;
+package org.fabric3.spi.federation.topology;
+
+import org.fabric3.spi.command.Response;
 
 /**
- * A response to a synchronous message returned when an exception is raised processing the original request.
+ * An response to a synchronous message indicating an error processing the message.
  */
-public class RemoteSystemException implements ErrorResponse {
-    private static final long serialVersionUID = 3104883810536039817L;
+public interface ErrorResponse extends Response {
 
-    private Exception exception;
-    private String runtimeName;
+    /**
+     * Returns the exception raised processing the synchronous message.
+     *
+     * @return the exception raised.
+     */
+    public Exception getException();
 
-    public RemoteSystemException(Exception exception) {
-        this.exception = exception;
-    }
-
-    public String getRuntimeName() {
-        return runtimeName;
-    }
-
-    public void setRuntimeName(String runtimeName) {
-        this.runtimeName = runtimeName;
-    }
-
-    public Exception getException() {
-        return exception;
-    }
 }

@@ -28,15 +28,12 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime.federation;
+package org.fabric3.spi.federation.addressing;
 
 import java.util.List;
 
-import org.fabric3.binding.zeromq.runtime.SocketAddress;
-
 /**
- * Provides a view on the state of all ZeroMQ endpoints in the domain. An endpoint is the socket which binds to an address and can either be the
- * ZeroMQ client or server side of a connection.
+ * Provides a view of physical socket addresses associated with a logical endpoints in the domain.
  */
 public interface AddressCache {
 
@@ -64,7 +61,7 @@ public interface AddressCache {
     void subscribe(String endpointId, AddressListener listener);
 
     /**
-     * Unsubscribes a listener.
+     * Un-subscribes a listener.
      *
      * @param endpointId the endpoint id
      * @param listenerId the listener id

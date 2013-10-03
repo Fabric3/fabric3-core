@@ -35,32 +35,18 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation;
+package org.fabric3.spi.federation.topology;
 
 /**
- * Receives callbacks when a domain topology changes.
+ * Implementations receive messages over a channel.
  */
-public interface TopologyListener {
+public interface MessageReceiver {
 
     /**
-     * Callback when a runtime joins a domain.
+     * Callback when a message is received.
      *
-     * @param name the runtime name
+     * @param object the message
      */
-    void onJoin(String name);
-
-    /**
-     * Callback when a runtime leaves a domain.
-     *
-     * @param name the runtime name
-     */
-    void onLeave(String name);
-
-    /**
-     * Callback when a runtime is elected leader in a domain.
-     *
-     * @param name the runtime name
-     */
-    void onLeaderElected(String name);
+    void onMessage(Object object);
 
 }

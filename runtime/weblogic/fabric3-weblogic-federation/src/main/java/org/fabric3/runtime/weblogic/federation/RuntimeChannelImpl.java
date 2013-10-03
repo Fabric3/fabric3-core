@@ -49,7 +49,7 @@ import org.fabric3.spi.command.Response;
 import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
-import org.fabric3.spi.federation.MessageReceiver;
+import org.fabric3.spi.federation.topology.MessageReceiver;
 
 /**
  * Standard implementation of a RuntimeChannel.

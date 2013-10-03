@@ -37,7 +37,7 @@
 */
 package org.fabric3.federation.deployment.command;
 
-import org.fabric3.spi.federation.ErrorResponse;
+import org.fabric3.spi.federation.topology.ErrorResponse;
 
 /**
  * A response returned to the controller when a runtime raises an error processing a {@link DeploymentCommand}.

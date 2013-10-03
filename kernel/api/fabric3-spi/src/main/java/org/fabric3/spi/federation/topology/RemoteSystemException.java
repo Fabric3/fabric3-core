@@ -35,15 +35,30 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.zeromq.runtime.federation;
-
-import org.fabric3.api.annotation.monitor.Severe;
+package org.fabric3.spi.federation.topology;
 
 /**
- *
+ * A response to a synchronous message returned when an exception is raised processing the original request.
  */
-public interface AddressMonitor {
+public class RemoteSystemException implements ErrorResponse {
+    private static final long serialVersionUID = 3104883810536039817L;
 
-    @Severe
-    void error(Exception e);
+    private Exception exception;
+    private String runtimeName;
+
+    public RemoteSystemException(Exception exception) {
+        this.exception = exception;
+    }
+
+    public String getRuntimeName() {
+        return runtimeName;
+    }
+
+    public void setRuntimeName(String runtimeName) {
+        this.runtimeName = runtimeName;
+    }
+
+    public Exception getException() {
+        return exception;
+    }
 }

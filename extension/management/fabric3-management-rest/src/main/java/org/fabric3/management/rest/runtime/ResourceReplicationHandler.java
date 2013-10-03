@@ -38,7 +38,7 @@
 package org.fabric3.management.rest.runtime;
 
 import org.fabric3.management.rest.spi.ResourceHost;
-import org.fabric3.spi.federation.MessageReceiver;
+import org.fabric3.spi.federation.topology.MessageReceiver;
 
 /**
  * Listens to {@link ReplicationEnvelope}s sent when a resource request is broadcast in a zone and dispatches the associated request to the managed

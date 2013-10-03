@@ -44,8 +44,8 @@ import org.easymock.EasyMock;
 import org.fabric3.channel.impl.ReplicationMonitor;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.EventWrapper;
-import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.ZoneTopologyService;
 
 /**
  *

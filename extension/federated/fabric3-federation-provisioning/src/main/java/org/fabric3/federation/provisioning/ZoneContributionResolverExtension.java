@@ -50,8 +50,8 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.ResolutionException;
-import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.ZoneTopologyService;
 
 /**
  * Resolves contributions in a domain. Resolution is done by first querying a the controller for the contribution URL. If the controller is

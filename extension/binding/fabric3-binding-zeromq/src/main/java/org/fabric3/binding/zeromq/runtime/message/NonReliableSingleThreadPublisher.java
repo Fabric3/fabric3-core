@@ -36,7 +36,7 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.management.OperationType;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.host.Port;
 import org.zeromq.ZMQ;

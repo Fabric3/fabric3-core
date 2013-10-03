@@ -48,8 +48,8 @@ import org.easymock.EasyMock;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
-import org.fabric3.spi.federation.MessageReceiver;
-import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.MessageReceiver;
+import org.fabric3.spi.federation.topology.ZoneTopologyService;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.BasicAuthenticator;
 

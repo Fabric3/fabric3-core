@@ -35,20 +35,25 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation;
-
-import org.fabric3.spi.command.Response;
+package org.fabric3.spi.federation.topology;
 
 /**
- * An response to a synchronous message indicating an error processing the message.
+ * Constants used by federation and other extensions.
  */
-public interface ErrorResponse extends Response {
+public interface FederationConstants {
 
     /**
-     * Returns the exception raised processing the synchronous message.
-     *
-     * @return the exception raised.
+     * The key for registering a runtime HTTP port with the {@link ZoneTopologyService}
      */
-    public Exception getException();
+    String HTTP_PORT_METADATA = "http.port";
 
+    /**
+     * The key for registering a runtime HTTPS port with the {@link ZoneTopologyService}
+     */
+    String HTTPS_PORT_METADATA = "https.port";
+
+    /**
+     * The key for registering a runtime HTTP host address with the {@link ZoneTopologyService}
+     */
+    String HTTP_HOST_METADATA = "http.host";
 }

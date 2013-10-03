@@ -37,15 +37,21 @@
  */
 package org.fabric3.cache.infinispan.runtime;
 
-import java.io.ByteArrayInputStream;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.management.MBeanServer;
 import javax.transaction.TransactionManager;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
+import java.io.ByteArrayInputStream;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
+import org.fabric3.cache.infinispan.util.XmlHelper;
+import org.fabric3.cache.spi.CacheBuildException;
+import org.fabric3.cache.spi.CacheManager;
+import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.federation.topology.ZoneChannelException;
 import org.infinispan.Cache;
 import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
@@ -64,13 +70,6 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Element;
-
-import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
-import org.fabric3.cache.infinispan.util.XmlHelper;
-import org.fabric3.cache.spi.CacheBuildException;
-import org.fabric3.cache.spi.CacheManager;
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.federation.ZoneChannelException;
 
 /**
  * Manages Infinispan cache resources on a runtime.

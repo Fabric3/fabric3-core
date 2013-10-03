@@ -35,25 +35,32 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation;
+package org.fabric3.spi.federation.topology;
 
 /**
- * Constants used by federation and other extensions.
+ * Receives callbacks when a domain topology changes.
  */
-public interface FederationConstants {
+public interface TopologyListener {
 
     /**
-     * The key for registering a runtime HTTP port with the {@link ZoneTopologyService}
+     * Callback when a runtime joins a domain.
+     *
+     * @param name the runtime name
      */
-    String HTTP_PORT_METADATA = "http.port";
+    void onJoin(String name);
 
     /**
-     * The key for registering a runtime HTTPS port with the {@link ZoneTopologyService}
+     * Callback when a runtime leaves a domain.
+     *
+     * @param name the runtime name
      */
-    String HTTPS_PORT_METADATA = "https.port";
+    void onLeave(String name);
 
     /**
-     * The key for registering a runtime HTTP host address with the {@link ZoneTopologyService}
+     * Callback when a runtime is elected leader in a domain.
+     *
+     * @param name the runtime name
      */
-    String HTTP_HOST_METADATA = "http.host";
+    void onLeaderElected(String name);
+
 }

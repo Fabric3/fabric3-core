@@ -46,8 +46,8 @@ import org.jgroups.Message;
 import org.jgroups.Receiver;
 import org.jgroups.View;
 
-import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.MessageReceiver;
+import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.MessageReceiver;
 
 /**
  *

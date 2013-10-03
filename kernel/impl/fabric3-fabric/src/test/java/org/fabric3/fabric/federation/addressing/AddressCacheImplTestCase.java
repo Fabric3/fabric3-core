@@ -28,20 +28,26 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime.federation;
+package org.fabric3.fabric.federation.addressing;
 
+import java.net.URI;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.event.EventService;
+import org.fabric3.spi.federation.addressing.AddressAnnouncement;
+import org.fabric3.spi.federation.addressing.AddressListener;
+import org.fabric3.spi.federation.addressing.AddressMonitor;
+import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.host.Port;
 
 /**
  *
  */
-public class LocalAddressCacheTestCase extends TestCase {
+public class AddressCacheImplTestCase extends TestCase {
     private static final Port PORT = new Port() {
         public String getName() {
             return null;
@@ -62,7 +68,7 @@ public class LocalAddressCacheTestCase extends TestCase {
     private static final SocketAddress ADDRESS1 = new SocketAddress("runtime", "tcp", "10.10.10.1", PORT);
     private static final SocketAddress ADDRESS2 = new SocketAddress("runtime", "tcp", "10.10.10.2", PORT);
 
-    private LocalAddressCache cache = new LocalAddressCache();
+    private AddressCacheImpl cache;
 
     @SuppressWarnings({"unchecked"})
     public void testPublishSubscribe() throws Exception {
@@ -100,16 +106,27 @@ public class LocalAddressCacheTestCase extends TestCase {
     public void testGetAddresses() throws Exception {
         AddressAnnouncement announcement = new AddressAnnouncement("test", AddressAnnouncement.Type.ACTIVATED, ADDRESS1);
         cache.publish(announcement);
-        assertEquals(1, cache.getActiveAddresses("test").size());
+        TestCase.assertEquals(1, cache.getActiveAddresses("test").size());
 
         announcement = new AddressAnnouncement("test", AddressAnnouncement.Type.ACTIVATED, ADDRESS2);
         cache.publish(announcement);
-        assertEquals(2, cache.getActiveAddresses("test").size());
+        TestCase.assertEquals(2, cache.getActiveAddresses("test").size());
 
         announcement = new AddressAnnouncement("test", AddressAnnouncement.Type.REMOVED, ADDRESS2);
         cache.publish(announcement);
-        assertEquals(1, cache.getActiveAddresses("test").size());
-        assertEquals(ADDRESS1, cache.getActiveAddresses("test").get(0));
+        TestCase.assertEquals(1, cache.getActiveAddresses("test").size());
+        TestCase.assertEquals(ADDRESS1, cache.getActiveAddresses("test").get(0));
     }
 
+    public void setUp() throws Exception {
+        super.setUp();
+        Executor executor = EasyMock.createNiceMock(Executor.class);
+        EventService eventService = EasyMock.createNiceMock(EventService.class);
+        HostInfo hostInfo = EasyMock.createNiceMock(HostInfo.class);
+        EasyMock.expect(hostInfo.getDomain()).andReturn(URI.create("fabric3://domain"));
+        AddressMonitor monitor = EasyMock.createNiceMock(AddressMonitor.class);
+        EasyMock.replay(hostInfo);
+
+        cache = new AddressCacheImpl(executor, eventService, hostInfo, monitor);
+    }
 }

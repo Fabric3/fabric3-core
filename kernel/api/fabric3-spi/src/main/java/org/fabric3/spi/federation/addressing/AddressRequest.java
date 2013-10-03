@@ -28,38 +28,21 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime.federation;
-
-import org.fabric3.binding.zeromq.runtime.SocketAddress;
+package org.fabric3.spi.federation.addressing;
 
 /**
- * Denotes a new socket bound on a runtime for an endpoint or the removal of an existing socket.
+ * A request for physical socket information.
  */
-public class AddressAnnouncement extends AddressEvent {
-    private static final long serialVersionUID = 5338562626119315692L;
-    public enum Type {
-        ACTIVATED, REMOVED
+public class AddressRequest extends AddressEvent {
+    private static final long serialVersionUID = 7513403961249000616L;
+
+    private String runtimeName;
+
+    public AddressRequest(String runtimeName) {
+        this.runtimeName = runtimeName;
     }
 
-    private String endpointId;
-    private Type type;
-    private SocketAddress address;
-
-    public AddressAnnouncement(String endpointId, Type type, SocketAddress address) {
-        this.endpointId = endpointId;
-        this.type = type;
-        this.address = address;
-    }
-
-    public String getEndpointId() {
-        return endpointId;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public SocketAddress getAddress() {
-        return address;
+    public String getRuntimeName() {
+        return runtimeName;
     }
 }

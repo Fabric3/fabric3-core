@@ -72,10 +72,10 @@ import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.federation.DomainTopologyService;
-import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.RuntimeInstance;
-import org.fabric3.spi.federation.Zone;
+import org.fabric3.spi.federation.topology.DomainTopologyService;
+import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.RuntimeInstance;
+import org.fabric3.spi.federation.topology.Zone;
 
 import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CHANNEL;
 import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONTEXT;

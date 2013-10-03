@@ -28,21 +28,27 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime.federation;
+package org.fabric3.spi.federation.addressing;
+
+import java.util.List;
 
 /**
- *
+ * Receives callbacks when an endpoint socket is bound or removed on a runtime in the domain.
  */
-public class AddressRequest extends AddressEvent {
-    private static final long serialVersionUID = 7513403961249000616L;
+public interface AddressListener {
 
-    private String runtimeName;
+    /**
+     * Returns the unique listener id.
+     *
+     * @return the unique listener id
+     */
+    String getId();
 
-    public AddressRequest(String runtimeName) {
-        this.runtimeName = runtimeName;
-    }
+    /**
+     * Callback when an endpoint socket changes.
+     *
+     * @param addresses the list of current sockets
+     */
+    void onUpdate(List<SocketAddress> addresses);
 
-    public String getRuntimeName() {
-        return runtimeName;
-    }
 }

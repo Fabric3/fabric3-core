@@ -51,8 +51,8 @@ import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.ScopeContainer;
-import org.fabric3.spi.federation.TopologyListener;
-import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.TopologyListener;
+import org.fabric3.spi.federation.topology.ZoneTopologyService;
 import org.fabric3.timer.spi.Task;
 import org.fabric3.timer.spi.TimerService;
 

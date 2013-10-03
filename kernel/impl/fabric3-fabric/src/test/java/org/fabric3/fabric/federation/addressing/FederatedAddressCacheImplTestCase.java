@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime.federation;
+package org.fabric3.fabric.federation.addressing;
 
 import java.net.URI;
 import java.util.List;
@@ -37,17 +37,22 @@ import java.util.concurrent.Executor;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.event.EventService;
-import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.federation.addressing.AddressAnnouncement;
+import org.fabric3.spi.federation.addressing.AddressListener;
+import org.fabric3.spi.federation.addressing.AddressMonitor;
+import org.fabric3.spi.federation.addressing.AddressRequest;
+import org.fabric3.spi.federation.addressing.AddressUpdate;
+import org.fabric3.spi.federation.topology.ZoneTopologyService;
 import org.fabric3.spi.host.Port;
 
 /**
  *
  */
-public class FederatedAddressCacheTestCase extends TestCase {
-    private static final String ZEROMQ_CHANNEL = "ZeroMQChannel.domain";
+public class FederatedAddressCacheImplTestCase extends TestCase {
+    private static final String CHANNEL = "F3AddressChannel.domain";
     private static final Port PORT = new Port() {
         public String getName() {
             return null;
@@ -80,20 +85,21 @@ public class FederatedAddressCacheTestCase extends TestCase {
     public void testOnLeave() throws Exception {
 
         AddressAnnouncement announcement = new AddressAnnouncement("test", AddressAnnouncement.Type.ACTIVATED, ADDRESS1);
-        topologyService.sendAsynchronous(ZEROMQ_CHANNEL, announcement);
+        topologyService.sendAsynchronous(CHANNEL, announcement);
 
         AddressListener listener = EasyMock.createMock(AddressListener.class);
         listener.onUpdate(EasyMock.isA(List.class));
         EasyMock.expectLastCall().times(2);
         EasyMock.replay(info, topologyService, listener);
 
-        FederatedAddressCache cache = new FederatedAddressCache(topologyService, executor, eventService, info, monitor);
+        AddressCacheImpl cache = new AddressCacheImpl(executor, eventService, info, monitor);
+        cache.setTopologyService(topologyService);
         cache.subscribe("test", listener);
 
         cache.publish(announcement);
 
         cache.onLeave("runtime");
-        assertTrue(cache.getActiveAddresses("test").isEmpty());
+        TestCase.assertTrue(cache.getActiveAddresses("test").isEmpty());
 
         EasyMock.verify(listener);
     }
@@ -101,14 +107,15 @@ public class FederatedAddressCacheTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testSendAddressAnnouncement() throws Exception {
         EasyMock.replay(info);
-        FederatedAddressCache cache = new FederatedAddressCache(topologyService, executor, eventService, info, monitor);
-        topologyService.sendAsynchronous(EasyMock.eq(ZEROMQ_CHANNEL), EasyMock.isA(AddressAnnouncement.class));
+        AddressCacheImpl cache = new AddressCacheImpl(executor, eventService, info, monitor);
+        cache.setTopologyService(topologyService);
+        topologyService.sendAsynchronous(EasyMock.eq(CHANNEL), EasyMock.isA(AddressAnnouncement.class));
         EasyMock.replay(topologyService);
 
         AddressAnnouncement announcement = new AddressAnnouncement("test", AddressAnnouncement.Type.ACTIVATED, ADDRESS1);
         cache.publish(announcement);
 
-        assertEquals(1, cache.getActiveAddresses("test").size());
+        TestCase.assertEquals(1, cache.getActiveAddresses("test").size());
         EasyMock.verify(info, topologyService);
     }
 
@@ -116,13 +123,14 @@ public class FederatedAddressCacheTestCase extends TestCase {
     public void testReceiveAddressAnnouncement() throws Exception {
         EasyMock.replay(info);
 
-        FederatedAddressCache cache = new FederatedAddressCache(topologyService, executor, eventService, info, monitor);
+        AddressCacheImpl cache = new AddressCacheImpl(executor, eventService, info, monitor);
+        cache.setTopologyService(topologyService);
         EasyMock.replay(topologyService);
 
         AddressAnnouncement announcement2 = new AddressAnnouncement("test", AddressAnnouncement.Type.ACTIVATED, ADDRESS2);
         cache.onMessage(announcement2);
 
-        assertEquals(1, cache.getActiveAddresses("test").size());
+        TestCase.assertEquals(1, cache.getActiveAddresses("test").size());
         EasyMock.verify(info, topologyService);
     }
 
@@ -130,11 +138,12 @@ public class FederatedAddressCacheTestCase extends TestCase {
     public void testSendAddressUpdate() throws Exception {
         EasyMock.expect(info.getRuntimeName()).andReturn("runtime").atLeastOnce();
         EasyMock.replay(info);
-        FederatedAddressCache cache = new FederatedAddressCache(topologyService, executor, eventService, info, monitor);
+        AddressCacheImpl cache = new AddressCacheImpl(executor, eventService, info, monitor);
+        cache.setTopologyService(topologyService);
 
-        topologyService.sendAsynchronous(EasyMock.eq(ZEROMQ_CHANNEL), EasyMock.isA(AddressAnnouncement.class));
+        topologyService.sendAsynchronous(EasyMock.eq(CHANNEL), EasyMock.isA(AddressAnnouncement.class));
 
-        topologyService.sendAsynchronous(EasyMock.eq("runtime2"), EasyMock.eq(ZEROMQ_CHANNEL), EasyMock.isA(AddressUpdate.class));
+        topologyService.sendAsynchronous(EasyMock.eq("runtime2"), EasyMock.eq(CHANNEL), EasyMock.isA(AddressUpdate.class));
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
 
             public Object answer() throws Throwable {

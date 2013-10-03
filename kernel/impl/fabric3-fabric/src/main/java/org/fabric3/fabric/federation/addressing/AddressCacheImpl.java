@@ -28,59 +28,73 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime.federation;
+package org.fabric3.fabric.federation.addressing;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomainCompleted;
-import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.MessageReceiver;
-import org.fabric3.spi.federation.TopologyListener;
-import org.fabric3.spi.federation.ZoneChannelException;
-import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.federation.addressing.AddressAnnouncement;
+import org.fabric3.spi.federation.addressing.AddressCache;
+import org.fabric3.spi.federation.addressing.AddressEvent;
+import org.fabric3.spi.federation.addressing.AddressListener;
+import org.fabric3.spi.federation.addressing.AddressMonitor;
+import org.fabric3.spi.federation.addressing.AddressRequest;
+import org.fabric3.spi.federation.addressing.AddressUpdate;
+import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.MessageReceiver;
+import org.fabric3.spi.federation.topology.TopologyListener;
+import org.fabric3.spi.federation.topology.ZoneChannelException;
+import org.fabric3.spi.federation.topology.ZoneTopologyService;
 import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
 /**
- * Propagates socket information throughout a distributed domain using the runtime federation API.
+ *
  */
-@EagerInit
 @Service(AddressCache.class)
-public class FederatedAddressCache extends LocalAddressCache implements TopologyListener, MessageReceiver, Fabric3EventListener<JoinDomainCompleted> {
-    private static final String ZEROMQ_CHANNEL = "ZeroMQChannel";
+public class AddressCacheImpl implements AddressCache, TopologyListener, MessageReceiver, Fabric3EventListener<JoinDomainCompleted> {
+    private static final String ADDRESS_CHANNEL = "F3AddressChannel";
+
     private ZoneTopologyService topologyService;
     private Executor executor;
     private EventService eventService;
     private HostInfo info;
     private AddressMonitor monitor;
+
     private String qualifiedChannelName;
 
-    public FederatedAddressCache(@Reference ZoneTopologyService topologyService,
-                                 @Reference Executor executor,
-                                 @Reference EventService eventService,
-                                 @Reference HostInfo info,
-                                 @Monitor AddressMonitor monitor) {
-        this.topologyService = topologyService;
+    protected Map<String, List<SocketAddress>> addresses = new ConcurrentHashMap<String, List<SocketAddress>>();
+    protected Map<String, List<AddressListener>> listeners = new ConcurrentHashMap<String, List<AddressListener>>();
+
+    public AddressCacheImpl(@Reference Executor executor, @Reference EventService eventService, @Reference HostInfo info, @Monitor AddressMonitor monitor) {
         this.executor = executor;
         this.eventService = eventService;
         this.info = info;
         this.monitor = monitor;
-        this.qualifiedChannelName = ZEROMQ_CHANNEL + "." + info.getDomain().getAuthority();
+        this.qualifiedChannelName = ADDRESS_CHANNEL + "." + info.getDomain().getAuthority();
+    }
+
+    @Reference(required = false)
+    public void setTopologyService(ZoneTopologyService topologyService) {
+        this.topologyService = topologyService;
     }
 
     @Init
     public void init() throws MessageException {
+
         eventService.subscribe(JoinDomainCompleted.class, this);
         topologyService.register(this);
     }
@@ -91,24 +105,68 @@ public class FederatedAddressCache extends LocalAddressCache implements Topology
         topologyService.deregister(this);
     }
 
+    public List<SocketAddress> getActiveAddresses(String endpointId) {
+        List<SocketAddress> list = addresses.get(endpointId);
+        if (list == null) {
+            return Collections.emptyList();
+        }
+        return list;
+    }
+
     public void publish(AddressEvent event) {
-        if (event instanceof AddressAnnouncement) {
-            try {
-                topologyService.sendAsynchronous(qualifiedChannelName, event);
-                super.publish(event);
-            } catch (MessageException e) {
-                monitor.error(e);
+        publish(event, true);
+    }
+
+    public void subscribe(String endpointId, AddressListener listener) {
+        List<AddressListener> list = listeners.get(endpointId);
+        if (list == null) {
+            list = new CopyOnWriteArrayList<AddressListener>();
+            this.listeners.put(endpointId, list);
+        }
+        list.add(listener);
+    }
+
+    public void unsubscribe(String endpointId, String listenerId) {
+        List<AddressListener> list = listeners.get(endpointId);
+        if (list == null) {
+            return;
+        }
+        List<AddressListener> deleted = new ArrayList<AddressListener>();
+        for (AddressListener listener : list) {
+            if (listenerId.equals(listener.getId())) {
+                deleted.add(listener);
+                if (list.isEmpty()) {
+                    listeners.remove(endpointId);
+                }
+                break;
             }
+        }
+        for (AddressListener listener : deleted) {
+            list.remove(listener);
+        }
+    }
+
+    protected void notifyChange(String endpointId) {
+        List<SocketAddress> addresses = this.addresses.get(endpointId);
+        if (addresses == null) {
+            addresses = Collections.emptyList();
+        }
+        List<AddressListener> list = listeners.get(endpointId);
+        if (list == null) {
+            return;
+        }
+        for (AddressListener listener : list) {
+            listener.onUpdate(addresses);
         }
     }
 
     public void onMessage(Object object) {
         if (object instanceof AddressAnnouncement) {
-            super.publish((AddressAnnouncement) object);
+            publish((AddressAnnouncement) object, false);
         } else if (object instanceof AddressUpdate) {
             AddressUpdate update = (AddressUpdate) object;
             for (AddressAnnouncement announcement : update.getAnnouncements()) {
-                super.publish(announcement);
+                publish(announcement, false);
             }
         } else if (object instanceof AddressRequest) {
             handleAddressRequest((AddressRequest) object);
@@ -156,6 +214,40 @@ public class FederatedAddressCache extends LocalAddressCache implements Topology
             monitor.error(e);
         } catch (MessageException e) {
             monitor.error(e);
+        }
+    }
+
+    private void publish(AddressEvent event, boolean propagate) {
+        if (event instanceof AddressAnnouncement) {
+            AddressAnnouncement announcement = (AddressAnnouncement) event;
+            String endpointId = announcement.getEndpointId();
+            List<SocketAddress> addresses = this.addresses.get(endpointId);
+            if (AddressAnnouncement.Type.ACTIVATED == announcement.getType()) {
+                // add the new address
+                if (addresses == null) {
+                    addresses = new CopyOnWriteArrayList<SocketAddress>();
+                    this.addresses.put(endpointId, addresses);
+                }
+                addresses.add(announcement.getAddress());
+            } else {
+                // remove the address
+                if (addresses != null) {
+                    addresses.remove(announcement.getAddress());
+                    if (addresses.isEmpty()) {
+                        this.addresses.remove(endpointId);
+                    }
+                }
+            }
+
+            if (propagate && topologyService != null && event instanceof AddressAnnouncement) {
+                try {
+                    topologyService.sendAsynchronous(qualifiedChannelName, event);
+                } catch (MessageException e) {
+                    monitor.error(e);
+                }
+            }
+            // notify listeners of a change
+            notifyChange(endpointId);
         }
     }
 

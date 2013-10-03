@@ -28,14 +28,14 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime;
+package org.fabric3.spi.federation.addressing;
 
 import java.io.Serializable;
 
 import org.fabric3.spi.host.Port;
 
 /**
- * A socket address.
+ * A physical socket address.
  */
 public class SocketAddress implements Serializable {
     private static final long serialVersionUID = -6325896048393741909L;
@@ -80,25 +80,26 @@ public class SocketAddress implements Serializable {
         return protocol + "://" + address + ":" + port.getNumber();
     }
 
-    @Override
     public String toString() {
         return protocol + "://" + address + ":" + port.getNumber() + " [" + runtimeName + "]";
     }
 
-    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SocketAddress that = (SocketAddress) o;
 
-        return port.getNumber() == that.port.getNumber() && !(address != null ? !address.equals(that.address) : that.address != null)
-                && !(protocol != null ? !protocol.equals(that.protocol) : that.protocol != null)
-                && !(runtimeName != null ? !runtimeName.equals(that.runtimeName) : that.runtimeName != null);
+        return port.getNumber() == that.port.getNumber() && !(address != null ? !address.equals(that.address) : that.address != null) && !(
+                protocol != null ? !protocol.equals(that.protocol) : that.protocol != null) && !(
+                runtimeName != null ? !runtimeName.equals(that.runtimeName) : that.runtimeName != null);
 
     }
 
-    @Override
     public int hashCode() {
         int result = runtimeName != null ? runtimeName.hashCode() : 0;
         result = 31 * result + (protocol != null ? protocol.hashCode() : 0);

@@ -28,13 +28,13 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.runtime.federation;
+package org.fabric3.spi.federation.addressing;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Denotes a set of socket addresses have been updated.
  */
 public class AddressUpdate extends AddressEvent {
     private static final long serialVersionUID = -7699148587872349130L;

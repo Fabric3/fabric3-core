@@ -64,11 +64,11 @@ import org.fabric3.spi.command.Response;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
-import org.fabric3.spi.federation.DomainTopologyService;
-import org.fabric3.spi.federation.ErrorResponse;
-import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.RuntimeInstance;
-import org.fabric3.spi.federation.Zone;
+import org.fabric3.spi.federation.topology.DomainTopologyService;
+import org.fabric3.spi.federation.topology.ErrorResponse;
+import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.RuntimeInstance;
+import org.fabric3.spi.federation.topology.Zone;
 import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.DeploymentUnit;
 

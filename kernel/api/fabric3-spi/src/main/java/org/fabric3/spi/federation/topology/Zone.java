@@ -35,16 +35,59 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation;
+package org.fabric3.spi.federation.topology;
+
+import java.util.List;
 
 /**
- *
+ * A domain zone.
  */
-public class MessageTimeoutException extends MessageException {
-    private static final long serialVersionUID = -1705962954917886183L;
+public class Zone {
+    private String name;
+    private List<RuntimeInstance> runtimes;
 
-    public MessageTimeoutException(String message, Throwable cause) {
-        super(message, cause);
+    /**
+     * Constructor.
+     *
+     * @param name     the zone name
+     * @param runtimes the active runtimes in the zone
+     */
+    public Zone(String name, List<RuntimeInstance> runtimes) {
+        this.name = name;
+        this.runtimes = runtimes;
     }
 
+    /**
+     * Returns the zone name.
+     *
+     * @return the zone name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the active runtimes in a zone.
+     *
+     * @return the active runtimes in a zone
+     */
+    public List<RuntimeInstance> getRuntimes() {
+        return runtimes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Zone zone = (Zone) o;
+
+        return !(name != null ? !name.equals(zone.name) : zone.name != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
+    }
 }

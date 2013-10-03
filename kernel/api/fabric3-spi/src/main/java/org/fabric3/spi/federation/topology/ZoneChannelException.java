@@ -35,25 +35,23 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation;
-
-import org.fabric3.host.Fabric3Exception;
+package org.fabric3.spi.federation.topology;
 
 /**
  *
  */
-public class MessageException extends Fabric3Exception {
-    private static final long serialVersionUID = 9222872325419816221L;
+public class ZoneChannelException extends MessageException {
+    private static final long serialVersionUID = -6557528031274360829L;
 
-    public MessageException(String message) {
+    public ZoneChannelException(String message) {
         super(message);
     }
 
-    public MessageException(String message, Throwable cause) {
+    public ZoneChannelException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public MessageException(Throwable cause) {
+    public ZoneChannelException(Throwable cause) {
         super(cause);
     }
 }

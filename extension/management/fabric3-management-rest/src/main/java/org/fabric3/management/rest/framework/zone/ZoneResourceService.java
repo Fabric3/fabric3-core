@@ -65,8 +65,8 @@ import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceListener;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
-import org.fabric3.spi.federation.ZoneChannelException;
-import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.ZoneChannelException;
+import org.fabric3.spi.federation.topology.ZoneTopologyService;
 
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 

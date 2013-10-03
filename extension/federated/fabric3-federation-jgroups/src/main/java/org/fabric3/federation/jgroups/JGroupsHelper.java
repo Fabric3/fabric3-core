@@ -44,7 +44,7 @@ import java.util.Set;
 import org.jgroups.Address;
 import org.jgroups.View;
 
-import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.topology.MessageException;
 
 /**
  * Helper service for the JGroups messaging layer.

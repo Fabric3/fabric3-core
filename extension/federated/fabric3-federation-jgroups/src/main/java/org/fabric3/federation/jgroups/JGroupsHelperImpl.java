@@ -50,7 +50,7 @@ import java.util.Set;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
-import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.topology.MessageException;
 import org.jgroups.Address;
 import org.jgroups.View;
 import org.jgroups.util.UUID;

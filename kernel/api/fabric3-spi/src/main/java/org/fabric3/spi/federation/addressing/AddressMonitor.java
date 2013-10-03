@@ -35,18 +35,15 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation;
+package org.fabric3.spi.federation.addressing;
+
+import org.fabric3.api.annotation.monitor.Severe;
 
 /**
- * Implementations receive messages over a channel.
+ *
  */
-public interface MessageReceiver {
+public interface AddressMonitor {
 
-    /**
-     * Callback when a message is received.
-     *
-     * @param object the message
-     */
-    void onMessage(Object object);
-
+    @Severe
+    void error(Exception e);
 }

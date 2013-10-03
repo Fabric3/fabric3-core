@@ -35,59 +35,23 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation;
-
-import java.util.List;
+package org.fabric3.spi.federation.topology;
 
 /**
- * A domain zone.
+ * Raised when an attempt is made to contact the controller but one cannot be found in the domain.
  */
-public class Zone {
-    private String name;
-    private List<RuntimeInstance> runtimes;
+public class ControllerNotFoundException extends MessageException {
+    private static final long serialVersionUID = 6661874470150036437L;
 
-    /**
-     * Constructor.
-     *
-     * @param name     the zone name
-     * @param runtimes the active runtimes in the zone
-     */
-    public Zone(String name, List<RuntimeInstance> runtimes) {
-        this.name = name;
-        this.runtimes = runtimes;
+    public ControllerNotFoundException(String message) {
+        super(message);
     }
 
-    /**
-     * Returns the zone name.
-     *
-     * @return the zone name
-     */
-    public String getName() {
-        return name;
+    public ControllerNotFoundException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    /**
-     * Returns the active runtimes in a zone.
-     *
-     * @return the active runtimes in a zone
-     */
-    public List<RuntimeInstance> getRuntimes() {
-        return runtimes;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Zone zone = (Zone) o;
-
-        return !(name != null ? !name.equals(zone.name) : zone.name != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+    public ControllerNotFoundException(Throwable cause) {
+        super(cause);
     }
 }

@@ -67,5 +67,7 @@
         <f3:implementation.system class="org.fabric3.fabric.handler.TransformerHandlerFactoryImpl"/>
     </component>
 
-
+    <component name="AddressCache">
+        <f3:implementation.system class="org.fabric3.fabric.federation.addressing.AddressCacheImpl"/>
+    </component>
 </composite>

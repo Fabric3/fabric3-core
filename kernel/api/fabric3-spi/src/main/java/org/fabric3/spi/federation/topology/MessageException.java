@@ -35,23 +35,25 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation;
+package org.fabric3.spi.federation.topology;
+
+import org.fabric3.host.Fabric3Exception;
 
 /**
- * Raised when an attempt is made to contact the controller but one cannot be found in the domain.
+ *
  */
-public class ControllerNotFoundException extends MessageException {
-    private static final long serialVersionUID = 6661874470150036437L;
+public class MessageException extends Fabric3Exception {
+    private static final long serialVersionUID = 9222872325419816221L;
 
-    public ControllerNotFoundException(String message) {
+    public MessageException(String message) {
         super(message);
     }
 
-    public ControllerNotFoundException(String message, Throwable cause) {
+    public MessageException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ControllerNotFoundException(Throwable cause) {
+    public MessageException(Throwable cause) {
         super(cause);
     }
 }

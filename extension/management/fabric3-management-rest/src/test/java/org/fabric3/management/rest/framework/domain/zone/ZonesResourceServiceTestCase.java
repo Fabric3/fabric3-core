@@ -50,12 +50,12 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.management.rest.model.Link;
-import org.fabric3.spi.federation.DomainTopologyService;
-import org.fabric3.spi.federation.RuntimeInstance;
-import org.fabric3.spi.federation.Zone;
+import org.fabric3.spi.federation.topology.DomainTopologyService;
+import org.fabric3.spi.federation.topology.RuntimeInstance;
+import org.fabric3.spi.federation.topology.Zone;
 
-import static org.fabric3.spi.federation.FederationConstants.HTTP_HOST_METADATA;
-import static org.fabric3.spi.federation.FederationConstants.HTTP_PORT_METADATA;
+import static org.fabric3.spi.federation.topology.FederationConstants.HTTP_HOST_METADATA;
+import static org.fabric3.spi.federation.topology.FederationConstants.HTTP_PORT_METADATA;
 
 /**
  *

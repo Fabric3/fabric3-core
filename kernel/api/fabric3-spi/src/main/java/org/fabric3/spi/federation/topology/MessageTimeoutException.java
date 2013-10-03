@@ -35,23 +35,16 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation;
+package org.fabric3.spi.federation.topology;
 
 /**
  *
  */
-public class ZoneChannelException extends MessageException {
-    private static final long serialVersionUID = -6557528031274360829L;
+public class MessageTimeoutException extends MessageException {
+    private static final long serialVersionUID = -1705962954917886183L;
 
-    public ZoneChannelException(String message) {
-        super(message);
-    }
-
-    public ZoneChannelException(String message, Throwable cause) {
+    public MessageTimeoutException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ZoneChannelException(Throwable cause) {
-        super(cause);
-    }
 }

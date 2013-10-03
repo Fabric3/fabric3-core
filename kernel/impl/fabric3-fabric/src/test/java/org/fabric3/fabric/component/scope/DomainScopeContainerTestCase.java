@@ -51,7 +51,7 @@ import org.easymock.EasyMock;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.component.ScopedComponent;
-import org.fabric3.spi.federation.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.ZoneTopologyService;
 
 /**
  *

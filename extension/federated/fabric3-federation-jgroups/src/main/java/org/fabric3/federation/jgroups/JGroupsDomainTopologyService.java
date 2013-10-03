@@ -82,13 +82,13 @@ import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeStart;
 import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.federation.DomainTopologyService;
-import org.fabric3.spi.federation.ErrorResponse;
-import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.RemoteSystemException;
-import org.fabric3.spi.federation.RuntimeInstance;
-import org.fabric3.spi.federation.TopologyListener;
-import org.fabric3.spi.federation.Zone;
+import org.fabric3.spi.federation.topology.DomainTopologyService;
+import org.fabric3.spi.federation.topology.ErrorResponse;
+import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.RemoteSystemException;
+import org.fabric3.spi.federation.topology.RuntimeInstance;
+import org.fabric3.spi.federation.topology.TopologyListener;
+import org.fabric3.spi.federation.topology.Zone;
 
 /**
  * JGroups implementation of the {@link DomainTopologyService}.

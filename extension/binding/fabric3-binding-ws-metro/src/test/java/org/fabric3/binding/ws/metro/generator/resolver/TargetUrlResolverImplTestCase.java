@@ -50,7 +50,7 @@ import org.oasisopen.sca.Constants;
 
 import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.model.type.definitions.Intent;
-import org.fabric3.spi.federation.DomainTopologyService;
+import org.fabric3.spi.federation.topology.DomainTopologyService;
 import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.instance.LogicalBinding;
