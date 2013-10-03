@@ -193,14 +193,26 @@ public class ReferenceCommandGenerator implements CommandGenerator {
                 command.add(detachCommand);
             } else if ((reinjection && targetComponent.getState() == LogicalState.NEW) || !incremental || wire.getState() == LogicalState.NEW
                        || targetComponent.getState() == LogicalState.NEW) {
-                PhysicalWireDefinition pwd = wireGenerator.generateWire(wire);
+                PhysicalWireDefinition pwd;
+                if (wire.getSourceBinding()!= null && wire.getTargetBinding() == null) {
+                    // wire is on a node runtime where the target component is on a different runtime and hence does not have a binding in the current runtime
+                    pwd = wireGenerator.generateBoundReference(wire.getSourceBinding());
+                } else {
+                    pwd = wireGenerator.generateWire(wire);
+                }
                 AttachWireCommand attachCommand = new AttachWireCommand();
                 attachCommand.setPhysicalWireDefinition(pwd);
                 command.add(attachCommand);
             }
             // generate physical callback wires if the forward service is bidirectional
             if (reference.getServiceContract().getCallbackContract() != null) {
-                PhysicalWireDefinition pwd = wireGenerator.generateWireCallback(wire);
+                PhysicalWireDefinition pwd;
+                if (wire.getSourceBinding()!= null && wire.getTargetBinding() == null) {
+                    // wire is on a node runtime where the target component is on a different runtime and hence does not have a binding in the current runtime
+                    pwd = wireGenerator.generateBoundReferenceCallback(reference.getCallbackBindings().get(0));
+                } else {
+                    pwd = wireGenerator.generateWireCallback(wire);
+                }
                 if (attach) {
                     AttachWireCommand attachCommand = new AttachWireCommand();
                     attachCommand.setPhysicalWireDefinition(pwd);

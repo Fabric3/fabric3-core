@@ -112,7 +112,7 @@ public interface WireGenerator {
     <T extends BindingDefinition> PhysicalWireDefinition generateBoundReferenceCallback(LogicalBinding<T> binding) throws GenerationException;
 
     /**
-     * Generates a PhysicalWireDefinition for a wire between collocated components.
+     * Generates a PhysicalWireDefinition for a wire.
      *
      * @param wire the logical wire
      * @return the physical wire definition.
@@ -121,7 +121,7 @@ public interface WireGenerator {
     PhysicalWireDefinition generateWire(LogicalWire wire) throws GenerationException;
 
     /**
-     * Generates a PhysicalWireDefinition for a callback wire between collocated components.
+     * Generates a PhysicalWireDefinition for a callback wire.
      *
      * @param wire the logical wire
      * @return the physical wire definition.

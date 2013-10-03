@@ -312,6 +312,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             } else {
                 channel = new JChannel();
             }
+            channel.setName(runtimeName);
             initializeChannel(channel);
             channels.put(name, channel);
             DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver, helper, monitor);

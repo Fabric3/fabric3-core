@@ -93,7 +93,7 @@ import org.w3c.dom.Element;
 @EagerInit
 @Management(name = "DomainTopologyService", path = "/runtime/federation/node/view")
 @Service(names = {DomainTopologyService.class, ZoneTopologyService.class})
-public class NodeDomainTopologyService extends AbstractTopologyService implements DomainTopologyService, ZoneTopologyService {
+public class NodeTopologyService extends AbstractTopologyService implements DomainTopologyService, ZoneTopologyService {
     private JChannel domainChannel;
     private MessageDispatcher dispatcher;
     private JoinEventListener joinListener;
@@ -112,13 +112,13 @@ public class NodeDomainTopologyService extends AbstractTopologyService implement
 
     private DomainMergeService mergeService;
 
-    public NodeDomainTopologyService(@Reference HostInfo info,
-                                     @Reference CommandExecutorRegistry executorRegistry,
-                                     @Reference DomainMergeService mergeService,
-                                     @Reference EventService eventService,
-                                     @Reference Executor executor,
-                                     @Reference JGroupsHelper helper,
-                                     @Monitor TopologyServiceMonitor monitor) {
+    public NodeTopologyService(@Reference HostInfo info,
+                               @Reference CommandExecutorRegistry executorRegistry,
+                               @Reference DomainMergeService mergeService,
+                               @Reference EventService eventService,
+                               @Reference Executor executor,
+                               @Reference JGroupsHelper helper,
+                               @Monitor TopologyServiceMonitor monitor) {
         super(info, executorRegistry, eventService, executor, helper, monitor);
         this.mergeService = mergeService;
         this.zoneName = info.getZoneName();
@@ -292,6 +292,7 @@ public class NodeDomainTopologyService extends AbstractTopologyService implement
             } else {
                 channel = new JChannel();
             }
+            channel.setName(runtimeName);
             initializeChannel(channel);
             channels.put(name, channel);
             DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver, helper, monitor);
@@ -330,7 +331,7 @@ public class NodeDomainTopologyService extends AbstractTopologyService implement
             throw new MessageException("Channel not found: " + name);
         }
         try {
-            View view = domainChannel.getView();
+            View view = channel.getView();
             if (view == null) {
                 throw new MessageException("Federation channel closed or not connected when sending message to: " + runtimeName);
             }

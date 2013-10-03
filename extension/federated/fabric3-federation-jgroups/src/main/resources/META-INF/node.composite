@@ -17,8 +17,8 @@ Public License. See the accompanying license file for details.
            autowire="true">
 
 
-    <component name="NodeDomainTopologyService">
-        <f3:implementation.system class="org.fabric3.federation.jgroups.NodeDomainTopologyService"/>
+    <component name="NodeTopologyService">
+        <f3:implementation.system class="org.fabric3.federation.jgroups.NodeTopologyService"/>
         <property name="channelConfig" source="$systemConfig//f3:federation/f3:config"/>
         <property name="defaultTimeout" source="$systemConfig//f3:federation/@timeout"/>
         <!--<property name="transportMetadata" source="$systemConfig//f3:federation/f3:transport/*"/>-->

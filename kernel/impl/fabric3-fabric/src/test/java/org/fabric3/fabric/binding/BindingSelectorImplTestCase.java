@@ -37,17 +37,18 @@
 */
 package org.fabric3.fabric.binding;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.model.type.component.Implementation;
 import org.fabric3.spi.binding.provider.BindingMatchResult;
 import org.fabric3.spi.binding.provider.BindingProvider;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -57,6 +58,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *
@@ -190,7 +192,12 @@ public class BindingSelectorImplTestCase extends TestCase {
         source.addReference(reference);
         composite.addComponent(source);
 
-        LogicalComponent target = new LogicalComponent(URI.create("composite/target"), null, composite);
+        ComponentDefinition definition = new ComponentDefinition("target", new Implementation<ComponentType>() {
+            public QName getType() {
+                return null;
+            }
+        });
+        LogicalComponent target = new LogicalComponent(URI.create("composite/target"), definition, composite);
         target.setZone(targetZone);
         LogicalService service = new LogicalService(URI.create("composite/source#service"), null, target);
         target.addService(service);

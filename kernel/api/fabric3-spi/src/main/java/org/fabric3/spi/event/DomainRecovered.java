@@ -37,10 +37,8 @@
 */
 package org.fabric3.spi.event;
 
-
 /**
- * Signals that a domain finished the recover phase. 
- * *
+ * Signals that a domain finished the recover phase.
  */
 public class DomainRecovered implements Fabric3Event {
 

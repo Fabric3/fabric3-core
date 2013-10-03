@@ -61,6 +61,7 @@ import org.fabric3.spi.event.DomainRecovered;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.ExtensionsInitialized;
 import org.fabric3.spi.event.JoinDomain;
+import org.fabric3.spi.event.JoinDomainCompleted;
 import org.fabric3.spi.event.RuntimeRecover;
 import org.fabric3.spi.event.RuntimeStart;
 import org.fabric3.spi.event.RuntimeStop;
@@ -116,7 +117,9 @@ public class DefaultCoordinator implements RuntimeCoordinator {
 
     public void joinDomain() {
         EventService eventService = runtime.getComponent(EventService.class);
+
         eventService.publish(new JoinDomain());
+        eventService.publish(new JoinDomainCompleted());
 
         // initiate domain recovery
         eventService.publish(new DomainRecover());

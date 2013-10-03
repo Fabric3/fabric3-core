@@ -56,6 +56,7 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.fabric3.spi.model.type.remote.RemoteImplementation;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
@@ -183,15 +184,17 @@ public class BindingSelectorImpl implements BindingSelector {
                     QName type = result.getType();
                     throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the reference: " + type);
                 }
-                if (target.getLeafService().getBindings().isEmpty()) {
-                    QName type = result.getType();
-                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the service: " + type);
-                }
                 wire.setSourceBinding(source.getBindings().get(0));
-                if (!target.getBindings().isEmpty()) {
-                    wire.setTargetBinding(target.getBindings().get(0));
-                } else {
-                    wire.setTargetBinding(target.getLeafService().getBindings().get(0));
+                if (!(target.getParent().getDefinition().getImplementation() instanceof RemoteImplementation)) {
+                    if (target.getLeafService().getBindings().isEmpty()) {
+                        QName type = result.getType();
+                        throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the service: " + type);
+                    }
+                    if (!target.getBindings().isEmpty()) {
+                        wire.setTargetBinding(target.getBindings().get(0));
+                    } else {
+                        wire.setTargetBinding(target.getLeafService().getBindings().get(0));
+                    }
                 }
                 return;
             }

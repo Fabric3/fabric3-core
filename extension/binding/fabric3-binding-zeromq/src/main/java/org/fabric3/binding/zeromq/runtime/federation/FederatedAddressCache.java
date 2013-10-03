@@ -33,44 +33,56 @@ package org.fabric3.binding.zeromq.runtime.federation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
+import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
+import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.event.EventService;
+import org.fabric3.spi.event.Fabric3EventListener;
+import org.fabric3.spi.event.JoinDomainCompleted;
+import org.fabric3.spi.federation.MessageException;
+import org.fabric3.spi.federation.MessageReceiver;
+import org.fabric3.spi.federation.TopologyListener;
+import org.fabric3.spi.federation.ZoneChannelException;
+import org.fabric3.spi.federation.ZoneTopologyService;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
-import org.fabric3.binding.zeromq.runtime.SocketAddress;
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.federation.MessageException;
-import org.fabric3.spi.federation.MessageReceiver;
-import org.fabric3.spi.federation.TopologyListener;
-import org.fabric3.spi.federation.ZoneChannelException;
-import org.fabric3.spi.federation.ZoneTopologyService;
-
 /**
- * An implementation which propagates socket information throughout a distributed domain using the runtime federation API.
+ * Propagates socket information throughout a distributed domain using the runtime federation API.
  */
 @EagerInit
 @Service(AddressCache.class)
-public class FederatedAddressCache extends LocalAddressCache implements TopologyListener, MessageReceiver {
+public class FederatedAddressCache extends LocalAddressCache implements TopologyListener, MessageReceiver, Fabric3EventListener<JoinDomainCompleted> {
     private static final String ZEROMQ_CHANNEL = "ZeroMQChannel";
     private ZoneTopologyService topologyService;
+    private Executor executor;
+    private EventService eventService;
     private HostInfo info;
+    private AddressMonitor monitor;
     private String qualifiedChannelName;
 
-    public FederatedAddressCache(@Reference ZoneTopologyService topologyService, @Reference HostInfo info) {
+    public FederatedAddressCache(@Reference ZoneTopologyService topologyService,
+                                 @Reference Executor executor,
+                                 @Reference EventService eventService,
+                                 @Reference HostInfo info,
+                                 @Monitor AddressMonitor monitor) {
         this.topologyService = topologyService;
+        this.executor = executor;
+        this.eventService = eventService;
         this.info = info;
+        this.monitor = monitor;
         this.qualifiedChannelName = ZEROMQ_CHANNEL + "." + info.getDomain().getAuthority();
     }
 
     @Init
     public void init() throws MessageException {
+        eventService.subscribe(JoinDomainCompleted.class, this);
         topologyService.register(this);
-        topologyService.openChannel(qualifiedChannelName, null, this);
-        AddressRequest request = new AddressRequest(info.getRuntimeName());
-        topologyService.sendAsynchronous(qualifiedChannelName, request);
     }
 
     @Destroy
@@ -79,15 +91,13 @@ public class FederatedAddressCache extends LocalAddressCache implements Topology
         topologyService.deregister(this);
     }
 
-    @Override
     public void publish(AddressEvent event) {
         if (event instanceof AddressAnnouncement) {
             try {
                 topologyService.sendAsynchronous(qualifiedChannelName, event);
                 super.publish(event);
             } catch (MessageException e) {
-                e.printStackTrace();
-                // TODO monitor
+                monitor.error(e);
             }
         }
     }
@@ -101,24 +111,7 @@ public class FederatedAddressCache extends LocalAddressCache implements Topology
                 super.publish(announcement);
             }
         } else if (object instanceof AddressRequest) {
-            AddressRequest request = (AddressRequest) object;
-            AddressUpdate update = new AddressUpdate();
-            for (Map.Entry<String, List<SocketAddress>> entry : addresses.entrySet()) {
-                for (SocketAddress address : entry.getValue()) {
-                    if (info.getRuntimeName().equals(address.getRuntimeName())) {
-                        AddressAnnouncement announcement = new AddressAnnouncement(entry.getKey(), AddressAnnouncement.Type.ACTIVATED, address);
-                        update.addAnnouncement(announcement);
-                    }
-                }
-            }
-            if (!update.getAnnouncements().isEmpty()) {
-                try {
-                    topologyService.sendAsynchronous(request.getRuntimeName(), qualifiedChannelName, update);
-                } catch (MessageException e) {
-                    e.printStackTrace();
-                    // TODO monitor
-                }
-            }
+            handleAddressRequest((AddressRequest) object);
         }
     }
 
@@ -147,6 +140,47 @@ public class FederatedAddressCache extends LocalAddressCache implements Topology
 
     public void onLeaderElected(String name) {
         // no-op
+    }
+
+    /**
+     * Broadcasts address requests after the runtime has joined the domain to synchronize the cache.
+     *
+     * @param event the event the event signalling the runtime has joined the domain
+     */
+    public void onEvent(JoinDomainCompleted event) {
+        try {
+            topologyService.openChannel(qualifiedChannelName, null, this);
+            AddressRequest request = new AddressRequest(info.getRuntimeName());
+            topologyService.sendAsynchronous(qualifiedChannelName, request);
+        } catch (ZoneChannelException e) {
+            monitor.error(e);
+        } catch (MessageException e) {
+            monitor.error(e);
+        }
+    }
+
+    private void handleAddressRequest(final AddressRequest request) {
+        final AddressUpdate update = new AddressUpdate();
+        for (Map.Entry<String, List<SocketAddress>> entry : addresses.entrySet()) {
+            for (SocketAddress address : entry.getValue()) {
+                if (info.getRuntimeName().equals(address.getRuntimeName())) {
+                    AddressAnnouncement announcement = new AddressAnnouncement(entry.getKey(), AddressAnnouncement.Type.ACTIVATED, address);
+                    update.addAnnouncement(announcement);
+                }
+            }
+        }
+        if (!update.getAnnouncements().isEmpty()) {
+            // send response from a separate thread to avoid blocking on the federation callback
+            executor.execute(new Runnable() {
+                public void run() {
+                    try {
+                        topologyService.sendAsynchronous(request.getRuntimeName(), qualifiedChannelName, update);
+                    } catch (MessageException e) {
+                        monitor.error(e);
+                    }
+                }
+            });
+        }
     }
 
 }
