@@ -202,14 +202,6 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         return UUID.get(address);
     }
 
-    public void broadcast(Command command) throws MessageException {
-        // null address will send to everyone
-        List<Address> addresses = helper.getRuntimeAddressesInZone(zoneName, domainChannel.getView());
-        for (Address address : addresses) {
-            sendAsync(address, command);
-        }
-    }
-
     public Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException {
         View view = domainChannel.getView();
         if (view == null) {

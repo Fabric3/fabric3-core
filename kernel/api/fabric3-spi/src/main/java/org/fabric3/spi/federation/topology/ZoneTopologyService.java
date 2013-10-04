@@ -39,7 +39,6 @@ package org.fabric3.spi.federation.topology;
 
 import java.io.Serializable;
 
-import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.Response;
 import org.fabric3.spi.command.ResponseCommand;
 
@@ -91,14 +90,6 @@ public interface ZoneTopologyService {
      * @return the name of the zone leader or null if the current runtime has not joined the domain
      */
     String getZoneLeaderName();
-
-    /**
-     * Sends a command asynchronously to all runtimes in the zone.
-     *
-     * @param command the command
-     * @throws MessageException if an error occurs sending the message
-     */
-    void broadcast(Command command) throws MessageException;
 
     /**
      * Sends a command synchronously to a runtime.

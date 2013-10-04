@@ -186,10 +186,6 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         }
     }
 
-    public void broadcast(Command command) throws MessageException {
-        throw new UnsupportedOperationException();
-    }
-
     public Response sendSynchronous(String destinationName, ResponseCommand command, long timeout) throws MessageException {
         Context rootContext = null;
         try {
