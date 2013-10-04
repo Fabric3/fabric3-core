@@ -49,7 +49,7 @@ import org.fabric3.spi.federation.addressing.AddressEvent;
 import org.fabric3.binding.zeromq.runtime.management.ZeroMQManagementService;
 import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.event.EventService;
+import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.wire.TransformerInterceptorFactory;

@@ -1,6 +1,6 @@
 /*
 * Fabric3
-* Copyright (c) 2009-2013 Metaform Systems
+* Copyright (c) 2010 Metaform Systems
 *
 * Fabric3 is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as
@@ -35,35 +35,11 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.event;
+package org.fabric3.spi.runtime.event;
 
 /**
- * The runtime event service. {@link Fabric3EventListener}s subscribe with this service to receive notification of various runtime events.
+ * Signals that a domain finished the recover phase.
  */
-public interface EventService {
-
-    /**
-     * Publishes a runtime event. EventListeners subscribed to the event will be notified.
-     *
-     * @param event the event
-     */
-    void publish(Fabric3Event event);
-
-    /**
-     * Subscribe the listener to receive notification when events of the specified type are published.
-     *
-     * @param type     the event type to receive notifications for
-     * @param listener the listener to subscribe
-     */
-    <T extends Fabric3Event> void subscribe(Class<T> type, Fabric3EventListener<T> listener);
-
-    /**
-     * Unsubscribe the listener from receiving notifications when events of the specified type are published.
-     *
-     * @param type     the event type to unsubscribe from
-     * @param listener the listener to unsubscribe
-     */
-    <T extends Fabric3Event> void unsubscribe(Class<T> type, Fabric3EventListener<T> listener);
-
+public class DomainRecovered implements Fabric3Event {
 
 }

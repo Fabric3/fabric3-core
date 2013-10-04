@@ -35,10 +35,10 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.event;
+package org.fabric3.spi.runtime.event;
 
 /**
- * Signals when request processing has stopped and the runtime is being taken offline
+ * Signals when a runtime enters the recover phase of its bootstrap process.
  */
-public class RuntimeStop implements Fabric3Event {
+public class RuntimeRecover implements Fabric3Event {
 }

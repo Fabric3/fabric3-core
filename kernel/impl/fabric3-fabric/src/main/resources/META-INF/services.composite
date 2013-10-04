@@ -24,7 +24,7 @@
     </component>
 
     <component name="EventService">
-        <f3:implementation.system class="org.fabric3.fabric.event.EventServiceImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.runtime.event.EventServiceImpl"/>
     </component>
 
     <component name="SerializationService">

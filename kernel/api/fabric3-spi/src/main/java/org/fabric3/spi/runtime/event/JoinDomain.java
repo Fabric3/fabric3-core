@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.event;
+package org.fabric3.spi.runtime.event;
 
 /**
  * Signals when a runtime enters the join domain phase of its bootstrap process.

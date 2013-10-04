@@ -47,7 +47,7 @@ import org.easymock.EasyMock;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.model.type.ModelObject;
-import org.fabric3.spi.event.ExtensionsInitialized;
+import org.fabric3.spi.runtime.event.ExtensionsInitialized;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 

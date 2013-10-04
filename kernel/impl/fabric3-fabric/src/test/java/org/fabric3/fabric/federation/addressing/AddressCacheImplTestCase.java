@@ -37,7 +37,7 @@ import java.util.concurrent.Executor;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.event.EventService;
+import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.federation.addressing.AddressAnnouncement;
 import org.fabric3.spi.federation.addressing.AddressListener;
 import org.fabric3.spi.federation.addressing.AddressMonitor;

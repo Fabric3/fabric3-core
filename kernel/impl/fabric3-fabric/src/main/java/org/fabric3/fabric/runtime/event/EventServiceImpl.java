@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.event;
+package org.fabric3.fabric.runtime.event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +44,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.spi.event.EventService;
-import org.fabric3.spi.event.Fabric3Event;
-import org.fabric3.spi.event.Fabric3EventListener;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.Fabric3Event;
+import org.fabric3.spi.runtime.event.Fabric3EventListener;
 
 /**
  * Default implementation of the EventService.

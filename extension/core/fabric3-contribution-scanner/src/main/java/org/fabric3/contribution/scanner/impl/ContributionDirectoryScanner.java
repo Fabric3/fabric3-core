@@ -75,11 +75,11 @@ import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.event.EventService;
-import org.fabric3.spi.event.ExtensionsInitialized;
-import org.fabric3.spi.event.Fabric3Event;
-import org.fabric3.spi.event.Fabric3EventListener;
-import org.fabric3.spi.event.RuntimeStart;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.ExtensionsInitialized;
+import org.fabric3.spi.runtime.event.Fabric3Event;
+import org.fabric3.spi.runtime.event.Fabric3EventListener;
+import org.fabric3.spi.runtime.event.RuntimeStart;
 
 /**
  * Scans deployment directories for contributions. In production mode, deployment directories will be scanned once at startup and any contained contributions

@@ -45,8 +45,8 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.util.FileHelper;
-import org.fabric3.spi.event.EventService;
-import org.fabric3.spi.event.RuntimeRecover;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.RuntimeRecover;
 
 /**
  *

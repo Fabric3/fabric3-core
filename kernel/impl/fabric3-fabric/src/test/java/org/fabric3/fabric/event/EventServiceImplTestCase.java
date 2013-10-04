@@ -40,9 +40,10 @@ package org.fabric3.fabric.event;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.spi.event.EventService;
-import org.fabric3.spi.event.Fabric3Event;
-import org.fabric3.spi.event.Fabric3EventListener;
+import org.fabric3.fabric.runtime.event.EventServiceImpl;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.Fabric3Event;
+import org.fabric3.spi.runtime.event.Fabric3EventListener;
 
 /**
  *

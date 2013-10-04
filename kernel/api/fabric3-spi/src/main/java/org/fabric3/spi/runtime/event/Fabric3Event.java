@@ -35,10 +35,10 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.event;
+package org.fabric3.spi.runtime.event;
 
 /**
- * Signals when runtime extensions are initialized.
+ * Represents a runtime event
  */
-public class ExtensionsInitialized implements Fabric3Event {
+public interface Fabric3Event {
 }

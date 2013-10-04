@@ -51,7 +51,7 @@ import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.TransformerHandlerFactory;
-import org.fabric3.spi.event.EventService;
+import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;

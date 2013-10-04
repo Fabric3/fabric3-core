@@ -35,10 +35,18 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.event;
+package org.fabric3.spi.runtime.event;
 
 /**
- * Signals when a runtime enters the recover phase of its bootstrap process.
+ * Implementations are notified of runtime events after they have subscribed with the {@link EventService} for a particular event type or types.
  */
-public class RuntimeRecover implements Fabric3Event {
+public interface Fabric3EventListener<T extends Fabric3Event> {
+
+    /**
+     * Notifies the listener of an event. The listener must not throw an exception as all listeners are notified on the same thread.
+     *
+     * @param event the event
+     */
+    void onEvent(T event);
+
 }

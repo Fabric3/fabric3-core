@@ -52,9 +52,9 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.Names;
 import org.fabric3.host.failure.ValidationFailure;
 import org.fabric3.model.type.ModelObject;
-import org.fabric3.spi.event.EventService;
-import org.fabric3.spi.event.ExtensionsInitialized;
-import org.fabric3.spi.event.Fabric3EventListener;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.ExtensionsInitialized;
+import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 
