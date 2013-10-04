@@ -65,7 +65,7 @@
     </component>
 
     <component name="Collector">
-        <f3:implementation.system class="org.fabric3.fabric.collector.CollectorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.CollectorImpl"/>
     </component>
 
 </composite>

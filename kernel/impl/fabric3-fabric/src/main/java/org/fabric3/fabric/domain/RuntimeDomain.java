@@ -39,7 +39,6 @@ package org.fabric3.fabric.domain;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.contribution.MetaDataStore;

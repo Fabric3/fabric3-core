@@ -49,7 +49,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
-import org.fabric3.fabric.collector.Collector;
 import org.fabric3.fabric.instantiator.InstantiationContext;
 import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.RuntimeMode;
