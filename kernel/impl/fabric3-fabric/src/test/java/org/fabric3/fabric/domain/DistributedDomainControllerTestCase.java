@@ -70,7 +70,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.definitions.PolicySet;
-import org.fabric3.spi.allocator.Allocator;
+import org.fabric3.spi.domain.Allocator;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;

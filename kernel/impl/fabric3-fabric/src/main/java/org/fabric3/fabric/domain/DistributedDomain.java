@@ -49,7 +49,7 @@ import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.allocator.Allocator;
+import org.fabric3.spi.domain.Allocator;
 import org.fabric3.spi.binding.provider.BindingSelectionException;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;

@@ -42,8 +42,8 @@ import javax.xml.namespace.QName;
 import org.fabric3.host.Names;
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.spi.allocator.AllocationException;
-import org.fabric3.spi.allocator.Allocator;
+import org.fabric3.spi.domain.AllocationException;
+import org.fabric3.spi.domain.Allocator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
