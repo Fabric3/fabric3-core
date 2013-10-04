@@ -46,7 +46,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.ChannelDefinition;
-import org.fabric3.spi.channel.ChannelConstants;
+import org.fabric3.spi.model.physical.ChannelConstants;
 import org.fabric3.spi.generator.ChannelDirection;
 import org.fabric3.spi.generator.ChannelGeneratorExtension;
 import org.fabric3.spi.generator.ConnectionBindingGenerator;

@@ -68,8 +68,8 @@ import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 
-import static org.fabric3.spi.channel.ChannelConstants.DURABLE_INTENT;
-import static org.fabric3.spi.channel.ChannelConstants.NON_PERSISTENT_INTENT;
+import static org.fabric3.spi.model.physical.ChannelConstants.DURABLE_INTENT;
+import static org.fabric3.spi.model.physical.ChannelConstants.NON_PERSISTENT_INTENT;
 
 /**
  * Connection binding generator that creates source and target definitions for bound channels, producers, and consumers.

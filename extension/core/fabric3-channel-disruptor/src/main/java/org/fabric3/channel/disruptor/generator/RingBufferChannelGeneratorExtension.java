@@ -41,7 +41,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.model.type.component.ChannelDefinition;
-import org.fabric3.spi.channel.ChannelConstants;
+import org.fabric3.spi.model.physical.ChannelConstants;
 import org.fabric3.spi.generator.ChannelGeneratorExtension;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;

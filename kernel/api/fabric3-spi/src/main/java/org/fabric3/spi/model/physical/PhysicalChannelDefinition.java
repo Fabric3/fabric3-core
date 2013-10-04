@@ -47,8 +47,6 @@ import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.net.URI;
 
-import org.fabric3.spi.channel.ChannelConstants;
-
 /**
  * Configuration to provision a channel on a runtime.
  */
