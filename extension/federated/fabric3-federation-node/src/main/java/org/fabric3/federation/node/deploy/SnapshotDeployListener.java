@@ -44,9 +44,8 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.node.command.DeploymentSnapshotCommand;
 import org.fabric3.federation.node.snapshot.SnapshotHelper;
 import org.fabric3.spi.domain.DeployListener;
-import org.fabric3.spi.federation.topology.ControllerTopologyService;
 import org.fabric3.spi.federation.topology.MessageException;
-import org.fabric3.spi.federation.topology.ParticipantTopologyService;
+import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.lcm.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -62,17 +61,14 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class SnapshotDeployListener implements DeployListener {
     private LogicalComponentManager lcm;
-    private ParticipantTopologyService participantTopologyService;
-    private ControllerTopologyService controllerTopologyService;
+    private NodeTopologyService topologyService;
     private ListenerMonitor monitor;
 
     public SnapshotDeployListener(@Reference(name = "lcm") LogicalComponentManager lcm,
-                                  @Reference ParticipantTopologyService participantTopologyService,
-                                  @Reference ControllerTopologyService controllerTopologyService,
+                                  @Reference NodeTopologyService topologyService,
                                   @Monitor ListenerMonitor monitor) {
         this.lcm = lcm;
-        this.participantTopologyService = participantTopologyService;
-        this.controllerTopologyService = controllerTopologyService;
+        this.topologyService = topologyService;
         this.monitor = monitor;
     }
 
@@ -103,7 +99,7 @@ public class SnapshotDeployListener implements DeployListener {
     }
 
     private void broadcastSnapshot(URI uri, LogicalState state) {
-        if (!participantTopologyService.isZoneLeader()) {
+        if (!topologyService.isZoneLeader()) {
             // only the zone leader should broadcast
             return;
         }
@@ -114,7 +110,7 @@ public class SnapshotDeployListener implements DeployListener {
                 return; // no artifacts deployed
             }
             DeploymentSnapshotCommand command = new DeploymentSnapshotCommand(snapshot);
-            controllerTopologyService.broadcast(command);
+            topologyService.broadcast(command);
         } catch (MessageException e) {
             monitor.error(e);
         }

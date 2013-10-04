@@ -65,6 +65,7 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.federation.topology.ControllerTopologyService;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
+import org.fabric3.spi.federation.topology.NodeTopologyService;
 import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.RuntimeInstance;
 import org.fabric3.spi.federation.topology.TopologyListener;
@@ -93,8 +94,8 @@ import org.w3c.dom.Element;
  */
 @EagerInit
 @Management(name = "NodeTopologyService", path = "/runtime/federation/node/view")
-@Service(names = {ControllerTopologyService.class, ParticipantTopologyService.class})
-public class NodeTopologyService extends AbstractTopologyService implements ControllerTopologyService, ParticipantTopologyService {
+@Service(NodeTopologyService.class)
+public class JGroupsNodeTopologyService extends AbstractTopologyService implements NodeTopologyService {
     private JChannel domainChannel;
     private MessageDispatcher dispatcher;
     private JoinEventListener joinListener;
@@ -112,13 +113,13 @@ public class NodeTopologyService extends AbstractTopologyService implements Cont
 
     private DomainMergeService mergeService;
 
-    public NodeTopologyService(@Reference HostInfo info,
-                               @Reference CommandExecutorRegistry executorRegistry,
-                               @Reference DomainMergeService mergeService,
-                               @Reference EventService eventService,
-                               @Reference Executor executor,
-                               @Reference JGroupsHelper helper,
-                               @Monitor TopologyServiceMonitor monitor) {
+    public JGroupsNodeTopologyService(@Reference HostInfo info,
+                                      @Reference CommandExecutorRegistry executorRegistry,
+                                      @Reference DomainMergeService mergeService,
+                                      @Reference EventService eventService,
+                                      @Reference Executor executor,
+                                      @Reference JGroupsHelper helper,
+                                      @Monitor TopologyServiceMonitor monitor) {
         super(info, executorRegistry, eventService, executor, helper, monitor);
         this.mergeService = mergeService;
         this.zoneName = info.getZoneName();
