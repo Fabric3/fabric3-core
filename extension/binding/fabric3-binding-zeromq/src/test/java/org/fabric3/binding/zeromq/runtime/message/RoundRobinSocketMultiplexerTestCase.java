@@ -226,7 +226,6 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
         manager.release(EasyMock.isA(String.class));
         EasyMock.expectLastCall().times(4);
 
-
         RoundRobinSocketMultiplexer multiplexer = new RoundRobinSocketMultiplexer(manager, ZMQ.PULL, metadata);
         ZMQ.Socket socket1 = EasyMock.createMock(ZMQ.Socket.class);
         socket1.setLinger(0);
@@ -287,7 +286,7 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
     }
 
     private SocketAddress createAddress(final int port) {
-        return new SocketAddress("vm", "tcp", String.valueOf(port), new Port() {
+        return new SocketAddress("vm", "zone", "tcp", String.valueOf(port), new Port() {
             public String getName() {
                 return null;
             }
@@ -305,6 +304,5 @@ public class RoundRobinSocketMultiplexerTestCase extends TestCase {
             }
         });
     }
-
 
 }

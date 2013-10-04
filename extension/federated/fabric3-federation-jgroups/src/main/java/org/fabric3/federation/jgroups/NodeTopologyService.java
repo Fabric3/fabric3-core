@@ -187,10 +187,6 @@ public class NodeTopologyService extends AbstractTopologyService implements Doma
         return list;
     }
 
-    public String getTransportMetaData(String zone, String transport) {
-        return null;
-    }
-
     public void broadcast(String zoneName, Command command) throws MessageException {
         throw new UnsupportedOperationException();
     }
@@ -213,8 +209,6 @@ public class NodeTopologyService extends AbstractTopologyService implements Doma
         throw new UnsupportedOperationException();
     }
 
-    // zone methods
-
     @ManagementOperation(description = "True if the runtime is the zone leader")
     public boolean isZoneLeader() {
         View view = domainChannel.getView();
@@ -234,9 +228,6 @@ public class NodeTopologyService extends AbstractTopologyService implements Doma
         topologyListeners.remove(listener);
     }
 
-    public void registerMetadata(String key, Serializable metadata) {
-    }
-
     public boolean isControllerAvailable() {
         return false;
     }
@@ -254,19 +245,7 @@ public class NodeTopologyService extends AbstractTopologyService implements Doma
         return UUID.get(address);
     }
 
-    public void sendAsynchronous(String runtimeName, Command command) throws MessageException {
-        throw new UnsupportedOperationException();
-    }
-
-    public List<Response> sendSynchronous(ResponseCommand command, long timeout) throws MessageException {
-        throw new UnsupportedOperationException();
-    }
-
     public Response sendSynchronousToController(ResponseCommand command, long timeout) throws MessageException {
-        throw new UnsupportedOperationException();
-    }
-
-    public void sendAsynchronousToController(Command command) throws MessageException {
         throw new UnsupportedOperationException();
     }
 
@@ -340,7 +319,6 @@ public class NodeTopologyService extends AbstractTopologyService implements Doma
         }
     }
 
-    // zone methods
     Fabric3EventListener<JoinDomain> getJoinListener() {
         if (joinListener == null) {
             joinListener = new JoinEventListener();

@@ -162,10 +162,6 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
 
     }
 
-    public void registerMetadata(String key, Serializable metadata) {
-
-    }
-
     public boolean isControllerAvailable() {
         return true;
     }
@@ -191,10 +187,6 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     }
 
     public void broadcast(Command command) throws MessageException {
-        throw new UnsupportedOperationException();
-    }
-
-    public void sendAsynchronous(String runtimeName, Command command) throws MessageException {
         throw new UnsupportedOperationException();
     }
 
@@ -228,49 +220,6 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
         } finally {
             JndiHelper.close(rootContext);
         }
-    }
-
-    public List<Response> sendSynchronous(ResponseCommand command, long timeout) throws MessageException {
-        List<Response> responses = new ArrayList<Response>();
-        Context rootContext = null;
-        try {
-            rootContext = getRootContext();
-            byte[] payload = serializationService.serialize(command);
-            NamingEnumeration<Binding> enumeration = rootContext.listBindings(PARTICIPANT_CONTEXT);
-            if (!enumeration.hasMoreElements()) {
-                throw new MessageException("No runtimes in domain");
-            }
-            while (enumeration.hasMoreElements()) {
-                Binding binding = enumeration.next();
-                if (RuntimeChannel.class.getName().equals(binding.getClassName())) {
-                    RuntimeChannel channel = (RuntimeChannel) binding.getObject();
-                    if (runtimeName.equals(channel.getRuntimeName()) || !channel.isActive()) {
-                        // don't send to self or inactive channel
-                        continue;
-                    }
-                    byte[] responsePayload = channel.sendSynchronous(payload);
-                    Response response = serializationService.deserialize(Response.class, responsePayload);
-                    responses.add(response);
-                }
-            }
-            return responses;
-        } catch (NamingException e) {
-            throw new MessageException(e);
-        } catch (RemoteException e) {
-            throw new MessageException(e);
-        } catch (ChannelException e) {
-            throw new MessageException(e);
-        } catch (IOException e) {
-            throw new MessageException(e);
-        } catch (ClassNotFoundException e) {
-            throw new MessageException(e);
-        } finally {
-            JndiHelper.close(rootContext);
-        }
-    }
-
-    public void sendAsynchronousToController(Command command) throws MessageException {
-        throw new UnsupportedOperationException();
     }
 
     public boolean isChannelOpen(String name) {

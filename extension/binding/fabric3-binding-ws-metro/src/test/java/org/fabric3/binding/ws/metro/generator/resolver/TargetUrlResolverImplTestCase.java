@@ -37,25 +37,25 @@
 */
 package org.fabric3.binding.ws.metro.generator.resolver;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.oasisopen.sca.Constants;
-
 import org.fabric3.binding.ws.model.WsBindingDefinition;
+import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.definitions.Intent;
-import org.fabric3.spi.federation.topology.DomainTopologyService;
 import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.oasisopen.sca.Constants;
 
 /**
  *
@@ -70,10 +70,15 @@ public class TargetUrlResolverImplTestCase extends TestCase {
 
         EffectivePolicy policy = createPolicy();
 
-        TargetUrlResolver resolver = new TargetUrlResolverImpl(servletHost, null);
+        HostInfo info = EasyMock.createMock(HostInfo.class);
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.VM);
+        EasyMock.replay(info);
+
+        TargetUrlResolver resolver = new TargetUrlResolverImpl(servletHost, info);
 
         URL url = resolver.resolveUrl(binding, policy);
         assertEquals("http://localhost:8080/service", url.toString());
+        EasyMock.verify(info);
     }
 
     public void testSingleVMHttps() throws Exception {
@@ -83,40 +88,18 @@ public class TargetUrlResolverImplTestCase extends TestCase {
 
         EffectivePolicy policy = createSecurityPolicy();
 
-        TargetUrlResolver resolver = new TargetUrlResolverImpl(servletHost, null);
+        HostInfo info = EasyMock.createMock(HostInfo.class);
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.VM);
+        EasyMock.replay(info);
+
+        TargetUrlResolver resolver = new TargetUrlResolverImpl(servletHost, info);
 
         URL url = resolver.resolveUrl(binding, policy);
         assertEquals("https://localhost:8989/service", url.toString());
-    }
-
-    public void testClusterVMHttp() throws Exception {
-        DomainTopologyService topologyService = EasyMock.createMock(DomainTopologyService.class);
-        EasyMock.expect(topologyService.getTransportMetaData("1", "http")).andReturn("clusteraddress:8080");
-        EasyMock.replay(topologyService);
-
-        EffectivePolicy policy = createPolicy();
-
-        TargetUrlResolver resolver = new TargetUrlResolverImpl(null, topologyService);
-
-        URL url = resolver.resolveUrl(binding, policy);
-        assertEquals("http://clusteraddress:8080/service", url.toString());
-    }
-
-    public void testClusterVMHttps() throws Exception {
-        DomainTopologyService topologyService = EasyMock.createMock(DomainTopologyService.class);
-        EasyMock.expect(topologyService.getTransportMetaData("1", "https")).andReturn("clusteraddress:8989");
-        EasyMock.replay(topologyService);
-
-        EffectivePolicy policy = createSecurityPolicy();
-
-        TargetUrlResolver resolver = new TargetUrlResolverImpl(null, topologyService);
-
-        URL url = resolver.resolveUrl(binding, policy);
-        assertEquals("https://clusteraddress:8989/service", url.toString());
+        EasyMock.verify(info);
     }
 
     @SuppressWarnings({"unchecked"})
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
         WsBindingDefinition definition = new WsBindingDefinition("name", URI.create("service"), null, null, 0);

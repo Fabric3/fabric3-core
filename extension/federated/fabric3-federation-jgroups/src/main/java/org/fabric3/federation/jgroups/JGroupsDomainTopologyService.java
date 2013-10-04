@@ -37,7 +37,6 @@
 */
 package org.fabric3.federation.jgroups;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,31 +46,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
-import org.jgroups.Address;
-import org.jgroups.JChannel;
-import org.jgroups.MembershipListener;
-import org.jgroups.Message;
-import org.jgroups.SuspectedException;
-import org.jgroups.TimeoutException;
-import org.jgroups.View;
-import org.jgroups.blocks.MessageDispatcher;
-import org.jgroups.blocks.RequestOptions;
-import org.jgroups.blocks.ResponseMode;
-import org.jgroups.util.UUID;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Element;
-
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.deployment.command.ControllerAvailableCommand;
-import org.fabric3.federation.deployment.command.RuntimeMetadataResponse;
-import org.fabric3.federation.deployment.command.RuntimeMetadataUpdateCommand;
-import org.fabric3.federation.deployment.command.ZoneMetadataResponse;
-import org.fabric3.federation.deployment.command.ZoneMetadataUpdateCommand;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.Response;
@@ -89,6 +67,22 @@ import org.fabric3.spi.federation.topology.RemoteSystemException;
 import org.fabric3.spi.federation.topology.RuntimeInstance;
 import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.federation.topology.Zone;
+import org.jgroups.Address;
+import org.jgroups.JChannel;
+import org.jgroups.MembershipListener;
+import org.jgroups.Message;
+import org.jgroups.SuspectedException;
+import org.jgroups.TimeoutException;
+import org.jgroups.View;
+import org.jgroups.blocks.MessageDispatcher;
+import org.jgroups.blocks.RequestOptions;
+import org.jgroups.blocks.ResponseMode;
+import org.jgroups.util.UUID;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Element;
 
 /**
  * JGroups implementation of the {@link DomainTopologyService}.
@@ -102,7 +96,6 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     private RuntimeStopEventListener stopListener;
     private View previousView;
     private List<TopologyListener> topologyListeners = new ArrayList<TopologyListener>();
-    private Map<String, Map<String, String>> transportMetadata = new ConcurrentHashMap<String, Map<String, String>>();
     private Map<String, Map<String, RuntimeInstance>> runtimes = new ConcurrentHashMap<String, Map<String, RuntimeInstance>>();
     private Element channelConfig;
 
@@ -168,7 +161,6 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         this.channelConfig = (Element) config.getElementsByTagName("config").item(0);
     }
 
-
     public List<RuntimeInstance> getRuntimes() {
         List<RuntimeInstance> list = new ArrayList<RuntimeInstance>();
         for (Map<String, RuntimeInstance> map : runtimes.values()) {
@@ -177,14 +169,6 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
             }
         }
         return list;
-    }
-
-    public String getTransportMetaData(String zone, String transport) {
-        Map<String, String> zoneCache = transportMetadata.get(zone);
-        if (zoneCache != null) {
-            return zoneCache.get(transport);
-        }
-        return null;
     }
 
     public void broadcast(String zoneName, Command command) throws MessageException {
@@ -268,24 +252,6 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         return responses;
     }
 
-    public Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException {
-        try {
-            byte[] payload = helper.serialize(command);
-            View view = domainChannel.getView();
-            if (view == null) {
-                throw new MessageException("Federation channel closed or not connected when sending message to: " + runtimeName);
-            }
-            Address address = helper.getRuntimeAddress(runtimeName, view);
-            Message message = new Message(address, domainChannel.getAddress(), payload);
-            RequestOptions options = new RequestOptions(ResponseMode.GET_ALL, timeout);
-            Object o = dispatcher.sendMessage(message, options);
-            assert o instanceof byte[] : "Expected byte[] but was " + o;
-            return (Response) helper.deserialize((byte[]) o);
-        } catch (Exception e) {
-            throw new MessageException("Error sending message to runtime: " + runtimeName, e);
-        }
-    }
-
     Fabric3EventListener<JoinDomain> getJoinListener() {
         if (joinListener == null) {
             joinListener = new JoinEventListener();
@@ -329,7 +295,6 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         return zones;
     }
 
-
     class JoinEventListener implements Fabric3EventListener<JoinDomain> {
 
         public void onEvent(JoinDomain event) {
@@ -366,7 +331,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     }
 
     /**
-     * Membership listener that tracks transport metadata for zones in the domain.
+     * Membership listener that tracks cached data in the domain.
      */
     private class DomainMembershipListener implements MembershipListener {
 
@@ -378,50 +343,30 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
             if (newZoneLeaders.isEmpty() && newRuntimes.isEmpty()) {
                 return;
             }
-            executor.execute(new Runnable() {
+            for (Address address : newZoneLeaders) {
+                String name = UUID.get(address);
 
-                public void run() {
-                    try {
-                        ZoneMetadataUpdateCommand zoneCommand = new ZoneMetadataUpdateCommand();
-                        RuntimeMetadataUpdateCommand runtimeCommand = new RuntimeMetadataUpdateCommand();
-                        for (Address address : newZoneLeaders) {
-                            String name = UUID.get(address);
-                            monitor.metadataUpdateRequest(name);
-                            Response value = sendSynchronous(name, zoneCommand, defaultTimeout);
-                            ZoneMetadataResponse response = (ZoneMetadataResponse) value;
-                            transportMetadata.put(response.getZone(), response.getMetadata());
-                            for (TopologyListener listener : topologyListeners) {
-                                listener.onLeaderElected(name);
-                            }
-                        }
-                        for (Address address : newRuntimes) {
-                            String name = UUID.get(address);
-                            for (TopologyListener listener : topologyListeners) {
-                                listener.onJoin(name);
-                            }
-                            String zoneName = helper.getZoneName(address);
-                            if (zoneName == null) {
-                                continue;
-                            }
-                            Map<String, RuntimeInstance> zones = runtimes.get(zoneName);
-                            if (zones == null) {
-                                zones = new HashMap<String, RuntimeInstance>();
-                                runtimes.put(zoneName, zones);
-                            }
-                            monitor.metadataUpdateRequest(name);
-                            Response value = sendSynchronous(name, runtimeCommand, defaultTimeout);
-                            RuntimeMetadataResponse response = (RuntimeMetadataResponse) value;
-                            Map<String, Serializable> metadata = response.getMetadata();
-                            RuntimeInstance instance = new RuntimeInstance(name, metadata);
-                            // TODO query metadata
-                            zones.put(name, instance);
-                        }
-                    } catch (MessageException e) {
-                        monitor.error("Error requesting zone metadata", e);
-                    }
+                for (TopologyListener listener : topologyListeners) {
+                    listener.onLeaderElected(name);
                 }
-            });
-
+            }
+            for (Address address : newRuntimes) {
+                String name = UUID.get(address);
+                for (TopologyListener listener : topologyListeners) {
+                    listener.onJoin(name);
+                }
+                String zoneName = helper.getZoneName(address);
+                if (zoneName == null) {
+                    continue;
+                }
+                Map<String, RuntimeInstance> zones = runtimes.get(zoneName);
+                if (zones == null) {
+                    zones = new HashMap<String, RuntimeInstance>();
+                    runtimes.put(zoneName, zones);
+                }
+                RuntimeInstance instance = new RuntimeInstance(name);
+                zones.put(name, instance);
+            }
 
         }
 
@@ -432,13 +377,10 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
             }
             String runtimeName = UUID.get(suspected);
             monitor.runtimeRemoved(runtimeName);
-            // Member is suspected. If it is a zone leader, remove the metadata from the cache
+            // Member is suspected. If it is a zone leader, remove the runtime instance from the cache
             View view = domainChannel.getView();
             if (view == null) {
                 return;
-            }
-            if (suspected.equals(helper.getZoneLeader(name, view))) {
-                transportMetadata.remove(name);
             }
             Map<String, RuntimeInstance> instances = runtimes.get(name);
             if (instances != null) {

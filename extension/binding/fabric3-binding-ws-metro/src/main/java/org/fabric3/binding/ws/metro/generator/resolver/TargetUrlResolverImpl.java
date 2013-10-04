@@ -40,33 +40,32 @@ package org.fabric3.binding.ws.metro.generator.resolver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.binding.ws.model.WsBindingDefinition;
+import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.definitions.Intent;
-import org.fabric3.spi.federation.topology.DomainTopologyService;
 import org.fabric3.spi.generator.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default implementation of TargetUrlResolver.
  */
 public class TargetUrlResolverImpl implements TargetUrlResolver {
-    private DomainTopologyService topologyService;
     private ServletHost servletHost;
+    private HostInfo hostInfo;
 
     /**
      * Constructor.
      *
-     * @param servletHost   the servlet host, used for determining the endpoint port  in a single-VM environment
-     * @param topologyService the optional domain manager, used for determining the endpoint address and port in a multi-VM environment. The reference
-     *                      is optional since a domain manager will not be present in a single-VM environment.
+     * @param servletHost the servlet host, used for determining the endpoint port  in a single-VM environment
+     * @param hostInfo    the host info
      */
-    public TargetUrlResolverImpl(@Reference ServletHost servletHost, @Reference(required = false) DomainTopologyService topologyService) {
+    public TargetUrlResolverImpl(@Reference ServletHost servletHost, @Reference HostInfo hostInfo) {
         this.servletHost = servletHost;
-        this.topologyService = topologyService;
+        this.hostInfo = hostInfo;
     }
 
     public URL resolveUrl(LogicalBinding<WsBindingDefinition> serviceBinding, EffectivePolicy policy) throws GenerationException {
@@ -77,17 +76,7 @@ public class TargetUrlResolverImpl implements TargetUrlResolver {
                 path = serviceBinding.getParent().getUri().getFragment();
             }
             boolean https = requiresHttps(policy);
-            if (topologyService != null) {
-                // distributed domain, get the remote node HTTP/S information
-                String zone = serviceBinding.getParent().getParent().getZone();
-                if (https) {
-                    String base = topologyService.getTransportMetaData(zone, "https");
-                    targetUrl = new URL("https://" + base + "/" + path);
-                } else {
-                    String base = topologyService.getTransportMetaData(zone, "http");
-                    targetUrl = new URL("http://" + base + "/" + path);
-                }
-            } else {
+            if (RuntimeMode.VM == hostInfo.getRuntimeMode()) {
                 // single VM
                 if (https) {
                     targetUrl = new URL("https://localhost:" + servletHost.getHttpsPort() + "/" + path);
@@ -95,6 +84,8 @@ public class TargetUrlResolverImpl implements TargetUrlResolver {
                     targetUrl = new URL("http://localhost:" + servletHost.getHttpPort() + "/" + path);
                 }
 
+            } else {
+                throw new GenerationException("Resolve URL not supported in distributed configuration");
             }
             return targetUrl;
         } catch (MalformedURLException e) {
@@ -103,13 +94,12 @@ public class TargetUrlResolverImpl implements TargetUrlResolver {
 
     }
 
-
     private boolean requiresHttps(EffectivePolicy policy) {
         for (Intent intent : policy.getProvidedEndpointIntents()) {
             String localPart = intent.getName().getLocalPart();
-            if (localPart.startsWith("authorization") || localPart.equals("integrity") || localPart.startsWith("confidentiality")
-                    || localPart.startsWith("mutualAuthentication") || localPart.equals("authentication") || localPart.startsWith("clientAuthentication")
-                    || localPart.startsWith("serverAuthentication")) {
+            if (localPart.startsWith("authorization") || localPart.equals("integrity") || localPart.startsWith("confidentiality") || localPart.startsWith(
+                    "mutualAuthentication") || localPart.equals("authentication") || localPart.startsWith("clientAuthentication") || localPart.startsWith(
+                    "serverAuthentication")) {
                 return true;
             }
         }

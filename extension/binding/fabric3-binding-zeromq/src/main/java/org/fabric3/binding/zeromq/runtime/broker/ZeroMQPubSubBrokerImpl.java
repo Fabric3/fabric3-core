@@ -173,7 +173,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                     if ("localhost".equals(specifiedHost)) {
                         specifiedHost = hostAddress;
                     }
-                    SocketAddress socketAddress = new SocketAddress("synthetic", "tcp", specifiedHost, port);
+                    SocketAddress socketAddress = new SocketAddress("synthetic", "synthetic", "tcp", specifiedHost, port);
                     addresses.add(socketAddress);
                 }
             } else {
@@ -221,6 +221,7 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         if (holder == null) {
             try {
                 String runtimeName = info.getRuntimeName();
+                String zone = info.getZoneName();
                 SocketAddress address;
                 List<SocketAddressDefinition> addresses = metadata.getSocketAddresses();
                 if (addresses != null && !addresses.isEmpty()) {
@@ -236,11 +237,11 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                     if ("localhost".equals(specifiedHost)) {
                         specifiedHost = hostAddress;
                     }
-                    address = new SocketAddress(runtimeName, "tcp", specifiedHost, port);
+                    address = new SocketAddress(runtimeName, zone, "tcp", specifiedHost, port);
                 } else {
                     // socket address to bind on is not configured in the binding definition - allocate one
                     Port port = allocator.allocate(channelName, ZMQ);
-                    address = new SocketAddress(runtimeName, "tcp", hostAddress, port);
+                    address = new SocketAddress(runtimeName, zone, "tcp", hostAddress, port);
                 }
 
                 Publisher publisher;

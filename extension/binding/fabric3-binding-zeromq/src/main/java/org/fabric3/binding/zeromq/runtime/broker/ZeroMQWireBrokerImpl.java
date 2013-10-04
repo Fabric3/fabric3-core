@@ -163,8 +163,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         eventService.subscribe(RuntimeStop.class, this);
     }
 
-    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader)
-            throws BrokerException {
+    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws BrokerException {
         SenderHolder holder;
         if (ZMQ.equals(uri.getScheme())) {
             DelegatingOneWaySender sender = new DelegatingOneWaySender(id, this, metadata);
@@ -213,8 +212,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         }
     }
 
-    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader)
-            throws BrokerException {
+    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws BrokerException {
         if (receivers.containsKey(uri.toString())) {
             throw new BrokerException("Receiver already defined for " + uri);
         }
@@ -222,6 +220,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             String endpointId = uri.toString();
 
             String runtimeName = info.getRuntimeName();
+            String zone = info.getZoneName();
             SocketAddress address;
 
             if (metadata.getSocketAddresses() != null && !metadata.getSocketAddresses().isEmpty()) {
@@ -236,13 +235,12 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
                 }
                 int portNumber = addressDefinition.getPort();
                 Port port = allocator.reserve(endpointId, ZMQ, portNumber);
-                address = new SocketAddress(runtimeName, "tcp", specifiedHost, port);
+                address = new SocketAddress(runtimeName, zone, "tcp", specifiedHost, port);
             } else {
                 // bind to a randomly allocated port
                 Port port = allocator.allocate(endpointId, ZMQ);
-                address = new SocketAddress(runtimeName, "tcp", host, port);
+                address = new SocketAddress(runtimeName, zone, "tcp", host, port);
             }
-
 
             addTransformer(chains, loader);
 
@@ -262,8 +260,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             String id = createReceiverId(uri);
             managementService.registerReceiver(id, receiver);
             monitor.onProvisionEndpoint(id);
-        } catch (PortAllocationException
-                e) {
+        } catch (PortAllocationException e) {
             throw new BrokerException("Error allocating port for " + uri, e);
         }
     }
@@ -356,7 +353,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
                 if ("localhost".equals(specifiedHost)) {
                     specifiedHost = hostAddress;
                 }
-                SocketAddress socketAddress = new SocketAddress("synthetic", "tcp", specifiedHost, port);
+                SocketAddress socketAddress = new SocketAddress("synthetic", "synthetic", "tcp", specifiedHost, port);
                 addresses.add(socketAddress);
             }
 
@@ -385,8 +382,8 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     }
 
     /**
-     * Determines if the wire is one-way or request-reply. The first operation is used to determine if the contract is one-way as the binding does not
-     * support mixing one-way and request-response operations on a service contract.
+     * Determines if the wire is one-way or request-reply. The first operation is used to determine if the contract is one-way as the binding does not support
+     * mixing one-way and request-response operations on a service contract.
      *
      * @param chains the wire invocation chains
      * @param uri    thr service URI.
@@ -432,7 +429,6 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         }
     }
 
-
     private Interceptor createInterceptor(SenderHolder holder, int i) {
         Sender sender = holder.getSender();
         if (sender instanceof NonReliableRequestReplySender) {
@@ -469,6 +465,5 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             return ids;
         }
     }
-
 
 }

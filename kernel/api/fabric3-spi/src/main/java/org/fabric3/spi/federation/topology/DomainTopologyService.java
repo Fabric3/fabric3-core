@@ -45,10 +45,9 @@ import org.fabric3.spi.command.Response;
 import org.fabric3.spi.command.ResponseCommand;
 
 /**
- * Responsible for group communications across a federated (distributed) domain. Federated communication takes place between the controller
- * responsible for a domain and participating runtimes, which are partitioned into zones. This service is present only on controller runtimes in a
- * federated topology and provides low-level communications between a controller and participants. Higher-level communications semantics such as
- * deployment can be layered over this service.
+ * Responsible for group communications across a federated (distributed) domain. Federated communication takes place between the controller responsible for a
+ * domain and participating runtimes, which are partitioned into zones. This service is present only on controller runtimes in a federated topology and provides
+ * low-level communications between a controller and participants. Higher-level communications semantics such as deployment can be layered over this service.
  */
 public interface DomainTopologyService {
 
@@ -65,15 +64,6 @@ public interface DomainTopologyService {
      * @return the active runtimes in the domain or an empty list if none are active
      */
     List<RuntimeInstance> getRuntimes();
-
-    /**
-     * Returns transport information such as port numbers in effect for a zone.
-     *
-     * @param zone      the zone
-     * @param transport the transport name
-     * @return the transport information or null if not found
-     */
-    String getTransportMetaData(String zone, String transport);
 
     /**
      * Sends a command asynchronously to all runtimes in the domain.
@@ -97,25 +87,14 @@ public interface DomainTopologyService {
      *
      * @param zoneName the zone
      * @param command  the command
-     * @param failFast determines if fail-fast behavior should be observed; i.e. if an error is received, the remaining synchronous calls will not be
-     *                 made. Otherwise, all synchronous calls will be attempted.
+     * @param failFast determines if fail-fast behavior should be observed; i.e. if an error is received, the remaining synchronous calls will not be made.
+     *                 Otherwise, all synchronous calls will be attempted.
      * @param timeout  the time to wait on a response
-     * @return the response messages. If an error was encountered and fail-fast is enabled, the responses will include all successful ones made up to
-     *         the point the error was received. The error response will be the last in the list. If fail-fast is not enabled, responses from all
-     *         runtimes in the zone will be received, possibly included multiple error responses.
+     * @return the response messages. If an error was encountered and fail-fast is enabled, the responses will include all successful ones made up to the point
+     *         the error was received. The error response will be the last in the list. If fail-fast is not enabled, responses from all runtimes in the zone
+     *         will be received, possibly included multiple error responses.
      * @throws MessageException if there is an error sending the message
      */
     List<Response> sendSynchronousToZone(String zoneName, ResponseCommand command, boolean failFast, long timeout) throws MessageException;
-
-    /**
-     * Sends a command synchronously to a runtime.
-     *
-     * @param runtimeName the runtime
-     * @param command     the command
-     * @param timeout     the time to wait on a response
-     * @return the response messages
-     * @throws MessageException if there is an error sending the message
-     */
-    Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException;
 
 }

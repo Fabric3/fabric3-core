@@ -41,6 +41,7 @@ public class SocketAddress implements Serializable {
     private static final long serialVersionUID = -6325896048393741909L;
 
     private String runtimeName;
+    private String zone;
     private String protocol;
     private String address;
     private Port port;
@@ -49,12 +50,14 @@ public class SocketAddress implements Serializable {
      * Constructor.
      *
      * @param runtimeName the runtime name where the socket is located
+     * @param zone        the zone
      * @param protocol    the protocol used for the socket, e.g. TCP
      * @param address     the IP address the socket should send/listen on
      * @param port        the socket port
      */
-    public SocketAddress(String runtimeName, String protocol, String address, Port port) {
+    public SocketAddress(String runtimeName, String zone, String protocol, String address, Port port) {
         this.runtimeName = runtimeName;
+        this.zone = zone;
         this.protocol = protocol;
         this.address = address;
         this.port = port;
@@ -62,6 +65,10 @@ public class SocketAddress implements Serializable {
 
     public String getRuntimeName() {
         return runtimeName;
+    }
+
+    public String getZone() {
+        return zone;
     }
 
     public String getProtocol() {

@@ -33,7 +33,6 @@
     <modules>
         <module>fabric3-jgroups</module>
         <module>fabric3-federation-node</module>
-        <module>fabric3-federation-addressing</module>
         <module>fabric3-federation-allocation</module>
         <module>fabric3-federation-deployment</module>
         <module>fabric3-federation-jgroups</module>

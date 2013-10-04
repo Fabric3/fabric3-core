@@ -77,8 +77,10 @@ import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.federation.topology.FederationConstants;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
+import org.fabric3.spi.federation.addressing.AddressAnnouncement;
+import org.fabric3.spi.federation.addressing.AddressCache;
+import org.fabric3.spi.federation.addressing.EndpointConstants;
+import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
@@ -100,6 +102,7 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
+import static org.fabric3.spi.federation.addressing.AddressAnnouncement.Type.ACTIVATED;
 
 /**
  * Implements an HTTP transport service using Jetty.
@@ -124,7 +127,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     private HostInfo hostInfo;
     private TransportMonitor monitor;
 
-    private ZoneTopologyService topologyService;
+    private AddressCache addressCache;
 
     private KeyStoreManager keyStoreManager;
     private AuthenticationService authenticationService;
@@ -205,8 +208,8 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     @Reference(required = false)
-    public void setTopologyService(ZoneTopologyService topologyService) {
-        this.topologyService = topologyService;
+    public void setAddressCache(AddressCache addressCache) {
+        this.addressCache = addressCache;
     }
 
     @Property(required = false)
@@ -629,15 +632,22 @@ public class JettyServiceImpl implements JettyService, Transport {
      * @throws UnknownHostException if there is an error retrieving the host address
      */
     private void registerHttpMetadata() throws UnknownHostException {
-        if (topologyService != null) {
-            topologyService.registerMetadata(FederationConstants.HTTP_PORT_METADATA, selectedHttp.getNumber());
+        if (addressCache != null) {
             String host = httpConnector.getHost();
             if (host == null) {
                 host = InetAddress.getLocalHost().getHostAddress();
             }
-            topologyService.registerMetadata(FederationConstants.HTTP_HOST_METADATA, host);
+
+            String runtimeName = hostInfo.getRuntimeName();
+            String zone = hostInfo.getZoneName();
+            SocketAddress httpAddress = new SocketAddress(runtimeName, zone, "http", host, selectedHttp);
+            AddressAnnouncement httpEvent = new AddressAnnouncement(EndpointConstants.HTTP_SERVER, ACTIVATED, httpAddress);
+            addressCache.publish(httpEvent);
+
             if (isHttpsEnabled()) {
-                topologyService.registerMetadata(FederationConstants.HTTPS_PORT_METADATA, selectedHttps.getNumber());
+                SocketAddress httpsAddress = new SocketAddress(runtimeName, zone, "https", host, selectedHttps);
+                AddressAnnouncement httpsEvent = new AddressAnnouncement(EndpointConstants.HTTPS_SERVER, ACTIVATED, httpsAddress);
+                addressCache.publish(httpsEvent);
             }
         }
     }

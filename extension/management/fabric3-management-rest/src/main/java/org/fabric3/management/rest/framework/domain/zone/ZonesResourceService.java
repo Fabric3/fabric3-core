@@ -37,47 +37,46 @@
 */
 package org.fabric3.management.rest.framework.domain.zone;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-
-import org.fabric3.host.Names;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.host.Names;
+import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.Link;
-import org.fabric3.spi.federation.topology.DomainTopologyService;
-import org.fabric3.spi.federation.topology.RuntimeInstance;
-import org.fabric3.spi.federation.topology.Zone;
-
+import org.fabric3.spi.federation.addressing.AddressCache;
+import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
-import static org.fabric3.spi.federation.topology.FederationConstants.HTTP_HOST_METADATA;
-import static org.fabric3.spi.federation.topology.FederationConstants.HTTP_PORT_METADATA;
+import static org.fabric3.spi.federation.addressing.EndpointConstants.HTTP_SERVER;
 
 /**
- * Produces the /domain/zones resource. This is a collection of links to active zone resources in the domain. The links correspond to zone leaders,
- * which provide /zone resources.
+ * Produces the /domain/zones resource. This is a collection of links to active zone resources in the domain. The links correspond to zone leaders, which
+ * provide /zone resources.
  * <p/>
  * Note this resource is only present on the controller.
  */
 @EagerInit
 @Management(path = "/domain/zones")
 public class ZonesResourceService {
-    private DomainTopologyService topologyService;
+    private AddressCache addressCache;
+    private HostInfo hostInfo;
 
-    @Reference(required = false)
-    public void setTopologyService(DomainTopologyService topologyService) {
-        this.topologyService = topologyService;
+    public ZonesResourceService(@Reference AddressCache addressCache, @Reference HostInfo hostInfo) {
+        this.addressCache = addressCache;
+        this.hostInfo = hostInfo;
     }
 
     @ManagementOperation(path = "/")
     public Set<Link> getZones(HttpServletRequest request) {
-        if (topologyService == null) {
+        if (RuntimeMode.VM == hostInfo.getRuntimeMode()) {
             return createLocalZoneLink(request);
         }
         return createDistributedZonesLink();
@@ -92,16 +91,21 @@ public class ZonesResourceService {
 
     private Set<Link> createDistributedZonesLink() {
         Set<Link> list = new HashSet<Link>();
-        Set<Zone> zones = topologyService.getZones();
-        for (Zone zone : zones) {
-            // calculate links for each zone by using the address of zone leaders
-            RuntimeInstance leader = zone.getRuntimes().get(0);
-            String httpPort = leader.getMetadata(Integer.class, HTTP_PORT_METADATA).toString();
-            String host = leader.getMetadata(String.class, HTTP_HOST_METADATA);
+        Set<String> zones = new HashSet<String>();
+        // calculate the list of zones by taking the first socket encountered in the zone
+        for (SocketAddress address : addressCache.getActiveAddresses(HTTP_SERVER)) {
+            String zone = address.getZone();
+            if (zones.contains(zone)) {
+                continue;
+            }
+            int httpPort = address.getPort().getNumber();
+            String host = address.getAddress();
             URL zoneUrl = ResourceHelper.createUrl("http://" + host + ":" + httpPort + "/management/zone");
-            Link link = new Link(zone.getName(), EDIT_LINK, zoneUrl);
+            Link link = new Link(zone, EDIT_LINK, zoneUrl);
             list.add(link);
+            zones.add(zone);
         }
+
         return list;
     }
 

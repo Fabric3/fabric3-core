@@ -37,27 +37,25 @@
 */
 package org.fabric3.management.rest.framework.domain.runtime;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.Link;
-import org.fabric3.spi.federation.topology.DomainTopologyService;
-import org.fabric3.spi.federation.topology.RuntimeInstance;
-import org.fabric3.spi.federation.topology.Zone;
-
+import org.fabric3.spi.federation.addressing.AddressCache;
+import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
-import static org.fabric3.spi.federation.topology.FederationConstants.HTTP_HOST_METADATA;
-import static org.fabric3.spi.federation.topology.FederationConstants.HTTP_PORT_METADATA;
+import static org.fabric3.spi.federation.addressing.EndpointConstants.HTTP_SERVER;
 
 /**
  * Produces the /domain/runtimes resource. This is a collection of links to active runtime resources in the domain.
@@ -68,20 +66,16 @@ import static org.fabric3.spi.federation.topology.FederationConstants.HTTP_PORT_
 @Management(path = "/domain/runtimes")
 public class RuntimesResourceService {
     private HostInfo info;
-    private DomainTopologyService topologyService;
+    private AddressCache addressCache;
 
-    public RuntimesResourceService(@Reference HostInfo info) {
+    public RuntimesResourceService(@Reference HostInfo info, @Reference AddressCache addressCache) {
         this.info = info;
-    }
-
-    @Reference(required = false)
-    public void setTopologyService(DomainTopologyService topologyService) {
-        this.topologyService = topologyService;
+        this.addressCache = addressCache;
     }
 
     @ManagementOperation(path = "/")
     public Set<Link> getRuntimes(HttpServletRequest request) {
-        if (topologyService == null) {
+        if (info.getRuntimeMode() == RuntimeMode.VM) {
             return createLocalRuntimeLink(request);
         }
         return createDistributedRuntimesLink();
@@ -96,16 +90,16 @@ public class RuntimesResourceService {
 
     private Set<Link> createDistributedRuntimesLink() {
         Set<Link> list = new HashSet<Link>();
-        Set<Zone> zones = topologyService.getZones();
-        for (Zone zone : zones) {
-            for (RuntimeInstance runtime : zone.getRuntimes()) {
-                String httpPort = runtime.getMetadata(Integer.class, HTTP_PORT_METADATA).toString();
-                String host = runtime.getMetadata(String.class, HTTP_HOST_METADATA);
-                URL runtimeUrl = ResourceHelper.createUrl("http://" + host + ":" + httpPort + "/management/runtime");
-                Link link = new Link(runtime.getName(), EDIT_LINK, runtimeUrl);
-                list.add(link);
-            }
+        List<SocketAddress> addresses = addressCache.getActiveAddresses(HTTP_SERVER);
+        for (SocketAddress address : addresses) {
+            int httpPort = address.getPort().getNumber();
+            String host = address.getAddress();
+            URL runtimeUrl = ResourceHelper.createUrl("http://" + host + ":" + httpPort + "/management/runtime");
+            String runtimeName = address.getRuntimeName();
+            Link link = new Link(runtimeName, EDIT_LINK, runtimeUrl);
+            list.add(link);
         }
+
         return list;
     }
 

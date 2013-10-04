@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
@@ -51,12 +50,8 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.deployment.command.ControllerAvailableCommand;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
-import org.fabric3.federation.deployment.command.RuntimeMetadataResponse;
-import org.fabric3.federation.deployment.command.RuntimeMetadataUpdateCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
-import org.fabric3.federation.deployment.command.ZoneMetadataResponse;
-import org.fabric3.federation.deployment.command.ZoneMetadataUpdateCommand;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.Response;
@@ -84,8 +79,6 @@ import org.jgroups.View;
 import org.jgroups.blocks.MessageDispatcher;
 import org.jgroups.blocks.RequestOptions;
 import org.jgroups.blocks.ResponseMode;
-import org.jgroups.util.Rsp;
-import org.jgroups.util.RspList;
 import org.jgroups.util.UUID;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -112,8 +105,7 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
     private final Object viewLock = new Object();
     private View previousView;
     private List<TopologyListener> topologyListeners = new ArrayList<TopologyListener>();
-    private Map<String, Serializable> runtimeMetadata = new ConcurrentHashMap<String, Serializable>();
-    private Map<String, String> transportMetadata = new ConcurrentHashMap<String, String>();
+
     private Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>();
 
     private int state = NOT_UPDATED;
@@ -149,23 +141,12 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         this.synchronize = synchronize;
     }
 
-    @Property(required = false)
-    public void setTransportMetadata(Map<String, String> transportMetadata) {
-        this.transportMetadata = transportMetadata;
-    }
-
     @Init
     public void init() throws Exception {
         super.init();
         if (!synchronize) {
             state = UPDATED;
         }
-        ZoneMetadataUpdateCommandExecutor zoneMetadataExecutor = new ZoneMetadataUpdateCommandExecutor();
-        executorRegistry.register(ZoneMetadataUpdateCommand.class, zoneMetadataExecutor);
-
-        RuntimeMetadataUpdateCommandExecutor runtimeMetadataExecutor = new RuntimeMetadataUpdateCommandExecutor();
-        executorRegistry.register(RuntimeMetadataUpdateCommand.class, runtimeMetadataExecutor);
-
         ControllerAvailableCommandExecutor executor = new ControllerAvailableCommandExecutor();
         executorRegistry.register(ControllerAvailableCommand.class, executor);
 
@@ -193,10 +174,6 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
 
     public void deregister(TopologyListener listener) {
         topologyListeners.remove(listener);
-    }
-
-    public void registerMetadata(String key, Serializable metadata) {
-        runtimeMetadata.put(key, metadata);
     }
 
     @ManagementOperation(description = "True if the runtime is the zone leader")
@@ -233,15 +210,6 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         }
     }
 
-    public void sendAsynchronous(String runtimeName, Command command) throws MessageException {
-        View view = domainChannel.getView();
-        if (view == null) {
-            throw new MessageException("Federation channel closed or not connected when sending message to: " + runtimeName);
-        }
-        Address address = helper.getRuntimeAddress(runtimeName, view);
-        sendAsync(address, command);
-    }
-
     public Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException {
         View view = domainChannel.getView();
         if (view == null) {
@@ -254,44 +222,12 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
         return send(address, command, timeout);
     }
 
-    @SuppressWarnings({"unchecked"})
-    public List<Response> sendSynchronous(ResponseCommand command, long timeout) throws MessageException {
-        List<Response> values = new ArrayList<Response>();
-        List<Address> addresses = helper.getRuntimeAddressesInZone(zoneName, domainChannel.getView());
-        Vector<Address> dest = new Vector<Address>(addresses);
-        byte[] payload = helper.serialize(command);
-        Message message = new Message(null, domainChannel.getAddress(), payload);
-        RequestOptions options = new RequestOptions(ResponseMode.GET_ALL, timeout);
-        RspList responses;
-        try {
-            responses = domainDispatcher.castMessage(dest, message, options);
-        } catch (Exception e) {
-            throw new MessageException("Error sending message", e);
-        }
-        Set<Map.Entry<Address, Rsp<?>>> set = responses.entrySet();
-        for (Map.Entry<Address, Rsp<?>> entry : set) {
-            Object val = entry.getValue().getValue();
-            assert val instanceof byte[] : " expected byte[] for response";
-            Response response = (Response) helper.deserialize((byte[]) val);
-            values.add(response);
-        }
-        return values;
-    }
-
     public Response sendSynchronousToController(ResponseCommand command, long timeout) throws MessageException {
         Address controller = helper.getController(domainChannel.getView());
         if (controller == null) {
             throw new ControllerNotFoundException("Controller could not be located");
         }
         return send(controller, command, timeout);
-    }
-
-    public void sendAsynchronousToController(Command command) throws MessageException {
-        Address controller = helper.getController(domainChannel.getView());
-        if (controller == null) {
-            throw new ControllerNotFoundException("Controller could not be located");
-        }
-        sendAsync(controller, command);
     }
 
     public boolean isChannelOpen(String name) {
@@ -534,22 +470,6 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
             } catch (MessageException e) {
                 monitor.error("Error updating the runtime", e);
             }
-        }
-    }
-
-    private class ZoneMetadataUpdateCommandExecutor implements CommandExecutor<ZoneMetadataUpdateCommand> {
-
-        public void execute(ZoneMetadataUpdateCommand command) throws ExecutionException {
-            ZoneMetadataResponse response = new ZoneMetadataResponse(zoneName, transportMetadata);
-            command.setResponse(response);
-        }
-    }
-
-    private class RuntimeMetadataUpdateCommandExecutor implements CommandExecutor<RuntimeMetadataUpdateCommand> {
-
-        public void execute(RuntimeMetadataUpdateCommand command) throws ExecutionException {
-            RuntimeMetadataResponse response = new RuntimeMetadataResponse(runtimeMetadata);
-            command.setResponse(response);
         }
     }
 

@@ -49,7 +49,7 @@ import org.fabric3.spi.host.Port;
  *
  */
 public class NonReliableQueuedPublisherTestCase extends TestCase {
-    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", new Port() {
+    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "zone", "tcp", "10.10.10.1", new Port() {
         public String getName() {
             return null;
         }

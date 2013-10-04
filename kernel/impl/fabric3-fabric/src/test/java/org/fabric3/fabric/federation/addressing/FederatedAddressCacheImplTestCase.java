@@ -72,8 +72,8 @@ public class FederatedAddressCacheImplTestCase extends TestCase {
 
     };
 
-    private static final SocketAddress ADDRESS1 = new SocketAddress("runtime", "tcp", "10.10.10.1", PORT);
-    private static final SocketAddress ADDRESS2 = new SocketAddress("runtime2", "tcp", "10.10.10.2", PORT);
+    private static final SocketAddress ADDRESS1 = new SocketAddress("runtime", "zone", "tcp", "10.10.10.1", PORT);
+    private static final SocketAddress ADDRESS2 = new SocketAddress("runtime2", "zone", "tcp", "10.10.10.2", PORT);
 
     private HostInfo info;
     private ZoneTopologyService topologyService;

@@ -38,7 +38,6 @@
 package org.fabric3.spi.federation.topology;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.Response;
@@ -80,14 +79,6 @@ public interface ZoneTopologyService {
     void deregister(TopologyListener listener);
 
     /**
-     * Registers runtime metadata that is propagated to the controller.
-     *
-     * @param key      the metadata key
-     * @param metadata the metadata
-     */
-    void registerMetadata(String key, Serializable metadata);
-
-    /**
      * Returns true if the domain controller is available.
      *
      * @return true if the domain controller is available
@@ -110,16 +101,6 @@ public interface ZoneTopologyService {
     void broadcast(Command command) throws MessageException;
 
     /**
-     * Sends a command asynchronously to a runtime.
-     *
-     * @param runtimeName the runtime
-     * @param command     the command
-     * @throws MessageException if an error occurs sending the message
-     */
-    @Deprecated
-    void sendAsynchronous(String runtimeName, Command command) throws MessageException;
-
-    /**
      * Sends a command synchronously to a runtime.
      *
      * @param runtimeName the runtime
@@ -131,17 +112,6 @@ public interface ZoneTopologyService {
     Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException;
 
     /**
-     * Sends a command synchronously to all runtimes in the zone.
-     *
-     * @param command the command
-     * @param timeout the timeout to wait for responses
-     * @return the responses
-     * @throws MessageException if an error occurs sending the message
-     */
-    @Deprecated
-    List<Response> sendSynchronous(ResponseCommand command, long timeout) throws MessageException;
-
-    /**
      * Sends a command synchronously to the controller.
      *
      * @param command the command
@@ -150,15 +120,6 @@ public interface ZoneTopologyService {
      * @throws MessageException if an error occurs sending the message. {@link ControllerNotFoundException} wil be thrown if a controller
      */
     Response sendSynchronousToController(ResponseCommand command, long timeout) throws MessageException;
-
-    /**
-     * Sends a command asynchronously to the controller.
-     *
-     * @param command the command
-     * @throws MessageException if an error occurs sending the message
-     */
-    @Deprecated
-    void sendAsynchronousToController(Command command) throws MessageException;
 
     /**
      * Returns true if the channel is open.

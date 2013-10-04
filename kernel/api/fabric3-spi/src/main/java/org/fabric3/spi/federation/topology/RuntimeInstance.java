@@ -37,25 +37,19 @@
 */
 package org.fabric3.spi.federation.topology;
 
-import java.io.Serializable;
-import java.util.Map;
-
 /**
  * An active runtime in the domain.
  */
 public class RuntimeInstance {
     private String name;
-    private Map<String, Serializable> metadata;
 
     /**
      * Constructor.
      *
      * @param name the unique runtime name.
-     * @param metadata the runtime metadata
      */
-    public RuntimeInstance(String name, Map<String, Serializable> metadata) {
+    public RuntimeInstance(String name) {
         this.name = name;
-        this.metadata = metadata;
     }
 
     /**
@@ -67,25 +61,13 @@ public class RuntimeInstance {
         return name;
     }
 
-    /**
-     * Returns keyed metadata
-     *
-     * @param type the metadata type
-     * @param key  the key
-     * @return the metadata
-     */
-    public <T extends Serializable> T getMetadata(Class<T> type, String key) {
-        return type.cast(metadata.get(key));
-    }
-    
-    public Map<String, Serializable> getMetadata() {
-        return metadata;
-    }
-
-    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         RuntimeInstance that = (RuntimeInstance) o;
 

@@ -70,9 +70,6 @@ public interface TopologyServiceMonitor {
     @Debug("Runtime removed from the domain: {0")
     void runtimeRemoved(String runtimeName);
 
-    @Debug("Sending request for transport information to: {0}")
-    void metadataUpdateRequest(String runtimeName);
-
     @Debug("Broadcasting availability to the domain")
     void broadcastAvailability();
 }

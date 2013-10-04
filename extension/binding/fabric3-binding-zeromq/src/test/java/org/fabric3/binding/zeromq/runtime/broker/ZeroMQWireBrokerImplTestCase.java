@@ -61,7 +61,7 @@ import org.fabric3.spi.wire.InvocationChain;
  *
  */
 public class ZeroMQWireBrokerImplTestCase extends TestCase {
-    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", new Port() {
+    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "zone", "tcp", "10.10.10.1", new Port() {
         public String getName() {
             return null;
         }
@@ -91,9 +91,9 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
     private ZeroMQManagementService managementService;
     private ZeroMQMetadata metadata;
 
-
     public void testConnectToReceiverRelease() throws Exception {
         EasyMock.expect(info.getRuntimeName()).andReturn("runtime");
+        EasyMock.expect(info.getZoneName()).andReturn("zone1");
 
         addressCache.publish(EasyMock.isA(AddressEvent.class));
         EasyMock.expectLastCall().times(2);
@@ -133,17 +133,7 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
         broker.connectToReceiver(URI.create("wire"), chains, metadata, getClass().getClassLoader());
         broker.releaseReceiver(URI.create("wire"));
 
-        EasyMock.verify(manager,
-                        addressCache,
-                        executorService,
-                        monitor,
-                        allocator,
-                        info,
-                        chain,
-                        interceptor,
-                        port,
-                        managementService,
-                        interceptorFactory);
+        EasyMock.verify(manager, addressCache, executorService, monitor, allocator, info, chain, interceptor, port, managementService, interceptorFactory);
     }
 
     public void testConnectToSenderRelease() throws Exception {

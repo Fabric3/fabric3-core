@@ -37,25 +37,21 @@
 */
 package org.fabric3.management.rest.framework.domain.zone;
 
-import java.io.Serializable;
+import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
+import org.fabric3.host.RuntimeMode;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.rest.model.Link;
-import org.fabric3.spi.federation.topology.DomainTopologyService;
-import org.fabric3.spi.federation.topology.RuntimeInstance;
-import org.fabric3.spi.federation.topology.Zone;
-
-import static org.fabric3.spi.federation.topology.FederationConstants.HTTP_HOST_METADATA;
-import static org.fabric3.spi.federation.topology.FederationConstants.HTTP_PORT_METADATA;
+import org.fabric3.spi.federation.addressing.AddressCache;
+import org.fabric3.spi.federation.addressing.EndpointConstants;
+import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.spi.host.Port;
 
 /**
  *
@@ -63,44 +59,49 @@ import static org.fabric3.spi.federation.topology.FederationConstants.HTTP_PORT_
 public class ZonesResourceServiceTestCase extends TestCase {
     private ZonesResourceService service;
     private HttpServletRequest request;
+    private HostInfo info;
+    private AddressCache addressCache;
+    private Port port;
 
     public void testDistributedGetZones() throws Exception {
-        DomainTopologyService topologyService = EasyMock.createMock(DomainTopologyService.class);
-        service.setTopologyService(topologyService);
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE);
 
-        Map<String, Serializable> metadata = new HashMap<String, Serializable>();
-        metadata.put(HTTP_HOST_METADATA, "localhost");
-        metadata.put(HTTP_PORT_METADATA, 8080);
+        EasyMock.expect(port.getNumber()).andReturn(8080);
+        SocketAddress address = new SocketAddress("runtime1", "zone", "http", "localhost", port);
+        List<SocketAddress> addresses = Collections.singletonList(address);
 
-        RuntimeInstance instance = new RuntimeInstance("runtime1", metadata);
-        List<RuntimeInstance> instances = Collections.singletonList(instance);
+        EasyMock.expect(addressCache.getActiveAddresses(EasyMock.eq(EndpointConstants.HTTP_SERVER))).andReturn(addresses);
 
-        Zone zone = new Zone("zone1", instances);
-        EasyMock.expect(topologyService.getZones()).andReturn(Collections.singleton(zone));
-
-        EasyMock.replay( topologyService, request);
+        EasyMock.replay(request, info, addressCache, port);
 
         Set<Link> links = service.getZones(request);
         Link link = links.iterator().next();
         assertEquals(new URL("http://localhost:8080/management/zone"), link.getHref());
-        EasyMock.verify(topologyService, request);
+        EasyMock.verify(request, info, addressCache, port);
     }
 
     public void testLocalGetZones() throws Exception {
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.VM);
+
         EasyMock.expect(request.getRequestURL()).andReturn(new StringBuffer("http://localhost/management/domain/zones")).atLeastOnce();
-        EasyMock.replay(request);
+        EasyMock.replay(request, info, addressCache);
 
         Set<Link> links = service.getZones(request);
         Link link = links.iterator().next();
         assertEquals(new URL("http://localhost/management/zone"), link.getHref());
-        EasyMock.verify(request);
+        EasyMock.verify(request, info, addressCache);
     }
 
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        service = new ZonesResourceService();
+        info = EasyMock.createMock(HostInfo.class);
+
+        addressCache = EasyMock.createMock(AddressCache.class);
+
+        port = EasyMock.createMock(Port.class);
+
+        service = new ZonesResourceService(addressCache, info);
 
         request = EasyMock.createMock(HttpServletRequest.class);
     }

@@ -22,7 +22,6 @@ Public License. See the accompanying license file for details.
         <property name="channelConfig" source="$systemConfig//f3:federation/f3:config"/>
         <property name="defaultTimeout" source="$systemConfig//f3:federation/@timeout"/>
         <property name="synchronize" source="$systemConfig//f3:federation/@synchronize"/>
-        <property name="transportMetadata" source="$systemConfig//f3:federation/f3:transport/*"/>
         <property name="defaultBindAddress" source="$systemConfig/f3:runtime/@host.address"/>
     </component>
 

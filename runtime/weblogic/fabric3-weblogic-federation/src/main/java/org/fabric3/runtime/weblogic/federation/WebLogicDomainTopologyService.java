@@ -37,14 +37,6 @@
 */
 package org.fabric3.runtime.weblogic.federation;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import javax.management.JMException;
 import javax.naming.Binding;
 import javax.naming.Context;
@@ -54,11 +46,12 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.event.EventContext;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.runtime.weblogic.cluster.ChannelException;
@@ -76,7 +69,10 @@ import org.fabric3.spi.federation.topology.DomainTopologyService;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.RuntimeInstance;
 import org.fabric3.spi.federation.topology.Zone;
-
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CHANNEL;
 import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONTEXT;
 
@@ -134,8 +130,7 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
                 Binding binding = list.next();
                 RuntimeChannel channel = (RuntimeChannel) binding.getObject();
                 String runtimeName = channel.getRuntimeName();
-                Map<String, Serializable> map = Collections.emptyMap();
-                RuntimeInstance runtimeInstance = new RuntimeInstance(runtimeName, map);
+                RuntimeInstance runtimeInstance = new RuntimeInstance(runtimeName);
                 instances.add(runtimeInstance);
             }
         } catch (NamingException e) {
@@ -144,10 +139,6 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
             monitor.error(e);
         }
         return instances;
-    }
-
-    public String getTransportMetaData(String zone, String transport) {
-        return "";
     }
 
     public void broadcast(Command command) throws MessageException {
@@ -224,41 +215,6 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
             }
         }
         return responses;
-    }
-
-    public Response sendSynchronous(String runtimeName, ResponseCommand command, long timeout) throws MessageException {
-        try {
-            RuntimeChannel runtimeChannel = null;
-            NamingEnumeration<Binding> list = rootContext.listBindings(PARTICIPANT_CONTEXT);
-            while (list.hasMore()) {
-                Binding binding = list.next();
-                RuntimeChannel channel = (RuntimeChannel) binding.getObject();
-                if (runtimeName.equals(channel.getRuntimeName())) {
-                    runtimeChannel = channel;
-                    break;
-                }
-            }
-            if (runtimeChannel == null) {
-                // TODO throw specific exception type
-                throw new MessageException("Runtime not found: " + runtimeName);
-            }
-            if (!runtimeChannel.isActive()) {
-                throw new MessageException("Runtime is not active: " + runtimeName);
-            }
-            byte[] payload = serializationService.serialize(command);
-            byte[] responsePayload = runtimeChannel.sendSynchronous(payload);
-            return serializationService.deserialize(Response.class, responsePayload);
-        } catch (ChannelException e) {
-            throw new MessageException(e);
-        } catch (NamingException e) {
-            throw new MessageException(e);
-        } catch (RemoteException e) {
-            throw new MessageException(e);
-        } catch (IOException e) {
-            throw new MessageException(e);
-        } catch (ClassNotFoundException e) {
-            throw new MessageException(e);
-        }
     }
 
     private List<RuntimeChannel> getChannels() throws MessageException {

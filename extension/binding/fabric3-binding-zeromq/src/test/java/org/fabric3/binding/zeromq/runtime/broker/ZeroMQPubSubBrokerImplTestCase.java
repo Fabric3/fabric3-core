@@ -61,7 +61,7 @@ import org.zeromq.ZMQ;
  *
  */
 public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
-    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "tcp", "10.10.10.1", new Port() {
+    private static final SocketAddress ADDRESS = new SocketAddress("runtime", "zone", "tcp", "10.10.10.1", new Port() {
         public String getName() {
             return null;
         }
@@ -133,6 +133,7 @@ public class ZeroMQPubSubBrokerImplTestCase extends TestCase {
         EasyMock.expect(allocator.allocate("channel", "zmq")).andReturn(port);
         allocator.release("channel");
         EasyMock.expect(info.getRuntimeName()).andReturn("runtime");
+        EasyMock.expect(info.getZoneName()).andReturn("zone1");
 
         EventStream stream = EasyMock.createMock(EventStream.class);
         EasyMock.expect(stream.getDefinition()).andReturn(new PhysicalEventStreamDefinition("test"));

@@ -37,26 +37,21 @@
 */
 package org.fabric3.management.rest.framework.domain.runtime;
 
-import java.io.Serializable;
+import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
+import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.rest.model.Link;
-import org.fabric3.spi.federation.topology.DomainTopologyService;
-import org.fabric3.spi.federation.topology.RuntimeInstance;
-import org.fabric3.spi.federation.topology.Zone;
-
-import static org.fabric3.spi.federation.topology.FederationConstants.HTTP_HOST_METADATA;
-import static org.fabric3.spi.federation.topology.FederationConstants.HTTP_PORT_METADATA;
+import org.fabric3.spi.federation.addressing.AddressCache;
+import org.fabric3.spi.federation.addressing.EndpointConstants;
+import org.fabric3.spi.federation.addressing.SocketAddress;
+import org.fabric3.spi.host.Port;
 
 /**
  *
@@ -66,33 +61,34 @@ public class RuntimesResourceServiceTestCase extends TestCase {
     private HostInfo info;
     private RuntimesResourceService service;
     private HttpServletRequest request;
+    private AddressCache addressCache;
+    private Port port;
 
     public void testDistributedGetRuntimes() throws Exception {
-        DomainTopologyService topologyService = EasyMock.createMock(DomainTopologyService.class);
-        service.setTopologyService(topologyService);
 
-        Map<String, Serializable> metadata = new HashMap<String, Serializable>();
-        metadata.put(HTTP_HOST_METADATA, "localhost");
-        metadata.put(HTTP_PORT_METADATA, 8080);
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE);
 
-        RuntimeInstance instance = new RuntimeInstance("runtime1", metadata);
-        List<RuntimeInstance> instances = Collections.singletonList(instance);
+        EasyMock.expect(port.getNumber()).andReturn(8080);
+        SocketAddress address = new SocketAddress("runtime1", "zone", "http", "localhost", port);
+        List<SocketAddress> addresses = Collections.singletonList(address);
 
-        Zone zone = new Zone("zone1", instances);
-        EasyMock.expect(topologyService.getZones()).andReturn(Collections.singleton(zone));
+        EasyMock.expect(addressCache.getActiveAddresses(EasyMock.eq(EndpointConstants.HTTP_SERVER))).andReturn(addresses);
 
-        EasyMock.replay(info, topologyService, request);
+        EasyMock.replay(info, addressCache, request, port);
 
         Set<Link> links = service.getRuntimes(request);
         Link link = links.iterator().next();
         assertEquals("runtime1", link.getName());
         URL url = new URL("http://localhost:8080/management/runtime");
         assertEquals(url, link.getHref());
-        EasyMock.verify(info, topologyService, request);
+        EasyMock.verify(info, addressCache, request, port);
     }
 
     public void testLocalGetRuntimes() throws Exception {
+
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.VM);
         EasyMock.expect(info.getRuntimeName()).andReturn("vm");
+
         EasyMock.expect(request.getRequestURL()).andReturn(new StringBuffer("http:/localhost/management/domain/contributions")).atLeastOnce();
 
         EasyMock.replay(info, request);
@@ -105,12 +101,15 @@ public class RuntimesResourceServiceTestCase extends TestCase {
         EasyMock.verify(info, request);
     }
 
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
         info = EasyMock.createMock(HostInfo.class);
-        service = new RuntimesResourceService(info);
+
+        addressCache = EasyMock.createMock(AddressCache.class);
+        service = new RuntimesResourceService(info, addressCache);
+
+        port = EasyMock.createMock(Port.class);
 
         request = EasyMock.createMock(HttpServletRequest.class);
     }

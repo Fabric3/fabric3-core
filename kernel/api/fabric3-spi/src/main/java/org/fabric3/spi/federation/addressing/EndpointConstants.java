@@ -35,25 +35,20 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.federation.topology;
+package org.fabric3.spi.federation.addressing;
 
 /**
  * Constants used by federation and other extensions.
  */
-public interface FederationConstants {
+public interface EndpointConstants {
 
     /**
-     * The key for registering a runtime HTTP port with the {@link ZoneTopologyService}
+     * The HTTP server endpoint
      */
-    String HTTP_PORT_METADATA = "http.port";
+    String HTTPS_SERVER = "f3.https.server";
 
     /**
-     * The key for registering a runtime HTTPS port with the {@link ZoneTopologyService}
+     * The HTTP server endpoint
      */
-    String HTTPS_PORT_METADATA = "https.port";
-
-    /**
-     * The key for registering a runtime HTTP host address with the {@link ZoneTopologyService}
-     */
-    String HTTP_HOST_METADATA = "http.host";
+    String HTTP_SERVER = "f3.http.server";
 }
