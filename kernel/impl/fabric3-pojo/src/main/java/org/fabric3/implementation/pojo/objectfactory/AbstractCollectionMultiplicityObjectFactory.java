@@ -43,8 +43,8 @@
  */
 package org.fabric3.implementation.pojo.objectfactory;
 
-import org.fabric3.spi.objectfactory.InjectionAttributes;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.InjectionAttributes;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;

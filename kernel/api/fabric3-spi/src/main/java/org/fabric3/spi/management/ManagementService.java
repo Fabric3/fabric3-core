@@ -40,7 +40,7 @@ package org.fabric3.spi.management;
 import java.net.URI;
 
 import org.fabric3.spi.model.type.java.ManagementInfo;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Exposes a component to the underlying runtime management framework.

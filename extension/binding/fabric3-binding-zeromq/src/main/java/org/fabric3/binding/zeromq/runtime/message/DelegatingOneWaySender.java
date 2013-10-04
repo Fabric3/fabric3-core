@@ -34,7 +34,7 @@ import java.util.List;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.spi.federation.addressing.SocketAddress;
-import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContext;
 
 /**
  * Delegates to another one-way sender.

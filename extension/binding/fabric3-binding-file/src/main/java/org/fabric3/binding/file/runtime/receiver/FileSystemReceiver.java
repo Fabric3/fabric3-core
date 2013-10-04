@@ -57,11 +57,11 @@ import org.fabric3.binding.file.api.InvalidDataException;
 import org.fabric3.binding.file.api.ServiceAdapter;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.host.util.IOHelper;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageCache;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageCache;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  * Periodically scans a directory for new files. When a new file is detected, the service bound to the directory is invoked with expected data types associated

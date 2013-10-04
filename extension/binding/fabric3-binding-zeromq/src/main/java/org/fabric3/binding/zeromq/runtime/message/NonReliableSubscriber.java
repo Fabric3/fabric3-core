@@ -44,7 +44,7 @@ import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.spi.federation.addressing.AddressListener;
-import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;

@@ -36,9 +36,9 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition;
-import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.SourceConnectionAttacher;
-import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.container.builder.component.ConnectionAttachException;
+import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
+import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 

@@ -40,13 +40,13 @@ package org.fabric3.implementation.proxy.jdk.wire;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.fabric3.spi.component.InstanceInvocationException;
-import org.fabric3.spi.invocation.CallbackReference;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageCache;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.wire.Interceptor;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.component.InstanceInvocationException;
+import org.fabric3.spi.container.invocation.CallbackReference;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageCache;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.container.wire.InvocationChain;
 import org.oasisopen.sca.ServiceUnavailableException;
 
 /**

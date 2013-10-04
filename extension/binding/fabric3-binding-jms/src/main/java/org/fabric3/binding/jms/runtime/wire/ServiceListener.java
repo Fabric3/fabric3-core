@@ -69,13 +69,13 @@ import org.fabric3.binding.jms.spi.common.CorrelationScheme;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
-import org.fabric3.spi.binding.handler.BindingHandler;
-import org.fabric3.spi.invocation.CallbackReference;
-import org.fabric3.spi.invocation.CallbackReferenceSerializer;
-import org.fabric3.spi.invocation.MessageCache;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.binding.handler.BindingHandler;
+import org.fabric3.spi.container.invocation.CallbackReference;
+import org.fabric3.spi.container.invocation.CallbackReferenceSerializer;
+import org.fabric3.spi.container.invocation.MessageCache;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.xml.XMLFactory;
 
 /**
@@ -176,13 +176,13 @@ public class ServiceListener implements MessageListener {
         if (PayloadType.XML == payloadTypes.getInputType()) {
             payload = new Object[]{payload};
         }
-        org.fabric3.spi.invocation.Message inMessage = MessageCache.getAndResetMessage();
+        org.fabric3.spi.container.invocation.Message inMessage = MessageCache.getAndResetMessage();
         inMessage.setWorkContext(workContext);
         inMessage.setBody(payload);
 
         applyHandlers(request, inMessage);
 
-        org.fabric3.spi.invocation.Message outMessage = interceptor.invoke(inMessage);
+        org.fabric3.spi.container.invocation.Message outMessage = interceptor.invoke(inMessage);
 
         if (oneWay) {
             // one-way message, return without waiting for a response
@@ -219,7 +219,7 @@ public class ServiceListener implements MessageListener {
         }
     }
 
-    private void sendResponse(Message request, Session responseSession, org.fabric3.spi.invocation.Message outMessage, Message response)
+    private void sendResponse(Message request, Session responseSession, org.fabric3.spi.container.invocation.Message outMessage, Message response)
             throws JMSException, JmsBadMessageException {
         CorrelationScheme correlationScheme = wireHolder.getCorrelationScheme();
         switch (correlationScheme) {
@@ -347,7 +347,7 @@ public class ServiceListener implements MessageListener {
         }
     }
 
-    private void applyHandlers(Message request, org.fabric3.spi.invocation.Message inMessage) {
+    private void applyHandlers(Message request, org.fabric3.spi.container.invocation.Message inMessage) {
         if (handlers != null) {
             for (BindingHandler<Message> handler : handlers) {
                 handler.handleInbound(request, inMessage);

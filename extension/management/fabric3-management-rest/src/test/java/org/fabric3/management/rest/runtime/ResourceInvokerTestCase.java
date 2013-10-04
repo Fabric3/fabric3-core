@@ -54,8 +54,8 @@ import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.security.BasicSecuritySubject;
 
 /**

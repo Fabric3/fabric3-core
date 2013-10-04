@@ -1,6 +1,6 @@
 package org.fabric3.cache.spi;
 
-import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuilderException;
 
 /**
  * Specialized builder for a runtime cache. Implementations create and remove cache resources on a runtime.

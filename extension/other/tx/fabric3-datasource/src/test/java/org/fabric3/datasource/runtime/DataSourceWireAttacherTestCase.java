@@ -44,7 +44,7 @@ import org.easymock.EasyMock;
 
 import org.fabric3.datasource.provision.DataSourceTargetDefinition;
 import org.fabric3.datasource.spi.DataSourceRegistry;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  *

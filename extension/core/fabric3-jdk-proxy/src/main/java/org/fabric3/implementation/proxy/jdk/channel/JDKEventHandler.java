@@ -46,8 +46,8 @@ package org.fabric3.implementation.proxy.jdk.channel;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.component.InstanceInvocationException;
+import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.container.component.InstanceInvocationException;
 
 /**
  * Dispatches from a proxy to an {@link EventStream}.

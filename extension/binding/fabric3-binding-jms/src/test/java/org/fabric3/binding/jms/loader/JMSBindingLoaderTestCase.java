@@ -64,7 +64,7 @@ import org.fabric3.binding.jms.spi.common.HeadersDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.MessageSelection;
 import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
+import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;

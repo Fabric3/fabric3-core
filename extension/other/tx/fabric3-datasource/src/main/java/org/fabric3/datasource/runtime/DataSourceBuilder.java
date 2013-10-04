@@ -44,8 +44,8 @@ import org.fabric3.datasource.provision.PhysicalDataSourceResource;
 import org.fabric3.datasource.spi.DataSourceConfiguration;
 import org.fabric3.datasource.spi.DataSourceFactory;
 import org.fabric3.datasource.spi.DataSourceFactoryException;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.resource.ResourceBuilder;
+import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 
 /**
  *

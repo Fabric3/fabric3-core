@@ -37,11 +37,11 @@
 */
 package org.fabric3.implementation.timer.runtime;
 
-import org.fabric3.spi.component.InstanceDestructionException;
-import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.wire.InvocationRuntimeException;
+import org.fabric3.spi.container.component.InstanceDestructionException;
+import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.wire.InvocationRuntimeException;
 
 /**
  * Invokes a timer component instance when a trigger has fired.

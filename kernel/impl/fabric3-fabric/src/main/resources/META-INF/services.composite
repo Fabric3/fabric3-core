@@ -60,7 +60,7 @@
     </component>
 
     <component name="TransformerInterceptorFactory">
-        <f3:implementation.system class="org.fabric3.fabric.interceptor.TransformerInterceptorFactoryImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.interceptor.TransformerInterceptorFactoryImpl"/>
     </component>
 
     <component name="TransformerHandlerFactory">

@@ -48,20 +48,20 @@ import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.SourceWireAttacher;
-import org.fabric3.spi.builder.component.WireAttachException;
+import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.component.ComponentManager;
-import org.fabric3.spi.component.ScopeContainer;
+import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
-import org.fabric3.spi.objectfactory.InjectionAttributes;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.InjectionAttributes;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.transform.TransformerRegistry;
 import org.fabric3.spi.util.UriHelper;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.wire.Wire;
 
 /**
  * Attaches and detaches wires to and from Java components.

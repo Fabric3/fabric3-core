@@ -40,11 +40,11 @@ import org.exist.xquery.value.SequenceType;
 import org.fabric3.exist.ExistDBInstance;
 import org.fabric3.exist.transform.Transformer;
 import org.fabric3.exist.transform.TransformerRegistry;
-import org.fabric3.spi.builder.WiringException;
+import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.model.physical.InteractionType;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.Wire;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

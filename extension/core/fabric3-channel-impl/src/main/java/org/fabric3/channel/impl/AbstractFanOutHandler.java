@@ -41,8 +41,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.EventStreamHandler;
 
 /**
  * Base FanOutHandler functionality.

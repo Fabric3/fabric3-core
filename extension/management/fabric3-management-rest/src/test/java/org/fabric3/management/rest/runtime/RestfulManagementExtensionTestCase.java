@@ -59,8 +59,8 @@ import org.fabric3.spi.model.type.java.ManagementInfo;
 import org.fabric3.spi.model.type.java.ManagementOperationInfo;
 import org.fabric3.spi.model.type.java.OperationType;
 import org.fabric3.spi.model.type.java.Signature;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 
 /**
  *

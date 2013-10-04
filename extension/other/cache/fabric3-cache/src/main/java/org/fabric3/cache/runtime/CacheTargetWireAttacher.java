@@ -41,12 +41,12 @@ package org.fabric3.cache.runtime;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.cache.provision.CacheTargetDefinition;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.objectfactory.SingletonObjectFactory;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.container.wire.Wire;
 
 /**
  *

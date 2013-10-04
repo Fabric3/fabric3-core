@@ -45,8 +45,8 @@ import java.util.NavigableMap;
 import com.lmax.disruptor.EventHandler;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.EventStream;
 
 /**
  *

@@ -46,8 +46,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.Dispatch;
 
 import com.sun.xml.ws.wsdl.parser.InaccessibleWSDLException;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.w3c.dom.Node;
 

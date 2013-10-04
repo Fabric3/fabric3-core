@@ -30,7 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime.message;
 
-import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContext;
 
 /**
  * Implementations dispatch messages over a ZeroMQ socket using a non-blocking one-way pattern. Qualities of service such as reliability may be

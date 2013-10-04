@@ -40,8 +40,8 @@ package org.fabric3.tx;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  * Implements transaction policy for a wire operation.

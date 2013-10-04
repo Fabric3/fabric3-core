@@ -40,10 +40,10 @@ package org.fabric3.implementation.web.runtime;
 import javax.servlet.ServletContext;
 
 import org.fabric3.implementation.pojo.objectfactory.MultiplicityObjectFactory;
-import org.fabric3.spi.objectfactory.InjectionAttributes;
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.InjectionAttributes;
+import org.fabric3.spi.container.objectfactory.Injector;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Injects objects (reference proxies, properties, contexts) into a ServletContext.

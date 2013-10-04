@@ -43,11 +43,11 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.ftp.provision.FtpSourceDefinition;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.transport.ftp.spi.FtpLetContainer;
 
 /**

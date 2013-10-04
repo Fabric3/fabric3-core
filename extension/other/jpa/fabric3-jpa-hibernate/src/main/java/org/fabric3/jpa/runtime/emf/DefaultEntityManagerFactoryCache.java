@@ -53,7 +53,7 @@ import org.oasisopen.sca.annotation.Service;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.Names;
 import org.fabric3.jpa.api.JpaResolutionException;
-import org.fabric3.spi.builder.classloader.ClassLoaderListener;
+import org.fabric3.spi.container.builder.classloader.ClassLoaderListener;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;

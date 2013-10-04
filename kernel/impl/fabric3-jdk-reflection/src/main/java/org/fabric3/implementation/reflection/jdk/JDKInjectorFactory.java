@@ -43,8 +43,8 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 import org.fabric3.implementation.pojo.spi.reflection.InjectorFactory;
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.Injector;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * The default runtime reflection factory extension that uses JDK reflection.

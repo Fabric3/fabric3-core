@@ -53,16 +53,16 @@ import org.fabric3.implementation.pojo.manager.ImplementationManager;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.objectfactory.ComponentObjectFactory;
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.component.ComponentException;
-import org.fabric3.spi.component.InstanceDestructionException;
-import org.fabric3.spi.component.InstanceInitException;
-import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.component.ScopeContainer;
-import org.fabric3.spi.component.ScopedComponent;
+import org.fabric3.spi.container.component.ComponentException;
+import org.fabric3.spi.container.component.InstanceDestructionException;
+import org.fabric3.spi.container.component.InstanceInitException;
+import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.component.ScopeContainer;
+import org.fabric3.spi.container.component.ScopedComponent;
 import org.fabric3.spi.model.type.java.Injectable;
-import org.fabric3.spi.objectfactory.InjectionAttributes;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.InjectionAttributes;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Base class for Java component implementations.

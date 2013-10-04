@@ -49,7 +49,7 @@ import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.implementation.timer.provision.TimerType;
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.component.ScopeContainer;
+import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.timer.spi.TimerService;
 

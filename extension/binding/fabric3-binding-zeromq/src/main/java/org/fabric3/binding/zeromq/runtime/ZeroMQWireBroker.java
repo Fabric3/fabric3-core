@@ -34,7 +34,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * Responsible for managing local senders and receivers. Unlike brokers in traditional hub-and-spoke messaging architectures, implementations do not

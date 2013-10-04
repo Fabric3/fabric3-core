@@ -41,9 +41,9 @@ package org.fabric3.implementation.bytecode.proxy.channel;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.container.channel.EventStreamHandler;
 
 /**
  * Implementation that delegates to a {@link ProxyFactory} to create channel proxies.

@@ -39,7 +39,7 @@ package org.fabric3.fabric.handler;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 

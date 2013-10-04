@@ -46,12 +46,12 @@ package org.fabric3.implementation.pojo.component;
 import java.lang.reflect.InvocationTargetException;
 
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.InstanceDestructionException;
-import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.wire.InvocationRuntimeException;
+import org.fabric3.spi.container.channel.EventStreamHandler;
+import org.fabric3.spi.container.component.AtomicComponent;
+import org.fabric3.spi.container.component.InstanceDestructionException;
+import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.wire.InvocationRuntimeException;
 
 /**
  * Responsible for dispatching an event to a Java-based component implementation instance.

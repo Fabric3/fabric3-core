@@ -44,7 +44,7 @@ import javax.servlet.ServletContext;
 
 import org.oasisopen.sca.ComponentContext;
 
-import org.fabric3.spi.objectfactory.Injector;
+import org.fabric3.spi.container.objectfactory.Injector;
 
 /**
  * Responsible for activating a web application in an embedded servlet container.

@@ -49,9 +49,9 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.command.StartContextCommand;
 import org.fabric3.model.type.component.Scope;
-import org.fabric3.spi.channel.ChannelManager;
-import org.fabric3.spi.component.ScopeContainer;
-import org.fabric3.spi.component.ScopeRegistry;
+import org.fabric3.spi.container.channel.ChannelManager;
+import org.fabric3.spi.container.component.ScopeContainer;
+import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 
 /**

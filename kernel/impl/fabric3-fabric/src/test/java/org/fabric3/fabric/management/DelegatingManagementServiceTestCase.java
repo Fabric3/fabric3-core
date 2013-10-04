@@ -45,7 +45,7 @@ import org.easymock.EasyMock;
 
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.model.type.java.ManagementInfo;
-import org.fabric3.spi.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 
 /**
  *

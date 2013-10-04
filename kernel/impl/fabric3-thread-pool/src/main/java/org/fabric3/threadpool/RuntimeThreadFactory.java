@@ -40,7 +40,7 @@ package org.fabric3.threadpool;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.fabric3.spi.invocation.Fabric3Thread;
+import org.fabric3.spi.container.invocation.Fabric3Thread;
 
 /**
  * Factory that returns named threads and sets an uncaught exception handler that forwards exceptions to a monitor.

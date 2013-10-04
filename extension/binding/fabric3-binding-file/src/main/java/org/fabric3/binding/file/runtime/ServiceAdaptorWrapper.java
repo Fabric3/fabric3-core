@@ -5,9 +5,8 @@ import java.io.IOException;
 
 import org.fabric3.binding.file.api.InvalidDataException;
 import org.fabric3.binding.file.api.ServiceAdapter;
-import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.component.AtomicComponent;
+import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**

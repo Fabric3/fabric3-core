@@ -39,9 +39,8 @@ package org.fabric3.channel.impl;
 
 import java.io.Serializable;
 
-import org.fabric3.channel.impl.ReplicationMonitor;
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.EventWrapper;
+import org.fabric3.spi.container.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.EventWrapper;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.fabric3.spi.federation.topology.ParticipantTopologyService;

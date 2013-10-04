@@ -40,9 +40,9 @@ package org.fabric3.implementation.proxy.jdk.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * Responsible for dispatching to a callback service from a component implementation instance that is not composite scope. Since only one client can

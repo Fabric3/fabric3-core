@@ -40,11 +40,11 @@ package org.fabric3.implementation.junit.runtime;
 import org.oasisopen.sca.ServiceUnavailableException;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.invocation.Message;
+import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.UsernamePasswordToken;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  * Sets a security subject for the current testcase invocation using configuration specified in the JUnit component definition.

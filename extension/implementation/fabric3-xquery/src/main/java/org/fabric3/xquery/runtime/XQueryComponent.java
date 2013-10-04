@@ -42,11 +42,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.namespace.QName;
 
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.component.AtomicComponent;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.Wire;
 
 /**
  *

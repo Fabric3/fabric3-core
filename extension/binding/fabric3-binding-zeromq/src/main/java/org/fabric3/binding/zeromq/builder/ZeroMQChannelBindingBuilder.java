@@ -38,9 +38,9 @@
 package org.fabric3.binding.zeromq.builder;
 
 import org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.component.ChannelBindingBuilder;
-import org.fabric3.spi.channel.Channel;
+import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.component.ChannelBindingBuilder;
+import org.fabric3.spi.container.channel.Channel;
 
 /**
  * A {@link ChannelBindingBuilder} that does nothing. Used to trigger creation of a channel that the ZeroMQ binding will connect to.

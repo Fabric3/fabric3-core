@@ -42,14 +42,14 @@ import java.net.URI;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.SourceWireAttacher;
-import org.fabric3.spi.component.ComponentManager;
+import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.UriHelper;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.xquery.provision.XQueryComponentSourceDefinition;
 
 /**

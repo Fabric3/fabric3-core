@@ -37,7 +37,7 @@
 */
 package org.fabric3.cache.spi;
 
-import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuilderException;
 
 /**
  * Denotes an error deploying or undeploying cache resources.

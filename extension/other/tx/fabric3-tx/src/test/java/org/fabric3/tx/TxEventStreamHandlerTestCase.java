@@ -44,7 +44,7 @@ import javax.transaction.TransactionManager;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.EventStreamHandler;
 
 /**
  *

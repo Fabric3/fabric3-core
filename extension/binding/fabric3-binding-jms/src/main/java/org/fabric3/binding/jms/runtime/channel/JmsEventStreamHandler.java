@@ -54,7 +54,7 @@ import javax.jms.Session;
 import java.io.Serializable;
 
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
-import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**

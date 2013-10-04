@@ -49,8 +49,8 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.fabric.command.StopComponentCommand;
-import org.fabric3.spi.component.ComponentManager;
-import org.fabric3.spi.component.Component;
+import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 
 /**

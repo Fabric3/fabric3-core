@@ -41,7 +41,7 @@ package org.fabric3.implementation.reflection.jdk;
 import java.lang.reflect.Constructor;
 
 import org.fabric3.implementation.pojo.spi.reflection.InstantiatorFactory;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * The default factory that uses JDK reflection.

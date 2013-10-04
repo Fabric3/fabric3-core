@@ -46,10 +46,10 @@ package org.fabric3.implementation.spring.runtime.component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.channel.EventStreamHandler;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.model.type.java.JavaType;
-import org.fabric3.spi.wire.InvocationRuntimeException;
+import org.fabric3.spi.container.wire.InvocationRuntimeException;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.springframework.beans.BeansException;
 

@@ -47,8 +47,8 @@ import org.apache.commons.net.SocketFactory;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.fabric3.binding.ftp.provision.FtpSecurity;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.transport.ftp.api.FtpConstants;
 import org.oasisopen.sca.ServiceUnavailableException;
 

@@ -18,11 +18,11 @@
            autowire="true">
 
     <component name="DomainScopeContainer">
-        <f3:implementation.system class="org.fabric3.fabric.component.scope.DomainScopeContainer"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.component.scope.DomainScopeContainer"/>
     </component>
 
     <component name="StatelessScopeContainer">
-        <f3:implementation.system class="org.fabric3.fabric.component.scope.StatelessScopeContainer"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.component.scope.StatelessScopeContainer"/>
     </component>
 
 

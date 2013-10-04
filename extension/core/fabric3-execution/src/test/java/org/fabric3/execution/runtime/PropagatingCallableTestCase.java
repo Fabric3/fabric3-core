@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 
 import junit.framework.TestCase;
 
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 
 /**
  *

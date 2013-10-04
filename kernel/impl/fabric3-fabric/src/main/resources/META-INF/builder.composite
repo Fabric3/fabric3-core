@@ -18,39 +18,39 @@
            autowire="true">
 
     <component name="Connector">
-        <f3:implementation.system class="org.fabric3.fabric.builder.ConnectorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.builder.ConnectorImpl"/>
     </component>
 
     <component name="ChannelConnector">
-        <f3:implementation.system class="org.fabric3.fabric.builder.ChannelConnectorImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.builder.ChannelConnectorImpl"/>
     </component>
 
     <component name="ClassLoaderBuilder">
-        <f3:implementation.system class="org.fabric3.fabric.builder.classloader.ClassLoaderBuilderImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.builder.classloader.ClassLoaderBuilderImpl"/>
     </component>
 
     <component name="ClassLoaderTracker">
-        <f3:implementation.system class="org.fabric3.fabric.builder.classloader.ClassLoaderTrackerImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.builder.classloader.ClassLoaderTrackerImpl"/>
     </component>
 
     <component name="ClassLoaderWireBuilder">
-        <f3:implementation.system class="org.fabric3.fabric.builder.classloader.ClassLoaderWireBuilderImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.builder.classloader.ClassLoaderWireBuilderImpl"/>
     </component>
 
     <component name="ChannelSourceAttacher" f3:key="org.fabric3.fabric.model.physical.ChannelSourceDefinition">
-        <f3:implementation.system class="org.fabric3.fabric.builder.channel.ChannelSourceAttacher"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.builder.channel.ChannelSourceAttacher"/>
     </component>
 
     <component name="ChannelTargetAttacher" f3:key="org.fabric3.fabric.model.physical.ChannelTargetDefinition">
-        <f3:implementation.system class="org.fabric3.fabric.builder.channel.ChannelTargetAttacher"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.builder.channel.ChannelTargetAttacher"/>
     </component>
 
     <component name="TypeEventFilterBuilder" f3:key="org.fabric3.fabric.model.physical.TypeEventFilterDefinition">
-        <f3:implementation.system class="org.fabric3.fabric.builder.channel.TypeEventFilterBuilder"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.builder.channel.TypeEventFilterBuilder"/>
     </component>
 
     <component name="ChannelBuilderRegistry">
-        <f3:implementation.system class="org.fabric3.fabric.builder.channel.ChannelBuilderRegistryImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.builder.channel.ChannelBuilderRegistryImpl"/>
     </component>
 
 </composite>

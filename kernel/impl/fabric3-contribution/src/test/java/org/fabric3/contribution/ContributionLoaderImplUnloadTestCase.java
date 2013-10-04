@@ -56,7 +56,7 @@ import org.easymock.EasyMock;
 import org.fabric3.host.contribution.ContributionInUseException;
 import org.fabric3.host.contribution.UnresolvedImportException;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.builder.classloader.ClassLoaderWireBuilder;
+import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.contribution.Contribution;

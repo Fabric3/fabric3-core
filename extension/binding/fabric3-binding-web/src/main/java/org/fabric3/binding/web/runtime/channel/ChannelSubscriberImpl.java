@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResource.TRANSPORT;
-import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.container.channel.EventStream;
 
 /**
  * Implements GET semantics for the RESTful publish/subscribe where a GET will either result in the creation of a websocket connection for clients that support

@@ -26,12 +26,12 @@ import org.exist.xquery.XQueryContext;
 import org.exist.xquery.value.Item;
 import org.exist.xquery.value.Sequence;
 import org.fabric3.exist.transform.Transformer;
-import org.fabric3.spi.invocation.CallFrame;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.wire.Interceptor;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.invocation.CallFrame;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageImpl;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * Invokes function from exist DB into Fabric3 Runtime

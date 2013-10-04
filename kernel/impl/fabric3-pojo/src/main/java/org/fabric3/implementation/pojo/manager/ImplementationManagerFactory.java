@@ -46,8 +46,8 @@ package org.fabric3.implementation.pojo.manager;
 import java.lang.reflect.Type;
 
 import org.fabric3.spi.model.type.java.Injectable;
-import org.fabric3.spi.objectfactory.InjectionAttributes;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.InjectionAttributes;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Creates {@link ImplementationManager}s.

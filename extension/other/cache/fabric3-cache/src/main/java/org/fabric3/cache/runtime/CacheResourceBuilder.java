@@ -47,8 +47,8 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.cache.provision.PhysicalCacheSetDefinition;
 import org.fabric3.cache.spi.CacheBuilder;
 import org.fabric3.cache.spi.PhysicalCacheResourceDefinition;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.resource.ResourceBuilder;
+import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.resource.ResourceBuilder;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**

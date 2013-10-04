@@ -27,9 +27,9 @@ import org.exist.xquery.XQueryContext;
 import org.exist.xquery.value.Sequence;
 import org.fabric3.exist.ExistDBInstance;
 import org.fabric3.exist.transform.TransformerRegistry;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageImpl;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  *

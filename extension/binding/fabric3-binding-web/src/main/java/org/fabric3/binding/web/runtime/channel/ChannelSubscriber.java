@@ -39,7 +39,7 @@ package org.fabric3.binding.web.runtime.channel;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.ChannelConnection;
 
 /**
  * Receives incoming requests for a channel published as a web endpoint. This dispatcher implements GET semantics for the RESTful publish/subscribe

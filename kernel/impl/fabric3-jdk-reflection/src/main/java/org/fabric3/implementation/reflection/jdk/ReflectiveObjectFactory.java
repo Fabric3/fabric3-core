@@ -48,8 +48,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.fabric3.implementation.pojo.spi.reflection.IncompatibleArgumentException;
 import org.fabric3.implementation.pojo.spi.reflection.NullPrimitiveException;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Reflectively instantiates a Java-based component instance.

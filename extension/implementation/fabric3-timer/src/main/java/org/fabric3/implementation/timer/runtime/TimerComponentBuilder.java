@@ -52,10 +52,10 @@ import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuild
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
 import org.fabric3.implementation.timer.provision.TimerData;
-import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.component.ScopeContainer;
-import org.fabric3.spi.component.ScopeRegistry;
+import org.fabric3.spi.container.component.ScopeContainer;
+import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.runtime.event.RuntimeStart;

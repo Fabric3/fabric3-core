@@ -52,8 +52,8 @@ import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvokerFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvokerFactory;
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.Injector;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

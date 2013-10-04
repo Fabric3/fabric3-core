@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.BasicAuthenticator;

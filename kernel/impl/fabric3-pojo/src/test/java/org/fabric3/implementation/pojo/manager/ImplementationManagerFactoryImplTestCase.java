@@ -57,16 +57,16 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.Injector;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  *

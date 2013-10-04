@@ -39,7 +39,7 @@ package org.fabric3.binding.web.runtime.channel;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.container.channel.EventStream;
 
 /**
  * Denies subscription requests for a channel.

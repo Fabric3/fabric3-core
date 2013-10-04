@@ -39,8 +39,8 @@ package org.fabric3.binding.test;
 
 import java.net.URI;
 
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.wire.Wire;
 
 /**
  * Implementations route messages to a service destination.

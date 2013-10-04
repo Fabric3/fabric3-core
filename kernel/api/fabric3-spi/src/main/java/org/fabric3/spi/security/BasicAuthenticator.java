@@ -39,7 +39,7 @@ package org.fabric3.spi.security;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContext;
 
 /**
  * Handles HTTP basic auth.

@@ -39,8 +39,8 @@ package org.fabric3.binding.web.runtime.channel;
 
 import org.atmosphere.cpr.Broadcaster;
 
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.model.physical.PhysicalEventStreamDefinition;
 
 /**

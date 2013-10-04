@@ -55,11 +55,11 @@ import org.fabric3.binding.jms.spi.common.HeadersDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
-import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.TargetConnectionAttacher;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.ChannelManager;
-import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.container.builder.component.ConnectionAttachException;
+import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.ChannelManager;
+import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;
 

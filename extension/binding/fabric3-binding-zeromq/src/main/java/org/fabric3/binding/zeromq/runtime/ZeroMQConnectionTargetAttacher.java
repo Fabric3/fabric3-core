@@ -32,9 +32,9 @@ package org.fabric3.binding.zeromq.runtime;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
-import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.TargetConnectionAttacher;
-import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.container.builder.component.ConnectionAttachException;
+import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
+import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.oasisopen.sca.annotation.Reference;

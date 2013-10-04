@@ -40,8 +40,8 @@ package org.fabric3.implementation.pojo.objectfactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Returns a <code>List</code> of object instances.

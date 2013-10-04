@@ -115,7 +115,7 @@ import org.w3c.dom.Element;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
-import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.KeyStoreManager;

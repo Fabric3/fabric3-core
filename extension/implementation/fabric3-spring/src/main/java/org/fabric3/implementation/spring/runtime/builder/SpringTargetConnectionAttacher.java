@@ -45,11 +45,11 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.implementation.spring.provision.SpringConnectionTargetDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.implementation.spring.runtime.component.SpringEventStreamHandler;
-import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.TargetConnectionAttacher;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.component.ComponentManager;
+import org.fabric3.spi.container.builder.component.ConnectionAttachException;
+import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.type.java.JavaType;
 

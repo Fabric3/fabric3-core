@@ -43,8 +43,8 @@
  */
 package org.fabric3.implementation.pojo.spi.proxy;
 
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Creates proxies fronting event channel connections.

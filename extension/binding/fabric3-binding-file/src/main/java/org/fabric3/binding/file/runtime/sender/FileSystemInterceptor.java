@@ -45,8 +45,8 @@ import java.lang.reflect.Array;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 import org.fabric3.binding.file.api.ReferenceAdapter;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  * Attached to bound reference invocation chains. Provides a non-transactional output stream for writing a file to the configured location.

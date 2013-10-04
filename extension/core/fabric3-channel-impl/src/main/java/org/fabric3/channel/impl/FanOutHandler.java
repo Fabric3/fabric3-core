@@ -39,8 +39,8 @@ package org.fabric3.channel.impl;
 
 import java.net.URI;
 
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.EventStreamHandler;
 
 /**
  * Broadcasts a received event to a collection of event stream handlers.

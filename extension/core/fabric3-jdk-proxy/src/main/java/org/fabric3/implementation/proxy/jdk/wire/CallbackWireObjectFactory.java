@@ -41,11 +41,11 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
-import org.fabric3.spi.invocation.CallbackReference;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.invocation.CallbackReference;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * Returns a proxy instance for a callback wire.

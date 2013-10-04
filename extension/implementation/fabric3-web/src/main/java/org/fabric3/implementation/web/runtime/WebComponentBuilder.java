@@ -46,10 +46,10 @@ import org.fabric3.container.web.spi.WebApplicationActivator;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.component.ComponentBuilder;
+import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.model.type.java.InjectionSite;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 

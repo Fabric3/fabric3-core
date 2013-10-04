@@ -46,17 +46,16 @@ import org.easymock.IMocksControl;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.mock.provision.MockTargetDefinition;
-import org.fabric3.implementation.mock.runtime.MockTargetInterceptor;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.TargetWireAttacher;
-import org.fabric3.spi.builder.component.WireAttachException;
+import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.objectfactory.SingletonObjectFactory;
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.Wire;
 
 /**
  *

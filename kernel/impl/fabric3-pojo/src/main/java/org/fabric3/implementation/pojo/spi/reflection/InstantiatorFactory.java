@@ -40,7 +40,7 @@ package org.fabric3.implementation.pojo.spi.reflection;
 
 import java.lang.reflect.Constructor;
 
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Creates {@link ObjectFactory}s for instantiating component implementation instances.

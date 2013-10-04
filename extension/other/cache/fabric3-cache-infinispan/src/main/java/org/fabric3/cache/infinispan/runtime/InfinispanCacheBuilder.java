@@ -44,7 +44,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
 import org.fabric3.cache.spi.CacheBuilder;
 import org.fabric3.cache.spi.CacheManager;
-import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuilderException;
 
 /**
  * Creates an Infinispan cache node on a runtime.

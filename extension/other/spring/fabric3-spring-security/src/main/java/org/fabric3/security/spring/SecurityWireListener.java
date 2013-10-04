@@ -39,8 +39,8 @@ package org.fabric3.security.spring;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spring.spi.WireListener;
 
 /**

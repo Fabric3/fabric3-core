@@ -37,8 +37,8 @@
 */
 package org.fabric3.implementation.pojo.objectfactory;
 
-import org.fabric3.spi.objectfactory.InjectionAttributes;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.InjectionAttributes;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Implementations use a backing collection of {@link ObjectFactory} instances that create a collection of instances for injection on a component,

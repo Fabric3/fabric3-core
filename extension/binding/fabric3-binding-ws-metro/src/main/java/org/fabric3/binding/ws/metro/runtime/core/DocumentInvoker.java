@@ -59,11 +59,11 @@ import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.server.Invoker;
 import com.sun.xml.ws.fault.SOAPFaultBuilder;
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageCache;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.wire.Interceptor;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageCache;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.container.wire.InvocationChain;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

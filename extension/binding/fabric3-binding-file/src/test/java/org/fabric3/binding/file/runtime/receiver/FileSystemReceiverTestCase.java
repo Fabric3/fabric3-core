@@ -50,9 +50,9 @@ import org.fabric3.binding.file.api.InvalidDataException;
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.host.util.FileHelper;
 import org.fabric3.host.util.IOHelper;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageImpl;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  *

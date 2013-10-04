@@ -12,8 +12,8 @@ import java.util.concurrent.TimeoutException;
 
 import junit.framework.TestCase;
 
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 
 /**
  *

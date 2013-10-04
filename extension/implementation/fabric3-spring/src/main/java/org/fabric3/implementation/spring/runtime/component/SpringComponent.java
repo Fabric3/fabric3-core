@@ -44,8 +44,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.spi.component.Component;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.component.Component;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.support.GenericXmlApplicationContext;

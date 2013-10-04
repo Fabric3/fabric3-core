@@ -43,9 +43,9 @@
  */
 package org.fabric3.fabric.executor;
 
-import org.fabric3.spi.builder.channel.ChannelBuilderRegistry;
+import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
 import org.fabric3.fabric.command.DisposeChannelCommand;
-import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;

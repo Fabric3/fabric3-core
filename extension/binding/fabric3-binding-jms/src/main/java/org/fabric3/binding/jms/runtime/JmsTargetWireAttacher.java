@@ -72,17 +72,17 @@ import org.fabric3.binding.jms.spi.common.OperationPropertiesDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
-import org.fabric3.spi.binding.handler.BindingHandler;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.binding.handler.BindingHandler;
+import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
+import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.Wire;
 
 /**
  * Attaches the reference end of a wire to a JMS destination.

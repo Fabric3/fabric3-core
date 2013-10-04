@@ -41,10 +41,10 @@ import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.Wire;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 import org.oasisopen.sca.annotation.EagerInit;

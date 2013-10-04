@@ -43,8 +43,8 @@
  */
 package org.fabric3.implementation.pojo.objectfactory;
 
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 import java.lang.reflect.Array;
 import java.util.List;

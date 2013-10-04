@@ -37,9 +37,9 @@
  */
 package org.fabric3.binding.ws.metro.runtime.core;
 
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageImpl;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  * Contains base functionality for Metro interceptors.

@@ -48,8 +48,8 @@ import java.lang.reflect.Method;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  *

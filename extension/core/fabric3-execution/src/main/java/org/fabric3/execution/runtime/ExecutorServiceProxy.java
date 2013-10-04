@@ -13,9 +13,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.invocation.CallbackReference;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.invocation.CallbackReference;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 
 /**
  * Proxies an executor service to create {@link PropagatingCallable} and {@link PropagatingRunnable} wrappers that propagate the current work context

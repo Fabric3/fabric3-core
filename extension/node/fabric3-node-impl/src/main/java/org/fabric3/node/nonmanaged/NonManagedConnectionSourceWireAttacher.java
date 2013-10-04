@@ -40,12 +40,12 @@ package org.fabric3.node.nonmanaged;
 import org.fabric3.host.Names;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
-import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.SourceConnectionAttacher;
-import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.container.builder.component.ConnectionAttachException;
+import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
+import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

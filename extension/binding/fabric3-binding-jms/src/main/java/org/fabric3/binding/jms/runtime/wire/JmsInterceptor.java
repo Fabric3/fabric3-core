@@ -68,12 +68,12 @@ import org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants;
 import org.fabric3.binding.jms.spi.common.CorrelationScheme;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
-import org.fabric3.spi.binding.handler.BindingHandler;
-import org.fabric3.spi.invocation.CallbackReference;
-import org.fabric3.spi.invocation.CallbackReferenceSerializer;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.binding.handler.BindingHandler;
+import org.fabric3.spi.container.invocation.CallbackReference;
+import org.fabric3.spi.container.invocation.CallbackReferenceSerializer;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageImpl;
+import org.fabric3.spi.container.wire.Interceptor;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 

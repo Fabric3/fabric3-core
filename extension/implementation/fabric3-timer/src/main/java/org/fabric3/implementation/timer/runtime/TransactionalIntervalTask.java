@@ -47,7 +47,7 @@ import javax.transaction.TransactionManager;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.spi.wire.InvocationRuntimeException;
+import org.fabric3.spi.container.wire.InvocationRuntimeException;
 import org.fabric3.timer.spi.Task;
 
 /**

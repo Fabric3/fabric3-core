@@ -43,7 +43,7 @@
  */
 package org.fabric3.implementation.pojo.builder;
 
-import org.fabric3.spi.builder.WiringException;
+import org.fabric3.spi.container.builder.WiringException;
 
 /**
  *

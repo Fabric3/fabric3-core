@@ -46,12 +46,12 @@ import org.fabric3.binding.ws.metro.provision.MetroSourceDefinition;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.SOAPMessageHandlerAdapter;
 import org.fabric3.binding.ws.metro.runtime.core.ServiceCallbackAddressHandler;
-import org.fabric3.spi.binding.handler.BindingHandler;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.binding.handler.BindingHandler;
+import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Base source wire attacher that provisions web service endpoints.

@@ -44,7 +44,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.ws.metro.util.ClassDefiner;
 import org.fabric3.binding.ws.metro.util.ClassLoaderUpdater;
-import org.fabric3.spi.builder.WiringException;
+import org.fabric3.spi.container.builder.WiringException;
 
 /**
  *

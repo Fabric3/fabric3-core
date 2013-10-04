@@ -42,7 +42,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.implementation.pojo.component.PojoComponent;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
-import org.fabric3.spi.component.ScopeContainer;
+import org.fabric3.spi.container.component.ScopeContainer;
 
 /**
  * The runtime instantiation of a Java component implementation.

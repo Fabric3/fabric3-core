@@ -68,9 +68,9 @@ import org.fabric3.spi.model.type.java.Injectable;
 import org.fabric3.spi.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
-import org.fabric3.spi.objectfactory.InjectionAttributes;
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.InjectionAttributes;
+import org.fabric3.spi.container.objectfactory.Injector;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  *

@@ -5,11 +5,11 @@ import java.util.UUID;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.websocket.WebSocketEventListener;
-import org.fabric3.spi.invocation.CallbackReference;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageCache;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.invocation.CallbackReference;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageCache;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 
 public class WebSocketServiceListener implements WebSocketEventListener {
 

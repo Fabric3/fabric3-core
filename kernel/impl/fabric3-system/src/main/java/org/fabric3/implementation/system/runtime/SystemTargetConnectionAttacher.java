@@ -47,12 +47,12 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.pojo.component.InvokerEventStreamHandler;
 import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
-import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.TargetConnectionAttacher;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.container.builder.component.ConnectionAttachException;
+import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.component.ComponentManager;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.type.java.Signature;
 import org.fabric3.spi.util.UriHelper;

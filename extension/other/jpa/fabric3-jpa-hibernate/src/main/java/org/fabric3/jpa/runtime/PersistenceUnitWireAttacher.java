@@ -46,13 +46,13 @@ import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.provision.PersistenceUnitTargetDefinition;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.objectfactory.SingletonObjectFactory;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.container.wire.Wire;
 
 /**
  * Attaches the target side of entity manager factories.

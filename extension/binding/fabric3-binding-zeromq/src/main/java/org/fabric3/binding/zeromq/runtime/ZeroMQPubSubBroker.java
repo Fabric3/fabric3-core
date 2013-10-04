@@ -33,7 +33,7 @@ package org.fabric3.binding.zeromq.runtime;
 import java.net.URI;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.ChannelConnection;
 
 /**
  * Responsible for managing local publishers and subscribers. Unlike brokers in traditional hub-and-spoke messaging architectures, implementations do not

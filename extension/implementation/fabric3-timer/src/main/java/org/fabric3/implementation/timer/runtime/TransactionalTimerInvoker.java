@@ -44,11 +44,11 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 
-import org.fabric3.spi.component.InstanceDestructionException;
-import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.wire.InvocationRuntimeException;
+import org.fabric3.spi.container.component.InstanceDestructionException;
+import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.wire.InvocationRuntimeException;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**

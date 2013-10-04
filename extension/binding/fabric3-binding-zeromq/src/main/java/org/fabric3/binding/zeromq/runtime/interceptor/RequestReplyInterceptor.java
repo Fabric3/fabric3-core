@@ -31,9 +31,9 @@
 package org.fabric3.binding.zeromq.runtime.interceptor;
 
 import org.fabric3.binding.zeromq.runtime.message.RequestReplySender;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  * Dispatches a message from an invocation chain to a ZeroMQ request-response sender.

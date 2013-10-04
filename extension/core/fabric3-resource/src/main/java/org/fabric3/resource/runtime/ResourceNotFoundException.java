@@ -37,7 +37,7 @@
 */
 package org.fabric3.resource.runtime;
 
-import org.fabric3.spi.builder.WiringException;
+import org.fabric3.spi.container.builder.WiringException;
 
 /**
  * Denotes a missing or invalid resource.

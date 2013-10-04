@@ -66,8 +66,8 @@ import org.fabric3.runtime.tomcat.servlet.ServletHostException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.contribution.ContributionResolver;
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.Injector;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 
 /**
  * Activates a web component in the host Tomcat runtime.

@@ -37,7 +37,7 @@
 */
 package org.fabric3.datasource.runtime;
 
-import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuilderException;
 
 /**
  *

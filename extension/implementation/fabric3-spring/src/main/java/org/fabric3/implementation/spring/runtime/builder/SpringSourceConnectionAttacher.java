@@ -46,13 +46,13 @@ import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyService;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
-import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.SourceConnectionAttacher;
-import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.container.builder.component.ConnectionAttachException;
+import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
+import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.component.ComponentManager;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.UriHelper;
 
 /**

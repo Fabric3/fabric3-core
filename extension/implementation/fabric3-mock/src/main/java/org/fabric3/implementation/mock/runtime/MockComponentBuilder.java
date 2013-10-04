@@ -45,10 +45,10 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.mock.model.MockComponentDefinition;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.component.ComponentBuilder;
+import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.component.ComponentBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  *

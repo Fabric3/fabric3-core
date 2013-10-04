@@ -3,8 +3,8 @@ package org.fabric3.binding.ws.metro.runtime.core;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 
 /**
  *

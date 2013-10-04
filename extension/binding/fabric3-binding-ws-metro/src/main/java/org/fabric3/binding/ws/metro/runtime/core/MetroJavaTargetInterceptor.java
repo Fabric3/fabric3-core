@@ -43,9 +43,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
 
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 

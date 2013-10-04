@@ -50,8 +50,8 @@ import org.w3c.dom.NodeList;
 
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaClass;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.objectfactory.SingletonObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;

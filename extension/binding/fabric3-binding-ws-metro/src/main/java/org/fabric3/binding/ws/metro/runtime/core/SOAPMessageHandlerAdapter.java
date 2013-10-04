@@ -45,11 +45,11 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 import java.util.Set;
 
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
-import org.fabric3.spi.binding.handler.BindingHandler;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageCache;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.binding.handler.BindingHandler;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageCache;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**

@@ -37,7 +37,7 @@
 */
 package org.fabric3.channel.impl;
 
-import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.ChannelConnection;
 
 /**
  * Broadcasts an event to multiple consumers on the same thread as the producer.

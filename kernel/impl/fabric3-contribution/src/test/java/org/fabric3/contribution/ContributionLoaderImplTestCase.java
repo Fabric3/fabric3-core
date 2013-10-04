@@ -65,7 +65,7 @@ import org.fabric3.contribution.wire.LocationContributionWire;
 import org.fabric3.host.Names;
 import org.fabric3.host.contribution.UnresolvedImportException;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.builder.classloader.ClassLoaderWireBuilder;
+import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.contribution.Contribution;

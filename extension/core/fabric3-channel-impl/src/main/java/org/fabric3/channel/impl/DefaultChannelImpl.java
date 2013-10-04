@@ -40,11 +40,11 @@ package org.fabric3.channel.impl;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.spi.channel.Channel;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.PassThroughHandler;
+import org.fabric3.spi.container.channel.Channel;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.container.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.PassThroughHandler;
 import org.fabric3.spi.model.physical.ChannelSide;
 
 /**

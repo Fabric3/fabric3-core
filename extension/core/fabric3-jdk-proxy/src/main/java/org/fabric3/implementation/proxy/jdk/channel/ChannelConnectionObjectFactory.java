@@ -44,9 +44,9 @@
 package org.fabric3.implementation.proxy.jdk.channel;
 
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Creates a proxy for a channel connection that implements a specified interface with a single method.

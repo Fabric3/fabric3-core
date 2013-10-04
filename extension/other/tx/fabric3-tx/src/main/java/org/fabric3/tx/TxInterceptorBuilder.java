@@ -42,9 +42,9 @@ import javax.transaction.TransactionManager;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.interceptor.InterceptorBuilder;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  * Creates a TxInterceptor for a wire invocation chain.

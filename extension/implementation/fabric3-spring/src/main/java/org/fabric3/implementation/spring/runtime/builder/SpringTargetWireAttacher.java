@@ -49,16 +49,16 @@ import org.fabric3.implementation.pojo.builder.MethodUtils;
 import org.fabric3.implementation.spring.provision.SpringTargetDefinition;
 import org.fabric3.implementation.spring.runtime.component.SpringComponent;
 import org.fabric3.implementation.spring.runtime.component.SpringInvoker;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.component.ComponentManager;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.UriHelper;
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spring.spi.WireListener;
 
 /**

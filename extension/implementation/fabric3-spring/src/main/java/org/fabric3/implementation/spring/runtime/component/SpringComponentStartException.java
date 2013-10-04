@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.spring.runtime.component;
 
-import org.fabric3.spi.component.ComponentException;
+import org.fabric3.spi.container.component.ComponentException;
 
 /**
  *

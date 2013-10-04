@@ -43,7 +43,7 @@
  */
 package org.fabric3.implementation.pojo.spi.reflection;
 
-import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 
 /**
  *

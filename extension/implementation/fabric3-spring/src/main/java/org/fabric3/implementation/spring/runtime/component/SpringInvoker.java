@@ -40,9 +40,9 @@ package org.fabric3.implementation.spring.runtime.component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.wire.Interceptor;
-import org.fabric3.spi.wire.InvocationRuntimeException;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.container.wire.InvocationRuntimeException;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.springframework.beans.BeansException;
 

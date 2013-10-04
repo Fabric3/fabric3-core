@@ -48,7 +48,7 @@ import org.fabric3.host.Names;
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvokerFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;
-import org.fabric3.spi.builder.classloader.ClassLoaderListener;
+import org.fabric3.spi.container.builder.classloader.ClassLoaderListener;
 import org.fabric3.spi.classloader.BytecodeClassLoader;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;

@@ -47,8 +47,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.wire.Interceptor;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**

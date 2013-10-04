@@ -46,7 +46,7 @@ import java.util.Map;
 
 import org.easymock.IMocksControl;
 
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Creates mock instances by delegating to the IMocksControl.

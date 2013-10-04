@@ -38,8 +38,8 @@
 package org.fabric3.channel.disruptor.impl;
 
 import com.lmax.disruptor.EventHandler;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.EventStream;
 
 /**
  * Dispatches an event from the channel ring buffer to consumer streams.

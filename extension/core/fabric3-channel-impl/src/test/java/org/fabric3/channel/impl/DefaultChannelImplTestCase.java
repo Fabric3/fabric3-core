@@ -42,10 +42,10 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.channel.PassThroughHandler;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.container.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.PassThroughHandler;
 import org.fabric3.spi.model.physical.ChannelSide;
 
 /**

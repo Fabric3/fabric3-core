@@ -63,8 +63,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.servlet.ServletContainer;

@@ -50,7 +50,7 @@ import javax.jms.ObjectMessage;
 import javax.jms.TextMessage;
 
 import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
-import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.EventStreamHandler;
 
 /**
  * Listens for requests sent to a destination and dispatches to a channel.

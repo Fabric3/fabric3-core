@@ -48,7 +48,7 @@ import java.util.Map;
 
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyServiceExtension;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * Creates JDK-based wire proxies.

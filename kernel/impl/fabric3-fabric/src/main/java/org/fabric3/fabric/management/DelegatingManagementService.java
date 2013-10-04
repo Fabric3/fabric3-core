@@ -50,7 +50,7 @@ import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.model.type.java.ManagementInfo;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * An implementation that delegates exporting managed resources to a collection of {@link ManagementExtension}s. This implementation caches export

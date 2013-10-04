@@ -41,8 +41,8 @@ package org.fabric3.implementation.pojo.builder;
 import org.w3c.dom.Document;
 
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Creates ObjectFactory instances for property values.

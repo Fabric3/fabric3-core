@@ -38,7 +38,7 @@
 package org.fabric3.binding.jms.runtime.wire;
 
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * Holder for invocation chains and payload type metadata. Used when dispatching messages.

@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.web.runtime.service;
 
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * A pair associating an invocation chain with a callback URI. For unidirectional services, the callback uri may be null.

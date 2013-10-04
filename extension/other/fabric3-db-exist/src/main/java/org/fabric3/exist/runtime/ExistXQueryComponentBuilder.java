@@ -30,9 +30,9 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.component.ComponentBuilder;
-import org.fabric3.spi.builder.component.ComponentBuilderRegistry;
+import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.component.ComponentBuilder;
+import org.fabric3.spi.container.builder.component.ComponentBuilderRegistry;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.xquery.provision.XQueryComponentDefinition;
 

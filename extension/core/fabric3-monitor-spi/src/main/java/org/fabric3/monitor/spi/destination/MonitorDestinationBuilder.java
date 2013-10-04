@@ -38,7 +38,7 @@
 package org.fabric3.monitor.spi.destination;
 
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
-import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuilderException;
 
 /**
  * Builds {@link MonitorDestination}s.

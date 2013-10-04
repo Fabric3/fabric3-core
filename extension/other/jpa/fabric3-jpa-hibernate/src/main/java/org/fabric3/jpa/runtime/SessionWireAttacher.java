@@ -49,12 +49,12 @@ import org.fabric3.jpa.provision.SessionTargetDefinition;
 import org.fabric3.jpa.runtime.proxy.EntityManagerService;
 import org.fabric3.jpa.runtime.proxy.MultiThreadedSessionProxyFactory;
 import org.fabric3.jpa.runtime.proxy.StatefulSessionProxyFactory;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.Wire;
 
 /**
  *

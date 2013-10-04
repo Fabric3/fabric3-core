@@ -43,10 +43,10 @@
  */
 package org.fabric3.implementation.pojo.objectfactory;
 
-import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.component.AtomicComponent;
+import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Delegates to an {@link AtomicComponent} to create an instance.

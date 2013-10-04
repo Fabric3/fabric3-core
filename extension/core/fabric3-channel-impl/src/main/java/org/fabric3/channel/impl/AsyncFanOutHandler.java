@@ -39,8 +39,8 @@ package org.fabric3.channel.impl;
 
 import java.util.concurrent.ExecutorService;
 
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.EventStream;
 
 /**
  * Asynchronously broadcasts a received event to a collection of handlers.

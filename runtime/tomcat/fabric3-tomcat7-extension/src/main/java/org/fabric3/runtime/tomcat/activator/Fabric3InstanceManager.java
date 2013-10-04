@@ -44,8 +44,8 @@ import javax.naming.NamingException;
 
 import org.apache.tomcat.InstanceManager;
 
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.Injector;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 
 /**
  * Manages reference injection on servlet instances.

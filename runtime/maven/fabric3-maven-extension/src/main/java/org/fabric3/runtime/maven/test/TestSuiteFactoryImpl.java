@@ -43,7 +43,7 @@ import org.apache.maven.surefire.suite.SurefireTestSuite;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.runtime.maven.TestSuiteFactory;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.test.spi.TestWireHolder;
 
 /**

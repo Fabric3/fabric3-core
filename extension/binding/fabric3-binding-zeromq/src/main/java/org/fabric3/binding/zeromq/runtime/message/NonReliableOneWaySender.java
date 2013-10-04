@@ -43,9 +43,9 @@ import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
-import org.fabric3.spi.invocation.CallbackReference;
-import org.fabric3.spi.invocation.CallbackReferenceSerializer;
-import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.CallbackReference;
+import org.fabric3.spi.container.invocation.CallbackReferenceSerializer;
+import org.fabric3.spi.container.invocation.WorkContext;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.zeromq.ZMQ;
 

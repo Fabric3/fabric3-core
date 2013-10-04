@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.web.runtime.service;
 
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * Manages invocation chains for a service exposed over the websocket binding.

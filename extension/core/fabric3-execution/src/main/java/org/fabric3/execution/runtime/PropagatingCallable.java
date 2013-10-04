@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.invocation.CallbackReference;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.invocation.CallbackReference;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 
 /**
  * Propagates a work context to the current thread executing the delegate callable.

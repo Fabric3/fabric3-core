@@ -62,8 +62,8 @@ import org.fabric3.runtime.maven.MavenRuntime;
 import org.fabric3.runtime.maven.ModuleContributionSource;
 import org.fabric3.runtime.maven.TestSuiteFactory;
 import org.fabric3.runtime.maven3.repository.Maven3Repository;
-import org.fabric3.spi.component.ComponentException;
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.component.ComponentException;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
 import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
 

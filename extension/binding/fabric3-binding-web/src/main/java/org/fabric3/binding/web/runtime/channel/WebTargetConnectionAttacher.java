@@ -38,9 +38,9 @@
 package org.fabric3.binding.web.runtime.channel;
 
 import org.fabric3.binding.web.provision.WebConnectionTargetDefinition;
-import org.fabric3.spi.builder.component.ConnectionAttachException;
-import org.fabric3.spi.builder.component.TargetConnectionAttacher;
-import org.fabric3.spi.channel.ChannelConnection;
+import org.fabric3.spi.container.builder.component.ConnectionAttachException;
+import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;
+import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**

@@ -37,7 +37,7 @@
 */
 package org.fabric3.policy.interceptor.simple;
 
-import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuilderException;
 
 /**
  * Exception thrown in case of instantiating interceptors.

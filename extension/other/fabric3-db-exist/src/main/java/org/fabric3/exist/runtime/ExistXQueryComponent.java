@@ -23,9 +23,9 @@ import org.exist.EXistException;
 import org.exist.xquery.XPathException;
 import org.fabric3.host.Fabric3RuntimeException;
 import org.fabric3.spi.Lifecycle;
-import org.fabric3.spi.builder.WiringException;
+import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.model.physical.InteractionType;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.xquery.runtime.XQueryComponent;
 
 /**

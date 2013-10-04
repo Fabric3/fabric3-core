@@ -28,7 +28,7 @@ import org.fabric3.implementation.proxy.jdk.wire.JDKInvocationHandler;
 import org.fabric3.implementation.proxy.jdk.wire.JDKWireProxyServiceImpl;
 import org.oasisopen.sca.ServiceReference;
 
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  *

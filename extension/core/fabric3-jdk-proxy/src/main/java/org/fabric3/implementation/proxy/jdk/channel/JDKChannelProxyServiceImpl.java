@@ -46,9 +46,9 @@ package org.fabric3.implementation.proxy.jdk.channel;
 import java.lang.reflect.Proxy;
 
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
-import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.EventStream;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * The default ChannelProxyService that uses JDK dynamic proxies.

@@ -37,8 +37,8 @@
 */
 package org.fabric3.binding.file.runtime.receiver;
 
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  * An implementation that passes an invocation to the next interceptor.

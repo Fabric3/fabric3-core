@@ -41,12 +41,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.invocation.CallbackReference;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageCache;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.CallbackReference;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageCache;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  * Encapsulates an invocation to be processed asynchronously.

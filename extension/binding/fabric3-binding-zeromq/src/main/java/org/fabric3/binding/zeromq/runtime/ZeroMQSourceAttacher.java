@@ -37,13 +37,13 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.Wire;
 
 /**
  *

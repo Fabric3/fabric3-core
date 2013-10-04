@@ -37,8 +37,8 @@
 */
 package org.fabric3.implementation.junit.runtime;
 
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  *

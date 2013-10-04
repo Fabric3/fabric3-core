@@ -39,7 +39,7 @@
 package org.fabric3.implementation.bytecode.proxy.channel;
 
 import org.fabric3.implementation.bytecode.proxy.common.ProxyDispatcher;
-import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.EventStreamHandler;
 
 /**
  * Dispatches to an {@link EventStreamHandler}s from a channel proxy based on the index of the proxy method invoked.

@@ -51,10 +51,10 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.fabric.command.DisposeComponentCommand;
-import org.fabric3.spi.builder.component.ComponentBuilder;
-import org.fabric3.spi.builder.component.ComponentBuilderListener;
-import org.fabric3.spi.component.ComponentManager;
-import org.fabric3.spi.component.Component;
+import org.fabric3.spi.container.builder.component.ComponentBuilder;
+import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
+import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 

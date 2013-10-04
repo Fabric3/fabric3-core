@@ -40,7 +40,7 @@ package org.fabric3.tx;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
-import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.container.channel.EventStreamHandler;
 
 /**
  * Implements transactional policy for an event stream.

@@ -53,8 +53,8 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.container.web.spi.WebRequestTunnel;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 
 /**
  *

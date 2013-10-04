@@ -41,7 +41,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.spi.builder.component.WireAttachException;
+import org.fabric3.spi.container.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;

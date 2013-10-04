@@ -37,7 +37,7 @@
 */
 package org.fabric3.fabric.handler;
 
-import org.fabric3.spi.channel.HandlerCreationException;
+import org.fabric3.spi.container.channel.HandlerCreationException;
 
 /**
  * Thrown when a transformer cannot be found.

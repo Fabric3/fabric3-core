@@ -48,9 +48,9 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.fabric.builder.classloader.ClassLoaderBuilder;
+import org.fabric3.fabric.container.builder.classloader.ClassLoaderBuilder;
 import org.fabric3.fabric.command.ProvisionClassloaderCommand;
-import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;

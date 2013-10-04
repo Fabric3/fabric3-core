@@ -16,7 +16,7 @@
 
 
     <component name="BindingHandlerRegistry">
-        <f3:implementation.system class="org.fabric3.fabric.binding.BindingHandlerRegistryImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.container.binding.BindingHandlerRegistryImpl"/>
     </component>
     
 </composite>

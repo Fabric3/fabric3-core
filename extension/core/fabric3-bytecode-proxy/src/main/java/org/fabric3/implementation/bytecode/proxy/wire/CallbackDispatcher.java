@@ -39,10 +39,10 @@ package org.fabric3.implementation.bytecode.proxy.wire;
 
 import java.util.Map;
 
-import org.fabric3.spi.invocation.CallbackReference;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.invocation.CallbackReference;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * Responsible for dispatching to a callback invocation from multi-threaded component instances such as composite scope components.

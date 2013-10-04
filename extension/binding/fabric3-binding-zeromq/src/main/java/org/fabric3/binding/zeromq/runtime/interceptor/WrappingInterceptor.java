@@ -1,7 +1,7 @@
 package org.fabric3.binding.zeromq.runtime.interceptor;
 
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  * Wraps a single message parameter in an Object array. Used when deserializing a parameter from a ZeroMQ socket and placing it in a message body.

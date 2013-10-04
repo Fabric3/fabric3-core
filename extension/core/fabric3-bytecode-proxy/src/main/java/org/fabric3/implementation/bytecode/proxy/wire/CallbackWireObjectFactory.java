@@ -44,9 +44,9 @@ import java.util.Map;
 
 import org.fabric3.implementation.bytecode.proxy.common.ProxyException;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * Creates proxies for a callback wire.

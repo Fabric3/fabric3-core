@@ -39,12 +39,12 @@ package org.fabric3.implementation.pojo.component;
 
 import javax.security.auth.Subject;
 
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.oasisopen.sca.ServiceReference;
 
 import org.fabric3.api.Fabric3RequestContext;
 import org.fabric3.api.SecuritySubject;
-import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContext;
 
 /**
  *

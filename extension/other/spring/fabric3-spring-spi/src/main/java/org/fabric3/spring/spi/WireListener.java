@@ -37,7 +37,7 @@
 */
 package org.fabric3.spring.spi;
 
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.wire.Wire;
 
 /**
  * Implementations receive callbacks when an application context is created and disposed.

@@ -44,11 +44,11 @@ import java.nio.ByteBuffer;
 import org.fabric3.host.Names;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.component.ComponentManager;
-import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.Component;
-import org.fabric3.spi.component.InstanceLifecycleException;
+import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.component.AtomicComponent;
+import org.fabric3.spi.container.component.Component;
+import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 

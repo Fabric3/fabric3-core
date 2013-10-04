@@ -44,8 +44,8 @@ import com.sun.xml.ws.api.pipe.TubeCloner;
 import com.sun.xml.ws.api.pipe.helper.AbstractFilterTubeImpl;
 
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
 
 /**
  * Populates invocation properties of an incoming request with a WorkContext. This is done so that the work context can be updated by other tubes, for example,

@@ -31,10 +31,10 @@
 package org.fabric3.binding.zeromq.runtime.interceptor;
 
 import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageImpl;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  * Dispatches a message from an invocation chain to a ZeroMQ one-way sender.

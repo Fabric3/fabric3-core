@@ -41,9 +41,9 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.builder.Connector;
+import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.fabric.command.DetachWireCommand;
-import org.fabric3.spi.builder.BuilderException;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.executor.CommandExecutor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;

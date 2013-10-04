@@ -43,9 +43,8 @@ import java.util.Set;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.implementation.pojo.objectfactory.SetMultiplicityObjectFactory;
-import org.fabric3.spi.objectfactory.InjectionAttributes;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.InjectionAttributes;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  *

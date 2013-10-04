@@ -44,7 +44,7 @@ import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.util.SimpleBroadcaster;
-import org.fabric3.spi.channel.EventWrapper;
+import org.fabric3.spi.container.channel.EventWrapper;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.oasisopen.sca.ServiceRuntimeException;

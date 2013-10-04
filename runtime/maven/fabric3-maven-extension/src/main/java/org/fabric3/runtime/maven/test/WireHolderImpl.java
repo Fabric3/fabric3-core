@@ -40,7 +40,7 @@ package org.fabric3.runtime.maven.test;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.test.spi.TestWireHolder;
 
 /**

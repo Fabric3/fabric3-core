@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.jms.spi.runtime.provider;
 
-import org.fabric3.spi.builder.WiringException;
+import org.fabric3.spi.container.builder.WiringException;
 
 /**
  * Denotes an error looking up a connection factory or destination.

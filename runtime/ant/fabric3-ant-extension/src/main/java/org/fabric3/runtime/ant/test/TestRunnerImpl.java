@@ -41,12 +41,12 @@ import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.runtime.ant.api.TestRunner;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageCache;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageCache;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.test.spi.TestWireHolder;
 import org.oasisopen.sca.annotation.Reference;
 

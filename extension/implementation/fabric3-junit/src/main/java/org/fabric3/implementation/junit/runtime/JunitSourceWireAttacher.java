@@ -43,16 +43,16 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.implementation.junit.provision.JUnitSourceDefinition;
 import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.transform.TransformerRegistry;
-import org.fabric3.spi.wire.Interceptor;
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.test.spi.TestWireHolder;
 
 /**

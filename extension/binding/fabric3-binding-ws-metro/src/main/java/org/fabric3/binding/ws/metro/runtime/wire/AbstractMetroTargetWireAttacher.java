@@ -47,9 +47,9 @@ import org.fabric3.binding.ws.metro.runtime.core.CallbackTargetHandler;
 import org.fabric3.binding.ws.metro.runtime.core.EndpointService;
 import org.fabric3.binding.ws.metro.runtime.core.ReferenceCallbackAddressHandler;
 import org.fabric3.binding.ws.metro.runtime.core.SOAPMessageHandlerAdapter;
-import org.fabric3.spi.binding.handler.BindingHandler;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.builder.component.TargetWireAttacher;
+import org.fabric3.spi.container.binding.handler.BindingHandler;
+import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
+import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 

@@ -52,10 +52,10 @@ import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.management.rest.spi.ResourceMapping;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Collects and reports sub-resource information for a managed artifact.

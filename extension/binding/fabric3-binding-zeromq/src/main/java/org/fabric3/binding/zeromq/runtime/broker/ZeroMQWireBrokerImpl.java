@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-import org.fabric3.spi.invocation.CallbackReference;
+import org.fabric3.spi.container.invocation.CallbackReference;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
@@ -78,14 +78,14 @@ import org.fabric3.spi.runtime.event.RuntimeStop;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.spi.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.model.physical.ParameterTypeHelper;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.type.java.JavaClass;
-import org.fabric3.spi.wire.Interceptor;
-import org.fabric3.spi.wire.InterceptorCreationException;
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.TransformerInterceptorFactory;
+import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.container.wire.InterceptorCreationException;
+import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
 
 /**
  *

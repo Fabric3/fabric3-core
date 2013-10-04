@@ -41,7 +41,7 @@ import java.net.URI;
 import java.util.Map;
 
 import org.fabric3.host.Names;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.wire.Wire;
 
 /**
  * Provides wires to test components used by a integration test runtime for test dispatching.

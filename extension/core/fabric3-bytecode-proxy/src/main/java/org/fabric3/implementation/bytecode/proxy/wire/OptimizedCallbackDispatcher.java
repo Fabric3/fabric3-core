@@ -37,9 +37,9 @@
 */
 package org.fabric3.implementation.bytecode.proxy.wire;
 
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  * Responsible for dispatching to a callback invocation from a stateless component or component with only one callback client..

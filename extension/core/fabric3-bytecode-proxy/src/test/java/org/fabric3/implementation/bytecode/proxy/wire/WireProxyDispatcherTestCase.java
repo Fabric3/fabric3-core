@@ -7,10 +7,10 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactoryImpl;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
-import org.fabric3.spi.wire.Interceptor;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageImpl;
+import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  *

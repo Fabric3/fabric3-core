@@ -40,7 +40,7 @@ package org.fabric3.binding.web.runtime.service;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  *

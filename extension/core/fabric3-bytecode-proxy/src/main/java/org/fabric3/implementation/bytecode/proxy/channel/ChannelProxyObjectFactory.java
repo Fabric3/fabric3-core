@@ -43,9 +43,9 @@ import java.net.URI;
 
 import org.fabric3.implementation.bytecode.proxy.common.ProxyException;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
-import org.fabric3.spi.channel.EventStreamHandler;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.channel.EventStreamHandler;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Creates a proxy for a channel.

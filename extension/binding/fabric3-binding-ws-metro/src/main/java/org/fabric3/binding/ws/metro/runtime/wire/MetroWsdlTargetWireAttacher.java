@@ -58,12 +58,12 @@ import org.fabric3.binding.ws.metro.runtime.core.MetroDispatchTargetInterceptor;
 import org.fabric3.binding.ws.metro.runtime.policy.FeatureResolver;
 import org.fabric3.spi.repository.ArtifactCache;
 import org.fabric3.spi.repository.CacheException;
-import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
-import org.fabric3.spi.builder.WiringException;
+import org.fabric3.spi.container.binding.handler.BindingHandlerRegistry;
+import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.Wire;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

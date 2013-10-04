@@ -46,7 +46,7 @@ package org.fabric3.fabric.executor;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.spi.builder.Connector;
+import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.fabric.command.DetachWireCommand;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;

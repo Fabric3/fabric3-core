@@ -68,7 +68,7 @@ import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

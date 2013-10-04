@@ -52,17 +52,17 @@ import org.fabric3.binding.file.runtime.receiver.ReceiverConfiguration;
 import org.fabric3.binding.file.runtime.receiver.ReceiverManager;
 import org.fabric3.binding.file.runtime.receiver.ReceiverMonitor;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.builder.WiringException;
-import org.fabric3.spi.builder.component.SourceWireAttacher;
+import org.fabric3.spi.container.builder.WiringException;
+import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.component.ComponentManager;
-import org.fabric3.spi.component.AtomicComponent;
-import org.fabric3.spi.component.Component;
+import org.fabric3.spi.container.component.ComponentManager;
+import org.fabric3.spi.container.component.AtomicComponent;
+import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.wire.Interceptor;
-import org.fabric3.spi.wire.InvocationChain;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.Wire;
 
 /**
  *

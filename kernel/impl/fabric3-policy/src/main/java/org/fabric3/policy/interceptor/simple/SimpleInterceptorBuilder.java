@@ -41,10 +41,10 @@ import java.net.URI;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.builder.interceptor.InterceptorBuilder;
+import org.fabric3.spi.container.builder.BuilderException;
+import org.fabric3.spi.container.builder.interceptor.InterceptorBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  * Builder for simple interceptors.

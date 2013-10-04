@@ -10,7 +10,7 @@ import com.sun.xml.ws.developer.JAXWSProperties;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  *

@@ -41,7 +41,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 
 import org.fabric3.binding.web.runtime.common.InvalidContentTypeException;
 import org.fabric3.model.type.contract.DataType;
-import org.fabric3.spi.channel.EventWrapper;
+import org.fabric3.spi.container.channel.EventWrapper;
 import org.fabric3.spi.model.type.json.JsonType;
 
 import static org.fabric3.binding.web.runtime.common.ContentTypes.APPLICATION_JSON;

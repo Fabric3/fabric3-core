@@ -52,10 +52,10 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
-import org.fabric3.spi.wire.TransformerInterceptorFactory;
+import org.fabric3.spi.container.wire.TransformerInterceptorFactory;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.spi.wire.Interceptor;
-import org.fabric3.spi.wire.InvocationChain;
+import org.fabric3.spi.container.wire.Interceptor;
+import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
  *

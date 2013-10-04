@@ -45,8 +45,8 @@ package org.fabric3.implementation.pojo.spi.proxy;
 
 import java.net.URI;
 
-import org.fabric3.spi.objectfactory.ObjectFactory;
-import org.fabric3.spi.wire.Wire;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.Wire;
 import org.oasisopen.sca.ServiceReference;
 
 /**

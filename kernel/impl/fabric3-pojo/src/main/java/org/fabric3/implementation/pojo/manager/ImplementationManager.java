@@ -43,10 +43,10 @@
  */
 package org.fabric3.implementation.pojo.manager;
 
-import org.fabric3.spi.component.InstanceDestructionException;
-import org.fabric3.spi.component.InstanceInitException;
-import org.fabric3.spi.component.InstanceLifecycleException;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.component.InstanceDestructionException;
+import org.fabric3.spi.container.component.InstanceInitException;
+import org.fabric3.spi.container.component.InstanceLifecycleException;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 
 /**
  * Returns an injected component instance. This is used by a Component implementation to create new instances of application implementation objects as

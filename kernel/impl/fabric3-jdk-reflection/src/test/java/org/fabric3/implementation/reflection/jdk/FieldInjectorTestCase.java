@@ -48,7 +48,7 @@ import java.lang.reflect.Field;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  *

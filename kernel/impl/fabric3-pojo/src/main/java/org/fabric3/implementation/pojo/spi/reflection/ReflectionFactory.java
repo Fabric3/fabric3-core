@@ -42,8 +42,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import org.fabric3.spi.objectfactory.Injector;
-import org.fabric3.spi.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.objectfactory.Injector;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
  * Factory responsible for creating instantiators, injectors, and invokers.

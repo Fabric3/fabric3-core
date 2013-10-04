@@ -58,7 +58,7 @@ import com.sun.xml.wss.SecurityEnvironment;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
-import org.fabric3.spi.objectfactory.ObjectCreationException;
+import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 
 /**
  * Creates JAX-WS <code>Dispatch</code> instances that can be shared among wire invocation chains.

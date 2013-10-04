@@ -43,12 +43,12 @@ import java.util.concurrent.ExecutorService;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.fabric3.spi.invocation.CallbackReference;
-import org.fabric3.spi.invocation.Message;
-import org.fabric3.spi.invocation.MessageImpl;
-import org.fabric3.spi.invocation.WorkContext;
-import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.wire.Interceptor;
+import org.fabric3.spi.container.invocation.CallbackReference;
+import org.fabric3.spi.container.invocation.Message;
+import org.fabric3.spi.container.invocation.MessageImpl;
+import org.fabric3.spi.container.invocation.WorkContext;
+import org.fabric3.spi.container.invocation.WorkContextCache;
+import org.fabric3.spi.container.wire.Interceptor;
 
 /**
  *
