@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.synthesize;
+package org.fabric3.fabric.synthesizer;
 
 import org.fabric3.host.Fabric3Exception;
 
