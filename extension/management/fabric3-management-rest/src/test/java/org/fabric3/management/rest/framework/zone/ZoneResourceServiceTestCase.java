@@ -37,18 +37,16 @@
 */
 package org.fabric3.management.rest.framework.zone;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.Role;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;
-import org.fabric3.management.rest.runtime.ManagementMonitor;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
@@ -82,7 +80,6 @@ public class ZoneResourceServiceTestCase extends TestCase {
         assertEquals("http:/localhost/management/zone/runtime", link.getHref().toString());
         EasyMock.verify(info, topologyService, request);
     }
-
 
     public void testLocalGetZoneResource() throws Exception {
 
@@ -132,7 +129,7 @@ public class ZoneResourceServiceTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        ManagementMonitor monitor = EasyMock.createNiceMock(ManagementMonitor.class);
+        ZoneResourceMonitor monitor = EasyMock.createNiceMock(ZoneResourceMonitor.class);
         EasyMock.replay(monitor);
 
         host = EasyMock.createMock(ResourceHost.class);
@@ -146,6 +143,5 @@ public class ZoneResourceServiceTestCase extends TestCase {
         String path = "/runtime/resource1";
         return new ResourceMapping("resource1", path, path, Verb.GET, null, new Object(), null, Collections.<Role>emptySet());
     }
-
 
 }

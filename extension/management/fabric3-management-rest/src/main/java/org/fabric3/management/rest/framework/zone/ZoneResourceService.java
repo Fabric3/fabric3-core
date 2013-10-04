@@ -78,7 +78,7 @@ import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 public class ZoneResourceService implements ResourceListener {
     private static final String RUNTIME_PATH = "/runtime/";
     private ResourceHost resourceHost;
-    private ManagementMonitor monitor;
+    private ZoneResourceMonitor monitor;
     private HostInfo info;
     private ParticipantTopologyService topologyService;
 
@@ -86,7 +86,7 @@ public class ZoneResourceService implements ResourceListener {
     private List<ResourceMapping> registered = new ArrayList<ResourceMapping>();
 
 
-    public ZoneResourceService(@Reference ResourceHost resourceHost, @Reference HostInfo info, @Monitor ManagementMonitor monitor) {
+    public ZoneResourceService(@Reference ResourceHost resourceHost, @Reference HostInfo info, @Monitor ZoneResourceMonitor monitor) {
         this.resourceHost = resourceHost;
         this.info = info;
         this.monitor = monitor;
