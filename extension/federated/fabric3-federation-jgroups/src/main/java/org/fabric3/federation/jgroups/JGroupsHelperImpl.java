@@ -45,12 +45,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectInputStream;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.RuntimeInstance;
+import org.fabric3.spi.federation.topology.Zone;
 import org.jgroups.Address;
 import org.jgroups.View;
 import org.jgroups.util.UUID;
@@ -189,13 +192,16 @@ public class JGroupsHelperImpl implements JGroupsHelper {
         return newRuntimes;
     }
 
-    /**
-     * Returns the set of new zone leaders that came online from the previous view
-     *
-     * @param oldView the old view
-     * @param newView the new view
-     * @return the new zones
-     */
+    public Set<Zone> getZones(Map<String, Map<String, RuntimeInstance>> runtimes) {
+        Set<Zone> zones = new HashSet<Zone>();
+        for (Map.Entry<String, Map<String, RuntimeInstance>> entry : runtimes.entrySet()) {
+            List<RuntimeInstance> instances = new ArrayList<RuntimeInstance>(entry.getValue().values());
+            Zone zone = new Zone(entry.getKey(), instances);
+            zones.add(zone);
+        }
+        return zones;
+    }
+
     public Set<Address> getNewZoneLeaders(View oldView, View newView) {
         Set<Address> newZoneLeaders = new HashSet<Address>();
         for (Address address : newView.getMembers()) {

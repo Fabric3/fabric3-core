@@ -92,7 +92,7 @@ import org.w3c.dom.Element;
  * JGroups implementation of the {@link DomainTopologyService} and the {@link ZoneTopologyService} for node runtimes.
  */
 @EagerInit
-@Management(name = "DomainTopologyService", path = "/runtime/federation/node/view")
+@Management(name = "NodeTopologyService", path = "/runtime/federation/node/view")
 @Service(names = {DomainTopologyService.class, ZoneTopologyService.class})
 public class NodeTopologyService extends AbstractTopologyService implements DomainTopologyService, ZoneTopologyService {
     private JChannel domainChannel;
@@ -163,8 +163,7 @@ public class NodeTopologyService extends AbstractTopologyService implements Doma
 
     @ManagementOperation(description = "The zones in the domain")
     public Set<Zone> getZones() {
-        View view = domainChannel.getView();
-        return getZones(view);
+        return helper.getZones(runtimes);
     }
 
     @ManagementOperation(description = "The runtimes in the domain")

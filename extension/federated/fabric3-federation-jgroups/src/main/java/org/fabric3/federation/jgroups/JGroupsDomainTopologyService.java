@@ -39,7 +39,6 @@ package org.fabric3.federation.jgroups;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -142,8 +141,7 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
 
     @ManagementOperation(description = "The zones in the domain")
     public Set<Zone> getZones() {
-        View view = domainChannel.getView();
-        return getZones(view);
+        return helper.getZones(runtimes);
     }
 
     @ManagementOperation(description = "The runtimes in the domain")
@@ -271,30 +269,6 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
         return domainChannel;
     }
 
-    /**
-     * Returns a list of zones in the given view
-     *
-     * @param view the view
-     * @return the list of zones
-     */
-    private Set<Zone> getZones(View view) {
-        Address controller = domainChannel.getAddress();
-        Set<Zone> zones = new HashSet<Zone>();
-        List<Address> members = view.getMembers();
-        for (Address member : members) {
-            if (!member.equals(controller)) {
-                String zoneName = helper.getZoneName(member);
-                Map<String, RuntimeInstance> instances = runtimes.get(zoneName);
-                List<RuntimeInstance> list = new ArrayList<RuntimeInstance>(instances.values());
-                if (zoneName != null) {
-                    Zone zone = new Zone(zoneName, list);
-                    zones.add(zone);
-                }
-            }
-        }
-        return zones;
-    }
-
     class JoinEventListener implements Fabric3EventListener<JoinDomain> {
 
         public void onEvent(JoinDomain event) {
@@ -336,7 +310,6 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     private class DomainMembershipListener implements MembershipListener {
 
         public void viewAccepted(View newView) {
-            // Send a ZoneMetadataUpdateCommand to any new zone leaders. Note that this must be done in a separate thread.
             final Set<Address> newZoneLeaders = helper.getNewZoneLeaders(previousView, newView);
             final Set<Address> newRuntimes = helper.getNewRuntimes(previousView, newView);
             previousView = newView;
