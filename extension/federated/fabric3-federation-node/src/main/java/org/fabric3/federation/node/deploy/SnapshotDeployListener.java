@@ -46,7 +46,7 @@ import org.fabric3.federation.node.snapshot.SnapshotHelper;
 import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
-import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.oasisopen.sca.annotation.EagerInit;

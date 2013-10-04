@@ -57,7 +57,7 @@ import org.fabric3.spi.generator.WireGenerator;
 import org.fabric3.spi.instantiator.AutowireResolver;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalService;

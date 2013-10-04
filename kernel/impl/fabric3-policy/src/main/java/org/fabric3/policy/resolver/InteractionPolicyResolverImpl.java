@@ -50,7 +50,7 @@ import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.policy.infoset.PolicyEvaluator;
 import org.fabric3.spi.generator.policy.PolicyRegistry;
 import org.fabric3.spi.generator.policy.PolicyResolutionException;
-import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;

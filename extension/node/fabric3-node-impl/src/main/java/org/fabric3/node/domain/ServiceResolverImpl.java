@@ -55,7 +55,7 @@ import org.fabric3.spi.builder.Connector;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.WireGenerator;
 import org.fabric3.spi.instantiator.AutowireResolver;
-import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;

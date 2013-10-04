@@ -45,7 +45,7 @@ import org.easymock.EasyMock;
 
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Response;
-import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 

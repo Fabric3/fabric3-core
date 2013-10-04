@@ -55,7 +55,7 @@ import org.fabric3.spi.generator.ChannelDirection;
 import org.fabric3.spi.generator.ChannelGenerator;
 import org.fabric3.spi.generator.ConnectionGenerator;
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;

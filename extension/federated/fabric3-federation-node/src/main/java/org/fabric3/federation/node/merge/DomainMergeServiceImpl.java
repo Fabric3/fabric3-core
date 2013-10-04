@@ -40,7 +40,7 @@ package org.fabric3.federation.node.merge;
 import java.util.Iterator;
 
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;

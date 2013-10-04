@@ -46,7 +46,7 @@ import org.fabric3.fabric.component.scope.CompositeScopeContainer;
 import org.fabric3.fabric.component.scope.ScopeContainerMonitor;
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
-import org.fabric3.fabric.lcm.LogicalComponentManagerImpl;
+import org.fabric3.fabric.domain.LogicalComponentManagerImpl;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;
 import org.fabric3.host.Names;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;

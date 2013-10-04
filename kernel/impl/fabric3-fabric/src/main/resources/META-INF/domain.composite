@@ -32,7 +32,7 @@
     </component>
 
     <component name="LogicalComponentManager">
-        <f3:implementation.system class="org.fabric3.fabric.lcm.LogicalComponentManagerImpl"/>
+        <f3:implementation.system class="org.fabric3.fabric.domain.LogicalComponentManagerImpl"/>
         <property name="autowire" source="$systemConfig/f3:domain/@autowire"/>
     </component>
 

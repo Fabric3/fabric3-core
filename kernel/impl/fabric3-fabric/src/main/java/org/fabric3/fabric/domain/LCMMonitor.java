@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.lcm;
+package org.fabric3.fabric.domain;
 
 import org.fabric3.api.annotation.monitor.Warning;
 

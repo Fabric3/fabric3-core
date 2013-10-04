@@ -172,7 +172,7 @@ import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.generator.policy.PolicyAttacher;
 import org.fabric3.spi.generator.policy.PolicyResolver;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;

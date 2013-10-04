@@ -56,7 +56,7 @@ import org.fabric3.fabric.cm.ComponentManagerImpl;
 import org.fabric3.fabric.component.scope.CompositeScopeContainer;
 import org.fabric3.fabric.component.scope.ScopeContainerMonitor;
 import org.fabric3.fabric.component.scope.ScopeRegistryImpl;
-import org.fabric3.fabric.lcm.LogicalComponentManagerImpl;
+import org.fabric3.fabric.domain.LogicalComponentManagerImpl;
 import org.fabric3.fabric.management.DelegatingManagementService;
 import org.fabric3.fabric.repository.RepositoryImpl;
 import org.fabric3.host.Names;
@@ -82,7 +82,7 @@ import org.fabric3.spi.component.ScopedComponent;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.invocation.WorkContextCache;
-import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.management.ManagementService;
 
 /**

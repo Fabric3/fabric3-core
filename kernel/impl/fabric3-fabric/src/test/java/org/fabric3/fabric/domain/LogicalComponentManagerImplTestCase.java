@@ -35,13 +35,15 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.lcm;
+package org.fabric3.fabric.domain;
 
 import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.fabric.domain.LCMMonitor;
+import org.fabric3.fabric.domain.LogicalComponentManagerImpl;
 import org.fabric3.host.Names;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;

@@ -57,7 +57,7 @@ import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.generator.policy.PolicyAttacher;
 import org.fabric3.spi.generator.policy.PolicyRegistry;
-import org.fabric3.spi.lcm.LogicalComponentManager;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
