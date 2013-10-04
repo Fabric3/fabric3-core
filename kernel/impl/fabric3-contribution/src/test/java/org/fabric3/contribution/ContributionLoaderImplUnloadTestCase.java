@@ -64,7 +64,7 @@ import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
-import org.fabric3.spi.generator.ClassLoaderWireGenerator;
+import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
 
 /**
  * This is more intended to be a integration test then a unit test. *

@@ -65,7 +65,7 @@ import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
-import org.fabric3.spi.generator.ClassLoaderWireGenerator;
+import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
 import static org.fabric3.host.Names.HOST_CONTRIBUTION;

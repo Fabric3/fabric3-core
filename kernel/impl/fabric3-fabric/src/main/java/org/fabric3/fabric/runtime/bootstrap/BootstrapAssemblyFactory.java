@@ -166,7 +166,7 @@ import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.generator.ClassLoaderWireGenerator;
+import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
 import org.fabric3.spi.generator.ComponentGenerator;
 import org.fabric3.spi.generator.Generator;
 import org.fabric3.spi.generator.policy.PolicyAttacher;

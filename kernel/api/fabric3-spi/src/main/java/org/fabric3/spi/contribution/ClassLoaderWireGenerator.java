@@ -35,9 +35,8 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.generator;
+package org.fabric3.spi.contribution;
 
-import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
 /**

@@ -77,7 +77,7 @@ import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.JavaImport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
-import org.fabric3.spi.generator.ClassLoaderWireGenerator;
+import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
 /**

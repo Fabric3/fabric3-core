@@ -57,7 +57,7 @@ import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.Export;
 import org.fabric3.spi.contribution.Import;
 import org.fabric3.spi.contribution.Symbol;
-import org.fabric3.spi.generator.ClassLoaderWireGenerator;
+import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
 /**
