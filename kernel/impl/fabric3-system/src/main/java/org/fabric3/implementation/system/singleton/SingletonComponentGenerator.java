@@ -47,8 +47,8 @@ import java.net.URI;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.spi.generator.ComponentGenerator;
-import org.fabric3.spi.generator.EffectivePolicy;
+import org.fabric3.spi.generator.component.ComponentGenerator;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;

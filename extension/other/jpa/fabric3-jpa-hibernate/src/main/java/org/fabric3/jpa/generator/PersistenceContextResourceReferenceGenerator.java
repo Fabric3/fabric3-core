@@ -44,7 +44,7 @@ import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.model.PersistenceContextResourceReference;
 import org.fabric3.jpa.override.OverrideRegistry;
 import org.fabric3.jpa.provision.PersistenceContextTargetDefinition;
-import org.fabric3.spi.generator.ResourceReferenceGenerator;
+import org.fabric3.spi.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 /**

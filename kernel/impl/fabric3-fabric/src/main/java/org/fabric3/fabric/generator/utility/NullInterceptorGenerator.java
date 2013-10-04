@@ -40,8 +40,8 @@ package org.fabric3.fabric.generator.utility;
 import org.w3c.dom.Element;
 
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.InterceptorGenerator;
-import org.fabric3.spi.generator.PolicyMetadata;
+import org.fabric3.spi.generator.wire.InterceptorGenerator;
+import org.fabric3.spi.generator.policy.PolicyMetadata;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 

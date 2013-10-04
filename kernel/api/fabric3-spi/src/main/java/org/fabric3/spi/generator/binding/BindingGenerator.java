@@ -41,12 +41,14 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.generator;
+package org.fabric3.spi.generator.binding;
 
 import java.util.List;
 
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
+import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;

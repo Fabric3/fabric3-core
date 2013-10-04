@@ -54,13 +54,13 @@ import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.spi.generator.BindingGenerator;
-import org.fabric3.spi.generator.ComponentGenerator;
+import org.fabric3.spi.generator.binding.BindingGenerator;
+import org.fabric3.spi.generator.component.ComponentGenerator;
 import org.fabric3.spi.generator.channel.ConnectionBindingGenerator;
-import org.fabric3.spi.generator.EventStreamHandlerGenerator;
-import org.fabric3.spi.generator.InterceptorGenerator;
+import org.fabric3.spi.generator.channel.EventStreamHandlerGenerator;
+import org.fabric3.spi.generator.wire.InterceptorGenerator;
 import org.fabric3.spi.generator.resource.ResourceGenerator;
-import org.fabric3.spi.generator.ResourceReferenceGenerator;
+import org.fabric3.spi.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.oasisopen.sca.annotation.Reference;
 

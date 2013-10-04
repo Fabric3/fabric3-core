@@ -35,9 +35,10 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.generator;
+package org.fabric3.spi.generator.resource;
 
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 

@@ -37,7 +37,7 @@
 */
 package org.fabric3.fabric.generator.wire;
 
-import org.fabric3.spi.generator.WireGenerator;
+import org.fabric3.spi.generator.wire.WireGenerator;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 

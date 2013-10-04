@@ -34,53 +34,34 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.spi.generator;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.spi.generator.channel;
 
-import javax.xml.namespace.QName;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.generator.policy.PolicyMetadata;
+import org.w3c.dom.Element;
+
+import org.fabric3.spi.model.physical.PhysicalHandlerDefinition;
 
 /**
- * Holds metadata for intents and policy sets. Some intents and policy sets, such as role-based authorization, require specific configuration (e.g.
- * roles specified by the intent annotation on a component). Metadata is keyed by intent or policy set qualified name.
+ * Generates {@link PhysicalHandlerDefinition}s used to attach policy handlers to an event stream.
  */
-public class PolicyMetadata {
-    private Map<QName, Serializable> metadata = new HashMap<QName, Serializable>();
-
-    public void add(QName name, Serializable data) {
-        metadata.put(name, data);
-    }
+public interface EventStreamHandlerGenerator {
 
     /**
-     * Returns the metadata associated with the qname.
+     * Generates a handler definition from the policy set extension. Implementations may return null if an handler should not be added to the stream.
      *
-     * @param name the intent/policy set qname
-     * @param type the expected metadata type
-     * @param <T>  the metadata type parameter
-     * @return the metadata or null;
+     * @param policy   policy set definition
+     * @param metadata intent or policy metadata keyed by policy/intent qualified name
+     * @return the definition
+     * @throws GenerationException if an exception occurs during generation
      */
-    public <T> T get(QName name, Class<T> type) {
-        return type.cast(metadata.get(name));
-    }
-
-    /**
-     * Returns all metadata.
-     *
-     * @return the metadata
-     */
-    public Map<QName, Serializable> get() {
-        return metadata;
-    }
-
-    /**
-     * Convenience method for adding a collection of metadata.
-     *
-     * @param metadata the metadata to add
-     */
-    public void addAll(Map<QName, Serializable> metadata) {
-        this.metadata.putAll(metadata);
-    }
+    PhysicalHandlerDefinition generate(Element policy, PolicyMetadata metadata) throws GenerationException;
 
 }

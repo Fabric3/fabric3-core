@@ -50,7 +50,7 @@ import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.spi.generator.ComponentGenerator;
+import org.fabric3.spi.generator.component.ComponentGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;

@@ -41,7 +41,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.execution.model.ExecutorServiceResourceReference;
 import org.fabric3.execution.provision.ExecutorServiceTargetDefinition;
-import org.fabric3.spi.generator.ResourceReferenceGenerator;
+import org.fabric3.spi.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 /**

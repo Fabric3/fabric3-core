@@ -53,7 +53,7 @@ import org.fabric3.spi.component.RegistrationException;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
-import org.fabric3.spi.generator.WireGenerator;
+import org.fabric3.spi.generator.wire.WireGenerator;
 import org.fabric3.spi.instantiator.AutowireResolver;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;

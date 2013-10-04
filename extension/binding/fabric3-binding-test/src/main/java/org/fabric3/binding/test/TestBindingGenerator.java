@@ -43,8 +43,8 @@ import java.util.List;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.spi.generator.BindingGenerator;
-import org.fabric3.spi.generator.EffectivePolicy;
+import org.fabric3.spi.generator.binding.BindingGenerator;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;

@@ -41,8 +41,10 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.generator;
+package org.fabric3.spi.generator.wire;
 
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.generator.policy.PolicyMetadata;
 import org.w3c.dom.Element;
 
 import org.fabric3.spi.model.instance.LogicalOperation;

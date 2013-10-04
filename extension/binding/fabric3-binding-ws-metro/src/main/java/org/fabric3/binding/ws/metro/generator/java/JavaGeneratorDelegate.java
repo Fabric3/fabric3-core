@@ -104,7 +104,7 @@ import org.fabric3.model.type.definitions.Intent;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
-import org.fabric3.spi.generator.EffectivePolicy;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;

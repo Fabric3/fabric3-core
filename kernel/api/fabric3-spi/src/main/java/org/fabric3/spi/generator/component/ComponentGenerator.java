@@ -41,10 +41,12 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.generator;
+package org.fabric3.spi.generator.component;
 
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.Implementation;
+import org.fabric3.spi.generator.policy.EffectivePolicy;
+import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;
