@@ -35,32 +35,40 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.channel.handler;
+package org.fabric3.channel.impl;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStreamHandler;
 
 /**
- * Broadcasts a received event to a collection of event stream handlers.
+ * Base FanOutHandler functionality.
  */
-public interface FanOutHandler extends EventStreamHandler {
+public abstract class AbstractFanOutHandler implements FanOutHandler {
+    protected Map<URI, ChannelConnection> index = new HashMap<URI, ChannelConnection>();
+    protected ChannelConnection[] connections = new ChannelConnection[0];
 
-    /**
-     * Adds a connection containing the event streams.
-     *
-     * @param uri        the connection uri
-     * @param connection the connection
-     */
-    void addConnection(URI uri, ChannelConnection connection);
+    public synchronized void addConnection(URI uri, ChannelConnection connection) {
+        index.put(uri, connection);
+        connections = index.values().toArray(new ChannelConnection[index.size()]);
+    }
 
-    /**
-     * Removes a connection
-     *
-     * @param uri the connection uri
-     * @return the removed connection
-     */
-    ChannelConnection removeConnection(URI uri);
+    public synchronized ChannelConnection removeConnection(URI uri) {
+        ChannelConnection connection = index.remove(uri);
+        connections = index.values().toArray(new ChannelConnection[index.size()]);
+        return connection;
+    }
+
+
+    public void setNext(EventStreamHandler next) {
+        throw new IllegalStateException("This handler must be the last one in the handler sequence");
+    }
+
+    public EventStreamHandler getNext() {
+        return null;
+    }
 
 }

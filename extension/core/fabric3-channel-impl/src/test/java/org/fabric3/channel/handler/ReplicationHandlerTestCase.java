@@ -41,6 +41,7 @@ import java.io.Serializable;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.channel.impl.ReplicationHandler;
 import org.fabric3.channel.impl.ReplicationMonitor;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.EventWrapper;

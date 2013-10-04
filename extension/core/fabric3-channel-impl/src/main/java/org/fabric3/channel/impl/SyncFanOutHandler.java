@@ -35,45 +35,17 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.channel.handler;
-
-import java.util.concurrent.ExecutorService;
+package org.fabric3.channel.impl;
 
 import org.fabric3.spi.channel.ChannelConnection;
-import org.fabric3.spi.channel.EventStream;
 
 /**
- * Asynchronously broadcasts a received event to a collection of handlers.
+ * Broadcasts an event to multiple consumers on the same thread as the producer.
  */
-public class AsyncFanOutHandler extends AbstractFanOutHandler {
-    private ExecutorService executorService;
-
-    public AsyncFanOutHandler(ExecutorService executorService) {
-        this.executorService = executorService;
-    }
-
+public class SyncFanOutHandler extends AbstractFanOutHandler {
     public void handle(Object event, boolean endOfBatch) {
-        if (connections.length == 0) {
-            // no connections, skip scheduling work
-            return;
-        }
-        FanOutWork work = new FanOutWork(event);
-        executorService.execute(work);
-    }
-
-    private class FanOutWork implements Runnable {
-        private Object event;
-
-        private FanOutWork(Object event) {
-            this.event = event;
-        }
-
-        public void run() {
-            for (ChannelConnection connection : connections) {
-                EventStream stream = connection.getEventStream();
-                // force end of batch
-                stream.getHeadHandler().handle(event, true);
-            }
+        for (ChannelConnection connection : connections) {
+            connection.getEventStream().getHeadHandler().handle(event, endOfBatch);
         }
     }
 }

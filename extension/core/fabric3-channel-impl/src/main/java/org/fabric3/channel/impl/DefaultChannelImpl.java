@@ -40,7 +40,6 @@ package org.fabric3.channel.impl;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.channel.handler.FanOutHandler;
 import org.fabric3.spi.channel.Channel;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;

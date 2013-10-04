@@ -45,10 +45,10 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.channel.handler.AsyncFanOutHandler;
-import org.fabric3.channel.handler.FanOutHandler;
-import org.fabric3.channel.handler.ReplicationHandler;
-import org.fabric3.channel.handler.SyncFanOutHandler;
+import org.fabric3.channel.impl.AsyncFanOutHandler;
+import org.fabric3.channel.impl.FanOutHandler;
+import org.fabric3.channel.impl.ReplicationHandler;
+import org.fabric3.channel.impl.SyncFanOutHandler;
 import org.fabric3.channel.impl.DefaultChannelImpl;
 import org.fabric3.channel.impl.ReplicationMonitor;
 import org.fabric3.spi.builder.BuilderException;

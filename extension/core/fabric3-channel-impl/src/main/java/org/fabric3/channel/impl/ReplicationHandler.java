@@ -35,17 +35,55 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.channel.handler;
+package org.fabric3.channel.impl;
 
-import org.fabric3.spi.channel.ChannelConnection;
+import java.io.Serializable;
+
+import org.fabric3.channel.impl.ReplicationMonitor;
+import org.fabric3.spi.channel.EventStreamHandler;
+import org.fabric3.spi.channel.EventWrapper;
+import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.MessageReceiver;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 
 /**
- * Broadcasts an event to multiple consumers on the same thread as the producer.
+ * Responsible for handling event replication in a zone. Specifically, replicates events to other channel instances and passes replicated events through to
+ * downstream handlers.
  */
-public class SyncFanOutHandler extends AbstractFanOutHandler {
+public class ReplicationHandler implements EventStreamHandler, MessageReceiver {
+    private String channelName;
+    private ParticipantTopologyService topologyService;
+    private EventStreamHandler next;
+    private ReplicationMonitor monitor;
+
+    public ReplicationHandler(String channelName, ParticipantTopologyService topologyService, ReplicationMonitor monitor) {
+        this.topologyService = topologyService;
+        this.channelName = channelName;
+        this.monitor = monitor;
+    }
+
+    public void setNext(EventStreamHandler next) {
+        this.next = next;
+    }
+
+    public EventStreamHandler getNext() {
+        return next;
+    }
+
     public void handle(Object event, boolean endOfBatch) {
-        for (ChannelConnection connection : connections) {
-            connection.getEventStream().getHeadHandler().handle(event, endOfBatch);
+        if (!(event instanceof EventWrapper) && event instanceof Serializable) {
+            // check for EventWrapper to avoid re-replicating an event that was just replicated
+            try {
+                topologyService.sendAsynchronous(channelName, (Serializable) event);
+            } catch (MessageException e) {
+                monitor.error(e);
+            }
         }
+        // pass the object to the head stream handler
+        next.handle(event, endOfBatch);
+    }
+
+    public void onMessage(Object event) {
+        next.handle(event, true);
     }
 }

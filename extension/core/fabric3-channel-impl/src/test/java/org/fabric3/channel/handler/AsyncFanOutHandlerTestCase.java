@@ -43,6 +43,7 @@ import java.util.concurrent.ExecutorService;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
+import org.fabric3.channel.impl.AsyncFanOutHandler;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.channel.EventStreamHandler;
