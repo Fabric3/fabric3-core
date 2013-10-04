@@ -44,7 +44,7 @@
     <include name="MonitorConfigurationComposite" scdlResource="META-INF/configuration.composite"/>
     
     <component name="FSArtifactCache">
-        <f3:implementation.system class="org.fabric3.fabric.artifact.FSArtifactCache"/>
+        <f3:implementation.system class="org.fabric3.fabric.repository.FSArtifactCache"/>
     </component>
     
 </composite>

@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.fabric3.host.util.IOHelper;
-import org.fabric3.spi.artifact.ArtifactCache;
+import org.fabric3.spi.repository.ArtifactCache;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.AuthorizationService;
 

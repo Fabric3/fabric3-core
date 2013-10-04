@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.artifact;
+package org.fabric3.spi.repository;
 
 import java.io.InputStream;
 import java.net.URI;

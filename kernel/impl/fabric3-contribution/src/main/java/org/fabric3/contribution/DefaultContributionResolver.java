@@ -47,8 +47,8 @@ import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.spi.artifact.ArtifactCache;
-import org.fabric3.spi.artifact.CacheException;
+import org.fabric3.spi.repository.ArtifactCache;
+import org.fabric3.spi.repository.CacheException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.contribution.ContributionResolverExtension;

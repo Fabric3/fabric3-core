@@ -43,7 +43,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.spi.artifact.ArtifactCache;
+import org.fabric3.spi.repository.ArtifactCache;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.AuthenticationService;
