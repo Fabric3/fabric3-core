@@ -49,15 +49,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.spi.federation.topology.ControllerTopologyService;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
-import org.fabric3.federation.deployment.spi.FederatedDeployerListener;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.CompensatableCommand;
@@ -65,12 +59,16 @@ import org.fabric3.spi.command.Response;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
+import org.fabric3.spi.federation.topology.ControllerTopologyService;
 import org.fabric3.spi.federation.topology.ErrorResponse;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.RuntimeInstance;
 import org.fabric3.spi.federation.topology.Zone;
 import org.fabric3.spi.generator.Deployment;
 import org.fabric3.spi.generator.DeploymentUnit;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * A Deployer that deploys the contents of a {@link DeploymentPackage} to a set of zones in a distributed domain using commit/rollback semantics.
@@ -80,7 +78,6 @@ public class FederatedDeployer implements Deployer {
     private DeployerMonitor monitor;
     private ControllerTopologyService topologyService;
     private SerializationService serializationService;
-    private List<FederatedDeployerListener> listeners;
     private long timeout = 60000;
 
     public FederatedDeployer(@Reference ControllerTopologyService topologyService,
@@ -89,12 +86,6 @@ public class FederatedDeployer implements Deployer {
         this.topologyService = topologyService;
         this.serializationService = serializationService;
         this.monitor = monitor;
-        this.listeners = new ArrayList<FederatedDeployerListener>();
-    }
-
-    @Reference(required = false)
-    public void setListeners(List<FederatedDeployerListener> listeners) {
-        this.listeners = listeners;
     }
 
     @Property(required = false)
@@ -117,7 +108,6 @@ public class FederatedDeployer implements Deployer {
             } catch (IOException e) {
                 throw new DeploymentException(e);
             }
-            notifyDeploy(command);
 
             Zone zone = new Zone(zoneName, Collections.<RuntimeInstance>emptyList());
             if (!topologyService.getZones().contains(zone)) {
@@ -148,10 +138,6 @@ public class FederatedDeployer implements Deployer {
             }
             completed.add(command);
         }
-        for (DeploymentCommand command : completed) {
-            // TODO a commit needs to be refactored to a separate coordinator
-            notifyCompletion(command);
-        }
     }
 
     private DeploymentCommand createCommand(String zone, Deployment currentDeployment, Deployment fullDeployment) throws IOException {
@@ -172,18 +158,4 @@ public class FederatedDeployer implements Deployer {
         byte[] serializedCommands = serializationService.serialize((Serializable) commands);
         return new SerializedDeploymentUnit(serializedProvisionCommands, serializedExtensionCommands, serializedCommands);
     }
-
-    private void notifyDeploy(DeploymentCommand command) throws DeploymentException {
-        for (FederatedDeployerListener listener : listeners) {
-            listener.onDeploy(command);
-        }
-    }
-
-    private void notifyCompletion(DeploymentCommand command) {
-        for (FederatedDeployerListener listener : listeners) {
-            listener.onCompletion(command);
-        }
-    }
-
-
 }
