@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.management.rest.runtime;
+package org.fabric3.management.rest.transformer;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -44,7 +44,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;

@@ -42,7 +42,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.fabric3.api.Role;
-import org.fabric3.management.rest.runtime.TransformerPair;
+import org.fabric3.management.rest.transformer.TransformerPair;
 
 /**
  * Maps an operation on a managed resource to a path relative to the management servlet and REST verb.

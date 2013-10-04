@@ -53,6 +53,7 @@ import org.fabric3.management.rest.Constants;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
+import org.fabric3.management.rest.transformer.TransformerPair;
 import org.fabric3.spi.transform.Transformer;
 
 /**

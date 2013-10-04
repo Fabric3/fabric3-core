@@ -52,6 +52,8 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
+import org.fabric3.management.rest.transformer.TransformerPair;
+import org.fabric3.management.rest.transformer.TransformerPairService;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.ManagementInfo;
 import org.fabric3.spi.model.type.java.ManagementOperationInfo;

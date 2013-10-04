@@ -31,7 +31,7 @@ Public License. See the accompanying license file for details.
     </component>
 
     <component name="TransformerPairService">
-        <f3:implementation.system class="org.fabric3.management.rest.runtime.TransformerPairServiceImpl"/>
+        <f3:implementation.system class="org.fabric3.management.rest.transformer.TransformerPairServiceImpl"/>
     </component>
 
     <component name="ZoneResourceService">

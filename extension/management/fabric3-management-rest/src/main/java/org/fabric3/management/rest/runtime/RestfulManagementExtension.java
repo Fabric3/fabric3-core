@@ -50,6 +50,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 
+import org.fabric3.management.rest.transformer.TransformerPair;
+import org.fabric3.management.rest.transformer.TransformerPairService;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
