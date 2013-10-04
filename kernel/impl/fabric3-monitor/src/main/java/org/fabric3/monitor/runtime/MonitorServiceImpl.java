@@ -50,7 +50,7 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.builder.component.ComponentBuilderListener;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.monitor.MonitorLocator;

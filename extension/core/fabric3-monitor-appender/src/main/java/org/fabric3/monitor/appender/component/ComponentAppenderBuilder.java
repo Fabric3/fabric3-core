@@ -45,7 +45,7 @@ import org.fabric3.host.Names;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
 import org.fabric3.spi.builder.BuilderException;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.component.InstanceLifecycleException;

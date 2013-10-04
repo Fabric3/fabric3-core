@@ -52,7 +52,7 @@ import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.builder.component.WireAttachException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.Injectable;

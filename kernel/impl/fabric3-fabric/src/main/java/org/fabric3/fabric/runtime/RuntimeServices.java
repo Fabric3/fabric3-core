@@ -45,7 +45,7 @@ import org.fabric3.host.repository.Repository;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.contribution.MetaDataStore;

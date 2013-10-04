@@ -4,7 +4,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.spi.binding.handler.BindingHandler;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopedComponent;

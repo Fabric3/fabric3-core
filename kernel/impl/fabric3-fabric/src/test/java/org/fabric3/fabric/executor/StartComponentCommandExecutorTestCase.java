@@ -49,7 +49,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.fabric.command.StartComponentCommand;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
 

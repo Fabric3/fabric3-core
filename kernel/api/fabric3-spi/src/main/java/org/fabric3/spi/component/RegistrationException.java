@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.cm;
+package org.fabric3.spi.component;
 
 import org.fabric3.spi.component.ComponentException;
 

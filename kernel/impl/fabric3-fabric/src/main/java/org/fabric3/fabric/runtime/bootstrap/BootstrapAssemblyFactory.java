@@ -158,7 +158,7 @@ import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.builder.component.SourceWireAttacher;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.OperationResolver;

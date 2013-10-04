@@ -41,23 +41,64 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.cm;
+package org.fabric3.spi.component;
 
-import org.fabric3.spi.cm.RegistrationException;
+import javax.xml.namespace.QName;
+import java.net.URI;
+import java.util.List;
 
 /**
- * Denotes an attempt to register a component when one is already regsitered with that id.
+ * Responsible for tracking and managing the component tree for a runtime instance. The tree corresponds to components deployed to the current runtime
+ * and hence may be sparse in comparison to the assembly component hierarchy for the SCA domain.
  */
-public class DuplicateComponentException extends RegistrationException {
-    private static final long serialVersionUID = 2257483559370700093L;
+public interface ComponentManager {
 
     /**
-     * Constructor specifying the id of the component.
+     * Registers a component which will be managed by the runtime
      *
-     * @param message the id of the component, also the default exception message
+     * @param component the component
+     * @throws RegistrationException when an error occurs registering the component
      */
-    public DuplicateComponentException(String message) {
-        super(message);
-    }
+    void register(Component component) throws RegistrationException;
 
+    /**
+     * Un-registers a component
+     *
+     * @param uri the component URI to un-register
+     * @throws RegistrationException when an error occurs registering the component
+     * @return the the component
+     */
+    Component unregister(URI uri) throws RegistrationException;
+
+    /**
+     * Returns the component with the given URI
+     *
+     * @param uri the component URI
+     * @return the component or null if not found
+     */
+    Component getComponent(URI uri);
+
+    /**
+     * Returns a list of all registered components.
+     *
+     * @return a list of all registered components
+     */
+    List<Component> getComponents();
+
+    /**
+     * Returns a list of components in the given structural URI.
+     *
+     * @param uri a URI representing the hierarchy
+     * @return the components
+     */
+    List<Component> getComponentsInHierarchy(URI uri);
+
+    /**
+     * Returns a list of components provisioned by the given deployable composite. The list is transitive and includes components in contained in
+     * child composites.
+     *
+     * @param deployable the composite
+     * @return the components.
+     */
+    List<Component> getDeployedComponents(QName deployable);
 }

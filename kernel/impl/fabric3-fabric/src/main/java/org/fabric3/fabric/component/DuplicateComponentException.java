@@ -41,37 +41,23 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.executor;
+package org.fabric3.fabric.component;
 
-import java.net.URI;
-
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
-
-import org.fabric3.fabric.command.StopComponentCommand;
-import org.fabric3.spi.component.ComponentManager;
-import org.fabric3.spi.component.Component;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
+import org.fabric3.spi.component.RegistrationException;
 
 /**
- *
+ * Denotes an attempt to register a component when one is already regsitered with that id.
  */
-public class StopComponentCommandExecutorTestCase extends TestCase {
+public class DuplicateComponentException extends RegistrationException {
+    private static final long serialVersionUID = 2257483559370700093L;
 
-    public void testExecute() throws Exception {
-        CommandExecutorRegistry executorRegistry = EasyMock.createMock(CommandExecutorRegistry.class);
-        ComponentManager manager = EasyMock.createMock(ComponentManager.class);
-        executorRegistry.register(EasyMock.eq(StopComponentCommand.class), EasyMock.isA(StopComponentCommandExecutor.class));
-        Component component = EasyMock.createMock(Component.class);
-        component.stop();
-        EasyMock.expect(manager.getComponent(EasyMock.isA(URI.class))).andReturn(component);
-        EasyMock.replay(executorRegistry, manager, component);
-
-        StopComponentCommandExecutor executor = new StopComponentCommandExecutor(manager, executorRegistry);
-        executor.init();
-        StopComponentCommand command = new StopComponentCommand(URI.create("component"));
-        executor.execute(command);
-        EasyMock.verify(executorRegistry, manager, component);
+    /**
+     * Constructor specifying the id of the component.
+     *
+     * @param message the id of the component, also the default exception message
+     */
+    public DuplicateComponentException(String message) {
+        super(message);
     }
 
 }

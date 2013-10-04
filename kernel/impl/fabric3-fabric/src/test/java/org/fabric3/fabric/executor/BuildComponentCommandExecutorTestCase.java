@@ -53,7 +53,7 @@ import org.easymock.EasyMock;
 import org.fabric3.fabric.command.BuildComponentCommand;
 import org.fabric3.spi.builder.component.ComponentBuilder;
 import org.fabric3.spi.builder.component.ComponentBuilderListener;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 

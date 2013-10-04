@@ -49,7 +49,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.spi.binding.handler.BindingHandler;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistry;
 import org.fabric3.spi.binding.handler.BindingHandlerRegistryCallback;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 
 /**

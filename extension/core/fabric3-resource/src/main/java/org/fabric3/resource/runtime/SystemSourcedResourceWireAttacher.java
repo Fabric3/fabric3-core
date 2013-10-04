@@ -44,7 +44,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.resource.provision.SystemSourcedTargetDefinition;
 import org.fabric3.spi.builder.WiringException;
 import org.fabric3.spi.builder.component.TargetWireAttacher;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.objectfactory.ObjectFactory;

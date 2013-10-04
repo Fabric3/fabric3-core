@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.fabric.cm;
+package org.fabric3.fabric.component;
 
 import java.net.URI;
 import java.util.List;
@@ -50,6 +50,8 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.fabric.component.ComponentManagerImpl;
+import org.fabric3.fabric.component.DuplicateComponentException;
 import org.fabric3.spi.component.Component;
 
 /**

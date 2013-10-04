@@ -44,7 +44,7 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.command.StopComponentCommand;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.component.Component;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.executor.CommandExecutor;

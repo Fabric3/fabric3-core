@@ -41,66 +41,68 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.cm;
+package org.fabric3.fabric.component;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.namespace.QName;
 
+import org.fabric3.spi.component.ComponentManager;
+import org.fabric3.spi.component.RegistrationException;
 import org.fabric3.spi.component.Component;
 
 /**
- * Responsible for tracking and managing the component tree for a runtime instance. The tree corresponds to components deployed to the current runtime
- * and hence may be sparse in comparison to the assembly component hierarchy for the SCA domain.
+ * Default implementation of the component manager.
  */
-public interface ComponentManager {
+public class ComponentManagerImpl implements ComponentManager {
+    private Map<URI, Component> components;
 
-    /**
-     * Registers a component which will be managed by the runtime
-     *
-     * @param component the component
-     * @throws RegistrationException when an error occurs registering the component
-     */
-    void register(Component component) throws RegistrationException;
+    public ComponentManagerImpl() {
+        components = new ConcurrentHashMap<URI, Component>();
+    }
 
-    /**
-     * Un-registers a component
-     *
-     * @param uri the component URI to un-register
-     * @throws RegistrationException when an error occurs registering the component
-     * @return the the component
-     */
-    Component unregister(URI uri) throws RegistrationException;
+    public synchronized void register(Component component) throws RegistrationException {
+        URI uri = component.getUri();
+        if (components.containsKey(uri)) {
+            throw new DuplicateComponentException("A component is already registered for: " + uri.toString());
+        }
+        components.put(uri, component);
+    }
 
-    /**
-     * Returns the component with the given URI
-     *
-     * @param uri the component URI
-     * @return the component or null if not found
-     */
-    Component getComponent(URI uri);
+    public synchronized Component unregister(URI uri) throws RegistrationException {
+        return components.remove(uri);
+    }
 
-    /**
-     * Returns a list of all registered components.
-     *
-     * @return a list of all registered components
-     */
-    List<Component> getComponents();
+    public Component getComponent(URI name) {
+        return components.get(name);
+    }
 
-    /**
-     * Returns a list of components in the given structural URI.
-     *
-     * @param uri a URI representing the hierarchy
-     * @return the components
-     */
-    List<Component> getComponentsInHierarchy(URI uri);
+    public List<Component> getComponents() {
+        return new ArrayList<Component>(components.values());
+    }
 
-    /**
-     * Returns a list of components provisioned by the given deployable composite. The list is transitive and includes components in contained in
-     * child composites.
-     *
-     * @param deployable the composite
-     * @return the components.
-     */
-    List<Component> getDeployedComponents(QName deployable);
+    public List<Component> getComponentsInHierarchy(URI uri) {
+        String stringified = uri.toString();
+        List<Component> hierarchy = new ArrayList<Component>();
+        for (Component component : components.values()) {
+            URI componentUri = component.getUri();
+            if (componentUri.toString().startsWith(stringified)) {
+                hierarchy.add(component);
+            }
+        }
+        return hierarchy;
+    }
+
+    public List<Component> getDeployedComponents(QName deployable) {
+        List<Component> deployed = new ArrayList<Component>();
+        for (Component component : components.values()) {
+            if (deployable.equals(component.getDeployable())) {
+                deployed.add(component);
+            }
+        }
+        return deployed;
+    }
 }

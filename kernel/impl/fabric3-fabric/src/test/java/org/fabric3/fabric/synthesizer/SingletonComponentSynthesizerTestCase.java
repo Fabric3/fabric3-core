@@ -41,7 +41,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.fabric.cm.ComponentManagerImpl;
+import org.fabric3.fabric.component.ComponentManagerImpl;
 import org.fabric3.fabric.component.scope.CompositeScopeContainer;
 import org.fabric3.fabric.component.scope.ScopeContainerMonitor;
 import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
@@ -51,7 +51,7 @@ import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;
 import org.fabric3.host.Names;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.component.AtomicComponent;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.introspection.java.ImplementationProcessor;

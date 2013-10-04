@@ -76,7 +76,7 @@ import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.spi.channel.ChannelManager;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.contribution.Capability;

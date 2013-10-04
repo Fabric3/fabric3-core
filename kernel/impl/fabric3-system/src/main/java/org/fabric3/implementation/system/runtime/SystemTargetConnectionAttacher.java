@@ -52,7 +52,7 @@ import org.fabric3.spi.builder.component.TargetConnectionAttacher;
 import org.fabric3.spi.channel.ChannelConnection;
 import org.fabric3.spi.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.spi.cm.ComponentManager;
+import org.fabric3.spi.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.type.java.Signature;
 import org.fabric3.spi.util.UriHelper;
