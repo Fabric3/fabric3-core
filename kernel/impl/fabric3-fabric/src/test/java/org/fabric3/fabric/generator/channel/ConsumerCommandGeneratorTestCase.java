@@ -45,9 +45,9 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.fabric.command.BuildChannelCommand;
-import org.fabric3.fabric.command.ChannelConnectionCommand;
-import org.fabric3.fabric.command.DisposeChannelCommand;
+import org.fabric3.fabric.deployment.command.BuildChannelCommand;
+import org.fabric3.fabric.deployment.command.ChannelConnectionCommand;
+import org.fabric3.fabric.deployment.command.DisposeChannelCommand;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ConsumerDefinition;
 import org.fabric3.spi.generator.channel.ChannelDirection;

@@ -48,7 +48,7 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.fabric.command.DisposeResourcesCommand;
+import org.fabric3.fabric.deployment.command.DisposeResourcesCommand;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.spi.generator.resource.ResourceGenerator;

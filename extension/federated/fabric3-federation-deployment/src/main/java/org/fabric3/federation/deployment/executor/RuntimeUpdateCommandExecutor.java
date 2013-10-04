@@ -46,9 +46,9 @@ import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
 import org.fabric3.federation.deployment.coordinator.DeploymentCache;
-import org.fabric3.spi.executor.CommandExecutor;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.command.CommandExecutor;
+import org.fabric3.spi.command.CommandExecutorRegistry;
+import org.fabric3.spi.command.ExecutionException;
 
 /**
  * Processes a {@link RuntimeUpdateCommand} on a zone leader by returning the cached deployment command for the current state of the zone.

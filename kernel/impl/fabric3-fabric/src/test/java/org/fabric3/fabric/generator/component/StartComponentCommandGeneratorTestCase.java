@@ -47,7 +47,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 
-import org.fabric3.fabric.command.StartComponentCommand;
+import org.fabric3.fabric.deployment.command.StartComponentCommand;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 

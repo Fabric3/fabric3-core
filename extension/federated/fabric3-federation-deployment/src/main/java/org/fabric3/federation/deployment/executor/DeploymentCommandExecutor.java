@@ -65,9 +65,9 @@ import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.component.ScopeRegistry;
-import org.fabric3.spi.executor.CommandExecutor;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.command.CommandExecutor;
+import org.fabric3.spi.command.CommandExecutorRegistry;
+import org.fabric3.spi.command.ExecutionException;
 
 /**
  * Processes {@link DeploymentCommand}s on a participant. If there is an error processing a command, a rollback to the previous runtime state will be

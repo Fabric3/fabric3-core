@@ -39,8 +39,8 @@ package org.fabric3.fabric.generator.channel;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.fabric.command.BuildChannelCommand;
-import org.fabric3.fabric.command.DisposeChannelCommand;
+import org.fabric3.fabric.deployment.command.BuildChannelCommand;
+import org.fabric3.fabric.deployment.command.DisposeChannelCommand;
 import org.fabric3.spi.generator.channel.ChannelDirection;
 import org.fabric3.spi.generator.channel.ChannelGenerator;
 import org.fabric3.spi.generator.GenerationException;

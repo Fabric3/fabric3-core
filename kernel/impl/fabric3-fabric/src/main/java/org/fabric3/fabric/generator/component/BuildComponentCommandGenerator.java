@@ -46,7 +46,7 @@ package org.fabric3.fabric.generator.component;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.fabric.command.BuildComponentCommand;
+import org.fabric3.fabric.deployment.command.BuildComponentCommand;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;

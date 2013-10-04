@@ -64,7 +64,7 @@ import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.runtime.event.JoinDomain;
 import org.fabric3.spi.runtime.event.RuntimeStop;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
+import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.federation.topology.ControllerTopologyService;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.RuntimeInstance;

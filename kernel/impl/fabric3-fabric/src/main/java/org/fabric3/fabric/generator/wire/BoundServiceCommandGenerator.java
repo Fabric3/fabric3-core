@@ -48,9 +48,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.fabric.command.AttachWireCommand;
-import org.fabric3.fabric.command.ConnectionCommand;
-import org.fabric3.fabric.command.DetachWireCommand;
+import org.fabric3.fabric.deployment.command.AttachWireCommand;
+import org.fabric3.fabric.deployment.command.ConnectionCommand;
+import org.fabric3.fabric.deployment.command.DetachWireCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.contract.ServiceContract;

@@ -53,8 +53,8 @@ import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.command.CommandExecutorRegistry;
+import org.fabric3.spi.command.ExecutionException;
 import org.fabric3.spi.generator.Deployment;
 
 import static org.fabric3.host.Names.LOCAL_ZONE;

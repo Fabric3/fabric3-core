@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
-import org.fabric3.fabric.command.StopContextCommand;
+import org.fabric3.fabric.deployment.command.StopContextCommand;
 import org.fabric3.host.Names;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.generator.GenerationException;

@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.fabric.executor.ExecutorNotFoundException;
+import org.fabric3.fabric.command.ExecutorNotFoundException;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.command.Command;
@@ -57,8 +57,8 @@ import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.command.CommandExecutorRegistry;
+import org.fabric3.spi.command.ExecutionException;
 import org.fabric3.spi.generator.DeploymentUnit;
 import org.oasisopen.sca.annotation.Reference;
 

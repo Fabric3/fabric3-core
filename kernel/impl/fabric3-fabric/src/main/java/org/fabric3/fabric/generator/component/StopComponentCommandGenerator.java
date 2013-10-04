@@ -39,7 +39,7 @@ package org.fabric3.fabric.generator.component;
 
 import org.oasisopen.sca.annotation.Property;
 
-import org.fabric3.fabric.command.StopComponentCommand;
+import org.fabric3.fabric.deployment.command.StopComponentCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;

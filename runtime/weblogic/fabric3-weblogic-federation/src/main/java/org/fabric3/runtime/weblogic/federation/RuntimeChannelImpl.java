@@ -47,8 +47,8 @@ import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.Response;
 import org.fabric3.spi.command.ResponseCommand;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.command.CommandExecutorRegistry;
+import org.fabric3.spi.command.ExecutionException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 
 /**

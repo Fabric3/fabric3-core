@@ -43,7 +43,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.fabric.command.ConnectionCommand;
+import org.fabric3.fabric.deployment.command.ConnectionCommand;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.CompositeImplementation;

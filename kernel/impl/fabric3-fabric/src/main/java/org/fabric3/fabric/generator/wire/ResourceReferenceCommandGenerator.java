@@ -41,8 +41,8 @@ import org.fabric3.spi.generator.wire.WireGenerator;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.fabric.command.AttachWireCommand;
-import org.fabric3.fabric.command.ConnectionCommand;
+import org.fabric3.fabric.deployment.command.AttachWireCommand;
+import org.fabric3.fabric.deployment.command.ConnectionCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;

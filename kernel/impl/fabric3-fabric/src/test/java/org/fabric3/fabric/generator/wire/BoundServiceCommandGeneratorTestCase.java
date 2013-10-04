@@ -42,7 +42,7 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.fabric.command.ConnectionCommand;
+import org.fabric3.fabric.deployment.command.ConnectionCommand;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.spi.generator.wire.WireGenerator;

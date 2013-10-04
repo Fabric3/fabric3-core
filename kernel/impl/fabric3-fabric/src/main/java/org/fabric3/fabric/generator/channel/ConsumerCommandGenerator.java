@@ -43,11 +43,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.fabric.command.AttachChannelConnectionCommand;
-import org.fabric3.fabric.command.BuildChannelCommand;
-import org.fabric3.fabric.command.ChannelConnectionCommand;
-import org.fabric3.fabric.command.DetachChannelConnectionCommand;
-import org.fabric3.fabric.command.DisposeChannelCommand;
+import org.fabric3.fabric.deployment.command.AttachChannelConnectionCommand;
+import org.fabric3.fabric.deployment.command.BuildChannelCommand;
+import org.fabric3.fabric.deployment.command.ChannelConnectionCommand;
+import org.fabric3.fabric.deployment.command.DetachChannelConnectionCommand;
+import org.fabric3.fabric.deployment.command.DisposeChannelCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.spi.generator.channel.ConnectionGenerator;
 import org.fabric3.spi.generator.GenerationException;

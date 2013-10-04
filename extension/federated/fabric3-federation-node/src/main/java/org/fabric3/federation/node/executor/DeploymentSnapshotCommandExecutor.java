@@ -39,9 +39,9 @@ package org.fabric3.federation.node.executor;
 
 import org.fabric3.federation.node.command.DeploymentSnapshotCommand;
 import org.fabric3.federation.node.merge.DomainMergeService;
-import org.fabric3.spi.executor.CommandExecutor;
-import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.executor.ExecutionException;
+import org.fabric3.spi.command.CommandExecutor;
+import org.fabric3.spi.command.CommandExecutorRegistry;
+import org.fabric3.spi.command.ExecutionException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;

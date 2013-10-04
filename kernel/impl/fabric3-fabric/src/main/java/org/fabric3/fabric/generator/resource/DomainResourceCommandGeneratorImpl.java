@@ -42,8 +42,8 @@ import java.util.List;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.fabric.command.BuildResourcesCommand;
-import org.fabric3.fabric.command.DisposeResourcesCommand;
+import org.fabric3.fabric.deployment.command.BuildResourcesCommand;
+import org.fabric3.fabric.deployment.command.DisposeResourcesCommand;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.spi.command.CompensatableCommand;

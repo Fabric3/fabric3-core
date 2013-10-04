@@ -46,13 +46,13 @@ import java.util.Set;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.fabric.command.AbstractExtensionsCommand;
-import org.fabric3.fabric.command.AttachWireCommand;
-import org.fabric3.fabric.command.ConnectionCommand;
-import org.fabric3.fabric.command.DetachWireCommand;
-import org.fabric3.fabric.command.ProvisionExtensionsCommand;
-import org.fabric3.fabric.command.UnProvisionExtensionsCommand;
-import org.fabric3.fabric.command.WireCommand;
+import org.fabric3.fabric.deployment.command.AbstractExtensionsCommand;
+import org.fabric3.fabric.deployment.command.AttachWireCommand;
+import org.fabric3.fabric.deployment.command.ConnectionCommand;
+import org.fabric3.fabric.deployment.command.DetachWireCommand;
+import org.fabric3.fabric.deployment.command.ProvisionExtensionsCommand;
+import org.fabric3.fabric.deployment.command.UnProvisionExtensionsCommand;
+import org.fabric3.fabric.deployment.command.WireCommand;
 import org.fabric3.fabric.generator.GenerationType;
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
