@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.ws.metro.generator.java.wsdl;
 
-import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.GenerationException;
 
 /**
  * Thrown when an error is encountered generating a WSDL.

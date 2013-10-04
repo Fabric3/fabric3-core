@@ -39,7 +39,7 @@ package org.fabric3.federation.deployment.command;
 
 import java.io.Serializable;
 
-import org.fabric3.spi.generator.DeploymentUnit;
+import org.fabric3.spi.deployment.generator.DeploymentUnit;
 
 /**
  * Encapsulates serialized {@link DeploymentUnit} commands.

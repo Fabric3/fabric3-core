@@ -46,7 +46,7 @@ import org.fabric3.monitor.spi.appender.AppenderGenerator;
 import org.fabric3.monitor.spi.destination.MonitorDestinationGenerator;
 import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;
-import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.GenerationException;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

@@ -47,7 +47,7 @@
     </component>
 
     <component name="PolicyRegistry">
-        <f3:implementation.system class="org.fabric3.fabric.generator.policy.DefaultPolicyRegistry"/>
+        <f3:implementation.system class="org.fabric3.fabric.deployment.generator.policy.DefaultPolicyRegistry"/>
     </component>
 
     <wire source="ApplicationDomain/policyRegistry" target="PolicyRegistry"/>

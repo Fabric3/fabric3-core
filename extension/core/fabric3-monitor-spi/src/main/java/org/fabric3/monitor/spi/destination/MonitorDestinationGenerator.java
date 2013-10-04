@@ -39,7 +39,7 @@ package org.fabric3.monitor.spi.destination;
 
 import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefinition;
 import org.fabric3.monitor.spi.model.type.MonitorDestinationDefinition;
-import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.GenerationException;
 
 /**
  * Generates physical definitions for a monitor destination.

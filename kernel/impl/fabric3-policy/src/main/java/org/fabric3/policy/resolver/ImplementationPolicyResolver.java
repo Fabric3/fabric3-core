@@ -40,7 +40,7 @@ package org.fabric3.policy.resolver;
 import java.util.Set;
 
 import org.fabric3.model.type.definitions.PolicySet;
-import org.fabric3.spi.generator.policy.PolicyResolutionException;
+import org.fabric3.spi.deployment.generator.policy.PolicyResolutionException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
 

@@ -55,7 +55,7 @@ import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.command.ExecutionException;
-import org.fabric3.spi.generator.Deployment;
+import org.fabric3.spi.deployment.generator.Deployment;
 
 import static org.fabric3.host.Names.LOCAL_ZONE;
 

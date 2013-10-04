@@ -41,7 +41,7 @@ import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
-import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.GenerationException;
 
 /**
  * Called by the JMS binding after generation has run to allow a host environment to provision JMS resources such as destinations. Implementations may

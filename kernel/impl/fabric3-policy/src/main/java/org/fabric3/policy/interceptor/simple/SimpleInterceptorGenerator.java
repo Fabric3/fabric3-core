@@ -40,8 +40,8 @@ package org.fabric3.policy.interceptor.simple;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.w3c.dom.Element;
 
-import org.fabric3.spi.generator.wire.InterceptorGenerator;
-import org.fabric3.spi.generator.policy.PolicyMetadata;
+import org.fabric3.spi.deployment.generator.wire.InterceptorGenerator;
+import org.fabric3.spi.deployment.generator.policy.PolicyMetadata;
 import org.fabric3.spi.model.instance.LogicalOperation;
 
 /**

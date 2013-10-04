@@ -39,13 +39,13 @@ package org.fabric3.fabric.domain;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
+import org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
-import org.fabric3.spi.generator.Generator;
-import org.fabric3.spi.generator.policy.PolicyAttacher;
-import org.fabric3.spi.generator.policy.PolicyRegistry;
+import org.fabric3.spi.deployment.generator.Generator;
+import org.fabric3.spi.deployment.generator.policy.PolicyAttacher;
+import org.fabric3.spi.deployment.generator.policy.PolicyRegistry;
 import org.fabric3.spi.domain.LogicalComponentManager;
 
 /**

@@ -41,8 +41,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.jndi.model.JndiContextDefinition;
 import org.fabric3.jndi.provision.PhysicalJndiContextDefinition;
-import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.resource.ResourceGenerator;
+import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 

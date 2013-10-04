@@ -59,7 +59,7 @@ import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.command.ExecutionException;
-import org.fabric3.spi.generator.DeploymentUnit;
+import org.fabric3.spi.deployment.generator.DeploymentUnit;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

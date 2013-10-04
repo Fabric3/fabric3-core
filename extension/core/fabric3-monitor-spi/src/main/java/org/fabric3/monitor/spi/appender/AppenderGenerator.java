@@ -39,7 +39,7 @@ package org.fabric3.monitor.spi.appender;
 
 import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;
-import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.GenerationException;
 
 /**
  *

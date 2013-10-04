@@ -41,8 +41,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.datasource.model.DataSourceResourceReference;
 import org.fabric3.datasource.provision.DataSourceTargetDefinition;
-import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.resource.ResourceReferenceGenerator;
+import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 
 /**

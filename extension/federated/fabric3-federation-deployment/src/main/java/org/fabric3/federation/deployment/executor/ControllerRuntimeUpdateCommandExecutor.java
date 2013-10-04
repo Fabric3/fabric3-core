@@ -57,10 +57,10 @@ import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.command.CommandExecutor;
 import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.command.ExecutionException;
-import org.fabric3.spi.generator.Deployment;
-import org.fabric3.spi.generator.DeploymentUnit;
-import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.Generator;
+import org.fabric3.spi.deployment.generator.Deployment;
+import org.fabric3.spi.deployment.generator.DeploymentUnit;
+import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.Generator;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 

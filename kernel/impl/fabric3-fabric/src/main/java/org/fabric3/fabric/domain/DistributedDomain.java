@@ -42,20 +42,20 @@ import java.util.List;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.fabric.generator.binding.BindingSelector;
-import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
+import org.fabric3.fabric.deployment.generator.binding.BindingSelector;
+import org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.domain.DeploymentException;
 import org.fabric3.host.domain.Domain;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.domain.Allocator;
-import org.fabric3.spi.generator.binding.BindingSelectionException;
+import org.fabric3.spi.deployment.generator.binding.BindingSelectionException;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeployListener;
-import org.fabric3.spi.generator.Generator;
-import org.fabric3.spi.generator.policy.PolicyAttacher;
-import org.fabric3.spi.generator.policy.PolicyRegistry;
+import org.fabric3.spi.deployment.generator.Generator;
+import org.fabric3.spi.deployment.generator.policy.PolicyAttacher;
+import org.fabric3.spi.deployment.generator.policy.PolicyRegistry;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 

@@ -37,9 +37,9 @@
 */
 package org.fabric3.node.nonmanaged;
 
-import org.fabric3.spi.generator.component.ComponentGenerator;
-import org.fabric3.spi.generator.policy.EffectivePolicy;
-import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
+import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
+import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;

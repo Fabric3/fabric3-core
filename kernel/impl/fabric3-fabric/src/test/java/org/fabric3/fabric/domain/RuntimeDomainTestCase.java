@@ -52,8 +52,8 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.easymock.IMocksControl;
-import org.fabric3.fabric.instantiator.InstantiationContext;
-import org.fabric3.fabric.instantiator.LogicalModelInstantiator;
+import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
+import org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.DefaultHostInfo;
@@ -64,9 +64,9 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeploymentPackage;
-import org.fabric3.spi.generator.Deployment;
-import org.fabric3.spi.generator.Generator;
-import org.fabric3.spi.generator.policy.PolicyAttacher;
+import org.fabric3.spi.deployment.generator.Deployment;
+import org.fabric3.spi.deployment.generator.Generator;
+import org.fabric3.spi.deployment.generator.policy.PolicyAttacher;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**

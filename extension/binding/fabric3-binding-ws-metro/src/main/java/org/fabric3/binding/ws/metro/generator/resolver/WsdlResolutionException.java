@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.ws.metro.generator.resolver;
 
-import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.GenerationException;
 
 /**
  * Denotes an error resolving a parsed WSDL document.

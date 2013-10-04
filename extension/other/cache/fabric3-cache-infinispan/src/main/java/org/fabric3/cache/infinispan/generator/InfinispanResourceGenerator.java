@@ -46,7 +46,7 @@ import org.fabric3.cache.infinispan.model.InfinispanCacheResourceDefinition;
 import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefinition;
 import org.fabric3.cache.infinispan.util.XmlHelper;
 import org.fabric3.cache.spi.CacheResourceGenerator;
-import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.GenerationException;
 
 /**
  * Generates configuration for creating an Infinispan cache on a runtime.

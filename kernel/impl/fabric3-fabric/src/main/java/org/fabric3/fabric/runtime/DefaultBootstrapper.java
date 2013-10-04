@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fabric3.contribution.manifest.ContributionExport;
-import org.fabric3.fabric.instantiator.component.AtomicComponentInstantiatorImpl;
+import org.fabric3.fabric.deployment.instantiator.component.AtomicComponentInstantiatorImpl;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapAssemblyFactory;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapCompositeFactory;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;

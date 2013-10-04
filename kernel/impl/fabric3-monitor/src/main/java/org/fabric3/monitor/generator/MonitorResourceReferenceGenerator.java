@@ -41,7 +41,7 @@ import java.net.URI;
 
 import org.fabric3.monitor.model.MonitorResourceReference;
 import org.fabric3.monitor.provision.MonitorTargetDefinition;
-import org.fabric3.spi.generator.resource.ResourceReferenceGenerator;
+import org.fabric3.spi.deployment.generator.resource.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.oasisopen.sca.annotation.EagerInit;

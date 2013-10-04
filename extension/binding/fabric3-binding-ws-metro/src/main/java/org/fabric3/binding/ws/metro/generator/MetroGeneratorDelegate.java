@@ -41,8 +41,8 @@ import org.fabric3.binding.ws.metro.provision.MetroSourceDefinition;
 import org.fabric3.binding.ws.metro.provision.MetroTargetDefinition;
 import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.spi.generator.policy.EffectivePolicy;
-import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
+import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 
 /**

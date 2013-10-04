@@ -50,7 +50,7 @@ import javax.xml.namespace.QName;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
-import org.fabric3.fabric.instantiator.InstantiationContext;
+import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
 import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.failure.AssemblyFailure;
 import org.fabric3.model.type.component.ComponentDefinition;

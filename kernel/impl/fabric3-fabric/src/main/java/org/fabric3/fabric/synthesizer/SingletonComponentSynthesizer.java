@@ -39,8 +39,8 @@ package org.fabric3.fabric.synthesizer;
 
 import java.net.URI;
 
-import org.fabric3.fabric.instantiator.AtomicComponentInstantiator;
-import org.fabric3.fabric.instantiator.InstantiationContext;
+import org.fabric3.fabric.deployment.instantiator.AtomicComponentInstantiator;
+import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
 import org.fabric3.host.domain.AssemblyException;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.implementation.system.singleton.SingletonComponent;
