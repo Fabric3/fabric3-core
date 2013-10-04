@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.binding;
+package org.fabric3.fabric.generator.binding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +44,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.fabric.generator.binding.ConfigurableBindingSelectionStrategy;
 import org.fabric3.spi.binding.provider.BindingProvider;
 
 /**

@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.binding;
+package org.fabric3.fabric.generator.binding;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
@@ -44,6 +44,8 @@ import java.util.Collections;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
+import org.fabric3.fabric.generator.binding.BindingSelectorImpl;
+import org.fabric3.fabric.generator.binding.NoSCABindingProviderException;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.ComponentDefinition;

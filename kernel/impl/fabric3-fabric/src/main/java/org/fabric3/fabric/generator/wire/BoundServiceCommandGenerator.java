@@ -54,7 +54,7 @@ import org.fabric3.fabric.command.DetachWireCommand;
 import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.model.type.component.BindingDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.spi.binding.generator.CallbackBindingGenerator;
+import org.fabric3.spi.generator.CallbackBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.generator.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;

@@ -35,25 +35,22 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.binding.generator;
+package org.fabric3.fabric.generator.binding;
 
-import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.binding.provider.BindingSelectionException;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**
- * Implementations generate a {@link BindingDefinition} for a callback. This is required for bindings that do not require a separate callback configuration on a
- * service or reference.
+ * Responsible for selecting and configuring binding configuration for wires and channels in a domain.
  */
-public interface CallbackBindingGenerator<BD extends BindingDefinition> {
-
-    BD generateServiceCallback(LogicalBinding<BD> forwardBinding);
+public interface BindingSelector {
 
     /**
-     * Generates a callback binding definition for the forward binding.
+     * Selects and configures bindings in a domain.
      *
-     * @param forwardBinding the forward binding
-     * @return the binding definition
+     * @param domain the domain component
+     * @throws BindingSelectionException if an error occurs selecting a binding
      */
-    BD generateReferenceCallback(LogicalBinding<BD> forwardBinding);
+    void selectBindings(LogicalCompositeComponent domain) throws BindingSelectionException;
 
 }
