@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
@@ -51,7 +52,6 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.spi.contribution.ContributionResolverExtension;
 import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.federation.topology.MessageException;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
 
 /**
  * Resolves contributions in a domain. Resolution is done by first querying a the controller for the contribution URL. If the controller is
@@ -59,14 +59,14 @@ import org.fabric3.spi.federation.topology.ZoneTopologyService;
  */
 @EagerInit
 public class ZoneContributionResolverExtension implements ContributionResolverExtension {
-    private ZoneTopologyService topologyService;
+    private ParticipantTopologyService topologyService;
     private ProvisionMonitor monitor;
     private boolean secure;
     private String username;
     private String password;
     private long defaultTimeout = 10000;
 
-    public ZoneContributionResolverExtension(@Reference ZoneTopologyService topologyService, @Monitor ProvisionMonitor monitor) {
+    public ZoneContributionResolverExtension(@Reference ParticipantTopologyService topologyService, @Monitor ProvisionMonitor monitor) {
         this.topologyService = topologyService;
         this.monitor = monitor;
     }

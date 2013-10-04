@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.fabric3.spi.federation.topology.ControllerTopologyService;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
@@ -64,7 +65,6 @@ import org.fabric3.spi.command.Response;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
-import org.fabric3.spi.federation.topology.DomainTopologyService;
 import org.fabric3.spi.federation.topology.ErrorResponse;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.RuntimeInstance;
@@ -78,12 +78,12 @@ import org.fabric3.spi.generator.DeploymentUnit;
 @EagerInit
 public class FederatedDeployer implements Deployer {
     private DeployerMonitor monitor;
-    private DomainTopologyService topologyService;
+    private ControllerTopologyService topologyService;
     private SerializationService serializationService;
     private List<FederatedDeployerListener> listeners;
     private long timeout = 60000;
 
-    public FederatedDeployer(@Reference DomainTopologyService topologyService,
+    public FederatedDeployer(@Reference ControllerTopologyService topologyService,
                              @Reference SerializationService serializationService,
                              @Monitor DeployerMonitor monitor) {
         this.topologyService = topologyService;

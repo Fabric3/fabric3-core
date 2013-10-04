@@ -59,7 +59,7 @@ import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeStart;
 import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.federation.topology.DomainTopologyService;
+import org.fabric3.spi.federation.topology.ControllerTopologyService;
 import org.fabric3.spi.federation.topology.ErrorResponse;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.RemoteSystemException;
@@ -84,11 +84,11 @@ import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Element;
 
 /**
- * JGroups implementation of the {@link DomainTopologyService}.
+ * JGroups implementation of the {@link ControllerTopologyService}.
  */
 @EagerInit
-@Management(name = "DomainTopologyService", path = "/runtime/federation/controller/view")
-public class JGroupsDomainTopologyService extends AbstractTopologyService implements DomainTopologyService {
+@Management(name = "ControllerTopologyService", path = "/runtime/federation/controller/view")
+public class JGroupsControllerTopologyService extends AbstractTopologyService implements ControllerTopologyService {
     private JChannel domainChannel;
     private MessageDispatcher dispatcher;
     private JoinEventListener joinListener;
@@ -98,12 +98,12 @@ public class JGroupsDomainTopologyService extends AbstractTopologyService implem
     private Map<String, Map<String, RuntimeInstance>> runtimes = new ConcurrentHashMap<String, Map<String, RuntimeInstance>>();
     private Element channelConfig;
 
-    public JGroupsDomainTopologyService(@Reference HostInfo info,
-                                        @Reference CommandExecutorRegistry executorRegistry,
-                                        @Reference EventService eventService,
-                                        @Reference Executor executor,
-                                        @Reference JGroupsHelper helper,
-                                        @Monitor TopologyServiceMonitor monitor) {
+    public JGroupsControllerTopologyService(@Reference HostInfo info,
+                                            @Reference CommandExecutorRegistry executorRegistry,
+                                            @Reference EventService eventService,
+                                            @Reference Executor executor,
+                                            @Reference JGroupsHelper helper,
+                                            @Monitor TopologyServiceMonitor monitor) {
         super(info, executorRegistry, eventService, executor, helper, monitor);
     }
 

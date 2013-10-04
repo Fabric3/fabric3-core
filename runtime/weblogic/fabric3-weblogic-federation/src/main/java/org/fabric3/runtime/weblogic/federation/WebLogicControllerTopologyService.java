@@ -65,7 +65,7 @@ import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.federation.topology.DomainTopologyService;
+import org.fabric3.spi.federation.topology.ControllerTopologyService;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.RuntimeInstance;
 import org.fabric3.spi.federation.topology.Zone;
@@ -79,9 +79,9 @@ import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONT
 /**
  * Provides domain-wide controller communication using the WebLogic clustered JNDI tree.
  */
-@Service(DomainTopologyService.class)
+@Service(ControllerTopologyService.class)
 @EagerInit
-public class WebLogicDomainTopologyService implements DomainTopologyService {
+public class WebLogicControllerTopologyService implements ControllerTopologyService {
     private static final String RUNTIME_NAME = "controller";
 
     private CommandExecutorRegistry executorRegistry;
@@ -94,11 +94,11 @@ public class WebLogicDomainTopologyService implements DomainTopologyService {
     private JmxHelper jmxHelper;
     private String domainName;
 
-    public WebLogicDomainTopologyService(@Reference CommandExecutorRegistry executorRegistry,
-                                         @Reference EventService eventService,
-                                         @Reference SerializationService serializationService,
-                                         @Reference JmxHelper jmxHelper,
-                                         @Monitor WebLogicTopologyMonitor monitor) {
+    public WebLogicControllerTopologyService(@Reference CommandExecutorRegistry executorRegistry,
+                                             @Reference EventService eventService,
+                                             @Reference SerializationService serializationService,
+                                             @Reference JmxHelper jmxHelper,
+                                             @Monitor WebLogicTopologyMonitor monitor) {
         this.executorRegistry = executorRegistry;
         this.eventService = eventService;
         this.serializationService = serializationService;

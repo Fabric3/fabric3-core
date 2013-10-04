@@ -49,7 +49,7 @@ import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.federation.topology.MessageReceiver;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.BasicAuthenticator;
 
@@ -79,7 +79,7 @@ public final class ResourceHostImplReplicationTestCase extends TestCase {
     }
 
     public void testReplicateChange() throws Exception {
-        ZoneTopologyService topologyService = EasyMock.createMock(ZoneTopologyService.class);
+        ParticipantTopologyService topologyService = EasyMock.createMock(ParticipantTopologyService.class);
         topologyService.openChannel(EasyMock.isA(String.class), (String) EasyMock.isNull(), EasyMock.isA(MessageReceiver.class));
         topologyService.sendAsynchronous(EasyMock.isA(String.class), EasyMock.isA((Serializable.class)));
         MockResource instance = EasyMock.createMock(MockResource.class);
@@ -105,7 +105,7 @@ public final class ResourceHostImplReplicationTestCase extends TestCase {
     }
 
     public void testReplicateHttpServletRequestChange() throws Exception {
-        ZoneTopologyService topologyService = EasyMock.createMock(ZoneTopologyService.class);
+        ParticipantTopologyService topologyService = EasyMock.createMock(ParticipantTopologyService.class);
         topologyService.openChannel(EasyMock.isA(String.class), (String) EasyMock.isNull(), EasyMock.isA(MessageReceiver.class));
         topologyService.sendAsynchronous(EasyMock.isA(String.class), EasyMock.isA((Serializable.class)));
 

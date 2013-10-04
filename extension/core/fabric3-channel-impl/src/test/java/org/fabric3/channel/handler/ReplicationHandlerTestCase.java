@@ -45,13 +45,13 @@ import org.fabric3.channel.impl.ReplicationMonitor;
 import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.EventWrapper;
 import org.fabric3.spi.federation.topology.MessageException;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 
 /**
  *
  */
 public class ReplicationHandlerTestCase extends TestCase {
-    private ZoneTopologyService topologyService;
+    private ParticipantTopologyService topologyService;
     private ReplicationMonitor monitor;
     private EventStreamHandler next;
 
@@ -130,7 +130,7 @@ public class ReplicationHandlerTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        topologyService = EasyMock.createMock(ZoneTopologyService.class);
+        topologyService = EasyMock.createMock(ParticipantTopologyService.class);
         monitor = EasyMock.createMock(ReplicationMonitor.class);
         next = EasyMock.createMock(EventStreamHandler.class);
     }

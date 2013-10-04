@@ -22,8 +22,8 @@ Copyright (c) 2009-2013 Metaform Systems
         <f3:implementation.system class="org.fabric3.runtime.weblogic.federation.WebLogicAllocator"/>
     </component>
 
-    <component name="WebLogicDomainTopologyService">
-        <f3:implementation.system class="org.fabric3.runtime.weblogic.federation.WebLogicDomainTopologyService"/>
+    <component name="WebLogicControllerTopologyService">
+        <f3:implementation.system class="org.fabric3.runtime.weblogic.federation.WebLogicControllerTopologyService"/>
     </component>
 
 

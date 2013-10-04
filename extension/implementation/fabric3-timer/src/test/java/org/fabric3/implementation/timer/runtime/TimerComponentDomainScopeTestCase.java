@@ -50,7 +50,7 @@ import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.implementation.timer.provision.TimerType;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ScopeContainer;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.timer.spi.TimerService;
 
 /**
@@ -58,7 +58,7 @@ import org.fabric3.timer.spi.TimerService;
  */
 public class TimerComponentDomainScopeTestCase extends TestCase {
     private TimerComponent component;
-    private ZoneTopologyService topologyService;
+    private ParticipantTopologyService topologyService;
     private TimerService timerService;
 
     public void testNotLeaderNoSchedule() throws Exception {
@@ -127,7 +127,7 @@ public class TimerComponentDomainScopeTestCase extends TestCase {
 
         EasyMock.replay(container, monitor, factory, info);
 
-        topologyService = EasyMock.createMock(ZoneTopologyService.class);
+        topologyService = EasyMock.createMock(ParticipantTopologyService.class);
 
         component = new TimerComponent(null,
                                        null,

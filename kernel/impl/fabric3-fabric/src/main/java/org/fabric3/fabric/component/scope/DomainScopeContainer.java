@@ -55,8 +55,8 @@ import org.fabric3.spi.component.GroupInitializationException;
 import org.fabric3.spi.component.InstanceLifecycleException;
 import org.fabric3.spi.component.ScopeContainer;
 import org.fabric3.spi.component.ScopedComponent;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
 import org.fabric3.spi.invocation.WorkContextCache;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -75,7 +75,7 @@ import org.oasisopen.sca.annotation.Service;
 @Service(names = {ScopeContainer.class, TopologyListener.class})
 public class DomainScopeContainer extends SingletonScopeContainer implements TopologyListener {
     private HostInfo info;
-    private ZoneTopologyService topologyService;
+    private ParticipantTopologyService topologyService;
     private final List<QName> deferredContexts = new ArrayList<QName>();
     boolean activated;
 
@@ -85,7 +85,7 @@ public class DomainScopeContainer extends SingletonScopeContainer implements Top
     }
 
     @Reference(required = false)
-    public void setTopologyService(List<ZoneTopologyService> topologyServices) {
+    public void setTopologyService(List<ParticipantTopologyService> topologyServices) {
         if (topologyServices.size() > 0) {
             this.topologyService = topologyServices.get(0);
         }

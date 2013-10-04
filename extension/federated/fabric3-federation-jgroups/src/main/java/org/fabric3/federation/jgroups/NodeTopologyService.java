@@ -62,14 +62,14 @@ import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.JoinDomain;
 import org.fabric3.spi.event.RuntimeStop;
 import org.fabric3.spi.executor.CommandExecutorRegistry;
-import org.fabric3.spi.federation.topology.DomainTopologyService;
+import org.fabric3.spi.federation.topology.ControllerTopologyService;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.RuntimeInstance;
 import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.federation.topology.Zone;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.jgroups.Address;
 import org.jgroups.Channel;
@@ -89,12 +89,12 @@ import org.oasisopen.sca.annotation.Service;
 import org.w3c.dom.Element;
 
 /**
- * JGroups implementation of the {@link DomainTopologyService} and the {@link ZoneTopologyService} for node runtimes.
+ * JGroups implementation of the {@link ControllerTopologyService} and the {@link ParticipantTopologyService} for node runtimes.
  */
 @EagerInit
 @Management(name = "NodeTopologyService", path = "/runtime/federation/node/view")
-@Service(names = {DomainTopologyService.class, ZoneTopologyService.class})
-public class NodeTopologyService extends AbstractTopologyService implements DomainTopologyService, ZoneTopologyService {
+@Service(names = {ControllerTopologyService.class, ParticipantTopologyService.class})
+public class NodeTopologyService extends AbstractTopologyService implements ControllerTopologyService, ParticipantTopologyService {
     private JChannel domainChannel;
     private MessageDispatcher dispatcher;
     private JoinEventListener joinListener;

@@ -55,8 +55,8 @@ import org.fabric3.spi.builder.BuilderException;
 import org.fabric3.spi.builder.channel.ChannelBuilder;
 import org.fabric3.spi.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.channel.Channel;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.Reference;
@@ -68,7 +68,7 @@ public class DefaultChannelBuilder implements ChannelBuilder {
 
     private ExecutorService executorService;
     private ReplicationMonitor monitor;
-    private ZoneTopologyService topologyService;
+    private ParticipantTopologyService topologyService;
     private boolean replicationCapable;
 
     private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder> bindingBuilders = Collections.emptyMap();
@@ -79,7 +79,7 @@ public class DefaultChannelBuilder implements ChannelBuilder {
     }
 
     @Reference(required = false)
-    public void setTopologyService(List<ZoneTopologyService> services) {
+    public void setTopologyService(List<ParticipantTopologyService> services) {
         // use a collection to force reinjection
         if (services != null && !services.isEmpty()) {
             this.topologyService = services.get(0);

@@ -17,8 +17,8 @@ Public License. See the accompanying license file for details.
            autowire="true">
 
 
-    <component name="ZoneTopologyService">
-        <f3:implementation.system class="org.fabric3.federation.jgroups.JGroupsZoneTopologyService"/>
+    <component name="JGroupsParticipantTopologyService">
+        <f3:implementation.system class="org.fabric3.federation.jgroups.JGroupsParticipantTopologyService"/>
         <property name="channelConfig" source="$systemConfig//f3:federation/f3:config"/>
         <property name="defaultTimeout" source="$systemConfig//f3:federation/@timeout"/>
         <property name="synchronize" source="$systemConfig//f3:federation/@synchronize"/>

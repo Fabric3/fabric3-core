@@ -60,8 +60,8 @@ import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.invocation.WorkContext;
 import org.fabric3.spi.invocation.WorkContextCache;
@@ -91,7 +91,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     private BasicAuthenticator authenticator;
     private ManagementMonitor monitor;
 
-    private ZoneTopologyService topologyService;
+    private ParticipantTopologyService topologyService;
 
     private ManagementSecurity security = ManagementSecurity.DISABLED;
     private Set<Role> roles = new HashSet<Role>();
@@ -137,7 +137,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     }
 
     @Reference(required = false)
-    public void setTopologyService(ZoneTopologyService topologyService) {
+    public void setTopologyService(ParticipantTopologyService topologyService) {
         this.topologyService = topologyService;
     }
 

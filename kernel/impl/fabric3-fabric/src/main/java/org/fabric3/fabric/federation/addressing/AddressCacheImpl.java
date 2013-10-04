@@ -53,9 +53,9 @@ import org.fabric3.spi.federation.addressing.AddressUpdate;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
@@ -68,7 +68,7 @@ import org.oasisopen.sca.annotation.Service;
 public class AddressCacheImpl implements AddressCache, TopologyListener, MessageReceiver, Fabric3EventListener<JoinDomainCompleted> {
     private static final String ADDRESS_CHANNEL = "F3AddressChannel";
 
-    private ZoneTopologyService topologyService;
+    private ParticipantTopologyService topologyService;
     private Executor executor;
     private EventService eventService;
     private HostInfo info;
@@ -88,7 +88,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
     }
 
     @Reference(required = false)
-    public void setTopologyService(ZoneTopologyService topologyService) {
+    public void setTopologyService(ParticipantTopologyService topologyService) {
         this.topologyService = topologyService;
     }
 

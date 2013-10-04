@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -66,7 +67,6 @@ import org.fabric3.management.rest.spi.ResourceListener;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
 
 import static org.fabric3.management.rest.model.Link.EDIT_LINK;
 
@@ -80,7 +80,7 @@ public class ZoneResourceService implements ResourceListener {
     private ResourceHost resourceHost;
     private ManagementMonitor monitor;
     private HostInfo info;
-    private ZoneTopologyService topologyService;
+    private ParticipantTopologyService topologyService;
 
     private List<ResourceMapping> subresources = new ArrayList<ResourceMapping>();
     private List<ResourceMapping> registered = new ArrayList<ResourceMapping>();
@@ -93,7 +93,7 @@ public class ZoneResourceService implements ResourceListener {
     }
 
     @Reference(required = false)
-    public void setTopologyService(ZoneTopologyService topologyService) {
+    public void setTopologyService(ParticipantTopologyService topologyService) {
         this.topologyService = topologyService;
     }
 

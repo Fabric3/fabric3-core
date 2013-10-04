@@ -66,10 +66,10 @@ import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.federation.topology.ControllerNotFoundException;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.RemoteSystemException;
 import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
 import org.jgroups.Address;
 import org.jgroups.Channel;
 import org.jgroups.JChannel;
@@ -90,8 +90,8 @@ import org.w3c.dom.Element;
  *
  */
 @EagerInit
-@Management(name = "ZoneTopologyService", path = "/runtime/federation/zone/view")
-public class JGroupsZoneTopologyService extends AbstractTopologyService implements ZoneTopologyService {
+@Management(name = "ParticipantTopologyService", path = "/runtime/federation/zone/view")
+public class JGroupsParticipantTopologyService extends AbstractTopologyService implements ParticipantTopologyService {
     private static final int NOT_UPDATED = -1;
     private static final int UPDATED = 1;
 
@@ -110,12 +110,12 @@ public class JGroupsZoneTopologyService extends AbstractTopologyService implemen
 
     private int state = NOT_UPDATED;
 
-    public JGroupsZoneTopologyService(@Reference HostInfo info,
-                                      @Reference CommandExecutorRegistry executorRegistry,
-                                      @Reference EventService eventService,
-                                      @Reference Executor executor,
-                                      @Reference JGroupsHelper helper,
-                                      @Monitor TopologyServiceMonitor monitor) {
+    public JGroupsParticipantTopologyService(@Reference HostInfo info,
+                                             @Reference CommandExecutorRegistry executorRegistry,
+                                             @Reference EventService eventService,
+                                             @Reference Executor executor,
+                                             @Reference JGroupsHelper helper,
+                                             @Monitor TopologyServiceMonitor monitor) {
         super(info, executorRegistry, eventService, executor, helper, monitor);
         zoneName = info.getZoneName();
     }

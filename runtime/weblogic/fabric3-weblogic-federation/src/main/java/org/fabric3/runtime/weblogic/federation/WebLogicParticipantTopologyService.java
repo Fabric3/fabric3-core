@@ -62,7 +62,6 @@ import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
 import org.fabric3.runtime.weblogic.cluster.ChannelException;
 import org.fabric3.runtime.weblogic.cluster.RuntimeChannel;
 import org.fabric3.spi.classloader.SerializationService;
-import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.Response;
 import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.event.EventService;
@@ -72,9 +71,9 @@ import org.fabric3.spi.executor.CommandExecutorRegistry;
 import org.fabric3.spi.executor.ExecutionException;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
@@ -87,9 +86,9 @@ import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONT
 /**
  * Provides domain communication for a participant runtime using the WebLogic clustered JNDI tree.
  */
-@Service(ZoneTopologyService.class)
+@Service(ParticipantTopologyService.class)
 @EagerInit
-public class WebLogicZoneTopologyService implements ZoneTopologyService {
+public class WebLogicParticipantTopologyService implements ParticipantTopologyService {
     private static final String JNDI_FACTORY = "weblogic.jndi.WLInitialContextFactory";
 
     private ExecutorService executorService;
@@ -109,12 +108,12 @@ public class WebLogicZoneTopologyService implements ZoneTopologyService {
     private List<ChannelOpenRequest> channelRequests = new ArrayList<ChannelOpenRequest>();
     private Set<String> openChannels = new HashSet<String>();
 
-    public WebLogicZoneTopologyService(@Reference EventService eventService,
-                                       @Reference SerializationService serializationService,
-                                       @Reference CommandExecutorRegistry executorRegistry,
-                                       @Reference ExecutorService executorService,
-                                       @Reference JmxHelper jmxHelper,
-                                       @Monitor WebLogicTopologyMonitor monitor) {
+    public WebLogicParticipantTopologyService(@Reference EventService eventService,
+                                              @Reference SerializationService serializationService,
+                                              @Reference CommandExecutorRegistry executorRegistry,
+                                              @Reference ExecutorService executorService,
+                                              @Reference JmxHelper jmxHelper,
+                                              @Monitor WebLogicTopologyMonitor monitor) {
         this.eventService = eventService;
         this.serializationService = serializationService;
         this.executorRegistry = executorRegistry;

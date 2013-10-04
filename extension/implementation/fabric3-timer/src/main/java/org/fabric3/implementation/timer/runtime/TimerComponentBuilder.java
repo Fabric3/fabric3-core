@@ -59,7 +59,7 @@ import org.fabric3.spi.component.ScopeRegistry;
 import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.event.Fabric3EventListener;
 import org.fabric3.spi.event.RuntimeStart;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.timer.spi.TimerService;
@@ -76,7 +76,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
     private TimerService timerService;
     private TransactionManager tm;
     private HostInfo info;
-    private ZoneTopologyService topologyService;
+    private ParticipantTopologyService topologyService;
     private InvokerMonitor monitor;
 
     private List<TimerComponent> scheduleQueue;
@@ -105,7 +105,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerComponentDe
     }
 
     @Reference(required = false)
-    public void setTopologyService(ZoneTopologyService topologyService) {
+    public void setTopologyService(ParticipantTopologyService topologyService) {
         this.topologyService = topologyService;
     }
 

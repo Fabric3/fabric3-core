@@ -45,7 +45,7 @@ import org.fabric3.spi.federation.addressing.AddressListener;
 import org.fabric3.spi.federation.addressing.AddressMonitor;
 import org.fabric3.spi.federation.addressing.AddressRequest;
 import org.fabric3.spi.federation.addressing.AddressUpdate;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.host.Port;
 
 /**
@@ -76,7 +76,7 @@ public class FederatedAddressCacheImplTestCase extends TestCase {
     private static final SocketAddress ADDRESS2 = new SocketAddress("runtime2", "zone", "tcp", "10.10.10.2", PORT);
 
     private HostInfo info;
-    private ZoneTopologyService topologyService;
+    private ParticipantTopologyService topologyService;
     private EventService eventService;
     private Executor executor;
     private AddressMonitor monitor;
@@ -176,6 +176,6 @@ public class FederatedAddressCacheImplTestCase extends TestCase {
         monitor = EasyMock.createNiceMock(AddressMonitor.class);
         info = EasyMock.createNiceMock(HostInfo.class);
         EasyMock.expect(info.getDomain()).andReturn(URI.create("fabric3://domain")).atLeastOnce();
-        topologyService = EasyMock.createMock(ZoneTopologyService.class);
+        topologyService = EasyMock.createMock(ParticipantTopologyService.class);
     }
 }

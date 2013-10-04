@@ -51,8 +51,8 @@ import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.model.type.component.Scope;
 import org.fabric3.spi.component.ComponentException;
 import org.fabric3.spi.component.ScopeContainer;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.TopologyListener;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
 import org.fabric3.timer.spi.Task;
 import org.fabric3.timer.spi.TimerService;
 
@@ -64,7 +64,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
     private Class<?> implementationClass;
     private TimerService timerService;
     private ScheduledFuture<?> future;
-    private ZoneTopologyService topologyService;
+    private ParticipantTopologyService topologyService;
     private InvokerMonitor monitor;
     private boolean scheduleOnStart;
     private Scope scope;
@@ -82,7 +82,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
                           ScopeContainer scopeContainer,
                           TimerService timerService,
                           TransactionManager tm,
-                          ZoneTopologyService topologyService,
+                          ParticipantTopologyService topologyService,
                           HostInfo info,
                           InvokerMonitor monitor,
                           boolean scheduleOnStart) {

@@ -44,7 +44,7 @@ import org.fabric3.spi.channel.EventStreamHandler;
 import org.fabric3.spi.channel.EventWrapper;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 
 /**
  * Responsible for handling event replication in a zone. Specifically, replicates events to other channel instances and passes replicated events through to
@@ -52,11 +52,11 @@ import org.fabric3.spi.federation.topology.ZoneTopologyService;
  */
 public class ReplicationHandler implements EventStreamHandler, MessageReceiver {
     private String channelName;
-    private ZoneTopologyService topologyService;
+    private ParticipantTopologyService topologyService;
     private EventStreamHandler next;
     private ReplicationMonitor monitor;
 
-    public ReplicationHandler(String channelName, ZoneTopologyService topologyService, ReplicationMonitor monitor) {
+    public ReplicationHandler(String channelName, ParticipantTopologyService topologyService, ReplicationMonitor monitor) {
         this.topologyService = topologyService;
         this.channelName = channelName;
         this.monitor = monitor;

@@ -52,7 +52,7 @@ import org.fabric3.management.rest.runtime.ManagementMonitor;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
-import org.fabric3.spi.federation.topology.ZoneTopologyService;
+import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 
 /**
  *
@@ -65,7 +65,7 @@ public class ZoneResourceServiceTestCase extends TestCase {
     private HttpServletRequest request;
 
     public void testDistributedGetZoneResource() throws Exception {
-        ZoneTopologyService topologyService = EasyMock.createMock(ZoneTopologyService.class);
+        ParticipantTopologyService topologyService = EasyMock.createMock(ParticipantTopologyService.class);
         EasyMock.expect(topologyService.getZoneLeaderName()).andReturn("runtime1");
         service.setTopologyService(topologyService);
 

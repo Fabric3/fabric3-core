@@ -18,8 +18,8 @@ Copyright (c) 2009-2013 Metaform Systems
            name="WebLogicFederationParticipantExtension"
            autowire="true">
 
-    <component name="WebLogicZoneTopologyService">
-        <f3:implementation.system class="org.fabric3.runtime.weblogic.federation.WebLogicZoneTopologyService"/>
+    <component name="WebLogicParticipantTopologyService">
+        <f3:implementation.system class="org.fabric3.runtime.weblogic.federation.WebLogicParticipantTopologyService"/>
         <property name="synchronize" source="$systemConfig//f3:federation/@synchronize"/>
         <property name="adminServerUrl" source="$systemConfig//f3:weblogic/@adminServerUrl"/>
     </component>
