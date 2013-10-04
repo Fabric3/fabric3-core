@@ -35,12 +35,10 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.event;
+package org.fabric3.fabric.runtime.event;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.fabric.runtime.event.EventServiceImpl;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3Event;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
