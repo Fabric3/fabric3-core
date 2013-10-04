@@ -76,7 +76,11 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.event.EventService;
+import org.fabric3.spi.event.Fabric3EventListener;
+import org.fabric3.spi.event.JoinDomainCompleted;
 import org.fabric3.spi.federation.addressing.AddressAnnouncement;
 import org.fabric3.spi.federation.addressing.AddressCache;
 import org.fabric3.spi.federation.addressing.EndpointConstants;
@@ -124,6 +128,7 @@ public class JettyServiceImpl implements JettyService, Transport {
     private ExecutorService executorService;
     private ManagementService managementService;
     private PortAllocator portAllocator;
+    private EventService eventService;
     private HostInfo hostInfo;
     private TransportMonitor monitor;
 
@@ -177,11 +182,13 @@ public class JettyServiceImpl implements JettyService, Transport {
     public JettyServiceImpl(@Reference ExecutorService executorService,
                             @Reference ManagementService managementService,
                             @Reference PortAllocator portAllocator,
+                            @Reference EventService eventService,
                             @Reference HostInfo hostInfo,
                             @Monitor TransportMonitor monitor) {
         this.executorService = executorService;
         this.managementService = managementService;
         this.portAllocator = portAllocator;
+        this.eventService = eventService;
         this.hostInfo = hostInfo;
         this.monitor = monitor;
         // Re-route the Jetty logger to use a monitor
@@ -191,9 +198,10 @@ public class JettyServiceImpl implements JettyService, Transport {
         }
     }
 
-    public JettyServiceImpl(PortAllocator portAllocator, TransportMonitor monitor, HostInfo hostInfo) {
+    public JettyServiceImpl(PortAllocator portAllocator, TransportMonitor monitor, EventService eventService, HostInfo hostInfo) {
         this.portAllocator = portAllocator;
         this.monitor = monitor;
+        this.eventService = eventService;
         this.hostInfo = hostInfo;
     }
 
@@ -353,7 +361,11 @@ public class JettyServiceImpl implements JettyService, Transport {
                 managementService.export(MAPPINGS, "HTTP", "Servlet management beans", servletHandler);
                 managementService.export(SESSIONS, "HTTP", "Servlet session manager", sessionManager);
             }
-            registerHttpMetadata();
+            eventService.subscribe(JoinDomainCompleted.class, new Fabric3EventListener<JoinDomainCompleted>() {
+                public void onEvent(JoinDomainCompleted event) {
+                    registerSockets();
+                }
+            });
         } catch (Exception e) {
             throw new JettyInitializationException("Error starting Jetty service", e);
         } finally {
@@ -627,27 +639,29 @@ public class JettyServiceImpl implements JettyService, Transport {
     }
 
     /**
-     * Registers HTTP and HTTPS metadata with the topology service if it is available.
-     *
-     * @throws UnknownHostException if there is an error retrieving the host address
+     * Registers HTTP and HTTPS socket information with the topology service if it is available.
      */
-    private void registerHttpMetadata() throws UnknownHostException {
-        if (addressCache != null) {
-            String host = httpConnector.getHost();
-            if (host == null) {
-                host = InetAddress.getLocalHost().getHostAddress();
-            }
+    private void registerSockets() {
+        if (RuntimeMode.VM != hostInfo.getRuntimeMode()) {
+            try {
+                String host = httpConnector.getHost();
+                if (host == null) {
+                    host = InetAddress.getLocalHost().getHostAddress();
+                }
 
-            String runtimeName = hostInfo.getRuntimeName();
-            String zone = hostInfo.getZoneName();
-            SocketAddress httpAddress = new SocketAddress(runtimeName, zone, "http", host, selectedHttp);
-            AddressAnnouncement httpEvent = new AddressAnnouncement(EndpointConstants.HTTP_SERVER, ACTIVATED, httpAddress);
-            addressCache.publish(httpEvent);
+                String runtimeName = hostInfo.getRuntimeName();
+                String zone = hostInfo.getZoneName();
+                SocketAddress httpAddress = new SocketAddress(runtimeName, zone, "http", host, selectedHttp);
+                AddressAnnouncement httpEvent = new AddressAnnouncement(EndpointConstants.HTTP_SERVER, ACTIVATED, httpAddress);
+                addressCache.publish(httpEvent);
 
-            if (isHttpsEnabled()) {
-                SocketAddress httpsAddress = new SocketAddress(runtimeName, zone, "https", host, selectedHttps);
-                AddressAnnouncement httpsEvent = new AddressAnnouncement(EndpointConstants.HTTPS_SERVER, ACTIVATED, httpsAddress);
-                addressCache.publish(httpsEvent);
+                if (isHttpsEnabled()) {
+                    SocketAddress httpsAddress = new SocketAddress(runtimeName, zone, "https", host, selectedHttps);
+                    AddressAnnouncement httpsEvent = new AddressAnnouncement(EndpointConstants.HTTPS_SERVER, ACTIVATED, httpsAddress);
+                    addressCache.publish(httpsEvent);
+                }
+            } catch (UnknownHostException e) {
+                monitor.exception("Error registering sockets", e);
             }
         }
     }

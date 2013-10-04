@@ -43,6 +43,10 @@
  */
 package org.fabric3.transport.jetty;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -50,21 +54,16 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.spi.event.EventService;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.transport.jetty.impl.JettyServiceImpl;
 import org.fabric3.transport.jetty.impl.TransportMonitor;
-
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.getCurrentArguments;
@@ -76,16 +75,10 @@ import static org.easymock.EasyMock.replay;
  */
 public class JettyServiceImplTestCase extends TestCase {
 
-    private static final String REQUEST1_HEADER =
-            "GET / HTTP/1.0\n"
-                    + "Host: localhost\n"
-                    + "Content-Type: text/xml\n"
-                    + "Connection: close\n"
-                    + "Content-Length: ";
-    private static final String REQUEST1_CONTENT =
-            "";
-    private static final String REQUEST1 =
-            REQUEST1_HEADER + REQUEST1_CONTENT.getBytes().length + "\n\n" + REQUEST1_CONTENT;
+    private static final String REQUEST1_HEADER = "GET / HTTP/1.0\n" + "Host: localhost\n" + "Content-Type: text/xml\n" + "Connection: close\n"
+                                                  + "Content-Length: ";
+    private static final String REQUEST1_CONTENT = "";
+    private static final String REQUEST1 = REQUEST1_HEADER + REQUEST1_CONTENT.getBytes().length + "\n\n" + REQUEST1_CONTENT;
 
     private static final int HTTP_PORT = 8585;
 
@@ -123,38 +116,38 @@ public class JettyServiceImplTestCase extends TestCase {
         service.destroy();
     }
 
-//    public void testRequestSession() throws Exception {
-//        JettyServiceImpl service = new JettyServiceImpl(monitor, scheduler);
-//        service.setDebug(true);
-//        service.setHttpPort(HTTP_PORT);
-//        service.init();
-//        TestServlet servlet = new TestServlet();
-//        service.registerMapping("/", servlet);
-//        Socket client = new Socket("127.0.0.1", HTTP_PORT);
-//        OutputStream os = client.getOutputStream();
-//        os.write(REQUEST1.getBytes());
-//        os.flush();
-//        read(client);
-//        service.destroy();
-//        assertTrue(servlet.invoked);
-//        assertNotNull(servlet.sessionId);
-//    }
-//
-//    public void testUseWorkScheduler() throws Exception {
-//        JettyServiceImpl service = new JettyServiceImpl(monitor, scheduler);
-//        service.setDebug(true);
-//        service.setHttpPort(HTTP_PORT);
-//        service.init();
-//        TestServlet servlet = new TestServlet();
-//        service.registerMapping("/", servlet);
-//        Socket client = new Socket("127.0.0.1", HTTP_PORT);
-//        OutputStream os = client.getOutputStream();
-//        os.write(REQUEST1.getBytes());
-//        os.flush();
-//        read(client);
-//        service.destroy();
-//        assertTrue(servlet.invoked);
-//    }
+    //    public void testRequestSession() throws Exception {
+    //        JettyServiceImpl service = new JettyServiceImpl(monitor, scheduler);
+    //        service.setDebug(true);
+    //        service.setHttpPort(HTTP_PORT);
+    //        service.init();
+    //        TestServlet servlet = new TestServlet();
+    //        service.registerMapping("/", servlet);
+    //        Socket client = new Socket("127.0.0.1", HTTP_PORT);
+    //        OutputStream os = client.getOutputStream();
+    //        os.write(REQUEST1.getBytes());
+    //        os.flush();
+    //        read(client);
+    //        service.destroy();
+    //        assertTrue(servlet.invoked);
+    //        assertNotNull(servlet.sessionId);
+    //    }
+    //
+    //    public void testUseWorkScheduler() throws Exception {
+    //        JettyServiceImpl service = new JettyServiceImpl(monitor, scheduler);
+    //        service.setDebug(true);
+    //        service.setHttpPort(HTTP_PORT);
+    //        service.init();
+    //        TestServlet servlet = new TestServlet();
+    //        service.registerMapping("/", servlet);
+    //        Socket client = new Socket("127.0.0.1", HTTP_PORT);
+    //        OutputStream os = client.getOutputStream();
+    //        os.write(REQUEST1.getBytes());
+    //        os.flush();
+    //        read(client);
+    //        service.destroy();
+    //        assertTrue(servlet.invoked);
+    //    }
 
     public void testRestart() throws Exception {
         service.setHttpPort(String.valueOf(HTTP_PORT));
@@ -211,7 +204,9 @@ public class JettyServiceImplTestCase extends TestCase {
         EasyMock.expectLastCall().atLeastOnce();
         EasyMock.replay(portAllocator, port);
 
-        service = new JettyServiceImpl(portAllocator, monitor, info);
+        EventService eventService = EasyMock.createNiceMock(EventService.class);
+
+        service = new JettyServiceImpl(portAllocator, monitor, eventService, info);
 
     }
 
@@ -247,7 +242,6 @@ public class JettyServiceImplTestCase extends TestCase {
                 writer.close();
             }
         }
-
 
     }
 }
