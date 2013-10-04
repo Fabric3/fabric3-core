@@ -35,17 +35,48 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.handler;
+package org.fabric3.fabric.container.handler;
 
-import org.fabric3.spi.container.channel.HandlerCreationException;
+import org.oasisopen.sca.ServiceRuntimeException;
+
+import org.fabric3.spi.container.channel.EventStreamHandler;
+import org.fabric3.spi.transform.TransformationException;
+import org.fabric3.spi.transform.Transformer;
 
 /**
- * Thrown when a transformer cannot be found.
+ * Converts the event to a target format by delegating to a transformer.
  */
-public class NoTransformerException extends HandlerCreationException {
-    private static final long serialVersionUID = -3119130836236306468L;
+public class TransformerHandler implements EventStreamHandler {
+    private Transformer<Object, Object> transformer;
+    private ClassLoader loader;
+    private EventStreamHandler next;
 
-    public NoTransformerException(String message) {
-        super(message);
+    /**
+     * Constructor.
+     *
+     * @param transformer the transformer
+     * @param loader      the event type classloader
+     */
+    public TransformerHandler(Transformer<Object, Object> transformer, ClassLoader loader) {
+        this.transformer = transformer;
+        this.loader = loader;
     }
+
+    public void handle(Object event, boolean endOfBatch) {
+        try {
+            Object o = transformer.transform(event, loader);
+            next.handle(o, endOfBatch);
+        } catch (TransformationException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    public void setNext(EventStreamHandler next) {
+        this.next = next;
+    }
+
+    public EventStreamHandler getNext() {
+        return next;
+    }
+
 }

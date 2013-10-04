@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.handler;
+package org.fabric3.fabric.container.handler;
 
 import java.util.Collections;
 import java.util.List;
