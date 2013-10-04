@@ -22,7 +22,7 @@
            autowire="true">
 
     <component name="ActiveMQBindingProvider">
-        <f3:implementation.system class="org.fabric3.binding.activemq.control.ActiveMQBindingProvider"/>
+        <f3:implementation.system class="org.fabric3.binding.activemq.binding.ActiveMQBindingProvider"/>
         <property name="connectionFactory" source="$systemConfig//f3:jms/f3:binding.sca/@factory"/>
         <property name="xaConnectionFactory" source="$systemConfig//f3:jms/f3:binding.sca/@xa.factory"/>
         <property name="level" source="$systemConfig//f3:jms/f3:binding.sca/@cache"/>

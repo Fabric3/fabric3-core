@@ -35,15 +35,21 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.activemq.control;
+package org.fabric3.spi.generator.binding;
 
-import org.fabric3.api.annotation.monitor.Severe;
+import org.fabric3.host.Fabric3Exception;
 
 /**
- *
+ * General error denoting an exception configuring a binding.
  */
-public interface ProviderMonitor {
+public class BindingSelectionException extends Fabric3Exception {
+    private static final long serialVersionUID = -8232393072665476184L;
 
-    @Severe
-    void error(String message);
+    public BindingSelectionException(String message) {
+        super(message);
+    }
+
+    public BindingSelectionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

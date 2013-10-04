@@ -46,8 +46,8 @@ import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.annotation.Property;
 
-import org.fabric3.spi.binding.provider.BindingProvider;
-import org.fabric3.spi.binding.provider.BindingSelectionStrategy;
+import org.fabric3.spi.generator.binding.BindingProvider;
+import org.fabric3.spi.generator.binding.BindingSelectionStrategy;
 
 /**
  * A BindingSelectionStrategy that makes a selection based on an ordered list of bindings. This list is provided via a property which can be sourced

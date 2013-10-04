@@ -37,7 +37,7 @@
 */
 package org.fabric3.fabric.generator.binding;
 
-import org.fabric3.spi.binding.provider.BindingSelectionException;
+import org.fabric3.spi.generator.binding.BindingSelectionException;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**

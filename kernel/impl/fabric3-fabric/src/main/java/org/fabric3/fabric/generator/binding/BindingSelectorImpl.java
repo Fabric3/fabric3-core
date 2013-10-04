@@ -45,10 +45,10 @@ import java.util.List;
 
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.spi.binding.provider.BindingMatchResult;
-import org.fabric3.spi.binding.provider.BindingProvider;
-import org.fabric3.spi.binding.provider.BindingSelectionException;
-import org.fabric3.spi.binding.provider.BindingSelectionStrategy;
+import org.fabric3.spi.generator.binding.BindingMatchResult;
+import org.fabric3.spi.generator.binding.BindingProvider;
+import org.fabric3.spi.generator.binding.BindingSelectionException;
+import org.fabric3.spi.generator.binding.BindingSelectionStrategy;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;

@@ -39,8 +39,8 @@ package org.fabric3.fabric.generator.binding;
 
 import java.util.List;
 
-import org.fabric3.spi.binding.provider.BindingMatchResult;
-import org.fabric3.spi.binding.provider.BindingSelectionException;
+import org.fabric3.spi.generator.binding.BindingMatchResult;
+import org.fabric3.spi.generator.binding.BindingSelectionException;
 
 /**
  *

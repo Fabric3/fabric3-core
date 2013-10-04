@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.activemq.control;
+package org.fabric3.binding.activemq.binding;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
@@ -52,9 +52,9 @@ import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.common.ResponseDefinition;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.spi.binding.provider.BindingMatchResult;
-import org.fabric3.spi.binding.provider.BindingProvider;
-import org.fabric3.spi.binding.provider.BindingSelectionException;
+import org.fabric3.spi.generator.binding.BindingMatchResult;
+import org.fabric3.spi.generator.binding.BindingProvider;
+import org.fabric3.spi.generator.binding.BindingSelectionException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
