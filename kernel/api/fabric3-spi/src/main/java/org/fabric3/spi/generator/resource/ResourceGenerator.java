@@ -35,41 +35,25 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.generator;
+package org.fabric3.spi.generator.resource;
 
-import java.util.List;
-import java.util.Map;
-
-import org.fabric3.spi.model.instance.LogicalChannel;
-import org.fabric3.spi.model.instance.LogicalConsumer;
-import org.fabric3.spi.model.instance.LogicalProducer;
-import org.fabric3.spi.model.physical.ChannelDeliveryType;
-import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
+import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.spi.generator.GenerationException;
+import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**
- * Generates physical metadata for an event channel connection.
+ * Generates {@link PhysicalResourceDefinition}s from a resource definition declared in a composite.
  */
-public interface ConnectionGenerator {
+public interface ResourceGenerator<RD extends ResourceDefinition> {
 
     /**
-     * Generate event channel connection metadata from a logical producer.
+     * Generate the physical definition for a logical resource.
      *
-     * @param producer the logical producer
-     * @param channels the a map of channels and delivery semantics the consumer is connected to
-     * @return the event channel connection metadata
-     * @throws GenerationException if a generation error is encountered
+     * @param resource the logical resource
+     * @return the physical resource definition.
+     * @throws GenerationException if there was a problem generating the wire
      */
-    List<PhysicalChannelConnectionDefinition> generateProducer(LogicalProducer producer, Map<LogicalChannel, ChannelDeliveryType> channels)
-            throws GenerationException;
+    PhysicalResourceDefinition generateResource(LogicalResource<RD> resource) throws GenerationException;
 
-    /**
-     * Generate event channel connection metadata from a logical consumer.
-     *
-     * @param consumer the logical consumer
-     * @param channels the a map of channels and delivery semantics the consumer is connected to
-     * @return the event channel connection metadata
-     * @throws GenerationException if a generation error is encountered
-     */
-    List<PhysicalChannelConnectionDefinition> generateConsumer(LogicalConsumer consumer, Map<LogicalChannel, ChannelDeliveryType> channels)
-            throws GenerationException;
 }

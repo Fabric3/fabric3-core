@@ -42,7 +42,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.fabric3.datasource.model.DataSourceResource;
 import org.fabric3.datasource.provision.PhysicalDataSourceResource;
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.ResourceGenerator;
+import org.fabric3.spi.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 

@@ -45,7 +45,7 @@ import org.fabric3.monitor.spi.model.physical.PhysicalMonitorDestinationDefiniti
 import org.fabric3.monitor.spi.model.type.MonitorDestinationDefinition;
 import org.fabric3.monitor.spi.model.type.MonitorResourceDefinition;
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.ResourceGenerator;
+import org.fabric3.spi.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;

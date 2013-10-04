@@ -62,7 +62,7 @@ import org.fabric3.model.type.definitions.IntentMap;
 import org.fabric3.model.type.definitions.PolicyPhase;
 import org.fabric3.model.type.definitions.PolicySet;
 import org.fabric3.spi.generator.ComponentGenerator;
-import org.fabric3.spi.generator.ConnectionBindingGenerator;
+import org.fabric3.spi.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.EventStreamHandlerGenerator;
 import org.fabric3.spi.generator.PolicyMetadata;
 import org.fabric3.spi.generator.policy.PolicyResolver;

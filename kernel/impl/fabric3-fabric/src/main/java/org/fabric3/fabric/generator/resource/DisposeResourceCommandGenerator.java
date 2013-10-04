@@ -54,7 +54,7 @@ import org.fabric3.fabric.generator.CommandGenerator;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.ResourceDefinition;
 import org.fabric3.spi.generator.GenerationException;
-import org.fabric3.spi.generator.ResourceGenerator;
+import org.fabric3.spi.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;

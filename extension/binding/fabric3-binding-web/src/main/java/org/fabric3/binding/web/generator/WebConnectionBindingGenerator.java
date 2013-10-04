@@ -53,7 +53,7 @@ import org.fabric3.binding.web.model.WebBindingDefinition;
 import org.fabric3.binding.web.provision.WebChannelBindingDefinition;
 import org.fabric3.binding.web.provision.WebConnectionSourceDefinition;
 import org.fabric3.binding.web.provision.WebConnectionTargetDefinition;
-import org.fabric3.spi.generator.ConnectionBindingGenerator;
+import org.fabric3.spi.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalConsumer;

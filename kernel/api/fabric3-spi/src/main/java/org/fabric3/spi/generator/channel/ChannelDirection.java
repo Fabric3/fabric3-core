@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.generator;
+package org.fabric3.spi.generator.channel;
 
 /**
  * Specifies if the physical channel instance is for a consumer or producer.

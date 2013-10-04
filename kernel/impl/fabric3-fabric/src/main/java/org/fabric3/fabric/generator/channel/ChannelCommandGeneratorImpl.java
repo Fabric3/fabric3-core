@@ -41,8 +41,8 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.fabric.command.BuildChannelCommand;
 import org.fabric3.fabric.command.DisposeChannelCommand;
-import org.fabric3.spi.generator.ChannelDirection;
-import org.fabric3.spi.generator.ChannelGenerator;
+import org.fabric3.spi.generator.channel.ChannelDirection;
+import org.fabric3.spi.generator.channel.ChannelGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;

@@ -51,7 +51,7 @@ import org.easymock.EasyMock;
 import org.fabric3.fabric.command.BuildResourcesCommand;
 import org.fabric3.fabric.generator.GeneratorRegistry;
 import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.spi.generator.ResourceGenerator;
+import org.fabric3.spi.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalState;

@@ -40,7 +40,7 @@ import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
-import org.fabric3.spi.generator.ConnectionBindingGenerator;
+import org.fabric3.spi.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;

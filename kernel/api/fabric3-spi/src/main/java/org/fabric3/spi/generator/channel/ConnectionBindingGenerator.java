@@ -41,9 +41,10 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.generator;
+package org.fabric3.spi.generator.channel;
 
 import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalProducer;

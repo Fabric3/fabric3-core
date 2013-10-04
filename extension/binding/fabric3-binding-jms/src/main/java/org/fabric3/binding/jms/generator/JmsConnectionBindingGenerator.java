@@ -58,7 +58,7 @@ import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
-import org.fabric3.spi.generator.ConnectionBindingGenerator;
+import org.fabric3.spi.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
