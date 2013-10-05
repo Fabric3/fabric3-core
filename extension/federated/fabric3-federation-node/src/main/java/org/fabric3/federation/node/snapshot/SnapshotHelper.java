@@ -90,6 +90,9 @@ public class SnapshotHelper {
         LogicalCompositeComponent domainCopy = new LogicalCompositeComponent(domain.getUri(), compositeCopy, null);
         for (LogicalComponent<?> component : domain.getComponents()) {
             if (uri == null || uri.equals(component.getDefinition().getContributionUri())) {
+                if (!isRemoted(component)){
+                    continue;
+                }
                 LogicalComponent<?> componentCopy = SnapshotHelper.snapshot(component, state, domainCopy);
                 domainCopy.addComponent(componentCopy);
             }
@@ -162,6 +165,18 @@ public class SnapshotHelper {
         }
         return contractCopy;
     }
+
+    private static boolean isRemoted(LogicalComponent<?> component) {
+        boolean isRemoted;
+        for (LogicalService service : component.getServices()) {
+            ServiceContract contract = service.getLeafService().getServiceContract();
+            if (contract.isRemotable() || !service.getBindings().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private SnapshotHelper() {
     }

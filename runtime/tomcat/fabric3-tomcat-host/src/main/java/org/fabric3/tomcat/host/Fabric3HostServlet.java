@@ -182,8 +182,8 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
             Document systemConfig = bootstrapService.loadSystemConfig(configDir);
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
-            String zoneName = bootstrapService.parseZoneName(systemConfig);
             RuntimeMode mode = bootstrapService.parseRuntimeMode(systemConfig);
+            String zoneName = bootstrapService.parseZoneName(systemConfig, mode);
 
             String environment = bootstrapService.parseEnvironment(systemConfig);
 

@@ -78,7 +78,6 @@ public class DefaultBootstrapService implements BootstrapService {
         return systemConfigLoader.loadSystemConfig(configDirectory);
     }
 
-
     public Document loadSystemConfig(Source source) throws ParseException {
         return systemConfigLoader.loadSystemConfig(source);
     }
@@ -91,8 +90,8 @@ public class DefaultBootstrapService implements BootstrapService {
         return systemConfigLoader.parseDomainName(systemConfig);
     }
 
-    public String parseZoneName(Document systemConfig) throws ParseException {
-        return systemConfigLoader.parseZoneName(systemConfig);
+    public String parseZoneName(Document systemConfig, RuntimeMode mode) throws ParseException {
+        return systemConfigLoader.parseZoneName(systemConfig, mode);
     }
 
     public RuntimeMode parseRuntimeMode(Document systemConfig) throws ParseException {

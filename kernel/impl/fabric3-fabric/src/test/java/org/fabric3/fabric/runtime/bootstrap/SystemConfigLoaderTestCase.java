@@ -63,32 +63,32 @@ import org.fabric3.host.util.FileHelper;
 public class SystemConfigLoaderTestCase extends TestCase {
 
     private static final String CONFIG = "<config>" +
-            "<runtime domain='mydomain' mode='controller' jmxPort='1111'/>" +
-            "   <web.server>" +
-            "       <http port='8181'/>" +
-            "   </web.server>" +
-            "</config>";
+                                         "<runtime domain='mydomain' mode='controller' jmxPort='1111'/>" +
+                                         "   <web.server>" +
+                                         "       <http port='8181'/>" +
+                                         "   </web.server>" +
+                                         "</config>";
 
     private static final String ZONE_CONFIG = "<config>" +
-            "   <federation>" +
-            "      <zoneName>zone1</zoneName>" +
-            "   </federation>" +
-            "</config>";
+                                              "   <federation>" +
+                                              "      <zoneName>zone1</zoneName>" +
+                                              "   </federation>" +
+                                              "</config>";
 
     private static final String PRODUCT_CONFIG = "<config><runtime product='Foo'/></config>";
 
     private static final String CONFIG_DEFAULT = "<config>" +
-            "   <web.server>" +
-            "       <http port='8181'/>" +
-            "   </web.server>" +
-            "</config>";
+                                                 "   <web.server>" +
+                                                 "       <http port='8181'/>" +
+                                                 "   </web.server>" +
+                                                 "</config>";
 
     private static final String DEPLOY_DIRS = "<config>" +
-            "   <deploy.directories>" +
-            "       <deploy.directory>foo</deploy.directory>" +
-            "       <deploy.directory>bar</deploy.directory>" +
-            "   </deploy.directories>" +
-            "</config>";
+                                              "   <deploy.directories>" +
+                                              "       <deploy.directory>foo</deploy.directory>" +
+                                              "       <deploy.directory>bar</deploy.directory>" +
+                                              "   </deploy.directories>" +
+                                              "</config>";
 
     private static final String ENVIRONMENT = "<config><runtime environment='test'/></config>";
 
@@ -145,7 +145,7 @@ public class SystemConfigLoaderTestCase extends TestCase {
         ByteArrayInputStream stream = new ByteArrayInputStream(ZONE_CONFIG.getBytes());
         InputStreamSource source = new InputStreamSource("stream", stream);
         Document systemConfig = loader.loadSystemConfig(source);
-        assertEquals("zone1", loader.parseZoneName(systemConfig));
+        assertEquals("zone1", loader.parseZoneName(systemConfig, RuntimeMode.NODE));
     }
 
     public void testParseDefaultZoneName() throws Exception {
@@ -153,7 +153,7 @@ public class SystemConfigLoaderTestCase extends TestCase {
         ByteArrayInputStream stream = new ByteArrayInputStream(CONFIG_DEFAULT.getBytes());
         InputStreamSource source = new InputStreamSource("stream", stream);
         Document systemConfig = loader.loadSystemConfig(source);
-        assertEquals("default.zone", loader.parseZoneName(systemConfig));
+        assertEquals("default.zone", loader.parseZoneName(systemConfig, RuntimeMode.NODE));
     }
 
     public void testParseEnvironment() throws Exception {

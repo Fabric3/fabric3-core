@@ -95,10 +95,11 @@ public interface BootstrapService {
      * Returns the configured zone name. If not configured, the default zone name will be returned.
      *
      * @param systemConfig the system configuration
+     * @param mode         the current runtime mode
      * @return the zone name
      * @throws ParseException if there is an error parsing the zone name
      */
-    String parseZoneName(Document systemConfig) throws ParseException;
+    String parseZoneName(Document systemConfig, RuntimeMode mode) throws ParseException;
 
     /**
      * Returns the configured runtime mode. If not configured, {@link RuntimeMode#VM} will be returned.

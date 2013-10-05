@@ -103,6 +103,16 @@ public class SnapshotHelperTestCase extends TestCase {
         }
     }
 
+    public void testSnapshotOnlyRemoteServices() throws Exception {
+        for (LogicalComponent<?> component : domain.getComponents()) {
+            for (LogicalService service : component.getServices()) {
+                service.getServiceContract().setRemotable(false);
+            }
+        }
+        LogicalCompositeComponent snapshot = SnapshotHelper.snapshot(domain, null, LogicalState.NEW);
+        assertTrue(snapshot.getComponents().isEmpty());
+    }
+
     public void testSnapshotOnlyComponentsInContribution() throws Exception {
         LogicalCompositeComponent snapshot = SnapshotHelper.snapshot(domain, URI.create("otherContribution"), LogicalState.NEW);
         assertTrue(snapshot.getComponents().isEmpty());
@@ -113,6 +123,7 @@ public class SnapshotHelperTestCase extends TestCase {
         contract = new JavaServiceContract(Bar.class);
         JavaServiceContract callbackContract = new JavaServiceContract(BarResponse.class);
         contract.setCallbackContract(callbackContract);
+        contract.setRemotable(true);
 
         serviceDefinition = new ServiceDefinition("service", contract);
 

@@ -128,7 +128,7 @@ public class DefaultFabric implements Fabric {
 
             String environment = bootstrapService.parseEnvironment(systemConfig);
 
-            String zoneName = bootstrapService.parseZoneName(systemConfig);
+            String zoneName = bootstrapService.parseZoneName(systemConfig, mode);
 
             String defaultRuntimeName = UUID.randomUUID().toString();
             String runtimeName = bootstrapService.getRuntimeName(domainName, zoneName, defaultRuntimeName, mode);

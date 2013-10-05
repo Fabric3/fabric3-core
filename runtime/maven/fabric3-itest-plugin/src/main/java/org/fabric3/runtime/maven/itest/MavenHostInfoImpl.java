@@ -81,7 +81,7 @@ public class MavenHostInfoImpl implements MavenHostInfo {
     }
 
     public String getZoneName() {
-        return Names.DEFAULT_ZONE;
+        return Names.LOCAL_ZONE;
     }
 
     public String getEnvironment() {

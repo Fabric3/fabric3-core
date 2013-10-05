@@ -136,7 +136,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             String environment = bootstrapService.parseEnvironment(systemConfig);
 
-            String zoneName = bootstrapService.parseZoneName(systemConfig);
+            String zoneName = bootstrapService.parseZoneName(systemConfig, mode);
 
             String productName = bootstrapService.parseProductName(systemConfig);
 

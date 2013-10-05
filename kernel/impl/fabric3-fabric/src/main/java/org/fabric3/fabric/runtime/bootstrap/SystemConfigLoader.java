@@ -213,7 +213,10 @@ public class SystemConfigLoader {
         throw new ParseException("Invalid system configuration: more than one <runtime> element specified");
     }
 
-    public String parseZoneName(Document systemConfig) throws ParseException {
+    public String parseZoneName(Document systemConfig, RuntimeMode mode) throws ParseException {
+        if (RuntimeMode.VM == mode) {
+            return Names.LOCAL_ZONE;
+        }
         Element root = systemConfig.getDocumentElement();
         NodeList nodes = root.getElementsByTagName("zoneName");
         if (nodes.getLength() == 1) {
