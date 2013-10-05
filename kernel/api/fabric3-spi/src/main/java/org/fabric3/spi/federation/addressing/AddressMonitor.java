@@ -37,6 +37,7 @@
 */
 package org.fabric3.spi.federation.addressing;
 
+import org.fabric3.api.annotation.monitor.Debug;
 import org.fabric3.api.annotation.monitor.Severe;
 
 /**
@@ -46,4 +47,13 @@ public interface AddressMonitor {
 
     @Severe
     void error(Exception e);
+
+    @Debug("Endpoint address added: {0}")
+    void added(String address);
+
+    @Debug("Endpoint address removed: {0}")
+    void removed(String address);
+
+    @Debug("Received endpoint address request from: {0}")
+    void receivedRequest(String name);
 }

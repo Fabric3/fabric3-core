@@ -37,6 +37,7 @@
 */
 package org.fabric3.federation.node.executor;
 
+import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.node.command.DeploymentSnapshotCommand;
 import org.fabric3.federation.node.merge.DomainMergeService;
 import org.fabric3.spi.command.CommandExecutor;
@@ -53,10 +54,14 @@ import org.oasisopen.sca.annotation.Reference;
 public class DeploymentSnapshotCommandExecutor implements CommandExecutor<DeploymentSnapshotCommand> {
     private CommandExecutorRegistry executorRegistry;
     private DomainMergeService mergeService;
+    private DeploymentMonitor monitor;
 
-    public DeploymentSnapshotCommandExecutor(@Reference CommandExecutorRegistry executorRegistry, @Reference DomainMergeService mergeService) {
+    public DeploymentSnapshotCommandExecutor(@Reference CommandExecutorRegistry executorRegistry,
+                                             @Reference DomainMergeService mergeService,
+                                             @Monitor DeploymentMonitor monitor) {
         this.executorRegistry = executorRegistry;
         this.mergeService = mergeService;
+        this.monitor = monitor;
     }
 
     @Init
@@ -65,6 +70,7 @@ public class DeploymentSnapshotCommandExecutor implements CommandExecutor<Deploy
     }
 
     public void execute(DeploymentSnapshotCommand command) throws ExecutionException {
+        monitor.received(command.getRuntimeName());
         mergeService.merge(command.getSnapshot());
     }
 }

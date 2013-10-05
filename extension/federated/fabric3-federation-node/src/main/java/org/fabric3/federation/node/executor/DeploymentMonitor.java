@@ -35,30 +35,15 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.federation.node.command;
+package org.fabric3.federation.node.executor;
 
-import org.fabric3.spi.command.Command;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.api.annotation.monitor.Debug;
 
 /**
  *
  */
-public class DeploymentSnapshotCommand implements Command {
-    private static final long serialVersionUID = 5885062703042938930L;
+public interface DeploymentMonitor {
 
-    private String runtimeName;
-    private LogicalCompositeComponent snapshot;
-
-    public DeploymentSnapshotCommand(String runtimeName, LogicalCompositeComponent snapshot) {
-        this.runtimeName = runtimeName;
-        this.snapshot = snapshot;
-    }
-
-    public String getRuntimeName() {
-        return runtimeName;
-    }
-
-    public LogicalCompositeComponent getSnapshot() {
-        return snapshot;
-    }
+    @Debug("Received deployment snapshot from {0}")
+    void received(String name);
 }

@@ -407,7 +407,7 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
             try {
                 domainChannel.connect(domainName);
                 domainDispatcher.start();
-                monitor.joiningDomain(runtimeName);
+                monitor.joinedDomain(runtimeName);
                 if (synchronize) {
                     while (domainChannel.getView() == null) {
                         try {

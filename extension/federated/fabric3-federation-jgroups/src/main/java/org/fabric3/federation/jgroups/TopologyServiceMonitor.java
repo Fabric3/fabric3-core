@@ -49,14 +49,23 @@ public interface TopologyServiceMonitor {
     @Severe
     void error(String message, Throwable t);
 
-    @Info("Joining domain as: {0}")
-    void joiningDomain(String runtimeName);
+    @Info("Joined domain as: {0}")
+    void joinedDomain(String name);
+
+    @Info("Disconnected from domain")
+    void disconnect();
+
+    @Debug("No runtimes found in the domain")
+    void noRuntimes();
+
+    @Debug("Received domain snapshot from {0}")
+    void receivedSnapshot(String name);
 
     @Debug("Handling message from: {0}")
-    void handleMessage(String runtimeName);
+    void handleMessage(String name);
 
     @Debug("Received message from: {0}")
-    void receiveMessage(String runtimeName);
+    void receiveMessage(String name);
 
     @Debug("Update request sent to: {0}")
     void updating(String s);
@@ -67,9 +76,13 @@ public interface TopologyServiceMonitor {
     @Debug("Unable to update the runtime until a controller becomes available")
     void updateDeferred();
 
-    @Debug("Runtime removed from the domain: {0")
-    void runtimeRemoved(String runtimeName);
+    @Debug("Runtime joined the domain: {0}")
+    void runtimeJoined(String name);
+
+    @Debug("Runtime removed from the domain: {0}")
+    void runtimeRemoved(String name);
 
     @Debug("Broadcasting availability to the domain")
     void broadcastAvailability();
+
 }

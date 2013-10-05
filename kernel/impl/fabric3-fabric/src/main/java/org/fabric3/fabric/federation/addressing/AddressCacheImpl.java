@@ -165,7 +165,8 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
 
     public void onMessage(Object object) {
         if (object instanceof AddressAnnouncement) {
-            publish((AddressAnnouncement) object, false);
+            AddressAnnouncement announcement = (AddressAnnouncement) object;
+            publish(announcement, false);
         } else if (object instanceof AddressUpdate) {
             AddressUpdate update = (AddressUpdate) object;
             for (AddressAnnouncement announcement : update.getAnnouncements()) {
@@ -186,6 +187,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
                 }
             }
             for (SocketAddress address : toDelete) {
+                monitor.removed(address.toString());
                 list.remove(address);
             }
             if (list.isEmpty()) {
@@ -227,17 +229,20 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
             AddressAnnouncement announcement = (AddressAnnouncement) event;
             String endpointId = announcement.getEndpointId();
             List<SocketAddress> addresses = this.addresses.get(endpointId);
+            SocketAddress address = announcement.getAddress();
             if (AddressAnnouncement.Type.ACTIVATED == announcement.getType()) {
                 // add the new address
                 if (addresses == null) {
                     addresses = new CopyOnWriteArrayList<SocketAddress>();
                     this.addresses.put(endpointId, addresses);
                 }
-                addresses.add(announcement.getAddress());
+                monitor.added(address.toString());
+                addresses.add(address);
             } else {
                 // remove the address
                 if (addresses != null) {
-                    addresses.remove(announcement.getAddress());
+                    monitor.removed(address.toString());
+                    addresses.remove(address);
                     if (addresses.isEmpty()) {
                         this.addresses.remove(endpointId);
                     }
@@ -257,6 +262,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
     }
 
     private void handleAddressRequest(final AddressRequest request) {
+        monitor.receivedRequest(request.getRuntimeName());
         final AddressUpdate update = new AddressUpdate();
         for (Map.Entry<String, List<SocketAddress>> entry : addresses.entrySet()) {
             for (SocketAddress address : entry.getValue()) {

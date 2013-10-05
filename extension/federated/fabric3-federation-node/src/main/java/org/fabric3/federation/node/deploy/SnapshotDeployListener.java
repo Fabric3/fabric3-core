@@ -43,6 +43,7 @@ import java.net.URI;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.node.command.DeploymentSnapshotCommand;
 import org.fabric3.federation.node.snapshot.SnapshotHelper;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
@@ -62,13 +63,16 @@ import org.oasisopen.sca.annotation.Reference;
 public class SnapshotDeployListener implements DeployListener {
     private LogicalComponentManager lcm;
     private NodeTopologyService topologyService;
+    private HostInfo info;
     private ListenerMonitor monitor;
 
     public SnapshotDeployListener(@Reference(name = "lcm") LogicalComponentManager lcm,
                                   @Reference NodeTopologyService topologyService,
+                                  @Reference HostInfo info,
                                   @Monitor ListenerMonitor monitor) {
         this.lcm = lcm;
         this.topologyService = topologyService;
+        this.info = info;
         this.monitor = monitor;
     }
 
@@ -109,7 +113,8 @@ public class SnapshotDeployListener implements DeployListener {
             if (snapshot.getComponents().isEmpty() && snapshot.getChannels().isEmpty()) {
                 return; // no artifacts deployed
             }
-            DeploymentSnapshotCommand command = new DeploymentSnapshotCommand(snapshot);
+            String runtimeName = info.getRuntimeName();
+            DeploymentSnapshotCommand command = new DeploymentSnapshotCommand(runtimeName, snapshot);
             topologyService.broadcast(command);
         } catch (MessageException e) {
             monitor.error(e);

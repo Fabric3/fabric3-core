@@ -342,6 +342,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
             try {
                 domainChannel.connect(domainName);
                 dispatcher.start();
+                monitor.joinedDomain(runtimeName);
                 List<Address> members = domainChannel.getView().getMembers();
                 if (!members.isEmpty()) {
                     // Obtain a snapshot of the logical domain from the oldest runtime
@@ -350,6 +351,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
                     String oldestName = UUID.get(oldest);
                     if (runtimeName.equals(oldestName)) {
                         // this runtime is the oldest, skip
+                        monitor.noRuntimes();
                         return;
                     }
 
@@ -364,6 +366,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
                         RequestOptions options = new RequestOptions(ResponseMode.GET_FIRST, timeout);
                         Object o = dispatcher.sendMessage(message, options);
                         DomainSnapshotResponse response = (DomainSnapshotResponse) helper.deserialize((byte[]) o);
+                        monitor.receivedSnapshot(UUID.get(oldest));
                         LogicalCompositeComponent snapshot = response.getSnapshot();
                         // merge the snapshot with the live logical domain
                         mergeService.merge(snapshot);
@@ -383,6 +386,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
             dispatcher.stop();
             domainChannel.disconnect();
             domainChannel.close();
+            monitor.disconnect();
             for (Channel channel : channels.values()) {
                 if (channel.isConnected()) {
                     channel.disconnect();
@@ -415,6 +419,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
                     zones = new HashMap<String, RuntimeInstance>();
                     runtimes.put(zoneName, zones);
                 }
+                monitor.runtimeJoined(newRuntime);
                 for (TopologyListener listener : topologyListeners) {
                     listener.onJoin(newRuntime);
                 }
@@ -441,7 +446,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
                     runtimes.remove(suspectedZone);
                 }
             }
-
+            monitor.runtimeRemoved(suspectedRuntime);
             for (TopologyListener listener : topologyListeners) {
                 listener.onLeave(suspectedRuntime);
             }
