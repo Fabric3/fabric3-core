@@ -40,7 +40,6 @@ package org.fabric3.federation.jgroups;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,13 +54,9 @@ import org.fabric3.federation.node.command.DomainSnapshotResponse;
 import org.fabric3.federation.node.merge.DomainMergeService;
 import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.command.Response;
 import org.fabric3.spi.command.ResponseCommand;
-import org.fabric3.spi.runtime.event.EventService;
-import org.fabric3.spi.runtime.event.Fabric3EventListener;
-import org.fabric3.spi.runtime.event.JoinDomain;
-import org.fabric3.spi.runtime.event.RuntimeStop;
-import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.federation.topology.ControllerTopologyService;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
@@ -72,6 +67,10 @@ import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.federation.topology.Zone;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.Fabric3EventListener;
+import org.fabric3.spi.runtime.event.JoinDomain;
+import org.fabric3.spi.runtime.event.RuntimeStop;
 import org.jgroups.Address;
 import org.jgroups.Channel;
 import org.jgroups.JChannel;
@@ -335,30 +334,6 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
 
     JChannel getDomainChannel() {
         return domainChannel;
-    }
-
-    /**
-     * Returns a list of zones in the given view
-     *
-     * @param view the view
-     * @return the list of zones
-     */
-    private Set<Zone> getZones(View view) {
-        Address controller = domainChannel.getAddress();
-        Set<Zone> zones = new HashSet<Zone>();
-        List<Address> members = view.getMembers();
-        for (Address member : members) {
-            if (!member.equals(controller)) {
-                String zoneName = helper.getZoneName(member);
-                Map<String, RuntimeInstance> instances = runtimes.get(zoneName);
-                List<RuntimeInstance> list = new ArrayList<RuntimeInstance>(instances.values());
-                if (zoneName != null) {
-                    Zone zone = new Zone(zoneName, list);
-                    zones.add(zone);
-                }
-            }
-        }
-        return zones;
     }
 
     class JoinEventListener implements Fabric3EventListener<JoinDomain> {
