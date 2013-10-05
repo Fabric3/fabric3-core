@@ -419,7 +419,9 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
                     zones = new HashMap<String, RuntimeInstance>();
                     runtimes.put(zoneName, zones);
                 }
-                monitor.runtimeJoined(newRuntime);
+                if (!newRuntime.equals(runtimeName)) {
+                    monitor.runtimeJoined(newRuntime);
+                }
                 for (TopologyListener listener : topologyListeners) {
                     listener.onJoin(newRuntime);
                 }
