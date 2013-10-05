@@ -48,11 +48,11 @@ public interface AddressMonitor {
     @Severe
     void error(Exception e);
 
-    @Debug("Endpoint address added: {0}")
-    void added(String address);
+    @Debug("Endpoint address added {0}: {1}")
+    void added(String endpoint, String address);
 
-    @Debug("Endpoint address removed: {0}")
-    void removed(String address);
+    @Debug("Endpoint address removed {0}: {1}")
+    void removed(String endpoint, String address);
 
     @Debug("Received endpoint address request from: {0}")
     void receivedRequest(String name);

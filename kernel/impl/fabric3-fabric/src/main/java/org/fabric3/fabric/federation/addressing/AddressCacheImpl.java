@@ -187,7 +187,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
                 }
             }
             for (SocketAddress address : toDelete) {
-                monitor.removed(address.toString());
+                monitor.removed(name, address.toString());
                 list.remove(address);
             }
             if (list.isEmpty()) {
@@ -236,12 +236,12 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
                     addresses = new CopyOnWriteArrayList<SocketAddress>();
                     this.addresses.put(endpointId, addresses);
                 }
-                monitor.added(address.toString());
+                monitor.added(endpointId, address.toString());
                 addresses.add(address);
             } else {
                 // remove the address
                 if (addresses != null) {
-                    monitor.removed(address.toString());
+                    monitor.removed(endpointId, address.toString());
                     addresses.remove(address);
                     if (addresses.isEmpty()) {
                         this.addresses.remove(endpointId);

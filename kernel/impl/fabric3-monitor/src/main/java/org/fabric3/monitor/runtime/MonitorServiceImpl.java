@@ -140,6 +140,11 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
 
     @Init
     public void init() {
+        // set the default level of any components deployed before this
+        for (Component component : manager.getComponents()) {
+            component.setLevel(defaultLevel);
+        }
+
         for (Map.Entry<QName, MonitorLevel> entry : deployableLevels.entrySet()) {
             for (Component component : manager.getDeployedComponents(entry.getKey())) {
                 component.setLevel(entry.getValue());
