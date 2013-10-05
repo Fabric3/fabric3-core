@@ -44,6 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.host.Names;
 import org.fabric3.host.Namespaces;
+import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentReference;
 import org.fabric3.model.type.component.Composite;
@@ -77,6 +78,7 @@ public class ServiceResolverImpl implements ServiceResolver {
     private AutowireResolver autowireResolver;
     private WireGenerator wireGenerator;
     private Connector connector;
+    private HostInfo info;
     private AtomicInteger idCounter = new AtomicInteger();
 
     public ServiceResolverImpl(@Reference InstanceDeployer deployer,
@@ -84,12 +86,14 @@ public class ServiceResolverImpl implements ServiceResolver {
                                @Reference(name = "lcm") LogicalComponentManager lcm,
                                @Reference AutowireResolver autowireResolver,
                                @Reference WireGenerator wireGenerator,
-                               @Reference Connector connector) {
+                               @Reference Connector connector,
+                               @Reference HostInfo info) {
         this.introspector = introspector;
         this.lcm = lcm;
         this.autowireResolver = autowireResolver;
         this.wireGenerator = wireGenerator;
         this.connector = connector;
+        this.info = info;
     }
 
     public <T> T resolve(Class<T> interfaze) throws ResolverException {
@@ -144,6 +148,7 @@ public class ServiceResolverImpl implements ServiceResolver {
         LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<NonManagedImplementation>(componentUri,
                                                                                                                      componentDefinition,
                                                                                                                      domainComponent);
+        logicalComponent.setZone(info.getZoneName());
         reference.setServiceContract(contract);
         LogicalReference logicalReference = new LogicalReference(referenceUri, reference, logicalComponent);
         logicalReference.setServiceContract(contract);
