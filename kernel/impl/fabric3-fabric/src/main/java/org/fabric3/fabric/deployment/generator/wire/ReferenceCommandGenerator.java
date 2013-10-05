@@ -187,7 +187,13 @@ public class ReferenceCommandGenerator implements CommandGenerator {
             boolean attach = true;
             if (targetComponent.getState() == LogicalState.MARKED || wire.getState() == LogicalState.MARKED) {
                 attach = false;
-                PhysicalWireDefinition pwd = wireGenerator.generateWire(wire);
+                PhysicalWireDefinition pwd;
+                if (wire.getSourceBinding()!= null && wire.getTargetBinding() == null) {
+                    // wire is on a node runtime where the target component is on a different runtime and hence does not have a binding in the current runtime
+                    pwd = wireGenerator.generateBoundReference(wire.getSourceBinding());
+                } else {
+                    pwd = wireGenerator.generateWire(wire);
+                }
                 DetachWireCommand detachCommand = new DetachWireCommand();
                 detachCommand.setPhysicalWireDefinition(pwd);
                 command.add(detachCommand);
