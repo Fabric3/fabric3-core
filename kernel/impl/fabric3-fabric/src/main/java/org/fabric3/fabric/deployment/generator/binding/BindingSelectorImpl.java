@@ -49,6 +49,7 @@ import org.fabric3.spi.deployment.generator.binding.BindingMatchResult;
 import org.fabric3.spi.deployment.generator.binding.BindingProvider;
 import org.fabric3.spi.deployment.generator.binding.BindingSelectionException;
 import org.fabric3.spi.deployment.generator.binding.BindingSelectionStrategy;
+import org.fabric3.spi.deployment.generator.binding.BindingSelector;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -123,6 +124,43 @@ public class BindingSelectorImpl implements BindingSelector {
         }
     }
 
+    public void selectBinding(LogicalWire wire) throws BindingSelectionException {
+        List<BindingMatchResult> results = new ArrayList<BindingMatchResult>();
+        LogicalReference source = wire.getSource();
+        LogicalService target = wire.getTarget();
+        for (BindingProvider provider : providers) {
+            BindingMatchResult result = provider.canBind(wire);
+            if (result.isMatch()) {
+                // clear binding.sca
+                source.getBindings().clear();
+                target.getBindings().clear();
+                provider.bind(wire);
+                if (source.getLeafReference().getBindings().isEmpty()) {
+                    QName type = result.getType();
+                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the reference: " + type);
+                }
+                wire.setSourceBinding(source.getBindings().get(0));
+                if (!(target.getParent().getDefinition().getImplementation() instanceof RemoteImplementation)) {
+                    if (target.getLeafService().getBindings().isEmpty()) {
+                        QName type = result.getType();
+                        throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the service: " + type);
+                    }
+                    if (!target.getBindings().isEmpty()) {
+                        wire.setTargetBinding(target.getBindings().get(0));
+                    } else {
+                        wire.setTargetBinding(target.getLeafService().getBindings().get(0));
+                    }
+                }
+                return;
+            }
+            results.add(result);
+
+        }
+        URI sourceUri = source.getUri();
+        URI targetUri = target.getUri();
+        throw new NoSCABindingProviderException("No SCA binding provider suitable for creating wire from " + sourceUri + " to " + targetUri, results);
+    }
+
     /**
      * Selects and configures bindings for wires sourced from the given component.
      *
@@ -161,49 +199,6 @@ public class BindingSelectorImpl implements BindingSelector {
                 }
             }
         }
-    }
-
-    /**
-     * Selects and configures a binding for a wire.
-     *
-     * @param wire the wire
-     * @throws BindingSelectionException if an error occurs selecting a binding
-     */
-    private void selectBinding(LogicalWire wire) throws BindingSelectionException {
-        List<BindingMatchResult> results = new ArrayList<BindingMatchResult>();
-        LogicalReference source = wire.getSource();
-        LogicalService target = wire.getTarget();
-        for (BindingProvider provider : providers) {
-            BindingMatchResult result = provider.canBind(wire);
-            if (result.isMatch()) {
-                // clear binding.sca
-                source.getBindings().clear();
-                target.getBindings().clear();
-                provider.bind(wire);
-                if (source.getLeafReference().getBindings().isEmpty()) {
-                    QName type = result.getType();
-                    throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the reference: " + type);
-                }
-                wire.setSourceBinding(source.getBindings().get(0));
-                if (!(target.getParent().getDefinition().getImplementation() instanceof RemoteImplementation)) {
-                    if (target.getLeafService().getBindings().isEmpty()) {
-                        QName type = result.getType();
-                        throw new BindingSelectionException("Binding provider error. Provider did not set a binding for the service: " + type);
-                    }
-                    if (!target.getBindings().isEmpty()) {
-                        wire.setTargetBinding(target.getBindings().get(0));
-                    } else {
-                        wire.setTargetBinding(target.getLeafService().getBindings().get(0));
-                    }
-                }
-                return;
-            }
-            results.add(result);
-
-        }
-        URI sourceUri = source.getUri();
-        URI targetUri = target.getUri();
-        throw new NoSCABindingProviderException("No SCA binding provider suitable for creating wire from " + sourceUri + " to " + targetUri, results);
     }
 
     /**

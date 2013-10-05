@@ -35,10 +35,10 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.fabric.deployment.generator.binding;
+package org.fabric3.spi.deployment.generator.binding;
 
-import org.fabric3.spi.deployment.generator.binding.BindingSelectionException;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.instance.LogicalWire;
 
 /**
  * Responsible for selecting and configuring binding configuration for wires and channels in a domain.
@@ -52,5 +52,13 @@ public interface BindingSelector {
      * @throws BindingSelectionException if an error occurs selecting a binding
      */
     void selectBindings(LogicalCompositeComponent domain) throws BindingSelectionException;
+
+    /**
+     * Selects and configures a binding for a wire.
+     *
+     * @param wire the wire
+     * @throws BindingSelectionException if an error occurs selecting a binding
+     */
+    void selectBinding(LogicalWire wire) throws BindingSelectionException;
 
 }

@@ -55,7 +55,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.easymock.IMocksControl;
-import org.fabric3.fabric.deployment.generator.binding.BindingSelector;
+import org.fabric3.spi.deployment.generator.binding.BindingSelector;
 import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
 import org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.Names;

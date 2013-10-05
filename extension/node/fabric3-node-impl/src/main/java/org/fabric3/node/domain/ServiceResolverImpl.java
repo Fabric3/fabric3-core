@@ -54,6 +54,8 @@ import org.fabric3.node.nonmanaged.NonManagedPhysicalSourceDefinition;
 import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.binding.BindingSelectionException;
+import org.fabric3.spi.deployment.generator.binding.BindingSelector;
 import org.fabric3.spi.deployment.generator.wire.WireGenerator;
 import org.fabric3.spi.deployment.instantiator.AutowireResolver;
 import org.fabric3.spi.domain.LogicalComponentManager;
@@ -76,6 +78,7 @@ public class ServiceResolverImpl implements ServiceResolver {
     private Introspector introspector;
     private LogicalComponentManager lcm;
     private AutowireResolver autowireResolver;
+    private BindingSelector bindingSelector;
     private WireGenerator wireGenerator;
     private Connector connector;
     private HostInfo info;
@@ -85,12 +88,14 @@ public class ServiceResolverImpl implements ServiceResolver {
                                @Reference Introspector introspector,
                                @Reference(name = "lcm") LogicalComponentManager lcm,
                                @Reference AutowireResolver autowireResolver,
+                               @Reference BindingSelector bindingSelector,
                                @Reference WireGenerator wireGenerator,
                                @Reference Connector connector,
                                @Reference HostInfo info) {
         this.introspector = introspector;
         this.lcm = lcm;
         this.autowireResolver = autowireResolver;
+        this.bindingSelector = bindingSelector;
         this.wireGenerator = wireGenerator;
         this.connector = connector;
         this.info = info;
@@ -99,15 +104,25 @@ public class ServiceResolverImpl implements ServiceResolver {
     public <T> T resolve(Class<T> interfaze) throws ResolverException {
         LogicalWire wire = createWire(interfaze);
         try {
-            PhysicalWireDefinition physicalWireDefinition = wireGenerator.generateWire(wire);
-            physicalWireDefinition.getTarget().setClassLoaderId(Names.HOST_CONTRIBUTION);
-            NonManagedPhysicalSourceDefinition source = (NonManagedPhysicalSourceDefinition) physicalWireDefinition.getSource();
+            boolean remote = !wire.getSource().getParent().getZone().equals(wire.getTarget().getParent().getZone());
+            PhysicalWireDefinition pwd;
+            if (remote) {
+                bindingSelector.selectBinding(wire);
+                pwd = wireGenerator.generateBoundReference(wire.getSourceBinding());
+                pwd.getSource().setUri(wire.getSource().getParent().getUri());
+            } else {
+                pwd = wireGenerator.generateWire(wire);
+            }
+            pwd.getTarget().setClassLoaderId(Names.HOST_CONTRIBUTION);
+            NonManagedPhysicalSourceDefinition source = (NonManagedPhysicalSourceDefinition) pwd.getSource();
             source.setClassLoaderId(Names.HOST_CONTRIBUTION);
-            connector.connect(physicalWireDefinition);
+            connector.connect(pwd);
             return interfaze.cast(source.getProxy());
         } catch (GenerationException e) {
             throw new ResolverException(e);
         } catch (BuilderException e) {
+            throw new ResolverException(e);
+        } catch (BindingSelectionException e) {
             throw new ResolverException(e);
         }
     }

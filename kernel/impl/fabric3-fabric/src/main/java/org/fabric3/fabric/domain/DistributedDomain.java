@@ -42,7 +42,7 @@ import java.util.List;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.fabric.deployment.generator.binding.BindingSelector;
+import org.fabric3.spi.deployment.generator.binding.BindingSelector;
 import org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiator;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.domain.DeploymentException;
