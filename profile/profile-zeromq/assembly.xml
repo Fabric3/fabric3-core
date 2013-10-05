@@ -19,7 +19,7 @@
     <!-- include assembly files -->
     <fileSets>
         <fileSet>
-            <directory>src/main</directory>
+            <directory>src/main/resources</directory>
             <outputDirectory>/</outputDirectory>
         </fileSet>
     </fileSets>

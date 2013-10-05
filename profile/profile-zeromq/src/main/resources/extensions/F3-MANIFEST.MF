@@ -1,0 +1,2 @@
+Name: Fabric3 ZeroMQ Profile
+Vendor: fabric3.org
