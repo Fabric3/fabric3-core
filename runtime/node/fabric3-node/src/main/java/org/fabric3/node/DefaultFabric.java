@@ -169,7 +169,7 @@ public class DefaultFabric implements Fabric {
         }
     }
 
-    public void start() throws FabricException {
+    public Fabric start() throws FabricException {
         if (state != State.INITIALIZED) {
             throw new IllegalStateException("Not in initialized state: " + state);
         }
@@ -177,25 +177,27 @@ public class DefaultFabric implements Fabric {
             coordinator.load();
             coordinator.joinDomain();
             state = State.STARTED;
+            return this;
         } catch (InitializationException e) {
             throw new FabricException(e);
         }
     }
 
-    public void stop() throws FabricException {
+    public Fabric stop() throws FabricException {
         if (state != State.STARTED) {
             throw new IllegalStateException("Not in started state: " + state);
         }
         try {
             coordinator.shutdown();
             state = State.STOPPED;
+            return this;
         } catch (ShutdownException e) {
             throw new FabricException(e);
         }
     }
 
-    public <T> void registerSystemService(Class<T> interfaze, T instance) throws FabricException {
-
+    public <T> Fabric registerSystemService(Class<T> interfaze, T instance) throws FabricException {
+        throw new UnsupportedOperationException();
     }
 
     public Domain getDomain() {

@@ -91,35 +91,40 @@ public class NodeDomain implements Domain {
         }
     }
 
-    public void subscribe(Class<?> interfaze, String name, Object consumer) {
+    public Domain subscribe(Class<?> interfaze, String name, Object consumer) {
+        return this;
     }
 
-    public void unsubscribe(Class<?> interfaze, String name, Object consumer) {
+    public Domain unsubscribe(Class<?> interfaze, String name, Object consumer) {
+        return this;
     }
 
-    public <T> void deploy(Class<T> interfaze, T instance) {
+    public <T> Domain deploy(Class<T> interfaze, T instance) {
         try {
             deployer.deploy(interfaze, instance);
+            return this;
         } catch (DeploymentException e) {
             throw new ServiceRuntimeException(e);
         }
     }
 
-    public <T> void undeploy(Class<T> interfaze, T instance) {
+    public <T> Domain undeploy(Class<T> interfaze, T instance) {
         try {
             deployer.undeploy(interfaze, instance);
+            return this;
         } catch (DeploymentException e) {
             throw new ServiceRuntimeException(e);
         }
     }
 
-    public void deploy(URL url) {
+    public Domain deploy(URL url) {
         try {
             URI uri = url.toURI();
             UrlContributionSource source = new UrlContributionSource(uri, url, false);
             contributionService.store(source);
             contributionService.install(uri);
             domain.include(Collections.singletonList(uri));
+            return this;
         } catch (URISyntaxException e) {
             throw new ServiceRuntimeException(e);
         } catch (StoreException e) {
@@ -133,12 +138,13 @@ public class NodeDomain implements Domain {
         }
     }
 
-    public void undeploy(URL url) {
+    public Domain undeploy(URL url) {
         try {
             URI uri = url.toURI();
             domain.undeploy(uri, true);
             contributionService.uninstall(uri);
             contributionService.remove(uri);
+            return this;
         } catch (URISyntaxException e) {
             throw new ServiceRuntimeException(e);
         } catch (ContributionNotFoundException e) {

@@ -47,14 +47,14 @@ public interface Fabric {
      *
      * @throws FabricException if there is an error connecting.
      */
-    void start() throws FabricException;
+    Fabric start() throws FabricException;
 
     /**
      * Stops the connection to the fabric.
      *
      * @throws FabricException if there an error stopping the connection
      */
-    void stop() throws FabricException;
+    Fabric stop() throws FabricException;
 
     /**
      * Registers an instance as a system component. This method is typically called before {@link #start()}}.
@@ -63,7 +63,7 @@ public interface Fabric {
      * @param instance  the instance
      * @throws FabricException if there is a registration error
      */
-    <T> void registerSystemService(Class<T> interfaze, T instance) throws FabricException;
+    <T> Fabric registerSystemService(Class<T> interfaze, T instance) throws FabricException;
 
     /**
      * Returns the fabric domain
