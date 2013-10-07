@@ -42,12 +42,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.RuntimeInstance;
 import org.fabric3.spi.federation.topology.Zone;
 import org.jgroups.Address;
 import org.jgroups.View;
-
-import org.fabric3.spi.federation.topology.MessageException;
 
 /**
  * Helper service for the JGroups messaging layer.
@@ -125,12 +124,21 @@ public interface JGroupsHelper {
     Set<Address> getNewRuntimes(View oldView, View newView);
 
     /**
+     * Calculates the set of runtimes that were removed from the new view.
+     *
+     * @param oldView the old view
+     * @param newView the new view
+     * @return the set of removed runtimes
+     */
+    Set<Address> getRemovedRuntimes(View oldView, View newView);
+
+    /**
      * Returns a list of zones in the given view
      *
      * @param runtimes the active runtimes where the key is the zone and the value is a map of runtime names to instances.
      * @return the list of zones
      */
-     Set<Zone> getZones(Map<String, Map<String, RuntimeInstance>> runtimes);
+    Set<Zone> getZones(Map<String, Map<String, RuntimeInstance>> runtimes);
 
     /**
      * Calculates the set of new zone leaders from the two views.

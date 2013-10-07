@@ -404,9 +404,13 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
         public void viewAccepted(View newView) {
             Set<Address> newZoneLeaders = helper.getNewZoneLeaders(previousView, newView);
             Set<Address> newRuntimes = helper.getNewRuntimes(previousView, newView);
+            Set<Address> removedRuntimes = helper.getRemovedRuntimes(previousView, newView);
             previousView = newView;
-            if (newZoneLeaders.isEmpty() && newRuntimes.isEmpty()) {
+            if (newZoneLeaders.isEmpty() && newRuntimes.isEmpty() && removedRuntimes.isEmpty()) {
                 return;
+            }
+            for (Address address : removedRuntimes) {
+                remove(address);
             }
             for (Address address : newRuntimes) {
                 String newRuntime = UUID.get(address);
@@ -435,6 +439,10 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
         }
 
         public void suspect(Address suspected) {
+            remove(suspected);
+        }
+
+        private void remove(Address suspected) {
             String suspectedRuntime = UUID.get(suspected);
             String suspectedZone = helper.getZoneName(suspected);
             if (suspectedZone == null) {
@@ -446,6 +454,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
                 instances.remove(suspectedRuntime);
                 if (instances.isEmpty()) {
                     runtimes.remove(suspectedZone);
+                    mergeService.drop(suspectedZone);
                 }
             }
             monitor.runtimeRemoved(suspectedRuntime);

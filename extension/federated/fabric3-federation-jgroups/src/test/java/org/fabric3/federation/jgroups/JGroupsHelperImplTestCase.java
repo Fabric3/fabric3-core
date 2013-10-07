@@ -172,6 +172,37 @@ public class JGroupsHelperImplTestCase extends TestCase {
         assertEquals(address2, newRuntimes.iterator().next());
     }
 
+    public void testRemovedRuntimes() throws Exception {
+        ViewId oldId = new ViewId(coord_addr, 123);
+        ViewId newId = new ViewId(coord_addr, 456);
+        List<Address> newMembers = new ArrayList<Address>();
+        List<Address> oldMembers = new ArrayList<Address>();
+        UUID address1 = UUID.randomUUID();
+        UUID address2 = UUID.randomUUID();
+        oldMembers.add(address1);
+        oldMembers.add(address2);
+        newMembers.add(address2);
+        View oldView = new View(oldId, oldMembers);
+        View newView = new View(newId, newMembers);
+
+        Set<Address> removedRuntimes = helper.getRemovedRuntimes(oldView, newView);
+        assertEquals(1, removedRuntimes.size());
+        assertEquals(address1, removedRuntimes.iterator().next());
+    }
+
+    public void testRemovedRuntimesOnBootstrap() throws Exception {
+        ViewId newId = new ViewId(coord_addr, 456);
+        List<Address> newMembers = new ArrayList<Address>();
+        UUID address1 = UUID.randomUUID();
+        UUID address2 = UUID.randomUUID();
+        newMembers.add(address1);
+        newMembers.add(address2);
+        View newView = new View(newId, newMembers);
+
+        Set<Address> removedRuntimes = helper.getRemovedRuntimes(null, newView);
+        assertTrue(removedRuntimes.isEmpty());
+    }
+
     public void testNewRuntimesOnBootstrap() throws Exception {
         ViewId newId = new ViewId(coord_addr, 456);
         List<Address> newMembers = new ArrayList<Address>();

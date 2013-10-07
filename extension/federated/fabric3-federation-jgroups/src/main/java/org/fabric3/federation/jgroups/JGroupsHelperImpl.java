@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -185,11 +186,30 @@ public class JGroupsHelperImpl implements JGroupsHelper {
     }
 
     public Set<Address> getNewRuntimes(View oldView, View newView) {
-        Set<Address> newRuntimes = new HashSet<Address>(newView.getMembers());
+        List<Address> members = newView.getMembers();
+        if (members == null) {
+            return Collections.emptySet();
+        }
+        Set<Address> newRuntimes = new HashSet<Address>(members);
         if (oldView != null) {
             newRuntimes.removeAll(oldView.getMembers());
         }
         return newRuntimes;
+    }
+
+    public Set<Address> getRemovedRuntimes(View oldView, View newView) {
+        if (oldView == null) {
+            return Collections.emptySet();
+        }
+        List<Address> members = oldView.getMembers();
+        if (members == null) {
+            return Collections.emptySet();
+        }
+        Set<Address> removedRuntimes = new HashSet<Address>(members);
+        if (oldView != null) {
+            removedRuntimes.removeAll(newView.getMembers());
+        }
+        return removedRuntimes;
     }
 
     public Set<Zone> getZones(Map<String, Map<String, RuntimeInstance>> runtimes) {
