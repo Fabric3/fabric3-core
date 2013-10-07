@@ -80,14 +80,14 @@ public class SnapshotDeployListener implements DeployListener {
         broadcastSnapshot(uri, LogicalState.NEW);
     }
 
-    public void onUnDeployCompleted(URI uri) {
+    public void onUnDeploy(URI uri) {
         broadcastSnapshot(uri, LogicalState.MARKED);
     }
 
-    public void onDeploy(URI uri) {
+    public void onUnDeployCompleted(URI uri) {
     }
 
-    public void onUnDeploy(URI uri) {
+    public void onDeploy(URI uri) {
     }
 
     public void onDeploy(QName deployable, String plan) {
