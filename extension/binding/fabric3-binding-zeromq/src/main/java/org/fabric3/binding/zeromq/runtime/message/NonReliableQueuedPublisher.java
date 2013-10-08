@@ -151,6 +151,7 @@ public class NonReliableQueuedPublisher implements Publisher, Thread.UncaughtExc
                     Object value = queue.poll(pollTimeout, TimeUnit.MILLISECONDS);
                     if (SHUTDOWN == value) {
                         close(id);
+                        return;
                     }
                     if (value == null) {
                         continue;
