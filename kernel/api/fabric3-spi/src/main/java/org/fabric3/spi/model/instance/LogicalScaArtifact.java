@@ -43,19 +43,23 @@
  */
 package org.fabric3.spi.model.instance;
 
-import java.io.Serializable;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import javax.xml.namespace.QName;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Base class for all logical artifacts.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public abstract class LogicalScaArtifact<P extends LogicalScaArtifact<?>> implements Serializable {
     private static final long serialVersionUID = 3937960041374196627L;
     private P parent;
     private Set<QName> intents = new LinkedHashSet<QName>();
     private Set<QName> policySets = new LinkedHashSet<QName>();
+    private Map<String, Object> metadata;
 
     /**
      * Constructor.
@@ -99,6 +103,20 @@ public abstract class LogicalScaArtifact<P extends LogicalScaArtifact<?>> implem
 
     public void removePolicySet(QName policySet) {
         policySets.remove(policySet);
+    }
+
+    public void addMetadata(String key, Object data) {
+        if (metadata == null) {
+            metadata = new HashMap<String, Object>();
+        }
+        metadata.put(key, data);
+    }
+
+    public <T> T getMetadata(String key, Class<T> type) {
+        if (metadata == null) {
+            return null;
+        }
+        return type.cast(metadata.get(key));
     }
 
 }
