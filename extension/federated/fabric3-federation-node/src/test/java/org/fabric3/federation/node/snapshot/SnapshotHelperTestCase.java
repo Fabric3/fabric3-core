@@ -42,12 +42,14 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.fabric3.model.type.component.AbstractService;
+import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Composite;
 import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.spi.model.instance.LogicalBinding;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalService;
@@ -66,12 +68,21 @@ public class SnapshotHelperTestCase extends TestCase {
     private LogicalService service;
     private LogicalComponent component;
     private LogicalCompositeComponent domain;
+    private LogicalChannel channel;
+    private Composite composite;
 
     public void testSnapshotContract() throws Exception {
         RemoteServiceContract snapshot = SnapshotHelper.snapshot(contract);
         assertEquals(Bar.class.getName(), snapshot.getInterfaceName());
         assertTrue(snapshot.getSuperTypes().contains(Foo.class.getName()));
         assertEquals(BarResponse.class.getName(), snapshot.getCallbackContract().getQualifiedInterfaceName());
+    }
+
+    public void testSnapshotChannel() throws Exception {
+        LogicalChannel snapshot = SnapshotHelper.snapshot(channel, composite, LogicalState.MARKED, domain);
+        assertNotNull(snapshot.getDefinition());
+        assertNotNull(snapshot.getDefinition().getContributionUri());
+        assertEquals(LogicalState.MARKED, snapshot.getState());
     }
 
     public void testSnapshotServiceDefinition() throws Exception {
@@ -141,13 +152,16 @@ public class SnapshotHelperTestCase extends TestCase {
         LogicalService componentService = new LogicalService(URI.create("componentService"), serviceDefinition, component);
         component.addService(componentService);
 
-        Composite composite = new Composite(new QName("test", "test"));
+        composite = new Composite(new QName("test", "test"));
         // composite.add(serviceDefinition);
         CompositeImplementation domainImpl = new CompositeImplementation();
         domainImpl.setComponentType(composite);
         ComponentDefinition<CompositeImplementation> domainDefinition = new ComponentDefinition<CompositeImplementation>("domain", domainImpl);
         domain = new LogicalCompositeComponent(URI.create("domain"), domainDefinition, null);
         domain.addComponent(component);
+
+        ChannelDefinition channelDefinition = new ChannelDefinition("Channel", URI.create("contribution"));
+        channel = new LogicalChannel(URI.create("channel"), channelDefinition, null);
     }
 
     private interface Foo {

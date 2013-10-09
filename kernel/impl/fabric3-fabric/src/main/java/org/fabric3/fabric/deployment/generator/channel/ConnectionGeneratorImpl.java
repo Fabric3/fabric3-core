@@ -54,11 +54,11 @@ import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.definitions.PolicySet;
-import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
+import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.channel.ConnectionBindingGenerator;
 import org.fabric3.spi.deployment.generator.channel.ConnectionGenerator;
 import org.fabric3.spi.deployment.generator.channel.EventStreamHandlerGenerator;
-import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
 import org.fabric3.spi.deployment.generator.policy.PolicyMetadata;
 import org.fabric3.spi.deployment.generator.policy.PolicyResolver;
 import org.fabric3.spi.deployment.generator.policy.PolicyResult;
@@ -66,7 +66,6 @@ import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
-import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.ChannelSide;
@@ -101,7 +100,7 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         URI classLoaderId = component.getDefinition().getContributionUri();
         sourceDefinition.setClassLoaderId(classLoaderId);
 
-        PhysicalEventStreamDefinition eventStream = generate(producer.getStreamOperation());
+        PhysicalEventStreamDefinition eventStream = generateProducerOperation(producer);
 
         for (Map.Entry<LogicalChannel, ChannelDeliveryType> entry : channels.entrySet()) {
             LogicalChannel channel = entry.getKey();
@@ -242,11 +241,15 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
         }
     }
 
-    private PhysicalEventStreamDefinition generate(LogicalOperation operation) {
-        Operation o = operation.getDefinition();
-        PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition(o.getName());
-        definition.setName(o.getName());
-        List<DataType<?>> params = o.getInputTypes();
+    private PhysicalEventStreamDefinition generateProducerOperation(LogicalProducer producer) throws GenerationException {
+        Operation operation = producer.getStreamOperation().getDefinition();
+        PhysicalEventStreamDefinition definition = new PhysicalEventStreamDefinition(operation.getName());
+        definition.setName(operation.getName());
+        List<DataType<?>> params = operation.getInputTypes();
+        if (params.size() < 1) {
+            String interfaceName = producer.getServiceContract().getQualifiedInterfaceName();
+            throw new GenerationException("A channel interface must have one parameter: operation " + operation.getName() + " on " + interfaceName);
+        }
         for (DataType<?> param : params) {
             Class<?> paramType = param.getPhysical();
             String paramName = paramType.getName();

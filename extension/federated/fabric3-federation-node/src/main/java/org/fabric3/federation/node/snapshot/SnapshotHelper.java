@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.model.type.component.AbstractService;
+import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.model.type.component.Composite;
@@ -49,6 +50,7 @@ import org.fabric3.model.type.component.CompositeImplementation;
 import org.fabric3.model.type.component.Implementation;
 import org.fabric3.model.type.component.ServiceDefinition;
 import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalService;
@@ -90,14 +92,38 @@ public class SnapshotHelper {
         LogicalCompositeComponent domainCopy = new LogicalCompositeComponent(domain.getUri(), compositeCopy, null);
         for (LogicalComponent<?> component : domain.getComponents()) {
             if (uri == null || uri.equals(component.getDefinition().getContributionUri())) {
-                if (!isRemoted(component)){
+                if (!isReplicable(component)) {
                     continue;
                 }
-                LogicalComponent<?> componentCopy = SnapshotHelper.snapshot(component, state, domainCopy);
+                LogicalComponent<?> componentCopy = snapshot(component, state, domainCopy);
                 domainCopy.addComponent(componentCopy);
             }
         }
+        for (LogicalChannel channel : domain.getChannels()) {
+            if (channel.getBindings().isEmpty()) {
+                continue;
+            }
+            LogicalChannel channelCopy = snapshot(channel, typeCopy, state, domainCopy);
+            domainCopy.addChannel(channelCopy);
+        }
         return domainCopy;
+    }
+
+    static LogicalChannel snapshot(LogicalChannel channel, Composite composite, LogicalState state, LogicalCompositeComponent domain) {
+        ChannelDefinition definition = channel.getDefinition();
+        String name = definition.getName();
+        URI contributionUri = definition.getContributionUri();
+        String type = definition.getType();
+        ChannelDefinition definitionCopy = new ChannelDefinition(name, contributionUri, type);
+        definitionCopy.setParent(composite);
+        definitionCopy.setIntents(definition.getIntents());
+        definitionCopy.setPolicySets(definition.getPolicySets());
+        LogicalChannel channelCopy = new LogicalChannel(channel.getUri(), definitionCopy, domain);
+        channelCopy.getBindings().addAll(channel.getBindings());
+        channelCopy.setDeployable(channel.getDeployable());
+        channelCopy.setZone(channel.getZone());
+        channelCopy.setState(state);
+        return channelCopy;
     }
 
     static LogicalComponent<?> snapshot(LogicalComponent<?> component, LogicalState state, LogicalCompositeComponent parent) {
@@ -166,8 +192,13 @@ public class SnapshotHelper {
         return contractCopy;
     }
 
-    private static boolean isRemoted(LogicalComponent<?> component) {
-        boolean isRemoted;
+    /**
+     * True if the component should be replicated. Only components with at least one remotable service or bound service are replicable.
+     *
+     * @param component the component
+     * @return true if the component is replicable
+     */
+    private static boolean isReplicable(LogicalComponent<?> component) {
         for (LogicalService service : component.getServices()) {
             ServiceContract contract = service.getLeafService().getServiceContract();
             if (contract.isRemotable() || !service.getBindings().isEmpty()) {
@@ -176,7 +207,6 @@ public class SnapshotHelper {
         }
         return false;
     }
-
 
     private SnapshotHelper() {
     }
