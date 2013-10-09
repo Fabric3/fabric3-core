@@ -37,16 +37,13 @@
  */
 package org.fabric3.binding.zeromq.introspection;
 
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.zeromq.common.SocketAddressDefinition;
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
@@ -56,6 +53,8 @@ import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Loads a <code>binding.zeromq</code> element in a composite.
@@ -69,6 +68,7 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
         addAttributes("name",
                       "requires",
                       "policySets",
+                      "timeout",
                       "target",
                       "addresses",
                       "name",
@@ -99,6 +99,16 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
             }
         }
 
+        String timeoutStr = reader.getAttributeValue(null, "timeout");
+        if (timeoutStr != null) {
+            try {
+                long timeout = Long.parseLong(timeoutStr);
+                metadata.setTimeout(timeout);
+            } catch (NumberFormatException e) {
+                InvalidValue error = new InvalidValue("Invalid timeout specified: " + timeoutStr, startLocation, e);
+                context.addError(error);
+            }
+        }
         String addresses = reader.getAttributeValue(null, "addresses");
         long highWater = parseLong("high.water", reader, context);
         long multicastRate = parseLong("multicast.rate", reader, context);
@@ -126,7 +136,6 @@ public class ZeroMQBindingLoader extends AbstractValidatingTypeLoader<ZeroMQBind
             }
             metadata.setSocketAddresses(addressDefinitions);
         }
-
 
         metadata.setHighWater(highWater);
         metadata.setMulticastRate(multicastRate);

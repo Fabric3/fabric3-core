@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -71,6 +72,7 @@ public class NonReliableSubscriber implements Subscriber, AddressListener {
     private AtomicInteger connectionCount = new AtomicInteger();
 
     private SocketReceiver receiver;
+    private long timeout;
 
     /**
      * Constructor
@@ -94,6 +96,12 @@ public class NonReliableSubscriber implements Subscriber, AddressListener {
         this.handler = head;
         this.metadata = metadata;
         this.executorService = executorService;
+        long specifiedTimeout = metadata.getTimeout();
+        if (specifiedTimeout < 0) {
+            this.timeout = specifiedTimeout;
+        } else {
+            this.timeout = TimeUnit.MILLISECONDS.toMicros(specifiedTimeout);
+        }
     }
 
     @ManagementOperation(type = OperationType.POST)
@@ -176,7 +184,9 @@ public class NonReliableSubscriber implements Subscriber, AddressListener {
             try {
                 while (active.get()) {
                     reconnect();
-                    long val = poller.poll();
+                    // Do not poll indefinitely since reconnect needs to be called periodically. Otherwise,  publisher socket address updates may not be
+                    // received until after the poll returns (which may be never if all publisher addresses changed).
+                    long val = poller.poll(timeout);
                     if (val > 0) {
                         // check if the message is a control message; if so, shutdown (currently the only implemented message)
                         byte[] controlPayload = controlSocket.recv(ZMQ.NOBLOCK);

@@ -67,7 +67,7 @@ public class RoundRobinSocketMultiplexer implements SocketMultiplexer {
         sockets = new HashMap<SocketAddress, ZMQ.Socket>();
     }
 
-    public synchronized void update(List<SocketAddress> addresses) {
+    public void update(List<SocketAddress> addresses) {
         if (sockets.isEmpty()) {
             if (addresses.size() == 1) {
                 SocketAddress address = addresses.get(0);

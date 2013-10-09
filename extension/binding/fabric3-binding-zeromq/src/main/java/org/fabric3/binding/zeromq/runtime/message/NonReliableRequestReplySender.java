@@ -277,7 +277,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
         /**
          * Closes an existing socket and creates a new one, binding it to the list of active service endpoints.
          */
-        private synchronized void reconnect() {
+        private void reconnect() {
             if (!doRefresh.getAndSet(false)) {
                 return;
             }

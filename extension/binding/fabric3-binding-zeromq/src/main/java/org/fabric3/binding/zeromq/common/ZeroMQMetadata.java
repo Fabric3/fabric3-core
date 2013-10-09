@@ -48,6 +48,7 @@ public class ZeroMQMetadata implements Serializable {
     private long sendBuffer = -1;
     private long receiveBuffer = -1;
     private String wireFormat;
+    private long timeout = 10;  // in milliseconds; default to 10
 
     /**
      * Returns the list of hosts to connect or bind to or null if not explicitly set.
@@ -191,5 +192,23 @@ public class ZeroMQMetadata implements Serializable {
      */
     public void setWireFormat(String wireFormat) {
         this.wireFormat = wireFormat;
+    }
+
+    /**
+     * Returns the timeout in milliseconds
+     *
+     * @return the timeout in milliseconds
+     */
+    public long getTimeout() {
+        return timeout;
+    }
+
+    /**
+     * Sets the timeout in milliseconds
+     *
+     * @param timeout the timeout in milliseconds
+     */
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
 }

@@ -226,7 +226,7 @@ public class NonReliableOneWaySender implements OneWaySender, Thread.UncaughtExc
         /**
          * Updates the multiplexer with new endpoint addresses.
          */
-        private synchronized void reconnect() {
+        private void reconnect() {
             if (!doRefresh.getAndSet(false)) {
                 return;
             }
