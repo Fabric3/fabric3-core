@@ -40,6 +40,7 @@ package org.fabric3.node.domain;
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.fabric3.host.Names;
@@ -51,10 +52,10 @@ import org.fabric3.node.nonmanaged.NonManagedPhysicalConnectionSourceDefinition;
 import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.ChannelConnector;
 import org.fabric3.spi.container.builder.channel.ChannelBuilderRegistry;
+import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.channel.ChannelDirection;
 import org.fabric3.spi.deployment.generator.channel.ChannelGenerator;
 import org.fabric3.spi.deployment.generator.channel.ConnectionGenerator;
-import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -63,6 +64,7 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
+import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.Reference;
@@ -96,20 +98,29 @@ public class ChannelResolverImpl implements ChannelResolver {
 
     public <T> T resolve(Class<T> interfaze, String name) throws ResolverException {
         try {
-            LogicalChannel logicalChannel = createChannel(name);
+            LogicalChannel logicalChannel = getChannel(name);
             LogicalProducer producer = createProducer(interfaze, logicalChannel.getUri());
             PhysicalChannelDefinition channelDefinition = channelGenerator.generateChannelDefinition(logicalChannel,
                                                                                                      SYNTHETIC_DEPLOYABLE,
                                                                                                      ChannelDirection.PRODUCER);
 
-            Map<LogicalChannel, ChannelDeliveryType> channels = Collections.singletonMap(logicalChannel, ChannelDeliveryType.DEFAULT);
-            PhysicalChannelConnectionDefinition physicalDefinition = connectionGenerator.generateProducer(producer, channels).get(0);  // must be 1
-
             channelBuilderRegistry.build(channelDefinition);
 
-            channelConnector.connect(physicalDefinition);
-            NonManagedPhysicalConnectionSourceDefinition sourceDefinition = (NonManagedPhysicalConnectionSourceDefinition) physicalDefinition.getSource();
-            return interfaze.cast(sourceDefinition.getProxy());
+            Map<LogicalChannel, ChannelDeliveryType> channels = Collections.singletonMap(logicalChannel, ChannelDeliveryType.DEFAULT);
+            List<PhysicalChannelConnectionDefinition> physicalDefinitions = connectionGenerator.generateProducer(producer, channels);
+            for (PhysicalChannelConnectionDefinition physicalDefinition : physicalDefinitions) {
+                channelConnector.connect(physicalDefinition);
+            }
+            for (PhysicalChannelConnectionDefinition physicalDefinition : physicalDefinitions) {
+                PhysicalConnectionSourceDefinition source = physicalDefinition.getSource();
+                if (!(source instanceof  NonManagedPhysicalConnectionSourceDefinition)) {
+                  continue;
+                }
+                NonManagedPhysicalConnectionSourceDefinition sourceDefinition = (NonManagedPhysicalConnectionSourceDefinition) source;
+                return interfaze.cast(sourceDefinition.getProxy());
+            }
+            throw new GenerationException("Source generator not found");
+
         } catch (GenerationException e) {
             throw new ResolverException(e);
         } catch (BuilderException e) {
@@ -117,7 +128,7 @@ public class ChannelResolverImpl implements ChannelResolver {
         }
     }
 
-    private LogicalChannel createChannel(String name) throws ResolverException {
+    private LogicalChannel getChannel(String name) throws ResolverException {
         LogicalCompositeComponent domainComponent = lcm.getRootComponent();
         String domainRoot = domainComponent.getUri().toString();
         URI channelUri = URI.create(domainRoot + "/" + name);
