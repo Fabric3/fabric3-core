@@ -38,23 +38,28 @@
 package org.fabric3.node;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.fabric3.api.node.Domain;
 import org.fabric3.api.node.Fabric;
 import org.fabric3.api.node.FabricException;
+import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.classloader.MaskingClassLoader;
 import org.fabric3.host.contribution.ContributionSource;
 import org.fabric3.host.contribution.FileContributionSource;
+import org.fabric3.host.contribution.UrlContributionSource;
 import org.fabric3.host.monitor.DelegatingDestinationRouter;
 import org.fabric3.host.os.OperatingSystem;
 import org.fabric3.host.runtime.BootConfiguration;
@@ -65,7 +70,6 @@ import org.fabric3.host.runtime.DefaultHostInfo;
 import org.fabric3.host.runtime.Fabric3Runtime;
 import org.fabric3.host.runtime.HiddenPackages;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.host.runtime.RuntimeConfiguration;
 import org.fabric3.host.runtime.RuntimeCoordinator;
 import org.fabric3.host.runtime.ScanException;
@@ -81,14 +85,15 @@ public class DefaultFabric implements Fabric {
     private static final File SYNTHETIC_DIRECTORY = new File("notfound");
     private static final String SYSTEM_COMPOSITE = "META-INF/system.composite";
     private static final URI DOMAIN_URI = URI.create("fabric3://runtime/NodeDomain");
+    private URL configUrl;
 
     private enum State {
-        UNINITIALIZED, INITIALIZED, STARTED, STOPPED
+        UNINITIALIZED, RUNNING
     }
 
-    private File tempDirectory = new File(System.getProperty("java.io.tmpdir"), ".f3");
-    private File extensionsDirectory = new File(tempDirectory, "extensions");
-    private File dataDirectory = new File(tempDirectory, "data");
+    private File tempDirectory;
+    private File extensionsDirectory;
+    private File dataDirectory;
 
     private State state = State.UNINITIALIZED;
 
@@ -97,18 +102,51 @@ public class DefaultFabric implements Fabric {
 
     private Domain domain;
 
+    private Set<String> extensions = new HashSet<String>();
+    private Set<URL> profileLocations = new HashSet<URL>();
+    private Set<String> profiles = new HashSet<String>();
+    private Set<URL> extensionLocations = new HashSet<URL>();
+
     /**
      * Constructor.
      *
      * @param configUrl the system configuration. If null, this implementation attempts to resolve and use the default configuration.
      */
     public DefaultFabric(URL configUrl) {
-        long start = System.currentTimeMillis();
+        this.configUrl = configUrl;
+        String id = UUID.randomUUID().toString();
+        tempDirectory = new File(System.getProperty("java.io.tmpdir"), ".f3-" + id);
+        extensionsDirectory = new File(tempDirectory, "extensions");
+        dataDirectory = new File(tempDirectory, "data");
+        createDirectories();
+    }
 
+    public Fabric addProfile(String name) {
+        profiles.add(name);
+        return this;
+    }
+
+    public Fabric addProfile(URL location) {
+        profileLocations.add(location);
+        return this;
+    }
+
+    public Fabric addExtension(String name) {
+        extensions.add(name);
+        return this;
+    }
+
+    public Fabric addExtension(URL location) {
+        extensionLocations.add(location);
+        return this;
+    }
+
+    public Fabric start() throws FabricException {
+        if (state != State.UNINITIALIZED) {
+            throw new IllegalStateException("In wrong state: " + state);
+        }
         DelegatingDestinationRouter router = new DelegatingDestinationRouter();
-
         try {
-            createDirectories();
 
             // create the classloaders for booting the runtime
             ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
@@ -119,7 +157,7 @@ public class DefaultFabric implements Fabric {
             BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
 
             // load the system configuration
-            UrlSource urlSource = resolveConfiguration(configUrl);
+            UrlSource urlSource = resolveSystemConfiguration(configUrl);
             Document systemConfig = bootstrapService.loadSystemConfig(urlSource);
 
             URI domainName = bootstrapService.parseDomainName(systemConfig);
@@ -133,8 +171,6 @@ public class DefaultFabric implements Fabric {
             String defaultRuntimeName = UUID.randomUUID().toString();
             String runtimeName = bootstrapService.getRuntimeName(domainName, zoneName, defaultRuntimeName, mode);
 
-            URL systemComposite = getClass().getClassLoader().getResource(SYSTEM_COMPOSITE);
-
             // create the HostInfo and runtime
             HostInfo hostInfo = createHostInfo(runtimeName, zoneName, mode, domainName, environment);
 
@@ -142,8 +178,13 @@ public class DefaultFabric implements Fabric {
 
             runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
-            // scan the classpath for extension archives
-            List<ContributionSource> extensions = scanExtensions();
+            URL systemComposite = getClass().getClassLoader().getResource(SYSTEM_COMPOSITE);
+
+            boolean onlyCore = profiles.isEmpty() && profileLocations.isEmpty() && extensionLocations.isEmpty();
+            List<ContributionSource> extensionSources = scanExtensions(onlyCore);
+            if (!onlyCore) {
+                addConfiguredExtensions(extensionSources);
+            }
 
             BootConfiguration configuration = new BootConfiguration();
             configuration.setRuntime(runtime);
@@ -151,15 +192,16 @@ public class DefaultFabric implements Fabric {
             configuration.setBootClassLoader(bootLoader);
             configuration.setSystemCompositeUrl(systemComposite);
             configuration.setSystemConfig(systemConfig);
-            configuration.setExtensionContributions(extensions);
+            configuration.setExtensionContributions(extensionSources);
 
             // boot the runtime
             coordinator = bootstrapService.createCoordinator(configuration);
             coordinator.boot();
 
-            state = State.INITIALIZED;
-
-            System.out.println("Booted in: " + (System.currentTimeMillis() - start));
+            coordinator.load();
+            coordinator.joinDomain();
+            state = State.RUNNING;
+            return this;
         } catch (RuntimeException e) {
             router.flush(System.out);
             throw new FabricException(e);
@@ -169,29 +211,20 @@ public class DefaultFabric implements Fabric {
         }
     }
 
-    public Fabric start() throws FabricException {
-        if (state != State.INITIALIZED) {
-            throw new IllegalStateException("Not in initialized state: " + state);
-        }
-        try {
-            coordinator.load();
-            coordinator.joinDomain();
-            state = State.STARTED;
-            return this;
-        } catch (InitializationException e) {
-            throw new FabricException(e);
-        }
-    }
-
     public Fabric stop() throws FabricException {
-        if (state != State.STARTED) {
-            throw new IllegalStateException("Not in started state: " + state);
+        if (state != State.RUNNING) {
+            throw new IllegalStateException("Not in running state: " + state);
         }
         try {
             coordinator.shutdown();
-            state = State.STOPPED;
+            state = State.UNINITIALIZED;
+            if (tempDirectory.exists()) {
+                FileHelper.cleanDirectory(tempDirectory);
+            }
             return this;
         } catch (ShutdownException e) {
+            throw new FabricException(e);
+        } catch (IOException e) {
             throw new FabricException(e);
         }
     }
@@ -201,24 +234,140 @@ public class DefaultFabric implements Fabric {
     }
 
     public Domain getDomain() {
+        if (state != State.RUNNING) {
+            throw new IllegalStateException("Not in started state: " + state);
+        }
         if (domain == null) {
             domain = runtime.getComponent(Domain.class, DOMAIN_URI);
         }
         return domain;
     }
 
+    /**
+     * Adds configured profiles and extensions to the sources.
+     *
+     * @param sources the sources
+     * @throws IOException if there is an error adding to the sources
+     */
+    private void addConfiguredExtensions(List<ContributionSource> sources) throws IOException {
+        File repositoryDirectory = ArchiveUtils.getJarDirectory(DefaultFabric.class).getParentFile().getParentFile();
+        for (String profile : profiles) {
+            File profileArchive = getProfileArchive(profile, repositoryDirectory);
+            List<File> expanded = ArchiveUtils.unpack(profileArchive, extensionsDirectory);
+            addSources(expanded, sources);
+        }
+
+        for (String extension : extensions) {
+            File extensionArchive = getExtensionArchive(extension, repositoryDirectory);
+            URI uri = URI.create(extensionArchive.getName());
+            URL location = extensionArchive.toURI().toURL();
+            ContributionSource source = new FileContributionSource(uri, location, -1, true);
+            sources.add(source);
+        }
+
+        addContributionSources(profileLocations, sources);
+        addContributionSources(extensionLocations, sources);
+    }
+
+    /**
+     * Adds the archive urls to the sources.
+     *
+     * @param sources the sources
+     */
+    private void addContributionSources(Set<URL> locations, List<ContributionSource> sources) {
+        for (URL location : locations) {
+            try {
+                UrlContributionSource source = new UrlContributionSource(location.toURI(), location, false);
+                sources.add(source);
+            } catch (URISyntaxException e) {
+                throw new FabricException(e);
+            }
+        }
+    }
+
+    /**
+     * Returns the archive file for the given profile in the Maven-based repository directory.
+     * <p/>
+     * The search algorithm is simple: calculate the Maven archive name using profile-[name]-[version]-bin.zip and find it relative to the provided directory
+     *
+     * @param profile   the profile name; if not prefixed with 'profile-', it will be appended/
+     * @param directory the repository directory
+     * @return the archive file
+     */
+    private File getProfileArchive(String profile, File directory) {
+        String name = profile;
+        if (!name.startsWith("profile-")) {
+            // add profile- prefix if not present
+            name = "profile-" + name;
+        }
+        File profileDirectory = new File(directory, name);
+        if (!profileDirectory.exists()) {
+            throw new FabricException("Profile not found in repository: " + profile);
+        }
+        File profileArchiveDirectory = new File(profileDirectory, Names.VERSION);
+        if (!profileArchiveDirectory.exists()) {
+            profileArchiveDirectory = new File(profileDirectory, Names.VERSION + "-SNAPSHOT");
+        }
+        if (!profileArchiveDirectory.exists()) {
+            throw new FabricException("Profile version not found in repository: " + profile);
+        }
+        File profileArchive = new File(profileArchiveDirectory, name + "-" + Names.VERSION + "-bin.zip");
+        if (!profileArchive.exists()) {
+            profileArchive = new File(profileArchiveDirectory, name + "-" + Names.VERSION + "-SNAPSHOT-bin.zip");
+        }
+        if (!profileArchive.exists()) {
+            throw new FabricException("Profile archive not found in repository: " + profile);
+        }
+        return profileArchive;
+    }
+
+    /**
+     * Returns the archive file for the given extension in the Maven-based repository directory.
+     * <p/>
+     * The search algorithm is simple: calculate the Maven archive name using [name]-[version].jar and find it relative to the provided directory
+     *
+     * @param extension the extension name, which is the Maven artifact id
+     * @param directory the repository directory
+     * @return the archive file
+     */
+    private File getExtensionArchive(String extension, File directory) {
+        File profileDirectory = new File(directory, extension);
+        if (!profileDirectory.exists()) {
+            throw new FabricException("Profile not found in repository: " + extension);
+        }
+        File profileArchiveDirectory = new File(profileDirectory, Names.VERSION);
+        if (!profileArchiveDirectory.exists()) {
+            profileArchiveDirectory = new File(profileDirectory, Names.VERSION + "-SNAPSHOT");
+        }
+        if (!profileArchiveDirectory.exists()) {
+            throw new FabricException("Profile version not found in repository: " + extension);
+        }
+        File profileArchive = new File(profileArchiveDirectory, extension + "-" + Names.VERSION + ".jar");
+        if (!profileArchive.exists()) {
+            profileArchive = new File(profileArchiveDirectory, extension + "-" + Names.VERSION + "-SNAPSHOT.jar");
+        }
+        if (!profileArchive.exists()) {
+            throw new FabricException("Extension archive not found in repository: " + extension);
+        }
+        return profileArchive;
+    }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void createDirectories() throws IOException {
+    private void createDirectories() throws FabricException {
         // clear out the tmp directory
         if (tempDirectory.exists()) {
-            FileHelper.cleanDirectory(tempDirectory);
+            try {
+                FileHelper.cleanDirectory(tempDirectory);
+            } catch (IOException e) {
+                throw new FabricException(e);
+            }
         }
         tempDirectory.mkdirs();
         extensionsDirectory.mkdirs();
         dataDirectory.mkdirs();
     }
 
-    private UrlSource resolveConfiguration(URL configUrl) {
+    private UrlSource resolveSystemConfiguration(URL configUrl) {
         if (configUrl == null) {
             configUrl = getClass().getClassLoader().getResource("META-INF/f3.default.config.xml");
             if (configUrl == null) {
@@ -236,7 +385,7 @@ public class DefaultFabric implements Fabric {
 
     }
 
-    public HostInfo createHostInfo(String runtimeName, String zoneName, RuntimeMode mode, URI domainName, String environment) throws IOException {
+    private HostInfo createHostInfo(String runtimeName, String zoneName, RuntimeMode mode, URI domainName, String environment) throws IOException {
 
         File runtimeDirectory = getRuntimeDirectory(mode);
 
@@ -261,42 +410,35 @@ public class DefaultFabric implements Fabric {
                                    false);
     }
 
-    private List<ContributionSource> scanExtensions() throws ScanException {
+    /**
+     * Scans for extensions on a classpath.
+     *
+     * @param onlyCore if true, only scan for core extensions; ignore all others as they will be explicitly configured
+     * @return the sources
+     * @throws ScanException if there is a scan error
+     */
+    private List<ContributionSource> scanExtensions(final boolean onlyCore) throws ScanException {
         try {
 
-            List<File> extensions = getExtensionArchives();
+            List<File> archives = scanClasspathForProfileArchives();
 
-            if (extensions.size() == 0) {
-                throw new ScanException("Core extensions not found");
-            }
-
-            for (File extension : extensions) {
-                ArchiveUtils.unpack(extension, extensionsDirectory);
-            }
-            File[] files = extensionsDirectory.listFiles(new FileFilter() {
-                public boolean accept(File pathname) {
-                    // skip directories and files beginning with '.'
-                    return !pathname.getName().startsWith(".");
-                }
-            });
-
-            if (files == null) {
-                return Collections.emptyList();
+            if (archives.size() == 0) {
+                throw new ScanException("Core extension archive not found");
             }
 
             List<ContributionSource> sources = new ArrayList<ContributionSource>();
-            for (File file : files) {
-                URL location = file.toURI().toURL();
-                ContributionSource source;
-                if (file.isDirectory()) {
-                    continue;
+            List<File> extensionsFiles = new ArrayList<File>();
 
-                } else {
-                    URI uri = URI.create(file.getName());
-                    source = new FileContributionSource(uri, location, -1, true);
+            for (File extension : archives) {
+                // if profiles and/or extensions are explicitly configured, only load the core Fabric extensions and ignore all other extensions/profiles on
+                // the classpath
+                if (onlyCore && !extension.getName().contains("fabric3-node-extensions")) {
+                    continue;
                 }
-                sources.add(source);
+                extensionsFiles.addAll(ArchiveUtils.unpack(extension, extensionsDirectory));
             }
+
+            addSources(extensionsFiles, sources);
             return sources;
         } catch (IOException e) {
             throw new ScanException("Error scanning extensions", e);
@@ -304,14 +446,36 @@ public class DefaultFabric implements Fabric {
     }
 
     /**
-     * Returns the installed extensions by scanning the classpath for F3 manifest entries.
+     * Adds contribution sources based on the list of files to the given sources.
+     *
+     * @param files   the files
+     * @param sources the sources to add to
+     * @throws MalformedURLException if there is an error reading a file name
+     */
+    private void addSources(List<File> files, List<ContributionSource> sources) throws MalformedURLException {
+        for (File file : files) {
+            URL location = file.toURI().toURL();
+            ContributionSource source;
+            if (file.isDirectory()) {
+                continue;
+
+            } else {
+                URI uri = URI.create(file.getName());
+                source = new FileContributionSource(uri, location, -1, true);
+            }
+            sources.add(source);
+        }
+    }
+
+    /**
+     * Returns the installed profiles by scanning the classpath for F3 manifest entries.
      *
      * @return a collection containing the archive files
      * @throws IOException if there is an error scanning for extensions
      */
-    private List<File> getExtensionArchives() throws IOException {
+    private List<File> scanClasspathForProfileArchives() throws IOException {
         Enumeration<URL> manifests = getClass().getClassLoader().getResources("extensions/F3-MANIFEST.MF");
-        List<File> extensions = new ArrayList<File>();
+        List<File> extensionFiles = new ArrayList<File>();
         while (manifests.hasMoreElements()) {
             // determine the containing archive name by removing the jar:file: protocol prefix and the manifest suffix
             URL manifest = manifests.nextElement();
@@ -320,9 +484,9 @@ public class DefaultFabric implements Fabric {
                 path = path.substring(5);
             }
             path = path.substring(0, path.length() - 27);      //27  = "!/extensions/F3-MANIFEST.MF"
-            extensions.add(new File(path));
+            extensionFiles.add(new File(path));
         }
-        return extensions;
+        return extensionFiles;
     }
 
 }

@@ -45,6 +45,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -110,7 +112,8 @@ public class ArchiveUtils {
      * @param destination the destination directory
      * @throws IOException if there is an error expanding the archive
      */
-    public static void unpack(File archive, File destination) throws IOException {
+    public static List<File> unpack(File archive, File destination) throws IOException {
+        List<File> expandedFiles = new ArrayList<File>();
         JarInputStream jarStream = null;
         try {
 
@@ -130,7 +133,9 @@ public class ArchiveUtils {
                     continue;
                 }
                 copy(jarStream, jarFile);
+                expandedFiles.add(jarFile);
             }
+            return expandedFiles;
         } finally {
             IOHelper.closeQuietly(jarStream);
         }
