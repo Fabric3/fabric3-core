@@ -38,7 +38,7 @@
 package org.fabric3.api.node;
 
 /**
- *
+ * Base Fabric API exception.
  */
 public class FabricException extends RuntimeException {
     private static final long serialVersionUID = 6334321742275083111L;
@@ -49,5 +49,9 @@ public class FabricException extends RuntimeException {
 
     public FabricException(String message) {
         super(message);
+    }
+
+    public FabricException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

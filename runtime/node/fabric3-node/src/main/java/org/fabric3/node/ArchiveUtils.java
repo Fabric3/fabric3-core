@@ -50,6 +50,8 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.fabric3.api.node.FabricException;
+import org.fabric3.host.Names;
 import org.fabric3.host.util.IOHelper;
 
 /**
@@ -89,20 +91,72 @@ public class ArchiveUtils {
         return jarFile.getParentFile();
     }
 
+
     /**
-     * Returns the class file name including the full path.
+     * Returns the archive file for the given profile in the Maven-based repository directory.
+     * <p/>
+     * The search algorithm is simple: calculate the Maven archive name using profile-[name]-[version]-bin.zip and find it relative to the provided directory
      *
-     * @param clazz the class
-     * @return the class file name
+     * @param profile   the profile name; if not prefixed with 'profile-', it will be appended/
+     * @param directory the repository directory
+     * @return the archive file
      */
-    private static String getClassFileName(Class<?> clazz) {
-        String name = clazz.getName();
-        int last = name.lastIndexOf('.');
-        if (last != -1) {
-            name = name.substring(last + 1);
+    public static File getProfileArchive(String profile, File directory) {
+        String name = profile;
+        if (!name.startsWith("profile-")) {
+            // add profile- prefix if not present
+            name = "profile-" + name;
         }
-        name = name + ".class";
-        return name;
+        File profileDirectory = new File(directory, name);
+        if (!profileDirectory.exists()) {
+            throw new FabricException("Profile not found in repository: " + profile);
+        }
+        File profileArchiveDirectory = new File(profileDirectory, Names.VERSION);
+        if (!profileArchiveDirectory.exists()) {
+            profileArchiveDirectory = new File(profileDirectory, Names.VERSION + "-SNAPSHOT");
+        }
+        if (!profileArchiveDirectory.exists()) {
+            throw new FabricException("Profile version not found in repository: " + profile);
+        }
+        File profileArchive = new File(profileArchiveDirectory, name + "-" + Names.VERSION + "-bin.zip");
+        if (!profileArchive.exists()) {
+            profileArchive = new File(profileArchiveDirectory, name + "-" + Names.VERSION + "-SNAPSHOT-bin.zip");
+        }
+        if (!profileArchive.exists()) {
+            throw new FabricException("Profile archive not found in repository: " + profile);
+        }
+        return profileArchive;
+    }
+
+    /**
+     * Returns the archive file for the given extension in the Maven-based repository directory.
+     * <p/>
+     * The search algorithm is simple: calculate the Maven archive name using [name]-[version].jar and find it relative to the provided directory
+     *
+     * @param extension the extension name, which is the Maven artifact id
+     * @param directory the repository directory
+     * @return the archive file
+     */
+    public static  File getExtensionArchive(String extension, File directory) {
+        File profileDirectory = new File(directory, extension);
+        if (!profileDirectory.exists()) {
+            throw new FabricException("Profile not found in repository: " + extension);
+        }
+        File profileArchiveDirectory = new File(profileDirectory, Names.VERSION);
+        if (!profileArchiveDirectory.exists()) {
+            profileArchiveDirectory = new File(profileDirectory, Names.VERSION + "-SNAPSHOT");
+        }
+        if (!profileArchiveDirectory.exists()) {
+            throw new FabricException("Profile version not found in repository: " + extension);
+        }
+        File profileArchive = new File(profileArchiveDirectory, extension + "-" + Names.VERSION + ".jar");
+        if (!profileArchive.exists()) {
+            profileArchive = new File(profileArchiveDirectory, extension + "-" + Names.VERSION + "-SNAPSHOT.jar");
+        }
+        if (!profileArchive.exists()) {
+            throw new FabricException("Extension archive not found in repository: " + extension);
+        }
+        return profileArchive;
     }
 
     /**
@@ -179,6 +233,22 @@ public class ArchiveUtils {
             os.close();
         }
         destination.deleteOnExit();
+    }
+
+    /**
+     * Returns the class file name including the full path.
+     *
+     * @param clazz the class
+     * @return the class file name
+     */
+    private static String getClassFileName(Class<?> clazz) {
+        String name = clazz.getName();
+        int last = name.lastIndexOf('.');
+        if (last != -1) {
+            name = name.substring(last + 1);
+        }
+        name = name + ".class";
+        return name;
     }
 
     private ArchiveUtils() {

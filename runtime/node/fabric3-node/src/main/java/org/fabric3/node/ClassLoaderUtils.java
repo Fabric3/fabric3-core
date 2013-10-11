@@ -37,8 +37,58 @@
 */
 package org.fabric3.node;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+import org.fabric3.api.node.FabricException;
+
 /**
- *
+ * ClassLoader utilities
  */
 public class ClassLoaderUtils {
+
+    /**
+     * Changes the classloader parent to the new one.
+     *
+     * @param classLoader the classloader
+     * @param newParent   the new parent
+     */
+    public static void changeParentClassLoader(ClassLoader classLoader, ClassLoader newParent) {
+        try {
+            // get the parent classloader field
+            Field parentField = getParentClassLoaderField();
+            parentField.setAccessible(true);
+
+            // change the final modifier
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(parentField, parentField.getModifiers() & ~Modifier.FINAL);
+
+            // set the parent classloader field to the new value
+            parentField.set(classLoader, newParent);
+        } catch (IllegalAccessException e) {
+            throw new FabricException("Unsupported VM", e);
+        } catch (NoSuchFieldException e) {
+            throw new FabricException("Unsupported VM", e);
+        }
+    }
+
+    private static Field getParentClassLoaderField() {
+        Field parentField;
+        try {
+            // try the Sun implementation first
+            parentField = ClassLoader.class.getDeclaredField("parent");
+        } catch (NoSuchFieldException e) {
+            // not found, try J9
+            try {
+                parentField = ClassLoader.class.getDeclaredField("parentClassLoader");
+            } catch (NoSuchFieldException e1) {
+                throw new FabricException("Unsupported VM", e);
+            }
+        }
+        return parentField;
+    }
+
+    private ClassLoaderUtils() {
+    }
 }

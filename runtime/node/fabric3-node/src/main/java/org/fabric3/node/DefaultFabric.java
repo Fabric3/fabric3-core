@@ -54,7 +54,6 @@ import java.util.UUID;
 import org.fabric3.api.node.Domain;
 import org.fabric3.api.node.Fabric;
 import org.fabric3.api.node.FabricException;
-import org.fabric3.host.Names;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.classloader.MaskingClassLoader;
 import org.fabric3.host.contribution.ContributionSource;
@@ -148,10 +147,17 @@ public class DefaultFabric implements Fabric {
         DelegatingDestinationRouter router = new DelegatingDestinationRouter();
         try {
 
+            ClassLoader fabricClassLoader = getClass().getClassLoader();
+            ClassLoader rootClassLoader = fabricClassLoader.getParent();
+
+            String[] packages = HiddenPackages.getPackages();
+            MaskingClassLoader maskingClassLoader = new MaskingClassLoader(rootClassLoader, packages);
+
+            // change the fabric classloader parent to the masking classloader so overridden classes can be masked
+            ClassLoaderUtils.changeParentClassLoader(fabricClassLoader, maskingClassLoader);
+
             // create the classloaders for booting the runtime
-            ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-            ClassLoader maskingClassLoader = new MaskingClassLoader(systemClassLoader, HiddenPackages.getPackages());
-            ClassLoader hostLoader = BootstrapHelper.createClassLoader(maskingClassLoader, SYNTHETIC_DIRECTORY);
+            ClassLoader hostLoader = BootstrapHelper.createClassLoader(fabricClassLoader, SYNTHETIC_DIRECTORY);
             ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, SYNTHETIC_DIRECTORY);
 
             BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
@@ -252,13 +258,13 @@ public class DefaultFabric implements Fabric {
     private void addConfiguredExtensions(List<ContributionSource> sources) throws IOException {
         File repositoryDirectory = ArchiveUtils.getJarDirectory(DefaultFabric.class).getParentFile().getParentFile();
         for (String profile : profiles) {
-            File profileArchive = getProfileArchive(profile, repositoryDirectory);
+            File profileArchive = ArchiveUtils.getProfileArchive(profile, repositoryDirectory);
             List<File> expanded = ArchiveUtils.unpack(profileArchive, extensionsDirectory);
             addSources(expanded, sources);
         }
 
         for (String extension : extensions) {
-            File extensionArchive = getExtensionArchive(extension, repositoryDirectory);
+            File extensionArchive = ArchiveUtils.getExtensionArchive(extension, repositoryDirectory);
             URI uri = URI.create(extensionArchive.getName());
             URL location = extensionArchive.toURI().toURL();
             ContributionSource source = new FileContributionSource(uri, location, -1, true);
@@ -285,72 +291,6 @@ public class DefaultFabric implements Fabric {
         }
     }
 
-    /**
-     * Returns the archive file for the given profile in the Maven-based repository directory.
-     * <p/>
-     * The search algorithm is simple: calculate the Maven archive name using profile-[name]-[version]-bin.zip and find it relative to the provided directory
-     *
-     * @param profile   the profile name; if not prefixed with 'profile-', it will be appended/
-     * @param directory the repository directory
-     * @return the archive file
-     */
-    private File getProfileArchive(String profile, File directory) {
-        String name = profile;
-        if (!name.startsWith("profile-")) {
-            // add profile- prefix if not present
-            name = "profile-" + name;
-        }
-        File profileDirectory = new File(directory, name);
-        if (!profileDirectory.exists()) {
-            throw new FabricException("Profile not found in repository: " + profile);
-        }
-        File profileArchiveDirectory = new File(profileDirectory, Names.VERSION);
-        if (!profileArchiveDirectory.exists()) {
-            profileArchiveDirectory = new File(profileDirectory, Names.VERSION + "-SNAPSHOT");
-        }
-        if (!profileArchiveDirectory.exists()) {
-            throw new FabricException("Profile version not found in repository: " + profile);
-        }
-        File profileArchive = new File(profileArchiveDirectory, name + "-" + Names.VERSION + "-bin.zip");
-        if (!profileArchive.exists()) {
-            profileArchive = new File(profileArchiveDirectory, name + "-" + Names.VERSION + "-SNAPSHOT-bin.zip");
-        }
-        if (!profileArchive.exists()) {
-            throw new FabricException("Profile archive not found in repository: " + profile);
-        }
-        return profileArchive;
-    }
-
-    /**
-     * Returns the archive file for the given extension in the Maven-based repository directory.
-     * <p/>
-     * The search algorithm is simple: calculate the Maven archive name using [name]-[version].jar and find it relative to the provided directory
-     *
-     * @param extension the extension name, which is the Maven artifact id
-     * @param directory the repository directory
-     * @return the archive file
-     */
-    private File getExtensionArchive(String extension, File directory) {
-        File profileDirectory = new File(directory, extension);
-        if (!profileDirectory.exists()) {
-            throw new FabricException("Profile not found in repository: " + extension);
-        }
-        File profileArchiveDirectory = new File(profileDirectory, Names.VERSION);
-        if (!profileArchiveDirectory.exists()) {
-            profileArchiveDirectory = new File(profileDirectory, Names.VERSION + "-SNAPSHOT");
-        }
-        if (!profileArchiveDirectory.exists()) {
-            throw new FabricException("Profile version not found in repository: " + extension);
-        }
-        File profileArchive = new File(profileArchiveDirectory, extension + "-" + Names.VERSION + ".jar");
-        if (!profileArchive.exists()) {
-            profileArchive = new File(profileArchiveDirectory, extension + "-" + Names.VERSION + "-SNAPSHOT.jar");
-        }
-        if (!profileArchive.exists()) {
-            throw new FabricException("Extension archive not found in repository: " + extension);
-        }
-        return profileArchive;
-    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void createDirectories() throws FabricException {

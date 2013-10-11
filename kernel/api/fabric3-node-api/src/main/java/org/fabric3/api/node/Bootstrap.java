@@ -63,7 +63,9 @@ public class Bootstrap {
      */
     public static Fabric initialize(URL url) throws FabricException {
         try {
-            Class<?> implClass = Class.forName(FABRIC_CLASS, true, Bootstrap.class.getClassLoader());
+            ClassLoader bootstrapClassLoader = Bootstrap.class.getClassLoader();
+            // instantiate the Fabric API implementation class
+            Class<?> implClass = Class.forName(FABRIC_CLASS, true, bootstrapClassLoader);
             return (Fabric) implClass.getConstructor(URL.class).newInstance(url);
         } catch (ClassNotFoundException e) {
             // programming error
@@ -80,6 +82,10 @@ public class Bootstrap {
         } catch (InvocationTargetException e) {
             // programming error
             throw new FabricException(e.getTargetException());
+        } catch (Exception e) {
+            throw new FabricException(e);
         }
     }
+
+
 }
