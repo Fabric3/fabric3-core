@@ -144,7 +144,7 @@ public class BrokerEngine {
         // set the default broker name
         brokerName = info.getRuntimeName().replace(":", ".");
         broker = new BrokerService();
-        broker.setUseJmx(true);
+        broker.setUseJmx(mBeanServer != null);
         broker.setTmpDataDirectory(tempDir);
         broker.setDataDirectory(dataDir.toString());
         if (brokerConfiguration == null) {
