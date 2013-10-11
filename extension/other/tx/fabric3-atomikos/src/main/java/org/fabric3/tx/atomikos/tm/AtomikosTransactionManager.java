@@ -47,9 +47,11 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
 
+import com.atomikos.datasource.xa.XID;
 import com.atomikos.icatch.config.UserTransactionService;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
 import com.atomikos.icatch.jta.TransactionManagerImp;
@@ -147,7 +149,12 @@ public class AtomikosTransactionManager implements TransactionManager, Fabric3Ev
         }
 
         // set the unique TM name
-        properties.setProperty(TM_NAME, info.getRuntimeName().replace(":", "_"));
+        String name = info.getRuntimeName().replace(":", "_");
+        // shorten to length required by Atomikos if too large
+        if (name.getBytes().length + 16 > XID.MAXGTRIDSIZE) {
+            name = new String(Arrays.copyOfRange(name.getBytes(), 0, XID.MAXGTRIDSIZE - 16));
+        }
+        properties.setProperty(TM_NAME, name);
 
         String path = trxDir.getCanonicalPath();
         properties.setProperty(OUTPUT_DIR_PROPERTY_NAME, path);
