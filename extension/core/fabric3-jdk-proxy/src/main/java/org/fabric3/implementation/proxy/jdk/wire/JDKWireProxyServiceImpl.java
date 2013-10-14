@@ -107,13 +107,13 @@ public class JDKWireProxyServiceImpl implements JDKWireProxyService {
 
     public <T> T createMultiThreadedCallbackProxy(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) throws ProxyCreationException {
         ClassLoader cl = interfaze.getClassLoader();
-        MultiThreadedCallbackInvocationHandler<T> handler = new MultiThreadedCallbackInvocationHandler<T>(interfaze, mappings);
+        MultiThreadedCallbackInvocationHandler<T> handler = new MultiThreadedCallbackInvocationHandler<T>(mappings);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 
     public <T> T createCallbackProxy(Class<T> interfaze, Map<Method, InvocationChain> mapping) {
         ClassLoader cl = interfaze.getClassLoader();
-        StatefulCallbackInvocationHandler<T> handler = new StatefulCallbackInvocationHandler<T>(interfaze, mapping);
+        StatefulCallbackInvocationHandler<T> handler = new StatefulCallbackInvocationHandler<T>(mapping);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 

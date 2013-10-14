@@ -45,9 +45,9 @@ import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.fabric3.spi.container.wire.InvocationChain;
 
 /**
- * Responsible for dispatching to a callback service from a component implementation instance that is not composite scope. Since only one client can
- * invoke the instance this proxy is injected on at a time, there can only be one callback target, even if the proxy is injected on an instance
- * variable. Consequently, the proxy does not need to map the callback target based on the forward request.
+ * Responsible for dispatching to a callback service from a component implementation instance that is not composite scope. Since only one client can invoke the
+ * instance this proxy is injected on at a time, there can only be one callback target, even if the proxy is injected on an instance variable. Consequently, the
+ * proxy does not need to map the callback target based on the forward request.
  */
 public class StatefulCallbackInvocationHandler<T> extends AbstractCallbackInvocationHandler<T> {
     private Map<Method, InvocationChain> chains;
@@ -55,11 +55,9 @@ public class StatefulCallbackInvocationHandler<T> extends AbstractCallbackInvoca
     /**
      * Constructor.
      *
-     * @param interfaze      the callback service interface implemented by the proxy
-     * @param chains         the invocation chain mappings for the callback wire
+     * @param chains the invocation chain mappings for the callback wire
      */
-    public StatefulCallbackInvocationHandler(Class<T> interfaze, Map<Method, InvocationChain> chains) {
-        super(interfaze);
+    public StatefulCallbackInvocationHandler(Map<Method, InvocationChain> chains) {
         this.chains = chains;
     }
 

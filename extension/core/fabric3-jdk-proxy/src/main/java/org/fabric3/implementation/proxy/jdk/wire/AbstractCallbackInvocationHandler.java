@@ -54,17 +54,6 @@ import org.oasisopen.sca.ServiceUnavailableException;
  * operation.
  */
 public abstract class AbstractCallbackInvocationHandler<T> implements InvocationHandler {
-    private final Class<T> interfaze;
-
-    /**
-     * Constructor.
-     *
-     * @param interfaze the callback service interface implemented by the proxy
-     */
-    public AbstractCallbackInvocationHandler(Class<T> interfaze) {
-        // needed to implement ServiceReference
-        this.interfaze = interfaze;
-    }
 
     protected Object invoke(InvocationChain chain, Object[] args, WorkContext workContext) throws Throwable {
         // Pop the call callback reference as we move back in the request stack. When the invocation is made on the callback target,

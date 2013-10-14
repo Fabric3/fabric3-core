@@ -60,11 +60,9 @@ public class MultiThreadedCallbackInvocationHandler<T> extends AbstractCallbackI
      * since callback proxies stored in instance variables may represent multiple clients, they must map the correct one for the request being processed on the
      * current thread. The mappings parameter keys a callback URI representing the client to the set of invocation chains for the callback service.
      *
-     * @param interfaze the callback service interface implemented by the proxy
      * @param mappings  the callback URI to invocation chain mappings
      */
-    public MultiThreadedCallbackInvocationHandler(Class<T> interfaze, Map<String, Map<Method, InvocationChain>> mappings) {
-        super(interfaze);
+    public MultiThreadedCallbackInvocationHandler(Map<String, Map<Method, InvocationChain>> mappings) {
         this.mappings = mappings;
         if (mappings.size() == 1) {
             singleMapping = mappings.values().iterator().next();
