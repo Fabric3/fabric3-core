@@ -50,6 +50,7 @@ import org.fabric3.spi.deployment.generator.binding.BindingProvider;
 import org.fabric3.spi.deployment.generator.binding.BindingSelectionException;
 import org.fabric3.spi.deployment.generator.binding.BindingSelectionStrategy;
 import org.fabric3.spi.deployment.generator.binding.BindingSelector;
+import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -58,6 +59,7 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.type.remote.RemoteImplementation;
+import org.fabric3.spi.model.type.remote.RemoteServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
@@ -189,7 +191,7 @@ public class BindingSelectorImpl implements BindingSelector {
         // on a node runtime bind all domain level, remotable services that are not explicitly configured with a binding
         if (RuntimeMode.NODE == info.getRuntimeMode()) {
             for (LogicalService service : component.getServices()) {
-                if (service.getBindings().isEmpty() && service.getLeafService().getServiceContract().isRemotable()) {
+                if (bindService(service)) {
                     for (BindingProvider provider : providers) {
                         BindingMatchResult result = provider.canBind(service);
                         if (result.isMatch()) {
@@ -228,6 +230,27 @@ public class BindingSelectorImpl implements BindingSelector {
         }
         URI uri = channel.getUri();
         throw new NoSCABindingProviderException("No SCA binding provider suitable for channel " + uri, results);
+    }
+
+    /**
+     * Determines if the service should be bound, i.e. if it has not already been bound by binding.sca or is remote (and not hosted on the current runtime).
+     *
+     * @param service the target
+     * @return true if the target should be bound
+     */
+    private boolean bindService(LogicalService service) {
+        if (!service.getBindings().isEmpty() || !service.getLeafService().getServiceContract().isRemotable()) {
+            return false;
+        }
+        if (service.getServiceContract() instanceof RemoteServiceContract) {
+            return false;
+        }
+        for (LogicalBinding<?> binding : service.getBindings()) {
+            if (binding.isAssigned()) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

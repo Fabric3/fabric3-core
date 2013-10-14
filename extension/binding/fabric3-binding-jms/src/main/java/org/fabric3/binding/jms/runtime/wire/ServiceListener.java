@@ -341,7 +341,7 @@ public class ServiceListener implements MessageListener {
             workContext.addCallbackReferences(stack);
             return workContext;
         } catch (JMSException ex) {
-            throw new JmsBadMessageException("Error deserialing callback references", ex);
+            throw new JmsBadMessageException("Error deserializing callback references", ex);
         } catch (IOException ex) {
             throw new JmsBadMessageException("Error deserializing callback references", ex);
         }

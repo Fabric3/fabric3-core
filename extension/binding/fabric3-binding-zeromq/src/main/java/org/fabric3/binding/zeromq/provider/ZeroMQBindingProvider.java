@@ -116,9 +116,6 @@ public class ZeroMQBindingProvider implements BindingProvider {
     }
 
     public void bind(LogicalService service) {
-        if (!bindTarget(service)) {
-            return;
-        }
         QName deployable = service.getParent().getDeployable();
 
         ZeroMQMetadata metadata = createMetadata();

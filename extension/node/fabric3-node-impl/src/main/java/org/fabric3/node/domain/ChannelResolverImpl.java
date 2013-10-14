@@ -144,12 +144,12 @@ public class ChannelResolverImpl implements ChannelResolver {
 
         LogicalCompositeComponent domainComponent = lcm.getRootComponent();
         String domainRoot = domainComponent.getUri().toString();
-        URI componentUri = URI.create(domainRoot + "Synthetic");
+        URI componentUri = URI.create(domainRoot + "/F3Synthetic");
 
         InjectingComponentType componentType = new InjectingComponentType();
         NonManagedImplementation implementation = new NonManagedImplementation();
         implementation.setComponentType(componentType);
-        ComponentDefinition<NonManagedImplementation> componentDefinition = new ComponentDefinition<NonManagedImplementation>("Synthetic");
+        ComponentDefinition<NonManagedImplementation> componentDefinition = new ComponentDefinition<NonManagedImplementation>("F3Synthetic");
         componentDefinition.setContributionUri(Names.HOST_CONTRIBUTION);
         componentDefinition.setImplementation(implementation);
         LogicalComponent<NonManagedImplementation> logicalComponent = new LogicalComponent<NonManagedImplementation>(componentUri,
@@ -158,7 +158,7 @@ public class ChannelResolverImpl implements ChannelResolver {
 
         ProducerDefinition producerDefinition = new ProducerDefinition("producer", contract);
 
-        LogicalProducer producer = new LogicalProducer(URI.create(domainRoot + "Synthetic#producer"), producerDefinition, logicalComponent);
+        LogicalProducer producer = new LogicalProducer(URI.create(domainRoot + "/F3Synthetic#producer"), producerDefinition, logicalComponent);
         producer.addTarget(channelUri);
         return producer;
     }

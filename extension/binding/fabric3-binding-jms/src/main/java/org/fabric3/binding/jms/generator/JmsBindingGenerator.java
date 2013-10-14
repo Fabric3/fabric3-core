@@ -43,15 +43,11 @@
  */
 package org.fabric3.binding.jms.generator;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.Constants;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.binding.jms.spi.common.ActivationSpec;
@@ -73,13 +69,16 @@ import org.fabric3.model.type.contract.DataType;
 import org.fabric3.model.type.contract.Operation;
 import org.fabric3.model.type.contract.ServiceContract;
 import org.fabric3.model.type.definitions.Intent;
+import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
-import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.type.xsd.XSDType;
+import org.oasisopen.sca.Constants;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Binding generator that creates the source and target definitions for JMS endpoint and reference wires.
