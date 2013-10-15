@@ -41,9 +41,11 @@ import org.fabric3.model.type.component.ComponentDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Processes a {@link ComponentDefinition}, potentially adding metadata based on introspecting the component implementation.
+ * Processes a {@link ComponentDefinition}, potentially adding binding metadata based on introspecting the component implementation or the component type.
+ * <p/>
+ * Note implementations are called after all {@link ImplementationProcessor}s have completed their work.
  */
-public interface ImplementationProcessor {
+public interface BindingProcessor {
 
     /**
      * Processes the component definition.
