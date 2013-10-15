@@ -58,7 +58,7 @@ import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.container.component.ScopedComponent;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.ImplementationProcessor;
+import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -76,7 +76,7 @@ import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
  */
 public class SingletonComponentSynthesizer implements ComponentSynthesizer {
 
-    private ImplementationProcessor implementationProcessor;
+    private ImplementationIntrospector implementationIntrospector;
     private AtomicComponentInstantiator instantiator;
     private LogicalComponentManager lcm;
     private ComponentManager componentManager;
@@ -84,22 +84,22 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
     private ScopeContainer scopeContainer;
 
     @Constructor
-    public SingletonComponentSynthesizer(@Reference ImplementationProcessor implementationProcessor,
+    public SingletonComponentSynthesizer(@Reference ImplementationIntrospector implementationIntrospector,
                                          @Reference AtomicComponentInstantiator instantiator,
                                          @Reference LogicalComponentManager lcm,
                                          @Reference ComponentManager componentManager,
                                          @Reference JavaContractProcessor contractProcessor,
                                          @Reference ScopeRegistry registry) {
-        this(implementationProcessor, instantiator, lcm, componentManager, contractProcessor, registry.getScopeContainer(Scope.COMPOSITE));
+        this(implementationIntrospector, instantiator, lcm, componentManager, contractProcessor, registry.getScopeContainer(Scope.COMPOSITE));
     }
 
-    public SingletonComponentSynthesizer(ImplementationProcessor implementationProcessor,
+    public SingletonComponentSynthesizer(ImplementationIntrospector implementationIntrospector,
                                          AtomicComponentInstantiator instantiator,
                                          LogicalComponentManager lcm,
                                          ComponentManager componentManager,
                                          JavaContractProcessor contractProcessor,
                                          ScopeContainer scopeContainer) {
-        this.implementationProcessor = implementationProcessor;
+        this.implementationIntrospector = implementationIntrospector;
         this.instantiator = instantiator;
         this.lcm = lcm;
         this.componentManager = componentManager;
@@ -158,7 +158,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             // introspect the instance so it may be injected by the runtime with additional services
             SystemImplementation implementation = new SystemImplementation();
             implementation.setImplementationClass(implClassName);
-            InjectingComponentType componentType = implementationProcessor.introspect(implClassName, context);
+            InjectingComponentType componentType = implementationIntrospector.introspect(implClassName, context);
             implementation.setComponentType(componentType);
 
             ComponentDefinition<Implementation<?>> def = new ComponentDefinition<Implementation<?>>(name);

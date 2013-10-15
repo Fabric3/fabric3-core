@@ -54,7 +54,7 @@ import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.ScopeContainer;
-import org.fabric3.spi.introspection.java.ImplementationProcessor;
+import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.oasisopen.sca.annotation.Reference;
@@ -64,7 +64,7 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class SingletonComponentSynthesizerTestCase extends TestCase {
 
-    private ImplementationProcessor implementationProcessor;
+    private ImplementationIntrospector implementationIntrospector;
     private AtomicComponentInstantiator instantiator;
     private LogicalComponentManagerImpl lcm;
     private ComponentManager componentManager;
@@ -72,7 +72,7 @@ public class SingletonComponentSynthesizerTestCase extends TestCase {
     private ScopeContainer scopeContainer;
 
     public void testSynthesizeIntrospect() throws Exception {
-        SingletonComponentSynthesizer synthesizer = new SingletonComponentSynthesizer(implementationProcessor,
+        SingletonComponentSynthesizer synthesizer = new SingletonComponentSynthesizer(implementationIntrospector,
                                                                                       instantiator,
                                                                                       lcm,
                                                                                       componentManager,
@@ -89,7 +89,7 @@ public class SingletonComponentSynthesizerTestCase extends TestCase {
     }
 
     public void testSynthesizeNoIntrospect() throws Exception {
-        SingletonComponentSynthesizer synthesizer = new SingletonComponentSynthesizer(implementationProcessor,
+        SingletonComponentSynthesizer synthesizer = new SingletonComponentSynthesizer(implementationIntrospector,
                                                                                       instantiator,
                                                                                       lcm,
                                                                                       componentManager,
@@ -108,7 +108,7 @@ public class SingletonComponentSynthesizerTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        implementationProcessor = BootstrapIntrospectionFactory.createSystemImplementationProcessor();
+        implementationIntrospector = BootstrapIntrospectionFactory.createSystemImplementationProcessor();
         instantiator = new AtomicComponentInstantiatorImpl();
         lcm = new LogicalComponentManagerImpl();
         lcm.init();

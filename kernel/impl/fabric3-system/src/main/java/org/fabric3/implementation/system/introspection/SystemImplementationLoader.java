@@ -52,7 +52,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.ImplementationProcessor;
+import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
@@ -63,15 +63,15 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  */
 @EagerInit
 public class SystemImplementationLoader extends AbstractValidatingTypeLoader<SystemImplementation> {
-    private ImplementationProcessor implementationProcessor;
+    private ImplementationIntrospector implementationIntrospector;
 
     /**
      * Constructor.
      *
-     * @param implementationProcessor the component type loader to use
+     * @param implementationIntrospector the component type loader to use
      */
-    public SystemImplementationLoader(@Reference ImplementationProcessor implementationProcessor) {
-        this.implementationProcessor = implementationProcessor;
+    public SystemImplementationLoader(@Reference ImplementationIntrospector implementationIntrospector) {
+        this.implementationIntrospector = implementationIntrospector;
         addAttributes("class");
     }
 
@@ -90,7 +90,7 @@ public class SystemImplementationLoader extends AbstractValidatingTypeLoader<Sys
         LoaderUtil.skipToEndElement(reader);
 
         implementation.setImplementationClass(implClass);
-        InjectingComponentType componentType = implementationProcessor.introspect(implClass, introspectionContext);
+        InjectingComponentType componentType = implementationIntrospector.introspect(implClass, introspectionContext);
         implementation.setComponentType(componentType);
         return implementation;
     }

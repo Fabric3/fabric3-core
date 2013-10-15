@@ -35,23 +35,12 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.introspection.java;
+package org.fabric3.implementation.junit.introspection;
 
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 
 /**
- * Introspects a Java-based implementation.
+ *
  */
-public interface ImplementationProcessor {
-
-    /**
-     * Introspects an implementation and derives the associated component type. If errors or warnings are encountered, they will be collated in the
-     * IntrospectionContext.
-     *
-     * @param className the fully qualified class name
-     * @param context   the introspection context
-     * @return the introspected component type
-     */
-    InjectingComponentType introspect(String className, IntrospectionContext context);
+public interface JUnitImplementationIntrospector extends ImplementationIntrospector {
 }

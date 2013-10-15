@@ -51,7 +51,7 @@ import org.fabric3.introspection.xml.composite.CompositeLoader;
 import org.fabric3.introspection.xml.composite.IncludeLoader;
 import org.fabric3.introspection.xml.composite.PropertyValueLoader;
 import org.fabric3.introspection.xml.composite.WireLoader;
-import org.fabric3.spi.introspection.java.ImplementationProcessor;
+import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.xml.CompositeConstants;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
@@ -73,7 +73,7 @@ public class BootstrapLoaderFactory {
     private BootstrapLoaderFactory() {
     }
 
-    public static Loader createLoader(ImplementationProcessor processor, XMLFactory xmlFactory) {
+    public static Loader createLoader(ImplementationIntrospector processor, XMLFactory xmlFactory) {
         LoaderHelper loaderHelper = new DefaultLoaderHelper();
 
         LoaderRegistryImpl registry = new LoaderRegistryImpl(xmlFactory);

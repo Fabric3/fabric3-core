@@ -42,8 +42,8 @@
         <f3:implementation.system class="org.fabric3.implementation.system.runtime.SystemTargetConnectionAttacher"/>
     </component>
 
-    <component name="SystemImplementationProcessor" f3:key="f3:implementation.system">
-        <f3:implementation.system class="org.fabric3.implementation.system.introspection.SystemImplementationProcessorImpl"/>
+    <component name="SystemImplementationIntrospector" f3:key="f3:implementation.system">
+        <f3:implementation.system class="org.fabric3.implementation.system.introspection.SystemImplementationIntrospectorImpl"/>
         <reference name="heuristic" target="SystemHeuristic"/>
     </component>
 

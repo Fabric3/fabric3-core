@@ -53,7 +53,7 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  */
 public class JavaComponentTypeLoaderTestCase extends TestCase {
 
-    private JavaImplementationProcessorImpl loader;
+    private JavaImplementationIntrospectorImpl loader;
     private ClassVisitor classVisitor;
     private IntrospectionContext context;
     private HeuristicProcessor heuristic;
@@ -92,6 +92,6 @@ public class JavaComponentTypeLoaderTestCase extends TestCase {
         classVisitor = control.createMock(ClassVisitor.class);
         heuristic = control.createMock(HeuristicProcessor.class);
 
-        loader = new JavaImplementationProcessorImpl(classVisitor, heuristic, helper);
+        loader = new JavaImplementationIntrospectorImpl(classVisitor, heuristic, helper);
     }
 }

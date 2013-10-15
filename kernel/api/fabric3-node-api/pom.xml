@@ -14,4 +14,12 @@
     <description>Fabric3 Node API Module.</description>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>

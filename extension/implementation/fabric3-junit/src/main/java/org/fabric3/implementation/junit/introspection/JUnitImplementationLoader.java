@@ -61,10 +61,10 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 @EagerInit
 public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUnitImplementation> {
 
-    private final JUnitImplementationProcessor implementationProcessor;
+    private final JUnitImplementationIntrospector introspector;
 
-    public JUnitImplementationLoader(@Reference JUnitImplementationProcessor implementationProcessor) {
-        this.implementationProcessor = implementationProcessor;
+    public JUnitImplementationLoader(@Reference JUnitImplementationIntrospector introspector) {
+        this.introspector = introspector;
         addAttributes("class", "requires", "policySets");
     }
 
@@ -74,7 +74,7 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
 
         validateAttributes(reader, context, implementation);
 
-        InjectingComponentType componentType = implementationProcessor.introspect(className, context);
+        InjectingComponentType componentType = introspector.introspect(className, context);
         implementation.setComponentType(componentType);
 
         // Add a binding only on the JUnit service (which is the impl class) so wires are generated to the test operations.

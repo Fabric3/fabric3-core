@@ -61,7 +61,7 @@ import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.ImplementationProcessor;
+import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.validation.InvalidCompositeException;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
@@ -79,7 +79,7 @@ public class BootstrapCompositeFactory {
     public static Composite createSystemComposite(URL compositeUrl,
                                                   Contribution contribution,
                                                   ClassLoader bootClassLoader,
-                                                  ImplementationProcessor processor) throws InitializationException {
+                                                  ImplementationIntrospector processor) throws InitializationException {
         try {
             // load and introspect the system composite XML
             Loader loader = BootstrapLoaderFactory.createLoader(processor, XML_FACTORY);

@@ -86,7 +86,7 @@ import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
-import org.fabric3.spi.introspection.java.ImplementationProcessor;
+import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.management.ManagementService;
@@ -107,7 +107,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     // bootstrap components - these are disposed of after the core runtime system components are booted
     private JavaContractProcessorImpl contractProcessor;
     private AtomicComponentInstantiatorImpl instantiator;
-    private ImplementationProcessor implementationProcessor;
+    private ImplementationIntrospector implementationIntrospector;
     private ComponentSynthesizer synthesizer;
 
     // runtime components - these are persistent and supplied by the runtime implementation
@@ -152,7 +152,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
         contractProcessor = new JavaContractProcessorImpl(helper);
         instantiator = new AtomicComponentInstantiatorImpl();
-        implementationProcessor = BootstrapIntrospectionFactory.createSystemImplementationProcessor();
+        implementationIntrospector = BootstrapIntrospectionFactory.createSystemImplementationProcessor();
     }
 
     public void bootRuntimeDomain() throws InitializationException {
@@ -173,7 +173,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         managementService = runtimeServices.getManagementService();
         hostInfo = runtimeServices.getHostInfo();
 
-        synthesizer = new SingletonComponentSynthesizer(implementationProcessor, instantiator, lcm, componentManager, contractProcessor, scopeContainer);
+        synthesizer = new SingletonComponentSynthesizer(implementationIntrospector, instantiator, lcm, componentManager, contractProcessor, scopeContainer);
 
         // register components provided by the runtime itself so they may be wired to
         registerRuntimeComponents(registrations);
@@ -199,8 +199,7 @@ public class DefaultBootstrapper implements Bootstrapper {
             // load the system composite
             Composite composite = BootstrapCompositeFactory.createSystemComposite(systemCompositeUrl,
                                                                                   bootContribution,
-                                                                                  bootClassLoader,
-                                                                                  implementationProcessor);
+                                                                                  bootClassLoader, implementationIntrospector);
 
             // create the property and merge it into the composite
             LogicalProperty logicalProperty = new LogicalProperty("systemConfig", systemConfig, false, domain);

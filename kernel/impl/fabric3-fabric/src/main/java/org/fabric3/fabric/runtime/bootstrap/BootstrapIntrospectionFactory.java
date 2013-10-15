@@ -55,7 +55,7 @@ import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.implementation.system.introspection.SystemConstructorHeuristic;
 import org.fabric3.implementation.system.introspection.SystemHeuristic;
-import org.fabric3.implementation.system.introspection.SystemImplementationProcessorImpl;
+import org.fabric3.implementation.system.introspection.SystemImplementationIntrospectorImpl;
 import org.fabric3.implementation.system.introspection.SystemServiceHeuristic;
 import org.fabric3.implementation.system.introspection.SystemUnannotatedHeuristic;
 import org.fabric3.introspection.java.DefaultClassVisitor;
@@ -72,7 +72,7 @@ import org.fabric3.introspection.java.annotation.OASISServiceProcessor;
 import org.fabric3.introspection.java.annotation.ProducerProcessor;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.monitor.introspection.MonitorProcessor;
-import org.fabric3.spi.introspection.java.ImplementationProcessor;
+import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.AnnotationProcessor;
 import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
@@ -92,7 +92,7 @@ public class BootstrapIntrospectionFactory {
      *
      * @return a new ImplementationProcessor for system components
      */
-    public static ImplementationProcessor createSystemImplementationProcessor() {
+    public static ImplementationIntrospector createSystemImplementationProcessor() {
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
         JavaContractProcessor contractProcessor = new JavaContractProcessorImpl(helper);
 
@@ -125,7 +125,7 @@ public class BootstrapIntrospectionFactory {
         SystemUnannotatedHeuristic unannotatedHeuristic = new SystemUnannotatedHeuristic(helper, contractProcessor);
         SystemHeuristic systemHeuristic = new SystemHeuristic(serviceHeuristic, constructorHeuristic, unannotatedHeuristic);
 
-        return new SystemImplementationProcessorImpl(classVisitor, systemHeuristic, helper);
+        return new SystemImplementationIntrospectorImpl(classVisitor, systemHeuristic, helper);
     }
 
 }

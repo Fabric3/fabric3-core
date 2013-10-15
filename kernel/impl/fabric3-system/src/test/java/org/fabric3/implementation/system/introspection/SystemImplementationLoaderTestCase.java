@@ -51,7 +51,7 @@ import org.easymock.EasyMock;
 
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.ImplementationProcessor;
+import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.model.type.java.InjectingComponentType;
 
 /**
@@ -60,14 +60,14 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 public class SystemImplementationLoaderTestCase extends TestCase {
     private IntrospectionContext context;
     private XMLStreamReader reader;
-    private ImplementationProcessor implementationProcessor;
+    private ImplementationIntrospector implementationIntrospector;
     private SystemImplementationLoader loader;
 
     public void testLoad() throws Exception {
         InjectingComponentType componentType = new InjectingComponentType();
-        EasyMock.expect(implementationProcessor.introspect(EasyMock.isA(String.class), EasyMock.eq(context))).andReturn(componentType);
+        EasyMock.expect(implementationIntrospector.introspect(EasyMock.isA(String.class), EasyMock.eq(context))).andReturn(componentType);
 
-        EasyMock.replay(implementationProcessor);
+        EasyMock.replay(implementationIntrospector);
 
         EasyMock.expect(reader.getLocation()).andReturn(null).atLeastOnce();
         EasyMock.expect(reader.getAttributeCount()).andReturn(0);
@@ -79,19 +79,19 @@ public class SystemImplementationLoaderTestCase extends TestCase {
         assertEquals(getClass().getName(), impl.getImplementationClass());
         EasyMock.verify(reader);
         EasyMock.verify(context);
-        EasyMock.verify(implementationProcessor);
+        EasyMock.verify(implementationIntrospector);
     }
 
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        implementationProcessor = EasyMock.createMock(ImplementationProcessor.class);
+        implementationIntrospector = EasyMock.createMock(ImplementationIntrospector.class);
 
         context = EasyMock.createMock(IntrospectionContext.class);
         EasyMock.replay(context);
 
         reader = EasyMock.createMock(XMLStreamReader.class);
 
-        loader = new SystemImplementationLoader(implementationProcessor);
+        loader = new SystemImplementationLoader(implementationIntrospector);
     }
 }

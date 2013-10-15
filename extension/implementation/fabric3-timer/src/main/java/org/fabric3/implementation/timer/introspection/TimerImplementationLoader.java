@@ -44,7 +44,7 @@ import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 import org.fabric3.implementation.java.introspection.ImplementationArtifactNotFound;
-import org.fabric3.implementation.java.introspection.JavaImplementationProcessor;
+import org.fabric3.implementation.java.introspection.JavaImplementationIntrospector;
 import org.fabric3.implementation.timer.model.TimerImplementation;
 import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.implementation.timer.provision.TimerType;
@@ -62,11 +62,11 @@ import static org.fabric3.implementation.timer.provision.TimerData.UNSPECIFIED;
  * Loads <implementation.timer> entries in a composite.
  */
 public class TimerImplementationLoader extends AbstractValidatingTypeLoader<TimerImplementation> {
-    private final JavaImplementationProcessor implementationProcessor;
+    private final JavaImplementationIntrospector introspector;
     private final LoaderHelper loaderHelper;
 
-    public TimerImplementationLoader(@Reference JavaImplementationProcessor implementationProcessor, @Reference LoaderHelper loaderHelper) {
-        this.implementationProcessor = implementationProcessor;
+    public TimerImplementationLoader(@Reference JavaImplementationIntrospector introspector, @Reference LoaderHelper loaderHelper) {
+        this.introspector = introspector;
         this.loaderHelper = loaderHelper;
         addAttributes("class", "intervalClass", "fixedRate", "repeatInterval", "fireOnce", "initialDelay", "unit", "requires", "policySets", "poolName");
     }
@@ -102,7 +102,7 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
 
         loaderHelper.loadPolicySetsAndIntents(implementation, reader, context);
 
-        InjectingComponentType componentType = implementationProcessor.introspect(implementation.getImplementationClass(), context);
+        InjectingComponentType componentType = introspector.introspect(implementation.getImplementationClass(), context);
         implementation.setComponentType(componentType);
 
         LoaderUtil.skipToEndElement(reader);

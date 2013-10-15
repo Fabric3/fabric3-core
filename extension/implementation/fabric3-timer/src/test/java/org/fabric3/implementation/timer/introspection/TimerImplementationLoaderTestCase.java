@@ -48,7 +48,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.implementation.java.introspection.JavaImplementationProcessor;
+import org.fabric3.implementation.java.introspection.JavaImplementationIntrospector;
 import org.fabric3.implementation.timer.model.TimerImplementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
@@ -168,7 +168,7 @@ public class TimerImplementationLoaderTestCase extends TestCase {
         super.setUp();
         xmlFactory = XMLInputFactory.newInstance();
         context = new DefaultIntrospectionContext(URI.create("test"), getClass().getClassLoader());
-        JavaImplementationProcessor processor = EasyMock.createMock(JavaImplementationProcessor.class);
+        JavaImplementationIntrospector processor = EasyMock.createMock(JavaImplementationIntrospector.class);
         EasyMock.expect(processor.introspect(EasyMock.isA(String.class), EasyMock.eq(context))).andReturn(new InjectingComponentType());
         EasyMock.replay(processor);
         LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);

@@ -50,7 +50,7 @@ import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
-import org.fabric3.spi.introspection.java.ImplementationProcessor;
+import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.InvalidImplementation;
 import org.fabric3.spi.introspection.java.MissingResource;
@@ -60,14 +60,14 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 /**
  * Loads a system component type
  */
-public class SystemImplementationProcessorImpl implements ImplementationProcessor {
+public class SystemImplementationIntrospectorImpl implements ImplementationIntrospector {
     private final ClassVisitor classVisitor;
     private final HeuristicProcessor heuristic;
     private final IntrospectionHelper helper;
 
-    public SystemImplementationProcessorImpl(@Reference(name = "classVisitor") ClassVisitor classVisitor,
-                                             @Reference(name = "heuristic") HeuristicProcessor heuristic,
-                                             @Reference(name = "helper") IntrospectionHelper helper) {
+    public SystemImplementationIntrospectorImpl(@Reference(name = "classVisitor") ClassVisitor classVisitor,
+                                                @Reference(name = "heuristic") HeuristicProcessor heuristic,
+                                                @Reference(name = "helper") IntrospectionHelper helper) {
         this.classVisitor = classVisitor;
         this.heuristic = heuristic;
         this.helper = helper;

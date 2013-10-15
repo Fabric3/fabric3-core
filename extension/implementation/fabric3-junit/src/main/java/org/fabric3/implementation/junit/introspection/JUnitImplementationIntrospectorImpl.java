@@ -51,14 +51,14 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
 /**
  *
  */
-public class JUnitImplementationProcessorImpl implements JUnitImplementationProcessor {
+public class JUnitImplementationIntrospectorImpl implements JUnitImplementationIntrospector {
     private final ClassVisitor classVisitor;
     private final HeuristicProcessor heuristic;
     private final IntrospectionHelper helper;
 
-    public JUnitImplementationProcessorImpl(@Reference(name = "classVisitor") ClassVisitor classVisitor,
-                                            @Reference(name = "heuristic") HeuristicProcessor heuristic,
-                                            @Reference(name = "helper") IntrospectionHelper helper) {
+    public JUnitImplementationIntrospectorImpl(@Reference(name = "classVisitor") ClassVisitor classVisitor,
+                                               @Reference(name = "heuristic") HeuristicProcessor heuristic,
+                                               @Reference(name = "helper") IntrospectionHelper helper) {
         this.classVisitor = classVisitor;
         this.heuristic = heuristic;
         this.helper = helper;

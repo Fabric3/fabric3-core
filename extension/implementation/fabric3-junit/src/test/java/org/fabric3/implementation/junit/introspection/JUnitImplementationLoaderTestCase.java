@@ -93,7 +93,7 @@ public class JUnitImplementationLoaderTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        JUnitImplementationProcessor processor = EasyMock.createNiceMock(JUnitImplementationProcessor.class);
+        JUnitImplementationIntrospector processor = EasyMock.createNiceMock(JUnitImplementationIntrospector.class);
         processor.introspect(EasyMock.isA(String.class), EasyMock.isA(IntrospectionContext.class));
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {

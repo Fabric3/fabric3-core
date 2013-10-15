@@ -57,12 +57,12 @@ import org.fabric3.spi.model.type.java.InjectingComponentType;
  */
 @EagerInit
 public class JavaImplementationLoader extends AbstractValidatingTypeLoader<JavaImplementation> {
-    private JavaImplementationProcessor implementationProcessor;
+    private JavaImplementationIntrospector introspector;
     private LoaderHelper loaderHelper;
 
 
-    public JavaImplementationLoader(@Reference JavaImplementationProcessor implementationProcessor, @Reference LoaderHelper loaderHelper) {
-        this.implementationProcessor = implementationProcessor;
+    public JavaImplementationLoader(@Reference JavaImplementationIntrospector introspector, @Reference LoaderHelper loaderHelper) {
+        this.introspector = introspector;
         this.loaderHelper = loaderHelper;
         addAttributes("class", "requires", "policySets");
     }
@@ -86,7 +86,7 @@ public class JavaImplementationLoader extends AbstractValidatingTypeLoader<JavaI
         LoaderUtil.skipToEndElement(reader);
 
         implementation.setImplementationClass(implClass);
-        InjectingComponentType componentType = implementationProcessor.introspect(implClass, introspectionContext);
+        InjectingComponentType componentType = introspector.introspect(implClass, introspectionContext);
         implementation.setComponentType(componentType);
         return implementation;
     }

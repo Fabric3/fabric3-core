@@ -37,10 +37,10 @@
 */
 package org.fabric3.implementation.java.introspection;
 
-import org.fabric3.spi.introspection.java.ImplementationProcessor;
+import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 
 /**
- * Strongly typed ImplementationProcessor for Java implementations.
+ * Strongly typed introspector for Java implementations.
  */
-public interface JavaImplementationProcessor extends ImplementationProcessor {
+public interface JavaImplementationIntrospector extends ImplementationIntrospector {
 }
