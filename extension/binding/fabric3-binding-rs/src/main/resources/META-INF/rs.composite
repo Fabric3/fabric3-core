@@ -18,6 +18,10 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.rs.introspection.RsBindingLoader"/>
     </component>
 
+    <component name="RsBindingProcessor">
+        <f3:implementation.system class="org.fabric3.binding.rs.introspection.RsBindingProcessor"/>
+    </component>
+
     <component name="RsBindingGenerator" f3:key="org.fabric3.api.binding.rs.RsBindingDefinition">
         <f3:implementation.system class="org.fabric3.binding.rs.generator.RsBindingGenerator"/>
     </component>
