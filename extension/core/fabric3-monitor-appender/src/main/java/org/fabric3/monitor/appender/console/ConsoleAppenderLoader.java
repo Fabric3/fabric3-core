@@ -41,7 +41,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -57,7 +56,7 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class ConsoleAppenderLoader extends AbstractValidatingTypeLoader<ConsoleAppenderDefinition> {
     private static final QName SCA_TYPE = new QName(Constants.SCA_NS, "appender.console");
-    private static final QName F3_TYPE = new QName(Namespaces.F3, "appender.console");
+    private static final QName F3_TYPE = new QName(org.fabric3.api.Namespaces.F3, "appender.console");
 
     private LoaderRegistry registry;
 

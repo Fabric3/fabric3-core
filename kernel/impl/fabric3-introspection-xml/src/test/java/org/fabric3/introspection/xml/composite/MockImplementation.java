@@ -39,7 +39,6 @@ package org.fabric3.introspection.xml.composite;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 
@@ -48,7 +47,7 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  */
 public class MockImplementation extends Implementation<InjectingComponentType> {
     private static final long serialVersionUID = 4898222089241004315L;
-    public static QName TYPE = new QName(Namespaces.F3, "implementation.testing");
+    public static QName TYPE = new QName(org.fabric3.api.Namespaces.F3, "implementation.testing");
 
     public QName getType() {
         return TYPE;

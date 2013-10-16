@@ -39,8 +39,6 @@ package org.fabric3.binding.ftp.common;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
-
 /**
  *
  */
@@ -49,12 +47,12 @@ public interface Constants {
     /**
      * Qualified name for the binding element.
      */
-    QName BINDING_QNAME = new QName(Namespaces.F3, "binding.ftp");
+    QName BINDING_QNAME = new QName(org.fabric3.api.Namespaces.F3, "binding.ftp");
 
     /**
      * Qualified name for the policy element.
      */
-    QName POLICY_QNAME = new QName(Namespaces.F3, "security");
+    QName POLICY_QNAME = new QName(org.fabric3.api.Namespaces.F3, "security");
 
     /**
      * The value for specifying no timeout for blocking operations on an FTP socket.

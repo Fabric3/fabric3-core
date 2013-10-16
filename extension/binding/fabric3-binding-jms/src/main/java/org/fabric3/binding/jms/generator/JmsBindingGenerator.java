@@ -63,7 +63,6 @@ import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsTargetDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
@@ -89,7 +88,7 @@ public class JmsBindingGenerator implements BindingGenerator<JmsBindingDefinitio
     private static final QName TRANSACTED_ONEWAY = new QName(Constants.SCA_NS, "transactedOneWay");
     private static final QName IMMEDIATE_ONEWAY = new QName(Constants.SCA_NS, "immediateOneWay");
     private static final QName ONEWAY = new QName(Constants.SCA_NS, "oneWay");
-    private static final QName NON_PERSISTENT = new QName(Namespaces.F3, "nonPersistent");
+    private static final QName NON_PERSISTENT = new QName(org.fabric3.api.Namespaces.F3, "nonPersistent");
 
     private static final DataType<?> ANY = new XSDType(String.class, new QName(XSDType.XSD_NS, "anyType"));
 

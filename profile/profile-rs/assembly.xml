@@ -27,6 +27,7 @@
  
         <dependencySet>
             <includes>
+                <include>org.codehaus.fabric3:fabric3-binding-rs-api</include>
                 <include>org.codehaus.fabric3:fabric3-binding-rs</include>
                 <include>org.codehaus.fabric3:fabric3-binding-rs-jersey</include>
                 <include>org.codehaus.fabric3:fabric3-jaxb</include>

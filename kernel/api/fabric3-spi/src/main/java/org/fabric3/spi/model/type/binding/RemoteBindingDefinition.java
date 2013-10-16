@@ -39,7 +39,6 @@ package org.fabric3.spi.model.type.binding;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.BindingDefinition;
 
 /**
@@ -49,7 +48,7 @@ import org.fabric3.api.model.type.component.BindingDefinition;
  */
 public class RemoteBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 975283470994901368L;
-    private static final QName QNAME = new QName(Namespaces.F3, "binding.remote");
+    private static final QName QNAME = new QName(org.fabric3.api.Namespaces.F3, "binding.remote");
 
     public static final RemoteBindingDefinition INSTANCE = new RemoteBindingDefinition();
 

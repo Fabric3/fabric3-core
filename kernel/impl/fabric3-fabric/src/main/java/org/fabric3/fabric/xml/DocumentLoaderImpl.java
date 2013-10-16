@@ -53,7 +53,6 @@ import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.util.IOHelper;
 
 /**
@@ -102,7 +101,7 @@ public class DocumentLoaderImpl implements DocumentLoader {
         }
         NodeList children = node.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
-            addNamespace(document, children.item(i), Namespaces.F3);
+            addNamespace(document, children.item(i), org.fabric3.api.Namespaces.F3);
         }
     }
 

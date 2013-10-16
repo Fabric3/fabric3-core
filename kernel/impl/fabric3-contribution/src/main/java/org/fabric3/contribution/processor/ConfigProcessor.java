@@ -10,7 +10,6 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.model.type.component.Composite;
@@ -54,7 +53,7 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
  */
 @EagerInit
 public class ConfigProcessor implements XmlProcessor {
-    private static final QName TYPE = new QName(Namespaces.F3, "config");
+    private static final QName TYPE = new QName(org.fabric3.api.Namespaces.F3, "config");
     private LoaderHelper loaderHelper;
     private XmlProcessorRegistry processorRegistry;
 

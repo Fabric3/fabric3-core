@@ -47,7 +47,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -57,12 +56,12 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  *
  */
 public class DefinitionsIndexerTestCase extends TestCase {
-    private static final QName INTERCEPTED_INTENT = new QName(Namespaces.F3, "intercepted");
-    private static final QName QUALIFIER_INTENT = new QName(Namespaces.F3, "qualifier");
-    private static final QName PROVIDED_INTENT = new QName(Namespaces.F3, "provided");
-    private static final QName PROVIDED_POLICY = new QName(Namespaces.F3, "providedPolicy");
-    private static final QName INTERCEPTED_POLICY = new QName(Namespaces.F3, "interceptedPolicy");
-    private static final QName WS_POLICY = new QName(Namespaces.F3, "wsPolicy");
+    private static final QName INTERCEPTED_INTENT = new QName(org.fabric3.api.Namespaces.F3, "intercepted");
+    private static final QName QUALIFIER_INTENT = new QName(org.fabric3.api.Namespaces.F3, "qualifier");
+    private static final QName PROVIDED_INTENT = new QName(org.fabric3.api.Namespaces.F3, "provided");
+    private static final QName PROVIDED_POLICY = new QName(org.fabric3.api.Namespaces.F3, "providedPolicy");
+    private static final QName INTERCEPTED_POLICY = new QName(org.fabric3.api.Namespaces.F3, "interceptedPolicy");
+    private static final QName WS_POLICY = new QName(org.fabric3.api.Namespaces.F3, "wsPolicy");
 
     private DefinitionsIndexer loader;
     private XMLStreamReader reader;

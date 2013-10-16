@@ -45,7 +45,6 @@ import javax.xml.stream.XMLStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.monitor.impl.model.type.DefaultMonitorDestinationDefinition;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;
@@ -67,7 +66,7 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class MonitorResourceLoader extends AbstractValidatingTypeLoader<MonitorResourceDefinition> {
     private static final QName SCA_TYPE = new QName(Constants.SCA_NS, "monitor");
-    private static final QName F3_TYPE = new QName(Namespaces.F3, "monitor");
+    private static final QName F3_TYPE = new QName(org.fabric3.api.Namespaces.F3, "monitor");
 
     private LoaderRegistry registry;
 

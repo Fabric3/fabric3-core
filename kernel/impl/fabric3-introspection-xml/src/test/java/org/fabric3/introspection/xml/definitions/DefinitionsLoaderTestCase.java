@@ -48,7 +48,6 @@ import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.api.model.type.definitions.AbstractPolicyDefinition;
@@ -74,14 +73,14 @@ public class DefinitionsLoaderTestCase extends TestCase {
     private static final Object WS_POLICY_NS = "http://schemas.xmlsoap.org/ws/2004/09/policy";
 
     private static final QName BINDING_QNAME = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "binding");
-    private static final QName INTERCEPTED_INTENT = new QName(Namespaces.F3, "intercepted");
-    private static final QName QUALIFIER_INTENT = new QName(Namespaces.F3, "qualifier");
-    private static final QName QUALIFIER_QUALFIED1_INTENT = new QName(Namespaces.F3, "qualifier.qualifier1");
-    private static final QName QUALIFIER_QUALFIED2_INTENT = new QName(Namespaces.F3, "qualifier.qualifier2");
-    private static final QName PROVIDED_INTENT = new QName(Namespaces.F3, "provided");
-    private static final QName PROVIDED_POLICY = new QName(Namespaces.F3, "providedPolicy");
-    private static final QName INTERCEPTED_POLICY = new QName(Namespaces.F3, "interceptedPolicy");
-    private static final QName WS_POLICY = new QName(Namespaces.F3, "wsPolicy");
+    private static final QName INTERCEPTED_INTENT = new QName(org.fabric3.api.Namespaces.F3, "intercepted");
+    private static final QName QUALIFIER_INTENT = new QName(org.fabric3.api.Namespaces.F3, "qualifier");
+    private static final QName QUALIFIER_QUALFIED1_INTENT = new QName(org.fabric3.api.Namespaces.F3, "qualifier.qualifier1");
+    private static final QName QUALIFIER_QUALFIED2_INTENT = new QName(org.fabric3.api.Namespaces.F3, "qualifier.qualifier2");
+    private static final QName PROVIDED_INTENT = new QName(org.fabric3.api.Namespaces.F3, "provided");
+    private static final QName PROVIDED_POLICY = new QName(org.fabric3.api.Namespaces.F3, "providedPolicy");
+    private static final QName INTERCEPTED_POLICY = new QName(org.fabric3.api.Namespaces.F3, "interceptedPolicy");
+    private static final QName WS_POLICY = new QName(org.fabric3.api.Namespaces.F3, "wsPolicy");
 
     private DefinitionsLoader loader;
     private Resource resource;
@@ -160,7 +159,7 @@ public class DefinitionsLoaderTestCase extends TestCase {
                 assertTrue(policySet.doesProvide(INTERCEPTED_INTENT));
 
                 QName expressionName = policySet.getExpressionName();
-                assertEquals(Namespaces.F3, expressionName.getNamespaceURI());
+                assertEquals(org.fabric3.api.Namespaces.F3, expressionName.getNamespaceURI());
                 assertEquals("interceptor", expressionName.getLocalPart());
                 assertEquals(PolicyPhase.INTERCEPTION, policySet.getPhase());
                 verified = true;
@@ -180,7 +179,7 @@ public class DefinitionsLoaderTestCase extends TestCase {
                 assertTrue(policySet.doesProvide(PROVIDED_INTENT));
 
                 QName expressionName = policySet.getExpressionName();
-                assertEquals(Namespaces.F3, expressionName.getNamespaceURI());
+                assertEquals(org.fabric3.api.Namespaces.F3, expressionName.getNamespaceURI());
                 assertEquals("someElement", expressionName.getLocalPart());
                 assertEquals(PolicyPhase.PROVIDED, policySet.getPhase());
                 verified = true;

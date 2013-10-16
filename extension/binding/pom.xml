@@ -31,6 +31,7 @@
 
 	<modules>
 		<module>fabric3-binding-jms</module>
+        <module>fabric3-binding-rs-api</module>
         <module>fabric3-binding-rs</module>
         <module>fabric3-binding-rs-jersey</module>
         <module>fabric3-binding-web</module>

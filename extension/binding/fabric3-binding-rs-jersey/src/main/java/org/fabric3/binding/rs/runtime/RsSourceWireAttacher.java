@@ -143,7 +143,8 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         return servletMapping;
     }
 
-    private void provision(RsSourceDefinition sourceDefinition, Wire wire, RsContainer container) throws ClassNotFoundException, RsContainerException {
+    private void provision(RsSourceDefinition sourceDefinition, Wire wire, RsContainer container)
+            throws ClassNotFoundException, RsContainerException, WireAttachException {
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(sourceDefinition.getClassLoaderId());
         Map<String, InvocationChain> invocationChains = new HashMap<String, InvocationChain>();
         for (InvocationChain chain : wire.getInvocationChains()) {
@@ -166,8 +167,11 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         }
     }
 
-    private Resource createResource(F3ResourceHandler handler) {
+    private Resource createResource(F3ResourceHandler handler) throws WireAttachException {
         Resource template = Resource.from(handler.getInterface());
+        if (template == null) {
+            throw new WireAttachException("Interface is not a JAX-RS resource: " + handler.getInterface().getName());
+        }
         Resource.Builder resourceBuilder = Resource.builder(template.getPath());
         for (ResourceMethod resourceMethod : template.getAllMethods()) {
             createMethod(resourceBuilder, resourceMethod, handler);

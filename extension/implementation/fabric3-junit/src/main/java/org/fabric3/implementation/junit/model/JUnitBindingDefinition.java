@@ -39,7 +39,6 @@ package org.fabric3.implementation.junit.model;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.implementation.junit.common.ContextConfiguration;
 import org.fabric3.api.model.type.component.BindingDefinition;
 
@@ -48,7 +47,7 @@ import org.fabric3.api.model.type.component.BindingDefinition;
  */
 public class JUnitBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = -1306543849900003084L;
-    private static final QName BINDING_QNAME = new QName(Namespaces.F3, "binding.junit");
+    private static final QName BINDING_QNAME = new QName(org.fabric3.api.Namespaces.F3, "binding.junit");
     private ContextConfiguration configuration;
 
     /**

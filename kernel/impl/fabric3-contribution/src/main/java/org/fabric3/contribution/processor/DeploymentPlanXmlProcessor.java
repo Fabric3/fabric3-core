@@ -44,7 +44,6 @@ import javax.xml.stream.XMLStreamReader;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
@@ -58,7 +57,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  */
 @EagerInit
 public class DeploymentPlanXmlProcessor implements XmlProcessor {
-    private static final QName PLAN = new QName(Namespaces.F3, "plan");
+    private static final QName PLAN = new QName(org.fabric3.api.Namespaces.F3, "plan");
     private XmlResourceElementLoader loader;
 
     public DeploymentPlanXmlProcessor(@Reference(name = "processorRegistry") XmlProcessorRegistry processorRegistry,

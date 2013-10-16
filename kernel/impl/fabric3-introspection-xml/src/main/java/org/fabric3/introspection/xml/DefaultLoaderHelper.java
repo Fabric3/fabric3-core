@@ -69,7 +69,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.PolicyAware;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Target;
@@ -120,7 +119,7 @@ public class DefaultLoaderHelper implements LoaderHelper {
     }
 
     public String loadKey(XMLStreamReader reader) {
-        String key = reader.getAttributeValue(Namespaces.F3, "key");
+        String key = reader.getAttributeValue(org.fabric3.api.Namespaces.F3, "key");
         if (key == null) {
             return null;
         }

@@ -49,7 +49,6 @@ import org.jaxen.SimpleFunctionContext;
 import org.jaxen.SimpleNamespaceContext;
 import org.oasisopen.sca.Constants;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**
@@ -74,7 +73,7 @@ public class LogicalModelXPath extends BaseXPath {
         // setup namespaces and functions
         SimpleNamespaceContext nc = new SimpleNamespaceContext();
         nc.addNamespace("sca", Constants.SCA_NS);
-        nc.addNamespace("f3", Namespaces.F3);
+        nc.addNamespace("f3", org.fabric3.api.Namespaces.F3);
         setNamespaceContext(nc);
 
         SimpleFunctionContext fc = initFunctionContext();

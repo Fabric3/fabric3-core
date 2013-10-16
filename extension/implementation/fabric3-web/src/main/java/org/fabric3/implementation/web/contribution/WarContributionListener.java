@@ -37,18 +37,16 @@
 */
 package org.fabric3.implementation.web.contribution;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
-import org.fabric3.api.host.Namespaces;
+import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.stream.Source;
-import org.fabric3.implementation.web.model.WebComponentType;
-import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.implementation.web.model.WebComponentType;
+import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -57,6 +55,7 @@ import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Listens for WAR contributions and adds a synthesized web component to allow contributions not to specify a web component in a contribution. A
@@ -119,7 +118,7 @@ public class WarContributionListener implements ContributionServiceListener {
     private Composite createComposite(Contribution contribution) {
         URI contributionUri = contribution.getUri();
         String localPart = createLocalPart(contributionUri);
-        QName compositeName = new QName(Namespaces.SYNTHESIZED, localPart);
+        QName compositeName = new QName(HostNamespaces.SYNTHESIZED, localPart);
         Composite composite = new Composite(compositeName);
         composite.setContributionUri(contributionUri);
 

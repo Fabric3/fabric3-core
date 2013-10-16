@@ -40,7 +40,6 @@ package org.fabric3.binding.web.model;
 import javax.xml.namespace.QName;
 
 import org.fabric3.binding.web.common.OperationsAllowed;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.BindingDefinition;
 
 /**
@@ -48,7 +47,7 @@ import org.fabric3.api.model.type.component.BindingDefinition;
  */
 public class WebBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 3182899822938972425L;
-    private static final QName BINDING_WEB = new QName(Namespaces.F3, "binding.web");
+    private static final QName BINDING_WEB = new QName(org.fabric3.api.Namespaces.F3, "binding.web");
 
     private OperationsAllowed allowed;
     private String wireFormat;

@@ -43,7 +43,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.contract.Operation;
@@ -80,8 +79,8 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class DefaultPolicyResolver implements PolicyResolver {
-    private static final QName IMPLEMENTATION_SYSTEM = new QName(Namespaces.F3, "implementation.system");
-    private static final QName IMPLEMENTATION_SINGLETON = new QName(Namespaces.F3, "singleton");
+    private static final QName IMPLEMENTATION_SYSTEM = new QName(org.fabric3.api.Namespaces.F3, "implementation.system");
+    private static final QName IMPLEMENTATION_SINGLETON = new QName(org.fabric3.api.Namespaces.F3, "singleton");
     private static final PolicyResult EMPTY_RESULT = new NullPolicyResult();
     private static final Operation DEFINITION = new Operation("_fabric3Generated", null, null, null);
 

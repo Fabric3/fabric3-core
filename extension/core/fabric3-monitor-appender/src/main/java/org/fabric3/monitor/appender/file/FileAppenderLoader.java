@@ -43,7 +43,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -60,7 +59,7 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class FileAppenderLoader extends AbstractValidatingTypeLoader<FileAppenderDefinition> {
     private static final QName SCA_TYPE = new QName(Constants.SCA_NS, "appender.file");
-    private static final QName F3_TYPE = new QName(Namespaces.F3, "appender.file");
+    private static final QName F3_TYPE = new QName(org.fabric3.api.Namespaces.F3, "appender.file");
     private static final String FABRIC3_LOG = "fabric3.log";
     private static final long SIZE_100MB = 104857600;
 

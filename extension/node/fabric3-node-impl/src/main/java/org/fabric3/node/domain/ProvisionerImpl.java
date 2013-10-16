@@ -40,8 +40,8 @@ package org.fabric3.node.domain;
 import javax.xml.namespace.QName;
 import java.util.List;
 
+import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.Names;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.model.type.builder.ComponentDefinitionBuilder;
@@ -122,7 +122,7 @@ public class ProvisionerImpl implements Provisioner {
         try {
 
             // find the wrapper composite used to deploy it and remove it from the host contribution
-            QName compositeName = new QName(Namespaces.SYNTHESIZED, name);
+            QName compositeName = new QName(HostNamespaces.SYNTHESIZED, name);
 
             QNameSymbol symbol = new QNameSymbol(compositeName);
             ResourceElement<QNameSymbol, Composite> element = metaDataStore.find(Composite.class, symbol);
@@ -148,7 +148,7 @@ public class ProvisionerImpl implements Provisioner {
      * @return the wrapping composite
      */
     private Composite createWrapperComposite(ComponentDefinition<?> definition) {
-        QName compositeName = new QName(Namespaces.SYNTHESIZED, definition.getName());
+        QName compositeName = new QName(HostNamespaces.SYNTHESIZED, definition.getName());
         Composite wrapper = new Composite(compositeName);
         wrapper.setContributionUri(Names.HOST_CONTRIBUTION);
         Contribution contribution = metaDataStore.find(Names.HOST_CONTRIBUTION);

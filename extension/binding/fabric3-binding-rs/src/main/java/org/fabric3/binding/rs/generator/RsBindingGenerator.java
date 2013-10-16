@@ -45,11 +45,10 @@ import javax.xml.namespace.QName;
 import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.binding.rs.model.RsBindingDefinition;
+import org.fabric3.api.binding.rs.RsBindingDefinition;
 import org.fabric3.binding.rs.provision.AuthenticationType;
 import org.fabric3.binding.rs.provision.RsSourceDefinition;
 import org.fabric3.binding.rs.provision.RsTargetDefinition;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
@@ -63,10 +62,10 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
  */
 @EagerInit
 public class RsBindingGenerator implements BindingGenerator<RsBindingDefinition> {
-    private static final QName F3_AUTHORIZATION = new QName(Namespaces.F3, "authorization");
+    private static final QName F3_AUTHORIZATION = new QName(org.fabric3.api.Namespaces.F3, "authorization");
     private static final QName SCA_AUTHORIZATION = new QName(Constants.SCA_NS, "authorization");
     private static final QName SCA_AUTHENTICATION = new QName(Constants.SCA_NS, "clientAuthentication");
-    private static final QName F3_BASIC_AUTHENTICATION = new QName(Namespaces.F3, "clientAuthentication");
+    private static final QName F3_BASIC_AUTHENTICATION = new QName(org.fabric3.api.Namespaces.F3, "clientAuthentication");
     private static final QName F3_DIGEST_AUTHENTICATION = null;
 
     public RsSourceDefinition generateSource(LogicalBinding<RsBindingDefinition> binding,

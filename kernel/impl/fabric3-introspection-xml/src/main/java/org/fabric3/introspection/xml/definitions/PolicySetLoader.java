@@ -52,7 +52,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.definitions.IntentMap;
 import org.fabric3.api.model.type.definitions.IntentQualifier;
 import org.fabric3.api.model.type.definitions.PolicyPhase;
@@ -227,8 +226,8 @@ public class PolicySetLoader extends AbstractValidatingTypeLoader<PolicySet> {
 
     private PolicyPhase parsePhase(Element extension, XMLStreamReader reader, IntrospectionContext context) {
         PolicyPhase phase = PolicyPhase.PROVIDED;
-        if (extension != null && Namespaces.F3.equals(extension.getNamespaceURI())) {
-            String phaseAttr = extension.getAttributeNS(Namespaces.F3, "phase");
+        if (extension != null && org.fabric3.api.Namespaces.F3.equals(extension.getNamespaceURI())) {
+            String phaseAttr = extension.getAttributeNS(org.fabric3.api.Namespaces.F3, "phase");
             if (phaseAttr != null && phaseAttr.length() > 0) {
                 try {
                     phase = PolicyPhase.valueOf(phaseAttr.toUpperCase());

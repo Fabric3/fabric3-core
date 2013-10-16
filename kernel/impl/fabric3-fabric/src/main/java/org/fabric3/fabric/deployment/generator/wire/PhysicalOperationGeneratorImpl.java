@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.definitions.PolicySet;
@@ -71,7 +70,7 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerator {
     private static final QName OASIS_ONEWAY = new QName(Constants.SCA_NS, "oneWay");
-    private static final QName ALLOWS_BY_REFERENCE = new QName(Namespaces.F3, "allowsPassByReference");
+    private static final QName ALLOWS_BY_REFERENCE = new QName(org.fabric3.api.Namespaces.F3, "allowsPassByReference");
     private OperationResolver operationResolver;
     private GeneratorRegistry generatorRegistry;
 

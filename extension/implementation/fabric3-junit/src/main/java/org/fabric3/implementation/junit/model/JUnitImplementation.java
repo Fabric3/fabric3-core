@@ -39,7 +39,6 @@ package org.fabric3.implementation.junit.model;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 
@@ -47,7 +46,7 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  *
  */
 public class JUnitImplementation extends Implementation<InjectingComponentType> {
-    public static final QName IMPLEMENTATION_JUNIT = new QName(Namespaces.F3, "junit");
+    public static final QName IMPLEMENTATION_JUNIT = new QName(org.fabric3.api.Namespaces.F3, "junit");
     private static final long serialVersionUID = -5048471724313487914L;
     private String implementationClass;
 

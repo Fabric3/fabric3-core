@@ -46,7 +46,6 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
@@ -69,7 +68,7 @@ import static org.fabric3.introspection.xml.plan.DeploymentPlanConstants.PLAN_NA
  */
 @EagerInit
 public class DeploymentPlanProcessor implements XmlResourceElementLoader {
-    private static final QName DEPLOYABLE_MAPPING = new QName(Namespaces.F3, "mapping");
+    private static final QName DEPLOYABLE_MAPPING = new QName(org.fabric3.api.Namespaces.F3, "mapping");
 
     private XmlResourceElementLoaderRegistry registry;
 

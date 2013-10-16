@@ -40,7 +40,6 @@ package org.fabric3.implementation.web.model;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.Implementation;
 
 /**
@@ -50,7 +49,7 @@ public class WebImplementation extends Implementation<WebComponentType> {
     private static final long serialVersionUID = 5589199308230767243L;
     // the deprecated, F3-specific namespace
     @Deprecated
-    public static final QName IMPLEMENTATION_WEBAPP = new QName(Namespaces.F3, "web");
+    public static final QName IMPLEMENTATION_WEBAPP = new QName(org.fabric3.api.Namespaces.F3, "web");
     public static final QName IMPLEMENTATION_WEB = new QName(org.oasisopen.sca.Constants.SCA_NS, "implementation.web");
 
     private URI uri;

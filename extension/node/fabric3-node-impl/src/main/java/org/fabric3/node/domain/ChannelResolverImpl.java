@@ -43,8 +43,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.Names;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
@@ -73,7 +73,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class ChannelResolverImpl implements ChannelResolver {
-    private static final QName SYNTHETIC_DEPLOYABLE = new QName(Namespaces.SYNTHESIZED, "SyntheticDeployable");
+    private static final QName SYNTHETIC_DEPLOYABLE = new QName(HostNamespaces.SYNTHESIZED, "SyntheticDeployable");
 
     private Introspector introspector;
     private LogicalComponentManager lcm;

@@ -34,24 +34,16 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- */
-package org.fabric3.binding.rs.model;
-
-import java.net.URI;
-import javax.xml.namespace.QName;
-
-import org.fabric3.api.host.Namespaces;
-import org.fabric3.api.model.type.component.BindingDefinition;
+*/
+package org.fabric3.api;
 
 /**
- *
+ * Defines common namespaces.
  */
-public class RsBindingDefinition extends BindingDefinition {
-    private static final long serialVersionUID = 7344870455465600359L;
+public interface Namespaces {
 
-    public static final QName BINDING_RS = new QName(Namespaces.F3, "binding.rs");
-
-    public RsBindingDefinition(String name, URI targetUri) {
-        super(name, targetUri, BINDING_RS);
-    }
+    /**
+     * Namespace used for Fabric3 elements.
+     */
+    String F3 = "urn:fabric3.org";
 }

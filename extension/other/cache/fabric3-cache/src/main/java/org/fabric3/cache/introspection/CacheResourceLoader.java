@@ -51,7 +51,6 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.cache.model.CacheSetResourceDefinition;
 import org.fabric3.cache.spi.CacheResourceDefinition;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -70,7 +69,7 @@ import org.fabric3.spi.introspection.xml.MissingAttribute;
 @EagerInit
 public class CacheResourceLoader extends AbstractValidatingTypeLoader<CacheSetResourceDefinition> {
     private static final QName SCA_TYPE = new QName(Constants.SCA_NS, "caches");
-    private static final QName F3_TYPE = new QName(Namespaces.F3, "caches");
+    private static final QName F3_TYPE = new QName(org.fabric3.api.Namespaces.F3, "caches");
 
     private LoaderRegistry registry;
 

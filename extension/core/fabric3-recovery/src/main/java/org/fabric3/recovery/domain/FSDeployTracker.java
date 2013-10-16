@@ -56,7 +56,6 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.xml.XMLFactory;
@@ -131,7 +130,7 @@ public class FSDeployTracker implements DeployListener {
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(stream);
             writer.writeStartDocument();
             writer.writeStartElement("domain");
-            writer.writeDefaultNamespace(Namespaces.F3);
+            writer.writeDefaultNamespace(org.fabric3.api.Namespaces.F3);
             writeContributions(writer);
             writeDeployables(writer);
             writer.writeEndElement();

@@ -50,7 +50,6 @@ import org.oasisopen.sca.Constants;
 import org.w3c.dom.Element;
 
 import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
@@ -74,7 +73,7 @@ import org.fabric3.spi.model.type.java.JavaClass;
  */
 public class PhysicalOperationGeneratorImplTestCase extends TestCase {
     private static final QName OASIS_ONEWAY = new QName(Constants.SCA_NS, "oneWay");
-    private static final QName ALLOWS_BY_REFERENCE = new QName(Namespaces.F3, "allowsPassByReference");
+    private static final QName ALLOWS_BY_REFERENCE = new QName(org.fabric3.api.Namespaces.F3, "allowsPassByReference");
 
     private static final URI CONTRIBUTION_URI = URI.create("contribution");
     private static final URI POLICY_URI = URI.create("policy");

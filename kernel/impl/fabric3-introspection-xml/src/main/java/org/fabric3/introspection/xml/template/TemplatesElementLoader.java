@@ -48,7 +48,6 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -59,7 +58,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
  */
 @EagerInit
 public class TemplatesElementLoader implements TypeLoader<ModelObject> {
-    private static final QName QNAME = new QName(Namespaces.F3, "templates");
+    private static final QName QNAME = new QName(org.fabric3.api.Namespaces.F3, "templates");
     private static final QName LAX_QNAME = new QName("", "templates");
     private LoaderRegistry loaderRegistry;
 

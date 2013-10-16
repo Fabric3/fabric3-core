@@ -45,7 +45,6 @@ package org.fabric3.implementation.system.singleton;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 
@@ -54,7 +53,7 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  */
 public class SingletonImplementation extends Implementation<InjectingComponentType> {
     private static final long serialVersionUID = -3874858273451538661L;
-    public static final QName IMPLEMENTATION_SINGLETON = new QName(Namespaces.F3, "singleton");
+    public static final QName IMPLEMENTATION_SINGLETON = new QName(org.fabric3.api.Namespaces.F3, "singleton");
 
     private String implementationClass;
 

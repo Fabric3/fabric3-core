@@ -39,8 +39,6 @@ package org.fabric3.spi.model.physical;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
-
 /**
  *
  */
@@ -49,22 +47,22 @@ public interface ChannelConstants {
     /**
      * Indicates a channel must replicate events to all channel instances in a zone.
      */
-    QName REPLICATE_INTENT = new QName(Namespaces.F3, "replication");
+    QName REPLICATE_INTENT = new QName(org.fabric3.api.Namespaces.F3, "replication");
 
     /**
      * Indicates a channel must send events in a durable (persistent) fashion.
      */
-    QName DURABLE_INTENT = new QName(Namespaces.F3, "durable");
+    QName DURABLE_INTENT = new QName(org.fabric3.api.Namespaces.F3, "durable");
 
     /**
      * Indicates a channel must send events in a non-durable (persistent) fashion.
      */
-    QName NON_PERSISTENT_INTENT = new QName(Namespaces.F3, "nonPersistent");
+    QName NON_PERSISTENT_INTENT = new QName(org.fabric3.api.Namespaces.F3, "nonPersistent");
 
     /**
      * The channel metadata key.
      */
-    QName METADATA = new QName(Namespaces.F3, "metadata");
+    QName METADATA = new QName(org.fabric3.api.Namespaces.F3, "metadata");
 
     /**
      * The default channel type.

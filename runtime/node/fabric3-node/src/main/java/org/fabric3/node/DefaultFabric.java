@@ -51,9 +51,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.fabric3.api.node.Domain;
-import org.fabric3.api.node.Fabric;
-import org.fabric3.api.node.FabricException;
 import org.fabric3.api.host.RuntimeMode;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.contribution.ContributionSource;
@@ -75,6 +72,9 @@ import org.fabric3.api.host.runtime.ScanException;
 import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.host.util.FileHelper;
+import org.fabric3.api.node.Domain;
+import org.fabric3.api.node.Fabric;
+import org.fabric3.api.node.FabricException;
 import org.w3c.dom.Document;
 
 /**
@@ -85,6 +85,7 @@ public class DefaultFabric implements Fabric {
     private static final File SYNTHETIC_DIRECTORY = new File("notfound");
     private static final String SYSTEM_COMPOSITE = "META-INF/system.composite";
     private static final URI DOMAIN_URI = URI.create("fabric3://runtime/NodeDomain");
+    public static final String ASM_PACKAGE = "org.objectweb.asm.";
     private URL configUrl;
 
     private enum State {
@@ -151,17 +152,20 @@ public class DefaultFabric implements Fabric {
             ClassLoader fabricClassLoader = getClass().getClassLoader();
             ClassLoader rootClassLoader = fabricClassLoader.getParent();
 
-            String[] packages = HiddenPackages.getPackages();
-            MaskingClassLoader maskingClassLoader = new MaskingClassLoader(rootClassLoader, packages);
+            MaskingClassLoader maskingClassLoader = new MaskingClassLoader(rootClassLoader, HiddenPackages.getPackages());
 
             // change the fabric classloader parent to the masking classloader so overridden classes can be masked
             ClassLoaderUtils.changeParentClassLoader(fabricClassLoader, maskingClassLoader);
 
             // create the classloaders for booting the runtime
             ClassLoader hostLoader = BootstrapHelper.createClassLoader(fabricClassLoader, SYNTHETIC_DIRECTORY);
-            ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, SYNTHETIC_DIRECTORY);
+            MaskingClassLoader maskingHostLoader = new MaskingClassLoader(hostLoader, ASM_PACKAGE);
 
-            BootstrapService bootstrapService = BootstrapFactory.getService(bootLoader);
+            // the boot loader needs to have unmasked access to the host loader
+            ClassLoader bootLoader = BootstrapHelper.createClassLoader(hostLoader, SYNTHETIC_DIRECTORY);
+            MaskingClassLoader maskingBootLoader = new MaskingClassLoader(bootLoader, ASM_PACKAGE);
+
+            BootstrapService bootstrapService = BootstrapFactory.getService(maskingBootLoader);
 
             // load the system configuration
             UrlSource urlSource = resolveSystemConfiguration(configUrl);
@@ -195,8 +199,8 @@ public class DefaultFabric implements Fabric {
 
             BootConfiguration configuration = new BootConfiguration();
             configuration.setRuntime(runtime);
-            configuration.setHostClassLoader(hostLoader);
-            configuration.setBootClassLoader(bootLoader);
+            configuration.setHostClassLoader(maskingHostLoader);
+            configuration.setBootClassLoader(maskingBootLoader);
             configuration.setSystemCompositeUrl(systemComposite);
             configuration.setSystemConfig(systemConfig);
             configuration.setExtensionContributions(extensionSources);

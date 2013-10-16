@@ -8,7 +8,6 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.xml.XmlIndexer;
@@ -20,7 +19,7 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  */
 @EagerInit
 public class ConfigIndexer implements XmlIndexer {
-    private static final QName TYPE = new QName(Namespaces.F3, "config");
+    private static final QName TYPE = new QName(org.fabric3.api.Namespaces.F3, "config");
     private XmlIndexerRegistry registry;
 
     @Init

@@ -46,7 +46,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
@@ -58,7 +57,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
 @EagerInit
 public class TestBindingLoader implements TypeLoader<TestBindingDefinition> {
 
-    public static final QName BINDING_QNAME = new QName(Namespaces.F3, "binding.test");
+    public static final QName BINDING_QNAME = new QName(org.fabric3.api.Namespaces.F3, "binding.test");
 
     public TestBindingDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         Location startLocation = reader.getLocation();

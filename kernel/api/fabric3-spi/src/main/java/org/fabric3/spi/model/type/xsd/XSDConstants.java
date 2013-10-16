@@ -41,8 +41,6 @@ import javax.xml.namespace.QName;
 
 import org.w3c.dom.Node;
 
-import org.fabric3.api.host.Namespaces;
-
 /**
  * Defines Schema-related constants
  */
@@ -51,5 +49,5 @@ public interface XSDConstants {
     /**
      * Defines a component property.
      */
-    XSDComplexType PROPERTY_TYPE = new XSDComplexType(Node.class, new QName(Namespaces.F3, "property"));
+    XSDComplexType PROPERTY_TYPE = new XSDComplexType(Node.class, new QName(org.fabric3.api.Namespaces.F3, "property"));
 }

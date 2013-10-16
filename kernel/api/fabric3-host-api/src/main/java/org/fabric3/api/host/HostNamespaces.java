@@ -40,12 +40,7 @@ package org.fabric3.api.host;
 /**
  * Namespaces used by Fabric3.
  */
-public interface Namespaces {
-
-    /**
-     * Namespace used for Fabric3 elements.
-     */
-    String F3 = "urn:fabric3.org";
+public interface HostNamespaces {
 
     /**
      * Namespace for synthesized artifacts. Generally not visible to end-user applications.

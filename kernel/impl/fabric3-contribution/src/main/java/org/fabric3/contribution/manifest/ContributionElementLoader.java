@@ -69,7 +69,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.fabric3.api.host.Namespaces.F3;
+import static org.fabric3.api.Namespaces.F3;
 import static org.oasisopen.sca.Constants.SCA_NS;
 
 /**

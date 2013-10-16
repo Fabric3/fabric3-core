@@ -48,7 +48,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.MockXMLFactory;
@@ -64,7 +63,7 @@ import org.fabric3.spi.xml.XMLFactory;
  */
 public class ComponentLoaderNoServiceTestCase extends TestCase {
     private String XML = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
-            + "xmlns:f3='" + Namespaces.F3 + "'>"
+            + "xmlns:f3='" + org.fabric3.api.Namespaces.F3 + "'>"
             + "<f3:implementation.testing/>"
             + "<service name='notThere'/>"
             + "</component>";

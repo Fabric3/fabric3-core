@@ -39,7 +39,6 @@ package org.fabric3.spi.model.type.remote;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
 
@@ -49,7 +48,7 @@ import org.fabric3.api.model.type.component.Implementation;
 public class RemoteImplementation extends Implementation<ComponentType> {
     private static final long serialVersionUID = -1812724898310420362L;
 
-    private static final QName TYPE = new QName(Namespaces.F3, "implementation.remote");
+    private static final QName TYPE = new QName(org.fabric3.api.Namespaces.F3, "implementation.remote");
 
     public QName getType() {
         return TYPE;

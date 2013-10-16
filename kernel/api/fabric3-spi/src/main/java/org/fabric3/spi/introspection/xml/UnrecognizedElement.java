@@ -47,7 +47,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.ModelObject;
 
 /**
@@ -66,10 +65,10 @@ public class UnrecognizedElement extends XmlValidationFailure {
         if (DeprecatedNamespaceHelper.isDeprecatedNamespace(namespace)) {
             if (getLine() == -1) {
                 return "The element specified in " + getResourceURI() + " uses the deprecated namespace "
-                        + namespace + ". Please change it to " + Namespaces.F3;
+                        + namespace + ". Please change it to " + org.fabric3.api.Namespaces.F3;
             }
             return "The element specified in " + getResourceURI() + " at " + getLine() + "," + getColumn() + " uses the deprecated namespace "
-                    + namespace + ". Please change it to " + Namespaces.F3;
+                    + namespace + ". Please change it to " + org.fabric3.api.Namespaces.F3;
         } else {
             if (getLine() == -1) {
                 return "The element " + name + " specified in " + getResourceURI() + " was not recognized. "
@@ -83,7 +82,7 @@ public class UnrecognizedElement extends XmlValidationFailure {
     public String getShortMessage() {
         String namespace = name.getNamespaceURI();
         if (DeprecatedNamespaceHelper.isDeprecatedNamespace(namespace)) {
-            return "The element uses the deprecated namespace " + namespace + ". Please change it to " + Namespaces.F3;
+            return "The element uses the deprecated namespace " + namespace + ". Please change it to " + org.fabric3.api.Namespaces.F3;
         } else {
             return "The element " + name + " was not recognized";
         }

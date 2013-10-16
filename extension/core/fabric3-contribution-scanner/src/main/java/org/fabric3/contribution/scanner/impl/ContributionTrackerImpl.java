@@ -58,7 +58,6 @@ import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Init;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.xml.XMLFactory;
 
@@ -158,7 +157,7 @@ public class ContributionTrackerImpl implements ContributionTracker {
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(stream);
             writer.writeStartDocument();
             writer.writeStartElement("contributions");
-            writer.writeDefaultNamespace(Namespaces.F3);
+            writer.writeDefaultNamespace(org.fabric3.api.Namespaces.F3);
             for (String entry : tracked) {
                 writer.writeStartElement("contribution");
                 writer.writeAttribute("name", entry);

@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.CompositeImplementation;
@@ -66,7 +65,7 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
     /**
      * Represents a synthetic composite. Synthetic composites are created to instantiate multiple deployable composites in a single operation.
      */
-    private static final QName SYNTHETIC_COMPOSITE = new QName(Namespaces.F3, "SyntheticComposite");
+    private static final QName SYNTHETIC_COMPOSITE = new QName(org.fabric3.api.Namespaces.F3, "SyntheticComposite");
 
     private ChannelInstantiator channelInstantiator;
     private PromotionNormalizer promotionNormalizer;

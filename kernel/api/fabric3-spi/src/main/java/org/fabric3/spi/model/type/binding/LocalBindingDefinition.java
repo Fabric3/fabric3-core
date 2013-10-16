@@ -39,7 +39,6 @@ package org.fabric3.spi.model.type.binding;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.BindingDefinition;
 
 /**
@@ -51,7 +50,7 @@ public final class LocalBindingDefinition extends BindingDefinition {
     public static final LocalBindingDefinition INSTANCE = new LocalBindingDefinition();
 
     private LocalBindingDefinition() {
-        super(null, new QName(Namespaces.F3, "binding.local"));
+        super(null, new QName(org.fabric3.api.Namespaces.F3, "binding.local"));
     }
 
 

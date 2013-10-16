@@ -37,7 +37,12 @@
 */
 package org.fabric3.api.model.type.builder;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentService;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.JavaImplementation;
 
@@ -47,6 +52,7 @@ import org.fabric3.api.model.type.java.JavaImplementation;
 public class ComponentDefinitionBuilder {
     private String name;
     private Object instance;
+    private Map<String, BindingDefinition> bindings;
 
     /**
      * Creates a builder.
@@ -62,6 +68,12 @@ public class ComponentDefinitionBuilder {
     public ComponentDefinitionBuilder(String name, Object instance) {
         this.name = name;
         this.instance = instance;
+        bindings = new HashMap<String, BindingDefinition>();
+    }
+
+    public ComponentDefinitionBuilder binding(String serviceName, BindingDefinition bindingDefinition) {
+        bindings.put(serviceName, bindingDefinition);
+        return this;
     }
 
     /**
@@ -75,6 +87,12 @@ public class ComponentDefinitionBuilder {
         InjectingComponentType type = new InjectingComponentType(instance.getClass().getName());
         implementation.setComponentType(type);
         definition.setImplementation(implementation);
+
+        for (Map.Entry<String, BindingDefinition> entry : bindings.entrySet()) {
+            ComponentService componentService = new ComponentService(entry.getKey());
+            componentService.addBinding(entry.getValue());
+            definition.add(componentService);
+        }
         return definition;
     }
 

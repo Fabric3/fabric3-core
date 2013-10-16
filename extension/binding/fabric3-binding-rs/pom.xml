@@ -41,6 +41,13 @@
         </dependency>
 
         <dependency>
+             <groupId>org.codehaus.fabric3</groupId>
+             <artifactId>fabric3-binding-rs-api</artifactId>
+             <version>${project.version}</version>
+             <scope>provided</scope>
+         </dependency>
+
+        <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-databinding-json</artifactId>
             <version>${project.version}</version>

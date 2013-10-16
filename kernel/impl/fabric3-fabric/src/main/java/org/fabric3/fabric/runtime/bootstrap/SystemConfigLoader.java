@@ -58,7 +58,6 @@ import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.api.host.Environment;
 import org.fabric3.api.host.Names;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.RuntimeMode;
 import org.fabric3.api.host.runtime.ParseException;
 import org.fabric3.api.host.stream.Source;
@@ -116,7 +115,7 @@ public class SystemConfigLoader {
             // all properties have a root <values> element, append the existing root to it. The existing root will be taken as a property <value>.
             Element oldRoot = document.getDocumentElement();
             boolean hasNamespaces = oldRoot.getNamespaceURI() != null && !"".equals(oldRoot.getNamespaceURI());
-            Element newRoot = document.createElementNS(Namespaces.F3, "values");
+            Element newRoot = document.createElementNS(org.fabric3.api.Namespaces.F3, "values");
             newRoot.setAttribute("xmlns:sca", Constants.SCA_NS);
             document.removeChild(oldRoot);
             document.appendChild(newRoot);
@@ -127,7 +126,7 @@ public class SystemConfigLoader {
                 // http://www.w3.org/TR/REC-xml-names/#defaulting (the default namespace does not apply to attribute names)
                 // If namespaces were added to attributes, consistency would require users to manually add them to all attributes in a systemConfig
                 // that is namespace-aware and hence is not updated using DocumentLoader.addNamespace().
-                loader.addNamespace(document, oldRoot, Namespaces.F3);
+                loader.addNamespace(document, oldRoot, org.fabric3.api.Namespaces.F3);
             }
             return document;
         } catch (IOException e) {

@@ -65,7 +65,6 @@ import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionServiceListener;
@@ -81,7 +80,7 @@ import org.fabric3.spi.xml.XMLFactory;
 @Service(names = {ContributionServiceListener.class, Fabric3EventListener.class})
 @EagerInit
 public class ProfileTracker implements ContributionServiceListener, Fabric3EventListener<RuntimeRecover> {
-    private static final QName CONTRIBUTION = new QName(Namespaces.F3, "contribution");
+    private static final QName CONTRIBUTION = new QName(org.fabric3.api.Namespaces.F3, "contribution");
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     private File repositoryIndex;
@@ -198,7 +197,7 @@ public class ProfileTracker implements ContributionServiceListener, Fabric3Event
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(stream);
             writer.writeStartDocument();
             writer.writeStartElement("profiles");
-            writer.writeDefaultNamespace(Namespaces.F3);
+            writer.writeDefaultNamespace(org.fabric3.api.Namespaces.F3);
             for (Map.Entry<URI, List<URI>> entry : mappings.entrySet()) {
                 writer.writeStartElement("contribution");
                 writer.writeAttribute("uri", entry.getKey().toString());

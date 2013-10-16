@@ -59,7 +59,6 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.domain.DomainJournal;
@@ -77,8 +76,8 @@ import org.fabric3.spi.xml.XMLFactory;
  */
 @EagerInit
 public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
-    private static final QName CONTRIBUTION = new QName(Namespaces.F3, "contribution");
-    private static final QName DEPLOYABLE = new QName(Namespaces.F3, "deployable");
+    private static final QName CONTRIBUTION = new QName(org.fabric3.api.Namespaces.F3, "contribution");
+    private static final QName DEPLOYABLE = new QName(org.fabric3.api.Namespaces.F3, "deployable");
     private EventService eventService;
     private FSDomainReplayMonitor monitor;
     private XMLInputFactory inputFactory;

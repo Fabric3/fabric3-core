@@ -39,13 +39,11 @@ package org.fabric3.introspection.xml.plan;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
-
 /**
  *
  */
 public interface DeploymentPlanConstants {
     String PLAN_NAMESPACE = "urn:fabric3.org:extension:plan";
 
-    QName PLAN = new QName(Namespaces.F3, "plan");
+    QName PLAN = new QName(org.fabric3.api.Namespaces.F3, "plan");
 }

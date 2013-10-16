@@ -7,7 +7,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -18,9 +17,9 @@ import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
  *
  */
 public class BindingHandlerLoaderTestCase extends TestCase {
-    private static final String XML_VALID = "<handler xmlns='" + Namespaces.F3 + "' target='TestComponent'/>";
-    private static final String XML_NO_TARGET = "<handler xmlns='" + Namespaces.F3 + "'/>";
-    private static final String XML_INVALID_ATTRIBUTE = "<handler xmlns='" + Namespaces.F3 + "' target='TestComponent' invalid='TestComponent'/>";
+    private static final String XML_VALID = "<handler xmlns='" + org.fabric3.api.Namespaces.F3 + "' target='TestComponent'/>";
+    private static final String XML_NO_TARGET = "<handler xmlns='" + org.fabric3.api.Namespaces.F3 + "'/>";
+    private static final String XML_INVALID_ATTRIBUTE = "<handler xmlns='" + org.fabric3.api.Namespaces.F3 + "' target='TestComponent' invalid='TestComponent'/>";
 
     private DefaultIntrospectionContext context;
     private BindingHandlerLoader loader;

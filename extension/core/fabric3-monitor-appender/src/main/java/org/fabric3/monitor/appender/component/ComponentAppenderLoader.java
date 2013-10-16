@@ -41,7 +41,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
@@ -58,7 +57,7 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class ComponentAppenderLoader extends AbstractValidatingTypeLoader<ComponentAppenderDefinition> {
     private static final QName SCA_TYPE = new QName(Constants.SCA_NS, "appender.component");
-    private static final QName F3_TYPE = new QName(Namespaces.F3, "appender.component");
+    private static final QName F3_TYPE = new QName(org.fabric3.api.Namespaces.F3, "appender.component");
 
     private LoaderRegistry registry;
 

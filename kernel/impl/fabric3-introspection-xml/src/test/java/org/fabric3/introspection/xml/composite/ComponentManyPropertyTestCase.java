@@ -49,7 +49,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.MockXMLFactory;
@@ -66,19 +65,19 @@ import org.fabric3.spi.introspection.xml.LoaderRegistry;
  */
 public class ComponentManyPropertyTestCase extends TestCase {
     private String XML_NONE = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
-            + "xmlns:f3='" + Namespaces.F3 + "'>"
+            + "xmlns:f3='" + org.fabric3.api.Namespaces.F3 + "'>"
             + "<f3:implementation.testing/>"
             + "<property name='prop' many='true'><value>val</value></property>"
             + "</component>";
 
     private String XML_MANY = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
-            + "xmlns:f3='" + Namespaces.F3 + "'>"
+            + "xmlns:f3='" + org.fabric3.api.Namespaces.F3 + "'>"
             + "<f3:implementation.testing/>"
             + "<property name='prop' many='true'><value>val</value></property>"
             + "</component>";
 
     private String XML_SINGLE = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
-            + "xmlns:f3='" + Namespaces.F3 + "'>"
+            + "xmlns:f3='" + org.fabric3.api.Namespaces.F3 + "'>"
             + "<f3:implementation.testing/>"
             + "<property name='prop' many='false'><value>val</value></property>"
             + "</component>";

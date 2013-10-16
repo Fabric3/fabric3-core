@@ -42,8 +42,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.Names;
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentReference;
@@ -73,7 +73,7 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class ServiceResolverImpl implements ServiceResolver {
-    private static final QName SYNTHETIC_DEPLOYABLE = new QName(Namespaces.SYNTHESIZED, "Synthetic");
+    private static final QName SYNTHETIC_DEPLOYABLE = new QName(HostNamespaces.SYNTHESIZED, "Synthetic");
 
     private Introspector introspector;
     private LogicalComponentManager lcm;
@@ -150,7 +150,7 @@ public class ServiceResolverImpl implements ServiceResolver {
         String name = "Synthetic" + id;
         URI componentUri = URI.create(domainComponent.getUri().toString() + "/" + name);
         URI referenceUri = URI.create(componentUri.toString() + "#reference");
-        QName qName = new QName(Namespaces.SYNTHESIZED, "SyntheticComposite" + id);
+        QName qName = new QName(HostNamespaces.SYNTHESIZED, "SyntheticComposite" + id);
         Composite composite = new Composite(qName);
 
         ComponentDefinition<NonManagedImplementation> componentDefinition = new ComponentDefinition<NonManagedImplementation>(name);

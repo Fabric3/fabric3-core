@@ -50,7 +50,6 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
@@ -65,7 +64,7 @@ import org.fabric3.spi.introspection.xml.TemplateRegistry;
  */
 @EagerInit
 public class TemplateElementLoader extends AbstractValidatingTypeLoader<ModelObject> {
-    private static final QName QNAME = new QName(Namespaces.F3, "template");
+    private static final QName QNAME = new QName(org.fabric3.api.Namespaces.F3, "template");
     private static final QName LAX_QNAME = new QName("", "template");
 
     private LoaderRegistry loaderRegistry;

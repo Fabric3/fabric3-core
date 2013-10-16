@@ -39,7 +39,6 @@ package org.fabric3.xquery.scdl;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.Implementation;
 
 /**
@@ -47,7 +46,7 @@ import org.fabric3.api.model.type.component.Implementation;
  */
 public class XQueryImplementation extends Implementation<XQueryComponentType> {
 
-    public static final QName QNAME = new QName(Namespaces.F3, "implementation.xquery");
+    public static final QName QNAME = new QName(org.fabric3.api.Namespaces.F3, "implementation.xquery");
     private String location;
     private String context;
     private boolean isModule;

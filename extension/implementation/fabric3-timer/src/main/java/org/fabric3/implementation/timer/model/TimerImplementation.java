@@ -39,7 +39,6 @@ package org.fabric3.implementation.timer.model;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.timer.provision.TimerData;
 
@@ -49,7 +48,7 @@ import org.fabric3.implementation.timer.provision.TimerData;
  * @version $$Rev: 7881 $$ $$Date: 2009-11-22 10:32:23 +0100 (Sun, 22 Nov 2009) $$
  */
 public class TimerImplementation extends JavaImplementation {
-    public static final QName IMPLEMENTATION_TIMER = new QName(Namespaces.F3, "implementation.timer");
+    public static final QName IMPLEMENTATION_TIMER = new QName(org.fabric3.api.Namespaces.F3, "implementation.timer");
     private static final long serialVersionUID = -911919528396189874L;
     private TimerData timerData;
 

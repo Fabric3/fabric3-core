@@ -51,7 +51,6 @@ import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.util.Set;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.definitions.ImplementationType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
@@ -105,7 +104,7 @@ public class ImplementationTypeLoader extends AbstractValidatingTypeLoader<Imple
             NamespaceContext namespaceContext = reader.getNamespaceContext();
             QName qName = LoaderUtil.getQName(name, context.getTargetNamespace(), namespaceContext);
 
-            if (!Namespaces.F3.equals(qName.getNamespaceURI()) && !registry.isRegistered(qName)) {
+            if (!org.fabric3.api.Namespaces.F3.equals(qName.getNamespaceURI()) && !registry.isRegistered(qName)) {
                 // do not check F3 namespaces as definitions files may be contributed during bootstrap when the F3 implementation loaders have not yet been
                 // registered
                 InvalidValue error = new InvalidValue("Unknown implementation type: " + qName, startLocation);

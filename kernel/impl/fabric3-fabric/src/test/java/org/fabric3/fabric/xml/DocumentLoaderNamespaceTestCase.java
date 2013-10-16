@@ -45,8 +45,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-import org.fabric3.api.host.Namespaces;
-
 /**
  *
  */
@@ -59,10 +57,10 @@ public class DocumentLoaderNamespaceTestCase extends TestCase {
         InputSource source = new InputSource(stream);
         Document document = loader.load(source, true);
         Element root = document.getDocumentElement();
-        loader.addNamespace(document, root, Namespaces.F3);
-        assertEquals(Namespaces.F3, root.getNamespaceURI());
+        loader.addNamespace(document, root, org.fabric3.api.Namespaces.F3);
+        assertEquals(org.fabric3.api.Namespaces.F3, root.getNamespaceURI());
         Node child = root.getChildNodes().item(0);
-        assertEquals(Namespaces.F3, child.getNamespaceURI());
+        assertEquals(org.fabric3.api.Namespaces.F3, child.getNamespaceURI());
 
     }
 

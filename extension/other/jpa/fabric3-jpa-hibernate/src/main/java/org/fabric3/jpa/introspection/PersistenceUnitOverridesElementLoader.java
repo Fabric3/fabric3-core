@@ -52,7 +52,6 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.override.DuplicateOverridesException;
 import org.fabric3.jpa.override.OverrideRegistry;
@@ -68,7 +67,7 @@ import org.fabric3.spi.introspection.xml.TypeLoader;
  */
 @EagerInit
 public class PersistenceUnitOverridesElementLoader implements TypeLoader<ModelObject> {
-    private static final QName QNAME = new QName(Namespaces.F3, "persistenceUnit");
+    private static final QName QNAME = new QName(org.fabric3.api.Namespaces.F3, "persistenceUnit");
 
     private LoaderRegistry loaderRegistry;
     private OverrideRegistry overrideRegistry;

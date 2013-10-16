@@ -45,7 +45,6 @@ package org.fabric3.implementation.system.model;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 
@@ -54,7 +53,7 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
  */
 public class SystemImplementation extends Implementation<InjectingComponentType> {
     private static final long serialVersionUID = -3698947089871597184L;
-    public static final QName IMPLEMENTATION_SYSTEM = new QName(Namespaces.F3, "implementation.system");
+    public static final QName IMPLEMENTATION_SYSTEM = new QName(org.fabric3.api.Namespaces.F3, "implementation.system");
     private String implementationClass;
 
     public SystemImplementation() {
