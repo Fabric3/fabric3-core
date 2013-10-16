@@ -34,23 +34,25 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.spi.model.type.java;
+*/
+package org.fabric3.implementation.java.introspection;
+
+import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**
  *
  */
-public enum OperationType {
-    GET,
-    POST,
-    PUT,
-    DELETE,
-    UNDEFINED
+public class MultipleInterfacesSupported extends JavaValidationFailure {
+    private Class<?> clazz;
 
+    protected MultipleInterfacesSupported(Class<?> clazz, InjectingComponentType componentType) {
+        super(clazz, componentType);
+        this.clazz = clazz;
+    }
+
+    public String getMessage() {
+        return "Multiple interfaces not supported " + clazz.getName();
+    }
 }
+

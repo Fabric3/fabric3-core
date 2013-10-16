@@ -34,40 +34,23 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.spi.model.type.java;
+*/
+package org.fabric3.spi.introspection.processor;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Represents an injection site on a Java-based component implementation.
+ * Processes a {@link ComponentDefinition}, delegating to {@link ImplementationProcessor}s and {@link BindingProcessor}s to add relevant metadata.
  */
-public class InjectionSite extends ModelObject<InjectingComponentType> {
-    private static final long serialVersionUID = 7792895640425046691L;
-
-    // Name of type being injected
-    private String type;
-
-    protected InjectionSite(String type) {
-        this.type = type;
-    }
-
-    protected InjectionSite() {
-        // required for deserialization
-    }
+public interface ComponentProcessor {
 
     /**
-     * Returns the Java type being injected, i.e. the class name.
+     * Process the definition.
      *
-     * @return the name of the Java type being injected
+     * @param definition the definition
+     * @param context    the introspection context to report errors
      */
-    public String getType() {
-        return type;
-    }
+    void process(ComponentDefinition<?> definition, IntrospectionContext context);
+
 }

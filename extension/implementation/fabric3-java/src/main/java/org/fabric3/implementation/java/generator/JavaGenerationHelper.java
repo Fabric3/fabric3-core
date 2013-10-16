@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.java.generator;
 
-import org.fabric3.implementation.java.model.JavaImplementation;
+import org.fabric3.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;

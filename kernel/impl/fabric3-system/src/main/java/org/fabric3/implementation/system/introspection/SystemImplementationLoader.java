@@ -56,7 +56,7 @@ import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.model.type.java.InjectingComponentType;
 
 /**
  * Loads information for a system implementation

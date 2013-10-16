@@ -42,8 +42,8 @@ import java.lang.reflect.Member;
 import org.fabric3.model.type.component.ComponentType;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.spi.model.type.java.InjectableType;
-import org.fabric3.spi.model.type.java.InjectionSite;
+import org.fabric3.model.type.java.InjectableType;
+import org.fabric3.model.type.java.InjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**

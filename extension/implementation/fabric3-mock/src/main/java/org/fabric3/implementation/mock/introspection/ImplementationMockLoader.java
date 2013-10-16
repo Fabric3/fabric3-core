@@ -46,7 +46,7 @@ import java.util.StringTokenizer;
 import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.model.type.java.InjectingComponentType;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 

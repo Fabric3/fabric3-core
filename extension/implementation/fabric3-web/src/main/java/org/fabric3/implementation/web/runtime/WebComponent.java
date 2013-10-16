@@ -52,7 +52,7 @@ import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.spi.container.component.Component;
 import org.fabric3.spi.container.component.ComponentException;
-import org.fabric3.spi.model.type.java.InjectionSite;
+import org.fabric3.model.type.java.InjectionSite;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;

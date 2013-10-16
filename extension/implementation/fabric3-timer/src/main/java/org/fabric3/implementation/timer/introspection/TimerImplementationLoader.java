@@ -54,7 +54,7 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.model.type.java.InjectingComponentType;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.implementation.timer.provision.TimerData.UNSPECIFIED;
 

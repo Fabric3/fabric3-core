@@ -44,7 +44,7 @@
 package org.fabric3.implementation.pojo.provision;
 
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.spi.model.type.java.Signature;
+import org.fabric3.model.type.java.Signature;
 
 /**
  *

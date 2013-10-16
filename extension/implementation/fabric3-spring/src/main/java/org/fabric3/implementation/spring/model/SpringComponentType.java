@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.model.type.java.InjectingComponentType;
 
 /**
  * A component type for a Spring application context.

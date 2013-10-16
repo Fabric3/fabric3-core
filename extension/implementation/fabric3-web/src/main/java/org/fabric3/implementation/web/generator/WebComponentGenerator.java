@@ -72,8 +72,8 @@ import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalPropertyDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.model.type.java.Injectable;
-import org.fabric3.spi.model.type.java.InjectionSite;
+import org.fabric3.model.type.java.Injectable;
+import org.fabric3.model.type.java.InjectionSite;
 
 import static org.fabric3.container.web.spi.WebApplicationActivator.OASIS_CONTEXT_ATTRIBUTE;
 import static org.fabric3.implementation.web.provision.WebConstants.SERVLET_CONTEXT_SITE;

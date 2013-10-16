@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.model.type.java;
+package org.fabric3.model.type.java;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -51,8 +51,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.fabric3.model.type.ModelObject;
 
 /**
  * Description of a method signature.

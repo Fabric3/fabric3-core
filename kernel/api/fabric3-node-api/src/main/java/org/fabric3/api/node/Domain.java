@@ -39,6 +39,8 @@ package org.fabric3.api.node;
 
 import java.net.URL;
 
+import org.fabric3.model.type.component.ComponentDefinition;
+
 /**
  * The main API for accessing a service fabric domain.
  */
@@ -67,6 +69,7 @@ public interface Domain {
      * @param interfaze the channel interface
      * @param name      the channel name
      * @param consumer  the consumer
+     * @return the domain
      */
     Domain subscribe(Class<?> interfaze, String name, Object consumer);
 
@@ -76,6 +79,7 @@ public interface Domain {
      * @param interfaze the channel interface
      * @param name      the channel name
      * @param consumer  the consumer
+     * @return the domain
      */
     Domain unsubscribe(Class<?> interfaze, String name, Object consumer);
 
@@ -84,28 +88,48 @@ public interface Domain {
      *
      * @param interfaze the service endpoint
      * @param instance  the service instance
+     * @return the domain
      */
     <T> Domain deploy(Class<T> interfaze, T instance);
+
+    /**
+     * Deploys a component specified by the given definition.
+     *
+     * @param definition the component definition
+     * @return the domain
+     */
+    Domain deploy(ComponentDefinition<?> definition);
+
+    /**
+     * Deploys an artifact such as a composite file or contribution to the domain.
+     *
+     * @param url the artifact URL
+     * @return the domain
+     */
+    Domain deploy(URL url);
 
     /**
      * Un-deploys a service endpoint.
      *
      * @param interfaze the service endpoint
      * @param instance  the service instance
+     * @return the domain
      */
     <T> Domain undeploy(Class<T> interfaze, T instance);
 
     /**
-     * Deploys an artifact such as a composite file or contribution to the domain.
+     * Un-deploys the component with the given name
      *
-     * @param url the artifact URL
+     * @param name the component name
+     * @return the domain
      */
-    Domain deploy(URL url);
+    Domain undeploy(String name);
 
     /**
      * Un-deploys an artifact such as a composite file or contribution from the domain.
      *
      * @param url the artifact URL
+     * @return the domain
      */
     Domain undeploy(URL url);
 

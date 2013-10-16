@@ -47,8 +47,8 @@ import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -77,7 +77,20 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
     }
 
     public JavaComponent build(JavaComponentDefinition definition) throws BuilderException {
+        if (definition.getInstance() != null) {
+            return buildNonManagedComponent(definition);
+        } else {
+            return buildManagedComponent(definition);
+        }
+    }
+
+    public void dispose(JavaComponentDefinition definition, JavaComponent component) throws BuilderException {
+        dispose(definition);
+    }
+
+    private JavaComponent buildManagedComponent(JavaComponentDefinition definition) throws BuilderException {
         URI uri = definition.getComponentUri();
+
         QName deployable = definition.getDeployable();
         ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
 
@@ -99,8 +112,13 @@ public class JavaComponentBuilder extends PojoComponentBuilder<JavaComponentDefi
         return component;
     }
 
-    public void dispose(JavaComponentDefinition definition, JavaComponent component) throws BuilderException {
-        dispose(definition);
+    private JavaComponent buildNonManagedComponent(JavaComponentDefinition definition) {
+        URI componentUri = definition.getComponentUri();
+        String scopeName = definition.getScope();
+        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
+        Object instance = definition.getInstance();
+        NonManagedImplementationManagerFactory factory = new NonManagedImplementationManagerFactory(instance);
+        return new JavaComponent(componentUri, factory, scopeContainer, definition.getDeployable(), false);
     }
 
 }

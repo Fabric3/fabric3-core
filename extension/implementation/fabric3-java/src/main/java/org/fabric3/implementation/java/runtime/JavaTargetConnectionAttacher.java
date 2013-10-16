@@ -54,7 +54,7 @@ import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.spi.model.type.java.Signature;
+import org.fabric3.model.type.java.Signature;
 import org.fabric3.spi.util.UriHelper;
 
 /**

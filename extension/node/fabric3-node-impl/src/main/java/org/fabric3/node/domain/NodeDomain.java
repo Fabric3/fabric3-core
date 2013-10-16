@@ -50,6 +50,7 @@ import org.fabric3.host.contribution.RemoveException;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.host.contribution.UrlContributionSource;
+import org.fabric3.model.type.component.ComponentDefinition;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -57,18 +58,18 @@ import org.oasisopen.sca.annotation.Reference;
  * Default Node Domain implementation.
  */
 public class NodeDomain implements Domain {
-    private InstanceDeployer deployer;
+    private Provisioner provisioner;
     private ServiceResolver serviceResolver;
     private ChannelResolver channelResolver;
     private ContributionService contributionService;
     private org.fabric3.host.domain.Domain domain;
 
-    public NodeDomain(@Reference InstanceDeployer deployer,
+    public NodeDomain(@Reference Provisioner provisioner,
                       @Reference ServiceResolver serviceResolver,
                       @Reference ChannelResolver channelResolver,
                       @Reference ContributionService contributionService,
                       @Reference(name = "domain") org.fabric3.host.domain.Domain domain) {
-        this.deployer = deployer;
+        this.provisioner = provisioner;
         this.serviceResolver = serviceResolver;
         this.channelResolver = channelResolver;
         this.contributionService = contributionService;
@@ -101,7 +102,16 @@ public class NodeDomain implements Domain {
 
     public <T> Domain deploy(Class<T> interfaze, T instance) {
         try {
-            deployer.deploy(interfaze, instance);
+            provisioner.deploy(interfaze, instance);
+            return this;
+        } catch (DeploymentException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    public Domain deploy(ComponentDefinition<?> definition) {
+        try {
+            provisioner.deploy(definition);
             return this;
         } catch (DeploymentException e) {
             throw new ServiceRuntimeException(e);
@@ -110,7 +120,16 @@ public class NodeDomain implements Domain {
 
     public <T> Domain undeploy(Class<T> interfaze, T instance) {
         try {
-            deployer.undeploy(interfaze, instance);
+            provisioner.undeploy(interfaze, instance);
+            return this;
+        } catch (DeploymentException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    public Domain undeploy(String name) {
+        try {
+            provisioner.undeploy(name);
             return this;
         } catch (DeploymentException e) {
             throw new ServiceRuntimeException(e);

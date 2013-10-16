@@ -46,7 +46,7 @@ package org.fabric3.jpa.introspection;
 import java.lang.reflect.Member;
 
 import org.fabric3.spi.introspection.java.JavaValidationFailure;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.model.type.java.InjectingComponentType;
 
 /**
  * Denotes an invalid persistence context type.

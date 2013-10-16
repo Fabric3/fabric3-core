@@ -44,7 +44,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.java.generator.JavaGenerationHelper;
-import org.fabric3.implementation.java.model.JavaImplementation;
+import org.fabric3.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.timer.model.TimerImplementation;
@@ -65,7 +65,7 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.model.type.java.InjectingComponentType;
 
 /**
  * Generates physical metadata for a Timer component deployment.

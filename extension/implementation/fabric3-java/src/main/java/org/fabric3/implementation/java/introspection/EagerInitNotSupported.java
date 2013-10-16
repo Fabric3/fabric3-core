@@ -38,7 +38,7 @@
 package org.fabric3.implementation.java.introspection;
 
 import org.fabric3.spi.introspection.java.JavaValidationFailure;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.model.type.java.InjectingComponentType;
 
 /**
  *

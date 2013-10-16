@@ -79,11 +79,11 @@ import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.MultiplicityType;
-import org.fabric3.spi.model.type.java.InjectableType;
+import org.fabric3.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import org.fabric3.spi.model.type.java.Signature;
+import org.fabric3.model.type.java.Signature;
 
 /**
  *

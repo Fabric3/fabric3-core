@@ -156,7 +156,7 @@ public class Operation extends AbstractPolicyAware<ServiceContract> {
     }
 
     public String toString() {
-        return new StringBuilder().append("Operation [").append(name).append("]").toString();
+        return "Operation [" + name + "]";
     }
 
     public boolean equals(Object o) {

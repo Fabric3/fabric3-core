@@ -52,4 +52,8 @@ public class DeploymentException extends Fabric3Exception {
     public DeploymentException(Throwable cause) {
         super(cause);
     }
+
+    protected DeploymentException() {
+    }
+
 }

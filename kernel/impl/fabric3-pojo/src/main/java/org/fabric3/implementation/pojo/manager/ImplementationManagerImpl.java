@@ -52,7 +52,7 @@ import org.fabric3.implementation.pojo.spi.reflection.ObjectCallbackException;
 import org.fabric3.spi.container.component.InstanceDestructionException;
 import org.fabric3.spi.container.component.InstanceInitException;
 import org.fabric3.spi.container.component.InstanceLifecycleException;
-import org.fabric3.spi.model.type.java.Injectable;
+import org.fabric3.model.type.java.Injectable;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;

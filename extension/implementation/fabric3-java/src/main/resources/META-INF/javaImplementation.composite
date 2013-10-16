@@ -31,6 +31,10 @@ Public License. See the accompanying license file for details.
         <reference name="heuristic" target="JavaHeuristic"/>
     </component>
 
+    <component name="JavaImplementationProcessor">
+        <f3:implementation.system class="org.fabric3.implementation.java.introspection.JavaImplementationProcessor"/>
+    </component>
+
     <component name="JavaHeuristic">
         <f3:implementation.system class="org.fabric3.implementation.java.introspection.JavaHeuristic"/>
         <reference name="service" target="JavaServiceHeuristic"/>
@@ -40,7 +44,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.implementation.java.introspection.JavaServiceHeuristic"/>
     </component>
 
-    <component name="JavaComponentGenerator" f3:key="org.fabric3.implementation.java.model.JavaImplementation">
+    <component name="JavaComponentGenerator" f3:key="org.fabric3.model.type.java.JavaImplementation">
         <f3:implementation.system class="org.fabric3.implementation.java.generator.JavaComponentGenerator"/>
     </component>
 

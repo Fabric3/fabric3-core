@@ -49,6 +49,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Constructor;
 
+import org.fabric3.model.type.java.InjectionSite;
+import org.fabric3.model.type.java.Signature;
+
 /**
  * Represents a constructor that is injected into when a component implementation instance is instantiated.
  */

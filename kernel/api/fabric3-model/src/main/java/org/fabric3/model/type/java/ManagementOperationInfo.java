@@ -41,19 +41,50 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.model.type.java;
+package org.fabric3.model.type.java;
+
+import java.util.Set;
+
+import org.fabric3.api.Role;
+import org.fabric3.model.type.ModelObject;
 
 /**
- * Enumeration of the type of InjectableAttribute supported.
- * <p/>
- * Currently supported types are: <ul> <li>Callbacks</li> <li>References</li> <ul> <li>Producers</li> <li>Properties</li> <li>Resources</li>
- * <li>Context (the implementation-specific context)</li> </ul>
+ * Encapsulates management information about a component operation.
  */
-public enum InjectableType {
-    CALLBACK,
-    REFERENCE,
-    PRODUCER,
-    PROPERTY,
-    RESOURCE,
-    CONTEXT
+public class ManagementOperationInfo extends ModelObject<ManagementInfo> {
+    private static final long serialVersionUID = 138617917546848298L;
+
+    private Signature signature;
+    private String path;
+    private String description;
+    private Set<Role> roles;
+    private OperationType type;
+
+    public ManagementOperationInfo(Signature signature, String path, OperationType type, String description, Set<Role> roles) {
+        this.signature = signature;
+        this.path = path;
+        this.type = type;
+        this.description = description;
+        this.roles = roles;
+    }
+
+    public Signature getSignature() {
+        return signature;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public OperationType getOperationType() {
+        return type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
 }

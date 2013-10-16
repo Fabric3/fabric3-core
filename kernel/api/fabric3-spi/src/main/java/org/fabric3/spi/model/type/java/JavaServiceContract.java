@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.model.type.java.Signature;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 
 /**

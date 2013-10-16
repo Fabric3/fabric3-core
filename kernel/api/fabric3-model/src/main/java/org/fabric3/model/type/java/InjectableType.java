@@ -34,30 +34,26 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.node.domain;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.model.type.java;
 
 /**
- * Deploys an instance as a component to the domain.
+ * Enumeration of the type of InjectableAttribute supported.
+ * <p/>
+ * Currently supported types are: <ul> <li>Callbacks</li> <li>References</li> <ul> <li>Producers</li> <li>Properties</li> <li>Resources</li>
+ * <li>Context (the implementation-specific context)</li> </ul>
  */
-public interface InstanceDeployer {
-
-    /**
-     * Deploy the instance.
-     *
-     * @param interfaze the service interface implemented by the instance
-     * @param instance  the instance
-     * @throws DeploymentException if there is a deployment error
-     */
-    <T> void deploy(Class<T> interfaze, T instance) throws DeploymentException;
-
-    /**
-     * Un-deploys an instance.
-     *
-     * @param interfaze the service interface implemented by the instance
-     * @param instance  the instance
-     * @throws DeploymentException if there is a un-deployment error
-     */
-    <T> void undeploy(Class<T> interfaze, T instance) throws DeploymentException;
-
+public enum InjectableType {
+    CALLBACK,
+    REFERENCE,
+    PRODUCER,
+    PROPERTY,
+    RESOURCE,
+    CONTEXT
 }

@@ -44,7 +44,7 @@
 package org.fabric3.implementation.pojo.provision;
 
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
-import org.fabric3.spi.model.type.java.ManagementInfo;
+import org.fabric3.model.type.java.ManagementInfo;
 
 /**
  * Definition of a physical component whose actual implementation is based on a POJO.

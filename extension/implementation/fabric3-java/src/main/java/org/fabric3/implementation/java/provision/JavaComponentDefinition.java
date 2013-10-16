@@ -45,4 +45,21 @@ import org.fabric3.implementation.pojo.provision.PojoComponentDefinition;
 public class JavaComponentDefinition extends PojoComponentDefinition {
     private static final long serialVersionUID = -4767928352571015483L;
 
+    private transient Object instance;
+
+    public JavaComponentDefinition() {
+    }
+
+    /**
+     * Constructor used to provision component instances that are not created by the runtime.
+     *
+     * @param instance the instance
+     */
+    public JavaComponentDefinition(Object instance) {
+        this.instance = instance;
+    }
+
+    public Object getInstance() {
+        return instance;
+    }
 }

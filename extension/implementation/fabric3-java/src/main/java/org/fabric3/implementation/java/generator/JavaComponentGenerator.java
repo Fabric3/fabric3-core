@@ -40,7 +40,7 @@ package org.fabric3.implementation.java.generator;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.java.model.JavaImplementation;
+import org.fabric3.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
@@ -77,6 +77,13 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
     }
 
     public PhysicalComponentDefinition generate(LogicalComponent<JavaImplementation> component) throws GenerationException {
+        Object instance = component.getDefinition().getImplementation().getInstance();
+        if (instance != null) {
+            // deploying an un managed instance
+            JavaComponentDefinition definition = new JavaComponentDefinition(instance);
+            definition.setScope("COMPOSITE");
+            return definition;
+        }
         JavaComponentDefinition definition = new JavaComponentDefinition();
         generationHelper.generate(definition, component);
         return definition;

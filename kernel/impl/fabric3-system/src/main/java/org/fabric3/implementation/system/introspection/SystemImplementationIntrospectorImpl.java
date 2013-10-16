@@ -55,7 +55,7 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.InvalidImplementation;
 import org.fabric3.spi.introspection.java.MissingResource;
 import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.model.type.java.InjectingComponentType;
 
 /**
  * Loads a system component type

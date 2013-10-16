@@ -49,8 +49,8 @@ import org.oasisopen.sca.annotation.Destroy;
 
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
-import org.fabric3.spi.model.type.java.Signature;
+import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.model.type.java.Signature;
 
 /**
  *

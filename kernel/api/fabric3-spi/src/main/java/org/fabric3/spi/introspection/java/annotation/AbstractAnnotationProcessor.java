@@ -49,7 +49,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.model.type.java.InjectingComponentType;
 
 /**
  * Abstract base class for annotation processors that provides default implementations of the interface methods that simply return.

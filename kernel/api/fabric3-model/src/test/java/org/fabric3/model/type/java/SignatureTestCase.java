@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.spi.model.type.java;
+package org.fabric3.model.type.java;
 
 import java.lang.reflect.Method;
 

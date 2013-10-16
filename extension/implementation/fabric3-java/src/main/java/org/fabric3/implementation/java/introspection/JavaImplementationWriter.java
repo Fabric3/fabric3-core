@@ -45,7 +45,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.implementation.java.model.JavaImplementation;
+import org.fabric3.model.type.java.JavaImplementation;
 import org.fabric3.spi.introspection.xml.TypeWriter;
 import org.fabric3.spi.introspection.xml.UnrecognizedTypeException;
 import org.fabric3.spi.introspection.xml.Writer;

@@ -21,9 +21,9 @@ Public License. See the accompanying license file for details.
         <reference name="domain" target="ApplicationDomain"/>
     </component>
 
-    <component name="InstanceDeployer">
-        <f3:implementation.system class="org.fabric3.node.domain.InstanceDeployerImpl"/>
-        <reference name="lcm" target="LogicalComponentManager"/>
+    <component name="Provisioner">
+        <f3:implementation.system class="org.fabric3.node.domain.ProvisionerImpl"/>
+        <reference name="domain" target="ApplicationDomain"/>
     </component>
 
     <component name="Introspector">

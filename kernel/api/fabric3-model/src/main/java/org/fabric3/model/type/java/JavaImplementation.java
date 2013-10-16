@@ -35,14 +35,12 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.java.model;
+package org.fabric3.model.type.java;
 
 import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.Constants;
-
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.oasisopen.sca.Constants;
 
 /**
  * Represents a Java component implementation type.
@@ -51,8 +49,14 @@ public class JavaImplementation extends Implementation<InjectingComponentType> {
     public static final QName IMPLEMENTATION_JAVA = new QName(Constants.SCA_NS, "implementation.java");
     private static final long serialVersionUID = 8922589166061811190L;
     private String implementationClass;
+    private transient Object instance;
 
     public JavaImplementation() {
+    }
+
+    public JavaImplementation(Object instance) {
+        this.instance = instance;
+        this.implementationClass = instance.getClass().getName();
     }
 
     public QName getType() {
@@ -71,4 +75,7 @@ public class JavaImplementation extends Implementation<InjectingComponentType> {
         return getImplementationClass();
     }
 
+    public Object getInstance() {
+        return instance;
+    }
 }

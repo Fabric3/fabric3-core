@@ -47,7 +47,7 @@ import junit.framework.TestCase;
 
 import org.fabric3.api.annotation.scope.Scopes;
 import org.fabric3.api.annotation.scope.Stateless;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.model.type.java.InjectingComponentType;
 
 @SuppressWarnings("unchecked")
 public class StatelessProcessorTestCase extends TestCase {

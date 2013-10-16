@@ -42,7 +42,7 @@ import java.lang.reflect.Member;
 import org.fabric3.api.annotation.Resource;
 import org.fabric3.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.model.type.java.InjectingComponentType;
 
 /**
  * Implementations extend resource processing by handling <code>@Resource</code> annotations for specific types such as DataSources.

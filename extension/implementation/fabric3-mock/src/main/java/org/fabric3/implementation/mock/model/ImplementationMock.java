@@ -42,7 +42,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.host.Namespaces;
 import org.fabric3.model.type.component.Implementation;
-import org.fabric3.spi.model.type.java.InjectingComponentType;
+import org.fabric3.model.type.java.InjectingComponentType;
 
 /**
  * Implementation type for mock components.
