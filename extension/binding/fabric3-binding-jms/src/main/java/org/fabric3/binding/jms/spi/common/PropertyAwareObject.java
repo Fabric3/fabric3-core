@@ -47,7 +47,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * A JMS binding configuration element that contains properties.

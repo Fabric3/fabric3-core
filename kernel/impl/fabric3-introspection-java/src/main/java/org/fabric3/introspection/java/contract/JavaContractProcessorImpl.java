@@ -56,9 +56,9 @@ import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Remotable;
 
-import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.Operation;
+import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;

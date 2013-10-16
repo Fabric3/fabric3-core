@@ -45,7 +45,7 @@ package org.fabric3.spi.model.instance;
 
 import java.net.URI;
 
-import org.fabric3.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.AbstractService;
 
 /**
  * An instantiated service in the domain.

@@ -49,11 +49,11 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.fabric3.api.annotation.Consumer;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
-import org.fabric3.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.component.ConsumerDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 
 public class ConsumerProcessorTestCase extends TestCase {
     private ConsumerProcessor processor;

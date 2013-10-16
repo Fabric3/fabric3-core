@@ -49,7 +49,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.fabric3.implementation.pojo.provision.PojoSourceDefinition;
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 import org.fabric3.spi.model.type.java.JavaClass;

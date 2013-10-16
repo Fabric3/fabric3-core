@@ -57,7 +57,7 @@ import org.oasisopen.sca.annotation.Qualifier;
 import org.oasisopen.sca.annotation.Requires;
 
 import org.fabric3.api.annotation.IntentMetaData;
-import org.fabric3.model.type.PolicyAware;
+import org.fabric3.api.model.type.PolicyAware;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 

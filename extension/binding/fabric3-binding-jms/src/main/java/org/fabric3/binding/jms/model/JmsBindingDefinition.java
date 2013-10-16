@@ -51,7 +51,7 @@ import javax.xml.namespace.QName;
 import org.oasisopen.sca.Constants;
 
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 
 /**

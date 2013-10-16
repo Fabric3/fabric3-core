@@ -42,8 +42,8 @@ import java.util.Collection;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
-import org.fabric3.model.type.definitions.AbstractPolicyDefinition;
-import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.api.model.type.definitions.AbstractPolicyDefinition;
+import org.fabric3.api.model.type.definitions.PolicySet;
 
 /**
  * Registry of binding types, implementation types, intents and policy sets within an SCA domain.

@@ -41,7 +41,7 @@ import java.net.URI;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.java.JavaImplementation;
+import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
@@ -49,11 +49,11 @@ import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.model.type.component.CallbackDefinition;
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.Scope;
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.CallbackDefinition;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Scope;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
@@ -64,10 +64,10 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.model.type.java.Injectable;
-import org.fabric3.model.type.java.InjectableType;
-import org.fabric3.model.type.java.InjectingComponentType;
-import org.fabric3.model.type.java.Signature;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.Signature;
 
 /**
  *

@@ -42,7 +42,7 @@ import org.easymock.EasyMock;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.w3c.dom.Element;
 
-import org.fabric3.model.type.contract.Operation;
+import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.deployment.generator.policy.PolicyMetadata;
 import org.fabric3.spi.model.instance.LogicalOperation;
 

@@ -47,12 +47,12 @@ import java.util.Set;
 
 import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
 import org.fabric3.fabric.deployment.instantiator.PromotionNormalizer;
-import org.fabric3.model.type.component.AbstractReference;
-import org.fabric3.model.type.component.Autowire;
-import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.model.type.component.CompositeImplementation;
-import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.model.type.definitions.Intent;
+import org.fabric3.api.model.type.component.AbstractReference;
+import org.fabric3.api.model.type.component.Autowire;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.CompositeImplementation;
+import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.definitions.Intent;
 import org.fabric3.spi.deployment.generator.policy.PolicyRegistry;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;

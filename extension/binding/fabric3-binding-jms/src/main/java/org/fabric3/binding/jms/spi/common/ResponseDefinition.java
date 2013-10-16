@@ -43,7 +43,7 @@
  */
 package org.fabric3.binding.jms.spi.common;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * A response configuration.

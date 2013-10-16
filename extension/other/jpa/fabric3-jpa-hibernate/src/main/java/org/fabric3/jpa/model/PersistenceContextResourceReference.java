@@ -37,8 +37,8 @@
 */
 package org.fabric3.jpa.model;
 
-import org.fabric3.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * Represents an entity manager factory treated as a resource.

@@ -41,7 +41,7 @@ package org.fabric3.spi.introspection.xml;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * Serializes model objects to a StAX output stream by delegating to {@link TypeWriter}s.

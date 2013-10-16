@@ -40,7 +40,7 @@ package org.fabric3.spi.model.type.java;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * Represents resolved type information for a Java generic type. Type parameters are resolved and recursively represented as

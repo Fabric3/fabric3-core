@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.java.introspection;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**

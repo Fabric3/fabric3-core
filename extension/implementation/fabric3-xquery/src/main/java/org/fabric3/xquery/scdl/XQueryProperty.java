@@ -39,7 +39,7 @@ package org.fabric3.xquery.scdl;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.model.type.component.Property;
+import org.fabric3.api.model.type.component.Property;
 
 /**
  *

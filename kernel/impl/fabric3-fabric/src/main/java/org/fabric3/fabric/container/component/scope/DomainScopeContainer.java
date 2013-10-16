@@ -50,7 +50,7 @@ import java.util.List;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.model.type.component.Scope;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.component.GroupInitializationException;
 import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.component.ScopeContainer;

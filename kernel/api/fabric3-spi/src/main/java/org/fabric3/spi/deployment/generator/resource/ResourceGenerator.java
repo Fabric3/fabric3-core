@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.deployment.generator.resource;
 
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.ResourceDefinition;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;

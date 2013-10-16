@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.model.type.json;
 
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 
 /**
  * A JSON type. The physical type represents the form the JSON type is stored in, e.g. a String. The logical type represents the Java class the type

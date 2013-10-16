@@ -53,7 +53,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.container.wire.InvocationChainImpl;
 import org.fabric3.fabric.container.wire.WireImpl;
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;

@@ -54,11 +54,11 @@ import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.management.rest.transformer.TransformerPair;
 import org.fabric3.management.rest.transformer.TransformerPairService;
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.java.ManagementInfo;
-import org.fabric3.model.type.java.ManagementOperationInfo;
-import org.fabric3.model.type.java.OperationType;
-import org.fabric3.model.type.java.Signature;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.java.ManagementInfo;
+import org.fabric3.api.model.type.java.ManagementOperationInfo;
+import org.fabric3.api.model.type.java.OperationType;
+import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.container.objectfactory.SingletonObjectFactory;
 

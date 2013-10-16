@@ -1,6 +1,6 @@
 package org.fabric3.transform.binary;
 
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.transform.SingleTypeTransformer;
 import org.fabric3.spi.transform.TransformationException;

@@ -44,8 +44,8 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.fabric3.model.type.component.Implementation;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.component.ResourceDefinition;
 import org.fabric3.spi.model.instance.Bindable;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;

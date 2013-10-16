@@ -49,7 +49,7 @@ import java.util.ListIterator;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.fabric.command.ExecutorNotFoundException;
 import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.model.type.component.Scope;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.container.component.InstanceLifecycleException;

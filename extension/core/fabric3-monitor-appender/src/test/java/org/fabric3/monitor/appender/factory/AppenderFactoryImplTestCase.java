@@ -46,7 +46,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.monitor.appender.console.ConsoleAppenderDefinition;
 import org.fabric3.monitor.appender.console.PhysicalConsoleAppenderDefinition;
 import org.fabric3.monitor.spi.appender.Appender;

@@ -10,12 +10,12 @@ import org.easymock.EasyMock;
 
 import org.fabric3.api.annotation.Cache;
 import org.fabric3.cache.model.CacheReferenceDefinition;
-import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**

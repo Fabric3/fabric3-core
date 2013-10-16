@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.model.type.java;
 
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 
 /**
  * A non-generic Java class. Since the class is not generic, the logical and physical representations are the same.

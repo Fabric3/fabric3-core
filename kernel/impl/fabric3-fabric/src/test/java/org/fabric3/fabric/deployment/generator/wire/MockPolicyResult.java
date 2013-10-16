@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.policy.PolicyMetadata;
 import org.fabric3.spi.deployment.generator.policy.PolicyResult;

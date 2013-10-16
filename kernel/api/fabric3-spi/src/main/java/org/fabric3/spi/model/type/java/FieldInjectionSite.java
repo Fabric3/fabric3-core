@@ -49,7 +49,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Field;
 
-import org.fabric3.model.type.java.InjectionSite;
+import org.fabric3.api.model.type.java.InjectionSite;
 
 /**
  * Represents a field that is injected into when a component implementation instance is instantiated.

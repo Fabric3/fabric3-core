@@ -51,8 +51,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.component.Target;
-import org.fabric3.model.type.component.WireDefinition;
+import org.fabric3.api.model.type.component.Target;
+import org.fabric3.api.model.type.component.WireDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidTargetException;

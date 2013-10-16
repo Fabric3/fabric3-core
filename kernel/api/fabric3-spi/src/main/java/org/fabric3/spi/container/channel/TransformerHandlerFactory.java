@@ -1,6 +1,6 @@
 package org.fabric3.spi.container.channel;
 
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 
 /**
  * Creates an {@link EventStreamHandler} that converts events from one type to another.

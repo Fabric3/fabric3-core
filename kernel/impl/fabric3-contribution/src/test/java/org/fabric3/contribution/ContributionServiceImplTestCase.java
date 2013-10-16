@@ -60,7 +60,7 @@ import org.fabric3.host.contribution.FileContributionSource;
 import org.fabric3.host.contribution.RemoveException;
 import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.host.repository.Repository;
-import org.fabric3.model.type.component.Composite;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;

@@ -46,7 +46,7 @@ import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
-import org.fabric3.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.EagerInit;

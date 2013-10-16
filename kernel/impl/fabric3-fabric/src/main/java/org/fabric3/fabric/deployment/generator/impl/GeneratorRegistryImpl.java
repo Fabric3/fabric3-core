@@ -50,10 +50,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.fabric.deployment.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
-import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.model.type.component.Implementation;
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
 import org.fabric3.spi.deployment.generator.channel.ConnectionBindingGenerator;

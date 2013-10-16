@@ -43,7 +43,7 @@ import org.fabric3.implementation.mock.provision.MockSourceDefinition;
 import org.fabric3.implementation.mock.provision.MockTargetDefinition;
 import org.fabric3.implementation.mock.model.ImplementationMock;
 import org.fabric3.implementation.mock.model.MockComponentDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;

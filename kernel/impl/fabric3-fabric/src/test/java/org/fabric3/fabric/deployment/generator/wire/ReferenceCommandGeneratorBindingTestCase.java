@@ -43,9 +43,9 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.fabric.deployment.command.ConnectionCommand;
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.CompositeImplementation;
-import org.fabric3.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.CompositeImplementation;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.spi.deployment.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;

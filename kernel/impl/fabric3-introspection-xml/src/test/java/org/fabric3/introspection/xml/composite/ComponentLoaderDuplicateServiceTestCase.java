@@ -54,7 +54,7 @@ import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.introspection.xml.common.ComponentServiceLoader;
-import org.fabric3.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;

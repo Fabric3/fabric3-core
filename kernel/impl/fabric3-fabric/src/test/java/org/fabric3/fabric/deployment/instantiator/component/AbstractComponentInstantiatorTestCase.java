@@ -53,8 +53,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.fabric3.introspection.xml.composite.StatefulNamespaceContext;
-import org.fabric3.model.type.component.CompositeImplementation;
-import org.fabric3.model.type.component.PropertyValue;
+import org.fabric3.api.model.type.component.CompositeImplementation;
+import org.fabric3.api.model.type.component.PropertyValue;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
 

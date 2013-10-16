@@ -47,7 +47,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.component.ConsumerDefinition;
 
 /**
  * A consumer on an instantiated component in the domain.

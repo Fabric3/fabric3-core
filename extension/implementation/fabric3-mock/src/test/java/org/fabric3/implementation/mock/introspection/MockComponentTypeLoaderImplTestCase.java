@@ -44,10 +44,10 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
-import org.fabric3.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**

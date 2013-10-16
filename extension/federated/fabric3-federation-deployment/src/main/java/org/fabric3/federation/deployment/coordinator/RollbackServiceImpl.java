@@ -47,7 +47,7 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.management.OperationType;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
-import org.fabric3.model.type.component.Scope;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CompensatableCommand;

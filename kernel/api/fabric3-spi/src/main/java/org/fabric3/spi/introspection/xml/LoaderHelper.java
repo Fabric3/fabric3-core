@@ -53,9 +53,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.w3c.dom.Document;
 
-import org.fabric3.model.type.PolicyAware;
-import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.model.type.component.Target;
+import org.fabric3.api.model.type.PolicyAware;
+import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.component.Target;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**

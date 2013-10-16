@@ -39,7 +39,7 @@ package org.fabric3.spi.introspection.xml;
 
 import java.net.URI;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * Manages assembly templates. Templates are used in composites as a placeholder for configuration that is specified elsewhere, in another composite

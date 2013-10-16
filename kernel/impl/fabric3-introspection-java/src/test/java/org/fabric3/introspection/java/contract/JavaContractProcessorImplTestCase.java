@@ -51,9 +51,9 @@ import junit.framework.TestCase;
 import org.oasisopen.sca.annotation.Callback;
 
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.Operation;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.Operation;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;

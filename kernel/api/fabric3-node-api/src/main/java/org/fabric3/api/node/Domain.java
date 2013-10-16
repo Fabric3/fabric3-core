@@ -39,7 +39,7 @@ package org.fabric3.api.node;
 
 import java.net.URL;
 
-import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentDefinition;
 
 /**
  * The main API for accessing a service fabric domain.

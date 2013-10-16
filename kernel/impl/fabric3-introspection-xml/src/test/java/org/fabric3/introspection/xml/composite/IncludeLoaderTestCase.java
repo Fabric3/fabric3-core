@@ -54,8 +54,8 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.host.stream.Source;
-import org.fabric3.model.type.component.Composite;
-import org.fabric3.model.type.component.Include;
+import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.api.model.type.component.Include;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;

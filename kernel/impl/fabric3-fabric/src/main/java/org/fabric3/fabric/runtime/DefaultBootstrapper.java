@@ -73,7 +73,7 @@ import org.fabric3.host.runtime.HostInfo;
 import org.fabric3.host.runtime.InitializationException;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
-import org.fabric3.model.type.component.Composite;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;

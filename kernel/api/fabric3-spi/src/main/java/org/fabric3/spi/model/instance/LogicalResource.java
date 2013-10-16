@@ -46,7 +46,7 @@ package org.fabric3.spi.model.instance;
 import javax.xml.namespace.QName;
 
 import org.fabric3.host.Names;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.ResourceDefinition;
 
 /**
  * An instantiated resource defined in a composite.

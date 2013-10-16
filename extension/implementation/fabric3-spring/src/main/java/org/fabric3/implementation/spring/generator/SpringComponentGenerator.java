@@ -52,10 +52,10 @@ import org.fabric3.implementation.spring.provision.SpringConnectionSourceDefinit
 import org.fabric3.implementation.spring.provision.SpringConnectionTargetDefinition;
 import org.fabric3.implementation.spring.provision.SpringSourceDefinition;
 import org.fabric3.implementation.spring.provision.SpringTargetDefinition;
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;

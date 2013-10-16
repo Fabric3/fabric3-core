@@ -41,7 +41,7 @@ package org.fabric3.introspection.xml.writer;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Init;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.introspection.xml.TypeWriter;
 import org.fabric3.spi.introspection.xml.Writer;
 

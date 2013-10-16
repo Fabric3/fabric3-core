@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.EventWrapper;
 import org.fabric3.spi.transform.TransformationException;

@@ -45,10 +45,10 @@ package org.fabric3.fabric.deployment.generator;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.model.type.component.Implementation;
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
 import org.fabric3.spi.deployment.generator.channel.ConnectionBindingGenerator;

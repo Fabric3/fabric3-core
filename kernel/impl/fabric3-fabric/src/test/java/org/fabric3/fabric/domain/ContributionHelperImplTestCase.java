@@ -55,7 +55,7 @@ import org.easymock.EasyMock;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.contribution.Deployable;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.model.type.component.Composite;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.Resource;

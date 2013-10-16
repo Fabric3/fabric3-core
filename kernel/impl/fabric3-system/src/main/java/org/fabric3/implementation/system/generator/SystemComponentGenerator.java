@@ -48,8 +48,8 @@ import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinit
 import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;
 import org.fabric3.implementation.system.provision.SystemSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemTargetDefinition;
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
@@ -64,10 +64,10 @@ import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionTargetDefinition;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.model.type.java.Injectable;
-import org.fabric3.model.type.java.InjectableType;
-import org.fabric3.model.type.java.InjectingComponentType;
-import org.fabric3.model.type.java.Signature;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.Signature;
 
 /**
  *

@@ -42,7 +42,7 @@ import java.util.Map;
 
 import org.fabric3.fabric.deployment.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.spi.deployment.generator.channel.ChannelDirection;
 import org.fabric3.spi.deployment.generator.channel.ChannelGenerator;
 import org.fabric3.spi.deployment.generator.channel.ChannelGeneratorExtension;

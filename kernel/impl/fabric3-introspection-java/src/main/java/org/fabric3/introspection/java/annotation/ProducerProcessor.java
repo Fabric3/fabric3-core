@@ -50,8 +50,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import org.fabric3.api.annotation.Producer;
-import org.fabric3.model.type.component.ProducerDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -59,7 +59,7 @@ import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;

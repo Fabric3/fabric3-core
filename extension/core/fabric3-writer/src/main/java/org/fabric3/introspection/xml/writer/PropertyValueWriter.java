@@ -44,7 +44,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.component.PropertyValue;
+import org.fabric3.api.model.type.component.PropertyValue;
 import org.fabric3.spi.introspection.xml.Writer;
 
 /**

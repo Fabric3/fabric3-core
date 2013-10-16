@@ -55,8 +55,8 @@ import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.model.type.java.InjectableType;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**

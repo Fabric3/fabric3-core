@@ -47,9 +47,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.model.type.component.AbstractReference;
-import org.fabric3.model.type.component.Autowire;
-import org.fabric3.model.type.component.ComponentReference;
+import org.fabric3.api.model.type.component.AbstractReference;
+import org.fabric3.api.model.type.component.Autowire;
+import org.fabric3.api.model.type.component.ComponentReference;
 
 /**
  * A reference on an instantiated component in the domain.

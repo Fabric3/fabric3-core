@@ -41,7 +41,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.contribution.Contribution;
 
 /**

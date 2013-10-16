@@ -43,7 +43,7 @@
  */
 package org.fabric3.spi.introspection.java;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * Denotes a missing resource such as a class file.

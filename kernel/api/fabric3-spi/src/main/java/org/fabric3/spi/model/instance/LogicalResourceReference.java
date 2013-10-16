@@ -39,7 +39,7 @@ package org.fabric3.spi.model.instance;
 
 import java.net.URI;
 
-import org.fabric3.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
 
 /**
  * A reference to a resource on an instantiated component in the domain.

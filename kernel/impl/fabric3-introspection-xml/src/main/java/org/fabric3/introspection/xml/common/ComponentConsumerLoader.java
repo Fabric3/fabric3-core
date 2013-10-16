@@ -56,9 +56,9 @@ import javax.xml.stream.XMLStreamReader;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.model.type.component.ComponentConsumer;
+import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.ComponentConsumer;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;

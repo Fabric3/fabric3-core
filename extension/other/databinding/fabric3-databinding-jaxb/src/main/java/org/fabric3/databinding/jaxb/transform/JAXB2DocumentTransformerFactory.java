@@ -50,7 +50,7 @@ import org.w3c.dom.Document;
 
 import org.fabric3.databinding.jaxb.factory.JAXBContextFactory;
 import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;

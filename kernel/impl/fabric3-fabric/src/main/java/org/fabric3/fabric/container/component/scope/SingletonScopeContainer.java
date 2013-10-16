@@ -59,7 +59,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.model.type.component.Scope;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.component.GroupInitializationException;
 import org.fabric3.spi.container.component.InstanceDestructionException;
 import org.fabric3.spi.container.component.InstanceInitException;

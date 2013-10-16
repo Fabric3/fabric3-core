@@ -48,7 +48,7 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * Failure that indicates an element was encountered that could not be handled.

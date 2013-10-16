@@ -51,7 +51,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
-import org.fabric3.model.type.component.Property;
+import org.fabric3.api.model.type.component.Property;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;

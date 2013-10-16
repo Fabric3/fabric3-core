@@ -51,7 +51,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
-import org.fabric3.model.type.component.Property;
+import org.fabric3.api.model.type.component.Property;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;

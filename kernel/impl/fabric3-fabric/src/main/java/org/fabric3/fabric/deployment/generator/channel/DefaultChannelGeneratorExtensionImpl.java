@@ -40,7 +40,7 @@ package org.fabric3.fabric.deployment.generator.channel;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.spi.model.physical.ChannelConstants;
 import org.fabric3.spi.deployment.generator.channel.ChannelGeneratorExtension;
 import org.fabric3.spi.deployment.generator.GenerationException;

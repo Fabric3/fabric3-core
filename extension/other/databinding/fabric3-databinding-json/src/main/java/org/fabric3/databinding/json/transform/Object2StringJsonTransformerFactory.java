@@ -42,7 +42,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.cfg.Annotations;
 import com.fasterxml.jackson.jaxrs.json.JsonMapperConfigurator;
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.json.JsonType;
 import org.fabric3.spi.transform.TransformerFactory;

@@ -37,7 +37,7 @@
 */
 package org.fabric3.xquery.scdl;
 
-import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.ComponentType;
 
 /**
  *

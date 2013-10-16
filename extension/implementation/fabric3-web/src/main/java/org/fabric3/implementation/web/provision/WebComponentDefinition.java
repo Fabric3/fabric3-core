@@ -43,7 +43,7 @@ import java.util.Map;
 import org.w3c.dom.Document;
 
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
-import org.fabric3.model.type.java.InjectionSite;
+import org.fabric3.api.model.type.java.InjectionSite;
 
 /**
  *

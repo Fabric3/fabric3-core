@@ -53,7 +53,7 @@ import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
-import org.fabric3.model.type.component.Scope;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ScopeContainer;

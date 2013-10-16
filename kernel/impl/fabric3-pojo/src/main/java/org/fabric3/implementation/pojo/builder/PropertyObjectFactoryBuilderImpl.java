@@ -48,7 +48,7 @@ import java.util.Set;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;

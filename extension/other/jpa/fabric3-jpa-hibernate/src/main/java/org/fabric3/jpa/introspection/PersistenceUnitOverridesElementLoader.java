@@ -56,7 +56,7 @@ import org.fabric3.host.Namespaces;
 import org.fabric3.jpa.api.PersistenceOverrides;
 import org.fabric3.jpa.override.DuplicateOverridesException;
 import org.fabric3.jpa.override.OverrideRegistry;
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;

@@ -41,8 +41,8 @@ import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.Constants;
 
-import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.model.type.component.Target;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Target;
 
 /**
  * Represents a service or reference explicitly bound using <code>binding.sca</code>.

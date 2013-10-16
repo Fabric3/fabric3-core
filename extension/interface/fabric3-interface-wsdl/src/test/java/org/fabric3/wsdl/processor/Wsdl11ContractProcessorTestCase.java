@@ -49,8 +49,8 @@ import junit.framework.TestCase;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.w3c.dom.Element;
 
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.Operation;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.model.type.xsd.XSDSimpleType;
 import org.fabric3.wsdl.model.WsdlServiceContract;

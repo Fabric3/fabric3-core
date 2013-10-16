@@ -185,11 +185,11 @@
         <f3:implementation.system class="org.fabric3.contribution.manifest.LibraryLoader"/>
     </component>
 
-    <component name="CompositeReferenceIntrospector" f3:key="org.fabric3.model.type.component.Composite">
+    <component name="CompositeReferenceIntrospector" f3:key="org.fabric3.api.model.type.component.Composite">
         <f3:implementation.system class="org.fabric3.contribution.introspector.CompositeReferenceIntrospector"/>
     </component>
 
-    <component name="CompositeResourceElementUpdater" f3:key="org.fabric3.model.type.component.Composite">
+    <component name="CompositeResourceElementUpdater" f3:key="org.fabric3.api.model.type.component.Composite">
         <f3:implementation.system class="org.fabric3.contribution.updater.CompositeResourceElementUpdater"/>
     </component>
 

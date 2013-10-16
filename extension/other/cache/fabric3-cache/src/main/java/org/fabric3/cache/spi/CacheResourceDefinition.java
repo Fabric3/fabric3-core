@@ -37,7 +37,7 @@
 */
 package org.fabric3.cache.spi;
 
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.ResourceDefinition;
 
 /**
  * Defines a cache. Providers subclass to provide specific cache configuration.

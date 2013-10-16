@@ -39,7 +39,7 @@ package org.fabric3.spi.deployment.instantiator;
 
 import java.util.List;
 
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;

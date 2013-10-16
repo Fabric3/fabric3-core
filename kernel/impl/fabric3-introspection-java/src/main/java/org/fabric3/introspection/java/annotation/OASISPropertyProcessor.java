@@ -51,7 +51,7 @@ import java.lang.reflect.Type;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.component.Property;
+import org.fabric3.api.model.type.component.Property;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -59,7 +59,7 @@ import org.fabric3.spi.introspection.java.MultiplicityType;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**

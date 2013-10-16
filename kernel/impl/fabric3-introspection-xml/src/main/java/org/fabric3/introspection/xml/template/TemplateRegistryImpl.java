@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.oasisopen.sca.annotation.Service;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.introspection.xml.DuplicateTemplateException;

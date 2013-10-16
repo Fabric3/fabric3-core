@@ -45,8 +45,8 @@ package org.fabric3.spi.deployment.generator.binding;
 
 import java.util.List;
 
-import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;

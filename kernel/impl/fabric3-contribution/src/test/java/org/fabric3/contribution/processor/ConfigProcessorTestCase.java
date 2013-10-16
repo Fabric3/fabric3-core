@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.w3c.dom.Document;
 
-import org.fabric3.model.type.component.Composite;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.xml.XmlProcessorRegistry;

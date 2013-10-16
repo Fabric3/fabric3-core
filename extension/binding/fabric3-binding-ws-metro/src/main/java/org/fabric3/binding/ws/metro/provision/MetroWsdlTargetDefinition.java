@@ -41,7 +41,7 @@ import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalDataTypes;
 

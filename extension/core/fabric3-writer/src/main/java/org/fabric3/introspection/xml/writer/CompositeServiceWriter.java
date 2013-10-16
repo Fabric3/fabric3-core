@@ -45,8 +45,8 @@ import javax.xml.stream.XMLStreamWriter;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.component.CompositeService;
+import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.api.model.type.component.CompositeService;
 import org.fabric3.spi.introspection.xml.UnrecognizedTypeException;
 import org.fabric3.spi.introspection.xml.Writer;
 

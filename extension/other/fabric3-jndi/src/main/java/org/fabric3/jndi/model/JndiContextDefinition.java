@@ -40,7 +40,7 @@ package org.fabric3.jndi.model;
 import java.util.Map;
 import java.util.Properties;
 
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.ResourceDefinition;
 
 /**
  *

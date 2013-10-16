@@ -42,7 +42,7 @@ import java.net.URI;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.binding.BindingMatchResult;
 import org.fabric3.spi.deployment.generator.binding.BindingProvider;
 import org.fabric3.spi.deployment.generator.binding.BindingSelectionException;

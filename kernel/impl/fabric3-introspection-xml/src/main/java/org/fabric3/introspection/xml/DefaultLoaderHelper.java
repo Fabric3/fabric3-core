@@ -70,10 +70,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.PolicyAware;
-import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.model.type.component.Target;
-import org.fabric3.model.type.definitions.Intent;
+import org.fabric3.api.model.type.PolicyAware;
+import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.component.Target;
+import org.fabric3.api.model.type.definitions.Intent;
 import org.fabric3.spi.deployment.generator.policy.PolicyRegistry;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;
@@ -91,9 +91,9 @@ import static javax.xml.stream.XMLStreamConstants.ENTITY_REFERENCE;
 import static javax.xml.stream.XMLStreamConstants.PROCESSING_INSTRUCTION;
 import static javax.xml.stream.XMLStreamConstants.SPACE;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.fabric3.model.type.component.Multiplicity.ONE_N;
-import static org.fabric3.model.type.component.Multiplicity.ONE_ONE;
-import static org.fabric3.model.type.component.Multiplicity.ZERO_ONE;
+import static org.fabric3.api.model.type.component.Multiplicity.ONE_N;
+import static org.fabric3.api.model.type.component.Multiplicity.ONE_ONE;
+import static org.fabric3.api.model.type.component.Multiplicity.ZERO_ONE;
 
 /**
  * Default implementation of the loader helper.

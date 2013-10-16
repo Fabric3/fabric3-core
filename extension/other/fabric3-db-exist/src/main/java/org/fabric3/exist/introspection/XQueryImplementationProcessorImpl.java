@@ -30,11 +30,11 @@ import org.exist.xquery.parser.XQueryParser;
 import org.exist.xquery.parser.XQueryTreeParser;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.component.InvalidImplementation;
-import org.fabric3.model.type.component.MissingResource;
-import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.model.type.service.DataType;
-import org.fabric3.model.type.service.Operation;
+import org.fabric3.api.model.type.component.InvalidImplementation;
+import org.fabric3.api.model.type.component.MissingResource;
+import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.service.DataType;
+import org.fabric3.api.model.type.service.Operation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionHelper;
 import org.fabric3.xquery.introspection.XQueryImplementationProcessor;

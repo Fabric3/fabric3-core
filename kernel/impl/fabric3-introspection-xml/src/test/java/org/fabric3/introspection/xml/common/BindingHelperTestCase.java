@@ -46,7 +46,7 @@ import javax.xml.stream.Location;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 

@@ -55,7 +55,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.json.JsonType;

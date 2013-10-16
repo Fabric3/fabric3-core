@@ -40,14 +40,14 @@ package org.fabric3.implementation.java.generator;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.java.JavaImplementation;
+import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaConnectionTargetDefinition;
 import org.fabric3.implementation.java.provision.JavaSourceDefinition;
 import org.fabric3.implementation.java.provision.JavaTargetDefinition;
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;

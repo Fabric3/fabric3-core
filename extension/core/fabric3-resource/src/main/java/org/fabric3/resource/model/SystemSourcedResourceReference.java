@@ -37,8 +37,8 @@
 */
 package org.fabric3.resource.model;
 
-import org.fabric3.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * A resource sourced from the runtime domain.

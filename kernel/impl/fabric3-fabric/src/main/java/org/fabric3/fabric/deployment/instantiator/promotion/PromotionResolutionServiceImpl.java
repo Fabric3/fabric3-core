@@ -49,7 +49,7 @@ import org.fabric3.fabric.deployment.instantiator.PromotedComponentNotFound;
 import org.fabric3.fabric.deployment.instantiator.PromotionResolutionService;
 import org.fabric3.fabric.deployment.instantiator.ReferenceNotFound;
 import org.fabric3.fabric.deployment.instantiator.ServiceNotFound;
-import org.fabric3.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;

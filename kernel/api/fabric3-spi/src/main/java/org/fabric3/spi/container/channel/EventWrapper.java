@@ -41,7 +41,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 
 /**
  * Wraps an event so that it can be materialized in different representations prior to being passed to consumers.

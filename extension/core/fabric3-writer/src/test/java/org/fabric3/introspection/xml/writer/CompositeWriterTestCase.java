@@ -47,8 +47,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import junit.framework.TestCase;
 
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.Composite;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.introspection.xml.Writer;
 
 /**

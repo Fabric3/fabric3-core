@@ -46,13 +46,13 @@ package org.fabric3.introspection.java.annotation;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Remotable;
 
-import org.fabric3.model.type.component.Implementation;
-import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 
 /**
  *

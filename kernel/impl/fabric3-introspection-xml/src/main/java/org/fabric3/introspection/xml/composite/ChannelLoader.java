@@ -53,9 +53,9 @@ import java.util.Map;
 
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.introspection.xml.common.BindingHelper;
-import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.spi.introspection.xml.ChannelTypeLoader;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;

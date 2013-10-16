@@ -40,7 +40,7 @@ package org.fabric3.spi.model.type.xsd;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 
 /**
  * Serves as the root of complex and simple types from the XML Schema type system.

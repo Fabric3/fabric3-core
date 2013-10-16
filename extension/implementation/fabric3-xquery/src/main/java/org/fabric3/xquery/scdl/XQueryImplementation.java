@@ -40,7 +40,7 @@ package org.fabric3.xquery.scdl;
 import javax.xml.namespace.QName;
 
 import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.Implementation;
+import org.fabric3.api.model.type.component.Implementation;
 
 /**
  *

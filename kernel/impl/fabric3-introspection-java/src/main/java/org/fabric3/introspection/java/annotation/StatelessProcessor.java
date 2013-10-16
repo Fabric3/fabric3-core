@@ -48,7 +48,7 @@ import org.oasisopen.sca.annotation.Scope;
 import org.fabric3.api.annotation.scope.Stateless;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 
 
 public class StatelessProcessor extends AbstractAnnotationProcessor<Stateless> {

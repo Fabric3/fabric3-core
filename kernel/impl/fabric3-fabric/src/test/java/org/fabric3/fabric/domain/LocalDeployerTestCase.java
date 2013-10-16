@@ -47,7 +47,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.model.type.component.Scope;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;

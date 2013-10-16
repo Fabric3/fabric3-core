@@ -25,35 +25,35 @@
         <f3:implementation.system class="org.fabric3.introspection.xml.writer.WriterImpl"/>
     </component>
 
-    <component name="CompositeWriter" f3:key="org.fabric3.model.type.component.Composite">
+    <component name="CompositeWriter" f3:key="org.fabric3.api.model.type.component.Composite">
         <f3:implementation.system class="org.fabric3.introspection.xml.writer.CompositeWriter"/>
     </component>
 
-    <component name="ComponentWriter" f3:key="org.fabric3.model.type.component.ComponentDefinition">
+    <component name="ComponentWriter" f3:key="org.fabric3.api.model.type.component.ComponentDefinition">
         <f3:implementation.system class="org.fabric3.introspection.xml.writer.ComponentWriter"/>
     </component>
 
-    <component name="CompositeServiceWriter" f3:key="org.fabric3.model.type.component.CompositeService">
+    <component name="CompositeServiceWriter" f3:key="org.fabric3.api.model.type.component.CompositeService">
         <f3:implementation.system class="org.fabric3.introspection.xml.writer.CompositeServiceWriter"/>
     </component>
 
-    <component name="CompositeReferenceWriter" f3:key="org.fabric3.model.type.component.CompositeReference">
+    <component name="CompositeReferenceWriter" f3:key="org.fabric3.api.model.type.component.CompositeReference">
         <f3:implementation.system class="org.fabric3.introspection.xml.writer.CompositeReferenceWriter"/>
     </component>
 
-    <component name="PropertyValueWriter" f3:key="org.fabric3.model.type.component.PropertyValue">
+    <component name="PropertyValueWriter" f3:key="org.fabric3.api.model.type.component.PropertyValue">
         <f3:implementation.system class="org.fabric3.introspection.xml.writer.PropertyValueWriter"/>
     </component>
 
-    <component name="ComponentReferenceWriter" f3:key="org.fabric3.model.type.component.ComponentReference">
+    <component name="ComponentReferenceWriter" f3:key="org.fabric3.api.model.type.component.ComponentReference">
         <f3:implementation.system class="org.fabric3.introspection.xml.writer.ComponentReferenceWriter"/>
     </component>
 
-    <component name="CommentWriter" f3:key="org.fabric3.model.type.Comment">
+    <component name="CommentWriter" f3:key="org.fabric3.api.model.type.Comment">
         <f3:implementation.system class="org.fabric3.introspection.xml.writer.CommentWriter"/>
     </component>
 
-    <component name="TextWriter" f3:key="org.fabric3.model.type.Text">
+    <component name="TextWriter" f3:key="org.fabric3.api.model.type.Text">
         <f3:implementation.system class="org.fabric3.introspection.xml.writer.TextWriter"/>
     </component>
 

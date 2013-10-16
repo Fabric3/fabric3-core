@@ -2,7 +2,7 @@ package org.fabric3.binding.ws.model;
 
 import java.net.URI;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * A WSA Address.

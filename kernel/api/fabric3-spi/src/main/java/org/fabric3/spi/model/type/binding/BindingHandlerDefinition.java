@@ -45,7 +45,7 @@ package org.fabric3.spi.model.type.binding;
 
 import java.net.URI;
 
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.ResourceDefinition;
 
 /**
  * Logical binding definition for handlers .

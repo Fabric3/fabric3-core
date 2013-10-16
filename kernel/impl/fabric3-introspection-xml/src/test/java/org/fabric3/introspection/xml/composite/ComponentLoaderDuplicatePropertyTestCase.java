@@ -53,7 +53,7 @@ import org.fabric3.host.Namespaces;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.MockXMLFactory;
-import org.fabric3.model.type.component.Property;
+import org.fabric3.api.model.type.component.Property;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;

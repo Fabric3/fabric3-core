@@ -50,7 +50,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.util.Set;
 
-import org.fabric3.model.type.definitions.BindingType;
+import org.fabric3.api.model.type.definitions.BindingType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;

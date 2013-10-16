@@ -49,7 +49,7 @@ import org.easymock.EasyMock;
 import org.fabric3.binding.ws.model.WsBindingDefinition;
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.model.type.definitions.Intent;
+import org.fabric3.api.model.type.definitions.Intent;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.instance.LogicalBinding;

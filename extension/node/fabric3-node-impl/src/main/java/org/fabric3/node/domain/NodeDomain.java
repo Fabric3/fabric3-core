@@ -50,7 +50,7 @@ import org.fabric3.host.contribution.RemoveException;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UninstallException;
 import org.fabric3.host.contribution.UrlContributionSource;
-import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Reference;
 

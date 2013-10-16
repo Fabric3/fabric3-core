@@ -44,7 +44,7 @@
 package org.fabric3.implementation.proxy.jdk.wire;
 
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
-import org.fabric3.model.type.contract.Operation;
+import org.fabric3.api.model.type.contract.Operation;
 
 /**
  * Thrown when an {@link Operation} cannot be mapped to a method on an interface

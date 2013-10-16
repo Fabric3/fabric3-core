@@ -39,7 +39,7 @@ package org.fabric3.fabric.model.physical;
 
 import java.util.List;
 
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.physical.PhysicalEventFilterDefinition;
 
 /**

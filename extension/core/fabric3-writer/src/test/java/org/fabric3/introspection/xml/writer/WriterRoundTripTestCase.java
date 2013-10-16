@@ -51,7 +51,7 @@ import org.fabric3.introspection.xml.composite.ComponentLoader;
 import org.fabric3.introspection.xml.composite.CompositeLoader;
 import org.fabric3.introspection.xml.composite.CompositeReferenceLoader;
 import org.fabric3.introspection.xml.composite.CompositeServiceLoader;
-import org.fabric3.model.type.component.Composite;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;

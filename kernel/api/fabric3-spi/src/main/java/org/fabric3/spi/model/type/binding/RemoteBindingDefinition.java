@@ -40,7 +40,7 @@ package org.fabric3.spi.model.type.binding;
 import javax.xml.namespace.QName;
 
 import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
 
 /**
  * Represents binding information for the source or target side of a bound wire. For bound services, the remote binding definition is used to

@@ -47,11 +47,11 @@ import org.easymock.IAnswer;
 
 import org.fabric3.implementation.junit.model.JUnitBindingDefinition;
 import org.fabric3.implementation.junit.model.JUnitImplementation;
-import org.fabric3.model.type.component.AbstractService;
-import org.fabric3.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**

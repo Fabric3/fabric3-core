@@ -2,7 +2,7 @@ package org.fabric3.cache.introspection;
 
 import java.lang.reflect.Member;
 
-import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**

@@ -44,9 +44,9 @@ import org.jaxen.Context;
 import org.jaxen.Function;
 import org.jaxen.FunctionCallException;
 
-import org.fabric3.model.type.component.AbstractReference;
-import org.fabric3.model.type.component.AbstractService;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.AbstractReference;
+import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;

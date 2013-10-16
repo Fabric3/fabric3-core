@@ -50,8 +50,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.Operation;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.Operation;
 
 /**
  * Default implementation of the PayloadTypeIntrospector. Message types are determined as follows:

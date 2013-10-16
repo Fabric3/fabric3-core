@@ -44,8 +44,8 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.Operation;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.contract.OperationNotFoundException;
 import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.type.java.JavaClass;

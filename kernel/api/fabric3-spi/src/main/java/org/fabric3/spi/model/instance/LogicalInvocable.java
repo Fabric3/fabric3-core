@@ -41,8 +41,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.model.type.contract.Operation;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.Operation;
+import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * A contract-based artifact that flows data such as a service, reference, consumer, producer, resource or binding.

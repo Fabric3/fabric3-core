@@ -40,9 +40,9 @@ package org.fabric3.implementation.web.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.model.type.java.Injectable;
-import org.fabric3.model.type.java.InjectionSite;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectionSite;
 
 /**
  * A component type representing a web component.

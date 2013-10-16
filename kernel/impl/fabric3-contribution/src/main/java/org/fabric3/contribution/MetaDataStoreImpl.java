@@ -55,7 +55,7 @@ import org.fabric3.host.Names;
 import org.fabric3.host.contribution.ContributionException;
 import org.fabric3.host.contribution.StoreException;
 import org.fabric3.host.contribution.UnresolvedImportException;
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;

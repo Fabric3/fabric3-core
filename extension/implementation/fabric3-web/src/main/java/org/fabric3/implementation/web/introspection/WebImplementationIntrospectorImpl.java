@@ -44,9 +44,9 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.web.model.WebComponentType;
 import org.fabric3.implementation.web.model.WebImplementation;
-import org.fabric3.model.type.component.AbstractReference;
-import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.AbstractReference;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -54,9 +54,9 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
-import org.fabric3.model.type.java.Injectable;
-import org.fabric3.model.type.java.InjectingComponentType;
-import org.fabric3.model.type.java.InjectionSite;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectionSite;
 
 /**
  * Default implementation of WebImplementationIntrospector.

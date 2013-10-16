@@ -52,11 +52,11 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
-import org.fabric3.model.type.java.InjectingComponentType;
-import org.fabric3.model.type.java.ManagementInfo;
-import org.fabric3.model.type.java.ManagementOperationInfo;
-import org.fabric3.model.type.java.OperationType;
-import org.fabric3.model.type.java.Signature;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.ManagementInfo;
+import org.fabric3.api.model.type.java.ManagementOperationInfo;
+import org.fabric3.api.model.type.java.OperationType;
+import org.fabric3.api.model.type.java.Signature;
 
 /**
  * Processes the {@link ManagementOperation} annotation on a component implementation class.

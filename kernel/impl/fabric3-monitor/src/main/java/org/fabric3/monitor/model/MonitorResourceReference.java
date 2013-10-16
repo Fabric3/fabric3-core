@@ -43,8 +43,8 @@
  */
 package org.fabric3.monitor.model;
 
-import org.fabric3.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  *

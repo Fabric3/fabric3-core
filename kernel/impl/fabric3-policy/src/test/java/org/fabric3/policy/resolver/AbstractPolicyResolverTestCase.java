@@ -44,7 +44,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import junit.framework.TestCase;
-import org.fabric3.model.type.definitions.Intent;
+import org.fabric3.api.model.type.definitions.Intent;
 import org.fabric3.policy.infoset.PolicyEvaluator;
 import org.fabric3.spi.deployment.generator.policy.PolicyRegistry;
 import org.fabric3.spi.deployment.generator.policy.PolicyResolutionException;

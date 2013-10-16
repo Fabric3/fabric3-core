@@ -41,9 +41,9 @@ package org.fabric3.wsdl.contract;
 import javax.xml.namespace.QName;
 import java.util.List;
 
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.Operation;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.Operation;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcherExtension;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.model.type.xsd.XSDComplexType;

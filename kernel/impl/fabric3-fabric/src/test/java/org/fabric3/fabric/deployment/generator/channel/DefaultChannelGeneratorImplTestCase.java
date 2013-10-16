@@ -41,7 +41,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.spi.model.physical.ChannelConstants;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;

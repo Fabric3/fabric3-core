@@ -51,12 +51,12 @@ import org.w3c.dom.Element;
 
 import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
 import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.model.type.component.Implementation;
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.Operation;
-import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.Operation;
+import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.wire.InterceptorGenerator;
@@ -66,7 +66,7 @@ import org.fabric3.spi.model.instance.LogicalOperation;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.physical.PhysicalInterceptorDefinition;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaClass;
 
 /**

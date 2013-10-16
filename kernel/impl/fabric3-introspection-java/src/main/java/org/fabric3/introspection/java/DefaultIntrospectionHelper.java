@@ -70,20 +70,20 @@ import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Remotable;
 import org.oasisopen.sca.annotation.Service;
 
-import org.fabric3.model.type.component.AbstractService;
-import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.Operation;
+import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.MultiplicityType;
-import org.fabric3.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import org.fabric3.model.type.java.Signature;
+import org.fabric3.api.model.type.java.Signature;
 
 /**
  *

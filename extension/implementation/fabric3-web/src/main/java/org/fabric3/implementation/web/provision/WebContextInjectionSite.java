@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.web.provision;
 
-import org.fabric3.model.type.java.InjectionSite;
+import org.fabric3.api.model.type.java.InjectionSite;
 
 /**
  * An injection site specialized for web applications.

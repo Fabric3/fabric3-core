@@ -45,7 +45,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
-import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.spi.model.physical.ChannelConstants;
 import org.fabric3.spi.deployment.generator.channel.ChannelDirection;
 import org.fabric3.spi.deployment.generator.channel.ChannelGeneratorExtension;

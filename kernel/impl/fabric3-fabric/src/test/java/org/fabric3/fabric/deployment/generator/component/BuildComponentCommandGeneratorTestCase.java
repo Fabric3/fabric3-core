@@ -51,9 +51,9 @@ import org.easymock.EasyMock;
 
 import org.fabric3.fabric.deployment.command.BuildComponentCommand;
 import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.model.type.component.Implementation;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.spi.deployment.generator.component.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;

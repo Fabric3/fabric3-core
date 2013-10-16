@@ -44,12 +44,12 @@ import java.util.Set;
 
 import org.fabric3.fabric.deployment.generator.GeneratorNotFoundException;
 import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
-import org.fabric3.model.type.component.AbstractReference;
-import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.Implementation;
-import org.fabric3.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.AbstractReference;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;

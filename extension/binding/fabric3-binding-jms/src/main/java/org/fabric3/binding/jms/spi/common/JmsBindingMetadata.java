@@ -46,7 +46,7 @@ package org.fabric3.binding.jms.spi.common;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * Encapsulates binding configuration.

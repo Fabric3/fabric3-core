@@ -41,8 +41,8 @@ import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.deployment.instantiator.AutowireResolver;

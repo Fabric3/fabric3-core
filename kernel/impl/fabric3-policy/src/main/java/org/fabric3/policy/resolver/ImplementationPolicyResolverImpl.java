@@ -43,12 +43,12 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.ComponentType;
-import org.fabric3.model.type.component.Implementation;
-import org.fabric3.model.type.definitions.ImplementationType;
-import org.fabric3.model.type.definitions.Intent;
-import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.definitions.ImplementationType;
+import org.fabric3.api.model.type.definitions.Intent;
+import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.policy.infoset.PolicyEvaluator;
 import org.fabric3.spi.deployment.generator.policy.PolicyRegistry;
 import org.fabric3.spi.deployment.generator.policy.PolicyResolutionException;

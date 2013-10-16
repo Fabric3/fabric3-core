@@ -43,8 +43,8 @@
  */
 package org.fabric3.spi.deployment.generator.component;
 
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.Implementation;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalComponent;

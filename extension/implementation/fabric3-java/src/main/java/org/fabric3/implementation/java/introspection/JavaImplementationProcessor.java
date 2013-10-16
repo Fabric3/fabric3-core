@@ -37,11 +37,11 @@
 */
 package org.fabric3.implementation.java.introspection;
 
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
-import org.fabric3.model.type.java.InjectingComponentType;
-import org.fabric3.model.type.java.JavaImplementation;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.introspection.processor.ImplementationProcessor;

@@ -39,7 +39,7 @@ package org.fabric3.spi.deployment.generator.policy;
 
 import java.util.Set;
 
-import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.spi.model.instance.LogicalComponent;
 
 /**

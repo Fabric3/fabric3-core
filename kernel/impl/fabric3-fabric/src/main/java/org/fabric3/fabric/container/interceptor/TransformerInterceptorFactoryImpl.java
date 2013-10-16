@@ -42,7 +42,7 @@ import java.util.List;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.wire.InterceptorCreationException;
 import org.fabric3.spi.container.wire.NoInterceptorException;
 import org.fabric3.spi.container.wire.TransformerInterceptorFactory;

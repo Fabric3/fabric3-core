@@ -46,12 +46,12 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.Resource;
 import org.fabric3.execution.model.ExecutorServiceResourceReference;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.resource.spi.ResourceTypeHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 
 /**
  * Handles resource injection for the runtime <code>ExecutorService</code>.

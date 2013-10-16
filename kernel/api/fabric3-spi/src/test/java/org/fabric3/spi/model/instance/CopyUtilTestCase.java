@@ -43,15 +43,15 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.model.type.component.ChannelDefinition;
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.ConsumerDefinition;
-import org.fabric3.model.type.component.ProducerDefinition;
-import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.component.ResourceDefinition;
-import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  *

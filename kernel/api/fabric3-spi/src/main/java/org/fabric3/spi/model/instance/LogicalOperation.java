@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.model.instance;
 
-import org.fabric3.model.type.contract.Operation;
+import org.fabric3.api.model.type.contract.Operation;
 
 /**
  * An operation on a service, reference or resource of an instantiated component.

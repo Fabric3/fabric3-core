@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.deployment.generator.binding;
 
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.spi.model.instance.LogicalBinding;
 
 /**

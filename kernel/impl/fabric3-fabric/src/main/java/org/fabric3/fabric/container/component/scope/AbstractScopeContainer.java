@@ -46,7 +46,7 @@ package org.fabric3.fabric.container.component.scope;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.component.Scope;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.container.component.ScopedComponent;

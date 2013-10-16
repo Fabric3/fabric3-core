@@ -44,11 +44,11 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.Composite;
-import org.fabric3.model.type.component.CompositeImplementation;
-import org.fabric3.model.type.component.Include;
+import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.api.model.type.component.CompositeImplementation;
+import org.fabric3.api.model.type.component.Include;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;

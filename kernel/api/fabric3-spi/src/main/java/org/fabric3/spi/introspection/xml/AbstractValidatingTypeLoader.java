@@ -43,7 +43,7 @@ import java.util.Set;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**

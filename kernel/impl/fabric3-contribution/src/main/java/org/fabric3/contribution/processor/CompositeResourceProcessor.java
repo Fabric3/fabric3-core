@@ -49,7 +49,7 @@ import java.net.URL;
 
 import org.fabric3.host.contribution.InstallException;
 import org.fabric3.host.stream.Source;
-import org.fabric3.model.type.component.Composite;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ProcessorRegistry;

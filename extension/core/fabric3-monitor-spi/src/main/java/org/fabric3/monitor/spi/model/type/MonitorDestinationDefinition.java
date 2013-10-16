@@ -37,9 +37,7 @@
 */
 package org.fabric3.monitor.spi.model.type;
 
-import java.util.List;
-
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  *

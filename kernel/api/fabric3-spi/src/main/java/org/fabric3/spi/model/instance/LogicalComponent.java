@@ -50,9 +50,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.fabric3.host.Names;
-import org.fabric3.model.type.component.Autowire;
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.Implementation;
+import org.fabric3.api.model.type.component.Autowire;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Implementation;
 
 /**
  * An instantiated component in the domain.

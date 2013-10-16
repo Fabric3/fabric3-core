@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.contract;
 
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * Determines if two <code>ServiceContract</code>s are compatible for wiring. Specifically, tests whether the target contract can be converted to the

@@ -47,8 +47,8 @@ import java.util.Map;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.Resource;
-import org.fabric3.model.type.component.ResourceReferenceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.resource.model.SystemSourcedResourceReference;
 import org.fabric3.resource.spi.ResourceTypeHandler;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -58,7 +58,7 @@ import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**

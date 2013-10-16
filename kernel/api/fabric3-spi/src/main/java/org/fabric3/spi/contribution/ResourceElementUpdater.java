@@ -40,7 +40,7 @@ package org.fabric3.spi.contribution;
 import java.io.Serializable;
 import java.util.Set;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * Dynamically updates a resource element contained in contribution and all references to it, including the transitive set of importing contributions,

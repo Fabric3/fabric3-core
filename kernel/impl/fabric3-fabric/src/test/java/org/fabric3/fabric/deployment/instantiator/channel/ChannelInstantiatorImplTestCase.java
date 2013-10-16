@@ -43,11 +43,11 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
-import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.model.type.component.ChannelDefinition;
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.Composite;
-import org.fabric3.model.type.component.CompositeImplementation;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.api.model.type.component.CompositeImplementation;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 

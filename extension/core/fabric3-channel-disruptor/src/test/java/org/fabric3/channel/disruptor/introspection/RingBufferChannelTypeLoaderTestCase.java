@@ -46,7 +46,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.fabric3.channel.disruptor.common.RingBufferData;
-import org.fabric3.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.spi.model.physical.ChannelConstants;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;

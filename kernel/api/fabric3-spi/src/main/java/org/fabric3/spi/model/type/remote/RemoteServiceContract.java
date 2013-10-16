@@ -39,7 +39,7 @@ package org.fabric3.spi.model.type.remote;
 
 import java.util.List;
 
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * An interface of a service hosted in a remote process.

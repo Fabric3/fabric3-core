@@ -48,9 +48,9 @@ import java.util.Set;
 
 import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
 import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.Operation;
-import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.Operation;
+import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.spi.contract.OperationNotFoundException;
 import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.deployment.generator.GenerationException;

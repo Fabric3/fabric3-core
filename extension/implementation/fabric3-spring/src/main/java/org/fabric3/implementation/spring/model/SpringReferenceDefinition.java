@@ -37,9 +37,9 @@
 */
 package org.fabric3.implementation.spring.model;
 
-import org.fabric3.model.type.component.Multiplicity;
-import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  *

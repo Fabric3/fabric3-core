@@ -18,7 +18,7 @@ Public License. See the accompanying license file for details.
 
     <component name="BindingTemplateLoader" f3:key="sca:binding.template">
         <f3:implementation.system class="org.fabric3.introspection.xml.template.TemplateLoader"/>
-        <property name="expectedType">org.fabric3.model.type.component.BindingDefinition</property>
+        <property name="expectedType">org.fabric3.api.model.type.component.BindingDefinition</property>
     </component>
 
     <component name="TemplateElementLoader">

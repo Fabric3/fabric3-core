@@ -48,9 +48,9 @@ import javax.xml.stream.XMLStreamReader;
 import org.oasisopen.sca.Constants;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.definitions.Intent;
-import org.fabric3.model.type.definitions.IntentType;
-import org.fabric3.model.type.definitions.Qualifier;
+import org.fabric3.api.model.type.definitions.Intent;
+import org.fabric3.api.model.type.definitions.IntentType;
+import org.fabric3.api.model.type.definitions.Qualifier;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;

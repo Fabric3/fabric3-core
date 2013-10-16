@@ -45,7 +45,7 @@ package org.fabric3.introspection.java.annotation;
 
 import java.lang.reflect.Method;
 
-import org.fabric3.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**

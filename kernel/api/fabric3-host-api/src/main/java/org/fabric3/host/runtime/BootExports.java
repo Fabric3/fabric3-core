@@ -58,7 +58,6 @@ public final class BootExports {
         BOOT_EXPORTS.put("org.fabric3.util.*", Names.VERSION);
         BOOT_EXPORTS.put("org.fabric3.host.*", Names.VERSION);
         BOOT_EXPORTS.put("org.fabric3.management.*", Names.VERSION);
-        BOOT_EXPORTS.put("org.fabric3.model.*", Names.VERSION);
         BOOT_EXPORTS.put("org.fabric3.implementation.pojo.*", Names.VERSION);
 
         // Third-party packages

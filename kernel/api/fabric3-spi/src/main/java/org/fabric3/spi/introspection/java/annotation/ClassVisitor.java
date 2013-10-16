@@ -38,7 +38,7 @@
 package org.fabric3.spi.introspection.java.annotation;
 
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 
 /**
  * Interface to a service that walks a Java class and updates the implementation definition based on annotations found.  Errors and warnings are

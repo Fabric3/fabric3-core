@@ -48,9 +48,9 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.model.type.java.Injectable;
-import org.fabric3.model.type.java.InjectionSite;
-import org.fabric3.model.type.java.Signature;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectionSite;
+import org.fabric3.api.model.type.java.Signature;
 
 /**
  * Base class for implementation manager factory definitions.

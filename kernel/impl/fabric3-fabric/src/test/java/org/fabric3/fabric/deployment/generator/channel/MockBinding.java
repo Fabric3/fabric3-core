@@ -37,7 +37,7 @@
 */
 package org.fabric3.fabric.deployment.generator.channel;
 
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
 
 /**
  *

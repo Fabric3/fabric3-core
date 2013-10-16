@@ -49,7 +49,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;

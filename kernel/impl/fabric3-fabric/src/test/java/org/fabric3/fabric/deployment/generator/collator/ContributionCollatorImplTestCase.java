@@ -46,7 +46,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.fabric.deployment.generator.GenerationType;
-import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.Export;

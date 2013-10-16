@@ -40,7 +40,7 @@ package org.fabric3.fabric.introspection;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.processor.BindingProcessor;
 import org.fabric3.spi.introspection.processor.ComponentProcessor;

@@ -49,7 +49,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementExtension;
 import org.fabric3.spi.management.ManagementService;
-import org.fabric3.model.type.java.ManagementInfo;
+import org.fabric3.api.model.type.java.ManagementInfo;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**

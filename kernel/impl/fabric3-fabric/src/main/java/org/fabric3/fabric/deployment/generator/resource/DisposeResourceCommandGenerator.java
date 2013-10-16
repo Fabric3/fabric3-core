@@ -52,7 +52,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.fabric.deployment.command.DisposeResourcesCommand;
 import org.fabric3.fabric.deployment.generator.CommandGenerator;
 import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.ResourceDefinition;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.resource.ResourceGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;

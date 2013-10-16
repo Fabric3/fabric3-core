@@ -39,7 +39,7 @@ package org.fabric3.fabric.deployment.instantiator;
 
 import java.util.List;
 
-import org.fabric3.model.type.component.Composite;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 
 /**

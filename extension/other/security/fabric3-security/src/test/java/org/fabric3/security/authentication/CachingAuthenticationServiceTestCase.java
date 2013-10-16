@@ -50,7 +50,7 @@ import org.easymock.EasyMock;
 import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.api.Role;
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.BasicSecuritySubject;

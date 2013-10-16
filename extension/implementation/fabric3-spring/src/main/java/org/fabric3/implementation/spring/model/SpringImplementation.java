@@ -40,7 +40,7 @@ package org.fabric3.implementation.spring.model;
 import javax.xml.namespace.QName;
 import java.util.List;
 
-import org.fabric3.model.type.component.Implementation;
+import org.fabric3.api.model.type.component.Implementation;
 import org.oasisopen.sca.Constants;
 
 /**

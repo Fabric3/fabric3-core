@@ -42,8 +42,8 @@ import java.net.URI;
 import junit.framework.TestCase;
 
 import org.fabric3.fabric.deployment.instantiator.AutowireNormalizer;
-import org.fabric3.model.type.component.Autowire;
-import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Autowire;
+import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 

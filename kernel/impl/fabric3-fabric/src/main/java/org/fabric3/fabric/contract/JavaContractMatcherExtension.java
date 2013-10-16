@@ -41,7 +41,7 @@ package org.fabric3.fabric.contract;
 import org.fabric3.spi.contract.ContractMatcherExtension;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
-import org.fabric3.model.type.java.Signature;
+import org.fabric3.api.model.type.java.Signature;
 import static org.fabric3.spi.contract.MatchResult.MATCH;
 import static org.fabric3.spi.contract.MatchResult.NO_MATCH;
 

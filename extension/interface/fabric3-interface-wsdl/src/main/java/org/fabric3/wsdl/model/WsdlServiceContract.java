@@ -43,7 +43,7 @@ import javax.xml.namespace.QName;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * WSDL Service contract.

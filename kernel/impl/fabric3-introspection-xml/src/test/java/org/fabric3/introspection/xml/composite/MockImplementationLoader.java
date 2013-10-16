@@ -40,12 +40,12 @@ package org.fabric3.introspection.xml.composite;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.model.type.component.Property;
-import org.fabric3.model.type.component.ReferenceDefinition;
-import org.fabric3.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.component.Property;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.TypeLoader;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 
 /**
  *

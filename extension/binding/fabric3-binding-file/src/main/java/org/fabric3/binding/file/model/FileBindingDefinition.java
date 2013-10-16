@@ -41,7 +41,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
 
 /**
  * A file binding configuration set on a reference.

@@ -37,7 +37,7 @@
 */
 package org.fabric3.timer.model;
 
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.ResourceDefinition;
 
 /**
  * A configured timer pool.

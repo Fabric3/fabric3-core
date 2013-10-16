@@ -39,7 +39,7 @@ package org.fabric3.contribution.processor;
 
 import javax.xml.stream.Location;
 
-import org.fabric3.model.type.component.Composite;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**

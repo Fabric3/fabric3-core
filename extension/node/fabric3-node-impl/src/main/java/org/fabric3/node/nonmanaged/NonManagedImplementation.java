@@ -40,8 +40,8 @@ package org.fabric3.node.nonmanaged;
 import javax.xml.namespace.QName;
 
 import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.Implementation;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 
 /**
  * Models non-managed code that is deployed as a component to a service fabric.

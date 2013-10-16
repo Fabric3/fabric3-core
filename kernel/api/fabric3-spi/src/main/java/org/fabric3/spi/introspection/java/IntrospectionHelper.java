@@ -51,11 +51,11 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Set;
 
-import org.fabric3.model.type.component.AbstractService;
-import org.fabric3.model.type.component.ReferenceDefinition;
+import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.TypeMapping;
-import org.fabric3.model.type.java.InjectableType;
+import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
 
 /**

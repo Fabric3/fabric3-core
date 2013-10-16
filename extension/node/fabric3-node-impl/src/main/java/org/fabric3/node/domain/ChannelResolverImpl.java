@@ -45,8 +45,8 @@ import java.util.Map;
 
 import org.fabric3.host.Names;
 import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.ProducerDefinition;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.node.nonmanaged.NonManagedPhysicalConnectionSourceDefinition;
 import org.fabric3.spi.container.builder.BuilderException;
@@ -65,7 +65,7 @@ import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.Reference;
 

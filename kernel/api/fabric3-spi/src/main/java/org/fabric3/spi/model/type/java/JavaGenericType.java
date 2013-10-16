@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.model.type.java;
 
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 
 /**
  * A Java generic type. The physical type is the raw type, e.g. <code>List</code> for the parameterized type <code>List&lt;String&gt;</code>. The

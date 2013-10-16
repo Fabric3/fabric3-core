@@ -52,7 +52,7 @@ import org.easymock.EasyMock;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 
 /**
  *

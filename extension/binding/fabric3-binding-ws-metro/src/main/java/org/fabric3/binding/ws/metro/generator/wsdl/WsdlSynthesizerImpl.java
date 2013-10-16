@@ -58,7 +58,7 @@ import javax.wsdl.extensions.soap.SOAPOperation;
 import javax.xml.namespace.QName;
 
 import org.fabric3.binding.ws.model.WsBindingDefinition;
-import org.fabric3.model.type.contract.Operation;
+import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.classloader.ClassLoaderObjectInputStream;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalBinding;

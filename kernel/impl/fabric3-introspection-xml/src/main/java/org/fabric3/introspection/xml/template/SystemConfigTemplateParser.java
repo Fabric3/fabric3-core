@@ -45,7 +45,7 @@ import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.host.Names;
 import org.fabric3.host.failure.ValidationFailure;
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.ExtensionsInitialized;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;

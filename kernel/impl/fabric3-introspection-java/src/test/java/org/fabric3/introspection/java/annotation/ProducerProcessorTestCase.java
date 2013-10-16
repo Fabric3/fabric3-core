@@ -50,14 +50,14 @@ import java.util.Collections;
 import junit.framework.TestCase;
 import org.fabric3.api.annotation.Producer;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
-import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.contract.Operation;
+import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 public class ProducerProcessorTestCase extends TestCase {

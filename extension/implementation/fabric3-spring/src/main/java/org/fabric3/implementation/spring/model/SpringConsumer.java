@@ -39,8 +39,8 @@ package org.fabric3.implementation.spring.model;
 
 import java.util.Collections;
 
-import org.fabric3.model.type.component.ConsumerDefinition;
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.component.ConsumerDefinition;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.type.java.JavaType;
 
 /**

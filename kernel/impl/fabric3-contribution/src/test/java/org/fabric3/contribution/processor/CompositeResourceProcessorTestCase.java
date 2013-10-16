@@ -48,7 +48,7 @@ import org.easymock.EasyMock;
 import org.fabric3.contribution.MockXMLFactory;
 import org.fabric3.host.stream.InputStreamSource;
 import org.fabric3.host.stream.Source;
-import org.fabric3.model.type.component.Composite;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;

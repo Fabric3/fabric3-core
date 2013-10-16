@@ -43,7 +43,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.EventWrapper;
 import org.fabric3.spi.model.type.java.JavaClass;

@@ -54,10 +54,10 @@ import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.introspection.xml.common.BindingHelper;
-import org.fabric3.model.type.ModelObject;
-import org.fabric3.model.type.component.BindingDefinition;
-import org.fabric3.model.type.component.CompositeService;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.CompositeService;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;

@@ -40,7 +40,7 @@ package org.fabric3.resource.spi;
 import java.lang.reflect.Member;
 import javax.annotation.Resource;
 
-import org.fabric3.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**

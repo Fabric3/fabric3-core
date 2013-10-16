@@ -50,7 +50,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 import org.oasisopen.sca.Constants;
 

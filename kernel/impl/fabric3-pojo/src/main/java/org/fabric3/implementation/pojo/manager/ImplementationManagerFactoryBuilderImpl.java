@@ -55,9 +55,9 @@ import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
-import org.fabric3.model.type.java.Injectable;
-import org.fabric3.model.type.java.InjectionSite;
-import org.fabric3.model.type.java.Signature;
+import org.fabric3.api.model.type.java.Injectable;
+import org.fabric3.api.model.type.java.InjectionSite;
+import org.fabric3.api.model.type.java.Signature;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 

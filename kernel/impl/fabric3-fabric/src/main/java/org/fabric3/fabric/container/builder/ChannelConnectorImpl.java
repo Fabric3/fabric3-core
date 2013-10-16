@@ -47,7 +47,7 @@ import org.fabric3.fabric.container.channel.ChannelConnectionImpl;
 import org.fabric3.fabric.container.channel.EventStreamImpl;
 import org.fabric3.fabric.container.channel.FilterHandler;
 import org.fabric3.fabric.container.channel.TransformerHandler;
-import org.fabric3.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.channel.EventFilter;
 import org.fabric3.spi.container.builder.channel.EventFilterBuilder;

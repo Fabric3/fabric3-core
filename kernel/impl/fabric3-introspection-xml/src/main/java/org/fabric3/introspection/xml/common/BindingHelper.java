@@ -40,7 +40,7 @@ package org.fabric3.introspection.xml.common;
 import java.util.List;
 import javax.xml.stream.Location;
 
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**

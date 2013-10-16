@@ -53,10 +53,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.definitions.IntentMap;
-import org.fabric3.model.type.definitions.IntentQualifier;
-import org.fabric3.model.type.definitions.PolicyPhase;
-import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.api.model.type.definitions.IntentMap;
+import org.fabric3.api.model.type.definitions.IntentQualifier;
+import org.fabric3.api.model.type.definitions.PolicyPhase;
+import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidPrefixException;

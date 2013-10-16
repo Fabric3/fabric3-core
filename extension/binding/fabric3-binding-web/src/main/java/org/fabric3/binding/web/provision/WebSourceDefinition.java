@@ -45,8 +45,8 @@ package org.fabric3.binding.web.provision;
 
 import java.net.URI;
 
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**

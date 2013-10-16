@@ -41,8 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.fabric3.model.type.definitions.Intent;
-import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.api.model.type.definitions.Intent;
+import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.spi.model.instance.LogicalOperation;
 
 /**

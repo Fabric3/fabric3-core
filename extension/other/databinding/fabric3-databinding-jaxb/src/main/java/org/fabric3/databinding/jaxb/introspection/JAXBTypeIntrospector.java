@@ -60,8 +60,8 @@ import javax.xml.transform.Source;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.databinding.jaxb.mapper.JAXBQNameMapper;
-import org.fabric3.model.type.contract.DataType;
-import org.fabric3.model.type.contract.Operation;
+import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.OperationIntrospector;
 import org.fabric3.spi.model.type.java.JavaType;

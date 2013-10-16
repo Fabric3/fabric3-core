@@ -47,7 +47,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.fabric.deployment.command.StartContextCommand;
-import org.fabric3.model.type.component.Scope;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ComponentException;
 import org.fabric3.spi.container.component.GroupInitializationException;

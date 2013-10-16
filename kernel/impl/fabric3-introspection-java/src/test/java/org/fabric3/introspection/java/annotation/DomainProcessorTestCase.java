@@ -47,7 +47,7 @@ import junit.framework.TestCase;
 
 import org.fabric3.api.annotation.scope.Domain;
 import org.fabric3.api.annotation.scope.Scopes;
-import org.fabric3.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 
 @SuppressWarnings("unchecked")
 public class DomainProcessorTestCase extends TestCase {

@@ -37,7 +37,7 @@
 */
 package org.fabric3.node.domain;
 
-import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentDefinition;
 
 /**
  * Deploys an instance as a component to the domain.

@@ -37,8 +37,8 @@
 */
 package org.fabric3.fabric.deployment.instantiator;
 
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.CompositeImplementation;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.CompositeImplementation;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 

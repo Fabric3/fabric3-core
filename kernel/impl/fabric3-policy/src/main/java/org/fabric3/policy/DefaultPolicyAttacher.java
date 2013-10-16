@@ -42,9 +42,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.fabric3.model.type.definitions.ExternalAttachment;
-import org.fabric3.model.type.definitions.Intent;
-import org.fabric3.model.type.definitions.PolicySet;
+import org.fabric3.api.model.type.definitions.ExternalAttachment;
+import org.fabric3.api.model.type.definitions.Intent;
+import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.policy.infoset.PolicyEvaluationException;
 import org.fabric3.policy.infoset.PolicyEvaluator;
 import org.fabric3.spi.deployment.generator.policy.PolicyAttacher;

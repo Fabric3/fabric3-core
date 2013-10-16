@@ -37,8 +37,8 @@
 */
 package org.fabric3.implementation.spring.model;
 
-import org.fabric3.model.type.component.ServiceDefinition;
-import org.fabric3.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
  * An SCA service definition in a Spring application context.

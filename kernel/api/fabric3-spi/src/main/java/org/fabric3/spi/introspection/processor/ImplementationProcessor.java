@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.introspection.processor;
 
-import org.fabric3.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**

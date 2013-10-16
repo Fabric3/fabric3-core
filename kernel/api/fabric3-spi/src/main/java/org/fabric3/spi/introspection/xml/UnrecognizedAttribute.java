@@ -45,7 +45,7 @@ package org.fabric3.spi.introspection.xml;
 
 import javax.xml.stream.Location;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
  * Failure that indicates an attribute was encountered that could not be handled.

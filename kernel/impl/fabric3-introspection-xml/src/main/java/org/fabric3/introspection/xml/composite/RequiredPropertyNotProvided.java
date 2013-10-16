@@ -39,8 +39,8 @@ package org.fabric3.introspection.xml.composite;
 
 import javax.xml.stream.Location;
 
-import org.fabric3.model.type.component.ComponentDefinition;
-import org.fabric3.model.type.component.Property;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Property;
 import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**

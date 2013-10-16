@@ -44,10 +44,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.easymock.IAnswer;
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.model.type.ModelObject;
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;

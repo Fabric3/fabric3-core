@@ -42,7 +42,7 @@ import javax.xml.namespace.QName;
 
 import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 import org.fabric3.host.Namespaces;
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
 
 /**
  * A ZeroMQ binding configuration set on a channel, reference, or composite.

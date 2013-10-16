@@ -1,6 +1,6 @@
 package org.fabric3.binding.hornetq.introspection;
 
-import org.fabric3.model.type.component.ResourceDefinition;
+import org.fabric3.api.model.type.component.ResourceDefinition;
 
 /**
  *

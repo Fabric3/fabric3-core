@@ -48,12 +48,12 @@ import org.easymock.EasyMock;
 
 import org.fabric3.host.stream.Source;
 import org.fabric3.host.stream.UrlSource;
-import org.fabric3.model.type.definitions.BindingType;
-import org.fabric3.model.type.definitions.ImplementationType;
-import org.fabric3.model.type.definitions.Intent;
-import org.fabric3.model.type.definitions.IntentMap;
-import org.fabric3.model.type.definitions.PolicySet;
-import org.fabric3.model.type.definitions.Qualifier;
+import org.fabric3.api.model.type.definitions.BindingType;
+import org.fabric3.api.model.type.definitions.ImplementationType;
+import org.fabric3.api.model.type.definitions.Intent;
+import org.fabric3.api.model.type.definitions.IntentMap;
+import org.fabric3.api.model.type.definitions.PolicySet;
+import org.fabric3.api.model.type.definitions.Qualifier;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.Resource;
@@ -61,7 +61,7 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.deployment.generator.policy.PolicyActivationException;
 
-import static org.fabric3.model.type.definitions.IntentType.INTERACTION;
+import static org.fabric3.api.model.type.definitions.IntentType.INTERACTION;
 
 /**
  *

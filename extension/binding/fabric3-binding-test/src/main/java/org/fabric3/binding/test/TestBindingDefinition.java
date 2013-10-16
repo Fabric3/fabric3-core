@@ -39,7 +39,7 @@ package org.fabric3.binding.test;
 
 import java.net.URI;
 
-import org.fabric3.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.BindingDefinition;
 
 /**
  *

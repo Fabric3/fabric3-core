@@ -45,8 +45,8 @@ import junit.framework.TestCase;
 
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.common.InvalidPropertyValue;
-import org.fabric3.model.type.component.PropertyMany;
-import org.fabric3.model.type.component.PropertyValue;
+import org.fabric3.api.model.type.component.PropertyMany;
+import org.fabric3.api.model.type.component.PropertyValue;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
