@@ -81,7 +81,7 @@ import org.w3c.dom.Document;
  * The default implementation of a fabric connection.
  */
 public class DefaultFabric implements Fabric {
-    private static final URI SYNTHETIC_CONTRIBUTION =  URI.create("F3SyntheticContribution");
+    private static final URI SYNTHETIC_CONTRIBUTION = URI.create("F3SyntheticContribution");
     private static final File SYNTHETIC_DIRECTORY = new File("notfound");
     private static final String SYSTEM_COMPOSITE = "META-INF/system.composite";
     private static final URI DOMAIN_URI = URI.create("fabric3://runtime/NodeDomain");
@@ -187,7 +187,7 @@ public class DefaultFabric implements Fabric {
 
             URL systemComposite = getClass().getClassLoader().getResource(SYSTEM_COMPOSITE);
 
-            boolean onlyCore = profiles.isEmpty() && profileLocations.isEmpty() && extensionLocations.isEmpty();
+            boolean onlyCore = profiles.isEmpty() && profileLocations.isEmpty() && extensionLocations.isEmpty() && extensions.isEmpty();
             List<ContributionSource> extensionSources = scanExtensions(onlyCore);
             if (!onlyCore) {
                 addConfiguredExtensions(extensionSources);
@@ -208,9 +208,6 @@ public class DefaultFabric implements Fabric {
             coordinator.load();
             coordinator.joinDomain();
 
-//            MetaDataStore metaDataStore = runtime.getComponent(MetaDataStore.class);
-//            Contribution contribution = new Contribution(SYNTHETIC_CONTRIBUTION);
-//            metaDataStore.store(contribution);
             state = State.RUNNING;
             return this;
         } catch (RuntimeException e) {
@@ -295,7 +292,6 @@ public class DefaultFabric implements Fabric {
             }
         }
     }
-
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void createDirectories() throws FabricException {

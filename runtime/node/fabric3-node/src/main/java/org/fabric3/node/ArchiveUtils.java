@@ -140,14 +140,14 @@ public class ArchiveUtils {
     public static  File getExtensionArchive(String extension, File directory) {
         File profileDirectory = new File(directory, extension);
         if (!profileDirectory.exists()) {
-            throw new FabricException("Profile not found in repository: " + extension);
+            throw new FabricException("Extension archive not found in repository: " + extension);
         }
         File profileArchiveDirectory = new File(profileDirectory, Names.VERSION);
         if (!profileArchiveDirectory.exists()) {
             profileArchiveDirectory = new File(profileDirectory, Names.VERSION + "-SNAPSHOT");
         }
         if (!profileArchiveDirectory.exists()) {
-            throw new FabricException("Profile version not found in repository: " + extension);
+            throw new FabricException("Extension archive version not found in repository: " + extension);
         }
         File profileArchive = new File(profileArchiveDirectory, extension + "-" + Names.VERSION + ".jar");
         if (!profileArchive.exists()) {
