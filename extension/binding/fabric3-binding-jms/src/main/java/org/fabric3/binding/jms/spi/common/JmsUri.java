@@ -43,11 +43,8 @@
  */
 package org.fabric3.binding.jms.spi.common;
 
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.regex.Pattern;
 
 /**
  *

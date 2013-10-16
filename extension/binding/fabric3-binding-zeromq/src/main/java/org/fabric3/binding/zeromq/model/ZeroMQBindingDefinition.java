@@ -37,11 +37,12 @@
  */
 package org.fabric3.binding.zeromq.model;
 
-import java.net.URI;
 import javax.xml.namespace.QName;
+import java.net.URI;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.api.Namespaces;
 import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 
 /**
  * A ZeroMQ binding configuration set on a channel, reference, or composite.
@@ -49,7 +50,7 @@ import org.fabric3.api.model.type.component.BindingDefinition;
 public class ZeroMQBindingDefinition extends BindingDefinition {
     private static final long serialVersionUID = 4154636613386389578L;
 
-    public static final QName BINDING_0MQ = new QName(org.fabric3.api.Namespaces.F3, "binding.zeromq");
+    public static final QName BINDING_0MQ = new QName(Namespaces.F3, "binding.zeromq");
 
     private ZeroMQMetadata metadata;
     private URI targetUri;
