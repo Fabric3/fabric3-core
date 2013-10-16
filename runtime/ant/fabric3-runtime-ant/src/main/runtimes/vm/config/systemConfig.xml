@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="urn:fabric3.org">
-    <web.server>
-        <http port="8181"/>
-    </web.server>
-</config>
