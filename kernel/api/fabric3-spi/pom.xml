@@ -39,7 +39,7 @@
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-model</artifactId>
+            <artifactId>fabric3-model-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 

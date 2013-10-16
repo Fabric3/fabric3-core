@@ -54,7 +54,7 @@
                 <include>org.codehaus.fabric3.spec:sca-api</include>
                 <include>org.codehaus.fabric3:fabric3-api</include>
                 <include>org.codehaus.fabric3:node-api</include>
-                <include>org.codehaus.fabric3:fabric3-model</include>
+                <include>org.codehaus.fabric3:fabric3-model-api</include>
                 <include>org.codehaus.fabric3:fabric3-host-api</include>
                 <include>${servlet.groupId}:${servlet.artifactId}</include>
             </includes>

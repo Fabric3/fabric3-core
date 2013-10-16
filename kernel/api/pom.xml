@@ -27,7 +27,7 @@
     <modules>
         <module>fabric3-api</module>
         <module>fabric3-host-api</module>
-        <module>fabric3-model</module>
+        <module>fabric3-model-api</module>
         <module>fabric3-spi</module>
         <module>fabric3-node-api</module>
     </modules>

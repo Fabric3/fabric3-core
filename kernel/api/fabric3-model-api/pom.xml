@@ -18,7 +18,7 @@
         <version>2.5.0-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
-    <artifactId>fabric3-model</artifactId>
+    <artifactId>fabric3-model-api</artifactId>
     <name>Fabric3 Assembly Model</name>
     <description>The in-memory model of an assembly</description>
     <packaging>bundle</packaging>
