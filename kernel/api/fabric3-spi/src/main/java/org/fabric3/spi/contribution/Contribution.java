@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
-import org.fabric3.host.stream.Source;
+import org.fabric3.api.host.stream.Source;
 
 /**
  * The base representation of a deployed contribution

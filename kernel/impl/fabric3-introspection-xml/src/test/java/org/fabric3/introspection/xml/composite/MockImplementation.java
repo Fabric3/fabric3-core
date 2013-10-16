@@ -39,7 +39,7 @@ package org.fabric3.introspection.xml.composite;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 

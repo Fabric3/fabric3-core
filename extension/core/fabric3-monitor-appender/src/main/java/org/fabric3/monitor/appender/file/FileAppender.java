@@ -44,7 +44,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import org.fabric3.host.util.FileHelper;
+import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.monitor.spi.appender.Appender;
 
 /**

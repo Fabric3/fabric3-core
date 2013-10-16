@@ -37,7 +37,7 @@
 */
 package org.fabric3.node.nonmanaged;
 
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.spi.container.builder.WiringException;

@@ -50,7 +50,7 @@ import org.oasisopen.sca.Constants;
 import org.w3c.dom.Element;
 
 import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;

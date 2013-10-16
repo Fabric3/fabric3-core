@@ -46,7 +46,7 @@ package org.fabric3.spi.container.component;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
-import org.fabric3.host.monitor.Monitorable;
+import org.fabric3.api.host.monitor.Monitorable;
 
 /**
  * The runtime instantiation of an SCA component

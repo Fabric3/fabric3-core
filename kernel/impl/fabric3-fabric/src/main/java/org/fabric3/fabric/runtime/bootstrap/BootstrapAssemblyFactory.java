@@ -111,11 +111,11 @@ import org.fabric3.fabric.deployment.instantiator.promotion.PromotionResolutionS
 import org.fabric3.fabric.deployment.instantiator.wire.AutowireInstantiatorImpl;
 import org.fabric3.fabric.deployment.instantiator.wire.WireInstantiatorImpl;
 import org.fabric3.fabric.xml.XMLFactoryImpl;
-import org.fabric3.host.domain.Domain;
-import org.fabric3.host.monitor.MonitorCreationException;
-import org.fabric3.host.monitor.MonitorProxyService;
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.api.host.domain.Domain;
+import org.fabric3.api.host.monitor.MonitorCreationException;
+import org.fabric3.api.host.monitor.MonitorProxyService;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.implementation.pojo.builder.ArrayBuilder;
 import org.fabric3.implementation.pojo.builder.ArrayBuilderImpl;
 import org.fabric3.implementation.pojo.builder.CollectionBuilder;

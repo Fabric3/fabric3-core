@@ -45,12 +45,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.contribution.FileContributionSource;
-import org.fabric3.host.contribution.SyntheticContributionSource;
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.runtime.ScanException;
-import org.fabric3.host.runtime.ScanResult;
+import org.fabric3.api.host.contribution.ContributionSource;
+import org.fabric3.api.host.contribution.FileContributionSource;
+import org.fabric3.api.host.contribution.SyntheticContributionSource;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.ScanException;
+import org.fabric3.api.host.runtime.ScanResult;
 
 /**
  * Scans a repository for extension and user contributions.

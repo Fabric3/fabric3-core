@@ -45,7 +45,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 
 /**
  *

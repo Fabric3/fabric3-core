@@ -8,7 +8,7 @@ import javax.wsdl.xml.WSDLLocator;
 
 import org.xml.sax.InputSource;
 
-import org.fabric3.host.stream.Source;
+import org.fabric3.api.host.stream.Source;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**

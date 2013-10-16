@@ -54,7 +54,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.Role;
-import org.fabric3.host.runtime.ParseException;
+import org.fabric3.api.host.runtime.ParseException;
 
 /**
  * Delegates to a runtime extension to perform JMX authentication.

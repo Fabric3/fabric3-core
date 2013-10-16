@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.CompositeImplementation;

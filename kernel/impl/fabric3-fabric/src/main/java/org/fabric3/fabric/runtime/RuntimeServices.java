@@ -39,10 +39,10 @@ package org.fabric3.fabric.runtime;
 
 import javax.management.MBeanServer;
 
-import org.fabric3.host.monitor.DestinationRouter;
-import org.fabric3.host.monitor.MonitorProxyService;
-import org.fabric3.host.repository.Repository;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.monitor.DestinationRouter;
+import org.fabric3.api.host.monitor.MonitorProxyService;
+import org.fabric3.api.host.repository.Repository;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ComponentManager;

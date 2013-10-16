@@ -50,8 +50,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.host.contribution.InstallException;
-import org.fabric3.host.stream.Source;
+import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.stream.Source;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceProcessor;

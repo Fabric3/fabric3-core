@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.deployment.generator.binding;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * General error denoting an exception configuring a binding.

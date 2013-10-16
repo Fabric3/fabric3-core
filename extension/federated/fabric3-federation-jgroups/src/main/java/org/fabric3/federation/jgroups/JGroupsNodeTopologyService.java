@@ -52,7 +52,7 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.node.command.DomainSnapshotCommand;
 import org.fabric3.federation.node.command.DomainSnapshotResponse;
 import org.fabric3.federation.node.merge.DomainMergeService;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.command.Response;

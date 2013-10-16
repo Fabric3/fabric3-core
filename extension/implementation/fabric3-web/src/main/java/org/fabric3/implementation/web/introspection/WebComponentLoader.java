@@ -53,8 +53,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
+import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Property;

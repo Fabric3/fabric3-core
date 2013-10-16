@@ -48,8 +48,8 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.host.monitor.DestinationRouter;
-import org.fabric3.host.monitor.MessageFormatter;
+import org.fabric3.api.host.monitor.DestinationRouter;
+import org.fabric3.api.host.monitor.MessageFormatter;
 import weblogic.logging.LoggingHelper;
 import weblogic.logging.WLLevel;
 

@@ -3,8 +3,8 @@ package org.fabric3.implementation.spring.introspection;
 import java.net.URL;
 import java.util.List;
 
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
+import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.host.stream.UrlSource;
 
 /**
  * A Source for multiple related artifacts; used to introspect multiple application contexts.

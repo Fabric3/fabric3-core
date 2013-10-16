@@ -52,7 +52,7 @@ import java.util.List;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
-import org.fabric3.host.domain.DeploymentException;
+import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.command.Response;

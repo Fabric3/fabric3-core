@@ -47,7 +47,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;

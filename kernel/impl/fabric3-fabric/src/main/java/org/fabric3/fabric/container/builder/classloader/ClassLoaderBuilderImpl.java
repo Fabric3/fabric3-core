@@ -55,8 +55,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.container.builder.classloader.ClassLoaderListener;
 import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
@@ -69,7 +69,7 @@ import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderDefinition;
 import org.fabric3.spi.model.physical.PhysicalClassLoaderWireDefinition;
 
-import static org.fabric3.host.Names.HOST_CONTRIBUTION;
+import static org.fabric3.api.host.Names.HOST_CONTRIBUTION;
 
 /**
  * Default implementation of ClassLoaderBuilder.

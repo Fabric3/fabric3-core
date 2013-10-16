@@ -60,7 +60,7 @@ import org.fabric3.binding.jms.spi.common.DestinationDefinition;
 import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.container.builder.component.ConnectionAttachException;
 import org.fabric3.spi.container.builder.component.SourceConnectionAttacher;
 import org.fabric3.spi.container.channel.ChannelConnection;

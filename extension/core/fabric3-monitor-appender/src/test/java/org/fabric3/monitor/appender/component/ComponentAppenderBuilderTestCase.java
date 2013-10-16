@@ -41,7 +41,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.AtomicComponent;

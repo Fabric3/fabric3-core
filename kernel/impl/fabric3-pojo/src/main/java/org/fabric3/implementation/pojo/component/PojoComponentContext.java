@@ -48,7 +48,7 @@ import java.net.URI;
 import java.util.Collection;
 
 import org.fabric3.api.Fabric3ComponentContext;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 

@@ -47,7 +47,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.implementation.pojo.component.PojoComponent;
 import org.fabric3.implementation.pojo.component.PojoComponentContext;
 import org.fabric3.implementation.pojo.component.PojoRequestContext;

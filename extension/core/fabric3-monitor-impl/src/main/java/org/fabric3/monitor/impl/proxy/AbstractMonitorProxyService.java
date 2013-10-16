@@ -43,15 +43,15 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
-import org.fabric3.host.monitor.MonitorCreationException;
-import org.fabric3.host.monitor.MonitorProxyServiceExtension;
-import org.fabric3.host.monitor.Monitorable;
+import org.fabric3.api.host.monitor.MonitorCreationException;
+import org.fabric3.api.host.monitor.MonitorProxyServiceExtension;
+import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 import org.fabric3.spi.monitor.DispatchInfo;
 import org.fabric3.spi.monitor.MonitorUtil;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
-import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
+import static org.fabric3.api.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
 /**
  *

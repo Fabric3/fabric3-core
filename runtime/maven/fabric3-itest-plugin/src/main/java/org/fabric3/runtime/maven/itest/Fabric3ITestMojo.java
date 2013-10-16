@@ -67,19 +67,19 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
-import org.fabric3.host.Names;
-import org.fabric3.host.contribution.ContributionNotFoundException;
-import org.fabric3.host.contribution.ContributionService;
-import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.contribution.FileContributionSource;
-import org.fabric3.host.contribution.InstallException;
-import org.fabric3.host.contribution.StoreException;
-import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.host.domain.Domain;
-import org.fabric3.host.classloader.DelegatingResourceClassLoader;
-import org.fabric3.host.runtime.HiddenPackages;
-import org.fabric3.host.classloader.MaskingClassLoader;
-import org.fabric3.host.util.FileHelper;
+import org.fabric3.api.host.Names;
+import org.fabric3.api.host.contribution.ContributionNotFoundException;
+import org.fabric3.api.host.contribution.ContributionService;
+import org.fabric3.api.host.contribution.ContributionSource;
+import org.fabric3.api.host.contribution.FileContributionSource;
+import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.contribution.StoreException;
+import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.domain.Domain;
+import org.fabric3.api.host.classloader.DelegatingResourceClassLoader;
+import org.fabric3.api.host.runtime.HiddenPackages;
+import org.fabric3.api.host.classloader.MaskingClassLoader;
+import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.runtime.maven.MavenRuntime;
 
 /**

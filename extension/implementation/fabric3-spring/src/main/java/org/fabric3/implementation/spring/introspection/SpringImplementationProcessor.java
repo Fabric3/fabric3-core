@@ -39,7 +39,7 @@ package org.fabric3.implementation.spring.introspection;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.fabric3.host.stream.Source;
+import org.fabric3.api.host.stream.Source;
 import org.fabric3.implementation.spring.model.SpringComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 

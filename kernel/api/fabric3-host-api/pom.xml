@@ -46,7 +46,7 @@ Public License. See the accompanying license file for details.
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Export-Package>org.fabric3.host.*;version=${fabric3.release.version}</Export-Package>
+                        <Export-Package>org.fabric3.api.host.*;version=${fabric3.release.version}</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

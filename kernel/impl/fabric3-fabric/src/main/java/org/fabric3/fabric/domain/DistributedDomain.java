@@ -44,10 +44,10 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.spi.deployment.generator.binding.BindingSelector;
 import org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiator;
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.host.domain.Domain;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.domain.Domain;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.domain.Allocator;
 import org.fabric3.spi.deployment.generator.binding.BindingSelectionException;
 import org.fabric3.spi.contribution.MetaDataStore;

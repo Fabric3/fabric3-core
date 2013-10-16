@@ -46,12 +46,12 @@ import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.contribution.Deployable;
-import org.fabric3.host.domain.CompositeAlreadyDeployedException;
-import org.fabric3.host.domain.DeployableNotFoundException;
-import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.host.contribution.Deployable;
+import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
+import org.fabric3.api.host.domain.DeployableNotFoundException;
+import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;

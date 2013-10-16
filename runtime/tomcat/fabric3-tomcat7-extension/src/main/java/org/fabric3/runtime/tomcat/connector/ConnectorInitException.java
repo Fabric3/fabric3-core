@@ -39,7 +39,7 @@ package org.fabric3.runtime.tomcat.connector;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  *

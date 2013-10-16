@@ -37,7 +37,7 @@
 */
 package org.fabric3.contribution;
 
-import org.fabric3.host.contribution.StoreException;
+import org.fabric3.api.host.contribution.StoreException;
 
 /**
  *

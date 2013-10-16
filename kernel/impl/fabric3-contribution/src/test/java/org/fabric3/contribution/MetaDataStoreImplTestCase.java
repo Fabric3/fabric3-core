@@ -53,7 +53,7 @@ import org.fabric3.contribution.wire.ContributionWireInstantiator;
 import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistryImpl;
 import org.fabric3.contribution.wire.QNameContributionWire;
 import org.fabric3.contribution.wire.QNameWireInstantiator;
-import org.fabric3.host.contribution.Deployable;
+import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;

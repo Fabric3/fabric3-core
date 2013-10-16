@@ -42,9 +42,9 @@ import java.util.List;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.host.contribution.InstallException;
-import org.fabric3.host.contribution.UnsupportedContentTypeException;
-import org.fabric3.host.stream.UrlSource;
+import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.contribution.UnsupportedContentTypeException;
+import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceState;

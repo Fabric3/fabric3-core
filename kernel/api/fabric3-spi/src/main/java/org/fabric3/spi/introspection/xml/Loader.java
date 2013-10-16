@@ -46,7 +46,7 @@ package org.fabric3.spi.introspection.xml;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.host.stream.Source;
+import org.fabric3.api.host.stream.Source;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**

@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.CompensatableCommand;
 

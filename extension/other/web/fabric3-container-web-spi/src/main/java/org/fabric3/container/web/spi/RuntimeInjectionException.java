@@ -37,7 +37,7 @@
 */
 package org.fabric3.container.web.spi;
 
-import org.fabric3.host.Fabric3RuntimeException;
+import org.fabric3.api.host.Fabric3RuntimeException;
 
 /**
  *

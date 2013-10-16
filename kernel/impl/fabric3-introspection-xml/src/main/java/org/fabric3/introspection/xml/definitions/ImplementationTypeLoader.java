@@ -51,7 +51,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.util.Set;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.definitions.ImplementationType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;

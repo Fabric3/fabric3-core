@@ -40,9 +40,9 @@ package org.fabric3.runtime.maven;
 import java.net.URI;
 import java.net.URL;
 
-import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
+import org.fabric3.api.host.contribution.ContributionSource;
+import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.host.stream.UrlSource;
 
 /**
  * A representation of a Maven module contribution.

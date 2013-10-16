@@ -58,7 +58,7 @@ import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
 import org.fabric3.federation.deployment.coordinator.DeploymentCache;
 import org.fabric3.federation.deployment.coordinator.RollbackException;
 import org.fabric3.federation.deployment.coordinator.RollbackService;
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;

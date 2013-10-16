@@ -41,7 +41,7 @@ import java.net.URI;
 
 import org.fabric3.fabric.deployment.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
-import org.fabric3.host.domain.AssemblyException;
+import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.implementation.system.model.SystemImplementation;
 import org.fabric3.implementation.system.singleton.SingletonComponent;
 import org.fabric3.implementation.system.singleton.SingletonImplementation;
@@ -69,7 +69,7 @@ import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.Reference;
-import static org.fabric3.host.Names.BOOT_CONTRIBUTION;
+import static org.fabric3.api.host.Names.BOOT_CONTRIBUTION;
 
 /**
  * Implementation that synthesizes a singleton component from an existing object instance.

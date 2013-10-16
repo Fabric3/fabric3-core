@@ -45,7 +45,7 @@ import java.util.jar.Manifest;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.host.Version;
+import org.fabric3.api.host.Version;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.manifest.JarManifestHandler;
 import org.fabric3.spi.contribution.manifest.JavaExport;

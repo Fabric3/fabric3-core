@@ -37,7 +37,7 @@
 */
 package org.fabric3.contribution;
 
-import org.fabric3.host.contribution.InstallException;
+import org.fabric3.api.host.contribution.InstallException;
 
 /**
  * Denots an error loading a contribution.

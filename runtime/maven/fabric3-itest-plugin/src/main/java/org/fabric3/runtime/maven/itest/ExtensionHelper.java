@@ -51,8 +51,8 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 
-import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.contribution.FileContributionSource;
+import org.fabric3.api.host.contribution.ContributionSource;
+import org.fabric3.api.host.contribution.FileContributionSource;
 
 /**
  *

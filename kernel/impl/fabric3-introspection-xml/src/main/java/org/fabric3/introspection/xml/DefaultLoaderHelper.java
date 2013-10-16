@@ -69,7 +69,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.PolicyAware;
 import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.Target;

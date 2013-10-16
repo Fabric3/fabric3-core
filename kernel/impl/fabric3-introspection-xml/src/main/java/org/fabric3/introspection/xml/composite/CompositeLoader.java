@@ -52,7 +52,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.host.contribution.ArtifactValidationFailure;
+import org.fabric3.api.host.contribution.ArtifactValidationFailure;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.AbstractReference;

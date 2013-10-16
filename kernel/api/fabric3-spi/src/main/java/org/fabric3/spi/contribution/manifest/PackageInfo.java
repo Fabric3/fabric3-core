@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.contribution.manifest;
 
-import org.fabric3.host.Version;
+import org.fabric3.api.host.Version;
 import org.fabric3.spi.model.version.Versionable;
 
 /**

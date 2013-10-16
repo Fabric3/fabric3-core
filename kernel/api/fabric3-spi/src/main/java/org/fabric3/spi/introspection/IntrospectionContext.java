@@ -48,7 +48,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.api.host.failure.ValidationFailure;
 
 /**
  * Context for the current introspection session.

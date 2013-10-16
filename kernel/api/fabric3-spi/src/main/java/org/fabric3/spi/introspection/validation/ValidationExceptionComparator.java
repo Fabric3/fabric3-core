@@ -39,8 +39,8 @@ package org.fabric3.spi.introspection.validation;
 
 import java.util.Comparator;
 
-import org.fabric3.host.contribution.ArtifactValidationFailure;
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.api.host.contribution.ArtifactValidationFailure;
+import org.fabric3.api.host.failure.ValidationFailure;
 
 /**
  * Orders ValidationFailures. ArtifactValidationFailures are ordered after other types.

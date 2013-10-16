@@ -41,7 +41,7 @@ import java.net.URI;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 import org.fabric3.resource.model.SystemSourcedResourceReference;
 import org.fabric3.resource.provision.SystemSourcedTargetDefinition;
 import org.fabric3.spi.deployment.generator.GenerationException;

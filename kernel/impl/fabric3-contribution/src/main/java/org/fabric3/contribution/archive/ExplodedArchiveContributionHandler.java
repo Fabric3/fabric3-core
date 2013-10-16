@@ -44,10 +44,10 @@ import java.net.URI;
 import java.net.URL;
 import java.util.regex.Pattern;
 
-import org.fabric3.host.contribution.InstallException;
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
-import org.fabric3.host.util.FileHelper;
+import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.host.stream.UrlSource;
+import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;

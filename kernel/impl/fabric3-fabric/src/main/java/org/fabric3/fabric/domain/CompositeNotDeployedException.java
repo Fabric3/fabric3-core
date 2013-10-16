@@ -37,7 +37,7 @@
 */
 package org.fabric3.fabric.domain;
 
-import org.fabric3.host.domain.DeploymentException;
+import org.fabric3.api.host.domain.DeploymentException;
 
 /**
  *

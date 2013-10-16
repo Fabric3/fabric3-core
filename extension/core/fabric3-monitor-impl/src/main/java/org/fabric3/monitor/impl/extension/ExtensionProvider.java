@@ -59,7 +59,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
-import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
+import static org.fabric3.api.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
 /**
  * Instantiates and (un)registers default monitor destinations with the destination registry.

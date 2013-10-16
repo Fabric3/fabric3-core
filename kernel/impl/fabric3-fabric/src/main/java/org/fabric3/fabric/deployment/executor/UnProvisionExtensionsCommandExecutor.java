@@ -46,12 +46,12 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.deployment.command.UnProvisionExtensionsCommand;
-import org.fabric3.host.contribution.ContributionNotFoundException;
-import org.fabric3.host.contribution.ContributionService;
-import org.fabric3.host.contribution.RemoveException;
-import org.fabric3.host.contribution.UninstallException;
-import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.host.domain.Domain;
+import org.fabric3.api.host.contribution.ContributionNotFoundException;
+import org.fabric3.api.host.contribution.ContributionService;
+import org.fabric3.api.host.contribution.RemoveException;
+import org.fabric3.api.host.contribution.UninstallException;
+import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.domain.Domain;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.command.CommandExecutor;

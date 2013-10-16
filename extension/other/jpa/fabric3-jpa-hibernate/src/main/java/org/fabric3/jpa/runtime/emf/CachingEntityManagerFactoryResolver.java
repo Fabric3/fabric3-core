@@ -45,7 +45,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.F3TransactionManagerLookup;
 import org.fabric3.jpa.api.JpaResolutionException;

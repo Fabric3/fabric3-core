@@ -45,8 +45,8 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.host.Names;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.Names;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;

@@ -43,8 +43,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.deployment.generator.binding.BindingMatchResult;
 import org.fabric3.spi.deployment.generator.binding.BindingProvider;
 import org.fabric3.spi.deployment.generator.binding.BindingSelectionException;
@@ -64,7 +64,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
-import static org.fabric3.host.Names.LOCAL_ZONE;
+import static org.fabric3.api.host.Names.LOCAL_ZONE;
 
 /**
  * Selects a binding provider by delegating to a BindingSelectionStrategy configured for the domain. For each wire, if a remote service has an explicit binding,

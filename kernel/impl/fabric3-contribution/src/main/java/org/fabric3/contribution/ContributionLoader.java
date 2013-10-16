@@ -37,8 +37,8 @@
 */
 package org.fabric3.contribution;
 
-import org.fabric3.host.contribution.ContributionInUseException;
-import org.fabric3.host.contribution.UnresolvedImportException;
+import org.fabric3.api.host.contribution.ContributionInUseException;
+import org.fabric3.api.host.contribution.UnresolvedImportException;
 import org.fabric3.spi.contribution.Contribution;
 
 /**

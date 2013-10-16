@@ -70,7 +70,7 @@ import org.fabric3.binding.zeromq.runtime.message.OneWaySender;
 import org.fabric3.binding.zeromq.runtime.message.Receiver;
 import org.fabric3.binding.zeromq.runtime.message.RequestReplySender;
 import org.fabric3.binding.zeromq.runtime.message.Sender;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;

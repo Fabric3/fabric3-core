@@ -46,9 +46,8 @@ import java.net.URL;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.fabric.repository.FSArtifactCache;
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.util.FileHelper;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.host.util.FileHelper;
 
 /**
  *

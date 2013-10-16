@@ -52,7 +52,7 @@ import org.fabric3.federation.deployment.command.ControllerAvailableCommand;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.Response;
 import org.fabric3.spi.command.ResponseCommand;

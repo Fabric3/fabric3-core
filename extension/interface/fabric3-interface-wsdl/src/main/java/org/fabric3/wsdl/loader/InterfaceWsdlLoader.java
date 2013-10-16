@@ -44,7 +44,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.fabric3.host.contribution.StoreException;
+import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;

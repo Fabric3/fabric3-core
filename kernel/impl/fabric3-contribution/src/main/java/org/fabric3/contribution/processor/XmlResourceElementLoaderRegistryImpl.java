@@ -43,7 +43,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.host.contribution.InstallException;
+import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.xml.XmlResourceElementLoader;
 import org.fabric3.spi.contribution.xml.XmlResourceElementLoaderRegistry;

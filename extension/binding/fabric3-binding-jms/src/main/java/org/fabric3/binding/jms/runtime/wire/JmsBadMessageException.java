@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.jms.runtime.wire;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Denotes a message the JMS binding cannot process and therefore should not be redelivered.

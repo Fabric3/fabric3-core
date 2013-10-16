@@ -45,8 +45,8 @@ package org.fabric3.runtime.maven.itest;
 
 import org.apache.maven.plugin.logging.Log;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.host.monitor.DestinationRouter;
-import org.fabric3.host.monitor.MessageFormatter;
+import org.fabric3.api.host.monitor.DestinationRouter;
+import org.fabric3.api.host.monitor.MessageFormatter;
 
 /**
  * Forwards monitor events to the Maven logger.

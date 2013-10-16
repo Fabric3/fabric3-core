@@ -49,17 +49,17 @@ import java.util.List;
 
 import org.fabric3.fabric.runtime.bootstrap.RepositoryScanner;
 import org.fabric3.fabric.runtime.bootstrap.SystemConfigLoader;
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.runtime.BootConfiguration;
-import org.fabric3.host.runtime.BootstrapService;
-import org.fabric3.host.runtime.Fabric3Runtime;
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.runtime.ParseException;
-import org.fabric3.host.runtime.RuntimeConfiguration;
-import org.fabric3.host.runtime.RuntimeCoordinator;
-import org.fabric3.host.runtime.ScanException;
-import org.fabric3.host.runtime.ScanResult;
-import org.fabric3.host.stream.Source;
+import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.host.runtime.BootConfiguration;
+import org.fabric3.api.host.runtime.BootstrapService;
+import org.fabric3.api.host.runtime.Fabric3Runtime;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.ParseException;
+import org.fabric3.api.host.runtime.RuntimeConfiguration;
+import org.fabric3.api.host.runtime.RuntimeCoordinator;
+import org.fabric3.api.host.runtime.ScanException;
+import org.fabric3.api.host.runtime.ScanResult;
+import org.fabric3.api.host.stream.Source;
 import org.w3c.dom.Document;
 
 /**

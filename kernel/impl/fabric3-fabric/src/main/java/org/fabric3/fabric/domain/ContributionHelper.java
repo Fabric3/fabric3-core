@@ -42,8 +42,8 @@ import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
-import org.fabric3.host.domain.CompositeAlreadyDeployedException;
-import org.fabric3.host.domain.DeploymentException;
+import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
+import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.plan.DeploymentPlan;

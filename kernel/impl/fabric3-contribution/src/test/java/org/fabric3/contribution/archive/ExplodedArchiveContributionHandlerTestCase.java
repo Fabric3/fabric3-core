@@ -45,8 +45,8 @@ import java.util.regex.Pattern;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
+import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;

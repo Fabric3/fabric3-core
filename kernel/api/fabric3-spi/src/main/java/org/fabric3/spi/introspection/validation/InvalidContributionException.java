@@ -42,8 +42,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.host.contribution.ValidationException;
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.api.host.contribution.ValidationException;
+import org.fabric3.api.host.failure.ValidationFailure;
 
 /**
  *

@@ -41,7 +41,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.spi.introspection.validation.ValidationUtils;
 
 /**

@@ -43,7 +43,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.host.Version;
+import org.fabric3.api.host.Version;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
 import org.fabric3.spi.introspection.IntrospectionContext;

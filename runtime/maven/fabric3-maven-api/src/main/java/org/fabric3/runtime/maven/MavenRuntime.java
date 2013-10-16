@@ -48,10 +48,10 @@ import javax.xml.namespace.QName;
 
 import org.apache.maven.surefire.suite.SurefireTestSuite;
 
-import org.fabric3.host.contribution.ContributionException;
-import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.host.runtime.Fabric3Runtime;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.contribution.ContributionException;
+import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.runtime.Fabric3Runtime;
+import org.fabric3.api.host.runtime.HostInfo;
 
 /**
  * API for the Maven runtime. The Maven runtime requires system component of type Map<String, Wire> named "TestWireHolder" that contains wires to

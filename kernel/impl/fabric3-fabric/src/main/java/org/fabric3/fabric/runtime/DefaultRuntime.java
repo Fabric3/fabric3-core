@@ -43,7 +43,7 @@
  */
 package org.fabric3.fabric.runtime;
 
-import org.fabric3.host.runtime.RuntimeConfiguration;
+import org.fabric3.api.host.runtime.RuntimeConfiguration;
 
 /**
  * The default Fabric3Runtime implementation.

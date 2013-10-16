@@ -42,9 +42,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.fabric3.host.Names;
-import org.fabric3.host.Namespaces;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.Names;
+import org.fabric3.api.host.Namespaces;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentReference;
 import org.fabric3.api.model.type.component.Composite;

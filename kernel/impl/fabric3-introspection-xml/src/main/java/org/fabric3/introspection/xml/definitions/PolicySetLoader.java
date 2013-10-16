@@ -52,7 +52,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.definitions.IntentMap;
 import org.fabric3.api.model.type.definitions.IntentQualifier;
 import org.fabric3.api.model.type.definitions.PolicyPhase;

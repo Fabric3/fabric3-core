@@ -40,7 +40,7 @@ package org.fabric3.binding.file.model;
 import javax.xml.namespace.QName;
 
 import org.fabric3.binding.file.common.Strategy;
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.BindingDefinition;
 
 /**

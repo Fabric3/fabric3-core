@@ -37,10 +37,10 @@
 */
 package org.fabric3.monitor.proxy;
 
-import org.fabric3.host.monitor.MonitorCreationException;
-import org.fabric3.host.monitor.MonitorProxyService;
-import org.fabric3.host.monitor.MonitorProxyServiceExtension;
-import org.fabric3.host.monitor.Monitorable;
+import org.fabric3.api.host.monitor.MonitorCreationException;
+import org.fabric3.api.host.monitor.MonitorProxyService;
+import org.fabric3.api.host.monitor.MonitorProxyServiceExtension;
+import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.spi.monitor.MonitorLocator;
 import org.fabric3.spi.monitor.MonitorProxy;
 import org.oasisopen.sca.annotation.Reference;

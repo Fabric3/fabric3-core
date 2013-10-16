@@ -40,7 +40,7 @@ package org.fabric3.implementation.java.runtime;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;

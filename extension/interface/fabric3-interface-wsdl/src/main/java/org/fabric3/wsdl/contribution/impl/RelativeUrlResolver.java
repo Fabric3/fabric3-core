@@ -50,7 +50,7 @@ import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.xml.sax.InputSource;
 
-import org.fabric3.host.util.IOHelper;
+import org.fabric3.api.host.util.IOHelper;
 
 /**
  * Returns an <code>InputSource</code> for an imported schema. Resolution is done by interpreting the <code>schemaLocation</code> attribute to be

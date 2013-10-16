@@ -42,12 +42,12 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.host.monitor.MonitorCreationException;
-import org.fabric3.host.monitor.Monitorable;
+import org.fabric3.api.host.monitor.MonitorCreationException;
+import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 import org.fabric3.spi.monitor.DispatchInfo;
 import org.oasisopen.sca.annotation.Reference;
-import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
+import static org.fabric3.api.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
 /**
  * Performs bytecode generation at runtime to create a monitor proxy.

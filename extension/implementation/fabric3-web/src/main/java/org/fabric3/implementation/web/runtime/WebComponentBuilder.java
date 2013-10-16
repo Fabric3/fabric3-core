@@ -43,7 +43,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.fabric3.container.web.spi.WebApplicationActivator;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.implementation.pojo.spi.proxy.WireProxyService;
 import org.fabric3.implementation.web.provision.WebComponentDefinition;
 import org.fabric3.spi.container.builder.BuilderException;

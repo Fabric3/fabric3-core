@@ -43,7 +43,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.contract.Operation;

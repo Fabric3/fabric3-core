@@ -43,8 +43,8 @@ import java.util.concurrent.TimeUnit;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.timer.provision.TimerData;
 import org.fabric3.implementation.timer.provision.TimerType;

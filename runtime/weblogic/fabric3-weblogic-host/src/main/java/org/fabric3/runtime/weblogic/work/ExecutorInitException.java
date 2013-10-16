@@ -1,6 +1,6 @@
 package org.fabric3.runtime.weblogic.work;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Raised when there is an error initializing the executor service.

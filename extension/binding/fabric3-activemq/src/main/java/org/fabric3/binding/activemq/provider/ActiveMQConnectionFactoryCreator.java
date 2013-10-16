@@ -49,7 +49,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryType;
 import org.fabric3.binding.jms.spi.runtime.provider.ConnectionFactoryCreator;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 
 /**
  * Creates ActiveMQ connection factories on demand.

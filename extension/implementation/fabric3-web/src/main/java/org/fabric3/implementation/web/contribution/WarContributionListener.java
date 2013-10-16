@@ -42,9 +42,9 @@ import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.host.Namespaces;
-import org.fabric3.host.contribution.Deployable;
-import org.fabric3.host.stream.Source;
+import org.fabric3.api.host.Namespaces;
+import org.fabric3.api.host.contribution.Deployable;
+import org.fabric3.api.host.stream.Source;
 import org.fabric3.implementation.web.model.WebComponentType;
 import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.api.model.type.component.ComponentDefinition;

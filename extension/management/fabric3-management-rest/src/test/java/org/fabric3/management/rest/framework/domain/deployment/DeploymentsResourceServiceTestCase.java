@@ -47,10 +47,10 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.host.contribution.Deployable;
-import org.fabric3.host.domain.AssemblyException;
-import org.fabric3.host.failure.AssemblyFailure;
-import org.fabric3.host.domain.Domain;
+import org.fabric3.api.host.contribution.Deployable;
+import org.fabric3.api.host.domain.AssemblyException;
+import org.fabric3.api.host.failure.AssemblyFailure;
+import org.fabric3.api.host.domain.Domain;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.Response;

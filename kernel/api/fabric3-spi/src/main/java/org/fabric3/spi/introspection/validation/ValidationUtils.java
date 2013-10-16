@@ -44,8 +44,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import org.fabric3.host.contribution.ArtifactValidationFailure;
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.api.host.contribution.ArtifactValidationFailure;
+import org.fabric3.api.host.failure.ValidationFailure;
 
 /**
  * Utility methods for outputting validation errors.

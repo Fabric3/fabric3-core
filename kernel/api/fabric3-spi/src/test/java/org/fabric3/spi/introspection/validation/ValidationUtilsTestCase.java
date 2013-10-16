@@ -42,7 +42,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.api.host.failure.ValidationFailure;
 
 /**
  *

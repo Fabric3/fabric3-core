@@ -41,7 +41,7 @@ import javax.xml.namespace.QName;
 
 import org.w3c.dom.Node;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 
 /**
  * Defines Schema-related constants

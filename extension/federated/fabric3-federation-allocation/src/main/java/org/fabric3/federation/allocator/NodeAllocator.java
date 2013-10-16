@@ -37,8 +37,8 @@
 */
 package org.fabric3.federation.allocator;
 
-import org.fabric3.host.Names;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.Names;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.domain.AllocationException;
 import org.fabric3.spi.domain.Allocator;
 import org.fabric3.spi.model.instance.LogicalChannel;

@@ -43,8 +43,8 @@ import java.net.URL;
 import junit.framework.TestCase;
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
+import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 

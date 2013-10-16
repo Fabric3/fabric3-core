@@ -43,13 +43,13 @@ import java.net.URL;
 import java.util.Collections;
 
 import org.fabric3.api.node.Domain;
-import org.fabric3.host.contribution.ContributionNotFoundException;
-import org.fabric3.host.contribution.ContributionService;
-import org.fabric3.host.contribution.InstallException;
-import org.fabric3.host.contribution.RemoveException;
-import org.fabric3.host.contribution.StoreException;
-import org.fabric3.host.contribution.UninstallException;
-import org.fabric3.host.contribution.UrlContributionSource;
+import org.fabric3.api.host.contribution.ContributionNotFoundException;
+import org.fabric3.api.host.contribution.ContributionService;
+import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.contribution.RemoveException;
+import org.fabric3.api.host.contribution.StoreException;
+import org.fabric3.api.host.contribution.UninstallException;
+import org.fabric3.api.host.contribution.UrlContributionSource;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Reference;
@@ -62,13 +62,13 @@ public class NodeDomain implements Domain {
     private ServiceResolver serviceResolver;
     private ChannelResolver channelResolver;
     private ContributionService contributionService;
-    private org.fabric3.host.domain.Domain domain;
+    private org.fabric3.api.host.domain.Domain domain;
 
     public NodeDomain(@Reference Provisioner provisioner,
                       @Reference ServiceResolver serviceResolver,
                       @Reference ChannelResolver channelResolver,
                       @Reference ContributionService contributionService,
-                      @Reference(name = "domain") org.fabric3.host.domain.Domain domain) {
+                      @Reference(name = "domain") org.fabric3.api.host.domain.Domain domain) {
         this.provisioner = provisioner;
         this.serviceResolver = serviceResolver;
         this.channelResolver = channelResolver;
@@ -152,7 +152,7 @@ public class NodeDomain implements Domain {
             throw new ServiceRuntimeException(e);
         } catch (InstallException e) {
             throw new ServiceRuntimeException(e);
-        } catch (org.fabric3.host.domain.DeploymentException e) {
+        } catch (org.fabric3.api.host.domain.DeploymentException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -168,7 +168,7 @@ public class NodeDomain implements Domain {
             throw new ServiceRuntimeException(e);
         } catch (ContributionNotFoundException e) {
             throw new ServiceRuntimeException(e);
-        } catch (org.fabric3.host.domain.DeploymentException e) {
+        } catch (org.fabric3.api.host.domain.DeploymentException e) {
             throw new ServiceRuntimeException(e);
         } catch (UninstallException e) {
             throw new ServiceRuntimeException(e);

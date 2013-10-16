@@ -73,7 +73,7 @@ import org.fabric3.binding.ws.metro.provision.ReferenceEndpointDefinition;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 import org.fabric3.binding.ws.model.WsBindingDefinition;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.definitions.Intent;
 import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;

@@ -37,8 +37,8 @@
 */
 package org.fabric3.spi.model.os;
 
-import org.fabric3.host.Version;
-import org.fabric3.host.os.OperatingSystem;
+import org.fabric3.api.host.Version;
+import org.fabric3.api.host.os.OperatingSystem;
 import org.fabric3.spi.model.version.Versionable;
 
 /**

@@ -47,7 +47,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.host.contribution.InstallException;
+import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.api.model.type.definitions.BindingType;
 import org.fabric3.api.model.type.definitions.ExternalAttachment;

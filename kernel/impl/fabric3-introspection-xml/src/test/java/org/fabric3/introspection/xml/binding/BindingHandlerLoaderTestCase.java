@@ -7,7 +7,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.introspection.xml.MockXMLFactory;
 import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;

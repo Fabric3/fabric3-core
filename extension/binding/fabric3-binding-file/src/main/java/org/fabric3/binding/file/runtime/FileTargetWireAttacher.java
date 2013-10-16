@@ -46,7 +46,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.binding.file.api.ReferenceAdapter;
 import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
 import org.fabric3.binding.file.runtime.sender.FileSystemInterceptor;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;

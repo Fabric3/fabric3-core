@@ -51,7 +51,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.cache.model.CacheSetResourceDefinition;
 import org.fabric3.cache.spi.CacheResourceDefinition;
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;

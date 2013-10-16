@@ -49,7 +49,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 import org.fabric3.api.model.type.component.Autowire;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Implementation;

@@ -37,10 +37,7 @@
 */
 package org.fabric3.binding.jms.loader;
 
-import javax.xml.stream.XMLStreamReader;
-
-import org.fabric3.host.Fabric3Exception;
-import org.fabric3.spi.introspection.xml.XmlValidationFailure;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  *

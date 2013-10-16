@@ -37,7 +37,7 @@
 */
 package org.fabric3.fabric.runtime;
 
-import org.fabric3.host.runtime.InitializationException;
+import org.fabric3.api.host.runtime.InitializationException;
 
 /**
  *

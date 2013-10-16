@@ -56,7 +56,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import sun.security.util.SecurityConstants;
 
-import org.fabric3.host.classloader.DelegatingResourceClassLoader;
+import org.fabric3.api.host.classloader.DelegatingResourceClassLoader;
 
 /**
  * A classloader implementation that supports a multi-parent hierarchy and extension resolution mechanism. Class resolution is performed in the following

@@ -37,7 +37,7 @@
 */
 package org.fabric3.monitor.impl.proxy;
 
-import org.fabric3.host.monitor.Monitorable;
+import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 import org.fabric3.spi.monitor.DispatchInfo;
 

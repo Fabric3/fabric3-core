@@ -40,7 +40,7 @@ package org.fabric3.spi.contribution;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.host.stream.Source;
+import org.fabric3.api.host.stream.Source;
 
 /**
  * Represents a resource in a contribution such as a WSDL document or composite.

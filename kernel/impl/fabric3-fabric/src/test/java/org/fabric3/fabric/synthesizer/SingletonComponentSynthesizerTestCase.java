@@ -48,7 +48,7 @@ import org.fabric3.fabric.deployment.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.deployment.instantiator.component.AtomicComponentInstantiatorImpl;
 import org.fabric3.fabric.domain.LogicalComponentManagerImpl;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.spi.container.component.ComponentManager;

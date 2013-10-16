@@ -37,7 +37,7 @@
 */
 package org.fabric3.runtime.weblogic.servlet;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Thrown when an error initializing the WebLogic servlet host is encountered.

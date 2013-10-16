@@ -37,7 +37,7 @@
 */
 package org.fabric3.runtime.weblogic.boot;
 
-import org.fabric3.host.runtime.HiddenPackages;
+import org.fabric3.api.host.runtime.HiddenPackages;
 
 /**
  *

@@ -39,7 +39,7 @@ import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.runtime.ParseException;
+import org.fabric3.api.host.runtime.ParseException;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;

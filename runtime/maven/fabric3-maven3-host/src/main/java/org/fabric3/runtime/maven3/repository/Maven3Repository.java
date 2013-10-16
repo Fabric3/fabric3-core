@@ -66,8 +66,8 @@ import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 
-import org.fabric3.host.repository.Repository;
-import org.fabric3.host.repository.RepositoryException;
+import org.fabric3.api.host.repository.Repository;
+import org.fabric3.api.host.repository.RepositoryException;
 
 /**
  * A Repository implementation that delegates to a set of local and remote Maven 3 repositories.

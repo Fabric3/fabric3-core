@@ -44,9 +44,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.host.contribution.InstallException;
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.contribution.UnsupportedContentTypeException;
+import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.host.contribution.UnsupportedContentTypeException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionProcessor;
 import org.fabric3.spi.contribution.ProcessorRegistry;

@@ -41,7 +41,7 @@ import java.net.URI;
 
 import org.apache.maven.surefire.suite.SurefireTestSuite;
 
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 
 /**
  * Creates a Surefire test suite to run as a set of integration tests.

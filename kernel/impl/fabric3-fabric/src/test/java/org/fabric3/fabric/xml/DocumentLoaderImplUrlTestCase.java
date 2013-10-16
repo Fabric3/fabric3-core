@@ -43,7 +43,7 @@ import java.io.File;
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
 
-import org.fabric3.host.util.FileHelper;
+import org.fabric3.api.host.util.FileHelper;
 
 /**
  *

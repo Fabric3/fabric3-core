@@ -39,7 +39,7 @@ package org.fabric3.implementation.timer.model;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.implementation.timer.provision.TimerData;
 

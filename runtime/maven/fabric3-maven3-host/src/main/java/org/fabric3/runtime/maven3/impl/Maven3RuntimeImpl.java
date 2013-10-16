@@ -49,14 +49,14 @@ import java.net.URL;
 
 import org.apache.maven.surefire.suite.SurefireTestSuite;
 import org.fabric3.fabric.runtime.AbstractRuntime;
-import org.fabric3.host.contribution.ContributionException;
-import org.fabric3.host.contribution.ContributionService;
-import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.host.domain.Domain;
-import org.fabric3.host.repository.Repository;
-import org.fabric3.host.repository.RepositoryException;
-import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.runtime.RuntimeConfiguration;
+import org.fabric3.api.host.contribution.ContributionException;
+import org.fabric3.api.host.contribution.ContributionService;
+import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.domain.Domain;
+import org.fabric3.api.host.repository.Repository;
+import org.fabric3.api.host.repository.RepositoryException;
+import org.fabric3.api.host.runtime.InitializationException;
+import org.fabric3.api.host.runtime.RuntimeConfiguration;
 import org.fabric3.runtime.maven.ContextStartException;
 import org.fabric3.runtime.maven.MavenRuntime;
 import org.fabric3.runtime.maven.ModuleContributionSource;
@@ -64,8 +64,8 @@ import org.fabric3.runtime.maven.TestSuiteFactory;
 import org.fabric3.runtime.maven3.repository.Maven3Repository;
 import org.fabric3.spi.container.component.ComponentException;
 import org.fabric3.spi.container.invocation.WorkContextCache;
-import static org.fabric3.host.Names.APPLICATION_DOMAIN_URI;
-import static org.fabric3.host.Names.CONTRIBUTION_SERVICE_URI;
+import static org.fabric3.api.host.Names.APPLICATION_DOMAIN_URI;
+import static org.fabric3.api.host.Names.CONTRIBUTION_SERVICE_URI;
 
 /**
  * Default Maven runtime implementation.

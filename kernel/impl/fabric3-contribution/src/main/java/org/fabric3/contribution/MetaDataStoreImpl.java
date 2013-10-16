@@ -51,10 +51,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.contribution.wire.ContributionWireInstantiatorRegistry;
-import org.fabric3.host.Names;
-import org.fabric3.host.contribution.ContributionException;
-import org.fabric3.host.contribution.StoreException;
-import org.fabric3.host.contribution.UnresolvedImportException;
+import org.fabric3.api.host.Names;
+import org.fabric3.api.host.contribution.ContributionException;
+import org.fabric3.api.host.contribution.StoreException;
+import org.fabric3.api.host.contribution.UnresolvedImportException;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;

@@ -55,8 +55,8 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.w3c.dom.Element;
 
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
+import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.wsdl.contribution.impl.SourceWsdlLocator;

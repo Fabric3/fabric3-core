@@ -48,7 +48,7 @@ import java.io.OutputStream;
 
 import org.fabric3.binding.file.api.InvalidDataException;
 import org.fabric3.binding.file.api.ServiceAdapter;
-import org.fabric3.host.util.IOHelper;
+import org.fabric3.api.host.util.IOHelper;
 
 /**
  * A {@link ServiceAdapter} implementation that passes a DataHandler to the target service.

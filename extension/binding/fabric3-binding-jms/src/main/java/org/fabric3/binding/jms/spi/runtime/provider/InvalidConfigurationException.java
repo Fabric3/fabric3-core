@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.jms.spi.runtime.provider;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Denotes an invalid connection factory configuration.

@@ -37,7 +37,7 @@
 */
 package org.fabric3.wsdl.contribution.impl;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.api.host.failure.ValidationFailure;
 
 /**
  *

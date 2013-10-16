@@ -45,7 +45,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.xml.XMLFactory;
 

@@ -43,7 +43,7 @@
  */
 package org.fabric3.spi.container.builder;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * The root exception for the builder package. Builder exceptions denote a non-recoverable failure.

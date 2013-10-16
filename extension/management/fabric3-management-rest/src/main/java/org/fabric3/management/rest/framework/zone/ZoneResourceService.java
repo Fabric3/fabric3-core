@@ -53,7 +53,7 @@ import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.Link;
 import org.fabric3.management.rest.model.Resource;

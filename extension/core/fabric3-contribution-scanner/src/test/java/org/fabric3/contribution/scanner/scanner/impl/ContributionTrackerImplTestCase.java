@@ -44,7 +44,7 @@ import org.easymock.EasyMock;
 
 import org.fabric3.contribution.scanner.impl.ContributionTrackerImpl;
 import org.fabric3.contribution.scanner.impl.ContributionTrackerMonitor;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 
 /**
  *

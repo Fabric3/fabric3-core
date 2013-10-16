@@ -40,7 +40,7 @@ package org.fabric3.fabric.deployment.instantiator.wire;
 import java.net.URI;
 import java.util.Collections;
 
-import org.fabric3.host.failure.AssemblyFailure;
+import org.fabric3.api.host.failure.AssemblyFailure;
 import org.fabric3.spi.model.instance.LogicalReference;
 
 public class KeyNotFound extends AssemblyFailure {

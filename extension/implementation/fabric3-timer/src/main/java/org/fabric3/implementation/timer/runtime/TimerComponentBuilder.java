@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.implementation.pojo.builder.PojoComponentBuilder;
 import org.fabric3.implementation.pojo.builder.PropertyObjectFactoryBuilder;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;

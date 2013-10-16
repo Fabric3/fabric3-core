@@ -40,10 +40,10 @@ package org.fabric3.node.domain;
 import javax.xml.namespace.QName;
 import java.util.List;
 
-import org.fabric3.host.Names;
-import org.fabric3.host.Namespaces;
-import org.fabric3.host.domain.Domain;
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.api.host.Names;
+import org.fabric3.api.host.Namespaces;
+import org.fabric3.api.host.domain.Domain;
+import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.model.type.builder.ComponentDefinitionBuilder;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
@@ -109,7 +109,7 @@ public class ProvisionerImpl implements Provisioner {
             wrapper.add(definition);
 
             domain.include(wrapper, false);
-        } catch (org.fabric3.host.domain.DeploymentException e) {
+        } catch (org.fabric3.api.host.domain.DeploymentException e) {
             throw new DeploymentException(e);
         }
     }
@@ -136,7 +136,7 @@ public class ProvisionerImpl implements Provisioner {
             Contribution contribution = resource.getContribution();
             contribution.getResources().remove(resource);
 
-        } catch (org.fabric3.host.domain.DeploymentException e) {
+        } catch (org.fabric3.api.host.domain.DeploymentException e) {
             throw new DeploymentException(e);
         }
     }

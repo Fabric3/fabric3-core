@@ -33,7 +33,7 @@ package org.fabric3.binding.zeromq.runtime.context;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;

@@ -49,7 +49,7 @@ import org.fabric3.binding.rs.model.RsBindingDefinition;
 import org.fabric3.binding.rs.provision.AuthenticationType;
 import org.fabric3.binding.rs.provision.RsSourceDefinition;
 import org.fabric3.binding.rs.provision.RsTargetDefinition;
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;

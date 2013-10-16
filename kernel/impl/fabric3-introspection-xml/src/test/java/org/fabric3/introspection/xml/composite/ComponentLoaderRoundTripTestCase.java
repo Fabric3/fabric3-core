@@ -50,7 +50,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.MockXMLFactory;

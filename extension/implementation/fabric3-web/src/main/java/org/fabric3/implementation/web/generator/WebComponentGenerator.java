@@ -46,7 +46,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.implementation.web.model.WebComponentType;
 import org.fabric3.implementation.web.model.WebImplementation;
 import org.fabric3.implementation.web.provision.WebComponentDefinition;

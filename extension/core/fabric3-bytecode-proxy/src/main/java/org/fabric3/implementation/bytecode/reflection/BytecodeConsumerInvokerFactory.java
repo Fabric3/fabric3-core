@@ -44,7 +44,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ConsumerInvokerFactory;
 import org.fabric3.implementation.pojo.spi.reflection.ServiceInvoker;

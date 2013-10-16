@@ -51,8 +51,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.fabric3.api.node.FabricException;
-import org.fabric3.host.Names;
-import org.fabric3.host.util.IOHelper;
+import org.fabric3.api.host.Names;
+import org.fabric3.api.host.util.IOHelper;
 
 /**
  * Methods for performing operations on JAR files.

@@ -48,8 +48,8 @@ import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.container.component.ScopedComponent;
 import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 

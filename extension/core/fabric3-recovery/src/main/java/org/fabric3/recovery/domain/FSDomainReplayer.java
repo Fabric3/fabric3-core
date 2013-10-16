@@ -59,11 +59,11 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.Namespaces;
-import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.host.domain.Domain;
-import org.fabric3.host.domain.DomainJournal;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.Namespaces;
+import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.domain.Domain;
+import org.fabric3.api.host.domain.DomainJournal;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.runtime.event.DomainRecover;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;

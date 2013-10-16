@@ -53,7 +53,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.host.stream.Source;
+import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.spi.contribution.MetaDataStore;

@@ -46,7 +46,7 @@ import java.util.Map;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.deployment.generator.GenerationType;
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;

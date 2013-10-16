@@ -46,7 +46,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderUtil;

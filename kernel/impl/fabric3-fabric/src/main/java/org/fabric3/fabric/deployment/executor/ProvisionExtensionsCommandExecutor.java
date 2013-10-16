@@ -47,12 +47,12 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.deployment.command.ProvisionExtensionsCommand;
-import org.fabric3.host.contribution.ContributionException;
-import org.fabric3.host.contribution.ContributionService;
-import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.contribution.FileContributionSource;
-import org.fabric3.host.domain.DeploymentException;
-import org.fabric3.host.domain.Domain;
+import org.fabric3.api.host.contribution.ContributionException;
+import org.fabric3.api.host.contribution.ContributionService;
+import org.fabric3.api.host.contribution.ContributionSource;
+import org.fabric3.api.host.contribution.FileContributionSource;
+import org.fabric3.api.host.domain.DeploymentException;
+import org.fabric3.api.host.domain.Domain;
 import org.fabric3.spi.contribution.ContributionResolver;
 import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.command.CommandExecutor;

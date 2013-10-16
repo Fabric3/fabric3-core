@@ -50,7 +50,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.host.contribution.StoreException;
+import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;

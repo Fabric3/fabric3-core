@@ -39,8 +39,8 @@ package org.fabric3.monitor.runtime;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.host.monitor.MonitorCreationException;
-import org.fabric3.host.monitor.MonitorProxyService;
+import org.fabric3.api.host.monitor.MonitorCreationException;
+import org.fabric3.api.host.monitor.MonitorProxyService;
 import org.fabric3.monitor.provision.MonitorTargetDefinition;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.TargetWireAttacher;

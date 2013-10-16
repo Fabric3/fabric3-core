@@ -41,7 +41,7 @@ package org.fabric3.implementation.bytecode.proxy.channel;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 import org.fabric3.implementation.bytecode.proxy.common.ProxyFactory;
 import org.fabric3.implementation.pojo.spi.proxy.ChannelProxyServiceExtension;
 import org.fabric3.implementation.pojo.spi.proxy.ProxyCreationException;

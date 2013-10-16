@@ -45,7 +45,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.monitor.impl.model.type.DefaultMonitorDestinationDefinition;
 import org.fabric3.monitor.spi.model.type.AppenderDefinition;

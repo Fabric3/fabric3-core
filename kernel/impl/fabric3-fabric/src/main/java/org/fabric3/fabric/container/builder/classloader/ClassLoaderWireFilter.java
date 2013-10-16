@@ -39,7 +39,7 @@ package org.fabric3.fabric.container.builder.classloader;
 
 import java.net.URL;
 
-import org.fabric3.host.classloader.DelegatingResourceClassLoader;
+import org.fabric3.api.host.classloader.DelegatingResourceClassLoader;
 
 /**
  * A bridging classloader that filters class and resource loading to a specified set of classes. This is used to enforce the semantics of a

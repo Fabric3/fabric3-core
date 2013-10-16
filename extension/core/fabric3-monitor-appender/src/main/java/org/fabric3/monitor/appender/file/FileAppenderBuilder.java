@@ -39,7 +39,7 @@ package org.fabric3.monitor.appender.file;
 
 import java.io.File;
 
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.appender.AppenderBuilder;
 import org.fabric3.spi.container.builder.BuilderException;

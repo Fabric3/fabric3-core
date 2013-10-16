@@ -44,8 +44,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.host.Namespaces;
-import org.fabric3.host.contribution.InstallException;
+import org.fabric3.api.host.Namespaces;
+import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.xml.XmlProcessor;

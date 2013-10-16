@@ -65,8 +65,8 @@ import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.Namespaces;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.Namespaces;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionServiceListener;
 import org.fabric3.spi.contribution.MetaDataStore;

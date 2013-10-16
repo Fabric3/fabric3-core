@@ -45,8 +45,8 @@ import javax.xml.namespace.QName;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 
-import org.fabric3.host.contribution.ValidationException;
-import org.fabric3.host.domain.AssemblyException;
+import org.fabric3.api.host.contribution.ValidationException;
+import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.runtime.maven.MavenRuntime;
 
 /**

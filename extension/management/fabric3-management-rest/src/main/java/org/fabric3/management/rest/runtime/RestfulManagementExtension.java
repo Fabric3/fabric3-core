@@ -59,7 +59,7 @@ import org.oasisopen.sca.annotation.Reference;
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.host.runtime.ParseException;
+import org.fabric3.api.host.runtime.ParseException;
 import org.fabric3.management.rest.framework.DynamicResourceService;
 import org.fabric3.management.rest.spi.ResourceHost;
 import org.fabric3.management.rest.spi.ResourceListener;

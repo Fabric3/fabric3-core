@@ -53,8 +53,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
+import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.implementation.spring.model.SpringComponentType;
 import org.fabric3.implementation.spring.model.SpringImplementation;
 import org.fabric3.spi.classloader.MultiParentClassLoader;

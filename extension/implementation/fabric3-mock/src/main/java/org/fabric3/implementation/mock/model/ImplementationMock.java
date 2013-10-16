@@ -40,7 +40,7 @@ package org.fabric3.implementation.mock.model;
 import java.util.List;
 import javax.xml.namespace.QName;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 

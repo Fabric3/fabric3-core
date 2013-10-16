@@ -47,8 +47,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import org.fabric3.host.contribution.InstallException;
-import org.fabric3.host.stream.Source;
+import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;

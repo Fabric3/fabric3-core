@@ -40,7 +40,7 @@ package org.fabric3.fabric.domain;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiator;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.deployment.generator.Generator;

@@ -47,15 +47,14 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import org.fabric3.host.Namespaces;
-import org.fabric3.host.util.IOHelper;
+import org.fabric3.api.host.Namespaces;
+import org.fabric3.api.host.util.IOHelper;
 
 /**
  * Default implementation that creates a new DocumentBuilder for every invocation.

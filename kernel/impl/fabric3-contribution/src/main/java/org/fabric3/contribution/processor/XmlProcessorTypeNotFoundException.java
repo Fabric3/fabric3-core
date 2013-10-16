@@ -37,7 +37,7 @@
 */
 package org.fabric3.contribution.processor;
 
-import org.fabric3.host.contribution.InstallException;
+import org.fabric3.api.host.contribution.InstallException;
 
 /**
  *

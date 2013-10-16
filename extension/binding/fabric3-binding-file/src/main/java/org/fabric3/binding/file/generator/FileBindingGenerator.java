@@ -40,7 +40,7 @@ import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.binding.file.model.FileBindingDefinition;
 import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
 import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.contract.ServiceContract;

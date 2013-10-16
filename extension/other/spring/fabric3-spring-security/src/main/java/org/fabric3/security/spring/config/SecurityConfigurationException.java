@@ -37,7 +37,7 @@
 */
 package org.fabric3.security.spring.config;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  *

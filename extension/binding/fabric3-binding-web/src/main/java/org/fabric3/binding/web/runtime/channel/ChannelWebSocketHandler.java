@@ -52,7 +52,7 @@ import org.atmosphere.websocket.WebSocketEventListener;
 import org.fabric3.binding.web.runtime.common.BroadcasterManager;
 import org.fabric3.binding.web.runtime.common.ContentTypes;
 import org.fabric3.binding.web.runtime.common.InvalidContentTypeException;
-import org.fabric3.host.util.IOHelper;
+import org.fabric3.api.host.util.IOHelper;
 import org.fabric3.spi.container.channel.EventWrapper;
 
 /**

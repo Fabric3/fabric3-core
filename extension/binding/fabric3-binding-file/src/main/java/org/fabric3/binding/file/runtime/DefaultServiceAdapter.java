@@ -45,7 +45,7 @@ import java.io.FileNotFoundException;
 
 import org.fabric3.binding.file.api.InvalidDataException;
 import org.fabric3.binding.file.api.ServiceAdapter;
-import org.fabric3.host.util.IOHelper;
+import org.fabric3.api.host.util.IOHelper;
 
 /**
  * The default {@link ServiceAdapter} implementation that passes an InputStream to the target service.

@@ -56,8 +56,8 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.Namespaces;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.Namespaces;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.xml.XMLFactory;
 

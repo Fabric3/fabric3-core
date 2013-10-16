@@ -37,7 +37,7 @@
 */
 package org.fabric3.recovery.contribution;
 
-import org.fabric3.host.contribution.ContributionException;
+import org.fabric3.api.host.contribution.ContributionException;
 
 /**
  *

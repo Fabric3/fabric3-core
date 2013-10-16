@@ -42,7 +42,7 @@ import java.net.URL;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.host.stream.UrlSource;
+import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.implementation.spring.model.SpringComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;

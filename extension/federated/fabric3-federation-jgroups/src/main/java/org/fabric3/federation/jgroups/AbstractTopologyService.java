@@ -56,7 +56,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.Response;
 import org.fabric3.spi.command.ResponseCommand;

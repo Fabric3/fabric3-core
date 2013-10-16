@@ -37,9 +37,9 @@
 */
 package org.fabric3.monitor.impl.proxy;
 
-import org.fabric3.host.monitor.MonitorCreationException;
-import org.fabric3.host.monitor.MonitorProxyServiceExtension;
-import org.fabric3.host.monitor.Monitorable;
+import org.fabric3.api.host.monitor.MonitorCreationException;
+import org.fabric3.api.host.monitor.MonitorProxyServiceExtension;
+import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;

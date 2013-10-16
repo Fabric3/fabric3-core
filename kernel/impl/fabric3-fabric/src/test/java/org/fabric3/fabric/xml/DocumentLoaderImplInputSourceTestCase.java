@@ -38,13 +38,10 @@
 package org.fabric3.fabric.xml;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 
 import junit.framework.TestCase;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-
-import org.fabric3.host.util.FileHelper;
 
 /**
  *

@@ -49,8 +49,8 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.Names;
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.api.host.Names;
+import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.ExtensionsInitialized;

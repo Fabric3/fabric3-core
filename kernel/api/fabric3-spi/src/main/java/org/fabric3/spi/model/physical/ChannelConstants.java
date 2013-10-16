@@ -39,7 +39,7 @@ package org.fabric3.spi.model.physical;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 
 /**
  *

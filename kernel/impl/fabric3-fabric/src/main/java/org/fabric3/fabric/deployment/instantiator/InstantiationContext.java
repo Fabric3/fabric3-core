@@ -40,7 +40,7 @@ package org.fabric3.fabric.deployment.instantiator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.host.failure.AssemblyFailure;
+import org.fabric3.api.host.failure.AssemblyFailure;
 
 /**
  * A context used during logical component instantiation to record errors.

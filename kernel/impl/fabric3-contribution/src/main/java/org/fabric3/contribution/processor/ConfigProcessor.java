@@ -10,9 +10,9 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
-import org.fabric3.host.Namespaces;
-import org.fabric3.host.contribution.Deployable;
-import org.fabric3.host.contribution.InstallException;
+import org.fabric3.api.host.Namespaces;
+import org.fabric3.api.host.contribution.Deployable;
+import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.spi.contribution.Contribution;

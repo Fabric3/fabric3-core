@@ -46,7 +46,7 @@ package org.fabric3.spi.model.instance;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.spi.model.type.binding.SCABinding;
 

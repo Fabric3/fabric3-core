@@ -46,8 +46,8 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
+import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.model.type.definitions.BindingType;
 import org.fabric3.api.model.type.definitions.ImplementationType;
 import org.fabric3.api.model.type.definitions.Intent;

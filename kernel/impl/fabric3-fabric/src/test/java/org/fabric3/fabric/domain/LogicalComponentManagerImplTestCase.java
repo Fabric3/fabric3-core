@@ -42,9 +42,7 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.fabric.domain.LCMMonitor;
-import org.fabric3.fabric.domain.LogicalComponentManagerImpl;
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 

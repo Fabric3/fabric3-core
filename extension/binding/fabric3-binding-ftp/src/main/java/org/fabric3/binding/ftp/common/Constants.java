@@ -39,7 +39,7 @@ package org.fabric3.binding.ftp.common;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 
 /**
  *

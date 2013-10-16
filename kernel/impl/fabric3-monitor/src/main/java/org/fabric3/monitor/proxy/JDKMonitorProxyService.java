@@ -46,14 +46,14 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.fabric3.api.MonitorChannel;
-import org.fabric3.host.monitor.DestinationRouter;
-import org.fabric3.host.monitor.MonitorCreationException;
-import org.fabric3.host.monitor.MonitorProxyServiceExtension;
-import org.fabric3.host.monitor.Monitorable;
+import org.fabric3.api.host.monitor.DestinationRouter;
+import org.fabric3.api.host.monitor.MonitorCreationException;
+import org.fabric3.api.host.monitor.MonitorProxyServiceExtension;
+import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.spi.monitor.DispatchInfo;
 import org.fabric3.spi.monitor.MonitorProxy;
 import org.fabric3.spi.monitor.MonitorUtil;
-import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
+import static org.fabric3.api.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
 /**
  * JDK-based implementation of the {@link MonitorProxyServiceExtension}.

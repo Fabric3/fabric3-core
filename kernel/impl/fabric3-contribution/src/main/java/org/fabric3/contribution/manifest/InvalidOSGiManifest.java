@@ -37,7 +37,7 @@
 */
 package org.fabric3.contribution.manifest;
 
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.api.host.failure.ValidationFailure;
 
 /**
  *

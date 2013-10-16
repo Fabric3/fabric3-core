@@ -48,10 +48,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.fabric3.host.repository.Repository;
-import org.fabric3.host.repository.RepositoryException;
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.util.FileHelper;
+import org.fabric3.api.host.repository.Repository;
+import org.fabric3.api.host.repository.RepositoryException;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.host.util.FileHelper;
 
 /**
  * The default implementation of a Repository that persists artifacts to the file system. Extensions will be persisted to the runtime repository

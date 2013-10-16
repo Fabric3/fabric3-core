@@ -51,7 +51,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.fabric3.api.Role;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.runtime.ParseException;
+import org.fabric3.api.host.runtime.ParseException;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.model.Response;

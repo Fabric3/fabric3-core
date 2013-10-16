@@ -48,8 +48,8 @@ import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
-import org.fabric3.host.Namespaces;
-import org.fabric3.host.stream.Source;
+import org.fabric3.api.host.Namespaces;
+import org.fabric3.api.host.stream.Source;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.api.model.type.definitions.AbstractPolicyDefinition;
 import org.fabric3.api.model.type.definitions.Intent;

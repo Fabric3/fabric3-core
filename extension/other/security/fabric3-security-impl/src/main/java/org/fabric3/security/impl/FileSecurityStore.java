@@ -56,8 +56,8 @@ import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.Role;
-import org.fabric3.host.contribution.StoreException;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.contribution.StoreException;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.security.BasicSecuritySubject;
 import org.fabric3.spi.xml.XMLFactory;
 

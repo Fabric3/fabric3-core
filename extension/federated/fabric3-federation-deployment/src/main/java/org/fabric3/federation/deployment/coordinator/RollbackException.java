@@ -37,7 +37,7 @@
 */
 package org.fabric3.federation.deployment.coordinator;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Thrown when an exception occurs reverting a runtime back to its previous deployment state.

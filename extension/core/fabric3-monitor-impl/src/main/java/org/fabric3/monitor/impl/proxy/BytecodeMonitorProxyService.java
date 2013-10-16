@@ -45,9 +45,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
-import org.fabric3.host.monitor.MonitorCreationException;
-import org.fabric3.host.monitor.MonitorProxyServiceExtension;
-import org.fabric3.host.monitor.Monitorable;
+import org.fabric3.api.host.monitor.MonitorCreationException;
+import org.fabric3.api.host.monitor.MonitorProxyServiceExtension;
+import org.fabric3.api.host.monitor.Monitorable;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
 import org.fabric3.monitor.spi.event.ParameterEntry;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
@@ -60,7 +60,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import static org.fabric3.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
+import static org.fabric3.api.host.monitor.DestinationRouter.DEFAULT_DESTINATION;
 
 /**
  * Performs bytecode generation at runtime to create a monitor proxy.
@@ -299,8 +299,8 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         mv.visitVarInsn(ALOAD, varCurrentLevelPosition);
         mv.visitMethodInsn(INVOKEVIRTUAL, MONITOR_LEVEL, "intValue", "()I");
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, ABSTRACT_MONITOR_HANDLER, "monitorable", "Lorg/fabric3/host/monitor/Monitorable;");
-        mv.visitMethodInsn(INVOKEINTERFACE, "org/fabric3/host/monitor/Monitorable", "getLevel", "()L" + MONITOR_LEVEL + ";");
+        mv.visitFieldInsn(GETFIELD, ABSTRACT_MONITOR_HANDLER, "monitorable", "Lorg/fabric3/api/host/monitor/Monitorable;");
+        mv.visitMethodInsn(INVOKEINTERFACE, "org/fabric3/api/host/monitor/Monitorable", "getLevel", "()L" + MONITOR_LEVEL + ";");
         mv.visitMethodInsn(INVOKEVIRTUAL, MONITOR_LEVEL, "intValue", "()I");
         Label l14 = new Label();
         mv.visitJumpInsn(IF_ICMPGE, l14);

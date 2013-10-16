@@ -51,7 +51,7 @@ import org.fabric3.spi.contribution.DependencyResolver;
 import org.fabric3.fabric.deployment.command.AttachExtensionCommand;
 import org.fabric3.fabric.deployment.command.ProvisionClassloaderCommand;
 import org.fabric3.fabric.deployment.command.UnprovisionClassloaderCommand;
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionWire;

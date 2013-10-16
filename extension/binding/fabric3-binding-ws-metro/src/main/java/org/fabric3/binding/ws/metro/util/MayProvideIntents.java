@@ -41,7 +41,7 @@ import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.Constants;
 
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 
 /**
  * List of intents that may be provided by Metro.

@@ -42,7 +42,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.host.contribution.InstallException;
+import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.xml.XmlIndexer;
 import org.fabric3.spi.contribution.xml.XmlIndexerRegistry;

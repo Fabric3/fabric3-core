@@ -51,7 +51,7 @@ import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
-import org.fabric3.host.domain.DeploymentException;
+import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.MultiClassLoaderObjectOutputStream;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.command.CommandExecutor;

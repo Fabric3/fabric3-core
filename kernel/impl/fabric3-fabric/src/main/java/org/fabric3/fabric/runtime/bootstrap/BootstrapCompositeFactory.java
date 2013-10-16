@@ -44,11 +44,11 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.fabric3.fabric.xml.XMLFactoryImpl;
-import org.fabric3.host.contribution.ContributionException;
-import org.fabric3.host.failure.ValidationFailure;
-import org.fabric3.host.runtime.InitializationException;
-import org.fabric3.host.stream.Source;
-import org.fabric3.host.stream.UrlSource;
+import org.fabric3.api.host.contribution.ContributionException;
+import org.fabric3.api.host.failure.ValidationFailure;
+import org.fabric3.api.host.runtime.InitializationException;
+import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.CompositeImplementation;

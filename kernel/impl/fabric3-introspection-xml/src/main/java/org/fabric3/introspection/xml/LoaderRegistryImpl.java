@@ -54,7 +54,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.host.stream.Source;
+import org.fabric3.api.host.stream.Source;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderException;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;

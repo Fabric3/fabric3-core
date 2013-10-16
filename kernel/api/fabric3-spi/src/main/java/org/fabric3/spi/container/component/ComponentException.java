@@ -43,7 +43,7 @@
  */
 package org.fabric3.spi.container.component;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * An checked exception encountered by an {@link org.fabric3.spi.container.component.Component}

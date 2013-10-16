@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.definitions.PolicySet;

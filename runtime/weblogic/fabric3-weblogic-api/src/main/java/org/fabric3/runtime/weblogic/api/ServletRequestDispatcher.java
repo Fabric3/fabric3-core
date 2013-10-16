@@ -50,7 +50,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.fabric3.host.Names;
+import org.fabric3.api.host.Names;
 
 /**
  * Interface to a system component that dispatches servlet requests to the Fabric3 runtime

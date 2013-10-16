@@ -37,7 +37,7 @@
 */
 package org.fabric3.spi.contract;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Thrown when an operation cannot be resolved against a set of target operations.

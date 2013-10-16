@@ -49,9 +49,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.host.Names;
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.os.OperatingSystem;
+import org.fabric3.api.host.Names;
+import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.host.os.OperatingSystem;
 import org.fabric3.runtime.maven.MavenHostInfo;
 
 /**

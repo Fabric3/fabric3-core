@@ -50,9 +50,9 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.host.contribution.ContributionService;
-import org.fabric3.host.contribution.ContributionSource;
-import org.fabric3.host.contribution.Deployable;
+import org.fabric3.api.host.contribution.ContributionService;
+import org.fabric3.api.host.contribution.ContributionSource;
+import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.Response;

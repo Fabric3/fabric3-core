@@ -45,7 +45,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.host.Version;
+import org.fabric3.api.host.Version;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;

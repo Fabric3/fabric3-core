@@ -48,8 +48,8 @@ import java.io.File;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.runtime.ScanResult;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.ScanResult;
 
 /**
  *

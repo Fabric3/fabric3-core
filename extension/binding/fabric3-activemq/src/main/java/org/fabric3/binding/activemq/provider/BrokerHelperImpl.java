@@ -2,7 +2,7 @@ package org.fabric3.binding.activemq.provider;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 
 /**
  *

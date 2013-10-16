@@ -43,8 +43,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.host.Names;
-import org.fabric3.host.Namespaces;
+import org.fabric3.api.host.Names;
+import org.fabric3.api.host.Namespaces;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.node.nonmanaged.NonManagedImplementation;

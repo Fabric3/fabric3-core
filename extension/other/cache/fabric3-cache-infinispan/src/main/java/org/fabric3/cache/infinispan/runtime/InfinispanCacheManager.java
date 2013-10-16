@@ -50,7 +50,7 @@ import org.fabric3.cache.infinispan.provision.InfinispanPhysicalResourceDefiniti
 import org.fabric3.cache.infinispan.util.XmlHelper;
 import org.fabric3.cache.spi.CacheBuildException;
 import org.fabric3.cache.spi.CacheManager;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
 import org.infinispan.Cache;
 import org.infinispan.configuration.cache.Configuration;

@@ -51,7 +51,7 @@ import org.fabric3.binding.file.runtime.receiver.PassThroughInterceptor;
 import org.fabric3.binding.file.runtime.receiver.ReceiverConfiguration;
 import org.fabric3.binding.file.runtime.receiver.ReceiverManager;
 import org.fabric3.binding.file.runtime.receiver.ReceiverMonitor;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;

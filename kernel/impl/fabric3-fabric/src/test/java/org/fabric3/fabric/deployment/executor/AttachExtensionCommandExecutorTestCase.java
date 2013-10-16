@@ -50,7 +50,7 @@ import java.util.Collection;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.fabric.deployment.command.AttachExtensionCommand;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
 import org.fabric3.spi.command.CommandExecutorRegistry;

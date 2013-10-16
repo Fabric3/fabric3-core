@@ -1,6 +1,6 @@
 package org.fabric3.binding.ws.metro.contribution;
 
-import org.fabric3.host.Version;
+import org.fabric3.api.host.Version;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionServiceListener;

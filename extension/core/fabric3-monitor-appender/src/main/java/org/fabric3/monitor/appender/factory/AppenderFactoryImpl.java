@@ -48,7 +48,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.host.failure.ValidationFailure;
+import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.monitor.appender.console.ConsoleAppender;
 import org.fabric3.monitor.appender.console.ConsoleAppenderDefinition;

@@ -42,8 +42,8 @@ import java.net.URL;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.host.contribution.InstallException;
-import org.fabric3.host.util.FileHelper;
+import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.introspection.IntrospectionContext;

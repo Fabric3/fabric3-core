@@ -55,25 +55,25 @@ import java.util.concurrent.CountDownLatch;
 
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
-import org.fabric3.host.Fabric3Exception;
-import org.fabric3.host.RuntimeMode;
-import org.fabric3.host.classloader.MaskingClassLoader;
-import org.fabric3.host.monitor.DelegatingDestinationRouter;
-import org.fabric3.host.monitor.MonitorProxyService;
-import org.fabric3.host.runtime.BootConfiguration;
-import org.fabric3.host.runtime.BootstrapFactory;
-import org.fabric3.host.runtime.BootstrapHelper;
-import org.fabric3.host.runtime.BootstrapService;
-import org.fabric3.host.runtime.Fabric3Runtime;
-import org.fabric3.host.runtime.HiddenPackages;
-import org.fabric3.host.runtime.HostInfo;
-import org.fabric3.host.runtime.RuntimeConfiguration;
-import org.fabric3.host.runtime.RuntimeCoordinator;
-import org.fabric3.host.runtime.ScanResult;
-import org.fabric3.host.runtime.ShutdownException;
-import org.fabric3.host.util.FileHelper;
+import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.host.classloader.MaskingClassLoader;
+import org.fabric3.api.host.monitor.DelegatingDestinationRouter;
+import org.fabric3.api.host.monitor.MonitorProxyService;
+import org.fabric3.api.host.runtime.BootConfiguration;
+import org.fabric3.api.host.runtime.BootstrapFactory;
+import org.fabric3.api.host.runtime.BootstrapHelper;
+import org.fabric3.api.host.runtime.BootstrapService;
+import org.fabric3.api.host.runtime.Fabric3Runtime;
+import org.fabric3.api.host.runtime.HiddenPackages;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.RuntimeConfiguration;
+import org.fabric3.api.host.runtime.RuntimeCoordinator;
+import org.fabric3.api.host.runtime.ScanResult;
+import org.fabric3.api.host.runtime.ShutdownException;
+import org.fabric3.api.host.util.FileHelper;
 import org.w3c.dom.Document;
-import static org.fabric3.host.Names.MONITOR_FACTORY_URI;
+import static org.fabric3.api.host.Names.MONITOR_FACTORY_URI;
 
 /**
  * This class provides the command line interface for starting the Fabric3 standalone server.

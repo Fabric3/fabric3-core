@@ -46,7 +46,7 @@ package org.fabric3.runtime.maven;
 import java.net.URL;
 import java.util.Set;
 
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 
 /**
  *

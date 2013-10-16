@@ -43,7 +43,7 @@
  */
 package org.fabric3.spi.container.objectfactory;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  * Denotes an error creating a new object instance.

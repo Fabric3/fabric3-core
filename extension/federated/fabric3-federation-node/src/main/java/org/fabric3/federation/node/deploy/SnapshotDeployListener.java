@@ -43,7 +43,7 @@ import java.net.URI;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.federation.node.command.DeploymentSnapshotCommand;
 import org.fabric3.federation.node.snapshot.SnapshotHelper;
-import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.NodeTopologyService;

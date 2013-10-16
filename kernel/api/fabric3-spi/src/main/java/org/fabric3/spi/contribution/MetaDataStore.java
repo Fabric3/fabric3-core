@@ -42,8 +42,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.host.contribution.StoreException;
-import org.fabric3.host.contribution.UnresolvedImportException;
+import org.fabric3.api.host.contribution.StoreException;
+import org.fabric3.api.host.contribution.UnresolvedImportException;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.spi.introspection.IntrospectionContext;
 

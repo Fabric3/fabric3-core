@@ -37,7 +37,7 @@
 */
 package org.fabric3.binding.ws.metro.runtime.core;
 
-import org.fabric3.host.Fabric3Exception;
+import org.fabric3.api.host.Fabric3Exception;
 
 /**
  *
