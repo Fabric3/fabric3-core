@@ -65,26 +65,6 @@ public interface Domain {
     <T> T getChannel(Class<T> interfaze, String name);
 
     /**
-     * Subscribes to receive events from a channel.
-     *
-     * @param interfaze the channel interface
-     * @param name      the channel name
-     * @param consumer  the consumer
-     * @return the domain
-     */
-    Domain subscribe(Class<?> interfaze, String name, Object consumer);
-
-    /**
-     * Un-subscribes a consumer from receiving events from a channel.
-     *
-     * @param interfaze the channel interface
-     * @param name      the channel name
-     * @param consumer  the consumer
-     * @return the domain
-     */
-    Domain unsubscribe(Class<?> interfaze, String name, Object consumer);
-
-    /**
      * Deploys a component.
      *
      * @param name       the component name

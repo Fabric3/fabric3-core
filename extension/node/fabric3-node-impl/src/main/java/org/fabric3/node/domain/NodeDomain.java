@@ -93,14 +93,6 @@ public class NodeDomain implements Domain {
         }
     }
 
-    public Domain subscribe(Class<?> interfaze, String name, Object consumer) {
-        return this;
-    }
-
-    public Domain unsubscribe(Class<?> interfaze, String name, Object consumer) {
-        return this;
-    }
-
     public Domain deploy(String name, Object instance, Class<?>... interfaces) {
         try {
             provisioner.deploy(name, instance, interfaces);

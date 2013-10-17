@@ -54,7 +54,8 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
 /**
  * Interface for processors that handle annotations attached to Java declarations.
  *
- * @param <A> the type of annotation this processor handles*/
+ * @param <A> the type of annotation this processor handles
+ */
 public interface AnnotationProcessor<A extends Annotation> {
     /**
      * Returns the type of annotation this processor handles.
@@ -64,8 +65,7 @@ public interface AnnotationProcessor<A extends Annotation> {
     Class<A> getType();
 
     /**
-     * Visit an annotation on a class or interface declaration.  If errors or warnings are encountered, they will be collated in the
-     * IntrospectionContext.
+     * Visit an annotation on a class or interface declaration.  If errors or warnings are encountered, they will be collated in the IntrospectionContext.
      *
      * @param annotation    the annotation
      * @param type          the class or interface
@@ -97,8 +97,7 @@ public interface AnnotationProcessor<A extends Annotation> {
     void visitMethod(A annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context);
 
     /**
-     * Visit an annotation on a method parameter declaration. If errors or warnings are encountered, they will be collated in the
-     * IntrospectionContext.
+     * Visit an annotation on a method parameter declaration. If errors or warnings are encountered, they will be collated in the IntrospectionContext.
      *
      * @param annotation    the annotation
      * @param method        the method declaration
@@ -107,12 +106,7 @@ public interface AnnotationProcessor<A extends Annotation> {
      * @param componentType the implementation component type being introspected
      * @param context       the current introspection context
      */
-    void visitMethodParameter(A annotation,
-                              Method method,
-                              int index,
-                              Class<?> implClass,
-                              InjectingComponentType componentType,
-                              IntrospectionContext context);
+    void visitMethodParameter(A annotation, Method method, int index, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context);
 
     /**
      * Visit an annotation on a constructor declaration. If errors or warnings are encountered, they will be collated in the IntrospectionContext.
@@ -123,15 +117,10 @@ public interface AnnotationProcessor<A extends Annotation> {
      * @param componentType the implementation component type being introspected
      * @param context       the current introspection context
      */
-    void visitConstructor(A annotation,
-                          Constructor<?> constructor,
-                          Class<?> implClass,
-                          InjectingComponentType componentType,
-                          IntrospectionContext context);
+    void visitConstructor(A annotation, Constructor<?> constructor, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context);
 
     /**
-     * Visit an annotation on a constructor parameter declaration. If errors or warnings are encountered, they will be collated in the
-     * IntrospectionContext.
+     * Visit an annotation on a constructor parameter declaration. If errors or warnings are encountered, they will be collated in the IntrospectionContext.
      *
      * @param annotation    the annotation
      * @param constructor   the constructor
