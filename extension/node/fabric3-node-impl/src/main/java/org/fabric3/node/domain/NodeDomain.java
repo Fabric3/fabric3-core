@@ -42,6 +42,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 
+import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.node.Domain;
 import org.fabric3.api.host.contribution.ContributionNotFoundException;
 import org.fabric3.api.host.contribution.ContributionService;
@@ -164,6 +165,15 @@ public class NodeDomain implements Domain {
         } catch (UninstallException e) {
             throw new ServiceRuntimeException(e);
         } catch (RemoveException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    public Domain deploy(ChannelDefinition definition) {
+        try {
+            provisioner.deploy(definition);
+            return this;
+        } catch (DeploymentException e) {
             throw new ServiceRuntimeException(e);
         }
     }

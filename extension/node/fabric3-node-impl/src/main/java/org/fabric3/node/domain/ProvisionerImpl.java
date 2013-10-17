@@ -45,6 +45,7 @@ import org.fabric3.api.host.Names;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.failure.ValidationFailure;
 import org.fabric3.api.model.type.builder.ComponentDefinitionBuilder;
+import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.ServiceDefinition;
@@ -116,9 +117,20 @@ public class ProvisionerImpl implements Provisioner {
         checkErrors(context);
 
         try {
-            Composite wrapper = createWrapperComposite(definition);
+            Composite wrapper = createWrapperComposite(definition.getName());
             wrapper.add(definition);
 
+            domain.include(wrapper, false);
+        } catch (org.fabric3.api.host.domain.DeploymentException e) {
+            throw new DeploymentException(e);
+        }
+    }
+
+    public void deploy(ChannelDefinition definition) throws DeploymentException {
+        try {
+            definition.setContributionUri(Names.HOST_CONTRIBUTION);
+            Composite wrapper = createWrapperComposite(definition.getName());
+            wrapper.add(definition);
             domain.include(wrapper, false);
         } catch (org.fabric3.api.host.domain.DeploymentException e) {
             throw new DeploymentException(e);
@@ -151,11 +163,11 @@ public class ProvisionerImpl implements Provisioner {
     /**
      * Creates a wrapper composite used to deploy the component to the domain. Also registers the wrapper with the Host contribution.
      *
-     * @param definition the component definition to deploy
+     * @param name the composite name
      * @return the wrapping composite
      */
-    private Composite createWrapperComposite(ComponentDefinition<?> definition) {
-        QName compositeName = new QName(HostNamespaces.SYNTHESIZED, definition.getName());
+    private Composite createWrapperComposite(String name) {
+        QName compositeName = new QName(HostNamespaces.SYNTHESIZED, name);
         Composite wrapper = new Composite(compositeName);
         wrapper.setContributionUri(Names.HOST_CONTRIBUTION);
         Contribution contribution = metaDataStore.find(Names.HOST_CONTRIBUTION);

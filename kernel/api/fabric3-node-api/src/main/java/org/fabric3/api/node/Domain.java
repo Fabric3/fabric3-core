@@ -39,6 +39,7 @@ package org.fabric3.api.node;
 
 import java.net.URL;
 
+import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 
 /**
@@ -102,6 +103,13 @@ public interface Domain {
     Domain deploy(ComponentDefinition<?> definition);
 
     /**
+     * Deploys a channel.
+     *
+     * @param definition the channel
+     */
+    Domain deploy(ChannelDefinition definition);
+
+    /**
      * Deploys an artifact such as a composite file or contribution to the domain.
      *
      * @param url the artifact URL
@@ -110,7 +118,7 @@ public interface Domain {
     Domain deploy(URL url);
 
     /**
-     * Un-deploys the component with the given name
+     * Un-deploys the channel or component with the given name
      *
      * @param name the component name
      * @return the domain

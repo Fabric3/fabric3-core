@@ -65,7 +65,7 @@ public class ComponentDefinitionBuilder {
         return new ComponentDefinitionBuilder(name, instance);
     }
 
-    public ComponentDefinitionBuilder(String name, Object instance) {
+    protected ComponentDefinitionBuilder(String name, Object instance) {
         this.name = name;
         this.instance = instance;
         bindings = new HashMap<String, BindingDefinition>();

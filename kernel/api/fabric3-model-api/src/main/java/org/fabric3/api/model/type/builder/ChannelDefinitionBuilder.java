@@ -35,48 +35,44 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.node.domain;
+package org.fabric3.api.model.type.builder;
 
 import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.api.model.type.component.ComponentDefinition;
 
 /**
- * Deploys an instance as a component to the domain.
+ *
  */
-public interface Provisioner {
+public class ChannelDefinitionBuilder {
+    public static final String RING_BUFFER = "ring.buffer";
+
+    private final ChannelDefinition definition;
 
     /**
-     * Deploy the instance.
+     * Creates a builder.
      *
-     * @param name       the component name
-     * @param instance   the instance
-     * @param interfaces the service interfaces implemented by the instance
-     * @throws DeploymentException if there is a deployment error
+     * @param name the channel name
+     * @return the builder
      */
-    void deploy(String name, Object instance, Class<?>... interfaces) throws DeploymentException;
+    public static ChannelDefinitionBuilder newBuilder(String name) {
+        return new ChannelDefinitionBuilder(name);
+    }
+
+    public ChannelDefinitionBuilder type(String type) {
+        definition.setType(type);
+        return this;
+    }
 
     /**
-     * Deploys a component corresponding to the given definition.
+     * Builds the channel definition.
      *
-     * @param definition the component definition
-     * @throws DeploymentException if there is a deployment error
+     * @return the definition
      */
-    void deploy(ComponentDefinition<?> definition) throws DeploymentException;
+    public ChannelDefinition build() {
+        return definition;
+    }
 
-    /**
-     * Deploys a channel.
-     *
-     * @param definition the channel
-     * @throws DeploymentException if there is a deployment error
-     */
-    void deploy(ChannelDefinition definition) throws DeploymentException;
-
-    /**
-     * Un-deploys the channel or component with the given name
-     *
-     * @param name the channel or component name
-     * @throws DeploymentException if there is a un-deployment error
-     */
-    void undeploy(String name) throws DeploymentException;
+    protected ChannelDefinitionBuilder(String name) {
+        definition = new ChannelDefinition(name);
+    }
 
 }

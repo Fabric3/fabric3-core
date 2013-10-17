@@ -52,6 +52,10 @@ public class ChannelDefinition extends BindableDefinition<Composite> {
     private URI contributionUri;
     private String type = DEFAULT_TYPE;
 
+    public ChannelDefinition(String name) {
+        this.name = name;
+    }
+
     public ChannelDefinition(String name, URI contributionUri) {
         this.name = name;
         this.contributionUri = contributionUri;
@@ -84,10 +88,27 @@ public class ChannelDefinition extends BindableDefinition<Composite> {
     }
 
     /**
+     * Sets the contribution URI.
+     *
+     * @param uri the contribution URI
+     */
+    public void setContributionUri(URI uri) {
+        this.contributionUri = uri;
+    }
+
+    /**
      * Returns the channel type.
      */
     public String getType() {
         return type;
     }
 
+    /**
+     * Sets the channel type
+     *
+     * @param type the channel type
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 }
