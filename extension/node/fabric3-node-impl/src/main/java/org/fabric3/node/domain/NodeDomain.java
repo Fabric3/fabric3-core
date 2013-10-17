@@ -100,9 +100,9 @@ public class NodeDomain implements Domain {
         return this;
     }
 
-    public <T> Domain deploy(Class<T> interfaze, T instance) {
+    public Domain deploy(String name, Object instance, Class<?>... interfaces) {
         try {
-            provisioner.deploy(interfaze, instance);
+            provisioner.deploy(name, instance, interfaces);
             return this;
         } catch (DeploymentException e) {
             throw new ServiceRuntimeException(e);
@@ -112,15 +112,6 @@ public class NodeDomain implements Domain {
     public Domain deploy(ComponentDefinition<?> definition) {
         try {
             provisioner.deploy(definition);
-            return this;
-        } catch (DeploymentException e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
-
-    public <T> Domain undeploy(Class<T> interfaze, T instance) {
-        try {
-            provisioner.undeploy(interfaze, instance);
             return this;
         } catch (DeploymentException e) {
             throw new ServiceRuntimeException(e);

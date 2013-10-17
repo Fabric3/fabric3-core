@@ -47,11 +47,12 @@ public interface Provisioner {
     /**
      * Deploy the instance.
      *
-     * @param interfaze the service interface implemented by the instance
-     * @param instance  the instance
+     * @param name       the component name
+     * @param instance   the instance
+     * @param interfaces the service interfaces implemented by the instance
      * @throws DeploymentException if there is a deployment error
      */
-    <T> void deploy(Class<T> interfaze, T instance) throws DeploymentException;
+    void deploy(String name, Object instance, Class<?>... interfaces) throws DeploymentException;
 
     /**
      * Deploys a component corresponding to the given definition.
@@ -60,15 +61,6 @@ public interface Provisioner {
      * @throws DeploymentException if there is a deployment error
      */
     void deploy(ComponentDefinition<?> definition) throws DeploymentException;
-
-    /**
-     * Un-deploys an instance.
-     *
-     * @param interfaze the service interface implemented by the instance
-     * @param instance  the instance
-     * @throws DeploymentException if there is a un-deployment error
-     */
-    <T> void undeploy(Class<T> interfaze, T instance) throws DeploymentException;
 
     /**
      * Un-deploys a component with the given name

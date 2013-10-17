@@ -79,16 +79,27 @@ public class ProvisionerImpl implements Provisioner {
         this.domain = domain;
     }
 
-    public <T> void deploy(Class<T> interfaze, T instance) throws DeploymentException {
+    public void deploy(String name, Object instance, Class<?>... interfaces) throws DeploymentException {
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
-        JavaServiceContract contract = contractProcessor.introspect(interfaze, context);
 
-        checkErrors(context);
-
-        // add the service contract
-        ComponentDefinition<?> definition = ComponentDefinitionBuilder.newBuilder(interfaze.getSimpleName(), instance).build();
-        ServiceDefinition serviceDefinition = new ServiceDefinition(interfaze.getSimpleName(), contract);
-        definition.getComponentType().add(serviceDefinition);
+        ComponentDefinition<?> definition = ComponentDefinitionBuilder.newBuilder(name, instance).build();
+        if (interfaces == null) {
+            // if no interfaces are specified, check if the implementation class implements one or more interfaces
+            Class<?>[] implementedInterfaces = getClass().getInterfaces();
+            if (implementedInterfaces.length == 0) {
+                // use the implementation class as the service interface
+                addService(instance.getClass(), definition);
+            } else {
+                // use all of the implemented interfaces as service interfaces
+                for (Class<?> interfaze : implementedInterfaces) {
+                    addService(interfaze, definition);
+                }
+            }
+        } else {
+            for (Class<?> interfaze : interfaces) {
+                addService(interfaze, definition);
+            }
+        }
 
         componentProcessor.process(definition, context);
 
@@ -112,10 +123,6 @@ public class ProvisionerImpl implements Provisioner {
         } catch (org.fabric3.api.host.domain.DeploymentException e) {
             throw new DeploymentException(e);
         }
-    }
-
-    public <T> void undeploy(Class<T> interfaze, T instance) throws DeploymentException {
-        undeploy(interfaze.getSimpleName());
     }
 
     public void undeploy(String name) throws DeploymentException {
@@ -159,6 +166,14 @@ public class ProvisionerImpl implements Provisioner {
         resource.setState(ResourceState.PROCESSED);
         contribution.addResource(resource);
         return wrapper;
+    }
+
+    private void addService(Class<?> interfaze, ComponentDefinition<?> definition) throws ValidationDeploymentException {
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+        JavaServiceContract contract = contractProcessor.introspect(interfaze, context);
+        ServiceDefinition serviceDefinition = new ServiceDefinition(interfaze.getSimpleName(), contract);
+        definition.getComponentType().add(serviceDefinition);
+        checkErrors(context);
     }
 
     private void checkErrors(DefaultIntrospectionContext context) throws ValidationDeploymentException {

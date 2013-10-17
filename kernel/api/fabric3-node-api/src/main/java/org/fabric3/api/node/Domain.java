@@ -84,13 +84,14 @@ public interface Domain {
     Domain unsubscribe(Class<?> interfaze, String name, Object consumer);
 
     /**
-     * Deploys a service endpoint.
+     * Deploys a component.
      *
-     * @param interfaze the service endpoint
-     * @param instance  the service instance
+     * @param name       the component name
+     * @param instance   the service instance
+     * @param interfaces the service endpoint interfaces provided by the component
      * @return the domain
      */
-    <T> Domain deploy(Class<T> interfaze, T instance);
+    Domain deploy(String name, Object instance, Class<?>... interfaces);
 
     /**
      * Deploys a component specified by the given definition.
@@ -107,15 +108,6 @@ public interface Domain {
      * @return the domain
      */
     Domain deploy(URL url);
-
-    /**
-     * Un-deploys a service endpoint.
-     *
-     * @param interfaze the service endpoint
-     * @param instance  the service instance
-     * @return the domain
-     */
-    <T> Domain undeploy(Class<T> interfaze, T instance);
 
     /**
      * Un-deploys the component with the given name
