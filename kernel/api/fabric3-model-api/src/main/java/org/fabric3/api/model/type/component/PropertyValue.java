@@ -43,13 +43,12 @@
  */
 package org.fabric3.api.model.type.component;
 
-import java.net.URI;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-
-import org.w3c.dom.Document;
+import java.net.URI;
 
 import org.fabric3.api.model.type.ModelObject;
+import org.w3c.dom.Document;
 
 /**
  * The value of a configured component property.
@@ -62,6 +61,7 @@ public class PropertyValue extends ModelObject<ComponentDefinition> {
     private QName type;
     private QName element;
     private Document value;
+    private Object instanceValue;
     private NamespaceContext namespaceContext;
     private PropertyMany many;
 
@@ -90,9 +90,9 @@ public class PropertyValue extends ModelObject<ComponentDefinition> {
     /**
      * Constructor for inline property values.
      *
-     * @param name      the name of the property
-     * @param value     the property value
-     * @param many      the property many parameter
+     * @param name  the name of the property
+     * @param value the property value
+     * @param many  the property many parameter
      */
     public PropertyValue(String name, Document value, PropertyMany many) {
         this.name = name;
@@ -103,12 +103,23 @@ public class PropertyValue extends ModelObject<ComponentDefinition> {
     /**
      * Constructor for inline property values.
      *
-     * @param name      the name of the property
-     * @param many      the property many parameter
+     * @param name the name of the property
+     * @param many the property many parameter
      */
     public PropertyValue(String name, PropertyMany many) {
         this.name = name;
         this.many = many;
+    }
+
+    /**
+     * Constructor for a value that has already been deserialized to an instance.
+     *
+     * @param name          the name of the property
+     * @param instanceValue the property value
+     */
+    public PropertyValue(String name, Object instanceValue) {
+        this.name = name;
+        this.instanceValue = instanceValue;
     }
 
     /**
@@ -181,6 +192,15 @@ public class PropertyValue extends ModelObject<ComponentDefinition> {
      */
     public void setFile(URI file) {
         this.file = file;
+    }
+
+    /**
+     * Returns the live value of the property.
+     *
+     * @return the live value of the property
+     */
+    public Object getInstanceValue() {
+        return instanceValue;
     }
 
     /**

@@ -42,6 +42,7 @@ import javax.xml.namespace.QName;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentService;
+import org.fabric3.api.model.type.component.PropertyValue;
 
 /**
  * Base builder for {@link ComponentDefinition}s.
@@ -55,7 +56,7 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
      * @param bindingDefinition the binding definition
      * @return the builder
      */
-    public ComponentDefinitionBuilder binding(String serviceName, BindingDefinition bindingDefinition) {
+    public T binding(String serviceName, BindingDefinition bindingDefinition) {
         ComponentDefinition<?> definition = getDefinition();
         ComponentService service = definition.getServices().get(serviceName);
         if (service == null) {
@@ -63,7 +64,33 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
             definition.add(service);
         }
         service.addBinding(bindingDefinition);
-        return this;
+        return builder();
+    }
+
+    /**
+     * Adds a property value.
+     *
+     * @param name  the property name
+     * @param value the value
+     * @return the builder
+     */
+    public T property(String name, Object value) {
+        PropertyValue propertyValue = new PropertyValue(name, value);
+        getDefinition().add(propertyValue);
+        return builder();
+    }
+
+    /**
+     * Adds a property value sourced from the XPath expression.
+     *
+     * @param name  the property name
+     * @param xpath the XPath expression
+     * @return the builder
+     */
+    public T propertyExpression(String name, String xpath) {
+        PropertyValue propertyValue = new PropertyValue(name, xpath);
+        getDefinition().add(propertyValue);
+        return builder();
     }
 
     /**
