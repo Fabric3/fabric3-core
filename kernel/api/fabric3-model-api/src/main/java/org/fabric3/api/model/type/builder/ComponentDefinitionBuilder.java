@@ -37,63 +37,84 @@
 */
 package org.fabric3.api.model.type.builder;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.xml.namespace.QName;
 
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentService;
-import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.api.model.type.java.JavaImplementation;
 
 /**
- * Creates {@link ComponentDefinition}s for deploying instances.
+ * Base builder for {@link ComponentDefinition}s.
  */
-public class ComponentDefinitionBuilder {
-    private String name;
-    private Object instance;
-    private Map<String, BindingDefinition> bindings;
+public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBuilder> {
 
     /**
-     * Creates a builder.
+     * Adds a binding configuration to a service provided by the component.
      *
-     * @param name     the component name
-     * @param instance the component instances
+     * @param serviceName       the service name
+     * @param bindingDefinition the binding definition
      * @return the builder
      */
-    public static ComponentDefinitionBuilder newBuilder(String name, Object instance) {
-        return new ComponentDefinitionBuilder(name, instance);
-    }
-
-    protected ComponentDefinitionBuilder(String name, Object instance) {
-        this.name = name;
-        this.instance = instance;
-        bindings = new HashMap<String, BindingDefinition>();
-    }
-
     public ComponentDefinitionBuilder binding(String serviceName, BindingDefinition bindingDefinition) {
-        bindings.put(serviceName, bindingDefinition);
+        ComponentDefinition<?> definition = getDefinition();
+        ComponentService service = definition.getServices().get(serviceName);
+        if (service == null) {
+            service = new ComponentService(serviceName);
+            definition.add(service);
+        }
+        service.addBinding(bindingDefinition);
         return this;
     }
 
     /**
-     * Builds the component definition.
+     * Sets the wire key for a component for use with Map-based reference.
      *
-     * @return the component definition
+     * @param key the key
+     * @return the builder
      */
-    public ComponentDefinition<JavaImplementation> build() {
-        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(name);
-        JavaImplementation implementation = new JavaImplementation(instance);
-        InjectingComponentType type = new InjectingComponentType(instance.getClass().getName());
-        implementation.setComponentType(type);
-        definition.setImplementation(implementation);
+    public T key(Object key) {
+        getDefinition().setKey(key.toString());
+        return builder();
+    }
 
-        for (Map.Entry<String, BindingDefinition> entry : bindings.entrySet()) {
-            ComponentService componentService = new ComponentService(entry.getKey());
-            componentService.addBinding(entry.getValue());
-            definition.add(componentService);
-        }
-        return definition;
+    /**
+     * Sets the wire order for a component for use with multiplicity reference.
+     *
+     * @param order the order
+     * @return the builder
+     */
+    public T order(int order) {
+        getDefinition().setOrder(order);
+        return builder();
+    }
+
+    /**
+     * Adds an intent to the implementation.
+     *
+     * @param intent the intent
+     * @return the builder
+     */
+    public T implementationIntent(QName intent) {
+        getDefinition().getImplementation().addIntent(intent);
+        return builder();
+    }
+
+    /**
+     * Adds an intent to the component.
+     *
+     * @param intent the intent
+     * @return the builder
+     */
+    public T componentIntent(QName intent) {
+        getDefinition().addIntent(intent);
+        return builder();
+    }
+
+    protected abstract ComponentDefinition<?> getDefinition();
+
+    @SuppressWarnings("unchecked")
+    private T builder() {
+        return (T) this;
     }
 
 }

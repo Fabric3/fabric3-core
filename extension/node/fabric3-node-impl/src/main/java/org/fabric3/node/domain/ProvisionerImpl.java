@@ -44,7 +44,7 @@ import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.failure.ValidationFailure;
-import org.fabric3.api.model.type.builder.ComponentDefinitionBuilder;
+import org.fabric3.api.model.type.builder.JavaComponentDefinitionBuilder;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
@@ -83,7 +83,7 @@ public class ProvisionerImpl implements Provisioner {
     public void deploy(String name, Object instance, Class<?>... interfaces) throws DeploymentException {
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
 
-        ComponentDefinition<?> definition = ComponentDefinitionBuilder.newBuilder(name, instance).build();
+        ComponentDefinition<?> definition = JavaComponentDefinitionBuilder.newBuilder(name, instance).build();
         if (interfaces == null) {
             // if no interfaces are specified, check if the implementation class implements one or more interfaces
             Class<?>[] implementedInterfaces = getClass().getInterfaces();
