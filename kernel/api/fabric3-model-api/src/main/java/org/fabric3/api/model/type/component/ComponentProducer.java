@@ -53,7 +53,6 @@ import java.util.List;
 public class ComponentProducer extends AbstractProducer<ComponentDefinition> {
     private static final long serialVersionUID = -4230400252060306972L;
 
-    private ComponentDefinition<?> parent;
     private List<URI> targets;
 
     /**
@@ -75,24 +74,6 @@ public class ComponentProducer extends AbstractProducer<ComponentDefinition> {
     public ComponentProducer(String name) {
         super(name);
         this.targets = new ArrayList<URI>();
-    }
-
-    /**
-     * Returns the parent component of this producer.
-     *
-     * @return the parent component
-     */
-    public ComponentDefinition<?> getComponent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent component of this producer.
-     *
-     * @param parent the parent component
-     */
-    public void setParent(ComponentDefinition<?> parent) {
-        this.parent = parent;
     }
 
     /**
