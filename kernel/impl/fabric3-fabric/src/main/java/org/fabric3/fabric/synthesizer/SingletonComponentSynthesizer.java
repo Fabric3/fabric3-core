@@ -158,7 +158,8 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             // introspect the instance so it may be injected by the runtime with additional services
             SystemImplementation implementation = new SystemImplementation();
             implementation.setImplementationClass(implClassName);
-            InjectingComponentType componentType = implementationIntrospector.introspect(implClassName, context);
+            InjectingComponentType componentType = new InjectingComponentType(implClassName);
+            implementationIntrospector.introspect(componentType, context);
             implementation.setComponentType(componentType);
 
             ComponentDefinition<Implementation<?>> def = new ComponentDefinition<Implementation<?>>(name);

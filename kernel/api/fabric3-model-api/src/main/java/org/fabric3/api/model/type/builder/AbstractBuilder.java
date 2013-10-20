@@ -37,45 +37,24 @@
 */
 package org.fabric3.api.model.type.builder;
 
-import org.fabric3.api.model.type.component.ChannelDefinition;
-
 /**
- *
+ * Base builder class.
  */
-public class ChannelDefinitionBuilder extends AbstractBuilder {
-    public static final String RING_BUFFER = "ring.buffer";
+public abstract class AbstractBuilder {
 
-    private final ChannelDefinition definition;
-
-    /**
-     * Creates a builder.
-     *
-     * @param name the channel name
-     * @return the builder
-     */
-    public static ChannelDefinitionBuilder newBuilder(String name) {
-        return new ChannelDefinitionBuilder(name);
+    protected enum State {
+        MUTABLE, FROZEN
     }
 
-    public ChannelDefinitionBuilder type(String type) {
-        checkState();
-        definition.setType(type);
-        return this;
+    protected State state = State.MUTABLE;
+
+    protected void checkState() {
+        if (state == State.FROZEN) {
+            throw new IllegalStateException("Builder has already been used");
+        }
     }
 
-    /**
-     * Builds the channel definition.
-     *
-     * @return the definition
-     */
-    public ChannelDefinition build() {
-        checkState();
-        freeze();
-        return definition;
+    protected void freeze() {
+        state = State.FROZEN;
     }
-
-    protected ChannelDefinitionBuilder(String name) {
-        definition = new ChannelDefinition(name);
-    }
-
 }

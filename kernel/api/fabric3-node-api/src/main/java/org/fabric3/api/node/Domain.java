@@ -37,10 +37,12 @@
 */
 package org.fabric3.api.node;
 
+import javax.xml.namespace.QName;
 import java.net.URL;
 
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Composite;
 
 /**
  * The main API for accessing a service fabric domain.
@@ -63,6 +65,14 @@ public interface Domain {
      * @return the channel
      */
     <T> T getChannel(Class<T> interfaze, String name);
+
+    /**
+     * Deploys a composite.
+     *
+     * @param composite the composite
+     * @return the domain
+     */
+    Domain deploy(Composite composite);
 
     /**
      * Deploys a component.
@@ -96,6 +106,14 @@ public interface Domain {
      * @return the domain
      */
     Domain deploy(URL url);
+
+    /**
+     * Un-deploys a composite.
+     *
+     * @param name the composite name
+     * @return the domain
+     */
+    Domain undeploy(QName name);
 
     /**
      * Un-deploys the channel or component with the given name

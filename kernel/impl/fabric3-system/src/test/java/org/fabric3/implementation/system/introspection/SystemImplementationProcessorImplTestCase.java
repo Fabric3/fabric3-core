@@ -73,7 +73,8 @@ public class SystemImplementationProcessorImplTestCase extends TestCase {
         classVisitor.visit(EasyMock.isA(InjectingComponentType.class), EasyMock.eq(Simple.class), EasyMock.isA(IntrospectionContext.class));
         heuristic.applyHeuristics(EasyMock.isA(InjectingComponentType.class), EasyMock.eq(Simple.class), EasyMock.isA(IntrospectionContext.class));
         control.replay();
-        InjectingComponentType componentType = loader.introspect(Simple.class.getName(), context);
+        InjectingComponentType componentType = new InjectingComponentType(Simple.class.getName());
+        loader.introspect(componentType, context);
 
         assertNotNull(componentType);
         assertEquals(Simple.class.getName(), componentType.getImplClass());

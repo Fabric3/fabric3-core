@@ -66,6 +66,7 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class JavaImplementationProcessor implements ImplementationProcessor {
     private JavaContractProcessor contractProcessor;
+    private JavaImplementationIntrospector introspector;
     private IntrospectionHelper helper;
     private Map<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation>> annotationProcessors;
 
@@ -74,8 +75,11 @@ public class JavaImplementationProcessor implements ImplementationProcessor {
         this.annotationProcessors = processors;
     }
 
-    public JavaImplementationProcessor(@Reference JavaContractProcessor contractProcessor, @Reference IntrospectionHelper helper) {
+    public JavaImplementationProcessor(@Reference JavaContractProcessor contractProcessor,
+                                       @Reference JavaImplementationIntrospector introspector,
+                                       @Reference IntrospectionHelper helper) {
         this.contractProcessor = contractProcessor;
+        this.introspector = introspector;
         this.helper = helper;
     }
 
@@ -85,19 +89,19 @@ public class JavaImplementationProcessor implements ImplementationProcessor {
         }
         JavaImplementation implementation = (JavaImplementation) definition.getImplementation();
         Object instance = implementation.getInstance();
-        if (instance == null) {
-            return;
-        }
         InjectingComponentType componentType = implementation.getComponentType();
-        componentType.setScope("COMPOSITE");
+        if (instance == null) {
+            introspector.introspect(componentType, context);
+        } else {
+            componentType.setScope("COMPOSITE");
 
-        if (componentType.getServices().isEmpty()) {
-            // introspect services if not defined
-            addServiceDefinitions(instance, componentType, context);
+            if (componentType.getServices().isEmpty()) {
+                // introspect services if not defined
+                addServiceDefinitions(instance, componentType, context);
+            }
+
+            processAnnotations(instance, definition, context);
         }
-
-        processAnnotations(instance, definition, context);
-
     }
 
     @SuppressWarnings("unchecked")

@@ -47,7 +47,7 @@ import org.fabric3.api.model.type.component.PropertyValue;
 /**
  * Base builder for {@link ComponentDefinition}s.
  */
-public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBuilder> {
+public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBuilder> extends AbstractBuilder {
 
     /**
      * Adds a binding configuration to a service provided by the component.
@@ -57,6 +57,7 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
      * @return the builder
      */
     public T binding(String serviceName, BindingDefinition bindingDefinition) {
+        checkState();
         ComponentDefinition<?> definition = getDefinition();
         ComponentService service = definition.getServices().get(serviceName);
         if (service == null) {
@@ -75,6 +76,7 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
      * @return the builder
      */
     public T property(String name, Object value) {
+        checkState();
         PropertyValue propertyValue = new PropertyValue(name, value);
         getDefinition().add(propertyValue);
         return builder();
@@ -88,6 +90,7 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
      * @return the builder
      */
     public T propertyExpression(String name, String xpath) {
+        checkState();
         PropertyValue propertyValue = new PropertyValue(name, xpath);
         getDefinition().add(propertyValue);
         return builder();
@@ -100,6 +103,7 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
      * @return the builder
      */
     public T key(Object key) {
+        checkState();
         getDefinition().setKey(key.toString());
         return builder();
     }
@@ -111,6 +115,7 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
      * @return the builder
      */
     public T order(int order) {
+        checkState();
         getDefinition().setOrder(order);
         return builder();
     }
@@ -122,6 +127,7 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
      * @return the builder
      */
     public T implementationIntent(QName intent) {
+        checkState();
         getDefinition().getImplementation().addIntent(intent);
         return builder();
     }
@@ -133,6 +139,7 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
      * @return the builder
      */
     public T componentIntent(QName intent) {
+        checkState();
         getDefinition().addIntent(intent);
         return builder();
     }

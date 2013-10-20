@@ -90,7 +90,8 @@ public class SystemImplementationLoader extends AbstractValidatingTypeLoader<Sys
         LoaderUtil.skipToEndElement(reader);
 
         implementation.setImplementationClass(implClass);
-        InjectingComponentType componentType = implementationIntrospector.introspect(implClass, introspectionContext);
+        InjectingComponentType componentType = new InjectingComponentType(implClass);
+        implementationIntrospector.introspect(componentType, introspectionContext);
         implementation.setComponentType(componentType);
         return implementation;
     }

@@ -48,6 +48,7 @@ import org.fabric3.api.model.type.builder.JavaComponentDefinitionBuilder;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
@@ -81,7 +82,7 @@ public class ProvisionerImpl implements Provisioner {
     }
 
     public void deploy(String name, Object instance, Class<?>... interfaces) throws DeploymentException {
-        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext(Names.HOST_CONTRIBUTION, getClass().getClassLoader());
 
         ComponentDefinition<?> definition = JavaComponentDefinitionBuilder.newBuilder(name, instance).build();
         if (interfaces == null) {
@@ -109,8 +110,30 @@ public class ProvisionerImpl implements Provisioner {
         deploy(definition);
     }
 
+    public void deploy(Composite composite) throws DeploymentException {
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext(Names.HOST_CONTRIBUTION, getClass().getClassLoader());
+
+        // enrich the model
+        for (ComponentDefinition<? extends Implementation<?>> definition : composite.getComponents().values()) {
+            componentProcessor.process(definition, context);
+        }
+        checkErrors(context);
+
+        // validate model
+
+        setContributionUris(composite);
+
+        try {
+            addCompositeToContribution(composite);
+            domain.include(composite, false);
+        } catch (org.fabric3.api.host.domain.DeploymentException e) {
+            // TODO remove the contribution
+            throw new DeploymentException(e);
+        }
+    }
+
     public void deploy(ComponentDefinition<?> definition) throws DeploymentException {
-        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext(Names.HOST_CONTRIBUTION, getClass().getClassLoader());
         definition.setContributionUri(Names.HOST_CONTRIBUTION);
 
         componentProcessor.process(definition, context);
@@ -137,13 +160,10 @@ public class ProvisionerImpl implements Provisioner {
         }
     }
 
-    public void undeploy(String name) throws DeploymentException {
+    public void undeploy(QName name) throws DeploymentException {
         try {
 
-            // find the wrapper composite used to deploy it and remove it from the host contribution
-            QName compositeName = new QName(HostNamespaces.SYNTHESIZED, name);
-
-            QNameSymbol symbol = new QNameSymbol(compositeName);
+            QNameSymbol symbol = new QNameSymbol(name);
             ResourceElement<QNameSymbol, Composite> element = metaDataStore.find(Composite.class, symbol);
             if (element == null) {
                 throw new DeploymentException("Component not deployed: " + name);
@@ -160,6 +180,12 @@ public class ProvisionerImpl implements Provisioner {
         }
     }
 
+    public void undeploy(String name) throws DeploymentException {
+        // find the wrapper composite used to deploy it and remove it from the host contribution
+        QName compositeName = new QName(HostNamespaces.SYNTHESIZED, name);
+        undeploy(compositeName);
+    }
+
     /**
      * Creates a wrapper composite used to deploy the component to the domain. Also registers the wrapper with the Host contribution.
      *
@@ -170,6 +196,14 @@ public class ProvisionerImpl implements Provisioner {
         QName compositeName = new QName(HostNamespaces.SYNTHESIZED, name);
         Composite wrapper = new Composite(compositeName);
         wrapper.setContributionUri(Names.HOST_CONTRIBUTION);
+
+        addCompositeToContribution(wrapper);
+
+        return wrapper;
+    }
+
+    private void addCompositeToContribution(Composite wrapper) {
+        QName compositeName = wrapper.getName();
         Contribution contribution = metaDataStore.find(Names.HOST_CONTRIBUTION);
         Resource resource = new Resource(contribution, null, "text/vnd.fabric3.composite+xml");
         QNameSymbol symbol = new QNameSymbol(compositeName);
@@ -177,11 +211,10 @@ public class ProvisionerImpl implements Provisioner {
         resource.addResourceElement(element);
         resource.setState(ResourceState.PROCESSED);
         contribution.addResource(resource);
-        return wrapper;
     }
 
     private void addService(Class<?> interfaze, ComponentDefinition<?> definition) throws ValidationDeploymentException {
-        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
+        DefaultIntrospectionContext context = new DefaultIntrospectionContext(Names.HOST_CONTRIBUTION, getClass().getClassLoader());
         JavaServiceContract contract = contractProcessor.introspect(interfaze, context);
         ServiceDefinition serviceDefinition = new ServiceDefinition(interfaze.getSimpleName(), contract);
         definition.getComponentType().add(serviceDefinition);
@@ -194,6 +227,19 @@ public class ProvisionerImpl implements Provisioner {
 
         if (context.hasErrors()) {
             throw new ValidationDeploymentException(errors, warnings);
+        }
+    }
+
+    private void setContributionUris(Composite composite) {
+        composite.setContributionUri(Names.HOST_CONTRIBUTION);
+        for (ComponentDefinition<? extends Implementation<?>> definition : composite.getComponents().values()) {
+            definition.setContributionUri(Names.HOST_CONTRIBUTION);
+            if (definition.getComponentType() instanceof Composite) {
+                setContributionUris((Composite) definition.getComponentType());
+            }
+        }
+        for (ChannelDefinition definition : composite.getChannels().values()) {
+            definition.setContributionUri(Names.HOST_CONTRIBUTION);
         }
     }
 

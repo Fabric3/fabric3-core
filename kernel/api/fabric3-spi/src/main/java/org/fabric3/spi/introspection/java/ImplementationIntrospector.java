@@ -46,12 +46,11 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
 public interface ImplementationIntrospector {
 
     /**
-     * Introspects an implementation and derives the associated component type. If errors or warnings are encountered, they will be collated in the
+     * Introspects an implementation and populates its component type. If errors or warnings are encountered, they will be collated in the
      * IntrospectionContext.
      *
-     * @param className the fully qualified class name
-     * @param context   the introspection context
-     * @return the introspected component type
+     * @param componentType the component type
+     * @param context       the introspection context
      */
-    InjectingComponentType introspect(String className, IntrospectionContext context);
+    void introspect(InjectingComponentType componentType, IntrospectionContext context);
 }

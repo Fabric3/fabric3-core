@@ -43,9 +43,7 @@
  */
 package org.fabric3.implementation.system.introspection;
 
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.implementation.system.model.SystemImplementation;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -55,7 +53,7 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.InvalidImplementation;
 import org.fabric3.spi.introspection.java.MissingResource;
 import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Loads a system component type
@@ -73,11 +71,9 @@ public class SystemImplementationIntrospectorImpl implements ImplementationIntro
         this.helper = helper;
     }
 
-    public InjectingComponentType introspect(String className, IntrospectionContext context) {
-        SystemImplementation implementation = new SystemImplementation();
-        InjectingComponentType componentType = new InjectingComponentType(className);
+    public void introspect(InjectingComponentType componentType, IntrospectionContext context) {
+        String className = componentType.getImplClass();
         componentType.setScope("COMPOSITE");
-        implementation.setComponentType(componentType);
 
         ClassLoader cl = context.getClassLoader();
         Class<?> implClass;
@@ -93,12 +89,12 @@ public class SystemImplementationIntrospectorImpl implements ImplementationIntro
             } else {
                 context.addError(new MissingResource("System implementation class not found on classpath", className, componentType));
             }
-            return componentType;
+            return;
         }
         if (implClass.isInterface()) {
             InvalidImplementation failure = new InvalidImplementation("Implementation class is an interface", implClass, componentType);
             context.addError(failure);
-            return componentType;
+            return;
         }
         TypeMapping mapping = context.getTypeMapping(implClass);
         if (mapping == null) {
@@ -110,6 +106,5 @@ public class SystemImplementationIntrospectorImpl implements ImplementationIntro
         classVisitor.visit(componentType, implClass, context);
 
         heuristic.applyHeuristics(componentType, implClass, context);
-        return componentType;
     }
 }

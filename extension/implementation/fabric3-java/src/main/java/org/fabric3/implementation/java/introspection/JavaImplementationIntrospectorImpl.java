@@ -65,8 +65,8 @@ public class JavaImplementationIntrospectorImpl implements JavaImplementationInt
         this.helper = helper;
     }
 
-    public InjectingComponentType introspect(String className, IntrospectionContext context) {
-        InjectingComponentType componentType = new InjectingComponentType(className);
+    public void introspect(InjectingComponentType componentType, IntrospectionContext context) {
+        String className = componentType.getImplClass();
         componentType.setScope("STATELESS");
 
         ClassLoader cl = context.getClassLoader();
@@ -83,12 +83,12 @@ public class JavaImplementationIntrospectorImpl implements JavaImplementationInt
             } else {
                 context.addError(new ImplementationArtifactNotFound(className, componentType));
             }
-            return componentType;
+            return;
         }
         if (implClass.isInterface()) {
             InvalidImplementation failure = new InvalidImplementation("Implementation class is an interface", implClass, componentType);
             context.addError(failure);
-            return componentType;
+            return;
         }
 
         TypeMapping mapping = context.getTypeMapping(implClass);
@@ -106,11 +106,9 @@ public class JavaImplementationIntrospectorImpl implements JavaImplementationInt
             context.addError(new ImplementationArtifactNotFound(className, e.getMessage(), componentType));
         }
         validateScope(componentType, implClass, context);
-        return componentType;
-
     }
 
-    private void validateScope(InjectingComponentType componentType, Class<?> implClass,  IntrospectionContext context) {
+    private void validateScope(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         String scope = componentType.getScope();
         if (componentType.isEagerInit() && !Scope.COMPOSITE.getScope().equals(scope) && !Scope.DOMAIN.getScope().equals(scope)) {
             EagerInitNotSupported warning = new EagerInitNotSupported(implClass, componentType);

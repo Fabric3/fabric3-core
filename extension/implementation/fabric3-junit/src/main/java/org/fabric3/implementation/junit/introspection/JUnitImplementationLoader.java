@@ -74,7 +74,8 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
 
         validateAttributes(reader, context, implementation);
 
-        InjectingComponentType componentType = introspector.introspect(className, context);
+        InjectingComponentType componentType = new InjectingComponentType(className);
+        introspector.introspect(componentType, context);
         implementation.setComponentType(componentType);
 
         // Add a binding only on the JUnit service (which is the impl class) so wires are generated to the test operations.
@@ -96,41 +97,41 @@ public class JUnitImplementationLoader extends AbstractValidatingTypeLoader<JUni
         String name;
         while (true) {
             switch (reader.next()) {
-            case START_ELEMENT:
-                Location startLocation = reader.getLocation();
+                case START_ELEMENT:
+                    Location startLocation = reader.getLocation();
 
-                name = reader.getName().getLocalPart();
-                if ("configuration".equals(name)) {
-                    configuration = new ContextConfiguration();
-                }
-                if ("username".equals(name)) {
-                    if (configuration == null) {
-                        InvalidContextConfiguration error =
-                                new InvalidContextConfiguration("Username element must be contained within a configuration element",
-                                                                startLocation,
-                                                                implementation);
-                        context.addError(error);
-                    } else {
-                        configuration.setUsername(reader.getElementText());
+                    name = reader.getName().getLocalPart();
+                    if ("configuration".equals(name)) {
+                        configuration = new ContextConfiguration();
                     }
-                } else if ("password".equals(name)) {
-                    if (configuration == null) {
-                        InvalidContextConfiguration error =
-                                new InvalidContextConfiguration("Password element must be contained within a configuration element",
-                                                                startLocation,
-                                                                implementation);
-                        context.addError(error);
-                    } else {
-                        configuration.setPassword(reader.getElementText());
+                    if ("username".equals(name)) {
+                        if (configuration == null) {
+                            InvalidContextConfiguration error = new InvalidContextConfiguration(
+                                    "Username element must be contained within a configuration element",
+                                    startLocation,
+                                    implementation);
+                            context.addError(error);
+                        } else {
+                            configuration.setUsername(reader.getElementText());
+                        }
+                    } else if ("password".equals(name)) {
+                        if (configuration == null) {
+                            InvalidContextConfiguration error = new InvalidContextConfiguration(
+                                    "Password element must be contained within a configuration element",
+                                    startLocation,
+                                    implementation);
+                            context.addError(error);
+                        } else {
+                            configuration.setPassword(reader.getElementText());
+                        }
                     }
-                }
-                break;
-            case END_ELEMENT:
-                name = reader.getName().getLocalPart();
-                if ("junit".equals(name)) {
-                    return configuration;
-                }
-                break;
+                    break;
+                case END_ELEMENT:
+                    name = reader.getName().getLocalPart();
+                    if ("junit".equals(name)) {
+                        return configuration;
+                    }
+                    break;
             }
         }
     }

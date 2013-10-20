@@ -37,59 +37,53 @@
 */
 package org.fabric3.implementation.timer.introspection;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.java.introspection.JavaImplementationIntrospector;
 import org.fabric3.implementation.timer.model.TimerImplementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 
 /**
  *
  */
 public class TimerImplementationLoaderTestCase extends TestCase {
     TimerImplementationLoader loader;
-    private static final String RECURRING =
-            "<implementation.timer intervalClass='" + TestInterval.class.getName() + "' class='" + TestTimer.class.getName() + "' />";
+    private static final String RECURRING = "<implementation.timer intervalClass='" + TestInterval.class.getName() + "' class='" + TestTimer.class.getName()
+                                            + "' />";
 
-    private static final String FIXED =
-            "<implementation.timer fixedRate='1000' unit='seconds' initialDelay='2000' class='" + TestTimer.class.getName() + "' />";
+    private static final String FIXED = "<implementation.timer fixedRate='1000' unit='seconds' initialDelay='2000' class='" + TestTimer.class.getName()
+                                        + "' />";
 
-    private static final String INTERVAL =
-            "<implementation.timer repeatInterval='1000' unit='seconds' initialDelay='2000' class='" + TestTimer.class.getName() + "' />";
+    private static final String INTERVAL = "<implementation.timer repeatInterval='1000' unit='seconds' initialDelay='2000' class='" + TestTimer.class.getName()
+                                           + "' />";
 
-    private static final String FIRE_ONCE =
-            "<implementation.timer fireOnce='1000' unit='seconds' class='" + TestTimer.class.getName() + "' />";
+    private static final String FIRE_ONCE = "<implementation.timer fireOnce='1000' unit='seconds' class='" + TestTimer.class.getName() + "' />";
 
-    private static final String ILLEGAL_ATTRIBUTE =
-            "<implementation.timer fireOnce='1000' foo='seconds' class='" + TestTimer.class.getName() + "' />";
+    private static final String ILLEGAL_ATTRIBUTE = "<implementation.timer fireOnce='1000' foo='seconds' class='" + TestTimer.class.getName() + "' />";
 
-    private static final String ILLEGAL_FIXED_AND_REPEAT =
-            "<implementation.timer fixedRate='1000' repeatInterval='2000' class='" + TestTimer.class.getName() + "' />";
+    private static final String ILLEGAL_FIXED_AND_REPEAT = "<implementation.timer fixedRate='1000' repeatInterval='2000' class='" + TestTimer.class.getName()
+                                                           + "' />";
 
-    private static final String INVALID_TIMER_IMPLEMENTATION =
-            "<implementation.timer intervalClass='" + TestInterval.class.getName() + "' class='" + TestCase.class.getName() + "' />";
+    private static final String INVALID_TIMER_IMPLEMENTATION = "<implementation.timer intervalClass='" + TestInterval.class.getName() + "' class='"
+                                                               + TestCase.class.getName() + "' />";
 
-    private static final String INVALID_INTERVAL_CLASS =
-            "<implementation.timer intervalClass='" + TestCase.class.getName() + "' class='" + TestTimer.class.getName() + "' />";
+    private static final String INVALID_INTERVAL_CLASS = "<implementation.timer intervalClass='" + TestCase.class.getName() + "' class='"
+                                                         + TestTimer.class.getName() + "' />";
 
-    private static final String INTERVAL_METHOD =
-            "<implementation.timer class='" + TestIntervalTimer.class.getName() + "' />";
+    private static final String INTERVAL_METHOD = "<implementation.timer class='" + TestIntervalTimer.class.getName() + "' />";
 
-    private static final String INVALID_INTERVAL_METHOD =
-            "<implementation.timer class='" + TestInvalidIntervalTimer.class.getName() + "' />";
-
+    private static final String INVALID_INTERVAL_METHOD = "<implementation.timer class='" + TestInvalidIntervalTimer.class.getName() + "' />";
 
     private XMLInputFactory xmlFactory;
     private DefaultIntrospectionContext context;
@@ -169,7 +163,7 @@ public class TimerImplementationLoaderTestCase extends TestCase {
         xmlFactory = XMLInputFactory.newInstance();
         context = new DefaultIntrospectionContext(URI.create("test"), getClass().getClassLoader());
         JavaImplementationIntrospector processor = EasyMock.createMock(JavaImplementationIntrospector.class);
-        EasyMock.expect(processor.introspect(EasyMock.isA(String.class), EasyMock.eq(context))).andReturn(new InjectingComponentType());
+        processor.introspect(EasyMock.isA(InjectingComponentType.class), EasyMock.eq(context));
         EasyMock.replay(processor);
         LoaderHelper helper = EasyMock.createNiceMock(LoaderHelper.class);
         loader = new TimerImplementationLoader(processor, helper);
@@ -181,6 +175,5 @@ public class TimerImplementationLoaderTestCase extends TestCase {
         reader.nextTag();
         return reader;
     }
-
 
 }

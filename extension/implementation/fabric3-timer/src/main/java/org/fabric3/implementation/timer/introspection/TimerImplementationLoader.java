@@ -102,7 +102,9 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
 
         loaderHelper.loadPolicySetsAndIntents(implementation, reader, context);
 
-        InjectingComponentType componentType = introspector.introspect(implementation.getImplementationClass(), context);
+        String implClass = implementation.getImplementationClass();
+        InjectingComponentType componentType = new InjectingComponentType(implClass);
+        introspector.introspect(componentType, context);
         implementation.setComponentType(componentType);
 
         LoaderUtil.skipToEndElement(reader);

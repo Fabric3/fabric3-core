@@ -55,7 +55,7 @@ public class JavaComponentDefinitionBuilder extends ComponentDefinitionBuilder<J
      * @return the builder
      */
     public static JavaComponentDefinitionBuilder newBuilder(String name, Class<?> clazz) {
-        return new JavaComponentDefinitionBuilder(name).implementation(clazz);
+        return new JavaComponentDefinitionBuilder(name, clazz).implementation(clazz);
     }
 
     /**
@@ -68,7 +68,7 @@ public class JavaComponentDefinitionBuilder extends ComponentDefinitionBuilder<J
     public static JavaComponentDefinitionBuilder newBuilder(Class<?> clazz) {
         // derive the name: the interface name if there is one interface or the implementation name
         String name = clazz.getInterfaces().length == 1 ? clazz.getInterfaces()[0].getSimpleName() : clazz.getSimpleName();
-        return new JavaComponentDefinitionBuilder(name).implementation(clazz);
+        return new JavaComponentDefinitionBuilder(name, clazz).implementation(clazz);
     }
 
     /**
@@ -82,31 +82,36 @@ public class JavaComponentDefinitionBuilder extends ComponentDefinitionBuilder<J
         return new JavaComponentDefinitionBuilder(name, instance);
     }
 
-    protected JavaComponentDefinitionBuilder(String name, Object instance) {
-        Class<?> clazz = instance.getClass();
-        InjectingComponentType componentType = new InjectingComponentType();
-        JavaImplementation implementation = new JavaImplementation(instance);
-        implementation.setComponentType(componentType);
-        implementation.setImplementationClass(clazz.getName());
-        definition = new ComponentDefinition<JavaImplementation>(name);
-        definition.setImplementation(implementation);
-    }
-
-    protected JavaComponentDefinitionBuilder(String name) {
-        InjectingComponentType componentType = new InjectingComponentType();
-        JavaImplementation implementation = new JavaImplementation();
-        implementation.setComponentType(componentType);
-        definition = new ComponentDefinition<JavaImplementation>(name);
-        definition.setImplementation(implementation);
-    }
-
     public ComponentDefinition<JavaImplementation> build() {
+        checkState();
+        freeze();
         return definition;
     }
 
     @Override
     protected ComponentDefinition<?> getDefinition() {
         return definition;
+    }
+
+    protected JavaComponentDefinitionBuilder(String name, Object instance) {
+        Class<?> clazz = instance.getClass();
+        String className = clazz.getName();
+        InjectingComponentType componentType = new InjectingComponentType(className);
+        JavaImplementation implementation = new JavaImplementation(instance);
+        implementation.setComponentType(componentType);
+        implementation.setImplementationClass(className);
+        definition = new ComponentDefinition<JavaImplementation>(name);
+        definition.setImplementation(implementation);
+    }
+
+    protected JavaComponentDefinitionBuilder(String name, Class<?> clazz) {
+        String className = clazz.getName();
+        InjectingComponentType componentType = new InjectingComponentType(className);
+        JavaImplementation implementation = new JavaImplementation();
+        implementation.setImplementationClass(className);
+        implementation.setComponentType(componentType);
+        definition = new ComponentDefinition<JavaImplementation>(name);
+        definition.setImplementation(implementation);
     }
 
     private JavaComponentDefinitionBuilder implementation(Class<?> clazz) {

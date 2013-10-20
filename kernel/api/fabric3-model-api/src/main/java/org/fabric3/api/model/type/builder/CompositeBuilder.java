@@ -52,7 +52,7 @@ import org.fabric3.api.model.type.component.Multiplicity;
 /**
  * Builds {@link Composite}s.
  */
-public class CompositeBuilder {
+public class CompositeBuilder extends AbstractBuilder {
     private Composite composite;
 
     /**
@@ -72,6 +72,7 @@ public class CompositeBuilder {
      * @return the builder
      */
     public CompositeBuilder add(ComponentDefinition<?> definition) {
+        checkState();
         composite.add(definition);
         return this;
     }
@@ -85,6 +86,7 @@ public class CompositeBuilder {
      * @return the builder
      */
     public CompositeBuilder promoteService(String name, String promoted) {
+        checkState();
         CompositeService compositeService = new CompositeService(name, URI.create(promoted));
         composite.add(compositeService);
         return this;
@@ -99,6 +101,7 @@ public class CompositeBuilder {
      * @return the builder
      */
     public CompositeBuilder promoteReference(String name, String promoted) {
+        checkState();
         CompositeReference compositeService = new CompositeReference(name, Collections.singletonList(URI.create(promoted)), Multiplicity.ONE_ONE);
         composite.add(compositeService);
         return this;
@@ -113,6 +116,7 @@ public class CompositeBuilder {
      * @return the builder
      */
     public CompositeBuilder promoteReferences(String name, Multiplicity multiplicity, List<String> promoted) {
+        checkState();
         List<URI> uris = new ArrayList<URI>();
         for (String value : promoted) {
             uris.add(URI.create(value));
@@ -128,6 +132,8 @@ public class CompositeBuilder {
      * @return the built composite
      */
     public Composite build() {
+        checkState();
+        freeze();
         return composite;
     }
 

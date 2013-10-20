@@ -37,8 +37,11 @@
 */
 package org.fabric3.node.domain;
 
+import javax.xml.namespace.QName;
+
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Composite;
 
 /**
  * Deploys an instance as a component to the domain.
@@ -54,6 +57,14 @@ public interface Provisioner {
      * @throws DeploymentException if there is a deployment error
      */
     void deploy(String name, Object instance, Class<?>... interfaces) throws DeploymentException;
+
+    /**
+     * Deploys a composite.
+     *
+     * @param composite the composite
+     * @throws DeploymentException if there is a deployment error
+     */
+    void deploy(Composite composite) throws DeploymentException;
 
     /**
      * Deploys a component corresponding to the given definition.
@@ -75,8 +86,15 @@ public interface Provisioner {
      * Un-deploys the channel or component with the given name
      *
      * @param name the channel or component name
-     * @throws DeploymentException if there is a un-deployment error
+     * @throws DeploymentException if there is an un-deployment error
      */
     void undeploy(String name) throws DeploymentException;
 
+    /**
+     * Un-deploys a composite.
+     *
+     * @param name the composite name
+     * @throws DeploymentException if there is an un-deployment error
+     */
+    void undeploy(QName name) throws DeploymentException;
 }

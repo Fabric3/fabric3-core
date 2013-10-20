@@ -37,6 +37,7 @@
 */
 package org.fabric3.fabric.domain;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,10 +48,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.namespace.QName;
 
-import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
-import org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiator;
 import org.fabric3.api.host.RuntimeMode;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.AssemblyException;
@@ -64,16 +62,13 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.api.model.type.definitions.PolicySet;
-import org.fabric3.spi.domain.AllocationException;
-import org.fabric3.spi.domain.Allocator;
+import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
+import org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiator;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
-import org.fabric3.spi.domain.DeployListener;
-import org.fabric3.spi.domain.Deployer;
-import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.deployment.generator.Deployment;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.Generator;
@@ -81,6 +76,11 @@ import org.fabric3.spi.deployment.generator.policy.PolicyActivationException;
 import org.fabric3.spi.deployment.generator.policy.PolicyAttacher;
 import org.fabric3.spi.deployment.generator.policy.PolicyRegistry;
 import org.fabric3.spi.deployment.generator.policy.PolicyResolutionException;
+import org.fabric3.spi.domain.AllocationException;
+import org.fabric3.spi.domain.Allocator;
+import org.fabric3.spi.domain.DeployListener;
+import org.fabric3.spi.domain.Deployer;
+import org.fabric3.spi.domain.DeploymentPackage;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.CopyUtil;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -400,8 +400,8 @@ public abstract class AbstractDomain implements Domain {
             QNameSymbol symbol = new QNameSymbol(deployable);
             ResourceElement<QNameSymbol, Composite> element = metadataStore.find(Composite.class, symbol);
             if (element == null) {
-                throw new DeploymentException("Contribution containing the deployable not found: " + deployable
-                                                      + ". The domain journal (domain.xml) may be out of sync.");
+                throw new DeploymentException(
+                        "Contribution containing the deployable not found: " + deployable + ". The domain journal (domain.xml) may be out of sync.");
             }
             Contribution contribution = element.getResource().getContribution();
             if (contribution == null) {
@@ -437,7 +437,6 @@ public abstract class AbstractDomain implements Domain {
         instantiateAndDeploy(deployableComposites, contributions, merged, true);
         // do not notify listeners
     }
-
 
     /**
      * Returns true if the domain is contained in a single VM.
@@ -493,9 +492,9 @@ public abstract class AbstractDomain implements Domain {
     }
 
     /**
-     * Instantiates and optionally deploys deployables from a set of contributions. Deployment is performed if recovery mode is false or the runtime
-     * is operating in single VM mode. When recovering in a distributed domain, the components contained in the deployables will be instantiated but
-     * not deployed to zones. This is because the domain can run headless (i.e. without a controller) and may already be hosting deployed components.
+     * Instantiates and optionally deploys deployables from a set of contributions. Deployment is performed if recovery mode is false or the runtime is
+     * operating in single VM mode. When recovering in a distributed domain, the components contained in the deployables will be instantiated but not deployed
+     * to zones. This is because the domain can run headless (i.e. without a controller) and may already be hosting deployed components.
      *
      * @param deployables   the deployables
      * @param contributions the contributions to deploy
@@ -568,7 +567,11 @@ public abstract class AbstractDomain implements Domain {
 
         QName name = composite.getName();
         QNameSymbol symbol = new QNameSymbol(name);
-        Contribution contribution = metadataStore.find(Composite.class, symbol).getResource().getContribution();
+        ResourceElement<QNameSymbol, Composite> element = metadataStore.find(Composite.class, symbol);
+        if (element == null) {
+            throw new DeploymentException("Composite not found in metadata store: " + name);
+        }
+        Contribution contribution = element.getResource().getContribution();
         if (ContributionState.INSTALLED != contribution.getState()) {
             throw new ContributionNotInstalledException("Contribution is not installed: " + contribution.getUri());
         }
@@ -684,8 +687,7 @@ public abstract class AbstractDomain implements Domain {
      * Activates and optionally deploys definitions to a domain.
      *
      * @param uri     the URI of the contribution containing the definitions to activate
-     * @param recover true if recovery is being performed. If true and the runtime is in distributed (controller) mode, definitions will only be
-     *                activated.
+     * @param recover true if recovery is being performed. If true and the runtime is in distributed (controller) mode, definitions will only be activated.
      * @throws DeploymentException if there is an error activating definitions
      */
     private synchronized void activateAndDeployDefinitions(URI uri, boolean recover) throws DeploymentException {
@@ -703,7 +705,6 @@ public abstract class AbstractDomain implements Domain {
             }
         }
     }
-
 
     /**
      * Activates policy definitions contained in the contribution.
@@ -748,7 +749,6 @@ public abstract class AbstractDomain implements Domain {
         }
     }
 
-
     private void undeployPolicySets(Set<PolicySet> policySets) throws DeploymentException {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
         if (isTransactional()) {
@@ -771,6 +771,5 @@ public abstract class AbstractDomain implements Domain {
             throw new DeploymentException(e);
         }
     }
-
 
 }

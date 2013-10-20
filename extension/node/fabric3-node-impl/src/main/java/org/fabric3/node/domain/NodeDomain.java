@@ -37,12 +37,14 @@
 */
 package org.fabric3.node.domain;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 
 import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.node.Domain;
 import org.fabric3.api.host.contribution.ContributionNotFoundException;
 import org.fabric3.api.host.contribution.ContributionService;
@@ -93,6 +95,16 @@ public class NodeDomain implements Domain {
         }
     }
 
+    public Domain deploy(Composite composite) {
+        try {
+            provisioner.deploy(composite);
+            return this;
+        } catch (DeploymentException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+
     public Domain deploy(String name, Object instance, Class<?>... interfaces) {
         try {
             provisioner.deploy(name, instance, interfaces);
@@ -105,6 +117,15 @@ public class NodeDomain implements Domain {
     public Domain deploy(ComponentDefinition<?> definition) {
         try {
             provisioner.deploy(definition);
+            return this;
+        } catch (DeploymentException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    public Domain undeploy(QName name) {
+        try {
+            provisioner.undeploy(name);
             return this;
         } catch (DeploymentException e) {
             throw new ServiceRuntimeException(e);

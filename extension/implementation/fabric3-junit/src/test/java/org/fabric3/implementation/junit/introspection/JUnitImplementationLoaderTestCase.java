@@ -37,21 +37,20 @@
 */
 package org.fabric3.implementation.junit.introspection;
 
-import java.io.StringReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.StringReader;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-
-import org.fabric3.implementation.junit.model.JUnitBindingDefinition;
-import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.implementation.junit.model.JUnitBindingDefinition;
+import org.fabric3.implementation.junit.model.JUnitImplementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 
 /**
@@ -59,13 +58,12 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
  */
 public class JUnitImplementationLoaderTestCase extends TestCase {
     private static final String XML = "<junit class='org.fabric3.test.Foo'/>";
-    private static final String CONFIGURATION_XML =
-            "<junit class='org.fabric3.test.Foo'>" +
-                    "   <configuration>" +
-                    "      <username>username</username>" +
-                    "      <password>password</password>" +
-                    "   </configuration>" +
-                    "</junit>";
+    private static final String CONFIGURATION_XML = "<junit class='org.fabric3.test.Foo'>" +
+                                                    "   <configuration>" +
+                                                    "      <username>username</username>" +
+                                                    "      <password>password</password>" +
+                                                    "   </configuration>" +
+                                                    "</junit>";
 
     private JUnitImplementationLoader loader;
 
@@ -94,10 +92,10 @@ public class JUnitImplementationLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         JUnitImplementationIntrospector processor = EasyMock.createNiceMock(JUnitImplementationIntrospector.class);
-        processor.introspect(EasyMock.isA(String.class), EasyMock.isA(IntrospectionContext.class));
+        processor.introspect(EasyMock.isA(InjectingComponentType.class), EasyMock.isA(IntrospectionContext.class));
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
-            public Object answer() throws Throwable {
-                InjectingComponentType componentType = new InjectingComponentType();
+            public Void answer() throws Throwable {
+                InjectingComponentType componentType = (InjectingComponentType) EasyMock.getCurrentArguments()[0];
                 ServiceDefinition serviceDefinition = new ServiceDefinition("Foo");
                 serviceDefinition.setServiceContract(new JavaServiceContract() {
                     private static final long serialVersionUID = 6696779955276690454L;
@@ -107,7 +105,7 @@ public class JUnitImplementationLoaderTestCase extends TestCase {
                     }
                 });
                 componentType.add(serviceDefinition);
-                return componentType;
+                return null;
             }
         });
         EasyMock.replay(processor);

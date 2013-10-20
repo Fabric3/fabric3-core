@@ -64,8 +64,8 @@ public class JUnitImplementationIntrospectorImpl implements JUnitImplementationI
         this.helper = helper;
     }
 
-    public InjectingComponentType introspect(String className, IntrospectionContext context) {
-        InjectingComponentType componentType = new InjectingComponentType(className);
+    public void introspect(InjectingComponentType componentType, IntrospectionContext context) {
+        String className = componentType.getImplClass();
         componentType.setScope("STATELESS");
 
         ClassLoader cl = context.getClassLoader();
@@ -81,7 +81,7 @@ public class JUnitImplementationIntrospectorImpl implements JUnitImplementationI
             } else {
                 context.addError(new ImplementationArtifactNotFound(className, componentType));
             }
-            return componentType;
+            return;
         }
         TypeMapping mapping = context.getTypeMapping(implClass);
         if (mapping == null) {
@@ -93,6 +93,5 @@ public class JUnitImplementationIntrospectorImpl implements JUnitImplementationI
         classVisitor.visit(componentType, implClass, context);
 
         heuristic.applyHeuristics(componentType, implClass, context);
-        return componentType;
     }
 }
