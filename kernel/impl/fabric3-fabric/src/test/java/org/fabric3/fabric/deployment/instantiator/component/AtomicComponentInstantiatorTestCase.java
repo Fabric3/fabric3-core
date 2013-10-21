@@ -43,19 +43,15 @@
  */
 package org.fabric3.fabric.deployment.instantiator.component;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collections;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentConsumer;
 import org.fabric3.api.model.type.component.ComponentDefinition;
@@ -75,6 +71,7 @@ import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
 import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.component.Target;
+import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
@@ -83,6 +80,8 @@ import org.fabric3.spi.model.instance.LogicalProperty;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *

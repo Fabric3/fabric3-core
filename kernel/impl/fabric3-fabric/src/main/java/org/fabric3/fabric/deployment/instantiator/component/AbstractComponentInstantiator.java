@@ -37,9 +37,6 @@
 */
 package org.fabric3.fabric.deployment.instantiator.component;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Map;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -51,21 +48,23 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathVariableResolver;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Map;
 
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentType;
+import org.fabric3.api.model.type.component.Property;
+import org.fabric3.api.model.type.component.PropertyValue;
+import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
+import org.fabric3.spi.model.instance.LogicalComponent;
+import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.fabric3.spi.model.instance.LogicalProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.ComponentType;
-import org.fabric3.api.model.type.component.Property;
-import org.fabric3.api.model.type.component.PropertyValue;
-import org.fabric3.spi.model.instance.LogicalComponent;
-import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalProperty;
 
 /**
  * Contains functionality common to different component instantiators.
@@ -79,7 +78,6 @@ public abstract class AbstractComponentInstantiator {
         DOCUMENT_FACTORY.setNamespaceAware(true);
         XPATH_FACTORY = XPathFactory.newInstance();
     }
-
 
     /**
      * Set the initial actual property values of a component.
@@ -97,50 +95,55 @@ public abstract class AbstractComponentInstantiator {
         for (Property property : componentType.getProperties().values()) {
             String name = property.getName();
             PropertyValue propertyValue = propertyValues.get(name);
-
-            Document value;
-            if (propertyValue == null) {
-                // use default value from component type
-                value = property.getDefaultValue();
-            } else {
-                // the spec defines the following sequence
-                if (propertyValue.getFile() != null) {
-                    // load the value from an external resource
-                    value = loadValueFromFile(property.getName(), propertyValue.getFile(), component, context);
-                } else if (propertyValue.getSource() != null) {
-                    // get the value by evaluating an XPath against the composite properties
-                    try {
-                        NamespaceContext nsContext = propertyValue.getNamespaceContext();
-                        value = deriveValueFromXPath(propertyValue, parent, nsContext);
-                    } catch (PropertyTypeException e) {
-                        InvalidProperty error = new InvalidProperty(name, component, e);
-                        context.addError(error);
-                        return;
-                    }
-                } else {
-                    // use inline XML file
-                    value = propertyValue.getValue();
-                }
-
-            }
-            if (property.isRequired() && value == null) {
-                // The XPath expression returned an empty value. Since the property is required, throw an exception
-                PropertySourceNotFound error = new PropertySourceNotFound(name, component);
-                context.addError(error);
-            } else if (!property.isRequired() && value == null) {
-                // The XPath expression returned an empty value. Since the property is optional, ignore it
-                continue;
-            } else {
-                // set the property value
-                boolean many = property.isMany();
-                LogicalProperty logicalProperty;
-                QName type = property.getType();
-                if (type == null) {
-                    logicalProperty = new LogicalProperty(name, value, many, component);
-                } else {
-                    logicalProperty = new LogicalProperty(name, value, many, type, component);
-                }
+            if (propertyValue != null && propertyValue.getInstanceValue() != null) {
+                // instance value is set
+                LogicalProperty logicalProperty = new LogicalProperty(name, propertyValue.getInstanceValue(), component);
                 component.setProperties(logicalProperty);
+            } else {
+                Document value;
+                if (propertyValue == null) {
+                    // use default value from component type
+                    value = property.getDefaultValue();
+                } else {
+                    // the spec defines the following sequence
+                    if (propertyValue.getFile() != null) {
+                        // load the value from an external resource
+                        value = loadValueFromFile(property.getName(), propertyValue.getFile(), component, context);
+                    } else if (propertyValue.getSource() != null) {
+                        // get the value by evaluating an XPath against the composite properties
+                        try {
+                            NamespaceContext nsContext = propertyValue.getNamespaceContext();
+                            value = deriveValueFromXPath(propertyValue, parent, nsContext);
+                        } catch (PropertyTypeException e) {
+                            InvalidProperty error = new InvalidProperty(name, component, e);
+                            context.addError(error);
+                            return;
+                        }
+                    } else {
+                        // use inline XML file
+                        value = propertyValue.getValue();
+                    }
+
+                }
+                if (property.isRequired() && value == null && (propertyValue == null || (propertyValue != null && propertyValue.getInstanceValue() == null))) {
+                    // The XPath expression returned an empty value. Since the property is required, throw an exception
+                    PropertySourceNotFound error = new PropertySourceNotFound(name, component);
+                    context.addError(error);
+                } else if (!property.isRequired() && value == null) {
+                    // The XPath expression returned an empty value. Since the property is optional, ignore it
+                    continue;
+                } else {
+                    // set the property value
+                    boolean many = property.isMany();
+                    LogicalProperty logicalProperty;
+                    QName type = property.getType();
+                    if (type == null) {
+                        logicalProperty = new LogicalProperty(name, value, many, component);
+                    } else {
+                        logicalProperty = new LogicalProperty(name, value, many, type, component);
+                    }
+                    component.setProperties(logicalProperty);
+                }
             }
 
         }
@@ -276,6 +279,5 @@ public abstract class AbstractComponentInstantiator {
         }
         return source;
     }
-
 
 }

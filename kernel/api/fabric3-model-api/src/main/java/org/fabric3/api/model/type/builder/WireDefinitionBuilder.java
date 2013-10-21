@@ -35,88 +35,76 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.model.instance;
+package org.fabric3.api.model.type.builder;
 
-import javax.xml.namespace.QName;
-
-import org.w3c.dom.Document;
+import org.fabric3.api.model.type.component.Target;
+import org.fabric3.api.model.type.component.WireDefinition;
 
 /**
- * Holds a parsed component property as a DOM.
+ * Builds a wire definition.
  */
-public class LogicalProperty extends LogicalScaArtifact<LogicalComponent<?>> {
-    private static final long serialVersionUID = 4648573312983221666L;
+public class WireDefinitionBuilder extends AbstractBuilder {
+    private Target reference;
+    private Target service;
 
-    private String name;
-    private Document value;
-    private Object instanceValue;
-    private boolean many;
-    private QName type;
-
-    public LogicalProperty(String name, Document value, boolean many, LogicalComponent<?> parent) {
-        super(parent);
-        this.name = name;
-        this.value = value;
-        this.many = many;
-    }
-
-    public LogicalProperty(String name, Document value, boolean many, QName type, LogicalComponent<?> parent) {
-        super(parent);
-        this.name = name;
-        this.value = value;
-        this.many = many;
-        this.type = type;
-    }
-
-    public LogicalProperty(String name, Object instanceValue, LogicalComponent<?> parent) {
-        super(parent);
-        this.name = name;
-        this.instanceValue = instanceValue;
+    /**
+     * Creates a new builder.
+     *
+     * @return the builder
+     */
+    public static WireDefinitionBuilder newBuilder() {
+        return new WireDefinitionBuilder();
     }
 
     /**
-     * Returns the property name.
+     * Sets the reference.
      *
-     * @return the property name
+     * @param value the reference in the form component/reference/binding where reference and binding may be optional
+     * @return the builder
      */
-    public String getName() {
-        return name;
+    public WireDefinitionBuilder reference(String value) {
+        checkState();
+        reference = parseTarget(value);
+        return this;
     }
 
     /**
-     * The parsed property value.
+     * Sets the service.
      *
-     * @return the value
+     * @param value the reference in the form component/service/binding where reference and binding may be optional
+     * @return the builder
      */
-    public Document getValue() {
-        return value;
+    public WireDefinitionBuilder service(String value) {
+        checkState();
+        service = parseTarget(value);
+        return this;
     }
 
     /**
-     * Returns the set instance value.
+     * Builds the wire.
      *
-     * @return the set instance value
+     * @return the built wire
      */
-    public Object getInstanceValue() {
-        return instanceValue;
+    public WireDefinition build() {
+        checkState();
+        freeze();
+        return new WireDefinition(reference, service, true);
     }
 
-    /**
-     * True if this property is many-valued.
-     *
-     * @return true if this property is many-valued
-     */
-    public boolean isMany() {
-        return many;
+    protected WireDefinitionBuilder() {
     }
 
-    /**
-     * Returns the XSD type or null of the property.
-     *
-     * @return the XSD type or null of the property.
-     */
-    public QName getType() {
-        return type;
+    private Target parseTarget(String target) {
+        String[] tokens = target.split("/");
+        if (tokens.length == 1) {
+            return new Target(tokens[0]);
+        } else if (tokens.length == 2) {
+            return new Target(tokens[0], tokens[1]);
+        } else if (tokens.length == 3) {
+            return new Target(tokens[0], tokens[1], tokens[2]);
+        } else {
+            throw new IllegalArgumentException("Invalid target format: " + target);
+
+        }
     }
 }
-

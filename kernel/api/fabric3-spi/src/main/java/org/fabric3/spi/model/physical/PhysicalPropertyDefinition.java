@@ -49,6 +49,7 @@ public class PhysicalPropertyDefinition implements Serializable {
     private static final long serialVersionUID = -9068366603932114615L;
     private String name;
     private Document value;
+    private Object instanceValue;
     private boolean many;
     private QName type;
 
@@ -63,6 +64,12 @@ public class PhysicalPropertyDefinition implements Serializable {
         this.type = type;
     }
 
+    public PhysicalPropertyDefinition(String name, Object value, boolean many) {
+        this.name = name;
+        this.instanceValue = value;
+        this.many = many;
+    }
+
     /**
      * Returns the property name.
      *
@@ -73,12 +80,21 @@ public class PhysicalPropertyDefinition implements Serializable {
     }
 
     /**
-     * The property values. Properties may be single-valued or multi-valued. Values are stored as child nodes of the root.
+     * Returns the property value. Properties may be single-valued or multi-valued. Values are stored as child nodes of the root.
      *
      * @return the property value
      */
     public Document getValue() {
         return value;
+    }
+
+    /**
+     * Returns the property value as an instance.
+     *
+     * @return the property value
+     */
+    public Object getInstanceValue() {
+        return instanceValue;
     }
 
     /**

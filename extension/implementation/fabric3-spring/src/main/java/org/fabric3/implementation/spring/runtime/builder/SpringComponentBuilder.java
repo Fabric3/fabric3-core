@@ -210,21 +210,27 @@ public class SpringComponentBuilder implements ComponentBuilder<SpringComponentD
 
         for (PhysicalPropertyDefinition propertyDefinition : propertyDefinitions) {
             String name = propertyDefinition.getName();
-            Document document = propertyDefinition.getValue();
-            String value = document.getElementsByTagName("value").item(0).getFirstChild().getNodeValue();
-            QName type = propertyDefinition.getType();
-            if (XSD_BOOLEAN.equals(type)) {
-                SingletonObjectFactory<Boolean> factory = new SingletonObjectFactory<Boolean>(Boolean.valueOf(value));
-                Pair pair = new Pair(Boolean.class, factory);
-                values.put(name, pair);
-            } else if (XSD_INT.equals(type)) {
-                SingletonObjectFactory<Integer> factory = new SingletonObjectFactory<Integer>(Integer.valueOf(value));
-                Pair pair = new Pair(Integer.class, factory);
+            if (propertyDefinition.getInstanceValue() != null) {
+                SingletonObjectFactory<Object> factory = new SingletonObjectFactory<Object>(propertyDefinition.getInstanceValue());
+                Pair pair = new Pair(Object.class, factory);
                 values.put(name, pair);
             } else {
-                SingletonObjectFactory<String> factory = new SingletonObjectFactory<String>(value);
-                Pair pair = new Pair(String.class, factory);
-                values.put(name, pair);
+                Document document = propertyDefinition.getValue();
+                String value = document.getElementsByTagName("value").item(0).getFirstChild().getNodeValue();
+                QName type = propertyDefinition.getType();
+                if (XSD_BOOLEAN.equals(type)) {
+                    SingletonObjectFactory<Boolean> factory = new SingletonObjectFactory<Boolean>(Boolean.valueOf(value));
+                    Pair pair = new Pair(Boolean.class, factory);
+                    values.put(name, pair);
+                } else if (XSD_INT.equals(type)) {
+                    SingletonObjectFactory<Integer> factory = new SingletonObjectFactory<Integer>(Integer.valueOf(value));
+                    Pair pair = new Pair(Integer.class, factory);
+                    values.put(name, pair);
+                } else {
+                    SingletonObjectFactory<String> factory = new SingletonObjectFactory<String>(value);
+                    Pair pair = new Pair(String.class, factory);
+                    values.put(name, pair);
+                }
             }
         }
         return values;

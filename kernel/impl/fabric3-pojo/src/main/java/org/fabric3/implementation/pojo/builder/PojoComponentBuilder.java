@@ -105,16 +105,21 @@ public abstract class PojoComponentBuilder<PCD extends PojoComponentDefinition, 
 
         for (PhysicalPropertyDefinition propertyDefinition : propertyDefinitions) {
             String name = propertyDefinition.getName();
-            Document value = propertyDefinition.getValue();
             Injectable source = new Injectable(InjectableType.PROPERTY, name);
+            if (propertyDefinition.getInstanceValue() != null) {
+                ObjectFactory<Object> objectFactory = new SingletonObjectFactory<Object>(propertyDefinition.getInstanceValue());
+                factory.setObjectFactory(source, objectFactory);
+            } else {
+                Document value = propertyDefinition.getValue();
 
-            Type type = factory.getGenericType(source);
-            DataType<?> dataType = getDataType(type, typeMapping);
+                Type type = factory.getGenericType(source);
+                DataType<?> dataType = getDataType(type, typeMapping);
 
-            ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
-            boolean many = propertyDefinition.isMany();
-            ObjectFactory<?> objectFactory = propertyBuilder.createFactory(name, dataType, value, many, classLoader);
-            factory.setObjectFactory(source, objectFactory);
+                ClassLoader classLoader = classLoaderRegistry.getClassLoader(definition.getClassLoaderId());
+                boolean many = propertyDefinition.isMany();
+                ObjectFactory<?> objectFactory = propertyBuilder.createFactory(name, dataType, value, many, classLoader);
+                factory.setObjectFactory(source, objectFactory);
+            }
         }
     }
 

@@ -38,21 +38,39 @@
 package org.fabric3.api.model.type.builder;
 
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.CompositeReference;
 import org.fabric3.api.model.type.component.CompositeService;
+import org.fabric3.api.model.type.component.Include;
 import org.fabric3.api.model.type.component.Multiplicity;
+import org.fabric3.api.model.type.component.Property;
+import org.fabric3.api.model.type.component.WireDefinition;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * Builds {@link Composite}s.
  */
 public class CompositeBuilder extends AbstractBuilder {
+    private static final DocumentBuilderFactory DOCUMENT_FACTORY;
+
+    static {
+        DOCUMENT_FACTORY = DocumentBuilderFactory.newInstance();
+        DOCUMENT_FACTORY.setNamespaceAware(true);
+    }
+
     private Composite composite;
 
     /**
@@ -71,9 +89,47 @@ public class CompositeBuilder extends AbstractBuilder {
      * @param definition the component definition
      * @return the builder
      */
-    public CompositeBuilder add(ComponentDefinition<?> definition) {
+    public CompositeBuilder component(ComponentDefinition<?> definition) {
         checkState();
         composite.add(definition);
+        return this;
+    }
+
+    /**
+     * Adds a channel definition to the composite.
+     *
+     * @param definition the channel definition
+     * @return the builder
+     */
+    public CompositeBuilder channel(ChannelDefinition definition) {
+        checkState();
+        composite.add(definition);
+        return this;
+    }
+
+    /**
+     * Includes the composite in the current composite.
+     *
+     * @param includeComposite the name of the composite to include
+     * @return the builder
+     */
+    public CompositeBuilder include(QName includeComposite) {
+        checkState();
+        Include include = new Include();
+        include.setName(includeComposite);
+        composite.add(include);
+        return this;
+    }
+
+    /**
+     * Adds the wire definition to the composite.
+     *
+     * @param wireDefinition the wire definition
+     * @return the builder
+     */
+    public CompositeBuilder wire(WireDefinition wireDefinition) {
+        checkState();
+        composite.add(wireDefinition);
         return this;
     }
 
@@ -124,6 +180,39 @@ public class CompositeBuilder extends AbstractBuilder {
         CompositeReference compositeService = new CompositeReference(name, uris, multiplicity);
         composite.add(compositeService);
         return this;
+    }
+
+    /**
+     * Adds a property to the composite parsed from the XML source.
+     *
+     * @param name   the property name
+     * @param source the XML source
+     * @return the builder
+     * @throws ModelBuilderException if an error reading the source occurs
+     */
+    public CompositeBuilder property(String name, URL source) {
+        checkState();
+        try {
+            Document document = DOCUMENT_FACTORY.newDocumentBuilder().parse(source.openStream());
+            // all properties have a root <values> element, append the existing root to it. The existing root will be taken as a property <value>.
+            Element oldRoot = document.getDocumentElement();
+            Element newRoot = document.createElement("values");
+            document.removeChild(oldRoot);
+            document.appendChild(newRoot);
+            newRoot.appendChild(oldRoot);
+
+            Property property = new Property(name);
+            property.setDefaultValue(document);
+            composite.add(property);
+        } catch (IOException e) {
+            throw new ModelBuilderException(e);
+        } catch (SAXException e) {
+            throw new ModelBuilderException(e);
+        } catch (ParserConfigurationException e) {
+            throw new ModelBuilderException(e);
+        }
+        return this;
+
     }
 
     /**

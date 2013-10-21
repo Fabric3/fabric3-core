@@ -93,11 +93,15 @@ public class GenerationHelperImpl implements GenerationHelper {
 
     public void processPropertyValues(LogicalComponent<?> component, PojoComponentDefinition physical) {
         for (LogicalProperty property : component.getAllProperties().values()) {
-           Document document = property.getValue();
-            if (document != null) {
-                String name = property.getName();
-                boolean many = property.isMany();
+            String name = property.getName();
+            boolean many = property.isMany();
+            if (property.getValue() != null) {
+                Document document = property.getValue();
                 PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, document, many);
+                physical.setPropertyDefinition(definition);
+            } else if (property.getInstanceValue() != null) {
+                Object value = property.getInstanceValue();
+                PhysicalPropertyDefinition definition = new PhysicalPropertyDefinition(name, value, many);
                 physical.setPropertyDefinition(definition);
             }
         }
