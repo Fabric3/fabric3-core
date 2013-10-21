@@ -122,7 +122,6 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
             URL resolved = resolver.resolve(uri);
             ClassLoader parentClassLoader = createParentClassLoader(parentClassLoaderId, uri);
             final WebAppContext context = createWebAppContext("/" + contextPath, injectors, resolved, parentClassLoader);
-            jettyService.registerHandler(context);  // the context needs to be registered before it is started
 
             // Use a ServletContextListener to setup session injectors and perform context injection.
             // Note context injection must be done here since servlet filters may rely on SCA reference proxies, c.f. FABRICTHREE-570
@@ -148,6 +147,7 @@ public class JettyWebApplicationActivator implements WebApplicationActivator {
                     context.getSessionHandler().clearEventListeners();
                 }
             });
+            jettyService.registerHandler(context);  // the context needs to be registered before it is started
             context.start();
 
             ServletContext servletContext = context.getServletContext();
