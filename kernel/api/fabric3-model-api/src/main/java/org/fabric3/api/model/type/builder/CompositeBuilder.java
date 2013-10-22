@@ -110,13 +110,14 @@ public class CompositeBuilder extends AbstractBuilder {
     /**
      * Includes the composite in the current composite.
      *
-     * @param includeComposite the name of the composite to include
+     * @param included the name of the composite to include
      * @return the builder
      */
-    public CompositeBuilder include(QName includeComposite) {
+    public CompositeBuilder include(Composite included) {
         checkState();
         Include include = new Include();
-        include.setName(includeComposite);
+        include.setIncluded(included);
+        include.setName(included.getName());
         composite.add(include);
         return this;
     }
