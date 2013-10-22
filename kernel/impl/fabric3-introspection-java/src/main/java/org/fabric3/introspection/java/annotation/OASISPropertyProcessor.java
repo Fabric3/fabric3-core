@@ -43,15 +43,16 @@
  */
 package org.fabric3.introspection.java.annotation;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.component.Property;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -59,8 +60,8 @@ import org.fabric3.spi.introspection.java.MultiplicityType;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -85,6 +86,7 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         boolean required = annotation.required();
         Property property = createDefinition(name, required, type, typeMapping);
+        processSource(field, property, context);
         componentType.add(property, site);
     }
 
@@ -103,26 +105,38 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
         TypeMapping typeMapping = context.getTypeMapping(implClass);
         boolean required = annotation.required();
         Property property = createDefinition(name, required, type, typeMapping);
+        processSource(method, property, context);
         componentType.add(property, site);
     }
 
-    private void validate(org.oasisopen.sca.annotation.Property annotation,
-                          Field field,
-                          InjectingComponentType componentType,
-                          IntrospectionContext context) {
+    public void visitConstructorParameter(org.oasisopen.sca.annotation.Property annotation,
+                                          Constructor<?> constructor,
+                                          int index,
+                                          Class<?> implClass,
+                                          InjectingComponentType componentType,
+                                          IntrospectionContext context) {
+        String name = helper.getSiteName(constructor, index, annotation.name());
+        Type type = helper.getGenericType(constructor, index);
+        ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
+        TypeMapping typeMapping = context.getTypeMapping(implClass);
+        boolean required = annotation.required();
+        Property property = createDefinition(name, required, type, typeMapping);
+        Class<?> paramType = constructor.getParameterTypes()[index];
+        Class<?> declaringClass = constructor.getDeclaringClass();
+        processSource(paramType, declaringClass, property, context);
+        componentType.add(property, site);
+    }
+
+    private void validate(org.oasisopen.sca.annotation.Property annotation, Field field, InjectingComponentType componentType, IntrospectionContext context) {
         if (!Modifier.isProtected(field.getModifiers()) && !Modifier.isPublic(field.getModifiers())) {
             Class<?> clazz = field.getDeclaringClass();
             if (annotation.required()) {
-                InvalidAccessor error =
-                        new InvalidAccessor("Invalid required property. The field " + field.getName() + " on " + clazz.getName()
-                                                    + " is annotated with @Property but properties must be public or protected.",
-                                            field,
-                                            componentType);
+                InvalidAccessor error = new InvalidAccessor("Invalid required property. The field " + field.getName() + " on " + clazz.getName()
+                                                            + " is annotated with @Property but properties must be public or protected.", field, componentType);
                 context.addError(error);
             } else {
-                InvalidAccessor warning =
-                        new InvalidAccessor("Ignoring the field " + field.getName() + " annotated with @Property on " + clazz.getName()
-                                                    + ". Properties must be public or protected.", field, componentType);
+                InvalidAccessor warning = new InvalidAccessor("Ignoring the field " + field.getName() + " annotated with @Property on " + clazz.getName()
+                                                              + ". Properties must be public or protected.", field, componentType);
                 context.addWarning(warning);
             }
         }
@@ -140,36 +154,21 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
         if (!Modifier.isProtected(method.getModifiers()) && !Modifier.isPublic(method.getModifiers())) {
             Class<?> clazz = method.getDeclaringClass();
             if (annotation.required()) {
-                InvalidAccessor error =
-                        new InvalidAccessor("Invalid required property. The method " + method
-                                                    + " is annotated with @Property and must be public or protected.", method, componentType);
+                InvalidAccessor error = new InvalidAccessor(
+                        "Invalid required property. The method " + method + " is annotated with @Property and must be public or protected.",
+                        method,
+                        componentType);
                 context.addError(error);
                 return false;
             } else {
-                InvalidAccessor warning =
-                        new InvalidAccessor("Ignoring " + method + " annotated with @Property. Property " + "must be public or protected.",
-                                            method,
-                                            componentType);
+                InvalidAccessor warning = new InvalidAccessor("Ignoring " + method + " annotated with @Property. Property " + "must be public or protected.",
+                                                              method,
+                                                              componentType);
                 context.addWarning(warning);
                 return false;
             }
         }
         return true;
-    }
-
-    public void visitConstructorParameter(org.oasisopen.sca.annotation.Property annotation,
-                                          Constructor<?> constructor,
-                                          int index,
-                                          Class<?> implClass,
-                                          InjectingComponentType componentType,
-                                          IntrospectionContext context) {
-        String name = helper.getSiteName(constructor, index, annotation.name());
-        Type type = helper.getGenericType(constructor, index);
-        ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
-        TypeMapping typeMapping = context.getTypeMapping(implClass);
-        boolean required = annotation.required();
-        Property property = createDefinition(name, required, type, typeMapping);
-        componentType.add(property, site);
     }
 
     private Property createDefinition(String name, boolean required, Type type, TypeMapping typeMapping) {
@@ -178,6 +177,31 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
         MultiplicityType multiplicityType = helper.introspectMultiplicity(type, typeMapping);
         property.setMany(MultiplicityType.COLLECTION == multiplicityType || MultiplicityType.DICTIONARY == multiplicityType);
         return property;
+    }
+
+    private void processSource(AccessibleObject accessible, Property property, IntrospectionContext context) {
+        Source source = accessible.getAnnotation(Source.class);
+        if (source != null) {
+            if (!source.value().startsWith("$")) {
+                Class<? extends AccessibleObject> clazz = accessible.getClass();
+                InvalidAnnotation error = new InvalidAnnotation("Source attribute must specify an expression starting with '$' on:" + accessible, clazz);
+                context.addError(error);
+            } else {
+                property.setSource(source.value());
+            }
+        }
+    }
+
+    private void processSource(Class<?> type, Class<?> clazz, Property property, IntrospectionContext context) {
+        Source source = type.getAnnotation(Source.class);
+        if (source != null) {
+            if (!source.value().startsWith("$")) {
+                InvalidAnnotation error = new InvalidAnnotation("Source attribute must specify an expression starting with '$' on:" + type, clazz);
+                context.addError(error);
+            } else {
+                property.setSource(source.value());
+            }
+        }
     }
 
 }

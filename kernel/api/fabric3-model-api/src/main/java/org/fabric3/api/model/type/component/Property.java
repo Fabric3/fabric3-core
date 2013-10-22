@@ -61,6 +61,7 @@ public class Property extends ModelObject<ComponentType> {
     private Document defaultValue;
     private QName type;
     private QName element;
+    private String source;
 
     public Property(String name) {
         this.name = name;
@@ -172,5 +173,23 @@ public class Property extends ModelObject<ComponentType> {
      */
     public void setElement(QName element) {
         this.element = element;
+    }
+
+    /**
+     * Returns the property source
+     *
+     * @return the property source
+     */
+    public String getSource() {
+        return source;
+    }
+
+    /**
+     * Sets the property source
+     *
+     * @param source the property source
+     */
+    public void setSource(String source) {
+        this.source = source;
     }
 }

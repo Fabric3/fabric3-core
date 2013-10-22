@@ -47,6 +47,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -59,17 +60,17 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 
 /**
- * Processes work using a delegate {@link ThreadPoolExecutor}. This executor records processing statistics as well as monitors for stalled threads.
- * When a stalled thread is encountered (i.e. when the processing time for a runnable has exceeded a threshold), an event is sent to the monitor.
+ * Processes work using a delegate {@link ThreadPoolExecutor}. This executor records processing statistics as well as monitors for stalled threads. When a
+ * stalled thread is encountered (i.e. when the processing time for a runnable has exceeded a threshold), an event is sent to the monitor.
  * <p/>
- * The default configuration uses a bounded queue to accept work. If the queue size is exceeded, work will be rejected. This allows the runtime to
- * degrade gracefully under load by pushing requests back to the client and avoid out-of-memory conditions.
+ * The default configuration uses a bounded queue to accept work. If the queue size is exceeded, work will be rejected. This allows the runtime to degrade
+ * gracefully under load by pushing requests back to the client and avoid out-of-memory conditions.
  */
 @EagerInit
 @Management(name = "RuntimeThreadPoolExecutor",
-        path = "/runtime/threadpool",
-        group = "kernel",
-        description = "Manages the runtime thread pool")
+            path = "/runtime/threadpool",
+            group = "kernel",
+            description = "Manages the runtime thread pool")
 public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     private int coreSize = 100;
     private long keepAliveTime = 60000;
@@ -101,6 +102,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
      * @param size the number of threads.
      */
     @Property(required = false)
+    @Source("$systemConfig//f3:thread.pool/@coreSize")
     public void setCoreSize(int size) {
         if (size < 0) {
             throw new IllegalArgumentException("Core pool size must be greater than or equal to 0");
@@ -114,6 +116,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
      * @param size the number of threads.
      */
     @Property(required = false)
+    @Source("$systemConfig//f3:thread.pool/@size")
     public void setMaximumSize(int size) {
         if (size < 0) {
             throw new IllegalArgumentException("The MaximumSize pool size must be greater than or equal to 0");
@@ -127,6 +130,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
      * @param size the maximum number of work items
      */
     @Property(required = false)
+    @Source("$systemConfig//f3:thread.pool/@queueSize")
     public void setQueueSize(int size) {
         this.queueSize = size;
     }
@@ -137,11 +141,13 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
      * @param period the period between checks for stalled threads.
      */
     @Property(required = false)
+    @Source("$systemConfig//f3:thread.pool/@stallCheckPeriod")
     public void setStallCheckPeriod(long period) {
         this.stallCheckPeriod = period;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:thread.pool/@rejected.execution.handler")
     public void setRejectedExecutionHandler(String handler) {
         if ("abort".equals(handler)) {
             this.rejectedExecutionHandler = new ThreadPoolExecutor.AbortPolicy();
@@ -160,11 +166,11 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
      * @param stallThreshold the time a thread can be processing work before it is considered stalled
      */
     @Property(required = false)
+    @Source("$systemConfig//f3:thread.pool/@stallThreshold")
     @ManagementOperation(description = "The time a thread can be processing work before it is considered stalled in milliseconds")
     public void setStallThreshold(int stallThreshold) {
         this.stallThreshold = stallThreshold;
     }
-
 
     @ManagementOperation(description = "Thread keep alive time in milliseconds")
     public long getKeepAliveTime() {
@@ -173,6 +179,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
 
     @ManagementOperation(description = "Thread keep alive time in milliseconds")
     @Property(required = false)
+    @Source("$systemConfig//f3:thread.pool/@keepAliveTime")
     public void setKeepAliveTime(long keepAliveTime) {
         if (keepAliveTime < 0) {
             throw new IllegalArgumentException("Keep alive time must be greater than or equal to 0");
@@ -188,6 +195,7 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
 
     @ManagementOperation(description = "True if the thread pool expires core threads")
     @Property(required = false)
+    @Source("$systemConfig//f3:thread.pool/@allowCoreThreadTimeOut")
     public void setAllowCoreThreadTimeOut(boolean allowCoreThreadTimeOut) {
         this.allowCoreThreadTimeOut = allowCoreThreadTimeOut;
     }
@@ -198,11 +206,13 @@ public class RuntimeThreadPoolExecutor extends AbstractExecutorService {
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:thread.pool/@checkStalledThreads")
     public void setCheckStalledThreads(boolean checkStalledThreads) {
         this.checkStalledThreads = checkStalledThreads;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:thread.pool/@statistics.off")
     public void setStatisticsOff(boolean statisticsOff) {
         this.statisticsOff = statisticsOff;
     }

@@ -37,12 +37,9 @@
 */
 package org.fabric3.api.model.type.builder;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-import java.util.Collections;
-import java.util.Iterator;
 
-import org.fabric3.api.Namespaces;
+import org.fabric3.api.model.type.NamespaceContextImpl;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentService;
@@ -156,22 +153,5 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
         return (T) this;
     }
 
-    private class NamespaceContextImpl implements NamespaceContext {
-
-        public String getNamespaceURI(String prefix) {
-            return prefix.equals("f3") ? Namespaces.F3 : null;
-        }
-
-        public String getPrefix(String namespaceURI) {
-            return namespaceURI.equals(Namespaces.F3) ? "f3" : null;
-        }
-
-        public Iterator getPrefixes(String namespaceURI) {
-            if (namespaceURI.equals(Namespaces.F3)) {
-                return Collections.singletonList("f3").iterator();
-            }
-            return Collections.emptyList().iterator();
-        }
-    }
 
 }

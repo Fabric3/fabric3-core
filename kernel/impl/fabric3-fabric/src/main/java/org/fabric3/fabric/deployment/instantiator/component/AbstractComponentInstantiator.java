@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
+import org.fabric3.api.model.type.NamespaceContextImpl;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Property;
@@ -102,8 +103,22 @@ public abstract class AbstractComponentInstantiator {
             } else {
                 Document value;
                 if (propertyValue == null) {
-                    // use default value from component type
-                    value = property.getDefaultValue();
+                    String source = property.getSource();
+                    if (source != null) {
+                        // get the value by evaluating an XPath against the composite properties
+                        try {
+                            NamespaceContext nsContext = new NamespaceContextImpl();
+                            propertyValue = new PropertyValue("name", source);
+                            value = deriveValueFromXPath(propertyValue, parent, nsContext);
+                        } catch (PropertyTypeException e) {
+                            InvalidProperty error = new InvalidProperty(name, component, e);
+                            context.addError(error);
+                            return;
+                        }
+                    } else {
+                        // use default value from component type
+                        value = property.getDefaultValue();
+                    }
                 } else {
                     // the spec defines the following sequence
                     if (propertyValue.getFile() != null) {

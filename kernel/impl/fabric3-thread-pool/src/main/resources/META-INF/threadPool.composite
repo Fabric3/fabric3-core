@@ -14,16 +14,6 @@ Public License. See the accompanying license file for details.
 
     <component name="RuntimeThreadPoolExecutor">
         <f3:implementation.system class="org.fabric3.threadpool.RuntimeThreadPoolExecutor"/>
-        <property name="maximumSize" source="$systemConfig//f3:thread.pool/@size"/>
-        <property name="coreSize" source="$systemConfig//f3:thread.pool/@coreSize"/>
-        <property name="rejectedExecutionHandler" source="$systemConfig//f3:thread.pool/@rejected.execution.handler"/>
-        <property name="keepAliveTime" source="$systemConfig//f3:thread.pool/@keepAliveTime"/>
-        <property name="allowCoreThreadTimeOut" source="$systemConfig//f3:thread.pool/@allowCoreThreadTimeOut"/>
-        <property name="queueSize" source="$systemConfig//f3:thread.pool/@queueSize"/>
-        <property name="stallThreshold" source="$systemConfig//f3:thread.pool/@stallThreshold"/>
-        <property name="checkStalledThreads" source="$systemConfig//f3:thread.pool/@checkStalledThreads"/>
-        <property name="stallCheckPeriod" source="$systemConfig//f3:thread.pool/@stallCheckPeriod"/>
-        <property name="statisticsOff" source="$systemConfig//f3:thread.pool/@statistics.off"/>
     </component>
 
 </composite>
