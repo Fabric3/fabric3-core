@@ -38,7 +38,6 @@
 package org.fabric3.spi.contribution;
 
 import org.fabric3.api.host.contribution.InstallException;
-import org.fabric3.api.host.stream.Source;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
@@ -94,13 +93,11 @@ public interface ProcessorRegistry {
     /**
      * Dispatches to a {@link ResourceProcessor} to index a resource contained in a contribution.
      *
-     * @param contribution the containing contribution
-     * @param contentType  the content type of the resource to process
-     * @param source       provides an input stream reading the contents of the resource
-     * @param context      the context to which validation errors and warnings are reported
+     * @param resource    the resource to index
+     * @param context     the context to which validation errors and warnings are reported
      * @throws InstallException if there was a problem indexing the contribution
      */
-    void indexResource(Contribution contribution, String contentType, Source source, IntrospectionContext context) throws InstallException;
+    void indexResource(Resource resource, IntrospectionContext context) throws InstallException;
 
     /**
      * Loads all indexed resources in a contribution.

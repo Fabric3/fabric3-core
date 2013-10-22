@@ -35,24 +35,21 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.contribution.archive;
+package org.fabric3.contribution.processor;
 
-import java.net.URL;
-
-import org.fabric3.api.host.contribution.InstallException;
-import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.api.host.failure.ValidationFailure;
 
 /**
- * Used to perform a callback operation when iterating contained artifacts in a contribution.
+ * Thrown when a duplicate composite file is defined in a provider class.
  */
-public interface Action {
-    /**
-     * Called when an artifact is reached during iteration.
-     *
-     * @param contribution the contribution being traversed
-     * @param contentType  the artifact MIME type to process
-     * @param url          the artifact url
-     * @throws InstallException if an error occurs processing the artifact
-     */
-    void process(Contribution contribution, String contentType, URL url) throws InstallException;
+public class DuplicateProviderComposite extends ValidationFailure {
+    private String message;
+
+    public DuplicateProviderComposite(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }

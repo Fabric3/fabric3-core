@@ -37,12 +37,29 @@
 */
 package org.fabric3.runtime.maven.contribution;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.host.util.FileHelper;
-import org.fabric3.spi.contribution.*;
-import org.fabric3.spi.contribution.archive.Action;
+import org.fabric3.spi.contribution.Constants;
+import org.fabric3.spi.contribution.ContentTypeResolutionException;
+import org.fabric3.spi.contribution.ContentTypeResolver;
+import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ContributionManifest;
+import org.fabric3.spi.contribution.ContributionProcessor;
+import org.fabric3.spi.contribution.ProcessorRegistry;
+import org.fabric3.spi.contribution.ProviderSymbol;
+import org.fabric3.spi.contribution.Resource;
+import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.contribution.ResourceState;
+import org.fabric3.spi.contribution.Symbol;
+import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
@@ -50,13 +67,6 @@ import org.fabric3.spi.introspection.xml.LoaderException;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 
 /**
  * Processes a Maven module directory.
@@ -68,9 +78,7 @@ public class ModuleContributionProcessor implements ContributionProcessor {
     private ContentTypeResolver contentTypeResolver;
     private Loader loader;
 
-    public ModuleContributionProcessor(@Reference ProcessorRegistry registry,
-                                       @Reference ContentTypeResolver contentTypeResolver,
-                                       @Reference Loader loader) {
+    public ModuleContributionProcessor(@Reference ProcessorRegistry registry, @Reference ContentTypeResolver contentTypeResolver, @Reference Loader loader) {
         this.registry = registry;
         this.contentTypeResolver = contentTypeResolver;
         this.loader = loader;
@@ -132,7 +140,6 @@ public class ModuleContributionProcessor implements ContributionProcessor {
             context.addWarnings(childContext.getWarnings());
         }
 
-
     }
 
     public void index(Contribution contribution, final IntrospectionContext context) throws InstallException {
@@ -141,10 +148,9 @@ public class ModuleContributionProcessor implements ContributionProcessor {
         try {
             Thread.currentThread().setContextClassLoader(loader);
 
-            iterateArtifacts(contribution, context, new Action() {
-                public void process(Contribution contribution, String contentType, URL url) throws InstallException {
-                    UrlSource source = new UrlSource(url);
-                    registry.indexResource(contribution, contentType, source, context);
+            iterateArtifacts(contribution, context, new ArtifactResourceCallback() {
+                public void onResource(Resource resource) throws InstallException {
+                    registry.indexResource(resource, context);
                 }
             });
         } finally {
@@ -174,30 +180,49 @@ public class ModuleContributionProcessor implements ContributionProcessor {
         return null;
     }
 
-    private void iterateArtifacts(Contribution contribution, final IntrospectionContext context, Action action) throws InstallException {
+    private void iterateArtifacts(Contribution contribution, final IntrospectionContext context, ArtifactResourceCallback callback) throws InstallException {
         File root = FileHelper.toFile(contribution.getLocation());
         assert root.isDirectory();
-        iterateArtifactsRecursive(contribution, context, action, root);
+        iterateArtifactsRecursive(contribution, context, callback, root);
     }
 
-    private void iterateArtifactsRecursive(Contribution contribution, final IntrospectionContext context, Action action, File dir)
+    private void iterateArtifactsRecursive(Contribution contribution, final IntrospectionContext context, ArtifactResourceCallback callback, File dir)
             throws InstallException {
         File[] files = dir.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
-                iterateArtifactsRecursive(contribution, context, action, file);
+                iterateArtifactsRecursive(contribution, context, callback, file);
             } else {
                 try {
-                    URL entryUrl = file.toURI().toURL();
-                    String contentType = contentTypeResolver.getContentType(entryUrl);
-                    // skip entry if we don't recognize the content type
-                    if (contentType == null) {
-                        continue;
+                    String name = file.getName();
+                    if (isProvider(file)) {
+                        // a DSL provider
+                        URL entryUrl = file.toURI().toURL();
+
+                        UrlSource source = new UrlSource(entryUrl);
+                        Resource resource = new Resource(contribution, source, Constants.DSL_CONTENT_TYPE);
+                        contribution.addResource(resource);
+
+                        String className = "f3." + name.substring(0, name.length() - 6).replace("/", ".");
+                        ProviderSymbol symbol = new ProviderSymbol(className);
+                        ResourceElement<Symbol, Object> element = new ResourceElement<Symbol, Object>(symbol);
+                        resource.addResourceElement(element);
+
+                        callback.onResource(resource);
+                    } else {
+
+                        URL entryUrl = file.toURI().toURL();
+                        String contentType = contentTypeResolver.getContentType(entryUrl);
+                        // skip entry if we don't recognize the content type
+                        if (contentType == null) {
+                            continue;
+                        }
+                        UrlSource source = new UrlSource(entryUrl);
+                        Resource resource = new Resource(contribution, source, contentType);
+                        contribution.addResource(resource);
+                        callback.onResource(resource);
                     }
-                    action.process(contribution, contentType, entryUrl);
                 } catch (MalformedURLException e) {
-                    context.addWarning(new ContributionIndexingFailure(file, e));
-                } catch (IOException e) {
                     context.addWarning(new ContributionIndexingFailure(file, e));
                 } catch (ContentTypeResolutionException e) {
                     context.addWarning(new ContributionIndexingFailure(file, e));
@@ -205,5 +230,13 @@ public class ModuleContributionProcessor implements ContributionProcessor {
             }
         }
 
+    }
+
+    private boolean isProvider(File file) {
+        File parent = file.getParentFile();
+        String name = file.getName();
+        String grandParentName = parent.getParentFile().getName();
+        return name.endsWith("Provider.class") && parent != null && "f3".equals(parent.getName()) && (grandParentName.equals("classes")
+                                                                                                      || grandParentName.equals("test-classes"));
     }
 }

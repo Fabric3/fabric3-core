@@ -44,12 +44,12 @@ import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
-import org.fabric3.spi.contribution.archive.Action;
+import org.fabric3.spi.contribution.Resource;
+import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 
 /**
  *
@@ -60,42 +60,42 @@ public class WarContributionHandlerTestCase extends TestCase {
     public void testIterateAllContents() throws Exception {
         Contribution contribution = createContribution();
 
-        Action action = EasyMock.createMock(Action.class);
-        action.process(EasyMock.isA(Contribution.class), EasyMock.isA(String.class), EasyMock.isA(URL.class));
+        ArtifactResourceCallback callback = EasyMock.createMock(ArtifactResourceCallback.class);
+        callback.onResource(EasyMock.isA(Resource.class));
         EasyMock.expectLastCall().times(6);  // 6 items in the jar minus the contribution manifest
-        EasyMock.replay(action);
+        EasyMock.replay(callback);
 
-        handler.iterateArtifacts(contribution, action);
+        handler.iterateArtifacts(contribution, callback);
 
-        EasyMock.verify(action);
+        EasyMock.verify(callback);
     }
 
     public void testExcludeContents() throws Exception {
         Contribution contribution = createContribution();
         contribution.getManifest().setScanExcludes(Collections.singletonList(Pattern.compile("WEB-INF/test1.*.composite")));
 
-        Action action = EasyMock.createMock(Action.class);
-        action.process(EasyMock.isA(Contribution.class), EasyMock.isA(String.class), EasyMock.isA(URL.class));
+        ArtifactResourceCallback callback = EasyMock.createMock(ArtifactResourceCallback.class);
+        callback.onResource(EasyMock.isA(Resource.class));
         // Should only be 5 items in the jar minus the contribution manifest and the excluded file
         EasyMock.expectLastCall().times(5);
-        EasyMock.replay(action);
+        EasyMock.replay(callback);
 
-        handler.iterateArtifacts(contribution, action);
+        handler.iterateArtifacts(contribution, callback);
 
-        EasyMock.verify(action);
+        EasyMock.verify(callback);
     }
 
     public void testDirectoryContents() throws Exception {
         Contribution contribution = createContribution();
         contribution.getManifest().setScanExcludes(Collections.singletonList(Pattern.compile("WEB-INF/.*")));
 
-        Action action = EasyMock.createMock(Action.class);
+        ArtifactResourceCallback callback = EasyMock.createMock(ArtifactResourceCallback.class);
         // no contents should be scanned
-        EasyMock.replay(action);
+        EasyMock.replay(callback);
 
-        handler.iterateArtifacts(contribution, action);
+        handler.iterateArtifacts(contribution, callback);
 
-        EasyMock.verify(action);
+        EasyMock.verify(callback);
     }
 
     protected void setUp() throws Exception {

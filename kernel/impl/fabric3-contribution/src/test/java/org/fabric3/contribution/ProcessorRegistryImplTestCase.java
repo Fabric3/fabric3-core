@@ -143,7 +143,11 @@ public class ProcessorRegistryImplTestCase extends TestCase {
 
         registry.register(processor);
 
-        registry.indexResource(contribution,"application/xml", null, context);
+        Resource resource = new Resource(contribution, null, "application/xml");
+        contribution.addResource(resource);
+
+        registry.indexResource(resource, context);
+
         EasyMock.verify(processor);
     }
 
@@ -154,7 +158,10 @@ public class ProcessorRegistryImplTestCase extends TestCase {
 
         registry.register(processor);
 
-        registry.indexResource(contribution,"application/xml", null, context);
+        Resource resource = new Resource(contribution, null, "application/xml");
+        contribution.addResource(resource);
+
+        registry.indexResource(resource, context);
         EasyMock.verify(processor);
     }
 

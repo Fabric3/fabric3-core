@@ -48,12 +48,17 @@ import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.host.util.FileHelper;
+import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
-import org.fabric3.spi.contribution.archive.Action;
+import org.fabric3.spi.contribution.ProviderSymbol;
+import org.fabric3.spi.contribution.Resource;
+import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
+import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
@@ -116,33 +121,55 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, Action action) throws InstallException {
+    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback) throws InstallException {
         File root = FileHelper.toFile(contribution.getLocation());
-        iterateArtifactsRecursive(contribution, action, root, root);
+        iterateArtifactsRecursive(contribution, callback, root, root);
     }
 
-    protected void iterateArtifactsRecursive(Contribution contribution, Action action, File dir, File root) throws InstallException {
+    protected void iterateArtifactsRecursive(Contribution contribution, ArtifactResourceCallback callback, File dir, File root) throws InstallException {
         File[] files = dir.listFiles();
         ContributionManifest manifest = contribution.getManifest();
         for (File file : files) {
             if (file.isDirectory()) {
-                iterateArtifactsRecursive(contribution, action, file, root);
+                iterateArtifactsRecursive(contribution, callback, file, root);
             } else {
                 try {
-                    if (file.getName().equals("sca-contribution.xml")) {
+                    String name = file.getName();
+                    if (name.equals("sca-contribution.xml")) {
                         // don't index the manifest
                         continue;
                     }
-                    URL entryUrl = file.toURI().toURL();
-                    String contentType = contentTypeResolver.getContentType(entryUrl);
-                    // skip entry if we don't recognize the content type
-                    if (contentType == null) {
-                        continue;
+
+                    if (isProvider(file, root)) {
+                        // a DSL provider
+                        URL entryUrl = file.toURI().toURL();
+
+                        UrlSource source = new UrlSource(entryUrl);
+                        Resource resource = new Resource(contribution, source, Constants.DSL_CONTENT_TYPE);
+
+                        String className = "f3." + name.substring(0, name.length() - 6).replace("/", ".");
+                        ProviderSymbol symbol = new ProviderSymbol(className);
+                        ResourceElement<Symbol, Object> element = new ResourceElement<Symbol, Object>(symbol);
+                        resource.addResourceElement(element);
+                        contribution.addResource(resource);
+
+                        callback.onResource(resource);
+                    } else {
+                        URL entryUrl = file.toURI().toURL();
+
+                        String contentType = contentTypeResolver.getContentType(entryUrl);
+                        // skip entry if we don't recognize the content type
+                        if (contentType == null) {
+                            continue;
+                        }
+                        if (exclude(manifest, file, root)) {
+                            continue;
+                        }
+                        UrlSource source = new UrlSource(entryUrl);
+                        Resource resource = new Resource(contribution, source, contentType);
+                        contribution.addResource(resource);
+                        callback.onResource(resource);
                     }
-                    if (exclude(manifest, file, root)) {
-                        continue;
-                    }
-                    action.process(contribution, contentType, entryUrl);
                 } catch (MalformedURLException e) {
                     throw new InstallException(e);
                 } catch (ContentTypeResolutionException e) {
@@ -151,6 +178,12 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
             }
         }
 
+    }
+
+    private boolean isProvider(File file, File root) {
+        File parent = file.getParentFile();
+        String name = file.getName();
+        return name.endsWith("Provider.class") && parent != null && "f3".equals(parent.getName()) && root.equals(parent.getParentFile());
     }
 
     private boolean exclude(ContributionManifest manifest, File file, File root) {

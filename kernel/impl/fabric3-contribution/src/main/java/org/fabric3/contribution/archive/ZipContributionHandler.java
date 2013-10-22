@@ -50,22 +50,26 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
+import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
-import org.fabric3.spi.contribution.archive.Action;
+import org.fabric3.spi.contribution.ProviderSymbol;
+import org.fabric3.spi.contribution.Resource;
+import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
+import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.contribution.manifest.JarManifestHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Introspects a Zip-based contribution, delegating to ResourceProcessors for handling leaf-level children.
@@ -144,7 +148,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, Action action) throws InstallException {
+    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback) throws InstallException {
         URL location = contribution.getLocation();
         ContributionManifest manifest = contribution.getManifest();
         ZipInputStream zipStream = null;
@@ -159,21 +163,42 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
                 if (entry.isDirectory()) {
                     continue;
                 }
-                if (entry.getName().contains("META-INF/sca-contribution.xml")) {
+
+                String name = entry.getName();
+
+                if (name.contains("META-INF/sca-contribution.xml")) {
                     // don't index the manifest
                     continue;
                 }
-                if (exclude(manifest, entry)) {
-                    continue;
-                }
 
-                String contentType = contentTypeResolver.getContentType(new URL(location, entry.getName()));
-                if (contentType == null) {
-                    // skip entry if we don't recognize the content type
-                    continue;
+                // check if it is a DSL provider
+                if (isProvider(name)) {
+                    URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + name);
+                    UrlSource source = new UrlSource(entryUrl);
+                    Resource resource = new Resource(contribution, source, Constants.DSL_CONTENT_TYPE);
+                    String className = "f3." + name.substring(3, name.length() - 6).replace("/", ".");
+                    ProviderSymbol symbol = new ProviderSymbol(className);
+                    ResourceElement<Symbol, Object> element = new ResourceElement<Symbol, Object>(symbol);
+                    resource.addResourceElement(element);
+                    contribution.addResource(resource);
+
+                    callback.onResource(resource);
+                } else {
+                    if (exclude(manifest, entry)) {
+                        continue;
+                    }
+
+                    String contentType = contentTypeResolver.getContentType(new URL(location, name));
+                    if (contentType == null) {
+                        // skip entry if we don't recognize the content type
+                        continue;
+                    }
+                    URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + name);
+                    UrlSource source = new UrlSource(entryUrl);
+                    Resource resource = new Resource(contribution, source, contentType);
+                    contribution.addResource(resource);
+                    callback.onResource(resource);
                 }
-                URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + entry.getName());
-                action.process(contribution, contentType, entryUrl);
             }
         } catch (ContentTypeResolutionException e) {
             throw new InstallException(e);
@@ -191,6 +216,10 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
             }
         }
 
+    }
+
+    private boolean isProvider(String name) {
+        return name.startsWith("f3/") && name.endsWith("Provider.class");
     }
 
     private boolean exclude(ContributionManifest manifest, ZipEntry entry) {

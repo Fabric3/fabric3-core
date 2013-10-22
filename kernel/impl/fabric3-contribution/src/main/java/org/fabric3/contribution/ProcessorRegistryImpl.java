@@ -42,10 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.api.host.contribution.InstallException;
-import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.contribution.UnsupportedContentTypeException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionProcessor;
@@ -54,6 +51,7 @@ import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceProcessor;
 import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *
@@ -92,15 +90,14 @@ public class ProcessorRegistryImpl implements ProcessorRegistry {
         processor.index(contribution, context);
     }
 
-    public void indexResource(Contribution contribution, String contentType, Source source, IntrospectionContext context) throws InstallException {
+    public void indexResource(Resource resource, IntrospectionContext context) throws InstallException {
+        String contentType = resource.getContentType();
         ResourceProcessor processor = resourceProcessorCache.get(contentType);
         if (processor == null) {
             // unknown type, skip
             return;
         }
-        Resource resource = new Resource(contribution, source, contentType);
         processor.index(resource, context);
-        contribution.addResource(resource);
     }
 
     public void processContribution(Contribution contribution, IntrospectionContext context) throws InstallException {

@@ -44,14 +44,13 @@ import java.util.Collections;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-
-import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionProcessor;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceState;
-import org.fabric3.spi.contribution.archive.Action;
+import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -111,21 +110,19 @@ public class ArchiveContributionProcessorTestCase extends TestCase {
     public void testIndex() throws Exception {
         ArchiveContributionHandler handler = EasyMock.createMock(ArchiveContributionHandler.class);
         EasyMock.expect(handler.canProcess(EasyMock.isA(Contribution.class))).andReturn(true);
-        handler.iterateArtifacts(EasyMock.isA(Contribution.class), EasyMock.isA(Action.class));
+        handler.iterateArtifacts(EasyMock.isA(Contribution.class), EasyMock.isA(ArtifactResourceCallback.class));
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 Contribution contribution = (Contribution) EasyMock.getCurrentArguments()[0];
-                Action action = (Action) EasyMock.getCurrentArguments()[1];
-                action.process(contribution, "application/xml", new URL("file://test"));
+                ArtifactResourceCallback callback = (ArtifactResourceCallback) EasyMock.getCurrentArguments()[1];
+                Resource resource = new Resource(contribution, new UrlSource( new URL("file://test")),"application/xml");
+                callback.onResource(resource);
                 return null;
             }
         });
 
         ProcessorRegistry registry = EasyMock.createMock(ProcessorRegistry.class);
-        registry.indexResource(EasyMock.isA(Contribution.class),
-                               EasyMock.isA(String.class),
-                               EasyMock.isA(Source.class),
-                               EasyMock.isA(IntrospectionContext.class));
+        registry.indexResource(EasyMock.isA(Resource.class), EasyMock.isA(IntrospectionContext.class));
         EasyMock.replay(handler, registry);
 
         processor.setContributionProcessorRegistry(registry);
@@ -149,7 +146,7 @@ public class ArchiveContributionProcessorTestCase extends TestCase {
         Contribution contribution = new Contribution(URI.create("contribution1"));
         Resource resource = new Resource(contribution, null, "application/xml");
         contribution.addResource(resource);
-        
+
         DefaultIntrospectionContext context = new DefaultIntrospectionContext();
 
         processor.process(contribution, context);

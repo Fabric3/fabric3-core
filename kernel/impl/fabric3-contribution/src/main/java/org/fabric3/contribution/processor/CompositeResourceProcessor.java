@@ -178,6 +178,10 @@ public class CompositeResourceProcessor implements ResourceProcessor {
     private void validateUnique(Resource resource, ResourceElement<QNameSymbol, Composite> element, XMLStreamReader reader, IntrospectionContext context) {
         Contribution contribution = resource.getContribution();
         for (Resource entry : contribution.getResources()) {
+            if (resource == entry) {
+                // skip self since the resource is added to the contribution and will be iterated
+                continue;
+            }
             if (resource.getContentType().equals(entry.getContentType())) {
                 for (ResourceElement<?, ?> elementEntry : entry.getResourceElements()) {
                     if (element.getSymbol().equals(elementEntry.getSymbol())) {

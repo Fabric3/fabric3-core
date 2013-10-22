@@ -67,6 +67,10 @@
         <f3:implementation.system class="org.fabric3.contribution.processor.CompositeResourceProcessor"/>
     </component>
 
+    <component name="ProviderResourceProcessor">
+        <f3:implementation.system class="org.fabric3.contribution.processor.ProviderResourceProcessor"/>
+    </component>
+
     <component name="XmlContributionProcessor">
         <f3:implementation.system class="org.fabric3.contribution.processor.XmlContributionProcessor"/>
     </component>

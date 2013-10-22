@@ -34,24 +34,32 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.spi.contribution;
+*/
+package org.fabric3.contribution.processor;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import org.fabric3.api.host.failure.ValidationFailure;
 
 /**
- * Definitions of constants.
+ *
  */
-public interface Constants {
+public class InvalidProviderMethod extends ValidationFailure {
+    private String message;
 
-    String COMPOSITE_CONTENT_TYPE = "text/vnd.fabric3.composite+xml";
+    public InvalidProviderMethod(String message) {
+        this.message = message;
+    }
 
-    String DSL_CONTENT_TYPE = "text/vnd.fabric3.dsl";
+    public InvalidProviderMethod(String message, Throwable e) {
+        StringWriter writer = new StringWriter();
+        PrintWriter pw = new PrintWriter(writer);
+        e.printStackTrace(pw);
+        this.message = message + ":\n" + writer.toString();
+    }
 
-    String EXPLODED_CONTENT_TYPE = "text/vnd.fabric3.exploded";
-
+    public String getMessage() {
+        return message;
+    }
 }

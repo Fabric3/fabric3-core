@@ -50,6 +50,7 @@ import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.Resource;
@@ -205,7 +206,7 @@ public class ProvisionerImpl implements Provisioner {
     private void addCompositeToContribution(Composite wrapper) {
         QName compositeName = wrapper.getName();
         Contribution contribution = metaDataStore.find(Names.HOST_CONTRIBUTION);
-        Resource resource = new Resource(contribution, null, "text/vnd.fabric3.composite+xml");
+        Resource resource = new Resource(contribution, null, Constants.COMPOSITE_CONTENT_TYPE);
         QNameSymbol symbol = new QNameSymbol(compositeName);
         ResourceElement<QNameSymbol, Composite> element = new ResourceElement<QNameSymbol, Composite>(symbol, wrapper);
         resource.addResourceElement(element);

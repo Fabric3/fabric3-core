@@ -38,38 +38,17 @@
 package org.fabric3.spi.contribution.archive;
 
 import org.fabric3.api.host.contribution.InstallException;
-import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.contribution.Resource;
 
 /**
- * Iterates contained artifacts in an archive contribution type during introspection.
+ * Used to perform a callback operation when iterating contained artifacts in a contribution.
  */
-public interface ArchiveContributionHandler {
-
+public interface ArtifactResourceCallback {
     /**
-     * Returns true if the implementation can process the contribution archive.
+     * Called when an artifact is reached during iteration.
      *
-     * @param contribution the contribution
-     * @return true if the implementation can process the contribution archive
+     * @param resource the resource
+     * @throws InstallException if an error occurs processing the artifact
      */
-    boolean canProcess(Contribution contribution);
-
-    /**
-     * Processes the manifest
-     *
-     * @param contribution the contribution
-     * @param context      the context to which validation errors and warnings are reported
-     * @throws InstallException if an error occurs processing the manifest
-     */
-    void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException;
-
-    /**
-     * Iterates through a contribution calling the supplied action when a contained artifact is encountered.
-     *
-     * @param contribution the contribution
-     * @param callback       the action to perform when an artifact is encountered
-     * @throws InstallException if an error occurs processing the manifest
-     */
-    void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback) throws InstallException;
-
+    void onResource(Resource resource) throws InstallException;
 }

@@ -109,7 +109,6 @@ public class WireLoader extends AbstractValidatingTypeLoader<WireDefinition> {
                 definition.attributeSpecified("replace");
             }
         }
-
         validateAttributes(reader, context, definition);
         LoaderUtil.skipToEndElement(reader);
         return definition;

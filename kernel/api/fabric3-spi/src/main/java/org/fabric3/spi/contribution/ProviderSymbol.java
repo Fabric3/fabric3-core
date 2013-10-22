@@ -34,24 +34,15 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
+*/
 package org.fabric3.spi.contribution;
 
 /**
- * Definitions of constants.
+ * A key to a DSL provider class.
  */
-public interface Constants {
+public class ProviderSymbol extends Symbol<String> {
 
-    String COMPOSITE_CONTENT_TYPE = "text/vnd.fabric3.composite+xml";
-
-    String DSL_CONTENT_TYPE = "text/vnd.fabric3.dsl";
-
-    String EXPLODED_CONTENT_TYPE = "text/vnd.fabric3.exploded";
-
+    public ProviderSymbol(String name) {
+        super(name);
+    }
 }

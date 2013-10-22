@@ -37,20 +37,17 @@
 */
 package org.fabric3.contribution.archive;
 
-import java.net.URL;
 import java.util.List;
-
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.contribution.UnsupportedContentTypeException;
-import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceState;
-import org.fabric3.spi.contribution.archive.Action;
+import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Handles common processing for contribution archives
@@ -83,10 +80,9 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
         ClassLoader loader = context.getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
-            handler.iterateArtifacts(contribution, new Action() {
-                public void process(Contribution contribution, String contentType, URL url) throws InstallException {
-                    UrlSource source = new UrlSource(url);
-                    registry.indexResource(contribution, contentType, source, context);
+            handler.iterateArtifacts(contribution, new ArtifactResourceCallback() {
+                public void onResource(Resource resource) throws InstallException {
+                    registry.indexResource(resource, context);
                 }
             });
         } finally {
