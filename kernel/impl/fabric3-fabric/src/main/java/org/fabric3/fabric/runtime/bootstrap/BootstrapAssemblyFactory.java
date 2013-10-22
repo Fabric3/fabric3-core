@@ -136,7 +136,7 @@ import org.fabric3.implementation.reflection.jdk.JDKInstantiatorFactory;
 import org.fabric3.implementation.reflection.jdk.JDKLifecycleInvokerFactory;
 import org.fabric3.implementation.reflection.jdk.JDKServiceInvokerFactory;
 import org.fabric3.implementation.system.generator.SystemComponentGenerator;
-import org.fabric3.implementation.system.model.SystemImplementation;
+import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
 import org.fabric3.implementation.system.provision.SystemSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemTargetDefinition;

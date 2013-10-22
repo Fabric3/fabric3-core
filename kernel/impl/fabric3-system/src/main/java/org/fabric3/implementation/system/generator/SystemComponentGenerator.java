@@ -42,7 +42,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.implementation.pojo.generator.GenerationHelper;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
-import org.fabric3.implementation.system.model.SystemImplementation;
+import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.fabric3.implementation.system.provision.SystemComponentDefinition;
 import org.fabric3.implementation.system.provision.SystemConnectionSourceDefinition;
 import org.fabric3.implementation.system.provision.SystemConnectionTargetDefinition;

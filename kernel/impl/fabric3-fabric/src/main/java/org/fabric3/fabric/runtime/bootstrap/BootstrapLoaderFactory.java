@@ -38,7 +38,7 @@
 package org.fabric3.fabric.runtime.bootstrap;
 
 import org.fabric3.implementation.system.introspection.SystemImplementationLoader;
-import org.fabric3.implementation.system.model.SystemImplementation;
+import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.common.ComponentConsumerLoader;

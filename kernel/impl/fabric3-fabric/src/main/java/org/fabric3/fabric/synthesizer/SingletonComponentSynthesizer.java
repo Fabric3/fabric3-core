@@ -42,7 +42,7 @@ import java.net.URI;
 import org.fabric3.fabric.deployment.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
 import org.fabric3.api.host.domain.AssemblyException;
-import org.fabric3.implementation.system.model.SystemImplementation;
+import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.fabric3.implementation.system.singleton.SingletonComponent;
 import org.fabric3.implementation.system.singleton.SingletonImplementation;
 import org.fabric3.api.model.type.component.ComponentDefinition;

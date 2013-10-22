@@ -48,7 +48,7 @@ import org.fabric3.fabric.deployment.instantiator.NoServiceOnComponent;
 import org.fabric3.fabric.deployment.instantiator.PromotedComponentNotFound;
 import org.fabric3.fabric.deployment.instantiator.ReferenceNotFound;
 import org.fabric3.fabric.deployment.instantiator.ServiceNotFound;
-import org.fabric3.implementation.system.model.SystemImplementation;
+import org.fabric3.spi.model.type.system.SystemImplementation;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.ServiceDefinition;

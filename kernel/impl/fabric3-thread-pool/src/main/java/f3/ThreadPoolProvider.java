@@ -34,49 +34,28 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.implementation.system.model;
+*/
+package f3;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.Namespaces;
+import org.fabric3.api.model.type.builder.CompositeBuilder;
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder;
+import org.fabric3.spi.model.type.system.SystemImplementation;
+import org.fabric3.threadpool.RuntimeThreadPoolExecutor;
 
 /**
- * Represents the system composite implementation
+ *
  */
-public class SystemImplementation extends Implementation<InjectingComponentType> {
-    private static final long serialVersionUID = -3698947089871597184L;
-    public static final QName IMPLEMENTATION_SYSTEM = new QName(org.fabric3.api.Namespaces.F3, "implementation.system");
-    private String implementationClass;
+public class ThreadPoolProvider {
+    private static final QName QNAME = new QName(Namespaces.F3, "ThreadPoolComposite");
 
-    public SystemImplementation() {
+    Composite getComposite() {
+        SystemComponentDefinitionBuilder componentBuilder = SystemComponentDefinitionBuilder.newBuilder(RuntimeThreadPoolExecutor.class);
+        ComponentDefinition<SystemImplementation> executor = componentBuilder.build();
+        return CompositeBuilder.newBuilder(QNAME).component(executor).build();
     }
-
-    public QName getType() {
-        return IMPLEMENTATION_SYSTEM;
-    }
-
-    public SystemImplementation(String implementationClass) {
-        this.implementationClass = implementationClass;
-    }
-
-    public String getImplementationClass() {
-        return implementationClass;
-    }
-
-    public void setImplementationClass(String implementationClass) {
-        this.implementationClass = implementationClass;
-    }
-
-    public String getArtifactName() {
-        return getImplementationClass();
-    }
-
 }
