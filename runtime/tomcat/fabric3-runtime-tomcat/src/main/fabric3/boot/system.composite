@@ -14,7 +14,6 @@
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:f3="urn:fabric3.org"
-           xmlns:introspection="urn:fabric3.org"
            name="StandaloneSystemComposite"
            autowire="true">
 
@@ -43,10 +42,6 @@
     <include name="MonitorConfigurationComposite" scdlResource="META-INF/configuration.composite"/>
 
     <include name="TransformComposite" scdlResource="META-INF/transform.composite"/>
-
-    <component name="FSArtifactCache">
-        <f3:implementation.system class="org.fabric3.fabric.repository.FSArtifactCache"/>
-    </component>
 
     <component name="SyntheticDirectoryContributionProcessor">
         <f3:implementation.system class="org.fabric3.contribution.archive.SyntheticDirectoryContributionProcessor"/>

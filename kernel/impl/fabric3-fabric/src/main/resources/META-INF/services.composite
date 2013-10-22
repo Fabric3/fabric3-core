@@ -75,4 +75,9 @@
         <f3:implementation.system class="org.fabric3.fabric.introspection.ComponentProcessorImpl"/>
     </component>
 
+    <component name="FSArtifactCache">
+        <f3:implementation.system class="org.fabric3.fabric.repository.FSArtifactCache"/>
+    </component>
+
+
 </composite>
