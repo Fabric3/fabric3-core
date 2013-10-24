@@ -421,17 +421,17 @@ public class BootstrapAssemblyFactory {
 
         List<CommandGenerator> commandGenerators = new ArrayList<CommandGenerator>();
 
-        commandGenerators.add(new BuildComponentCommandGenerator(generatorRegistry, 1));
+        commandGenerators.add(new BuildComponentCommandGenerator(generatorRegistry));
 
         // command generators for wires
         OperationResolver operationResolver = new OperationResolverImpl();
         PhysicalOperationGenerator operationGenerator = new PhysicalOperationGeneratorImpl(operationResolver, generatorRegistry);
         WireGenerator wireGenerator = new WireGeneratorImpl(generatorRegistry, matcher, resolver, operationGenerator);
-        commandGenerators.add(new ReferenceCommandGenerator(wireGenerator, 2));
-        commandGenerators.add(new BoundServiceCommandGenerator(wireGenerator, 2));
-        commandGenerators.add(new ResourceReferenceCommandGenerator(wireGenerator, 2));
+        commandGenerators.add(new ReferenceCommandGenerator(wireGenerator));
+        commandGenerators.add(new BoundServiceCommandGenerator(wireGenerator));
+        commandGenerators.add(new ResourceReferenceCommandGenerator(wireGenerator));
 
-        StartComponentCommandGenerator startGenerator = new StartComponentCommandGenerator(3);
+        StartComponentCommandGenerator startGenerator = new StartComponentCommandGenerator();
         commandGenerators.add(startGenerator);
 
         return commandGenerators;

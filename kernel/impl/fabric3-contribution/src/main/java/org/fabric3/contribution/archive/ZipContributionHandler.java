@@ -69,11 +69,13 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
+import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Introspects a Zip-based contribution, delegating to ResourceProcessors for handling leaf-level children.
  */
+@EagerInit
 public class ZipContributionHandler implements ArchiveContributionHandler {
     private List<JarManifestHandler> manifestHandlers = Collections.emptyList();
     private final Loader loader;

@@ -46,13 +46,13 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
+import org.fabric3.api.annotation.Source;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.spi.security.KeyStoreManager;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.security.KeyStoreManager;
 
 /**
  * Configures the JVM to use the specified key and trust stores.
@@ -81,57 +81,68 @@ public class KeyStoreManagerImpl implements KeyStoreManager {
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:security/f3:keystore.property")
     public void setKeyStoreLocationProperty(String keyStoreLocationProperty) {
         this.keyStoreLocationProperty = keyStoreLocationProperty;
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:security/f3:keystore.password.property")
     public void setKeyStorePasswordProperty(String keyStorePasswordProperty) {
         this.keyStorePasswordProperty = keyStorePasswordProperty;
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:security/f3:truststore.property")
     public void setTrustStoreLocationProperty(String trustStoreLocationProperty) {
         this.trustStoreLocationProperty = trustStoreLocationProperty;
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:security/f3:truststore.password.property")
     public void setTrustStorePasswordProperty(String trustStorePasswordProperty) {
         this.trustStorePasswordProperty = trustStorePasswordProperty;
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:security/f3:keystore")
     public void setKeyStoreLocation(String keyStoreLocation) {
         this.keyStoreLocation = keyStoreLocation;
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:security/f3:keystore.password")
     public void setKeyStorePassword(String keyStorePassword) {
         this.keyStorePassword = keyStorePassword;
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:security/f3:truststore")
     public void setTrustStoreLocation(String trustStoreLocation) {
         this.trustStoreLocation = trustStoreLocation;
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:security/f3:truststore.password")
     public void setTrustStorePassword(String trustStorePassword) {
         this.trustStorePassword = trustStorePassword;
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:security/f3:cert.password")
     public void setCertPassword(String certPassword) {
         this.certPassword = certPassword;
     }
 
 
     @Property(required = false)
+    @Source("$systemConfig/f3:security/f3:keystore.type")
     public void setKeyStoreType(String keyStoreType) {
         this.keyStoreType = keyStoreType;
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:security/f3:truststore.type")
     public void setTrustStoreType(String trustStoreType) {
         this.trustStoreType = trustStoreType;
     }

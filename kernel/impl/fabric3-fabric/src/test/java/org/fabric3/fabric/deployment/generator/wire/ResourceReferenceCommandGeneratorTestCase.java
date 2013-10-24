@@ -63,7 +63,7 @@ public class ResourceReferenceCommandGeneratorTestCase extends TestCase {
         EasyMock.replay(wireGenerator);
         LogicalComponent<?> component = createComponent();
 
-        ResourceReferenceCommandGenerator generator = new ResourceReferenceCommandGenerator(wireGenerator, 0);
+        ResourceReferenceCommandGenerator generator = new ResourceReferenceCommandGenerator(wireGenerator);
         ConnectionCommand command = generator.generate(component, true);
         assertEquals(1, command.getAttachCommands().size());
 
@@ -75,7 +75,7 @@ public class ResourceReferenceCommandGeneratorTestCase extends TestCase {
         LogicalComponent<?> component = createComponent();
         component.setState(LogicalState.PROVISIONED);
 
-        ResourceReferenceCommandGenerator generator = new ResourceReferenceCommandGenerator(wireGenerator, 0);
+        ResourceReferenceCommandGenerator generator = new ResourceReferenceCommandGenerator(wireGenerator);
         assertNull(generator.generate(component, true));
 
         EasyMock.verify(wireGenerator);
@@ -89,7 +89,7 @@ public class ResourceReferenceCommandGeneratorTestCase extends TestCase {
         LogicalComponent<?> component = createComponent();
         component.setState(LogicalState.PROVISIONED);
 
-        ResourceReferenceCommandGenerator generator = new ResourceReferenceCommandGenerator(wireGenerator, 0);
+        ResourceReferenceCommandGenerator generator = new ResourceReferenceCommandGenerator(wireGenerator);
         ConnectionCommand command = generator.generate(component, false);
         assertEquals(1, command.getAttachCommands().size());
 

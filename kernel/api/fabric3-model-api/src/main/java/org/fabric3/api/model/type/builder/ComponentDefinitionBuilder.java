@@ -42,8 +42,11 @@ import javax.xml.namespace.QName;
 import org.fabric3.api.model.type.NamespaceContextImpl;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ComponentReference;
 import org.fabric3.api.model.type.component.ComponentService;
+import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.PropertyValue;
+import org.fabric3.api.model.type.component.Target;
 
 /**
  * Base builder for {@link ComponentDefinition}s.
@@ -66,6 +69,53 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
             definition.add(service);
         }
         service.addBinding(bindingDefinition);
+        return builder();
+    }
+
+    /**
+     * Adds a reference with the given name and target.
+     *
+     * @param name   the reference name
+     * @param target the target
+     */
+    public T reference(String name, String target) {
+        checkState();
+        ComponentDefinition<?> definition = getDefinition();
+        ComponentReference reference = new ComponentReference(name, Multiplicity.ONE_ONE);
+        reference.addTarget(new Target(target));
+        definition.add(reference);
+        return builder();
+    }
+
+    /**
+     * Adds a reference with the given name and target.
+     *
+     * @param name   the reference name
+     * @param target the target
+     */
+    public T reference(String name, String target, boolean required) {
+        checkState();
+        ComponentDefinition<?> definition = getDefinition();
+        Multiplicity multiplicity = required ? Multiplicity.ONE_ONE : Multiplicity.ZERO_ONE;
+        ComponentReference reference = new ComponentReference(name, multiplicity);
+        reference.addTarget(new Target(target));
+        definition.add(reference);
+        return builder();
+    }
+
+    /**
+     * Adds a reference with the given name and target.
+     *
+     * @param name         the reference name
+     * @param target       the target
+     * @param multiplicity the    multiplicity
+     */
+    public T reference(String name, String target, Multiplicity multiplicity) {
+        checkState();
+        ComponentDefinition<?> definition = getDefinition();
+        ComponentReference reference = new ComponentReference(name, multiplicity);
+        reference.addTarget(new Target(target));
+        definition.add(reference);
         return builder();
     }
 
@@ -152,6 +202,5 @@ public abstract class ComponentDefinitionBuilder<T extends ComponentDefinitionBu
     private T builder() {
         return (T) this;
     }
-
 
 }

@@ -53,6 +53,7 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.util.IOHelper;
 import org.fabric3.spi.contribution.archive.ClasspathProcessor;
@@ -89,6 +90,7 @@ public class JarClasspathProcessor implements ClasspathProcessor {
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:runtime/f3:explode.jars")
     public void setExplodeJars(boolean explodeJars) {
         this.explodeJars = explodeJars;
     }

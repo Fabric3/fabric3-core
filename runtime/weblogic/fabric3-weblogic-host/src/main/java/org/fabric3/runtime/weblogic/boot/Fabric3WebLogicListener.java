@@ -48,7 +48,6 @@ import javax.servlet.ServletContextListener;
 import javax.xml.bind.JAXBContext;
 import java.io.File;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -209,9 +208,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
                                                                runtimeMode,
                                                                domainName,
                                                                environment,
-                                                               runtimeDir,
-                                                               configDir,
-                                                               extensionsDir,
+                                                               runtimeDir, extensionsDir,
                                                                deployDirs,
                                                                true);
 
@@ -228,8 +225,6 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             Map<String, String> exportedPackages = getExportedPackages();
 
-            URL systemComposite = new File(bootDir, "system.composite").toURI().toURL();
-
             ScanResult result = bootstrapService.scanRepository(hostInfo);
 
             BootConfiguration configuration = new BootConfiguration();
@@ -245,7 +240,6 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             configuration.setRuntime(runtime);
             configuration.setHostClassLoader(hostLoader);
             configuration.setBootClassLoader(bootLoader);
-            configuration.setSystemCompositeUrl(systemComposite);
             configuration.setSystemConfig(systemConfig);
             configuration.setExtensionContributions(result.getExtensionContributions());
             configuration.setUserContributions(result.getUserContributions());

@@ -46,16 +46,17 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.definitions.PolicySet;
+import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
 import org.fabric3.spi.contract.OperationNotFoundException;
 import org.fabric3.spi.contract.OperationResolver;
 import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.wire.InterceptorGenerator;
 import org.fabric3.spi.deployment.generator.policy.PolicyMetadata;
 import org.fabric3.spi.deployment.generator.policy.PolicyResult;
+import org.fabric3.spi.deployment.generator.wire.InterceptorGenerator;
 import org.fabric3.spi.model.instance.LogicalAttachPoint;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalOperation;
@@ -84,6 +85,7 @@ public class PhysicalOperationGeneratorImpl implements PhysicalOperationGenerato
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:sca/@enableByValue")
     public void setPassByValueEnabled(boolean passByValueEnabled) {
         this.passByValueEnabled = passByValueEnabled;
     }

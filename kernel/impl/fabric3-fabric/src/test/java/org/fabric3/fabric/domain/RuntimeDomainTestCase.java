@@ -194,7 +194,6 @@ public class RuntimeDomainTestCase extends TestCase {
                                             null,
                                             null,
                                             null,
-                                            null,
                                             false);
         ContributionHelperImpl helper = new ContributionHelperImpl(store, info);
 

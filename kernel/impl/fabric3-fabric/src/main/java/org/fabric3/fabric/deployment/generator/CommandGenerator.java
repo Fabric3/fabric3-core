@@ -52,10 +52,22 @@ import org.fabric3.spi.model.instance.LogicalComponent;
  */
 public interface CommandGenerator {
 
+    int PREPARE = 1;
+
+    int BUILD_COMPONENTS = 2;
+
+    int ATTACH = 3;
+
+    int START_COMPONENTS = 4;
+
+    int DISPOSE_COMPONENTS = 5;
+
+    int DISPOSE_RESOURCES = 6;
+
     /**
-     * Gets the order the command generator should be called in.
+     * Gets the phase the command generator should be called in.
      *
-     * @return an ascending  value where 0 is first
+     * @return an ascending value where 0 is first
      */
     int getOrder();
 
@@ -63,8 +75,7 @@ public interface CommandGenerator {
      * Generates a command based on the contents of a logical component
      *
      * @param logicalComponent the logical component to generate the command from
-     * @param incremental      true if generation should be incremental, i.e. commands are only generated for new components as opposed to existing
-     *                         ones
+     * @param incremental      true if generation should be incremental, i.e. commands are only generated for new components as opposed to existing ones
      * @return the generated command or null if no changes were detected
      * @throws GenerationException if an error occurs during generation
      */

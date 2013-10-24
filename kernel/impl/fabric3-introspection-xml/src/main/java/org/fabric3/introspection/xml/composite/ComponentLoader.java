@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.Autowire;
@@ -126,6 +127,7 @@ public class ComponentLoader extends AbstractExtensibleTypeLoader<ComponentDefin
     }
 
     @org.oasisopen.sca.annotation.Property(required = false)
+    @Source("$systemConfig/f3:loader/@round.trip")
     public void setRoundTrip(boolean roundTrip) {
         this.roundTrip = roundTrip;
     }

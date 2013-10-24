@@ -37,17 +37,17 @@
 */
 package org.fabric3.fabric.deployment.generator.binding;
 
+import javax.xml.namespace.QName;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.annotation.Property;
-
+import org.fabric3.api.annotation.Source;
 import org.fabric3.spi.deployment.generator.binding.BindingProvider;
 import org.fabric3.spi.deployment.generator.binding.BindingSelectionStrategy;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * A BindingSelectionStrategy that makes a selection based on an ordered list of bindings. This list is provided via a property which can be sourced
@@ -58,6 +58,7 @@ public class ConfigurableBindingSelectionStrategy implements BindingSelectionStr
     private BindingProviderComparator comparator = new BindingProviderComparator();
 
     @Property(required = false)
+    @Source("$systemConfig//f3:bindings/f3:binding.sca/f3:provider.order")
     public void setScaBindingOrder(List<QName> order) {
         this.bindingOrder = new HashMap<QName, Integer>(order.size());
         for (int i = 0; i < order.size(); i++) {

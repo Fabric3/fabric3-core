@@ -49,6 +49,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentService;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -80,6 +81,7 @@ public class ComponentServiceLoader extends AbstractExtensibleTypeLoader<Compone
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:loader/@round.trip")
     public void setRoundTrip(boolean roundTrip) {
         this.roundTrip = roundTrip;
     }

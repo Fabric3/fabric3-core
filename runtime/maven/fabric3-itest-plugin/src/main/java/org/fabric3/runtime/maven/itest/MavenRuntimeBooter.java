@@ -136,9 +136,6 @@ public class MavenRuntimeBooter {
             configuration.setHostClassLoader(hostClassLoader);
             configuration.setBootClassLoader(bootClassLoader);
 
-            URL systemComposite = bootClassLoader.getResource("META-INF/fabric3/embeddedMaven.composite");
-            configuration.setSystemCompositeUrl(systemComposite);
-
             configuration.setSystemConfig(systemConfig);
             configuration.setExtensionContributions(contributions);
             configuration.setExportedPackages(exportedPackages);

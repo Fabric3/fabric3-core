@@ -46,4 +46,9 @@ public interface Namespaces {
      * Namespace used for Fabric3 elements.
      */
     String F3 = "urn:fabric3.org";
+
+    /**
+     * Namespace prefix used for Fabric3 elements.
+     */
+    Object F3_PREFIX = "{" + F3 + "}";
 }

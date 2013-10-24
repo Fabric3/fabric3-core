@@ -45,13 +45,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.container.builder.component.ComponentBuilderListener;
-import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.Component;
+import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
 import org.fabric3.spi.monitor.MonitorLocator;
 import org.fabric3.spi.monitor.MonitorService;
@@ -85,6 +86,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:runtime/@monitor.level")
     public void setDefaultLevel(String defaultLevel) {
         this.defaultLevel = MonitorLevel.valueOf(defaultLevel);
     }
@@ -95,6 +97,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
      * @param levels the mapping of composite name to monitor level.
      */
     @Property(required = false)
+    @Source("$systemConfig//f3:runtime/f3:monitor/f3:deployable.levels")
     public void setDeployableLevels(Element levels) {
         this.deployableLevels = new HashMap<QName, MonitorLevel>();
         NodeList list = levels.getElementsByTagName("level");
@@ -112,6 +115,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
      * @param levels the mapping of classes-loggers to monitor level
      */
     @Property(required = false)
+    @Source("$systemConfig//f3:runtime/f3:monitor/f3:contribution.levels")
     public void setContributionLevels(Element levels) {
         NodeList list = levels.getElementsByTagName("level");
         for (int i = 0; i < list.getLength(); i++) {
@@ -128,6 +132,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
      * @param levels the mapping of classes-loggers to monitor level
      */
     @Property(required = false)
+    @Source("$systemConfig//f3:runtime/f3:monitor/f3:provider.levels")
     public void setProviderLevels(Element levels) {
         NodeList list = levels.getElementsByTagName("level");
         for (int i = 0; i < list.getLength(); i++) {

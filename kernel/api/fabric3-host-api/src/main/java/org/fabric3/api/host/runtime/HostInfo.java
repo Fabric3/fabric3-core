@@ -121,13 +121,6 @@ public interface HostInfo {
     File getNativeLibraryDir();
 
     /**
-     * Returns the directory containing this runtime's configuration.
-     *
-     * @return the directory containing this runtime's configuration or null if the runtime does not support external configuration
-     */
-    File getConfigDirectory();
-
-    /**
      * Returns the user repository directory.
      *
      * @return the user repository directory or null if the runtime provisions extensions from an external source

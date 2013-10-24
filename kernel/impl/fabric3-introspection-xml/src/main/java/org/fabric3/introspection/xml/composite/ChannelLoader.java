@@ -51,6 +51,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 
+import org.fabric3.api.annotation.Source;
 import org.fabric3.introspection.xml.common.AbstractExtensibleTypeLoader;
 import org.fabric3.introspection.xml.common.BindingHelper;
 import org.fabric3.api.model.type.ModelObject;
@@ -90,6 +91,7 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:loader/@round.trip")
     public void setRoundTrip(boolean roundTrip) {
         this.roundTrip = roundTrip;
     }

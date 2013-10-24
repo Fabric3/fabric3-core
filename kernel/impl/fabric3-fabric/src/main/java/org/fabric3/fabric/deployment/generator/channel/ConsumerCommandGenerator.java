@@ -69,18 +69,14 @@ import static org.fabric3.spi.deployment.generator.channel.ChannelDirection.CONS
 public class ConsumerCommandGenerator implements CommandGenerator {
     private ConnectionGenerator connectionGenerator;
     private ChannelCommandGenerator channelGenerator;
-    private int order;
 
-    public ConsumerCommandGenerator(@Reference ConnectionGenerator connectionGenerator,
-                                    @Reference ChannelCommandGenerator channelGenerator,
-                                    @Property(name = "order") int order) {
+    public ConsumerCommandGenerator(@Reference ConnectionGenerator connectionGenerator, @Reference ChannelCommandGenerator channelGenerator) {
         this.connectionGenerator = connectionGenerator;
         this.channelGenerator = channelGenerator;
-        this.order = order;
     }
 
     public int getOrder() {
-        return order;
+        return ATTACH;
     }
 
     @SuppressWarnings("unchecked")

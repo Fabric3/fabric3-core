@@ -49,8 +49,8 @@ import org.fabric3.fabric.deployment.command.ChannelConnectionCommand;
 import org.fabric3.fabric.deployment.command.DetachChannelConnectionCommand;
 import org.fabric3.fabric.deployment.command.DisposeChannelCommand;
 import org.fabric3.fabric.deployment.generator.CommandGenerator;
-import org.fabric3.spi.deployment.generator.channel.ConnectionGenerator;
 import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.channel.ConnectionGenerator;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -58,7 +58,6 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.spi.deployment.generator.channel.ChannelDirection.PRODUCER;
 
@@ -69,18 +68,14 @@ import static org.fabric3.spi.deployment.generator.channel.ChannelDirection.PROD
 public class ProducerCommandGenerator implements CommandGenerator {
     private ConnectionGenerator connectionGenerator;
     private ChannelCommandGenerator channelGenerator;
-    private int order;
 
-    public ProducerCommandGenerator(@Reference ConnectionGenerator connectionGenerator,
-                                    @Reference ChannelCommandGenerator channelGenerator,
-                                    @Property(name = "order") int order) {
+    public ProducerCommandGenerator(@Reference ConnectionGenerator connectionGenerator, @Reference ChannelCommandGenerator channelGenerator) {
         this.connectionGenerator = connectionGenerator;
         this.channelGenerator = channelGenerator;
-        this.order = order;
     }
 
     public int getOrder() {
-        return order;
+        return ATTACH;
     }
 
     @SuppressWarnings("unchecked")

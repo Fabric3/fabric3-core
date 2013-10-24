@@ -41,15 +41,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.fabric.deployment.instantiator.AtomicComponentInstantiator;
-import org.fabric3.fabric.deployment.instantiator.ChannelInstantiator;
-import org.fabric3.fabric.deployment.instantiator.CompositeComponentInstantiator;
-import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
-import org.fabric3.fabric.deployment.instantiator.WireInstantiator;
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentReference;
@@ -60,12 +52,20 @@ import org.fabric3.api.model.type.component.CompositeReference;
 import org.fabric3.api.model.type.component.CompositeService;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ResourceDefinition;
+import org.fabric3.fabric.deployment.instantiator.AtomicComponentInstantiator;
+import org.fabric3.fabric.deployment.instantiator.ChannelInstantiator;
+import org.fabric3.fabric.deployment.instantiator.CompositeComponentInstantiator;
+import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
+import org.fabric3.fabric.deployment.instantiator.WireInstantiator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Instantiates a composite component in the logical representation of a domain. Child components will be recursively instantiated if they exist.
@@ -81,6 +81,7 @@ public class CompositeComponentInstantiatorImpl extends AbstractComponentInstant
     private boolean componentTypeOverride;
 
     @Property(required = false)
+    @Source("$systemConfig//f3:sca/@componentTypeOverride")
     public void setComponentTypeOverride(boolean componentTypeOverride) {
         this.componentTypeOverride = componentTypeOverride;
     }

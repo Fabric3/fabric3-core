@@ -63,7 +63,6 @@ public class DefaultHostInfo implements HostInfo {
     private File userDirectory;
     private File sharedDirectory;
     private File runtimeDirectory;
-    private File configDirectory;
     private File tempDirectory;
     private File nativeDirectory;
 
@@ -84,7 +83,6 @@ public class DefaultHostInfo implements HostInfo {
      * @param userDirectory     user repository directory
      * @param sharedDirectory   the shared extensions repository directory
      * @param runtimeDirectory  the private extensions repository directory
-     * @param configDir         directory containing the standalone configuration
      * @param dataDirectory     directory for storing persistent data
      * @param tempDirectory     the directory for writing temporary files
      * @param deployDirectories the directory for file system-based deployments
@@ -100,7 +98,6 @@ public class DefaultHostInfo implements HostInfo {
                            File userDirectory,
                            File sharedDirectory,
                            File runtimeDirectory,
-                           File configDir,
                            File dataDirectory,
                            File tempDirectory,
                            List<File> deployDirectories,
@@ -115,7 +112,6 @@ public class DefaultHostInfo implements HostInfo {
         this.userDirectory = userDirectory;
         this.sharedDirectory = sharedDirectory;
         this.runtimeDirectory = runtimeDirectory;
-        this.configDirectory = configDir;
         this.dataDirectory = dataDirectory;
         this.tempDirectory = tempDirectory;
         this.javaEEXAEnabled = javaEEXAEnabled;
@@ -178,10 +174,6 @@ public class DefaultHostInfo implements HostInfo {
 
     public File getExtensionsRepositoryDirectory() {
         return sharedDirectory;
-    }
-
-    public File getConfigDirectory() {
-        return configDirectory;
     }
 
     public List<File> getDeployDirectories() {

@@ -58,7 +58,7 @@ public class StopComponentCommandGeneratorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testIncrementalStop() throws Exception {
-        StopComponentCommandGenerator generator = new StopComponentCommandGenerator(0);
+        StopComponentCommandGenerator generator = new StopComponentCommandGenerator();
         URI uri = URI.create("component");
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);
         component.setState(LogicalState.MARKED);
@@ -70,7 +70,7 @@ public class StopComponentCommandGeneratorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testFullStop() throws Exception {
-        StopComponentCommandGenerator generator = new StopComponentCommandGenerator(0);
+        StopComponentCommandGenerator generator = new StopComponentCommandGenerator();
         URI uri = URI.create("component");
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);
         component.setState(LogicalState.MARKED);
@@ -81,7 +81,7 @@ public class StopComponentCommandGeneratorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testIncrementalNoStop() throws Exception {
-        StopComponentCommandGenerator generator = new StopComponentCommandGenerator(0);
+        StopComponentCommandGenerator generator = new StopComponentCommandGenerator();
         URI uri = URI.create("component");
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);
         component.setState(LogicalState.PROVISIONED);

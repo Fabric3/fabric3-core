@@ -65,7 +65,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         EasyMock.replay(wireGenerator);
         LogicalComponent<?> component = createComponent();
 
-        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator, 0);
+        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
         ConnectionCommand command = generator.generate(component, true);
         assertEquals(1, command.getAttachCommands().size());
 
@@ -76,7 +76,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         EasyMock.replay(wireGenerator);
         LogicalComponent<?> component = createComponent();
         setBindingState(component, LogicalState.PROVISIONED);
-        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator, 0);
+        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
         assertNull(generator.generate(component, true));
 
         EasyMock.verify(wireGenerator);
@@ -89,7 +89,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         LogicalComponent<?> component = createComponent();
         setBindingState(component, LogicalState.PROVISIONED);
 
-        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator, 0);
+        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
         ConnectionCommand command = generator.generate(component, false);
         assertEquals(1, command.getAttachCommands().size());
 
@@ -97,7 +97,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
     }
 
     public void testGenerateNoBindingIncremental() throws Exception {
-        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator, 0);
+        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
 
         EasyMock.replay(wireGenerator);
 
@@ -117,7 +117,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         LogicalComponent<?> component = createComponent();
         setBindingState(component, LogicalState.MARKED);
 
-        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator, 0);
+        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
         ConnectionCommand command = generator.generate(component, true);
         assertEquals(1, command.getDetachCommands().size());
 
@@ -140,7 +140,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         LogicalBinding<?> binding = new LogicalBinding(definition, service);
         service.addCallbackBinding(binding);
 
-        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator, 0);
+        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
         ConnectionCommand command = generator.generate(component, true);
         assertEquals(2, command.getAttachCommands().size());
 
@@ -165,7 +165,7 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         service.addCallbackBinding(binding);
         setBindingState(component, LogicalState.MARKED);
 
-        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator, 0);
+        BoundServiceCommandGenerator generator = new BoundServiceCommandGenerator(wireGenerator);
         ConnectionCommand command = generator.generate(component, true);
         assertEquals(2, command.getDetachCommands().size());
 

@@ -40,6 +40,7 @@ package f3;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.Namespaces;
+import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
@@ -53,7 +54,8 @@ import org.fabric3.threadpool.RuntimeThreadPoolExecutor;
 public class ThreadPoolProvider {
     private static final QName QNAME = new QName(Namespaces.F3, "ThreadPoolComposite");
 
-    Composite getComposite() {
+    @Provides
+    public static Composite getComposite() {
         SystemComponentDefinitionBuilder componentBuilder = SystemComponentDefinitionBuilder.newBuilder(RuntimeThreadPoolExecutor.class);
         ComponentDefinition<SystemImplementation> executor = componentBuilder.build();
         return CompositeBuilder.newBuilder(QNAME).component(executor).build();

@@ -57,24 +57,24 @@ public class WireDefinitionBuilder extends AbstractBuilder {
     }
 
     /**
-     * Sets the reference.
+     * Sets the reference source.
      *
      * @param value the reference in the form component/reference/binding where reference and binding may be optional
      * @return the builder
      */
-    public WireDefinitionBuilder reference(String value) {
+    public WireDefinitionBuilder source(String value) {
         checkState();
         reference = parseTarget(value);
         return this;
     }
 
     /**
-     * Sets the service.
+     * Sets the service target.
      *
      * @param value the reference in the form component/service/binding where reference and binding may be optional
      * @return the builder
      */
-    public WireDefinitionBuilder service(String value) {
+    public WireDefinitionBuilder target(String value) {
         checkState();
         service = parseTarget(value);
         return this;

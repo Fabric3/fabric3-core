@@ -43,8 +43,6 @@
  */
 package org.fabric3.fabric.deployment.generator.component;
 
-import org.oasisopen.sca.annotation.Property;
-
 import org.fabric3.fabric.deployment.command.StartComponentCommand;
 import org.fabric3.fabric.deployment.generator.CommandGenerator;
 import org.fabric3.spi.deployment.generator.GenerationException;
@@ -56,14 +54,9 @@ import org.fabric3.spi.model.instance.LogicalState;
  * Creates a command to start an atomic component on a runtime.
  */
 public class StartComponentCommandGenerator implements CommandGenerator {
-    private int order;
-
-    public StartComponentCommandGenerator(@Property(name = "order") int order) {
-        this.order = order;
-    }
 
     public int getOrder() {
-        return order;
+        return START_COMPONENTS;
     }
 
     @SuppressWarnings("unchecked")

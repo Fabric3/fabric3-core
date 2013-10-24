@@ -79,8 +79,7 @@ import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 
 /**
- * Instantiates an ImplementationProcessor for introspecting system components. System components are composite-scoped and support the standard SCA
- * lifecycle, including @Init, @Destroy, and @EagerInit.
+ * Instantiates an ImplementationProcessor for introspecting system components.
  */
 public class BootstrapIntrospectionFactory {
 
@@ -96,11 +95,8 @@ public class BootstrapIntrospectionFactory {
         IntrospectionHelper helper = new DefaultIntrospectionHelper();
         JavaContractProcessor contractProcessor = new JavaContractProcessorImpl(helper);
 
-        Map<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation>> processors =
-                new HashMap<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation>>();
-
-        // OSOA annotations
-        // no constructor processor is needed as that is handled by heuristics
+        Map<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation>> processors
+                = new HashMap<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation>>();
 
         // OASIS annotations
         processors.put(Property.class, new OASISPropertyProcessor(helper));

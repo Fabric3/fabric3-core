@@ -37,41 +37,35 @@
 */
 package org.fabric3.fabric.deployment.generator.wire;
 
-import org.fabric3.spi.deployment.generator.wire.WireGenerator;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.fabric.deployment.command.AttachWireCommand;
 import org.fabric3.fabric.deployment.command.ConnectionCommand;
 import org.fabric3.fabric.deployment.generator.CommandGenerator;
 import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Generates commands to attach a component to its resources.
  */
 public class ResourceReferenceCommandGenerator implements CommandGenerator {
+    private WireGenerator wireGenerator;
 
-    private final WireGenerator wireGenerator;
-    private final int order;
-
-    public ResourceReferenceCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
+    public ResourceReferenceCommandGenerator(@Reference WireGenerator wireGenerator) {
         this.wireGenerator = wireGenerator;
-        this.order = order;
     }
 
     public int getOrder() {
-        return order;
+        return ATTACH;
     }
 
     public ConnectionCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
-        if (component instanceof LogicalCompositeComponent
-                || component.getResourceReferences().isEmpty()
-                || (component.getState() != LogicalState.NEW && incremental)) {
+        if (component instanceof LogicalCompositeComponent || component.getResourceReferences().isEmpty() || (component.getState() != LogicalState.NEW
+                                                                                                              && incremental)) {
             return null;
         }
         ConnectionCommand command = new ConnectionCommand(component.getUri());

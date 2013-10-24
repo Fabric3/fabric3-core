@@ -43,23 +43,20 @@
  */
 package org.fabric3.api.host.runtime;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.w3c.dom.Document;
-
 import org.fabric3.api.host.contribution.ContributionSource;
+import org.w3c.dom.Document;
 
 /**
  * Encapsulates configuration needed to bootstrap a runtime.
  */
 public class BootConfiguration {
     private Fabric3Runtime runtime;
-    private URL systemCompositeUrl;
     private Document systemConfig;
     private ClassLoader bootClassLoader;
     private Map<String, String> exportedPackages = new HashMap<String, String>();
@@ -75,14 +72,6 @@ public class BootConfiguration {
 
     public void setRuntime(Fabric3Runtime runtime) {
         this.runtime = runtime;
-    }
-
-    public URL getSystemCompositeUrl() {
-        return systemCompositeUrl;
-    }
-
-    public void setSystemCompositeUrl(URL url) {
-        this.systemCompositeUrl = url;
     }
 
     public Document getSystemConfig() {

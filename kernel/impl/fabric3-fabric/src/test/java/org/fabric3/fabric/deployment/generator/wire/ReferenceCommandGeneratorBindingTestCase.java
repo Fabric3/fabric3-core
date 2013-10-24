@@ -257,7 +257,7 @@ public class ReferenceCommandGeneratorBindingTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         wireGenerator = EasyMock.createMock(WireGenerator.class);
-        generator = new ReferenceCommandGenerator(wireGenerator, 0);
+        generator = new ReferenceCommandGenerator(wireGenerator);
     }
 
 }

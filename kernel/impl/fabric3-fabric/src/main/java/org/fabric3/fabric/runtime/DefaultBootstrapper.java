@@ -45,18 +45,10 @@ package org.fabric3.fabric.runtime;
 
 import javax.management.MBeanServer;
 import java.net.URI;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.contribution.manifest.ContributionExport;
-import org.fabric3.fabric.deployment.instantiator.component.AtomicComponentInstantiatorImpl;
-import org.fabric3.fabric.runtime.bootstrap.BootstrapAssemblyFactory;
-import org.fabric3.fabric.runtime.bootstrap.BootstrapCompositeFactory;
-import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;
-import org.fabric3.fabric.runtime.bootstrap.Java6HostExports;
-import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
 import org.fabric3.api.host.Version;
 import org.fabric3.api.host.contribution.ContributionException;
 import org.fabric3.api.host.domain.DeploymentException;
@@ -71,11 +63,20 @@ import org.fabric3.api.host.runtime.ComponentRegistration;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.InitializationException;
+import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.contribution.manifest.ContributionExport;
+import org.fabric3.fabric.deployment.instantiator.component.AtomicComponentInstantiatorImpl;
+import org.fabric3.fabric.runtime.bootstrap.BootstrapAssemblyFactory;
+import org.fabric3.fabric.runtime.bootstrap.BootstrapCompositeFactory;
+import org.fabric3.fabric.runtime.bootstrap.BootstrapIntrospectionFactory;
+import org.fabric3.fabric.runtime.bootstrap.Java6HostExports;
+import org.fabric3.fabric.synthesizer.ComponentRegistrationException;
+import org.fabric3.fabric.synthesizer.ComponentSynthesizer;
+import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
-import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
@@ -86,14 +87,12 @@ import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
-import org.fabric3.fabric.synthesizer.ComponentRegistrationException;
-import org.fabric3.fabric.synthesizer.ComponentSynthesizer;
 import org.w3c.dom.Document;
 import static org.fabric3.api.host.Names.BOOT_CONTRIBUTION;
 import static org.fabric3.api.host.Names.HOST_CONTRIBUTION;
@@ -128,7 +127,6 @@ public class DefaultBootstrapper implements Bootstrapper {
     private Domain runtimeDomain;
 
     private Fabric3Runtime runtime;
-    private URL systemCompositeUrl;
     private Document systemConfig;
     private ClassLoader bootClassLoader;
     private Map<String, String> exportedPackages;
@@ -140,7 +138,6 @@ public class DefaultBootstrapper implements Bootstrapper {
 
     public DefaultBootstrapper(BootConfiguration configuration) {
         runtime = configuration.getRuntime();
-        systemCompositeUrl = configuration.getSystemCompositeUrl();
         systemConfig = configuration.getSystemConfig();
         hostClassLoader = configuration.getHostClassLoader();
         bootClassLoader = configuration.getBootClassLoader();
@@ -197,9 +194,7 @@ public class DefaultBootstrapper implements Bootstrapper {
     public void bootSystem() throws InitializationException {
         try {
             // load the system composite
-            Composite composite = BootstrapCompositeFactory.createSystemComposite(systemCompositeUrl,
-                                                                                  bootContribution,
-                                                                                  bootClassLoader, implementationIntrospector);
+            Composite composite = BootstrapCompositeFactory.createSystemComposite(bootContribution, hostInfo, bootClassLoader, implementationIntrospector);
 
             // create the property and merge it into the composite
             LogicalProperty logicalProperty = new LogicalProperty("systemConfig", systemConfig, false, domain);

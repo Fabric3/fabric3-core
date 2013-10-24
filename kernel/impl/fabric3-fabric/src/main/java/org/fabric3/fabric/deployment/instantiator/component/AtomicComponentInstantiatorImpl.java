@@ -39,10 +39,7 @@ package org.fabric3.fabric.deployment.instantiator.component;
 
 import java.net.URI;
 
-import org.oasisopen.sca.annotation.Property;
-
-import org.fabric3.fabric.deployment.instantiator.AtomicComponentInstantiator;
-import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.BindingDefinition;
@@ -56,6 +53,8 @@ import org.fabric3.api.model.type.component.ConsumerDefinition;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.api.model.type.component.ResourceReferenceDefinition;
+import org.fabric3.fabric.deployment.instantiator.AtomicComponentInstantiator;
+import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -64,6 +63,7 @@ import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.fabric3.spi.model.instance.LogicalService;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  *
@@ -72,6 +72,7 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
     private boolean componentTypeOverride;
 
     @Property(required = false)
+    @Source("$systemConfig//f3:sca/@componentTypeOverride")
     public void setComponentTypeOverride(boolean componentTypeOverride) {
         this.componentTypeOverride = componentTypeOverride;
     }

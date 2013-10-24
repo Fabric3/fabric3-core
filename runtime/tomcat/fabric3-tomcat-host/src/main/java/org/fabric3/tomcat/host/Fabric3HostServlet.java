@@ -48,7 +48,6 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
-import java.net.URL;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,10 +90,10 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
     private static final String FABRIC3_MODE = "fabric3.mode";
     private static final String FABRIC3_HOME = "fabric3";
 
-    private RuntimeCoordinator coordinator;
-    private ServerMonitor monitor;
-    private Wrapper wrapper;
-    private Host host;
+    private transient RuntimeCoordinator coordinator;
+    private transient ServerMonitor monitor;
+    private transient Wrapper wrapper;
+    private transient Host host;
     private File installDirectory;
     private boolean restartEnabled;
 
@@ -192,7 +191,7 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
             List<File> deployDirs = bootstrapService.parseDeployDirectories(systemConfig);
 
             // create the HostInfo and runtime
-            HostInfo hostInfo = createHostInfo(runtimeName, zoneName, mode, domainName, environment, runtimeDir, configDir, extensionsDir, deployDirs, false);
+            HostInfo hostInfo = createHostInfo(runtimeName, zoneName, mode, domainName, environment, runtimeDir, extensionsDir, deployDirs, false);
 
             // clear out the tmp directory
             if (firstInitTime) {
@@ -208,8 +207,6 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
-            URL systemComposite = new File(bootDir, "system.composite").toURI().toURL();
-
             ScanResult result = bootstrapService.scanRepository(hostInfo);
 
             List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
@@ -220,7 +217,6 @@ public class Fabric3HostServlet extends HttpServlet implements ContainerServlet 
             configuration.setRuntime(runtime);
             configuration.setHostClassLoader(hostLoader);
             configuration.setBootClassLoader(bootLoader);
-            configuration.setSystemCompositeUrl(systemComposite);
             configuration.setSystemConfig(systemConfig);
             configuration.setExtensionContributions(result.getExtensionContributions());
             configuration.setUserContributions(result.getUserContributions());

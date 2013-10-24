@@ -46,6 +46,7 @@ package org.fabric3.runtime.maven.itest;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -105,10 +106,6 @@ public class MavenHostInfoImpl implements MavenHostInfo {
         return tempDir;
     }
 
-    public File getConfigDirectory() {
-        return null;
-    }
-
     public File getUserRepositoryDirectory() {
         return null;
     }
@@ -122,7 +119,7 @@ public class MavenHostInfoImpl implements MavenHostInfo {
     }
 
     public List<File> getDeployDirectories() {
-        return null;
+        return Collections.emptyList();
     }
 
     public boolean supportsClassLoaderIsolation() {

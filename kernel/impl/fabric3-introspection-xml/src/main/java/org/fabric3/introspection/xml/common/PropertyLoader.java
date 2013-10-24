@@ -48,6 +48,7 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.fabric3.api.annotation.Source;
 import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
@@ -78,6 +79,7 @@ public class PropertyLoader extends AbstractValidatingTypeLoader<Property> {
     }
 
     @org.oasisopen.sca.annotation.Property(required = false)
+    @Source("$systemConfig/f3:loader/@round.trip")
     public void setRoundTrip(boolean roundTrip) {
         this.roundTrip = roundTrip;
     }

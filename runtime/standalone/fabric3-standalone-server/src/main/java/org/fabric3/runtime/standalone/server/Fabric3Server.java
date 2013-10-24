@@ -49,7 +49,6 @@ import javax.management.ObjectName;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -150,9 +149,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
                                                                mode,
                                                                domainName,
                                                                environment,
-                                                               runtimeDir,
-                                                               configDir,
-                                                               extensionsDir,
+                                                               runtimeDir, extensionsDir,
                                                                deployDirs,
                                                                false);
 
@@ -173,14 +170,11 @@ public class Fabric3Server implements Fabric3ServerMBean {
 
             Fabric3Runtime runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
-            URL systemComposite = new File(bootDir, "system.composite").toURI().toURL();
-
             ScanResult result = bootstrapService.scanRepository(hostInfo);
 
             configuration.setRuntime(runtime);
             configuration.setHostClassLoader(hostLoader);
             configuration.setBootClassLoader(bootLoader);
-            configuration.setSystemCompositeUrl(systemComposite);
             configuration.setSystemConfig(systemConfig);
             configuration.setExtensionContributions(result.getExtensionContributions());
             configuration.setUserContributions(result.getUserContributions());

@@ -55,20 +55,20 @@ public class SystemComponentDefinitionBuilder extends ComponentDefinitionBuilder
      * @return the builder
      */
     public static SystemComponentDefinitionBuilder newBuilder(String name, Class<?> clazz) {
-        return new SystemComponentDefinitionBuilder(name, clazz).implementation(clazz);
+        return new SystemComponentDefinitionBuilder(name, clazz);
     }
 
     /**
-     * Creates a new builder using the given implementation class. If the implementation class implements a single interface, its simple name will be used as
-     * the component name. Otherwise, the implementation class name will be used.
+     * Creates a new builder using the given implementation class. If the implementation class implements a single interface and ends in "Impl", its simple name
+     * will be used as the component name. Otherwise, the implementation class name will be used.
      *
      * @param clazz the implementation class
      * @return the builder
      */
     public static SystemComponentDefinitionBuilder newBuilder(Class<?> clazz) {
         // derive the name: the interface name if there is one interface or the implementation name
-        String name = clazz.getInterfaces().length == 1 ? clazz.getInterfaces()[0].getSimpleName() : clazz.getSimpleName();
-        return new SystemComponentDefinitionBuilder(name, clazz).implementation(clazz);
+        String name = clazz.getInterfaces().length == 1 && clazz.getName().endsWith("Impl") ? clazz.getInterfaces()[0].getSimpleName() : clazz.getSimpleName();
+        return new SystemComponentDefinitionBuilder(name, clazz);
     }
 
     public ComponentDefinition<SystemImplementation> build() {
@@ -93,9 +93,6 @@ public class SystemComponentDefinitionBuilder extends ComponentDefinitionBuilder
 
     private SystemComponentDefinitionBuilder implementation(Class<?> clazz) {
         String name = clazz.getName();
-        if (name.endsWith("Impl")) {
-            name = name.substring(0, name.length() - 4);
-        }
         definition.getImplementation().setImplementationClass(name);
         return this;
     }

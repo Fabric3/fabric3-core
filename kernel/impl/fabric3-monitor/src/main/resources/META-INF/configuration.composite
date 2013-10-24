@@ -17,10 +17,6 @@
 
     <component name="MonitorService">
         <f3:implementation.system class="org.fabric3.monitor.runtime.MonitorServiceImpl"/>
-        <property name="defaultLevel" source="$systemConfig//f3:runtime/@monitor.level"/>
-        <property name="deployableLevels" source="$systemConfig//f3:runtime/f3:monitor/f3:deployable.levels"/>
-        <property name="contributionLevels" source="$systemConfig//f3:runtime/f3:monitor/f3:contribution.levels"/>
-        <property name="providerLevels" source="$systemConfig//f3:runtime/f3:monitor/f3:provider.levels"/>
     </component>
 
 </composite>

@@ -66,15 +66,13 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
  */
 public class DisposeResourceCommandGenerator implements CommandGenerator {
     private GeneratorRegistry generatorRegistry;
-    private int order;
 
-    public DisposeResourceCommandGenerator(@Reference GeneratorRegistry generatorRegistry, @Property(name = "order") int order) {
+    public DisposeResourceCommandGenerator(@Reference GeneratorRegistry generatorRegistry) {
         this.generatorRegistry = generatorRegistry;
-        this.order = order;
     }
 
     public int getOrder() {
-        return order;
+        return DISPOSE_RESOURCES;
     }
 
     @SuppressWarnings({"unchecked"})

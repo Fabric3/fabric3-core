@@ -258,7 +258,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
         super.setUp();
         wireGenerator = EasyMock.createMock(WireGenerator.class);
         lcm = EasyMock.createMock(LogicalComponentManager.class);
-        generator = new ReferenceCommandGenerator(wireGenerator, 0);
+        generator = new ReferenceCommandGenerator(wireGenerator);
     }
 
 }

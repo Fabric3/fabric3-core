@@ -38,21 +38,38 @@
  */
 package org.fabric3.fabric.runtime.bootstrap;
 
+import javax.xml.namespace.QName;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
-import javax.xml.namespace.QName;
 
-import org.fabric3.fabric.xml.XMLFactoryImpl;
-import org.fabric3.api.host.contribution.ContributionException;
+import f3.ContributionServiceProvider;
+import f3.FabricProvider;
+import f3.JDKReflectionProvider;
+import f3.JavaIntrospectionProvider;
+import f3.MonitorProvider;
+import f3.PojoProvider;
+import f3.PolicyProvider;
+import f3.SystemImplementationProvider;
+import f3.ThreadPoolProvider;
+import f3.TransformerProvider;
+import f3.XmlIntrospectionProvider;
+import org.fabric3.api.Namespaces;
 import org.fabric3.api.host.failure.ValidationFailure;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.InitializationException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
+import org.fabric3.api.model.type.builder.CompositeBuilder;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.CompositeImplementation;
 import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.contribution.archive.SyntheticDirectoryClasspathProcessor;
+import org.fabric3.contribution.archive.SyntheticDirectoryContributionProcessor;
+import org.fabric3.contribution.processor.SymLinkClasspathProcessor;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
@@ -63,45 +80,74 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.validation.InvalidCompositeException;
-import org.fabric3.spi.introspection.xml.Loader;
-import org.fabric3.spi.introspection.xml.LoaderException;
-import org.fabric3.spi.xml.XMLFactory;
+import org.fabric3.spi.model.type.system.SystemComponentDefinitionBuilder;
 
 /**
  * Creates the initial system composite that is deployed to the runtime domain.
  */
 public class BootstrapCompositeFactory {
-    private static final XMLFactory XML_FACTORY = new XMLFactoryImpl();
+    private static final URL COMPOSITE_URL;
+
+    static {
+        try {
+            COMPOSITE_URL = new URL("file://SystemBootComposite");
+        } catch (MalformedURLException e) {
+            throw new AssertionError(e);
+        }
+    }
 
     private BootstrapCompositeFactory() {
     }
 
-    public static Composite createSystemComposite(URL compositeUrl,
-                                                  Contribution contribution,
+    public static Composite createSystemComposite(Contribution contribution,
+                                                  HostInfo hostInfo,
                                                   ClassLoader bootClassLoader,
                                                   ImplementationIntrospector processor) throws InitializationException {
-        try {
-            // load and introspect the system composite XML
-            Loader loader = BootstrapLoaderFactory.createLoader(processor, XML_FACTORY);
-            URI contributionUri = contribution.getUri();
-            IntrospectionContext introspectionContext = new DefaultIntrospectionContext(contributionUri, bootClassLoader, compositeUrl);
-            Source source = new UrlSource(compositeUrl);
-            Composite composite = loader.load(source, Composite.class, introspectionContext);
-            if (introspectionContext.hasErrors()) {
-                QName name = composite.getName();
-                List<ValidationFailure> errors = introspectionContext.getErrors();
-                List<ValidationFailure> warnings = introspectionContext.getWarnings();
-                throw new InvalidCompositeException(name, errors, warnings);
-            }
 
-            addContributionUri(contributionUri, composite);
-            addResource(contribution, composite, compositeUrl);
-            return composite;
-        } catch (ContributionException e) {
-            throw new InitializationException(e);
-        } catch (LoaderException e) {
-            throw new InitializationException(e);
+        CompositeBuilder builder = CompositeBuilder.newBuilder(new QName(Namespaces.F3, "SystemBootComposite"));
+        builder.include(ContributionServiceProvider.getComposite());
+        builder.include(FabricProvider.getComposite());
+        builder.include(JavaIntrospectionProvider.getComposite());
+        builder.include(XmlIntrospectionProvider.getComposite());
+        builder.include(JDKReflectionProvider.getComposite());
+        builder.include(MonitorProvider.getComposite());
+        builder.include(PojoProvider.getComposite());
+        builder.include(PolicyProvider.getComposite());
+        builder.include(SystemImplementationProvider.getComposite());
+        builder.include(ThreadPoolProvider.getComposite());
+        builder.include(SystemImplementationProvider.getComposite());
+        builder.include(TransformerProvider.getComposite());
+
+        if (!hostInfo.getDeployDirectories().isEmpty()) {
+            // supports file-based deploy
+            builder.component(SystemComponentDefinitionBuilder.newBuilder("SyntheticDirectoryContributionProcessor",
+                                                                          SyntheticDirectoryContributionProcessor.class).build());
+
+            builder.component(SystemComponentDefinitionBuilder.newBuilder("SyntheticDirectoryClasspathProcessor",
+                                                                          SyntheticDirectoryClasspathProcessor.class).build());
+
+            builder.component(SystemComponentDefinitionBuilder.newBuilder("SymLinkClasspathProcessor", SymLinkClasspathProcessor.class).build());
+
         }
+
+        Composite composite = builder.build();
+
+        URI contributionUri = contribution.getUri();
+        IntrospectionContext context = new DefaultIntrospectionContext(contributionUri, bootClassLoader, COMPOSITE_URL);
+        for (ComponentDefinition<? extends Implementation<?>> definition : composite.getComponents().values()) {
+            processor.introspect((InjectingComponentType) definition.getComponentType(), context);
+        }
+
+        if (context.hasErrors()) {
+            QName name = composite.getName();
+            List<ValidationFailure> errors = context.getErrors();
+            List<ValidationFailure> warnings = context.getWarnings();
+            throw new InitializationException(new InvalidCompositeException(name, errors, warnings));
+        }
+
+        addContributionUri(contributionUri, composite);
+        addResource(contribution, composite);
+        return composite;
     }
 
     /**
@@ -129,10 +175,9 @@ public class BootstrapCompositeFactory {
      *
      * @param contribution the contribution
      * @param composite    the composite
-     * @param scdlLocation the location of the composite file
      */
-    private static void addResource(Contribution contribution, Composite composite, URL scdlLocation) {
-        Source source = new UrlSource(scdlLocation);
+    private static void addResource(Contribution contribution, Composite composite) {
+        Source source = new UrlSource(COMPOSITE_URL);
         Resource resource = new Resource(contribution, source, Constants.COMPOSITE_CONTENT_TYPE);
         QName compositeName = composite.getName();
         QNameSymbol symbol = new QNameSymbol(compositeName);

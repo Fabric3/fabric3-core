@@ -30,7 +30,7 @@
         <f3:implementation.system class="org.fabric3.contribution.DependencyResolverImpl"/>
     </component>
 
-    <component name="ClassLoaderWireGenerator" f3:key="org.fabric3.contribution.wire.JavaContributionWire">
+    <component name="JavaContributionWireGenerator" f3:key="org.fabric3.contribution.wire.JavaContributionWire">
         <f3:implementation.system class="org.fabric3.contribution.generator.JavaContributionWireGenerator"/>
     </component>
 

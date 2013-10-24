@@ -70,7 +70,7 @@ public class BuildResourceCommandGeneratorTestCase extends TestCase {
         EasyMock.expect(registry.getResourceGenerator(EasyMock.eq(MockDefinition.class))).andReturn(resourceGenerator);
         EasyMock.replay(registry, resourceGenerator);
 
-        BuildResourceCommandGenerator generator = new BuildResourceCommandGenerator(registry, 0);
+        BuildResourceCommandGenerator generator = new BuildResourceCommandGenerator(registry);
 
         LogicalCompositeComponent composite = new LogicalCompositeComponent(URI.create("component"), null, null);
         LogicalResource resource = new LogicalResource(new MockDefinition(), composite);
@@ -87,7 +87,7 @@ public class BuildResourceCommandGeneratorTestCase extends TestCase {
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.replay(registry);
 
-        BuildResourceCommandGenerator generator = new BuildResourceCommandGenerator(registry, 0);
+        BuildResourceCommandGenerator generator = new BuildResourceCommandGenerator(registry);
 
         LogicalCompositeComponent composite = new LogicalCompositeComponent(URI.create("component"), null, null);
         LogicalResource resource = new LogicalResource(new MockDefinition(), composite);
@@ -107,7 +107,7 @@ public class BuildResourceCommandGeneratorTestCase extends TestCase {
         EasyMock.expect(registry.getResourceGenerator(EasyMock.eq(MockDefinition.class))).andReturn(resourceGenerator);
         EasyMock.replay(registry, resourceGenerator);
 
-        BuildResourceCommandGenerator generator = new BuildResourceCommandGenerator(registry, 0);
+        BuildResourceCommandGenerator generator = new BuildResourceCommandGenerator(registry);
 
         LogicalCompositeComponent composite = new LogicalCompositeComponent(URI.create("component"), null, null);
         composite.setState(LogicalState.PROVISIONED);

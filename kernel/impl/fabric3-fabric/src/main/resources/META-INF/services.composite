@@ -47,16 +47,6 @@
 
     <component name="KeyStoreManager">
         <f3:implementation.system class="org.fabric3.fabric.security.KeyStoreManagerImpl"/>
-        <property name="keyStoreLocationProperty" source="$systemConfig/f3:security/f3:keystore.property"/>
-        <property name="keyStorePasswordProperty" source="$systemConfig/f3:security/f3:keystore.password.property"/>
-        <property name="trustStoreLocationProperty" source="$systemConfig/f3:security/f3:truststore.property"/>
-        <property name="trustStorePasswordProperty" source="$systemConfig/f3:security/f3:truststore.password.property"/>
-
-        <property name="keyStoreLocation" source="$systemConfig/f3:security/f3:keystore"/>
-        <property name="keyStorePassword" source="$systemConfig/f3:security/f3:keystore.password"/>
-        <property name="trustStoreLocation" source="$systemConfig/f3:security/f3:truststore"/>
-        <property name="trustStorePassword" source="$systemConfig/f3:security/f3:truststore.password"/>
-        <property name="certPassword" source="$systemConfig/f3:security/f3:cert.password"/>
     </component>
 
     <component name="TransformerInterceptorFactory">

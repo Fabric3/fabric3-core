@@ -58,7 +58,7 @@ public class StartComponentCommandGeneratorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testIncrementalStart() throws Exception {
-        StartComponentCommandGenerator generator = new StartComponentCommandGenerator(0);
+        StartComponentCommandGenerator generator = new StartComponentCommandGenerator();
         URI uri = URI.create("component");
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);
 
@@ -69,7 +69,7 @@ public class StartComponentCommandGeneratorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testFullStart() throws Exception {
-        StartComponentCommandGenerator generator = new StartComponentCommandGenerator(0);
+        StartComponentCommandGenerator generator = new StartComponentCommandGenerator();
         URI uri = URI.create("component");
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);
         component.setState(LogicalState.PROVISIONED);
@@ -80,7 +80,7 @@ public class StartComponentCommandGeneratorTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testIncrementalNoStart() throws Exception {
-        StartComponentCommandGenerator generator = new StartComponentCommandGenerator(0);
+        StartComponentCommandGenerator generator = new StartComponentCommandGenerator();
         URI uri = URI.create("component");
         LogicalComponent<?> component = new LogicalComponent(uri, null, null);
         component.setState(LogicalState.PROVISIONED);

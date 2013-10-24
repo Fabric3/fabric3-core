@@ -41,14 +41,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.fabric.deployment.command.AttachWireCommand;
 import org.fabric3.fabric.deployment.command.ConnectionCommand;
 import org.fabric3.fabric.deployment.command.DetachWireCommand;
 import org.fabric3.fabric.deployment.generator.CommandGenerator;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.component.Multiplicity;
-import org.fabric3.spi.deployment.generator.binding.CallbackBindingGenerator;
 import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.binding.CallbackBindingGenerator;
 import org.fabric3.spi.deployment.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -59,7 +59,6 @@ import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.type.binding.SCABinding;
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -69,17 +68,13 @@ public class ReferenceCommandGenerator implements CommandGenerator {
     private WireGenerator wireGenerator;
     private Map<Class<?>, CallbackBindingGenerator> generators = Collections.emptyMap();
 
-    private int order;
-
     /**
      * Constructor.
      *
      * @param wireGenerator the physical wire generator
-     * @param order         the order for this command generator
      */
-    public ReferenceCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
+    public ReferenceCommandGenerator(@Reference WireGenerator wireGenerator) {
         this.wireGenerator = wireGenerator;
-        this.order = order;
     }
 
     @Reference(required = false)
@@ -88,7 +83,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
     }
 
     public int getOrder() {
-        return order;
+        return ATTACH;
     }
 
     public ConnectionCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {
@@ -188,7 +183,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
             if (targetComponent.getState() == LogicalState.MARKED || wire.getState() == LogicalState.MARKED) {
                 attach = false;
                 PhysicalWireDefinition pwd;
-                if (wire.getSourceBinding()!= null && wire.getTargetBinding() == null) {
+                if (wire.getSourceBinding() != null && wire.getTargetBinding() == null) {
                     // wire is on a node runtime where the target component is on a different runtime and hence does not have a binding in the current runtime
                     pwd = wireGenerator.generateBoundReference(wire.getSourceBinding());
                 } else {
@@ -200,7 +195,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
             } else if ((reinjection && targetComponent.getState() == LogicalState.NEW) || !incremental || wire.getState() == LogicalState.NEW
                        || targetComponent.getState() == LogicalState.NEW) {
                 PhysicalWireDefinition pwd;
-                if (wire.getSourceBinding()!= null && wire.getTargetBinding() == null) {
+                if (wire.getSourceBinding() != null && wire.getTargetBinding() == null) {
                     // wire is on a node runtime where the target component is on a different runtime and hence does not have a binding in the current runtime
                     pwd = wireGenerator.generateBoundReference(wire.getSourceBinding());
                 } else {
@@ -213,7 +208,7 @@ public class ReferenceCommandGenerator implements CommandGenerator {
             // generate physical callback wires if the forward service is bidirectional
             if (reference.getServiceContract().getCallbackContract() != null) {
                 PhysicalWireDefinition pwd;
-                if (wire.getSourceBinding()!= null && wire.getTargetBinding() == null) {
+                if (wire.getSourceBinding() != null && wire.getTargetBinding() == null) {
                     // wire is on a node runtime where the target component is on a different runtime and hence does not have a binding in the current runtime
                     pwd = wireGenerator.generateBoundReferenceCallback(reference.getCallbackBindings().get(0));
                 } else {

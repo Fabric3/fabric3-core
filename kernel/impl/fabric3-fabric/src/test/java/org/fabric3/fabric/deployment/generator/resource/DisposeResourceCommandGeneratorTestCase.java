@@ -70,7 +70,7 @@ public class DisposeResourceCommandGeneratorTestCase extends TestCase {
         EasyMock.expect(registry.getResourceGenerator(EasyMock.eq(MockDefinition.class))).andReturn(resourceGenerator);
         EasyMock.replay(registry, resourceGenerator);
 
-        DisposeResourceCommandGenerator generator = new DisposeResourceCommandGenerator(registry, 0);
+        DisposeResourceCommandGenerator generator = new DisposeResourceCommandGenerator(registry);
 
         LogicalCompositeComponent composite = new LogicalCompositeComponent(URI.create("component"), null, null);
         composite.setState(LogicalState.MARKED);
@@ -88,7 +88,7 @@ public class DisposeResourceCommandGeneratorTestCase extends TestCase {
         GeneratorRegistry registry = EasyMock.createMock(GeneratorRegistry.class);
         EasyMock.replay(registry);
 
-        DisposeResourceCommandGenerator generator = new DisposeResourceCommandGenerator(registry, 0);
+        DisposeResourceCommandGenerator generator = new DisposeResourceCommandGenerator(registry);
 
         LogicalCompositeComponent composite = new LogicalCompositeComponent(URI.create("component"), null, null);
         LogicalResource resource = new LogicalResource(new MockDefinition(), composite);

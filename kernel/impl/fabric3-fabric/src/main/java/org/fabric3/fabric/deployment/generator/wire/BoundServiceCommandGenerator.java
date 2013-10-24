@@ -48,14 +48,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.fabric.deployment.command.AttachWireCommand;
 import org.fabric3.fabric.deployment.command.ConnectionCommand;
 import org.fabric3.fabric.deployment.command.DetachWireCommand;
 import org.fabric3.fabric.deployment.generator.CommandGenerator;
-import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.api.model.type.contract.ServiceContract;
-import org.fabric3.spi.deployment.generator.binding.CallbackBindingGenerator;
 import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.binding.CallbackBindingGenerator;
 import org.fabric3.spi.deployment.generator.wire.WireGenerator;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
@@ -64,25 +64,22 @@ import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalWireDefinition;
 import org.fabric3.spi.model.type.binding.SCABinding;
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Generates commands to attach/detach the source end of physical wires to their transports for components being deployed or undeployed.
  */
 public class BoundServiceCommandGenerator implements CommandGenerator {
-    private final WireGenerator wireGenerator;
-    private final int order;
+    private WireGenerator wireGenerator;
 
     private Map<Class<?>, CallbackBindingGenerator> generators = Collections.emptyMap();
 
-    public BoundServiceCommandGenerator(@Reference WireGenerator wireGenerator, @Property(name = "order") int order) {
+    public BoundServiceCommandGenerator(@Reference WireGenerator wireGenerator) {
         this.wireGenerator = wireGenerator;
-        this.order = order;
     }
 
     public int getOrder() {
-        return order;
+        return ATTACH;
     }
 
     @Reference(required = false)
@@ -161,11 +158,9 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
                 }
             }
             // generate the callback command set
-            if (callbackBinding != null
-                    && !(callbackBinding.getDefinition() instanceof SCABinding)
-                    && ((callbackBinding.getState() == LogicalState.NEW
-                    || callbackBinding.getState() == LogicalState.MARKED
-                    || !incremental))) {
+            if (callbackBinding != null && !(callbackBinding.getDefinition() instanceof SCABinding) && ((callbackBinding.getState() == LogicalState.NEW
+                                                                                                         || callbackBinding.getState() == LogicalState.MARKED
+                                                                                                         || !incremental))) {
                 PhysicalWireDefinition callbackPwd = wireGenerator.generateBoundServiceCallback(callbackBinding);
                 if (LogicalState.MARKED == callbackBinding.getState()) {
                     DetachWireCommand detachWireCommand = new DetachWireCommand();
@@ -179,7 +174,6 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
             }
         }
     }
-
 
     private void generateCallbackBindings(LogicalService service) throws GenerationException {
         for (LogicalBinding<?> logicalBinding : service.getBindings()) {

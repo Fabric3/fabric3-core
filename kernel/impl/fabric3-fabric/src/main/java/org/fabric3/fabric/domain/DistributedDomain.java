@@ -39,25 +39,25 @@ package org.fabric3.fabric.domain;
 
 import java.util.List;
 
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.spi.deployment.generator.binding.BindingSelector;
-import org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiator;
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.host.RuntimeMode;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.domain.Allocator;
-import org.fabric3.spi.deployment.generator.binding.BindingSelectionException;
+import org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiator;
 import org.fabric3.spi.contribution.MetaDataStore;
-import org.fabric3.spi.domain.Deployer;
-import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.deployment.generator.Generator;
+import org.fabric3.spi.deployment.generator.binding.BindingSelectionException;
+import org.fabric3.spi.deployment.generator.binding.BindingSelector;
 import org.fabric3.spi.deployment.generator.policy.PolicyAttacher;
 import org.fabric3.spi.deployment.generator.policy.PolicyRegistry;
+import org.fabric3.spi.domain.Allocator;
+import org.fabric3.spi.domain.DeployListener;
+import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Implements a distributed domain containing user-defined services.
@@ -76,15 +76,7 @@ public class DistributedDomain extends AbstractDomain implements Domain {
                              @Reference Collector collector,
                              @Reference ContributionHelper contributionHelper,
                              @Reference HostInfo info) {
-        super(metaDataStore,
-              logicalComponentManager,
-              generator,
-              logicalModelInstantiator,
-              policyAttacher,
-              deployer,
-              collector,
-              contributionHelper,
-              info);
+        super(metaDataStore, logicalComponentManager, generator, logicalModelInstantiator, policyAttacher, deployer, collector, contributionHelper, info);
         generateFullDeployment = RuntimeMode.CONTROLLER == info.getRuntimeMode();
         this.bindingSelector = bindingSelector;
     }
@@ -135,6 +127,7 @@ public class DistributedDomain extends AbstractDomain implements Domain {
      * @param transactional used to override default non-transactional deployment behavior in the single-VM runtime
      */
     @Property(required = false)
+    @Source("$systemConfig//f3:deployment/@transactional")
     public void setTransactional(boolean transactional) {
         this.transactional = transactional;
     }
@@ -160,7 +153,5 @@ public class DistributedDomain extends AbstractDomain implements Domain {
             throw new DeploymentException(e);
         }
     }
-
-
 
 }

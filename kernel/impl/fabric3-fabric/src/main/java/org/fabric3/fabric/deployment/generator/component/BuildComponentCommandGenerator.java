@@ -43,9 +43,6 @@
  */
 package org.fabric3.fabric.deployment.generator.component;
 
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.fabric.deployment.command.BuildComponentCommand;
 import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
 import org.fabric3.spi.deployment.generator.GenerationException;
@@ -53,20 +50,19 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Creates a command to build a component on a runtime.
  */
 public class BuildComponentCommandGenerator extends AbstractBuildComponentCommandGenerator {
-    private int order;
 
-    public BuildComponentCommandGenerator(@Reference GeneratorRegistry generatorRegistry, @Property(name = "order") int order) {
+    public BuildComponentCommandGenerator(@Reference GeneratorRegistry generatorRegistry) {
         super(generatorRegistry);
-        this.order = order;
     }
 
     public int getOrder() {
-        return order;
+        return BUILD_COMPONENTS;
     }
 
     public BuildComponentCommand generate(LogicalComponent<?> component, boolean incremental) throws GenerationException {

@@ -39,11 +39,7 @@ package org.fabric3.fabric.domain;
 
 import java.net.URI;
 
-import org.oasisopen.sca.annotation.Constructor;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Names;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -56,6 +52,10 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.util.UriHelper;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Implementation of LogicalComponentManager. The runtime domain configuration (created during bootstrap) defaults autowire to ON; the application
@@ -84,6 +84,7 @@ public class LogicalComponentManagerImpl implements LogicalComponentManager {
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:domain/@autowire")
     public void setAutowire(String value) {
         autowireValue = value;
     }

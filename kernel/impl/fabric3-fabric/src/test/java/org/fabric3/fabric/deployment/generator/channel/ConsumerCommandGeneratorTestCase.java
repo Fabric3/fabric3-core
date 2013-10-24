@@ -75,7 +75,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
-        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator, 0);
+        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator);
 
         LogicalCompositeComponent parent = new LogicalCompositeComponent(URI.create("domain"), null, null);
         URI channelUri = URI.create("NotFoundChannel");
@@ -107,7 +107,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
                                                        EasyMock.isA(ChannelDirection.class))).andReturn(buildChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
-        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator, 0);
+        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
 
         ChannelConnectionCommand command = generator.generate(component, true);
@@ -131,7 +131,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
                                                        EasyMock.isA(ChannelDirection.class))).andReturn(buildChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
-        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator, 0);
+        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
         ChannelConnectionCommand command = generator.generate(component, true);
 
@@ -153,7 +153,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
 
         EasyMock.replay(connectionGenerator, channelGenerator);
 
-        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator, 0);
+        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
         component.setState(LogicalState.MARKED);
         ChannelConnectionCommand command = generator.generate(component, true);
@@ -178,7 +178,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
                                                        EasyMock.isA(ChannelDirection.class))).andReturn(buildChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
-        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator, 0);
+        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
         component.setState(LogicalState.PROVISIONED);
         ChannelConnectionCommand command = generator.generate(component, false);
@@ -203,7 +203,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
                                                          EasyMock.isA(ChannelDirection.class))).andReturn(disposeChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
-        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator, 0);
+        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
         component.setState(LogicalState.MARKED);
         ChannelConnectionCommand command = generator.generate(component, false);
@@ -219,7 +219,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
-        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator, 0);
+        ConsumerCommandGenerator generator = new ConsumerCommandGenerator(connectionGenerator, channelGenerator);
         LogicalComponent<?> component = createComponent();
         component.setState(LogicalState.PROVISIONED);
         assertNull(generator.generate(component, true));

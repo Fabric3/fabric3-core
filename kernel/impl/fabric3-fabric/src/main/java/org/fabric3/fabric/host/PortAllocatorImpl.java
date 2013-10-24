@@ -52,15 +52,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * The default port allocator implementation.
@@ -80,6 +80,7 @@ public class PortAllocatorImpl implements PortAllocator {
     private LinkedList<Integer> unallocated = new LinkedList<Integer>();
 
     @Property(required = false)
+    @Source("$systemConfig/f3:runtime/@port.range")
     public void setRange(String range) {
         String[] tokens = range.split("-");
         if (tokens.length == 2) {
@@ -92,6 +93,7 @@ public class PortAllocatorImpl implements PortAllocator {
     }
 
     @Property(required = false)
+    @Source("$systemConfig/f3:runtime/@host.address")
     public void setHost(String host){
         configuredHost = host;
     }

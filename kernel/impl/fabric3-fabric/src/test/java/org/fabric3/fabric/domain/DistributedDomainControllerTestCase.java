@@ -291,7 +291,6 @@ public class DistributedDomainControllerTestCase extends TestCase {
                                             null,
                                             null,
                                             null,
-                                            null,
                                             false);
 
         control = EasyMock.createControl();

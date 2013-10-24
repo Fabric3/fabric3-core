@@ -37,8 +37,6 @@
 */
 package org.fabric3.fabric.deployment.generator.component;
 
-import org.oasisopen.sca.annotation.Property;
-
 import org.fabric3.fabric.deployment.command.StopComponentCommand;
 import org.fabric3.fabric.deployment.generator.CommandGenerator;
 import org.fabric3.spi.deployment.generator.GenerationException;
@@ -51,14 +49,8 @@ import org.fabric3.spi.model.instance.LogicalState;
  */
 public class StopComponentCommandGenerator implements CommandGenerator {
 
-    private int order;
-
-    public StopComponentCommandGenerator(@Property(name = "order") int order) {
-        this.order = order;
-    }
-
     public int getOrder() {
-        return order;
+        return PREPARE;
     }
 
     @SuppressWarnings("unchecked")

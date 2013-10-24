@@ -188,8 +188,6 @@ public class DefaultFabric implements Fabric {
 
             runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
-            URL systemComposite = getClass().getClassLoader().getResource(SYSTEM_COMPOSITE);
-
             boolean onlyCore = profiles.isEmpty() && profileLocations.isEmpty() && extensionLocations.isEmpty() && extensions.isEmpty();
             List<ContributionSource> extensionSources = scanExtensions(onlyCore);
             if (!onlyCore) {
@@ -200,7 +198,6 @@ public class DefaultFabric implements Fabric {
             configuration.setRuntime(runtime);
             configuration.setHostClassLoader(maskingHostLoader);
             configuration.setBootClassLoader(maskingBootLoader);
-            configuration.setSystemCompositeUrl(systemComposite);
             configuration.setSystemConfig(systemConfig);
             configuration.setExtensionContributions(extensionSources);
 
@@ -346,7 +343,6 @@ public class DefaultFabric implements Fabric {
                                    SYNTHETIC_DIRECTORY,
                                    SYNTHETIC_DIRECTORY,
                                    runtimeDirectory,
-                                   SYNTHETIC_DIRECTORY,
                                    dataDirectory,
                                    tempDirectory,
                                    deployDirs,

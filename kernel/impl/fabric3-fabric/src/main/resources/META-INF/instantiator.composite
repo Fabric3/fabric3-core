@@ -24,12 +24,10 @@
 
     <component name="AtomicComponentInstantiator">
         <f3:implementation.system class="org.fabric3.fabric.deployment.instantiator.component.AtomicComponentInstantiatorImpl"/>
-        <property name="componentTypeOverride" source="$systemConfig//f3:sca/@componentTypeOverride"/>
     </component>
 
     <component name="CompositeComponentInstantiator">
         <f3:implementation.system class="org.fabric3.fabric.deployment.instantiator.component.CompositeComponentInstantiatorImpl"/>
-        <property name="componentTypeOverride" source="$systemConfig//f3:sca/@componentTypeOverride"/>
     </component>
 
     <component name="WireInstantiator">
