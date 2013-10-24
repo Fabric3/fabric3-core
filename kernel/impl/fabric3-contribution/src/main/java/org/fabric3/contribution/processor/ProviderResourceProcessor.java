@@ -40,6 +40,7 @@ package org.fabric3.contribution.processor;
 import javax.xml.namespace.QName;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.host.contribution.InstallException;
@@ -97,6 +98,11 @@ public class ProviderResourceProcessor implements ResourceProcessor {
                 }
                 if (method.getParameterTypes().length > 0) {
                     InvalidProviderMethod error = new InvalidProviderMethod("Provides method cannot take parameters: " + method);
+                    context.addError(error);
+                    continue;
+                }
+                if (!Modifier.isStatic(method.getModifiers())) {
+                    InvalidProviderMethod error = new InvalidProviderMethod("Provides method must be static: " + method);
                     context.addError(error);
                     continue;
                 }
