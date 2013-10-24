@@ -211,12 +211,12 @@ public class ModuleContributionProcessor implements ContributionProcessor {
                         callback.onResource(resource);
                     } else {
 
-                        URL entryUrl = file.toURI().toURL();
-                        String contentType = contentTypeResolver.getContentType(entryUrl);
+                        String contentType = contentTypeResolver.getContentType(name);
                         // skip entry if we don't recognize the content type
                         if (contentType == null) {
                             continue;
                         }
+                        URL entryUrl = file.toURI().toURL();
                         UrlSource source = new UrlSource(entryUrl);
                         Resource resource = new Resource(contribution, source, contentType);
                         contribution.addResource(resource);

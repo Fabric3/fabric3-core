@@ -92,18 +92,9 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
         } catch (IOException ex) {
             throw new ContentTypeResolutionException("Unable to resolve content type: " + urlString, urlString, ex);
         }
-
     }
 
-    public void register(String fileExtension, String contentType) {
-        extensionMap.put(fileExtension, contentType);
-    }
-
-    public void unregister(String fileExtension) {
-        extensionMap.remove(fileExtension);
-    }
-
-    private String getContentType(String pathURI) {
+    public String getContentType(String pathURI) {
         int extensionIndex = pathURI.lastIndexOf('.');
         if (extensionIndex != -1) {
             String extension = pathURI.substring(extensionIndex + 1);
@@ -114,6 +105,14 @@ public class ExtensionMapContentTypeResolver implements ContentTypeResolver {
         }
 
         return null;
+    }
+
+    public void register(String fileExtension, String contentType) {
+        extensionMap.put(fileExtension, contentType);
+    }
+
+    public void unregister(String fileExtension) {
+        extensionMap.remove(fileExtension);
     }
 
 

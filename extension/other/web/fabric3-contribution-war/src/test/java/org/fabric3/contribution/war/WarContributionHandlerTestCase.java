@@ -101,7 +101,7 @@ public class WarContributionHandlerTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         ContentTypeResolver resolver = EasyMock.createMock(ContentTypeResolver.class);
-        EasyMock.expect(resolver.getContentType(EasyMock.isA(URL.class))).andReturn("application/xml").anyTimes();
+        EasyMock.expect(resolver.getContentType(EasyMock.isA(String.class))).andReturn("application/xml").anyTimes();
         EasyMock.replay(resolver);
         handler = new WarContributionHandler(null, resolver);
     }

@@ -155,7 +155,7 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                     if (exclude(manifest, entry)) {
                         continue;
                     }
-                    String contentType = contentTypeResolver.getContentType(new URL(location, name));
+                    String contentType = contentTypeResolver.getContentType(name);
                     if (contentType == null) {
                         // skip entry if we don't recognize the content type
                         continue;
