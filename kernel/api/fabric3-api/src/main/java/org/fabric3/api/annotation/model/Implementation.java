@@ -35,32 +35,26 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.introspection.processor;
+package org.fabric3.api.annotation.model;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.spi.introspection.IntrospectionContext;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Processes a {@link ComponentDefinition}, potentially adding metadata based on introspecting the component implementation.
+ * Specifies an implementation type annotation.
  */
-public interface ImplementationProcessor<I extends Implementation<?>> {
+@Target({ANNOTATION_TYPE})
+@Retention(RUNTIME)
+public @interface Implementation {
 
     /**
-     * Processes the component definition.
+     * Returns the implementation type qualified name.
      *
-     * @param definition the component definition
-     * @param context    the introspection context
+     * @return the implementation type qualified name
      */
-    void process(ComponentDefinition<I> definition, IntrospectionContext context);
-
-    /**
-     * Processes a component definition, introspecting the provided implementation class to determine the component type.
-     *
-     * @param definition the component definition
-     * @param clazz      the implementation class
-     * @param context    the introspection context
-     */
-    void process(ComponentDefinition<I> definition, Class<?> clazz, IntrospectionContext context);
+    String value() default "";
 
 }

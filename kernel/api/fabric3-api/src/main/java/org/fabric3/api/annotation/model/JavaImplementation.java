@@ -35,32 +35,22 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.introspection.processor;
+package org.fabric3.api.annotation.model;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.spi.introspection.IntrospectionContext;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Processes a {@link ComponentDefinition}, potentially adding metadata based on introspecting the component implementation.
+ * Specifies a class is a Java component implementation.
+ * <p/>
+ * This annotation is optional. If a class is annotated with {@link Component} and no implementation annotation is specified, the Java implementation type is
+ * assumed.
  */
-public interface ImplementationProcessor<I extends Implementation<?>> {
-
-    /**
-     * Processes the component definition.
-     *
-     * @param definition the component definition
-     * @param context    the introspection context
-     */
-    void process(ComponentDefinition<I> definition, IntrospectionContext context);
-
-    /**
-     * Processes a component definition, introspecting the provided implementation class to determine the component type.
-     *
-     * @param definition the component definition
-     * @param clazz      the implementation class
-     * @param context    the introspection context
-     */
-    void process(ComponentDefinition<I> definition, Class<?> clazz, IntrospectionContext context);
-
+@Target({TYPE})
+@Retention(RUNTIME)
+@Implementation("{http://docs.oasis-open.org/ns/opencsa/sca/200912}implementation.java")
+public @interface JavaImplementation {
 }

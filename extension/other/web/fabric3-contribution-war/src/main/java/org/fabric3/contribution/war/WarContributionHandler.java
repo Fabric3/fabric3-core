@@ -46,14 +46,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.fabric3.spi.contribution.Constants;
-import org.fabric3.spi.contribution.ProviderSymbol;
-import org.fabric3.spi.contribution.Resource;
-import org.fabric3.spi.contribution.ResourceElement;
-import org.fabric3.spi.contribution.Symbol;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
-
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
@@ -61,12 +53,16 @@ import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
-import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
+import org.fabric3.spi.contribution.JavaArtifactIntrospector;
+import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
+import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.Loader;
 import org.fabric3.spi.introspection.xml.LoaderException;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Introspects a WAR contribution, delegating to ResourceProcessors for handling leaf-level children.
@@ -74,10 +70,14 @@ import org.fabric3.spi.introspection.xml.LoaderException;
 @EagerInit
 public class WarContributionHandler implements ArchiveContributionHandler {
     private Loader loader;
+    private JavaArtifactIntrospector artifactIntrospector;
     private ContentTypeResolver contentTypeResolver;
 
-    public WarContributionHandler(@Reference Loader loader, @Reference ContentTypeResolver contentTypeResolver) {
+    public WarContributionHandler(@Reference Loader loader,
+                                  @Reference JavaArtifactIntrospector artifactIntrospector,
+                                  @Reference ContentTypeResolver contentTypeResolver) {
         this.loader = loader;
+        this.artifactIntrospector = artifactIntrospector;
         this.contentTypeResolver = contentTypeResolver;
     }
 
@@ -114,7 +114,7 @@ public class WarContributionHandler implements ArchiveContributionHandler {
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback) throws InstallException {
+    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws InstallException {
         URL location = contribution.getLocation();
         ContributionManifest manifest = contribution.getManifest();
         ZipInputStream zipStream = null;
@@ -135,20 +135,14 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                     continue;
                 }
 
-                // check if it is a DSL provider
-                if (isProvider(name)) {
+                if (name.endsWith(".class")) {
                     URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + name);
-
-                    UrlSource source = new UrlSource(entryUrl);
-                    Resource resource = new Resource(contribution, source, Constants.DSL_CONTENT_TYPE);
-
-                    String className = "f3." + name.substring(3, name.length() - 6).replace("/", ".");
-                    ProviderSymbol symbol = new ProviderSymbol(className);
-                    ResourceElement<Symbol, Object> element = new ResourceElement<Symbol, Object>(symbol);
-                    resource.addResourceElement(element);
-
+                    ClassLoader classLoader = context.getClassLoader();
+                    Resource resource = artifactIntrospector.inspect(name, entryUrl, contribution, classLoader);
+                    if (resource == null) {
+                        continue;
+                    }
                     contribution.addResource(resource);
-
                     callback.onResource(resource);
                 } else {
 
@@ -184,10 +178,6 @@ public class WarContributionHandler implements ArchiveContributionHandler {
             }
         }
 
-    }
-
-    private boolean isProvider(String name) {
-        return name.startsWith("f3/") && name.endsWith("Provider.class");
     }
 
     private boolean exclude(ContributionManifest manifest, ZipEntry entry) {

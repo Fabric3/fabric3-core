@@ -42,7 +42,7 @@ import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Iterates contained artifacts in an archive contribution type during introspection.
+ * Processes a contribution manifest and iterates contained artifacts in an archive contribution type during introspection.
  */
 public interface ArchiveContributionHandler {
 
@@ -67,9 +67,10 @@ public interface ArchiveContributionHandler {
      * Iterates through a contribution calling the supplied action when a contained artifact is encountered.
      *
      * @param contribution the contribution
-     * @param callback       the action to perform when an artifact is encountered
+     * @param callback     the action to perform when an artifact is encountered
+     * @param context      the context to which validation errors and warnings are reported
      * @throws InstallException if an error occurs processing the manifest
      */
-    void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback) throws InstallException;
+    void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws InstallException;
 
 }

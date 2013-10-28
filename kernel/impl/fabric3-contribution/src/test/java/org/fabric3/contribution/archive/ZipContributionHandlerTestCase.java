@@ -49,6 +49,7 @@ import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
+import org.fabric3.spi.contribution.JavaArtifactIntrospector;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -61,6 +62,7 @@ import org.fabric3.spi.introspection.xml.Loader;
 public class ZipContributionHandlerTestCase extends TestCase {
     private ZipContributionHandler handler;
     private Loader loader;
+    private IntrospectionContext context;
 
     public void testCanProcess() throws Exception {
         Contribution contribution = createContribution();
@@ -88,7 +90,7 @@ public class ZipContributionHandlerTestCase extends TestCase {
         EasyMock.expectLastCall().times(6);  // 6 items in the jar minus the contribution manifest
         EasyMock.replay(callback);
 
-        handler.iterateArtifacts(contribution, callback);
+        handler.iterateArtifacts(contribution, callback, context);
 
         EasyMock.verify(callback);
     }
@@ -103,7 +105,7 @@ public class ZipContributionHandlerTestCase extends TestCase {
         EasyMock.expectLastCall().times(5);
         EasyMock.replay(callback);
 
-        handler.iterateArtifacts(contribution, callback);
+        handler.iterateArtifacts(contribution, callback, context);
 
         EasyMock.verify(callback);
     }
@@ -116,7 +118,7 @@ public class ZipContributionHandlerTestCase extends TestCase {
         // no contents should be scanned
         EasyMock.replay(callback);
 
-        handler.iterateArtifacts(contribution, callback);
+        handler.iterateArtifacts(contribution, callback, context);
 
         EasyMock.verify(callback);
     }
@@ -127,8 +129,12 @@ public class ZipContributionHandlerTestCase extends TestCase {
         EasyMock.expect(resolver.getContentType(EasyMock.isA(String.class))).andReturn("application/xml").anyTimes();
         EasyMock.replay(resolver);
         loader = EasyMock.createMock(Loader.class);
+        JavaArtifactIntrospector artifactIntrospector = EasyMock.createNiceMock(JavaArtifactIntrospector.class);
 
-        handler = new ZipContributionHandler(loader, resolver);
+        ClassLoader classLoader = getClass().getClassLoader();
+        context = new DefaultIntrospectionContext(URI.create("test"), classLoader);
+
+        handler = new ZipContributionHandler(loader, artifactIntrospector, resolver);
     }
 
     private Contribution createContribution() {

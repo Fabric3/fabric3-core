@@ -35,32 +35,24 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.introspection.processor;
+package org.fabric3.spi.contribution;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.spi.introspection.IntrospectionContext;
+import java.net.URL;
 
 /**
- * Processes a {@link ComponentDefinition}, potentially adding metadata based on introspecting the component implementation.
+ * Introspects a Java class and determines if it is a contribution resource, e.g. an annotated component or model provider class.
  */
-public interface ImplementationProcessor<I extends Implementation<?>> {
+public interface JavaArtifactIntrospector {
 
     /**
-     * Processes the component definition.
+     * Introspects the class and determines if it is a contribution resource.
      *
-     * @param definition the component definition
-     * @param context    the introspection context
+     * @param name         the class name
+     * @param url          the URL for the class bytecode
+     * @param contribution the containing contribution
+     * @param loader       the classloader
+     * @return a resource or null if the class is not a resource
      */
-    void process(ComponentDefinition<I> definition, IntrospectionContext context);
-
-    /**
-     * Processes a component definition, introspecting the provided implementation class to determine the component type.
-     *
-     * @param definition the component definition
-     * @param clazz      the implementation class
-     * @param context    the introspection context
-     */
-    void process(ComponentDefinition<I> definition, Class<?> clazz, IntrospectionContext context);
+    Resource inspect(String name, URL url, Contribution contribution, ClassLoader loader);
 
 }

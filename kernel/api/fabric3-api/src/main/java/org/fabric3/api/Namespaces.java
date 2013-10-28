@@ -50,5 +50,5 @@ public interface Namespaces {
     /**
      * Namespace prefix used for Fabric3 elements.
      */
-    Object F3_PREFIX = "{" + F3 + "}";
+    String F3_PREFIX = "{" + F3 + "}";
 }

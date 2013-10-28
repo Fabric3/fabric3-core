@@ -54,6 +54,7 @@ import org.fabric3.contribution.ProcessorRegistryImpl;
 import org.fabric3.contribution.archive.ArchiveContributionProcessor;
 import org.fabric3.contribution.archive.ExplodedArchiveContributionHandler;
 import org.fabric3.contribution.archive.JarClasspathProcessor;
+import org.fabric3.contribution.archive.JavaArtifactIntrospectorImpl;
 import org.fabric3.contribution.archive.ZipContributionHandler;
 import org.fabric3.contribution.generator.JavaContributionWireGenerator;
 import org.fabric3.contribution.generator.LocationContributionWireGenerator;
@@ -76,6 +77,7 @@ import org.fabric3.contribution.processor.ConfigIndexer;
 import org.fabric3.contribution.processor.ConfigProcessor;
 import org.fabric3.contribution.processor.DefinitionsProcessor;
 import org.fabric3.contribution.processor.DeploymentPlanXmlProcessor;
+import org.fabric3.contribution.processor.JavaResourceProcessor;
 import org.fabric3.contribution.processor.ProviderResourceProcessor;
 import org.fabric3.contribution.processor.SymLinkContributionProcessor;
 import org.fabric3.contribution.processor.XmlContributionProcessor;
@@ -131,6 +133,8 @@ public class ContributionServiceProvider {
         compositeBuilder.component(newBuilder(CompositeResourceProcessor.class).build());
 
         compositeBuilder.component(newBuilder(ProviderResourceProcessor.class).build());
+
+        compositeBuilder.component(newBuilder(JavaResourceProcessor.class).build());
 
         compositeBuilder.component(newBuilder(XmlContributionProcessor.class).build());
 
@@ -191,6 +195,8 @@ public class ContributionServiceProvider {
         compositeBuilder.component(newBuilder(CompositeReferenceIntrospector.class).key(Composite.class.getName()).build());
 
         compositeBuilder.component(newBuilder(CompositeResourceElementUpdater.class).key(Composite.class.getName()).build());
+
+        compositeBuilder.component(newBuilder(JavaArtifactIntrospectorImpl.class).build());
 
         // reinject the metadata store after runtime bootstrap
 

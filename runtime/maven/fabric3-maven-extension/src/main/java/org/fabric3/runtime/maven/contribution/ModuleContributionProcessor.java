@@ -42,23 +42,22 @@ import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.host.util.FileHelper;
-import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
 import org.fabric3.spi.contribution.ContributionProcessor;
+import org.fabric3.spi.contribution.JavaArtifactIntrospector;
 import org.fabric3.spi.contribution.ProcessorRegistry;
-import org.fabric3.spi.contribution.ProviderSymbol;
 import org.fabric3.spi.contribution.Resource;
-import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.ResourceState;
-import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
@@ -76,11 +75,16 @@ public class ModuleContributionProcessor implements ContributionProcessor {
     private static final String MAVEN_CONTENT_TYPE = "application/vnd.fabric3.maven-project";
     private ProcessorRegistry registry;
     private ContentTypeResolver contentTypeResolver;
+    private JavaArtifactIntrospector artifactIntrospector;
     private Loader loader;
 
-    public ModuleContributionProcessor(@Reference ProcessorRegistry registry, @Reference ContentTypeResolver contentTypeResolver, @Reference Loader loader) {
+    public ModuleContributionProcessor(@Reference ProcessorRegistry registry,
+                                       @Reference ContentTypeResolver contentTypeResolver,
+                                       @Reference JavaArtifactIntrospector artifactIntrospector,
+                                       @Reference Loader loader) {
         this.registry = registry;
         this.contentTypeResolver = contentTypeResolver;
+        this.artifactIntrospector = artifactIntrospector;
         this.loader = loader;
     }
 
@@ -98,7 +102,8 @@ public class ModuleContributionProcessor implements ContributionProcessor {
         ClassLoader loader = context.getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
-            for (Resource resource : contribution.getResources()) {
+            List<Resource> copy = new ArrayList<Resource>(contribution.getResources());   // copy the list since processors may add resources
+            for (Resource resource : copy) {
                 if (ResourceState.UNPROCESSED == resource.getState()) {
                     registry.processResource(resource, context);
                 }
@@ -195,22 +200,16 @@ public class ModuleContributionProcessor implements ContributionProcessor {
             } else {
                 try {
                     String name = file.getName();
-                    if (isProvider(file)) {
-                        // a DSL provider
+                    if (name.endsWith(".class")) {
+                        name = calculateClassName(file);
                         URL entryUrl = file.toURI().toURL();
-
-                        UrlSource source = new UrlSource(entryUrl);
-                        Resource resource = new Resource(contribution, source, Constants.DSL_CONTENT_TYPE);
+                        Resource resource = artifactIntrospector.inspect(name, entryUrl, contribution, context.getClassLoader());
+                        if (resource == null) {
+                            continue;
+                        }
                         contribution.addResource(resource);
-
-                        String className = "f3." + name.substring(0, name.length() - 6).replace("/", ".");
-                        ProviderSymbol symbol = new ProviderSymbol(className);
-                        ResourceElement<Symbol, Object> element = new ResourceElement<Symbol, Object>(symbol);
-                        resource.addResourceElement(element);
-
                         callback.onResource(resource);
                     } else {
-
                         String contentType = contentTypeResolver.getContentType(name);
                         // skip entry if we don't recognize the content type
                         if (contentType == null) {
@@ -232,11 +231,16 @@ public class ModuleContributionProcessor implements ContributionProcessor {
 
     }
 
-    private boolean isProvider(File file) {
-        File parent = file.getParentFile();
-        String name = file.getName();
-        String grandParentName = parent.getParentFile().getName();
-        return name.endsWith("Provider.class") && parent != null && "f3".equals(parent.getName()) && (grandParentName.equals("classes")
-                                                                                                      || grandParentName.equals("test-classes"));
+    private String calculateClassName(File file) {
+        String name;
+        int index = file.getPath().indexOf("target" + File.separator + "classes" + File.separator);
+        if (index > 0) {
+            name = file.getPath().substring(index + 15);
+        } else {
+            index = file.getPath().indexOf("target" + File.separator + "test-classes" + File.separator);
+            name = file.getPath().substring(index + 20);
+        }
+        return name;
     }
+
 }

@@ -46,11 +46,20 @@ import org.fabric3.spi.introspection.IntrospectionContext;
 public interface ComponentProcessor {
 
     /**
-     * Process the definition.
+     * Processes the component definition.
      *
      * @param definition the definition
      * @param context    the introspection context to report errors
      */
     void process(ComponentDefinition<?> definition, IntrospectionContext context);
+
+    /**
+     * Processes the component definition and introspects the implementation class to create the appropriate implementation model based on annotations or
+     * heuristics.
+     *
+     * @param definition the definition
+     * @param context    the introspection context to report errors
+     */
+    void process(ComponentDefinition<?> definition, Class clazz, IntrospectionContext context);
 
 }

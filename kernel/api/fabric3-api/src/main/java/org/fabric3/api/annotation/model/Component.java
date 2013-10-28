@@ -56,7 +56,7 @@ public @interface Component {
      *
      * @return the composite name
      */
-    String composite() default Namespaces.F3 + "DefaultApplicationComposite";
+    String composite() default Namespaces.F3_PREFIX + "DefaultApplicationComposite";
 
     /**
      * Specifies the component name.

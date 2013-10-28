@@ -53,15 +53,12 @@ import java.util.zip.ZipInputStream;
 import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
-import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
-import org.fabric3.spi.contribution.ProviderSymbol;
+import org.fabric3.spi.contribution.JavaArtifactIntrospector;
 import org.fabric3.spi.contribution.Resource;
-import org.fabric3.spi.contribution.ResourceElement;
-import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
 import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.contribution.manifest.JarManifestHandler;
@@ -78,11 +75,15 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class ZipContributionHandler implements ArchiveContributionHandler {
     private List<JarManifestHandler> manifestHandlers = Collections.emptyList();
-    private final Loader loader;
-    private final ContentTypeResolver contentTypeResolver;
+    private Loader loader;
+    private JavaArtifactIntrospector artifactIntrospector;
+    private ContentTypeResolver contentTypeResolver;
 
-    public ZipContributionHandler(@Reference Loader loader, @Reference ContentTypeResolver contentTypeResolver) {
+    public ZipContributionHandler(@Reference Loader loader,
+                                  @Reference JavaArtifactIntrospector artifactIntrospector,
+                                  @Reference ContentTypeResolver contentTypeResolver) {
         this.loader = loader;
+        this.artifactIntrospector = artifactIntrospector;
         this.contentTypeResolver = contentTypeResolver;
     }
 
@@ -150,7 +151,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback) throws InstallException {
+    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws InstallException {
         URL location = contribution.getLocation();
         ContributionManifest manifest = contribution.getManifest();
         ZipInputStream zipStream = null;
@@ -173,17 +174,14 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
                     continue;
                 }
 
-                // check if it is a DSL provider
-                if (isProvider(name)) {
+                if (name.endsWith(".class")) {
                     URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + name);
-                    UrlSource source = new UrlSource(entryUrl);
-                    Resource resource = new Resource(contribution, source, Constants.DSL_CONTENT_TYPE);
-                    String className = "f3." + name.substring(3, name.length() - 6).replace("/", ".");
-                    ProviderSymbol symbol = new ProviderSymbol(className);
-                    ResourceElement<Symbol, Object> element = new ResourceElement<Symbol, Object>(symbol);
-                    resource.addResourceElement(element);
+                    ClassLoader classLoader = context.getClassLoader();
+                    Resource resource = artifactIntrospector.inspect(name, entryUrl, contribution, classLoader);
+                    if (resource == null) {
+                        continue;
+                    }
                     contribution.addResource(resource);
-
                     callback.onResource(resource);
                 } else {
                     if (exclude(manifest, entry)) {
@@ -218,10 +216,6 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
             }
         }
 
-    }
-
-    private boolean isProvider(String name) {
-        return name.startsWith("f3/") && name.endsWith("Provider.class");
     }
 
     private boolean exclude(ContributionManifest manifest, ZipEntry entry) {

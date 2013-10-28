@@ -48,15 +48,12 @@ import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.host.util.FileHelper;
-import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
-import org.fabric3.spi.contribution.ProviderSymbol;
+import org.fabric3.spi.contribution.JavaArtifactIntrospector;
 import org.fabric3.spi.contribution.Resource;
-import org.fabric3.spi.contribution.ResourceElement;
-import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
 import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -71,10 +68,14 @@ import static org.fabric3.spi.contribution.Constants.EXPLODED_CONTENT_TYPE;
  */
 public class ExplodedArchiveContributionHandler implements ArchiveContributionHandler {
     private Loader loader;
+    private JavaArtifactIntrospector artifactIntrospector;
     private final ContentTypeResolver contentTypeResolver;
 
-    public ExplodedArchiveContributionHandler(@Reference Loader loader, @Reference ContentTypeResolver contentTypeResolver) {
+    public ExplodedArchiveContributionHandler(@Reference Loader loader,
+                                              @Reference JavaArtifactIntrospector artifactIntrospector,
+                                              @Reference ContentTypeResolver contentTypeResolver) {
         this.loader = loader;
+        this.artifactIntrospector = artifactIntrospector;
         this.contentTypeResolver = contentTypeResolver;
     }
 
@@ -121,17 +122,18 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
         }
     }
 
-    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback) throws InstallException {
+    public void iterateArtifacts(Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context) throws InstallException {
         File root = FileHelper.toFile(contribution.getLocation());
-        iterateArtifactsRecursive(contribution, callback, root, root);
+        iterateArtifactsRecursive(root, root, contribution, callback, context);
     }
 
-    protected void iterateArtifactsRecursive(Contribution contribution, ArtifactResourceCallback callback, File dir, File root) throws InstallException {
+    protected void iterateArtifactsRecursive(File dir, File root, Contribution contribution, ArtifactResourceCallback callback, IntrospectionContext context)
+            throws InstallException {
         File[] files = dir.listFiles();
         ContributionManifest manifest = contribution.getManifest();
         for (File file : files) {
             if (file.isDirectory()) {
-                iterateArtifactsRecursive(contribution, callback, file, root);
+                iterateArtifactsRecursive(file, root, contribution, callback, context);
             } else {
                 try {
                     String name = file.getName();
@@ -140,28 +142,26 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                         continue;
                     }
 
-                    if (isProvider(file, root)) {
-                        // a DSL provider
+                    boolean isClass = file.getName().endsWith(".class");
+                    if (isClass) {
+                        name = getRelativeName(file, root);
                         URL entryUrl = file.toURI().toURL();
-
-                        UrlSource source = new UrlSource(entryUrl);
-                        Resource resource = new Resource(contribution, source, Constants.DSL_CONTENT_TYPE);
-
-                        String className = "f3." + name.substring(0, name.length() - 6).replace("/", ".");
-                        ProviderSymbol symbol = new ProviderSymbol(className);
-                        ResourceElement<Symbol, Object> element = new ResourceElement<Symbol, Object>(symbol);
-                        resource.addResourceElement(element);
+                        ClassLoader classLoader = context.getClassLoader();
+                        Resource resource = artifactIntrospector.inspect(name, entryUrl, contribution, classLoader);
+                        if (resource == null) {
+                            continue;
+                        }
                         contribution.addResource(resource);
-
                         callback.onResource(resource);
+
                     } else {
 
-                        String contentType = contentTypeResolver.getContentType(file.getName());
+                        String contentType = contentTypeResolver.getContentType(name);
                         // skip entry if we don't recognize the content type
                         if (contentType == null) {
                             continue;
                         }
-                        if (exclude(manifest, file, root)) {
+                        if (exclude(file, root, manifest)) {
                             continue;
                         }
                         URL entryUrl = file.toURI().toURL();
@@ -180,21 +180,19 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
 
     }
 
-    private boolean isProvider(File file, File root) {
-        File parent = file.getParentFile();
-        String name = file.getName();
-        return name.endsWith("Provider.class") && parent != null && "f3".equals(parent.getName()) && root.equals(parent.getParentFile());
-    }
-
-    private boolean exclude(ContributionManifest manifest, File file, File root) {
+    private boolean exclude(File file, File root, ContributionManifest manifest) {
+        // construct a file name relative to the root directory as excludes are relative to the archive root
+        String relativeName = getRelativeName(file, root);
         for (Pattern pattern : manifest.getScanExcludes()) {
-            // construct a file name relative to the root directory as excludes are relative to the archive root  
-            String relativePathName = file.toURI().toString().substring(root.toURI().toString().length());
-            if (pattern.matcher(relativePathName).matches()) {
+            if (pattern.matcher(relativeName).matches()) {
                 return true;
             }
         }
         return false;
+    }
+
+    private String getRelativeName(File file, File root) {
+        return file.toURI().toString().substring(root.toURI().toString().length());
     }
 
 }

@@ -64,7 +64,7 @@ import org.oasisopen.sca.annotation.Reference;
  * Adds metadata for Java component implementations.
  */
 @EagerInit
-public class JavaImplementationProcessor implements ImplementationProcessor {
+public class JavaImplementationProcessor implements ImplementationProcessor<JavaImplementation> {
     private JavaContractProcessor contractProcessor;
     private JavaImplementationIntrospector introspector;
     private IntrospectionHelper helper;
@@ -83,11 +83,8 @@ public class JavaImplementationProcessor implements ImplementationProcessor {
         this.helper = helper;
     }
 
-    public void process(ComponentDefinition<?> definition, IntrospectionContext context) {
-        if (!(definition.getImplementation() instanceof JavaImplementation)) {
-            return;
-        }
-        JavaImplementation implementation = (JavaImplementation) definition.getImplementation();
+    public void process(ComponentDefinition<JavaImplementation> definition, IntrospectionContext context) {
+        JavaImplementation implementation = definition.getImplementation();
         Object instance = implementation.getInstance();
         InjectingComponentType componentType = implementation.getComponentType();
         if (instance == null) {
@@ -99,9 +96,17 @@ public class JavaImplementationProcessor implements ImplementationProcessor {
                 // introspect services if not defined
                 addServiceDefinitions(instance, componentType, context);
             }
-
             processAnnotations(instance, definition, context);
         }
+    }
+
+    public void process(ComponentDefinition<JavaImplementation> definition, Class<?> clazz, IntrospectionContext context) {
+        JavaImplementation implementation = new JavaImplementation();
+        implementation.setImplementationClass(clazz.getName());
+        InjectingComponentType componentType = new InjectingComponentType(clazz.getName());
+        implementation.setComponentType(componentType);
+        definition.setImplementation(implementation);
+        process(definition, context);
     }
 
     @SuppressWarnings("unchecked")

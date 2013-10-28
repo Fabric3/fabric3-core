@@ -107,6 +107,11 @@ public class ProviderResourceProcessor implements ResourceProcessor {
                     continue;
                 }
                 Composite composite = (Composite) method.invoke(null);
+                if (composite == null) {
+                    InvalidProviderMethod error = new InvalidProviderMethod("Provides method returned null: " + method);
+                    context.addError(error);
+                    continue;
+                }
                 QName compositeName = composite.getName();
 
                 QNameSymbol compositeSymbol = new QNameSymbol(compositeName);

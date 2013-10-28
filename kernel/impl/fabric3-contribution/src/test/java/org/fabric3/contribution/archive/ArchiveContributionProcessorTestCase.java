@@ -110,12 +110,14 @@ public class ArchiveContributionProcessorTestCase extends TestCase {
     public void testIndex() throws Exception {
         ArchiveContributionHandler handler = EasyMock.createMock(ArchiveContributionHandler.class);
         EasyMock.expect(handler.canProcess(EasyMock.isA(Contribution.class))).andReturn(true);
-        handler.iterateArtifacts(EasyMock.isA(Contribution.class), EasyMock.isA(ArtifactResourceCallback.class));
+        ClassLoader classLoader = getClass().getClassLoader();
+        IntrospectionContext context = new DefaultIntrospectionContext(URI.create("test"), classLoader);
+        handler.iterateArtifacts(EasyMock.isA(Contribution.class), EasyMock.isA(ArtifactResourceCallback.class), EasyMock.isA(IntrospectionContext.class));
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 Contribution contribution = (Contribution) EasyMock.getCurrentArguments()[0];
                 ArtifactResourceCallback callback = (ArtifactResourceCallback) EasyMock.getCurrentArguments()[1];
-                Resource resource = new Resource(contribution, new UrlSource( new URL("file://test")),"application/xml");
+                Resource resource = new Resource(contribution, new UrlSource(new URL("file://test")), "application/xml");
                 callback.onResource(resource);
                 return null;
             }
@@ -130,7 +132,6 @@ public class ArchiveContributionProcessorTestCase extends TestCase {
 
         Contribution contribution = new Contribution(URI.create("contribution1"));
 
-        DefaultIntrospectionContext context = new DefaultIntrospectionContext();
         processor.index(contribution, context);
 
         EasyMock.verify(handler, registry);

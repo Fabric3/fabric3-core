@@ -48,14 +48,18 @@ import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
+import org.fabric3.spi.contribution.JavaArtifactIntrospector;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
+import org.fabric3.spi.introspection.DefaultIntrospectionContext;
+import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
  *
  */
 public class WarContributionHandlerTestCase extends TestCase {
     private WarContributionHandler handler;
+    private IntrospectionContext context;
 
     public void testIterateAllContents() throws Exception {
         Contribution contribution = createContribution();
@@ -65,7 +69,7 @@ public class WarContributionHandlerTestCase extends TestCase {
         EasyMock.expectLastCall().times(6);  // 6 items in the jar minus the contribution manifest
         EasyMock.replay(callback);
 
-        handler.iterateArtifacts(contribution, callback);
+        handler.iterateArtifacts(contribution, callback, context);
 
         EasyMock.verify(callback);
     }
@@ -80,7 +84,7 @@ public class WarContributionHandlerTestCase extends TestCase {
         EasyMock.expectLastCall().times(5);
         EasyMock.replay(callback);
 
-        handler.iterateArtifacts(contribution, callback);
+        handler.iterateArtifacts(contribution, callback, context);
 
         EasyMock.verify(callback);
     }
@@ -93,7 +97,7 @@ public class WarContributionHandlerTestCase extends TestCase {
         // no contents should be scanned
         EasyMock.replay(callback);
 
-        handler.iterateArtifacts(contribution, callback);
+        handler.iterateArtifacts(contribution, callback, context);
 
         EasyMock.verify(callback);
     }
@@ -103,7 +107,12 @@ public class WarContributionHandlerTestCase extends TestCase {
         ContentTypeResolver resolver = EasyMock.createMock(ContentTypeResolver.class);
         EasyMock.expect(resolver.getContentType(EasyMock.isA(String.class))).andReturn("application/xml").anyTimes();
         EasyMock.replay(resolver);
-        handler = new WarContributionHandler(null, resolver);
+        JavaArtifactIntrospector artifactIntrospector = EasyMock.createNiceMock(JavaArtifactIntrospector.class);
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        context = new DefaultIntrospectionContext(URI.create("test"), classLoader);
+
+        handler = new WarContributionHandler(null, artifactIntrospector, resolver);
     }
 
     private Contribution createContribution() {

@@ -37,6 +37,7 @@
 */
 package org.fabric3.contribution.archive;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.host.contribution.InstallException;
@@ -44,8 +45,8 @@ import org.fabric3.api.host.contribution.UnsupportedContentTypeException;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceState;
-import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.contribution.archive.ArchiveContributionHandler;
+import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -84,7 +85,7 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
                 public void onResource(Resource resource) throws InstallException {
                     registry.indexResource(resource, context);
                 }
-            });
+            }, context);
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassloader);
         }
@@ -96,7 +97,8 @@ public class ArchiveContributionProcessor extends AbstractContributionProcessor 
         ClassLoader loader = context.getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(loader);
-            for (Resource resource : contribution.getResources()) {
+            List<Resource> copy = new ArrayList<Resource>(contribution.getResources());   // copy the list since processors may add resources
+            for (Resource resource : copy) {
                 if (ResourceState.UNPROCESSED == resource.getState()) {
                     registry.processResource(resource, context);
                 }

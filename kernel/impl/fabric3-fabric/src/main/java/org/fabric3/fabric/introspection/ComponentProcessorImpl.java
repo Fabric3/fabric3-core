@@ -37,10 +37,15 @@
 */
 package org.fabric3.fabric.introspection;
 
+import javax.xml.namespace.QName;
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import org.fabric3.api.annotation.model.Implementation;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.processor.BindingProcessor;
 import org.fabric3.spi.introspection.processor.ComponentProcessor;
@@ -51,11 +56,11 @@ import org.oasisopen.sca.annotation.Reference;
  *
  */
 public class ComponentProcessorImpl implements ComponentProcessor {
-    private List<ImplementationProcessor> implementationProcessors = Collections.emptyList();
+    private Map<QName, ImplementationProcessor<?>> implementationProcessors = Collections.emptyMap();
     private List<BindingProcessor> bindingProcessors = Collections.emptyList();
 
     @Reference(required = false)
-    public void setImplementationProcessors(List<ImplementationProcessor> implementationProcessors) {
+    public void setImplementationProcessors(Map<QName, ImplementationProcessor<?>> implementationProcessors) {
         this.implementationProcessors = implementationProcessors;
     }
 
@@ -64,13 +69,38 @@ public class ComponentProcessorImpl implements ComponentProcessor {
         this.bindingProcessors = bindingProcessors;
     }
 
+    @SuppressWarnings("unchecked")
     public void process(ComponentDefinition<?> definition, IntrospectionContext context) {
-        for (ImplementationProcessor processor : implementationProcessors) {
-            processor.process(definition, context);
+        QName type = definition.getImplementation().getType();
+        ImplementationProcessor processor = implementationProcessors.get(type);
+        if (processor == null) {
+            context.addError(new UnknownImplementation("Unknown implementation type: " + type));
+            return;
+        }
+        processor.process(definition, context);
+
+        for (BindingProcessor bindingProcessor : bindingProcessors) {
+            bindingProcessor.process(definition, context);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void process(ComponentDefinition<?> definition, Class clazz, IntrospectionContext context) {
+        QName implementationType = JavaImplementation.IMPLEMENTATION_JAVA;   // default to Java the implementation type
+        for (Annotation annotation : clazz.getAnnotations()) {
+            Implementation implementation = annotation.annotationType().getAnnotation(Implementation.class);
+            if (implementation != null) {
+                implementationType = QName.valueOf(implementation.value());
+                break;
+            }
         }
 
-        for (BindingProcessor processor : bindingProcessors) {
-            processor.process(definition, context);
+        ImplementationProcessor processor = implementationProcessors.get(implementationType);
+        if (processor == null) {
+            context.addError(new UnknownImplementation("Unknown implementation type: " + implementationType));
+            return;
         }
+        processor.process(definition, clazz, context);
+
     }
 }

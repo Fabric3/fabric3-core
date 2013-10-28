@@ -35,32 +35,21 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.introspection.processor;
+package f3;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.spi.introspection.IntrospectionContext;
+import javax.xml.namespace.QName;
+
+import org.fabric3.api.annotation.model.Provides;
+import org.fabric3.api.model.type.component.Composite;
 
 /**
- * Processes a {@link ComponentDefinition}, potentially adding metadata based on introspecting the component implementation.
+ *
  */
-public interface ImplementationProcessor<I extends Implementation<?>> {
+public class TestProvider {
 
-    /**
-     * Processes the component definition.
-     *
-     * @param definition the component definition
-     * @param context    the introspection context
-     */
-    void process(ComponentDefinition<I> definition, IntrospectionContext context);
-
-    /**
-     * Processes a component definition, introspecting the provided implementation class to determine the component type.
-     *
-     * @param definition the component definition
-     * @param clazz      the implementation class
-     * @param context    the introspection context
-     */
-    void process(ComponentDefinition<I> definition, Class<?> clazz, IntrospectionContext context);
+    @Provides
+    public static Composite getComposite() {
+        return new Composite(QName.valueOf("{test}test"));
+    }
 
 }

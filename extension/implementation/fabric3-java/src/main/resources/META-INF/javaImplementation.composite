@@ -31,7 +31,7 @@ Public License. See the accompanying license file for details.
         <reference name="heuristic" target="JavaHeuristic"/>
     </component>
 
-    <component name="JavaImplementationProcessor">
+    <component name="JavaImplementationProcessor" f3:key="sca:implementation.java">
         <f3:implementation.system class="org.fabric3.implementation.java.introspection.JavaImplementationProcessor"/>
     </component>
 

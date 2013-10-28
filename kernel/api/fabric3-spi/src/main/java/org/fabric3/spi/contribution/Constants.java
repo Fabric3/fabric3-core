@@ -50,6 +50,8 @@ public interface Constants {
 
     String COMPOSITE_CONTENT_TYPE = "text/vnd.fabric3.composite+xml";
 
+    String JAVA_COMPONENT_CONTENT_TYPE = "text/vnd.fabric3.component+java";
+
     String DSL_CONTENT_TYPE = "text/vnd.fabric3.dsl";
 
     String EXPLODED_CONTENT_TYPE = "text/vnd.fabric3.exploded";

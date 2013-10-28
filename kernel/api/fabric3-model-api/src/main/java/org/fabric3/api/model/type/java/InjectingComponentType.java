@@ -46,6 +46,7 @@ package org.fabric3.api.model.type.java;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.CallbackDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ConsumerDefinition;
@@ -70,6 +71,7 @@ public class InjectingComponentType extends ComponentType {
     private Signature initMethod;
     private Signature destroyMethod;
     private Map<InjectionSite, Injectable> injectionSites = new HashMap<InjectionSite, Injectable>();
+    private Map<ModelObject, InjectionSite> injectionSiteMapping = new HashMap<ModelObject, InjectionSite>();
     private Map<String, CallbackDefinition> callbacks = new HashMap<String, CallbackDefinition>();
     private Map<String, Signature> consumerSignatures = new HashMap<String, Signature>();
 
@@ -116,8 +118,7 @@ public class InjectingComponentType extends ComponentType {
     }
 
     /**
-     * Sets the default initialization level for components of this type. A value greater than zero indicates that components should be eagerly
-     * initialized.
+     * Sets the default initialization level for components of this type. A value greater than zero indicates that components should be eagerly initialized.
      *
      * @param initLevel default initialization level for components of this type
      */
@@ -181,6 +182,7 @@ public class InjectingComponentType extends ComponentType {
         super.add(reference);
         Injectable injectable = new Injectable(InjectableType.REFERENCE, reference.getName());
         addInjectionSite(injectionSite, injectable);
+        injectionSiteMapping.put(reference, injectionSite);
     }
 
     /**
@@ -193,6 +195,7 @@ public class InjectingComponentType extends ComponentType {
         super.add(producer);
         Injectable injectable = new Injectable(InjectableType.PRODUCER, producer.getName());
         addInjectionSite(injectionSite, injectable);
+        injectionSiteMapping.put(producer, injectionSite);
     }
 
     /**
@@ -226,6 +229,7 @@ public class InjectingComponentType extends ComponentType {
         super.add(property);
         Injectable injectable = new Injectable(InjectableType.PROPERTY, property.getName());
         addInjectionSite(injectionSite, injectable);
+        injectionSiteMapping.put(property, injectionSite);
     }
 
     /**
@@ -238,6 +242,7 @@ public class InjectingComponentType extends ComponentType {
         super.add(definition);
         Injectable injectable = new Injectable(InjectableType.RESOURCE, definition.getName());
         addInjectionSite(injectionSite, injectable);
+        injectionSiteMapping.put(definition, injectionSite);
     }
 
     /**
@@ -252,6 +257,7 @@ public class InjectingComponentType extends ComponentType {
         callbacks.put(name, definition);
         Injectable injectable = new Injectable(InjectableType.CALLBACK, name);
         addInjectionSite(injectionSite, injectable);
+        injectionSiteMapping.put(definition, injectionSite);
     }
 
     /**
@@ -282,6 +288,16 @@ public class InjectingComponentType extends ComponentType {
      */
     public Map<InjectionSite, Injectable> getInjectionSites() {
         return injectionSites;
+    }
+
+    /**
+     * Returns the injection site for the model object.
+     *
+     * @param object the model object, e.g. a reference, producer, callback, etc.
+     * @return the injection site or null
+     */
+    public InjectionSite getInjectionSite(ModelObject object) {
+        return injectionSiteMapping.get(object);
     }
 
     /**
@@ -337,6 +353,5 @@ public class InjectingComponentType extends ComponentType {
     public void setDestroyMethod(Signature destroyMethod) {
         this.destroyMethod = destroyMethod;
     }
-
 
 }

@@ -35,32 +35,21 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.spi.introspection.processor;
+package org.fabric3.fabric.introspection;
 
-import org.fabric3.api.model.type.component.ComponentDefinition;
-import org.fabric3.api.model.type.component.Implementation;
-import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.api.host.failure.ValidationFailure;
 
 /**
- * Processes a {@link ComponentDefinition}, potentially adding metadata based on introspecting the component implementation.
+ *
  */
-public interface ImplementationProcessor<I extends Implementation<?>> {
+public class UnknownImplementation extends ValidationFailure {
+    private String message;
 
-    /**
-     * Processes the component definition.
-     *
-     * @param definition the component definition
-     * @param context    the introspection context
-     */
-    void process(ComponentDefinition<I> definition, IntrospectionContext context);
+    public UnknownImplementation(String message) {
+        this.message = message;
+    }
 
-    /**
-     * Processes a component definition, introspecting the provided implementation class to determine the component type.
-     *
-     * @param definition the component definition
-     * @param clazz      the implementation class
-     * @param context    the introspection context
-     */
-    void process(ComponentDefinition<I> definition, Class<?> clazz, IntrospectionContext context);
-
+    public String getMessage() {
+        return message;
+    }
 }
