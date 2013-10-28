@@ -48,10 +48,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.fabric3.api.annotation.Producer;
 import org.fabric3.api.model.type.component.ProducerDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -59,7 +62,6 @@ import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -83,6 +85,9 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<Producer> {
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
         ProducerDefinition definition = createDefinition(name, type, implClass, componentType, field, context);
+
+        processTargets(annotation, definition, field, context);
+
         componentType.add(definition, site);
     }
 
@@ -92,6 +97,7 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<Producer> {
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         ProducerDefinition definition = createDefinition(name, type, implClass, componentType, method, context);
+        processTargets(annotation, definition, method, context);
         componentType.add(definition, site);
     }
 
@@ -106,10 +112,11 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<Producer> {
         Type type = helper.getGenericType(constructor, index);
         ConstructorInjectionSite site = new ConstructorInjectionSite(constructor, index);
         ProducerDefinition definition = createDefinition(name, type, implClass, componentType, constructor, context);
+        processTargets(annotation, definition, constructor, context);
         componentType.add(definition, site);
     }
 
-    protected ProducerDefinition createDefinition(String name,
+    private ProducerDefinition createDefinition(String name,
                                                   Type type,
                                                   Class<?> implClass,
                                                   InjectingComponentType componentType,
@@ -125,6 +132,22 @@ public class ProducerProcessor extends AbstractAnnotationProcessor<Producer> {
         }
         // TODO handle policies
         return new ProducerDefinition(name, contract);
+    }
+
+    private void processTargets(Producer annotation, ProducerDefinition definition, Member member, IntrospectionContext context) {
+        try {
+            if (annotation.targets().length > 0) {
+                for (String target : annotation.targets()) {
+                    definition.addTarget(new URI(target));
+                }
+            } else if (annotation.target().length() > 0) {
+                definition.addTarget(new URI(annotation.target()));
+            }
+        } catch (URISyntaxException e) {
+            Class<?> clazz = member.getDeclaringClass();
+            InvalidAnnotation error = new InvalidAnnotation("Invalid producer target on : " + clazz.getName(), clazz, e);
+            context.addError(error);
+        }
     }
 
 }

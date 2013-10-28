@@ -200,26 +200,36 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
                 logicalProducer.addIntents(componentProducer.getIntents());
                 // TODO refactor this: URIs should be resolved to channels by a separate service that also handles promotion
                 for (URI uri : componentProducer.getTargets()) {
-                    if (uri.isAbsolute()) {
-                        LogicalComponent<?> domain = component.getParent();
-                        while (domain.getParent() != null) {
-                            domain = domain.getParent();
-                        }
-                        logicalProducer.addTarget(URI.create(domain.getUri().toString() + "/" + uri.getAuthority()));
-                    } else {
-                        logicalProducer.addTarget(URI.create(component.getParent().getUri().toString() + "/" + uri.toString()));
-                    }
+                    addTarget(logicalProducer, uri, component);
+                }
+            } else {
+                for (URI uri : producer.getTargets()) {
+                    addTarget(logicalProducer, uri, component);
                 }
             }
             component.addProducer(logicalProducer);
         }
     }
 
+    private void addTarget(LogicalProducer logicalProducer, URI uri, LogicalComponent<?> component) {
+        if (uri.isAbsolute()) {
+            LogicalComponent<?> domain = component.getParent();
+            while (domain.getParent() != null) {
+                domain = domain.getParent();
+            }
+            logicalProducer.addTarget(URI.create(domain.getUri().toString() + "/" + uri.getAuthority()));
+        } else {
+            logicalProducer.addTarget(URI.create(component.getParent().getUri().toString() + "/" + uri.toString()));
+        }
+    }
+
     private void createResourceReferences(LogicalComponent<?> component, ComponentType componentType) {
         for (ResourceReferenceDefinition resourceReference : componentType.getResourceReferences().values()) {
             URI resourceUri = component.getUri().resolve('#' + resourceReference.getName());
-            LogicalResourceReference<ResourceReferenceDefinition> logicalResourceReference =
-                    new LogicalResourceReference<ResourceReferenceDefinition>(resourceUri, resourceReference, component);
+            LogicalResourceReference<ResourceReferenceDefinition> logicalResourceReference = new LogicalResourceReference<ResourceReferenceDefinition>(
+                    resourceUri,
+                    resourceReference,
+                    component);
             component.addResource(logicalResourceReference);
         }
     }

@@ -56,4 +56,18 @@ public @interface Producer {
      */
     public abstract String value() default "";
 
+    /**
+     * Specifies the target channel for the producer.
+     *
+     * @return the target channel for the producer
+     */
+    public abstract String target() default "";
+
+    /**
+     * Specifies the target channels for the producer.
+     *
+     * @return the target channels for the producer
+     */
+    public abstract String[] targets() default {};
+
 }

@@ -43,6 +43,10 @@
  */
 package org.fabric3.api.model.type.component;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.contract.ServiceContract;
 
@@ -54,6 +58,8 @@ public abstract class AbstractProducer<P extends ModelObject> extends BindableDe
 
     private String name;
     private ServiceContract serviceContract;
+
+    protected List<URI> targets = new ArrayList<URI>();
 
     /**
      * Constructor.
@@ -105,5 +111,31 @@ public abstract class AbstractProducer<P extends ModelObject> extends BindableDe
         this.serviceContract = serviceContract;
     }
 
+    /**
+     * Returns the URIs of channels this producer sends messages to.
+     *
+     * @return the URIs of channels this producer sends messages to
+     */
+    public List<URI> getTargets() {
+        return targets;
+    }
+
+    /**
+     * Sets the URIs of channels this producer sends messages to.
+     *
+     * @param targets the URIs of channels this producer sends messages to
+     */
+    public void setTargets(List<URI> targets) {
+        this.targets = targets;
+    }
+
+    /**
+     * Adds the URI of a channel this producer sends messages to.
+     *
+     * @param target the channel URI
+     */
+    public void addTarget(URI target) {
+        targets.add(target);
+    }
 
 }

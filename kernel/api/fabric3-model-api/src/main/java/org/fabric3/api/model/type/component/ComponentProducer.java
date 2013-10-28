@@ -44,7 +44,6 @@
 package org.fabric3.api.model.type.component;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,8 +51,6 @@ import java.util.List;
  */
 public class ComponentProducer extends AbstractProducer<ComponentDefinition> {
     private static final long serialVersionUID = -4230400252060306972L;
-
-    private List<URI> targets;
 
     /**
      * Constructor.
@@ -73,34 +70,7 @@ public class ComponentProducer extends AbstractProducer<ComponentDefinition> {
      */
     public ComponentProducer(String name) {
         super(name);
-        this.targets = new ArrayList<URI>();
     }
 
-    /**
-     * Returns the URIs of channels this producer sends messages to.
-     *
-     * @return the URIs of channels this producer sends messages to
-     */
-    public List<URI> getTargets() {
-        return targets;
-    }
-
-    /**
-     * Sets the URIs of channels this producer sends messages to.
-     *
-     * @param targets the URIs of channels this producer sends messages to
-     */
-    public void setTargets(List<URI> targets) {
-        this.targets = targets;
-    }
-
-    /**
-     * Adds the URI of a channel this producer sends messages to.
-     *
-     * @param target the channel URI
-     */
-    public void addTarget(URI target) {
-        targets.add(target);
-    }
 
 }
