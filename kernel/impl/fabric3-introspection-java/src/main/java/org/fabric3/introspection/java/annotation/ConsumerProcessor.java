@@ -43,23 +43,26 @@
  */
 package org.fabric3.introspection.java.annotation;
 
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.annotation.Consumer;
 import org.fabric3.api.model.type.component.ConsumerDefinition;
 import org.fabric3.api.model.type.contract.DataType;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
-import org.fabric3.api.model.type.java.Signature;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -94,7 +97,7 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
         } else {
             definition.setSequence(sequence);
         }
-
+        processSources(annotation, definition, method, context);
         componentType.add(definition, signature);
     }
 
@@ -119,6 +122,22 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
         } else {
             JavaTypeInfo info = helper.createTypeInfo(type, mapping);
             return new JavaGenericType(info);
+        }
+    }
+
+    private void processSources(Consumer annotation, ConsumerDefinition definition, Member member, IntrospectionContext context) {
+        try {
+            if (annotation.sources().length > 0) {
+                for (String target : annotation.sources()) {
+                    definition.addSource(new URI(target));
+                }
+            } else if (annotation.source().length() > 0) {
+                definition.addSource(new URI(annotation.source()));
+            }
+        } catch (URISyntaxException e) {
+            Class<?> clazz = member.getDeclaringClass();
+            InvalidAnnotation error = new InvalidAnnotation("Invalid consumer source on : " + clazz.getName(), clazz, e);
+            context.addError(error);
         }
     }
 

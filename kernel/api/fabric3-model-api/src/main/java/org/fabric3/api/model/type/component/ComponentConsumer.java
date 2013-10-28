@@ -45,7 +45,6 @@ package org.fabric3.api.model.type.component;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,8 +52,6 @@ import java.util.List;
  */
 public class ComponentConsumer extends AbstractConsumer<ComponentDefinition> {
     private static final long serialVersionUID = -4230400252060306972L;
-
-    private List<URI> sources;
 
     /**
      * Constructor.
@@ -75,25 +72,7 @@ public class ComponentConsumer extends AbstractConsumer<ComponentDefinition> {
      */
     public ComponentConsumer(String name) {
         super(name);
-        this.sources = Collections.emptyList();
         bindings = new ArrayList<BindingDefinition>();
     }
 
-    /**
-     * Returns the URIs of channels this consumer receives events from.
-     *
-     * @return the URIs of channels this consumer receives events from
-     */
-    public List<URI> getSources() {
-        return sources;
-    }
-
-    /**
-     * Sets the source channel uris.
-     *
-     * @param sources the source channel uris
-     */
-    public void setSources(List<URI> sources) {
-        this.sources = sources;
-    }
 }

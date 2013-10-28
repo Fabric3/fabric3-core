@@ -43,6 +43,8 @@
  */
 package org.fabric3.api.model.type.component;
 
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.model.type.ModelObject;
@@ -57,6 +59,7 @@ public abstract class AbstractConsumer<P extends ModelObject> extends BindableDe
     private String name;
     private List<DataType<?>> types;
 
+    protected List<URI> sources = new ArrayList<URI>();
 
     /**
      * Constructor.
@@ -104,4 +107,32 @@ public abstract class AbstractConsumer<P extends ModelObject> extends BindableDe
     public void setTypes(List<DataType<?>> types) {
         this.types = types;
     }
+
+    /**
+     * Returns the URIs of channels this consumer receives events from.
+     *
+     * @return the URIs of channels this consumer receives events from
+     */
+    public List<URI> getSources() {
+        return sources;
+    }
+
+    /**
+     * Sets the source channel uris.
+     *
+     * @param sources the source channel uris
+     */
+    public void setSources(List<URI> sources) {
+        this.sources = sources;
+    }
+
+    /**
+     * Adds a channel source for this consumer
+     *
+     * @param source the source URI
+     */
+    public void addSource(URI source) {
+        sources.add(source);
+    }
+
 }

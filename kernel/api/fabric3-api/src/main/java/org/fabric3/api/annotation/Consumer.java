@@ -62,4 +62,19 @@ public @interface Consumer {
      * @return the sequence in which a consumer should receive events from a channel
      */
     public abstract int sequence() default 0;
+
+    /**
+     * Returns the source channel for the consumer.
+     *
+     * @return the source channel for the consumer
+     */
+    public abstract String source() default "";
+
+    /**
+     * Returns the source channels for the consumer.
+     *
+     * @return the source channels for the consumer
+     */
+    public abstract String[] sources() default {};
+
 }

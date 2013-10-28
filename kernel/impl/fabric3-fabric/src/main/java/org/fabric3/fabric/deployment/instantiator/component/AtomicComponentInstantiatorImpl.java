@@ -173,15 +173,11 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
                 logicalConsumer.addIntents(componentConsumer.getIntents());
                 // TODO refactor this: URIs should be resolved to channels by a separate service that also handles promotion
                 for (URI uri : componentConsumer.getSources()) {
-                    if (uri.isAbsolute()) {
-                        LogicalComponent<?> domain = component.getParent();
-                        while (domain.getParent() != null) {
-                            domain = domain.getParent();
-                        }
-                        logicalConsumer.addSource(URI.create(domain.getUri().toString() + "/" + uri.getAuthority()));
-                    } else {
-                        logicalConsumer.addSource(URI.create(component.getParent().getUri().toString() + "/" + uri.toString()));
-                    }
+                    addSource(logicalConsumer, uri, component);
+                }
+            } else {
+                for (URI uri : consumer.getSources()) {
+                    addSource(logicalConsumer, uri, component);
                 }
             }
             component.addConsumer(logicalConsumer);
@@ -208,6 +204,18 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
                 }
             }
             component.addProducer(logicalProducer);
+        }
+    }
+
+    private void addSource(LogicalConsumer logicalConsumer, URI uri, LogicalComponent<?> component) {
+        if (uri.isAbsolute()) {
+            LogicalComponent<?> domain = component.getParent();
+            while (domain.getParent() != null) {
+                domain = domain.getParent();
+            }
+            logicalConsumer.addSource(URI.create(domain.getUri().toString() + "/" + uri.getAuthority()));
+        } else {
+            logicalConsumer.addSource(URI.create(component.getParent().getUri().toString() + "/" + uri.toString()));
         }
     }
 
