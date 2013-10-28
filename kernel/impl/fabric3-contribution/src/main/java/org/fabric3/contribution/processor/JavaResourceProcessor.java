@@ -97,7 +97,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
         try {
             QName compositeName = QName.valueOf(annotation.composite());
             ComponentDefinition definition = new ComponentDefinition(name);
-
+            definition.setContributionUri(context.getContributionUri());
             componentProcessor.process(definition, clazz, context);
 
             ParsedComponentSymbol symbol = new ParsedComponentSymbol(definition);
