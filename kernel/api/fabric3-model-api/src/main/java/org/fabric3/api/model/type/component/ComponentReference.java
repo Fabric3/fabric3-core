@@ -43,16 +43,12 @@
  */
 package org.fabric3.api.model.type.component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A reference configured on a component.
  */
 public class ComponentReference extends AbstractReference<ComponentDefinition> {
     private static final long serialVersionUID = 2072898078368317712L;
 
-    private List<Target> targets = new ArrayList<Target>();
     private boolean nonOverridable;
     private ComponentDefinition parent;
 
@@ -82,18 +78,6 @@ public class ComponentReference extends AbstractReference<ComponentDefinition> {
      */
     public void setParent(ComponentDefinition parent) {
         this.parent = parent;
-    }
-
-    public List<Target> getTargets() {
-        return targets;
-    }
-
-    public void addTargets(List<Target> targets) {
-        this.targets.addAll(targets);
-    }
-
-    public void addTarget(Target target) {
-        targets.add(target);
     }
 
     public boolean isNonOverridable() {

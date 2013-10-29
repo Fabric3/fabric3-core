@@ -37,18 +37,11 @@
 */
 package org.fabric3.fabric.deployment.instantiator.wire;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.namespace.QName;
 
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.fabric.deployment.instantiator.AmbiguousService;
-import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
-import org.fabric3.fabric.deployment.instantiator.NoServiceOnComponent;
-import org.fabric3.fabric.deployment.instantiator.ServiceNotFound;
-import org.fabric3.fabric.deployment.instantiator.WireInstantiator;
 import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentReference;
@@ -56,6 +49,11 @@ import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Target;
 import org.fabric3.api.model.type.component.WireDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.fabric.deployment.instantiator.AmbiguousService;
+import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
+import org.fabric3.fabric.deployment.instantiator.NoServiceOnComponent;
+import org.fabric3.fabric.deployment.instantiator.ServiceNotFound;
+import org.fabric3.fabric.deployment.instantiator.WireInstantiator;
 import org.fabric3.spi.contract.ContractMatcher;
 import org.fabric3.spi.contract.MatchResult;
 import org.fabric3.spi.model.instance.Bindable;
@@ -66,6 +64,7 @@ import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
 import org.fabric3.spi.model.type.binding.SCABinding;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default implementation of the WireInstantiator.
@@ -116,14 +115,19 @@ public class WireInstantiatorImpl implements WireInstantiator {
     private void instantiateReferenceWires(LogicalReference reference, InstantiationContext context) {
         LogicalCompositeComponent parent = reference.getParent().getParent();
         ComponentReference componentReference = reference.getComponentReference();
-        if (componentReference == null) {
-            // the reference is not configured on the component definition in the composite so there are no wires
+        AbstractReference<?> definition = reference.getDefinition();
+        if (componentReference == null && definition.getTargets().isEmpty()) {
+            // the reference is not configured on the component definition in the composite or in the component type so there are no wires
             return;
         }
 
-        List<Target> serviceTargets = componentReference.getTargets();
+        List<Target> serviceTargets = componentReference != null ? componentReference.getTargets(): definition.getTargets();
+        if (serviceTargets.isEmpty()) {
+            serviceTargets = definition.getTargets();
+        }
         List<SCABinding> scaBindings = new ArrayList<SCABinding>();
-        for (BindingDefinition binding : componentReference.getBindings()) {
+        List<BindingDefinition> bindings = componentReference != null ? componentReference.getBindings() : definition.getBindings();
+        for (BindingDefinition binding : bindings) {
             if (binding instanceof SCABinding) {
                 SCABinding scaBinding = (SCABinding) binding;
                 scaBindings.add(scaBinding);
@@ -131,7 +135,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
         }
         if (scaBindings.isEmpty()) {
             //  if the component reference has no bindings, use the composite definition's
-            AbstractReference<?> definition = reference.getDefinition();
+
             for (BindingDefinition binding : definition.getBindings()) {
                 if (binding instanceof SCABinding) {
                     SCABinding scaBinding = (SCABinding) binding;
@@ -331,7 +335,8 @@ public class WireInstantiatorImpl implements WireInstantiator {
 
         wire.setSourceBinding(referenceBinding);
         wire.setTargetBinding(serviceBinding);
-        if (serviceBinding != null && referenceBinding != null && !referenceBinding.getDefinition().getType().equals(serviceBinding.getDefinition().getType())) {
+        if (serviceBinding != null && referenceBinding != null
+            && !referenceBinding.getDefinition().getType().equals(serviceBinding.getDefinition().getType())) {
             raiseIncompatibleBindings(reference, service, referenceBindingName, context);
         }
     }
@@ -444,7 +449,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
         String componentName = target.getComponent();
         URI referenceUri = reference.getUri();
         String msg = "More than one service available on component: " + componentName + ". The wire from the reference " + referenceUri
-                + " must explicitly specify a target service.";
+                     + " must explicitly specify a target service.";
         AmbiguousService error = new AmbiguousService(msg, reference);
         context.addError(error);
     }
@@ -459,20 +464,15 @@ public class WireInstantiatorImpl implements WireInstantiator {
     }
 
     private void raiseServiceBindingNotFound(LogicalService service, String name, InstantiationContext context) {
-        BindingNotFound error =
-                new BindingNotFound("The binding " + name + "  for service " + service.getUri() + " was not found", service);
+        BindingNotFound error = new BindingNotFound("The binding " + name + "  for service " + service.getUri() + " was not found", service);
         context.addError(error);
     }
 
-    private void raiseIncompatibleBindings(LogicalReference reference,
-                                           LogicalService service,
-                                           String name,
-                                           InstantiationContext context) {
+    private void raiseIncompatibleBindings(LogicalReference reference, LogicalService service, String name, InstantiationContext context) {
 
-        BindingNotFound error = new BindingNotFound("The binding " + name + " for reference " + reference.getUri() + " and service "
-                                                            + service.getUri() + " are not compatible", reference);
+        BindingNotFound error = new BindingNotFound(
+                "The binding " + name + " for reference " + reference.getUri() + " and service " + service.getUri() + " are not compatible", reference);
         context.addError(error);
     }
-
 
 }

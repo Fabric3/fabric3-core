@@ -123,8 +123,13 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         ComponentReference componentReference = logicalReference.getComponentReference();
         LogicalComponent<?> component = logicalReference.getParent();
 
+        AbstractReference<?> referenceDefinition = logicalReference.getDefinition();
         if (componentReference == null) {
-            // The reference is not configured on the component definition in the composite. i.e. it is only present in the componentType
+            List<Target> targets = referenceDefinition.getTargets();
+            if (!targets.isEmpty()) {
+                return;
+            }
+            // The reference is not configured on the component definition in the composite or in the component type
             if (logicalReference.isResolved()) {
                 return;
             }
@@ -136,8 +141,8 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                 instantiateWires(logicalReference, requiredContract, compositeComponent);
             }
 
-        } else {
-            // The reference is explicitly configured on the component definition in the composite
+        } else if (componentReference != null) {
+            // The reference is explicitly configured on the component definition in the composite or in the component type
             List<Target> targets = componentReference.getTargets();
             if (!targets.isEmpty()) {
                 return;
@@ -145,7 +150,6 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
 
             if (componentReference.getAutowire() == Autowire.ON || (componentReference.getAutowire() == Autowire.INHERITED
                                                                     && component.getAutowire() == Autowire.ON)) {
-                AbstractReference referenceDefinition = logicalReference.getDefinition();
                 ServiceContract requiredContract = referenceDefinition.getServiceContract();
                 boolean resolved = instantiateWires(logicalReference, requiredContract, component.getParent());
                 if (!resolved) {
@@ -155,7 +159,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         }
 
         boolean targeted = !logicalReference.getLeafReference().getWires().isEmpty();
-        if (!targeted && logicalReference.getDefinition().isRequired() && !logicalReference.isConcreteBound()) {
+        if (!targeted && referenceDefinition.isRequired() && !logicalReference.isConcreteBound()) {
             String referenceUri = logicalReference.getUri().toString();
             ReferenceNotFound error = new ReferenceNotFound("Unable to resolve reference " + referenceUri, logicalReference);
             context.addError(error);

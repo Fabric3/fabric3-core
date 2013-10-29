@@ -89,7 +89,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
         ResourceElement<?, ?> resourceElement = resource.getResourceElements().get(0);
         Class<?> clazz = (Class<?>) resourceElement.getValue();
         Component annotation = clazz.getAnnotation(Component.class);
-        String name = clazz.getName();
+        String name = clazz.getSimpleName();
         if (annotation.name().length() > 0) {
             name = annotation.name();
         }
@@ -104,7 +104,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
             ResourceElement<ParsedComponentSymbol, QName> parsedElement = new ResourceElement<ParsedComponentSymbol, QName>(symbol, compositeName);
             resource.addResourceElement(parsedElement);
         } catch (IllegalArgumentException e) {
-            InvalidComponentAnnotation error = new InvalidComponentAnnotation("Invalid composite name: " + name, e);
+            InvalidComponentAnnotation error = new InvalidComponentAnnotation("Invalid composite name: " + name + " on class: " + clazz.getName(), e);
             context.addError(error);
         }
     }

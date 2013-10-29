@@ -67,6 +67,8 @@ public abstract class AbstractReference<P extends ModelObject> extends BindableD
 
     private List<BindingDefinition> callbackBindings = new ArrayList<BindingDefinition>();
 
+    protected List<Target> targets = new ArrayList<Target>();
+
     /**
      * Constructor.
      *
@@ -126,6 +128,18 @@ public abstract class AbstractReference<P extends ModelObject> extends BindableD
      */
     public void setMultiplicity(Multiplicity multiplicity) {
         this.multiplicity = multiplicity;
+    }
+
+    public List<Target> getTargets() {
+        return targets;
+    }
+
+    public void addTargets(List<Target> targets) {
+        this.targets.addAll(targets);
+    }
+
+    public void addTarget(Target target) {
+        targets.add(target);
     }
 
     /**

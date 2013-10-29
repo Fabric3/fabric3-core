@@ -44,15 +44,18 @@
 package org.fabric3.introspection.java.annotation;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.annotation.Target;
+import org.fabric3.api.annotation.Targets;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -61,8 +64,8 @@ import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -77,7 +80,6 @@ public class OASISReferenceProcessor extends AbstractAnnotationProcessor<Referen
         this.policyProcessor = processor;
     }
 
-
     public OASISReferenceProcessor(@org.oasisopen.sca.annotation.Reference JavaContractProcessor contractProcessor,
                                    @org.oasisopen.sca.annotation.Reference IntrospectionHelper helper) {
         super(Reference.class);
@@ -85,31 +87,26 @@ public class OASISReferenceProcessor extends AbstractAnnotationProcessor<Referen
         this.helper = helper;
     }
 
-    public void visitField(Reference annotation,
-                           Field field,
-                           Class<?> implClass,
-                           InjectingComponentType componentType,
-                           IntrospectionContext context) {
+    public void visitField(Reference annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         String name = helper.getSiteName(field, annotation.name());
         Type type = field.getGenericType();
         FieldInjectionSite site = new FieldInjectionSite(field);
         Annotation[] annotations = field.getAnnotations();
         boolean required = annotation.required();
         ReferenceDefinition definition = createDefinition(name, required, type, implClass, annotations, componentType, context);
+
+        addTargets(field, field, context, definition);
         componentType.add(definition, site);
     }
 
-    public void visitMethod(Reference annotation,
-                            Method method,
-                            Class<?> implClass,
-                            InjectingComponentType componentType,
-                            IntrospectionContext context) {
+    public void visitMethod(Reference annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
 
         String name = helper.getSiteName(method, annotation.name());
         Type type = helper.getGenericType(method);
         MethodInjectionSite site = new MethodInjectionSite(method, 0);
         Annotation[] annotations = method.getAnnotations();
         ReferenceDefinition definition = createDefinition(name, annotation.required(), type, implClass, annotations, componentType, context);
+        addTargets(method, method, context, definition);
         componentType.add(definition, site);
     }
 
@@ -127,8 +124,8 @@ public class OASISReferenceProcessor extends AbstractAnnotationProcessor<Referen
         boolean required = annotation.required();
         ReferenceDefinition definition = createDefinition(name, required, type, implClass, annotations, componentType, context);
         componentType.add(definition, site);
+        addTargets(constructor, constructor, context, definition);
     }
-
 
     @SuppressWarnings({"unchecked"})
     private ReferenceDefinition createDefinition(String name,
@@ -149,6 +146,43 @@ public class OASISReferenceProcessor extends AbstractAnnotationProcessor<Referen
             }
         }
         return definition;
+    }
+
+    private void addTargets(AccessibleObject accessibleObject, Member member, IntrospectionContext context, ReferenceDefinition definition) {
+        Targets targetsAnnotation = accessibleObject.getAnnotation(Targets.class);
+        if (targetsAnnotation != null) {
+            for (String value : targetsAnnotation.value()) {
+                org.fabric3.api.model.type.component.Target target = parseTarget(value, member, context);
+                if (target != null) {
+                    definition.addTarget(target);
+                }
+            }
+        } else {
+            Target targetAnnotation = accessibleObject.getAnnotation(Target.class);
+            if (targetAnnotation != null) {
+                org.fabric3.api.model.type.component.Target target = parseTarget(targetAnnotation.value(), member, context);
+                if (target != null) {
+                    definition.addTarget(target);
+                }
+            }
+        }
+    }
+
+    private org.fabric3.api.model.type.component.Target parseTarget(String target, Member member, IntrospectionContext context) {
+        String[] tokens = target.split("/");
+        if (tokens.length == 1) {
+            return new org.fabric3.api.model.type.component.Target(tokens[0]);
+        } else if (tokens.length == 2) {
+            return new org.fabric3.api.model.type.component.Target(tokens[0], tokens[1]);
+        } else if (tokens.length == 3) {
+            return new org.fabric3.api.model.type.component.Target(tokens[0], tokens[1], tokens[2]);
+        } else {
+            Class<?> clazz = member.getDeclaringClass();
+            String name = member.getName();
+            InvalidAnnotation error = new InvalidAnnotation("Invalid target format: " + target + " on " + name, clazz);
+            context.addError(error);
+            return null;
+        }
     }
 
 }
