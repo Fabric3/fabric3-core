@@ -75,6 +75,7 @@ import org.fabric3.api.host.repository.Repository;
 import org.fabric3.api.host.repository.RepositoryException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContentTypeResolutionException;
 import org.fabric3.spi.contribution.ContentTypeResolver;
@@ -600,6 +601,7 @@ public class ContributionServiceImpl implements ContributionService {
                 // there were just warnings, report them
                 monitor.contributionWarnings(ValidationUtils.outputWarnings(context.getWarnings()));
             }
+            calculateDeployables(contribution);
         } catch (StoreException e) {
             throw new InstallException(e);
         }
@@ -629,6 +631,41 @@ public class ContributionServiceImpl implements ContributionService {
                 context.addError(failure);
             }
 
+        }
+    }
+
+    /**
+     * Calculates deployables in a contribution. If no deployables are configured, all composites are considered deployables; otherwise only composites
+     * configured as part of the contribution manifest or in the composite itself are deployables.
+     *
+     * @param contribution the contribution
+     */
+    private void calculateDeployables(Contribution contribution) {
+        ContributionManifest manifest = contribution.getManifest();
+        boolean empty = manifest.getDeployables().isEmpty();
+        for (Resource resource : contribution.getResources()) {
+            for (ResourceElement<?, ?> element : resource.getResourceElements()) {
+                if (element.getValue() instanceof Composite) {
+                    Composite composite = (Composite) element.getValue();
+                    if (composite.isDeployable()) {
+                        Deployable deployable = new Deployable(composite.getName(), composite.getModes(), composite.getEnvironments());
+                        if (!manifest.getDeployables().contains(deployable)) {
+                            manifest.getDeployables().add(deployable);
+                        }
+                    }
+                }
+            }
+        }
+        if (empty) {
+            for (Resource resource : contribution.getResources()) {
+                for (ResourceElement<?, ?> element : resource.getResourceElements()) {
+                    if (element.getValue() instanceof Composite) {
+                        Composite composite = (Composite) element.getValue();
+                        Deployable deployable = new Deployable(composite.getName(), composite.getModes(), composite.getEnvironments());
+                        manifest.addDeployable(deployable);
+                    }
+                }
+            }
         }
     }
 

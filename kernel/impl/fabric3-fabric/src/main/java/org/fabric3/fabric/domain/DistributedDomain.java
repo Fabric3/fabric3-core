@@ -40,7 +40,7 @@ package org.fabric3.fabric.domain;
 import java.util.List;
 
 import org.fabric3.api.annotation.Source;
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.HostInfo;

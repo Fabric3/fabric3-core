@@ -58,7 +58,7 @@ import org.fabric3.fabric.xml.DocumentLoader;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
 import org.fabric3.api.host.Environment;
 import org.fabric3.api.host.Names;
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.ParseException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;

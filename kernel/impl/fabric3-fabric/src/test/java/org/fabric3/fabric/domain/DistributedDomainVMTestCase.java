@@ -59,7 +59,7 @@ import org.fabric3.spi.deployment.generator.binding.BindingSelector;
 import org.fabric3.fabric.deployment.instantiator.InstantiationContext;
 import org.fabric3.fabric.deployment.instantiator.LogicalModelInstantiator;
 import org.fabric3.api.host.Names;
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.DomainJournal;

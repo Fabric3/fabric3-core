@@ -49,7 +49,7 @@ import java.util.List;
 
 import org.fabric3.fabric.runtime.bootstrap.RepositoryScanner;
 import org.fabric3.fabric.runtime.bootstrap.SystemConfigLoader;
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.BootConfiguration;
 import org.fabric3.api.host.runtime.BootstrapService;
 import org.fabric3.api.host.runtime.Fabric3Runtime;

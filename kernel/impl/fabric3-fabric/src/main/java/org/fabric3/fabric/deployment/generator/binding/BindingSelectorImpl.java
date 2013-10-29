@@ -44,7 +44,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.fabric3.api.annotation.Source;
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.deployment.generator.binding.BindingMatchResult;
 import org.fabric3.spi.deployment.generator.binding.BindingProvider;

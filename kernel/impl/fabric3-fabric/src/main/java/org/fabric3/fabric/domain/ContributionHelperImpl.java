@@ -46,7 +46,7 @@ import javax.xml.namespace.QName;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;
 import org.fabric3.api.host.domain.DeployableNotFoundException;

@@ -46,7 +46,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.management.rest.framework.AbstractResourceService;
 import org.fabric3.management.rest.model.Resource;

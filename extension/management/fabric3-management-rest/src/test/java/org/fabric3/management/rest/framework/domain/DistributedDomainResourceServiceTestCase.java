@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.management.rest.model.Resource;
 

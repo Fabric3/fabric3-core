@@ -53,7 +53,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import org.fabric3.api.host.Environment;
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.stream.InputStreamSource;
 import org.fabric3.api.host.util.FileHelper;
 

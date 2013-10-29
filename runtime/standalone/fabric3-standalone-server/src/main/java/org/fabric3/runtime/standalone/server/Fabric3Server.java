@@ -55,7 +55,7 @@ import java.util.concurrent.CountDownLatch;
 import org.fabric3.api.annotation.monitor.Info;
 import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.monitor.DelegatingDestinationRouter;
 import org.fabric3.api.host.monitor.MonitorProxyService;

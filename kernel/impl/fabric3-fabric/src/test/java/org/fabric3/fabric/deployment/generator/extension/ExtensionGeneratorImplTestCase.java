@@ -55,7 +55,7 @@ import org.fabric3.fabric.deployment.command.DetachWireCommand;
 import org.fabric3.fabric.deployment.command.ProvisionExtensionsCommand;
 import org.fabric3.fabric.deployment.command.UnProvisionExtensionsCommand;
 import org.fabric3.fabric.deployment.generator.GenerationType;
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;

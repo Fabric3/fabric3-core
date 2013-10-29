@@ -47,7 +47,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.os.OperatingSystem;
 
 /**

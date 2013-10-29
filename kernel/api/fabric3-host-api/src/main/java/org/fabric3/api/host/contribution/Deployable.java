@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 
 /**
  * Represents a deployable artifact in a contribution
@@ -101,5 +101,23 @@ public class Deployable implements Serializable {
      */
     public List<String> getEnvironments() {
         return environments;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Deployable that = (Deployable) o;
+
+        return !(name != null ? !name.equals(that.name) : that.name != null);
+
+    }
+
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
     }
 }

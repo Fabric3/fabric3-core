@@ -49,7 +49,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.domain.AssemblyException;
 import org.fabric3.api.host.domain.CompositeAlreadyDeployedException;

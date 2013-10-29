@@ -54,7 +54,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarFile;
 
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.Version;
 import org.fabric3.api.host.classloader.DelegatingResourceClassLoader;
 import org.fabric3.api.host.os.OperatingSystem;

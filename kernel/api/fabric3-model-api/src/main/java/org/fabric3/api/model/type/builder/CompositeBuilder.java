@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
@@ -214,6 +215,41 @@ public class CompositeBuilder extends AbstractBuilder {
         }
         return this;
 
+    }
+
+    /**
+     * Makes the composite a deployable composite.
+     *
+     * @return the builder
+     */
+    public CompositeBuilder deployable() {
+        checkState();
+        composite.setDeployable(true);
+        return this;
+    }
+
+    /**
+     * Sets the runtime modes for the composite.
+     *
+     * @param modes the runtime modes
+     * @return the builder
+     */
+    public CompositeBuilder mode(List<RuntimeMode> modes) {
+        checkState();
+        composite.setModes(modes);
+        return this;
+    }
+
+    /**
+     * Sets the runtime environments the composite is activated in.
+     *
+     * @param environments the runtime environments
+     * @return the builder
+     */
+    public CompositeBuilder environment(List<String> environments) {
+        checkState();
+        composite.setEnvironments(environments);
+        return this;
     }
 
     /**

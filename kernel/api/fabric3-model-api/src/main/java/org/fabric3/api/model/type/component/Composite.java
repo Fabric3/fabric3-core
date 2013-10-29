@@ -56,6 +56,7 @@ import java.util.Set;
 
 import org.fabric3.api.model.type.Namespace;
 import org.fabric3.api.model.type.PolicyAware;
+import org.fabric3.api.model.type.RuntimeMode;
 
 /**
  * A composite component type.
@@ -67,6 +68,10 @@ public class Composite extends ComponentType implements PolicyAware {
     private URI contributionUri;
     private boolean local;
     private Autowire autowire;
+
+    private boolean deployable;
+    private List<RuntimeMode> modes = Collections.emptyList();
+    private List<String> environments = Collections.emptyList();
 
     private Set<QName> intents = new LinkedHashSet<QName>();
     private Set<QName> policySets = new LinkedHashSet<QName>();
@@ -177,6 +182,60 @@ public class Composite extends ComponentType implements PolicyAware {
      */
     public void setAutowire(Autowire autowire) {
         this.autowire = autowire;
+    }
+
+    /**
+     * Returns true if this composite is configured as a deployable.
+     *
+     * @return true if this composite is configured as a deployable
+     */
+    public boolean isDeployable() {
+        return deployable;
+    }
+
+    /**
+     * Sets if this composite is configured as a deployable.
+     *
+     * @param deployable if this composite is configured as a deployable
+     */
+    public void setDeployable(boolean deployable) {
+        this.deployable = deployable;
+    }
+
+    /**
+     * Returns the runtime modes this composite is activated under.
+     *
+     * @return the runtime modes
+     */
+    public List<RuntimeMode> getModes() {
+        return modes;
+    }
+
+    /**
+     * Sets the runtime modes this composite is activated under.
+     *
+     * @param modes the runtime modes this composite is activated under
+     */
+    public void setModes(List<RuntimeMode> modes) {
+        this.modes = modes;
+    }
+
+    /**
+     * Returns the environments this composite is activated under.
+     *
+     * @return the environments this composite is activated under
+     */
+    public List<String> getEnvironments() {
+        return environments;
+    }
+
+    /**
+     * Sets the environments this composite is activated under.
+     *
+     * @param environments the environments this composite is activated under
+     */
+    public void setEnvironments(List<String> environments) {
+        this.environments = environments;
     }
 
     /**

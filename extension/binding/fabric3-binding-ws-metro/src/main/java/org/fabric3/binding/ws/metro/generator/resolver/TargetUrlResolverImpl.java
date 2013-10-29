@@ -41,7 +41,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.fabric3.binding.ws.model.WsBindingDefinition;
-import org.fabric3.api.host.RuntimeMode;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.definitions.Intent;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
