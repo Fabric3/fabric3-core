@@ -37,17 +37,20 @@
 */
 package org.fabric3.implementation.java.introspection;
 
-import org.oasisopen.sca.annotation.Reference;
+import java.util.Collections;
+import java.util.List;
 
 import org.fabric3.api.model.type.component.Scope;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.ImplementationNotFoundException;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.InvalidImplementation;
+import org.fabric3.spi.introspection.java.PostProcessor;
 import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -56,6 +59,12 @@ public class JavaImplementationIntrospectorImpl implements JavaImplementationInt
     private final ClassVisitor classVisitor;
     private final HeuristicProcessor heuristic;
     private final IntrospectionHelper helper;
+    private List<PostProcessor> postProcessors = Collections.emptyList();
+
+    @Reference(required = false)
+    public void setPostProcessors(List<PostProcessor> postProcessors) {
+        this.postProcessors = postProcessors;
+    }
 
     public JavaImplementationIntrospectorImpl(@Reference(name = "classVisitor") ClassVisitor classVisitor,
                                               @Reference(name = "heuristic") HeuristicProcessor heuristic,
@@ -106,6 +115,9 @@ public class JavaImplementationIntrospectorImpl implements JavaImplementationInt
             context.addError(new ImplementationArtifactNotFound(className, e.getMessage(), componentType));
         }
         validateScope(componentType, implClass, context);
+        for (PostProcessor postProcessor : postProcessors) {
+            postProcessor.process(componentType, implClass, context);
+        }
     }
 
     private void validateScope(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {

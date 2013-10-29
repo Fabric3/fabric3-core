@@ -41,6 +41,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.annotation.Consumer;
@@ -54,6 +55,7 @@ import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
+import org.fabric3.spi.introspection.java.PostProcessor;
 import org.fabric3.spi.introspection.java.annotation.AnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.introspection.processor.ImplementationProcessor;
@@ -69,6 +71,12 @@ public class JavaImplementationProcessor implements ImplementationProcessor<Java
     private JavaImplementationIntrospector introspector;
     private IntrospectionHelper helper;
     private Map<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation>> annotationProcessors;
+    private List<PostProcessor> postProcessors = Collections.emptyList();
+
+    @Reference(required = false)
+    public void setPostProcessors(List<PostProcessor> postProcessors) {
+        this.postProcessors = postProcessors;
+    }
 
     @Reference
     public void setAnnotationProcessors(Map<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation>> processors) {
@@ -97,6 +105,10 @@ public class JavaImplementationProcessor implements ImplementationProcessor<Java
                 addServiceDefinitions(instance, componentType, context);
             }
             processAnnotations(instance, definition, context);
+
+            for (PostProcessor postProcessor : postProcessors) {
+                postProcessor.process(componentType, instance.getClass(), context);
+            }
         }
     }
 

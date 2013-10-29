@@ -83,8 +83,6 @@ public class ProvisionerImpl implements Provisioner {
     }
 
     public void deploy(String name, Object instance, Class<?>... interfaces) throws DeploymentException {
-        DefaultIntrospectionContext context = new DefaultIntrospectionContext(Names.HOST_CONTRIBUTION, getClass().getClassLoader());
-
         ComponentDefinition<?> definition = JavaComponentDefinitionBuilder.newBuilder(name, instance).build();
         if (interfaces == null) {
             // if no interfaces are specified, check if the implementation class implements one or more interfaces
@@ -103,10 +101,6 @@ public class ProvisionerImpl implements Provisioner {
                 addService(interfaze, definition);
             }
         }
-
-        componentProcessor.process(definition, context);
-
-        checkErrors(context);
 
         deploy(definition);
     }

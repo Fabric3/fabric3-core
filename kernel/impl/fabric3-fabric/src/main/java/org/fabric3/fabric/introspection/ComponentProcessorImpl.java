@@ -40,14 +40,12 @@ package org.fabric3.fabric.introspection;
 import javax.xml.namespace.QName;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.annotation.model.Implementation;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.processor.BindingProcessor;
 import org.fabric3.spi.introspection.processor.ComponentProcessor;
 import org.fabric3.spi.introspection.processor.ImplementationProcessor;
 import org.oasisopen.sca.annotation.Reference;
@@ -57,16 +55,10 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class ComponentProcessorImpl implements ComponentProcessor {
     private Map<QName, ImplementationProcessor<?>> implementationProcessors = Collections.emptyMap();
-    private List<BindingProcessor> bindingProcessors = Collections.emptyList();
 
     @Reference(required = false)
     public void setImplementationProcessors(Map<QName, ImplementationProcessor<?>> implementationProcessors) {
         this.implementationProcessors = implementationProcessors;
-    }
-
-    @Reference(required = false)
-    public void setBindingProcessors(List<BindingProcessor> bindingProcessors) {
-        this.bindingProcessors = bindingProcessors;
     }
 
     @SuppressWarnings("unchecked")
@@ -78,10 +70,6 @@ public class ComponentProcessorImpl implements ComponentProcessor {
             return;
         }
         processor.process(definition, context);
-
-        for (BindingProcessor bindingProcessor : bindingProcessors) {
-            bindingProcessor.process(definition, context);
-        }
     }
 
     @SuppressWarnings("unchecked")

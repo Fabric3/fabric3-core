@@ -41,7 +41,7 @@ import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Processes a {@link ComponentDefinition}, delegating to {@link ImplementationProcessor}s and {@link BindingProcessor}s to add relevant metadata.
+ * Processes a {@link ComponentDefinition}, delegating to {@link ImplementationProcessor}s to add relevant metadata.
  */
 public interface ComponentProcessor {
 
