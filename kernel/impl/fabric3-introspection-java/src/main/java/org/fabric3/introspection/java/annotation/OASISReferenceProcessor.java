@@ -53,6 +53,7 @@ import java.lang.reflect.Type;
 
 import org.fabric3.api.annotation.Target;
 import org.fabric3.api.annotation.Targets;
+import org.fabric3.api.model.type.component.Multiplicity;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -151,6 +152,14 @@ public class OASISReferenceProcessor extends AbstractAnnotationProcessor<Referen
     private void addTargets(AccessibleObject accessibleObject, Member member, IntrospectionContext context, ReferenceDefinition definition) {
         Targets targetsAnnotation = accessibleObject.getAnnotation(Targets.class);
         if (targetsAnnotation != null) {
+            Multiplicity multiplicity = definition.getMultiplicity();
+            if (multiplicity != Multiplicity.ONE_N && multiplicity != Multiplicity.ZERO_N) {
+                Class<?> clazz = member.getDeclaringClass();
+                String name = member.getName();
+                InvalidAnnotation error = new InvalidAnnotation("Reference is not a multiplicity: " + name, clazz);
+                context.addError(error);
+                return;
+            }
             for (String value : targetsAnnotation.value()) {
                 org.fabric3.api.model.type.component.Target target = parseTarget(value, member, context);
                 if (target != null) {
