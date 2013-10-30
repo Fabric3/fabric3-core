@@ -35,7 +35,7 @@ import java.util.List;
 
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;

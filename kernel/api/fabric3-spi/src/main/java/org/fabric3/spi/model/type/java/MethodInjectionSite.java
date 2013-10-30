@@ -63,11 +63,13 @@ public class MethodInjectionSite extends InjectionSite implements Externalizable
     private static final long serialVersionUID = -2222837362065034249L;
     private Signature signature;
     private int param;
+    private transient Method method;
 
     public MethodInjectionSite(Method method, int param) {
         super(method.getParameterTypes()[param].getName());
         this.signature = new Signature(method);
         this.param = param;
+        this.method = method;
     }
 
     public MethodInjectionSite() {
@@ -92,6 +94,15 @@ public class MethodInjectionSite extends InjectionSite implements Externalizable
      */
     public int getParam() {
         return param;
+    }
+
+    /**
+     * Returns the method or null if this class has been deserialized.
+     *
+     * @return the method or null
+     */
+    public Method getMethod() {
+        return method;
     }
 
     public String toString() {

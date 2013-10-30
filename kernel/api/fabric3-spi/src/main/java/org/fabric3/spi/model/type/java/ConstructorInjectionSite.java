@@ -59,6 +59,7 @@ public class ConstructorInjectionSite extends InjectionSite implements Externali
     private static final long serialVersionUID = -6543986170145816234L;
     private Signature signature;
     private int param;
+    private transient Constructor constructor;
 
     public ConstructorInjectionSite(Constructor<?> constructor, int param) {
         super(constructor.getParameterTypes()[param].getName());
@@ -92,6 +93,15 @@ public class ConstructorInjectionSite extends InjectionSite implements Externali
      */
     public int getParam() {
         return param;
+    }
+
+    /**
+     * Returns the constructor, or null if this class has been deserialized.
+     *
+     * @return the constructor or null
+     */
+    public Constructor getConstructor() {
+        return constructor;
     }
 
     public String toString() {

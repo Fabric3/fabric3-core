@@ -38,7 +38,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.zeromq.ZMQ;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.JDK7WorkaroundHelper;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;

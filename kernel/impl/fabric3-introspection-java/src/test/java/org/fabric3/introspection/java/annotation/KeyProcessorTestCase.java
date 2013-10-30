@@ -42,6 +42,7 @@ import junit.framework.TestCase;
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.spi.introspection.java.InvalidAnnotation;
 
 /**
  *

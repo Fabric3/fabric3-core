@@ -15,7 +15,7 @@ Public License. See the accompanying license file for details.
               f3:description="JAX-RS (REST) API extension">
     <import.java package="org.fabric3.api.model.*" version="2.5.0"/>
 
-    <export.java package="org.fabric3.api.binding.rs" version="2.5.0"/>
+    <export.java package="org.fabric3.api.binding.rs.*" version="2.5.0"/>
 
     <f3:provides.capability name="rest"/>
 </contribution>

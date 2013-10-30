@@ -39,6 +39,7 @@ package org.fabric3.introspection.java.annotation;
 
 import org.fabric3.api.annotation.wire.Order;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 
@@ -53,7 +54,7 @@ public class OrderProcessor extends AbstractAnnotationProcessor<Order> {
 
     public void visitType(Order annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
         if (annotation.value() == Integer.MIN_VALUE) {
-            context.addError(new InvalidAnnotation("A value must be specified for @Order", type));
+            context.addError(new InvalidAnnotation("A value must be specified for @Order", type, annotation, type));
             return;
         }
         componentType.setOrder(annotation.value());

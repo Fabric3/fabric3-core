@@ -45,9 +45,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.binding.zeromq.common.SocketAddressDefinition;
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;

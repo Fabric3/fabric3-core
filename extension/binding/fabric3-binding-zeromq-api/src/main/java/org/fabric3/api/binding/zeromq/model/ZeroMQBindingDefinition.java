@@ -34,47 +34,44 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
  */
-package org.fabric3.introspection.java.annotation;
+package org.fabric3.api.binding.zeromq.model;
 
-import org.fabric3.spi.introspection.java.JavaValidationFailure;
+import javax.xml.namespace.QName;
+import java.net.URI;
+
+import org.fabric3.api.Namespaces;
+import org.fabric3.api.model.type.component.BindingDefinition;
 
 /**
- * Denotes an invalid use of an annotation.
+ * A ZeroMQ binding configuration set on a channel, reference, or composite.
  */
-public class InvalidAnnotation extends JavaValidationFailure {
-    private String message;
-    private Exception e;
+public class ZeroMQBindingDefinition extends BindingDefinition {
+    private static final long serialVersionUID = 4154636613386389578L;
 
-    public InvalidAnnotation(String message, Class<?> clazz) {
-        super(clazz);
-        this.message = message;
+    public static final QName BINDING_0MQ = new QName(Namespaces.F3, "binding.zeromq");
+
+    private ZeroMQMetadata metadata;
+    private URI targetUri;
+
+    public ZeroMQBindingDefinition(String bindingName, ZeroMQMetadata metadata) {
+        this(bindingName, null, metadata);
     }
 
-    public InvalidAnnotation(String message, Class<?> clazz, Exception e) {
-        super(clazz);
-        this.message = message;
-        this.e = e;
+    public ZeroMQBindingDefinition(String bindingName, URI targetUri, ZeroMQMetadata metadata) {
+        super(bindingName, targetUri, BINDING_0MQ);
+        this.metadata = metadata;
     }
 
-    public String getMessage() {
-        if (e == null) {
-            return message + " : " + getClass();
-        }
-        return message + ".\n" + e;
+    public ZeroMQMetadata getZeroMQMetadata() {
+        return metadata;
     }
 
-    public String getShortMessage() {
-        if (e == null) {
-            return message;
-        }
-        return message + ": " + e.getMessage();
+    public URI getTargetUri() {
+        return targetUri;
     }
 
+    public void setTargetUri(URI targetUri) {
+        this.targetUri = targetUri;
+    }
 }

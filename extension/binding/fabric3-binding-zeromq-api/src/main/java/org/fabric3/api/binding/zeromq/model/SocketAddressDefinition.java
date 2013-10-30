@@ -1,4 +1,4 @@
-package org.fabric3.binding.zeromq.common;
+package org.fabric3.api.binding.zeromq.model;
 
 import java.io.Serializable;
 

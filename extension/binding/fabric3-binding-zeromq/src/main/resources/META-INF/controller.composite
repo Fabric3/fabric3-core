@@ -20,11 +20,11 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.zeromq.introspection.ZeroMQBindingLoader"/>
     </component>
 
-    <component name="ZeroMQBindingGenerator" f3:key="org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition">
+    <component name="ZeroMQBindingGenerator" f3:key="org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition">
         <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQBindingGenerator"/>
     </component>
 
-    <component name="ZeroMQConnectionBindingGenerator" f3:key="org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition">
+    <component name="ZeroMQConnectionBindingGenerator" f3:key="org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition">
         <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQConnectionBindingGenerator"/>
     </component>
 

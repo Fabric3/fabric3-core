@@ -32,7 +32,7 @@ package org.fabric3.binding.zeromq.provision;
 
 import java.net.URI;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**

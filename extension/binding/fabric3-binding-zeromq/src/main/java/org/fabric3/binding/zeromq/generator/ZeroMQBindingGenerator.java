@@ -35,8 +35,8 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQSourceDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQTargetDefinition;
 import org.fabric3.api.model.type.contract.Operation;

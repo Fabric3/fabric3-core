@@ -30,7 +30,7 @@
  */
 package org.fabric3.binding.zeromq.runtime;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
 import org.fabric3.spi.container.builder.component.ConnectionAttachException;
 import org.fabric3.spi.container.builder.component.TargetConnectionAttacher;

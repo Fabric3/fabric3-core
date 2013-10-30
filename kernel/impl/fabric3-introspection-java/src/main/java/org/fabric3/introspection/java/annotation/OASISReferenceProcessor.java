@@ -60,6 +60,7 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
+import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
@@ -156,12 +157,12 @@ public class OASISReferenceProcessor extends AbstractAnnotationProcessor<Referen
             if (multiplicity != Multiplicity.ONE_N && multiplicity != Multiplicity.ZERO_N) {
                 Class<?> clazz = member.getDeclaringClass();
                 String name = member.getName();
-                InvalidAnnotation error = new InvalidAnnotation("Reference is not a multiplicity: " + name, clazz);
+                InvalidAnnotation error = new InvalidAnnotation("Reference is not a multiplicity: " + name, accessibleObject, targetsAnnotation, clazz);
                 context.addError(error);
                 return;
             }
             for (String value : targetsAnnotation.value()) {
-                org.fabric3.api.model.type.component.Target target = parseTarget(value, member, context);
+                org.fabric3.api.model.type.component.Target target = parseTarget(value, targetsAnnotation, accessibleObject, member, context);
                 if (target != null) {
                     definition.addTarget(target);
                 }
@@ -169,7 +170,7 @@ public class OASISReferenceProcessor extends AbstractAnnotationProcessor<Referen
         } else {
             Target targetAnnotation = accessibleObject.getAnnotation(Target.class);
             if (targetAnnotation != null) {
-                org.fabric3.api.model.type.component.Target target = parseTarget(targetAnnotation.value(), member, context);
+                org.fabric3.api.model.type.component.Target target = parseTarget(targetAnnotation.value(), targetAnnotation, accessibleObject, member, context);
                 if (target != null) {
                     definition.addTarget(target);
                 }
@@ -177,7 +178,11 @@ public class OASISReferenceProcessor extends AbstractAnnotationProcessor<Referen
         }
     }
 
-    private org.fabric3.api.model.type.component.Target parseTarget(String target, Member member, IntrospectionContext context) {
+    private org.fabric3.api.model.type.component.Target parseTarget(String target,
+                                                                    Annotation annotation,
+                                                                    AccessibleObject accessibleObject,
+                                                                    Member member,
+                                                                    IntrospectionContext context) {
         String[] tokens = target.split("/");
         if (tokens.length == 1) {
             return new org.fabric3.api.model.type.component.Target(tokens[0]);
@@ -188,7 +193,7 @@ public class OASISReferenceProcessor extends AbstractAnnotationProcessor<Referen
         } else {
             Class<?> clazz = member.getDeclaringClass();
             String name = member.getName();
-            InvalidAnnotation error = new InvalidAnnotation("Invalid target format: " + target + " on " + name, clazz);
+            InvalidAnnotation error = new InvalidAnnotation("Invalid target format: " + target + " on " + name, accessibleObject, annotation, clazz);
             context.addError(error);
             return null;
         }

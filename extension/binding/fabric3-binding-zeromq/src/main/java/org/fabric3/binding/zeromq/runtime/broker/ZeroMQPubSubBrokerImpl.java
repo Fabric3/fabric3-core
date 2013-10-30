@@ -40,8 +40,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.binding.zeromq.common.SocketAddressDefinition;
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.BrokerException;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.spi.federation.addressing.SocketAddress;

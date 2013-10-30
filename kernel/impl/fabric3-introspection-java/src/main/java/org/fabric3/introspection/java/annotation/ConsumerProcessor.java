@@ -43,7 +43,7 @@
  */
 package org.fabric3.introspection.java.annotation;
 
-import java.lang.reflect.Member;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -59,6 +59,7 @@ import org.fabric3.api.model.type.java.Signature;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
+import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.spi.model.type.java.JavaClass;
 import org.fabric3.spi.model.type.java.JavaGenericType;
@@ -97,7 +98,8 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
         } else {
             definition.setSequence(sequence);
         }
-        processSources(annotation, definition, method, context);
+        Class<?> clazz = method.getDeclaringClass();
+        processSources(annotation, definition, method, clazz, context);
         componentType.add(definition, signature);
     }
 
@@ -125,7 +127,7 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
         }
     }
 
-    private void processSources(Consumer annotation, ConsumerDefinition definition, Member member, IntrospectionContext context) {
+    private void processSources(Consumer annotation, ConsumerDefinition definition, AccessibleObject member, Class<?> clazz, IntrospectionContext context) {
         try {
             if (annotation.sources().length > 0) {
                 for (String target : annotation.sources()) {
@@ -135,8 +137,7 @@ public class ConsumerProcessor extends AbstractAnnotationProcessor<Consumer> {
                 definition.addSource(new URI(annotation.source()));
             }
         } catch (URISyntaxException e) {
-            Class<?> clazz = member.getDeclaringClass();
-            InvalidAnnotation error = new InvalidAnnotation("Invalid consumer source on : " + clazz.getName(), clazz, e);
+            InvalidAnnotation error = new InvalidAnnotation("Invalid consumer source on : " + clazz.getName(), member, annotation, clazz, e);
             context.addError(error);
         }
     }

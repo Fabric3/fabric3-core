@@ -39,6 +39,7 @@ package org.fabric3.introspection.java.annotation;
 
 import org.fabric3.api.annotation.wire.Key;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 
@@ -53,7 +54,7 @@ public class KeyProcessor extends AbstractAnnotationProcessor<Key> {
 
     public void visitType(Key annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
         if (annotation.value().length() == 0) {
-            context.addError(new InvalidAnnotation("A value must be specified for @Key", type));
+            context.addError(new InvalidAnnotation("A value must be specified for @Key", type, annotation, type));
             return;
         }
         componentType.setKey(annotation.value());

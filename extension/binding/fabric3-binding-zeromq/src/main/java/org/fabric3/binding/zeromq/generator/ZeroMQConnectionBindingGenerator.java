@@ -36,8 +36,8 @@ import org.fabric3.binding.zeromq.provision.ZeroMQChannelBindingDefinition;
 import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionSourceDefinition;
 import org.fabric3.binding.zeromq.provision.ZeroMQConnectionTargetDefinition;
 import org.fabric3.spi.deployment.generator.channel.ConnectionBindingGenerator;

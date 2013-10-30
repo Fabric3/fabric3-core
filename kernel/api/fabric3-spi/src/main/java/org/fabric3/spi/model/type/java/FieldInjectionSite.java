@@ -57,10 +57,12 @@ import org.fabric3.api.model.type.java.InjectionSite;
 public class FieldInjectionSite extends InjectionSite implements Externalizable {
     private static final long serialVersionUID = -6502983302874808563L;
     private String name;
+    private transient Field field;
 
     public FieldInjectionSite(Field field) {
         super(field.getType().getName());
-        name = field.getName();
+        this.name = field.getName();
+        this.field = field;
     }
 
     public FieldInjectionSite() {
@@ -74,6 +76,15 @@ public class FieldInjectionSite extends InjectionSite implements Externalizable 
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns the field, which may be null if this class is deserialized.
+     *
+     * @return the field or null
+     */
+    public Field getField() {
+        return field;
     }
 
     public String toString() {

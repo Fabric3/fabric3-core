@@ -49,7 +49,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.fabric3.api.binding.rs.RsBindingDefinition;
+import org.fabric3.api.binding.rs.model.RsBindingDefinition;
 import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;

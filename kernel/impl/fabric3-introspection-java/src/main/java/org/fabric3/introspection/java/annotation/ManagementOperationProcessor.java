@@ -51,6 +51,7 @@ import org.fabric3.api.Role;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.ManagementInfo;
@@ -76,7 +77,8 @@ public class ManagementOperationProcessor extends AbstractAnnotationProcessor<Ma
         if (info == null) {
             // there was no management annotation on the type - record an error
             Class<?> clazz = method.getDeclaringClass();
-            context.addError(new InvalidAnnotation("Implementation is missing @" + Management.class.getSimpleName(), clazz));
+            String name = Management.class.getSimpleName();
+            context.addError(new InvalidAnnotation("Implementation is missing @" + name, method, annotation, clazz));
             return;
         }
         String description = annotation.description();

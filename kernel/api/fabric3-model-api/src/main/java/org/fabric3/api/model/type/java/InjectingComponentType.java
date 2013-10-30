@@ -301,6 +301,15 @@ public class InjectingComponentType extends ComponentType {
     }
 
     /**
+     * Returns the model object-to-injection site mappings.
+     *
+     * @return the mappings
+     */
+    public Map<ModelObject, InjectionSite> getInjectionSiteMappings() {
+        return injectionSiteMapping;
+    }
+
+    /**
      * Returns the signature of the constructor to use.
      *
      * @return the signature of the constructor to use

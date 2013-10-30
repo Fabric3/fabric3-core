@@ -29,6 +29,12 @@
         </dependency>
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-binding-zeromq-api</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-jgroups</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>

@@ -53,9 +53,9 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.binding.zeromq.common.SocketAddressDefinition;
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;

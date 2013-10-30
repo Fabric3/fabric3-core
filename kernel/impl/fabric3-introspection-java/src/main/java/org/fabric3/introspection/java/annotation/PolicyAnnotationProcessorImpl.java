@@ -43,23 +43,23 @@
  */
 package org.fabric3.introspection.java.annotation;
 
+import javax.xml.namespace.QName;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
+import org.fabric3.api.annotation.IntentMetaData;
+import org.fabric3.api.model.type.PolicyAware;
+import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.InvalidAnnotation;
+import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.oasisopen.sca.annotation.Intent;
 import org.oasisopen.sca.annotation.PolicySets;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Qualifier;
 import org.oasisopen.sca.annotation.Requires;
-
-import org.fabric3.api.annotation.IntentMetaData;
-import org.fabric3.api.model.type.PolicyAware;
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 
 /**
  *
@@ -129,9 +129,7 @@ public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor 
      * @param modelObject the model object the intent is associated with
      * @param context     the current introspection context
      */
-    private void processIntentAnnotation(Annotation annotation,
-                                         PolicyAware modelObject,
-                                         IntrospectionContext context) {
+    private void processIntentAnnotation(Annotation annotation, PolicyAware modelObject, IntrospectionContext context) {
         Class<? extends Annotation> annotClass = annotation.annotationType();
         if (annotClass.isAnnotationPresent(Intent.class)) {
             Intent intent = annotClass.getAnnotation(Intent.class);
@@ -155,9 +153,9 @@ public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor 
             } catch (IllegalArgumentException e) {
                 context.addError(new InvalidIntentName(val, annotClass, e));
             } catch (IllegalAccessException e) {
-                context.addError(new InvalidAnnotation("Error reading annotation value " + annotClass.getName(), annotClass, e));
+                context.addError(new InvalidAnnotation("Error reading annotation value " + annotClass.getName(), annotClass, annotation, annotClass, e));
             } catch (InvocationTargetException e) {
-                context.addError(new InvalidAnnotation("Error reading annotation value" + annotClass.getName(), annotClass, e));
+                context.addError(new InvalidAnnotation("Error reading annotation value" + annotClass.getName(), annotClass, annotation, annotClass, e));
             }
         } else {
             // check if the annotation is an intent annotation but not marked with the @Intent annotation
@@ -195,14 +193,15 @@ public class PolicyAnnotationProcessorImpl implements PolicyAnnotationProcessor 
                 } else {
                     String metadataName = metadataAnnotClass.getName();
                     String annotationName = annotClass.getName();
-                    InvalidAnnotation error =
-                            new InvalidAnnotation("Value for " + metadataName + " must be String or String[] on " + annotationName, annotClass);
+                    InvalidAnnotation error = new InvalidAnnotation("Value for " + metadataName + " must be String or String[] on " + annotationName,
+                                                                    annotClass,
+                                                                    annotation,
+                                                                    annotClass);
                     context.addError(error);
                 }
             }
         }
         return null;
     }
-
 
 }

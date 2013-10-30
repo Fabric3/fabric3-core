@@ -34,23 +34,50 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- */
-package org.fabric3.api.binding.rs;
+*/
+package org.fabric3.api.binding.zeromq.annotation;
 
-import javax.xml.namespace.QName;
-import java.net.URI;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.api.annotation.model.Binding;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Configures a service to be exposed as a JAX-RS resource.
+ * Binds a reference or service to ZeroMQ.
  */
-public class RsBindingDefinition extends BindingDefinition {
-    private static final long serialVersionUID = 7344870455465600359L;
+@Target({TYPE, FIELD, METHOD, PARAMETER})
+@Retention(RUNTIME)
+@Binding
+public @interface ZeroMQ {
 
-    public static final QName BINDING_RS = new QName(org.fabric3.api.Namespaces.F3, "binding.rs");
+    /**
+     * Specifies the service interface to bind.
+     *
+     * @return the service interface to bind
+     */
+    public Class<?> service() default Void.class;
 
-    public RsBindingDefinition(String name, URI serviceUri) {
-        super(name, serviceUri, BINDING_RS);
-    }
+    public String target() default "";
+
+    public String hosts() default "";
+
+    public String uri() default "";
+
+    public long highWater() default -1;
+
+    public long multicastRate() default -1;
+
+    public long multicastRecovery() default -1;
+
+    public long sendBuffer() default -1;
+
+    public long receiveBuffer() default -1;
+
+    public long timeout() default 10;
+
 }

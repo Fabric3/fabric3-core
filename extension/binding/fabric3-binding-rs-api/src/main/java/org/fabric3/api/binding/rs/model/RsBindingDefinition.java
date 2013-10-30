@@ -35,44 +35,22 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.zeromq.model;
+package org.fabric3.api.binding.rs.model;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.api.Namespaces;
 import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
 
 /**
- * A ZeroMQ binding configuration set on a channel, reference, or composite.
+ * Configures a service to be exposed as a JAX-RS resource.
  */
-public class ZeroMQBindingDefinition extends BindingDefinition {
-    private static final long serialVersionUID = 4154636613386389578L;
+public class RsBindingDefinition extends BindingDefinition {
+    private static final long serialVersionUID = 7344870455465600359L;
 
-    public static final QName BINDING_0MQ = new QName(Namespaces.F3, "binding.zeromq");
+    public static final QName BINDING_RS = new QName(org.fabric3.api.Namespaces.F3, "binding.rs");
 
-    private ZeroMQMetadata metadata;
-    private URI targetUri;
-
-    public ZeroMQBindingDefinition(String bindingName, ZeroMQMetadata metadata) {
-        this(bindingName, null, metadata);
-    }
-
-    public ZeroMQBindingDefinition(String bindingName, URI targetUri, ZeroMQMetadata metadata) {
-        super(bindingName, targetUri, BINDING_0MQ);
-        this.metadata = metadata;
-    }
-
-    public ZeroMQMetadata getZeroMQMetadata() {
-        return metadata;
-    }
-
-    public URI getTargetUri() {
-        return targetUri;
-    }
-
-    public void setTargetUri(URI targetUri) {
-        this.targetUri = targetUri;
+    public RsBindingDefinition(String name, URI serviceUri) {
+        super(name, serviceUri, BINDING_RS);
     }
 }

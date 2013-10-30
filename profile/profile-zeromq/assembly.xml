@@ -28,6 +28,7 @@
         <dependencySet>
             <includes>
                 <include>org.codehaus.fabric3:fabric3-binding-zeromq-library</include>
+                <include>org.codehaus.fabric3:fabric3-binding-zeromq-api</include>
                 <include>org.codehaus.fabric3:fabric3-binding-zeromq</include>
             </includes>
             <outputDirectory>/extensions</outputDirectory>

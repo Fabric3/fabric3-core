@@ -38,7 +38,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.fabric3.api.annotation.management.Management;
-import org.fabric3.binding.zeromq.common.ZeroMQMetadata;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
