@@ -20,6 +20,10 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.zeromq.introspection.ZeroMQBindingLoader"/>
     </component>
 
+    <component name="ZeroMQPostProcessor">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.introspection.ZeroMQPostProcessor"/>
+    </component>
+
     <component name="ZeroMQBindingGenerator" f3:key="org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition">
         <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQBindingGenerator"/>
     </component>
@@ -28,6 +32,9 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQConnectionBindingGenerator"/>
     </component>
 
+    <component name="ZeroMQCallbackBindingGenerator" f3:key="org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition">
+        <f3:implementation.system class="org.fabric3.binding.zeromq.generator.ZeroMQCallbackBindingGenerator"/>
+    </component>
     <component name="ZeroMQBindingProvider">
         <f3:implementation.system class="org.fabric3.binding.zeromq.provider.ZeroMQBindingProvider"/>
         <property name="enabled" source="$systemConfig//f3:zeromq.binding/@bindingProvider"/>

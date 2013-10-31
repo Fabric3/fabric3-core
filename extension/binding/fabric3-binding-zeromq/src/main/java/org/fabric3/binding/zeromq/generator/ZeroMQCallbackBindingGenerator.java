@@ -35,49 +35,26 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.binding.zeromq.annotation;
+package org.fabric3.binding.zeromq.generator;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import org.fabric3.api.annotation.model.Binding;
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
+import org.fabric3.spi.deployment.generator.binding.CallbackBindingGenerator;
+import org.fabric3.spi.model.instance.LogicalBinding;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Binds a reference or service to ZeroMQ.
+ *
  */
-@Target({TYPE, FIELD, METHOD, PARAMETER})
-@Retention(RUNTIME)
-@Binding("{urn:fabric3.org}binding.zeromq")
-public @interface ZeroMQ {
+@EagerInit
+public class ZeroMQCallbackBindingGenerator implements CallbackBindingGenerator<ZeroMQBindingDefinition> {
+    public ZeroMQBindingDefinition generateServiceCallback(LogicalBinding<ZeroMQBindingDefinition> forwardBinding) {
+        ZeroMQMetadata metadata = new ZeroMQMetadata();
+        return new ZeroMQBindingDefinition("binding.zeromq.callback", metadata);
+    }
 
-    /**
-     * Specifies the service interface to bind.
-     *
-     * @return the service interface to bind
-     */
-    public Class<?> service() default Void.class;
-
-    public String target() default "";
-
-    public String addresses() default "";
-
-    public long timeout() default 10;
-
-    public long highWater() default -1;
-
-    public long multicastRate() default -1;
-
-    public long multicastRecovery() default -1;
-
-    public long sendBuffer() default -1;
-
-    public long receiveBuffer() default -1;
-
-    public String wireFormat() default "";
-
+    public ZeroMQBindingDefinition generateReferenceCallback(LogicalBinding<ZeroMQBindingDefinition> forwardBinding) {
+        ZeroMQMetadata metadata = new ZeroMQMetadata();
+        return new ZeroMQBindingDefinition("binding.zeromq.callback", metadata);
+    }
 }

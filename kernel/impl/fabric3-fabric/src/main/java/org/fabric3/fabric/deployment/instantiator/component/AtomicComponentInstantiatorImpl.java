@@ -139,20 +139,30 @@ public class AtomicComponentInstantiatorImpl extends AbstractComponentInstantiat
     }
 
     private void createReferences(ComponentDefinition<?> definition, LogicalComponent<?> component, ComponentType componentType) {
-        for (AbstractReference reference : componentType.getReferences().values()) {
+        for (AbstractReference<?> reference : componentType.getReferences().values()) {
             String name = reference.getName();
             URI referenceUri = component.getUri().resolve('#' + name);
             LogicalReference logicalReference = new LogicalReference(referenceUri, reference, component);
 
-            // reference is configured in the component definition
             ComponentReference componentReference = definition.getReferences().get(name);
             if (componentReference != null) {
+                // reference is configured in the component definition
                 logicalReference.addIntents(componentReference.getIntents());
                 for (BindingDefinition binding : componentReference.getBindings()) {
                     LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
                     logicalReference.addBinding(logicalBinding);
                 }
                 for (BindingDefinition binding : componentReference.getCallbackBindings()) {
+                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
+                    logicalReference.addCallbackBinding(logicalBinding);
+                }
+            } else {
+                // check if reference is configured with bindings in the component type
+                for (BindingDefinition binding : reference.getBindings()) {
+                    LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
+                    logicalReference.addBinding(logicalBinding);
+                }
+                for (BindingDefinition binding : reference.getCallbackBindings()) {
                     LogicalBinding<BindingDefinition> logicalBinding = new LogicalBinding<BindingDefinition>(binding, logicalReference);
                     logicalReference.addCallbackBinding(logicalBinding);
                 }

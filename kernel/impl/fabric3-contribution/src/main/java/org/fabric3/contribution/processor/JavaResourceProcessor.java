@@ -48,6 +48,7 @@ import org.fabric3.api.host.contribution.InstallException;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.api.model.type.component.Include;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
@@ -147,10 +148,38 @@ public class JavaResourceProcessor implements ResourceProcessor {
                 Deployable deployable = new Deployable(compositeName);
                 manifest.addDeployable(deployable);
             }
+            composite.add(definition);
+        } else {
+            composite.add(definition);
+            updateIncludingComposites(contribution, composite);
         }
-        composite.add(definition);
 
         resource.setState(ResourceState.PROCESSED);
+    }
+
+    /**
+     * Updates composites that include the given composite after a component has been added to the later. This is necessary since the including composite caches
+     * a view of the included components.
+     * <p/>
+     * Note only the current contribution needs to be searched as contributions are ordered on install.
+     *
+     * @param contribution the current contribution
+     * @param composite    the composite
+     */
+    private void updateIncludingComposites(Contribution contribution, Composite composite) {
+        for (Resource contributionResource : contribution.getResources()) {
+            for (ResourceElement<?, ?> element : contributionResource.getResourceElements()) {
+                if (element.getValue() instanceof Composite) {
+                    Composite candidate = (Composite) element.getValue();
+                    for (Include include : candidate.getIncludes().values()) {
+                        if (include.getIncluded().getName().equals(composite.getName())) {
+                            candidate.add(include);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private class ParsedComponentSymbol extends Symbol<ComponentDefinition> {

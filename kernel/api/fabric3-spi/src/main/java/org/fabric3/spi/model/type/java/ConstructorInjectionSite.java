@@ -65,6 +65,7 @@ public class ConstructorInjectionSite extends InjectionSite implements Externali
         super(constructor.getParameterTypes()[param].getName());
         this.signature = new Signature(constructor);
         this.param = param;
+        this.constructor = constructor;
     }
 
     public ConstructorInjectionSite(Signature signature, int param) {

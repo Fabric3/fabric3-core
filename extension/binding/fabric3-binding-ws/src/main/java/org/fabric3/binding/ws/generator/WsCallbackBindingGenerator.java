@@ -49,7 +49,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 public class WsCallbackBindingGenerator implements CallbackBindingGenerator<WsBindingDefinition> {
 
     public WsBindingDefinition generateServiceCallback(LogicalBinding<WsBindingDefinition> forwardBinding) {
-        throw new UnsupportedOperationException();
+        return new WsBindingDefinition();
     }
 
     public WsBindingDefinition generateReferenceCallback(LogicalBinding<WsBindingDefinition> forwardBinding) {

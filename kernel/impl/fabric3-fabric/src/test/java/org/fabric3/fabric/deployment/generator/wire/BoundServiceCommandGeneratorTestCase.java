@@ -42,6 +42,10 @@ import java.net.URI;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.ServiceDefinition;
+import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.fabric.deployment.command.ConnectionCommand;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
@@ -57,7 +61,6 @@ import org.fabric3.spi.model.physical.PhysicalWireDefinition;
  */
 public class BoundServiceCommandGeneratorTestCase extends TestCase {
     private WireGenerator wireGenerator;
-
 
     public void testGenerateIncremental() throws Exception {
         MockWireDefinition wireDefinition = new MockWireDefinition();
@@ -101,8 +104,15 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
 
         EasyMock.replay(wireGenerator);
 
-        LogicalComponent component = new LogicalComponent(URI.create("component"), null, null);
-        LogicalService service = new LogicalService(URI.create("component#service"), null, null);
+        ServiceDefinition serviceDefinition = new ServiceDefinition("service");
+        InjectingComponentType componentType = new InjectingComponentType();
+        componentType.add(serviceDefinition);
+        JavaImplementation implementation = new JavaImplementation();
+        implementation.setComponentType(componentType);
+        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>("component", implementation);
+        LogicalComponent<?> component = new LogicalComponent<JavaImplementation>(URI.create("component"), definition, null);
+
+        LogicalService service = new LogicalService(URI.create("component#service"), null, component);
         component.addService(service);
 
         generator.generate(component, true);
@@ -172,7 +182,6 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         EasyMock.verify(wireGenerator);
     }
 
-
     private LogicalComponent<?> createComponent() {
         LogicalComponent component = new LogicalComponent(URI.create("component"), null, null);
         LogicalService service = new LogicalService(URI.create("component#service"), null, null);
@@ -183,7 +192,6 @@ public class BoundServiceCommandGeneratorTestCase extends TestCase {
         component.addService(service);
         return component;
     }
-
 
     @Override
     protected void setUp() throws Exception {

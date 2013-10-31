@@ -80,7 +80,7 @@ public class InvalidAnnotation extends JavaValidationFailure {
 
     public String getMessage() {
         if (e == null) {
-            return message + " : " + getClass();
+            return message + " : " + getCodeLocation();
         }
         return message + ".\n" + e;
     }

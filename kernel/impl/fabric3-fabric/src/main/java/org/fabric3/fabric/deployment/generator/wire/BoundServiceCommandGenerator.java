@@ -175,6 +175,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void generateCallbackBindings(LogicalService service) throws GenerationException {
         for (LogicalBinding<?> logicalBinding : service.getBindings()) {
             if (logicalBinding.getDefinition() instanceof SCABinding) {
@@ -185,7 +186,7 @@ public class BoundServiceCommandGenerator implements CommandGenerator {
             if (generator == null) {
                 throw new GenerationException("Callback generator not found for:" + logicalBinding.getDefinition().getType());
             }
-            BindingDefinition definition = generator.generateReferenceCallback(logicalBinding);
+            BindingDefinition definition = generator.generateServiceCallback(logicalBinding);
             definition.setParent(service.getDefinition());
             LogicalBinding<?> logicalCallback = new LogicalBinding(definition, service);
             service.addCallbackBinding(logicalCallback);

@@ -37,15 +37,19 @@
 */
 package org.fabric3.binding.zeromq.introspection;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.binding.zeromq.annotation.ZeroMQ;
+import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.model.type.ModelObject;
@@ -78,6 +82,9 @@ public class ZeroMQPostProcessor implements PostProcessor {
             return;
         }
         Class<?> serviceInterface = annotation.service();
+        if (serviceInterface.equals(Void.class)) {
+            serviceInterface = null;
+        }
         AbstractService boundService = null;
         if (serviceInterface == null) {
             if (componentType.getServices().size() != 1) {
@@ -86,6 +93,11 @@ public class ZeroMQPostProcessor implements PostProcessor {
                 return;
             }
             boundService = componentType.getServices().values().iterator().next();
+            try {
+                serviceInterface = implClass.getClassLoader().loadClass(boundService.getServiceContract().getQualifiedInterfaceName());
+            } catch (ClassNotFoundException e) {
+                throw new AssertionError(e);
+            }
         } else {
             String name = serviceInterface.getName();
             for (AbstractService service : componentType.getServices().values()) {
@@ -107,6 +119,9 @@ public class ZeroMQPostProcessor implements PostProcessor {
         ZeroMQMetadata metadata = new ZeroMQMetadata();
         String bindingName = "ZMQ" + serviceInterface.getSimpleName();
         ZeroMQBindingDefinition binding = new ZeroMQBindingDefinition(bindingName, metadata);
+
+        processMetadata(annotation, metadata);
+
         boundService.addBinding(binding);
     }
 
@@ -120,43 +135,94 @@ public class ZeroMQPostProcessor implements PostProcessor {
             if (site instanceof FieldInjectionSite) {
                 FieldInjectionSite fieldSite = (FieldInjectionSite) site;
                 Field field = fieldSite.getField();
-                processAnnotation(field, reference, implClass, context);
+                processReferenceAnnotation(field, reference, implClass, context);
             } else if (site instanceof MethodInjectionSite) {
                 MethodInjectionSite methodSite = (MethodInjectionSite) site;
                 Method method = methodSite.getMethod();
-                processAnnotation(method, reference, implClass, context);
+                processReferenceAnnotation(method, reference, implClass, context);
             } else if (site instanceof ConstructorInjectionSite) {
                 ConstructorInjectionSite constructorSite = (ConstructorInjectionSite) site;
                 Constructor<?> constructor = constructorSite.getConstructor();
-                processAnnotation(constructor, reference, implClass, context);
+                Annotation[] annotations = constructor.getParameterAnnotations()[constructorSite.getParam()];
+                for (Annotation annotation : annotations) {
+                    if (ZeroMQ.class.equals(annotation.annotationType())) {
+                        processAnnotation((ZeroMQ) annotation, reference, constructor, implClass, context);
+                    }
+                }
             }
         }
 
     }
 
-    private void processAnnotation(AccessibleObject accessibleObject, ReferenceDefinition reference, Class<?> implClass, IntrospectionContext context) {
-        ZeroMQ annotation = accessibleObject.getAnnotation(ZeroMQ.class);
+    private void processReferenceAnnotation(AccessibleObject object, ReferenceDefinition reference, Class<?> implClass, IntrospectionContext context) {
+        ZeroMQ annotation = object.getAnnotation(ZeroMQ.class);
         if (annotation == null) {
             return;
         }
 
+        processAnnotation(annotation, reference, object, implClass, context);
+
+    }
+
+    private void processAnnotation(ZeroMQ annotation,
+                                   ReferenceDefinition reference,
+                                   AccessibleObject object,
+                                   Class<?> implClass,
+                                   IntrospectionContext context) {
         ZeroMQMetadata metadata = new ZeroMQMetadata();
         String bindingName = "ZMQ" + reference.getName();
         ZeroMQBindingDefinition binding = new ZeroMQBindingDefinition(bindingName, metadata);
 
+        parseTarget(annotation, binding, object, implClass, context);
+        parseAddresses(annotation, metadata, object, implClass, context);
+
+        processMetadata(annotation, metadata);
+        reference.addBinding(binding);
+    }
+
+    private void processMetadata(ZeroMQ annotation, ZeroMQMetadata metadata) {
+        metadata.setTimeout(annotation.timeout());
+        metadata.setHighWater(annotation.highWater());
+        metadata.setMulticastRate(annotation.multicastRate());
+        metadata.setReceiveBuffer(annotation.receiveBuffer());
+        metadata.setMulticastRecovery(annotation.multicastRecovery());
+        metadata.setSendBuffer(annotation.sendBuffer());
+        metadata.setWireFormat(annotation.wireFormat());
+    }
+
+    private void parseAddresses(ZeroMQ annotation, ZeroMQMetadata metadata, AccessibleObject object, Class<?> implClass, IntrospectionContext context) {
+        String addresses = annotation.addresses();
+        if (addresses.length() == 0) {
+            return;
+        }
+        List<SocketAddressDefinition> addressDefinitions = new ArrayList<SocketAddressDefinition>();
+        String[] addressStrings = addresses.split("\\s+");
+        for (String entry : addressStrings) {
+            String[] tokens = entry.split(":");
+            if (tokens.length != 2) {
+                context.addError(new InvalidAnnotation("Invalid address specified on ZeroMQ binding: " + entry, object, annotation, implClass));
+            } else {
+                try {
+                    String host = tokens[0];
+                    int port = Integer.parseInt(tokens[1]);
+                    addressDefinitions.add(new SocketAddressDefinition(host, port));
+                } catch (NumberFormatException e) {
+                    context.addError(new InvalidAnnotation("Invalid port specified on ZeroMQ binding: " + e.getMessage(), object, annotation, implClass));
+                }
+            }
+        }
+        metadata.setSocketAddresses(addressDefinitions);
+    }
+
+    private void parseTarget(ZeroMQ annotation, ZeroMQBindingDefinition binding, AccessibleObject object, Class<?> implClass, IntrospectionContext context) {
         String target = annotation.target();
         try {
             URI targetUri = new URI(target);
             binding.setTargetUri(targetUri);
         } catch (URISyntaxException e) {
-            InvalidAnnotation error = new InvalidAnnotation("Invalid target URI specified on ZeroMQ annotation: " + target,
-                                                            accessibleObject,
-                                                            annotation,
-                                                            implClass,
-                                                            e);
+            InvalidAnnotation error = new InvalidAnnotation("Invalid target URI specified on ZeroMQ annotation: " + target, object, annotation, implClass, e);
             context.addError(error);
         }
-        reference.addBinding(binding);
     }
 
 }
