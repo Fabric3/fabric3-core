@@ -66,7 +66,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- *
+ * Introspects ZeroMQ binding information in a component implementation.
  */
 @EagerInit
 public class ZeroMQPostProcessor implements PostProcessor {
