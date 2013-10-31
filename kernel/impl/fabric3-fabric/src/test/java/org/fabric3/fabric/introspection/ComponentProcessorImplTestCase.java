@@ -49,7 +49,7 @@ import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.processor.ImplementationProcessor;
+import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import static org.fabric3.api.model.type.java.JavaImplementation.IMPLEMENTATION_JAVA;
 
 /**

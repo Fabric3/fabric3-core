@@ -59,7 +59,7 @@ import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.spi.introspection.processor.ComponentProcessor;
+import org.fabric3.spi.introspection.java.ComponentProcessor;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.Reference;
 

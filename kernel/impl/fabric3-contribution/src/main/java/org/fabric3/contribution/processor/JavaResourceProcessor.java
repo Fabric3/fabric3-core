@@ -60,7 +60,7 @@ import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.processor.ComponentProcessor;
+import org.fabric3.spi.introspection.java.ComponentProcessor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 

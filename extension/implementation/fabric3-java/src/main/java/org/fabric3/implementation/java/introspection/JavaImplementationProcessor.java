@@ -58,7 +58,7 @@ import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.PostProcessor;
 import org.fabric3.spi.introspection.java.annotation.AnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.fabric3.spi.introspection.processor.ImplementationProcessor;
+import org.fabric3.spi.introspection.java.ImplementationProcessor;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 

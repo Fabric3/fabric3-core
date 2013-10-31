@@ -52,7 +52,7 @@ import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.processor.ComponentProcessor;
+import org.fabric3.spi.introspection.java.ComponentProcessor;
 
 /**
  *
