@@ -59,6 +59,7 @@ import org.fabric3.contribution.archive.ZipContributionHandler;
 import org.fabric3.contribution.generator.JavaContributionWireGenerator;
 import org.fabric3.contribution.generator.LocationContributionWireGenerator;
 import org.fabric3.contribution.introspector.CompositeReferenceIntrospector;
+import org.fabric3.contribution.listener.APIImportListener;
 import org.fabric3.contribution.manifest.ContributionElementLoader;
 import org.fabric3.contribution.manifest.ContributionExportLoader;
 import org.fabric3.contribution.manifest.ContributionImport;
@@ -197,6 +198,8 @@ public class ContributionServiceProvider {
         compositeBuilder.component(newBuilder(CompositeResourceElementUpdater.class).key(Composite.class.getName()).build());
 
         compositeBuilder.component(newBuilder(JavaArtifactIntrospectorImpl.class).build());
+
+        compositeBuilder.component(newBuilder(APIImportListener.class).build());
 
         // reinject the metadata store after runtime bootstrap
 

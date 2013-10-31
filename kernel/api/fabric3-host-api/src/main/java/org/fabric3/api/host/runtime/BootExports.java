@@ -53,7 +53,11 @@ public final class BootExports {
         BOOT_EXPORTS = new HashMap<String, String>();
 
         // Fabric3 packages
-        BOOT_EXPORTS.put("org.fabric3.api.*", Names.VERSION);
+        BOOT_EXPORTS.put("org.fabric3.api", Names.VERSION);
+        BOOT_EXPORTS.put("org.fabric3.api.annotation", Names.VERSION);
+        BOOT_EXPORTS.put("org.fabric3.api.host.*", Names.VERSION);
+        BOOT_EXPORTS.put("org.fabric3.api.model.*", Names.VERSION);
+        BOOT_EXPORTS.put("org.fabric3.api.node.*", Names.VERSION);
         BOOT_EXPORTS.put("org.fabric3.spi.*", Names.VERSION);
         BOOT_EXPORTS.put("org.fabric3.util.*", Names.VERSION);
         BOOT_EXPORTS.put("org.fabric3.management.*", Names.VERSION);
