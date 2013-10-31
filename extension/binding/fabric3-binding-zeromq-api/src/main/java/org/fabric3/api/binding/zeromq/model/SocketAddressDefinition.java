@@ -18,6 +18,15 @@ public class SocketAddressDefinition implements Serializable {
         this.port = port;
     }
 
+    public SocketAddressDefinition(String address) {
+        String[] tokens = address.split(":");
+        if (tokens.length != 2) {
+            throw new IllegalArgumentException("Socket address must be in the form <host:port>: " + address);
+        }
+        this.host = tokens[0];
+        this.port = Integer.parseInt(tokens[1]);
+    }
+
     public String getHost() {
         return host;
     }
