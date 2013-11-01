@@ -49,13 +49,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.annotation.model.Binding;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AnnotationProcessor;
 import org.fabric3.spi.introspection.java.annotation.ClassVisitor;
 import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
-import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Default ClassVisitor implementation.
@@ -92,60 +92,74 @@ public class DefaultClassVisitor implements ClassVisitor {
     }
 
     public void visit(InjectingComponentType componentType, Class<?> clazz, IntrospectionContext context) {
-        walk(componentType, clazz, clazz, false, context);
+        visit(componentType, clazz, clazz, false, context);
     }
 
-    private void walk(InjectingComponentType componentType, Class<?> clazz, Class<?> implClass, boolean isSuperClass, IntrospectionContext context) {
+    private void visit(InjectingComponentType componentType, Class<?> clazz, Class<?> implClass, boolean isSuperClass, IntrospectionContext context) {
         if (!clazz.isInterface()) {
-            walkSuperClasses(componentType, clazz, implClass, context);
+            visitSuperClasses(componentType, clazz, implClass, context);
         }
 
-        walkInterfaces(componentType, clazz, implClass, context);
+        visitInterfaces(componentType, clazz, implClass, context);
 
-        walkClass(componentType, clazz, context);
+        visitClass(componentType, clazz, context);
 
-        walkFields(componentType, clazz, implClass, context);
+        visitFields(componentType, clazz, implClass, context);
 
-        walkMethods(componentType, clazz, implClass, context);
+        visitMethods(componentType, clazz, implClass, context);
 
         if (!isSuperClass) {
             // If a super class is being evaluated, ignore its constructors.
             // Otherwise references, properties, or resources may be incorrectly introspected.
-            walkConstructors(componentType, clazz, implClass, context);
+            visitConstructors(componentType, clazz, implClass, context);
         }
     }
 
-    private void walkSuperClasses(InjectingComponentType componentType, Class<?> clazz, Class<?> implClass, IntrospectionContext context) {
+    private void visitSuperClasses(InjectingComponentType componentType, Class<?> clazz, Class<?> implClass, IntrospectionContext context) {
         Class<?> superClass = clazz.getSuperclass();
         if (superClass != null && !superClass.equals(Object.class)) {
-            walk(componentType, superClass, implClass, true, context);
+            visit(componentType, superClass, implClass, true, context);
         }
     }
 
-    private void walkInterfaces(InjectingComponentType componentType, Class<?> clazz, Class<?> implClass, IntrospectionContext context) {
+    private void visitInterfaces(InjectingComponentType componentType, Class<?> clazz, Class<?> implClass, IntrospectionContext context) {
         for (Class<?> interfaze : clazz.getInterfaces()) {
-            walk(componentType, interfaze, implClass, false, context);
+            visit(componentType, interfaze, implClass, false, context);
         }
     }
 
-    private void walkClass(InjectingComponentType componentType, Class<?> clazz, IntrospectionContext context) {
+    private void visitClass(InjectingComponentType componentType, Class<?> clazz, IntrospectionContext context) {
         for (Annotation annotation : clazz.getDeclaredAnnotations()) {
             visitType(annotation, clazz, componentType, context);
         }
     }
 
-    private void walkFields(InjectingComponentType componentType, Class<?> clazz, Class<?> implClass, IntrospectionContext context) {
+    private void visitFields(InjectingComponentType componentType, Class<?> clazz, Class<?> implClass, IntrospectionContext context) {
         for (Field field : clazz.getDeclaredFields()) {
-            for (Annotation annotation : field.getDeclaredAnnotations()) {
+            Annotation[] annotations = field.getDeclaredAnnotations();
+            for (Annotation annotation : annotations) {
                 visitField(annotation, field, implClass, componentType, context);
+            }
+            for (Annotation annotation : annotations) {
+                Binding binding = annotation.annotationType().getAnnotation(Binding.class);
+                if (binding != null) {
+                    visitField(binding, field, implClass, componentType, context);
+                }
             }
         }
     }
 
-    private void walkMethods(InjectingComponentType componentType, Class<?> clazz, Class<?> implClass, IntrospectionContext context) {
+    private void visitMethods(InjectingComponentType componentType, Class<?> clazz, Class<?> implClass, IntrospectionContext context) {
         for (Method method : clazz.getDeclaredMethods()) {
-            for (Annotation annotation : method.getDeclaredAnnotations()) {
+            Annotation[] declaredAnnotations = method.getDeclaredAnnotations();
+            for (Annotation annotation : declaredAnnotations) {
                 visitMethod(annotation, method, implClass, componentType, context);
+            }
+            for (Annotation annotation : declaredAnnotations) {
+                Binding binding = annotation.annotationType().getAnnotation(Binding.class);
+                if (binding != null) {
+                    visitMethod(binding, method, implClass, componentType, context);
+                }
             }
 
             Annotation[][] parameterAnnotations = method.getParameterAnnotations();
@@ -158,7 +172,7 @@ public class DefaultClassVisitor implements ClassVisitor {
         }
     }
 
-    private void walkConstructors(InjectingComponentType componentType, Class<?> clazz, Class<?> implClass, IntrospectionContext context) {
+    private void visitConstructors(InjectingComponentType componentType, Class<?> clazz, Class<?> implClass, IntrospectionContext context) {
         for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
             for (Annotation annotation : constructor.getDeclaredAnnotations()) {
                 visitConstructor(annotation, constructor, implClass, componentType, context);
@@ -169,6 +183,12 @@ public class DefaultClassVisitor implements ClassVisitor {
                 Annotation[] annotations = parameterAnnotations[i];
                 for (Annotation annotation : annotations) {
                     visitConstructorParameter(annotation, constructor, i, implClass, componentType, context);
+                }
+                for (Annotation annotation : annotations) {
+                    Binding binding = annotation.annotationType().getAnnotation(Binding.class);
+                    if (binding != null) {
+                        visitConstructorParameter(binding, constructor, i, implClass, componentType, context);
+                    }
                 }
             }
         }

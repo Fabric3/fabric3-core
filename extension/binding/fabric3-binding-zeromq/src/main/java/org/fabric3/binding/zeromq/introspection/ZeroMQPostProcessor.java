@@ -135,11 +135,11 @@ public class ZeroMQPostProcessor implements PostProcessor {
             if (site instanceof FieldInjectionSite) {
                 FieldInjectionSite fieldSite = (FieldInjectionSite) site;
                 Field field = fieldSite.getField();
-                processReferenceAnnotation(field, reference, implClass, context);
+                processBindingAnnotation(field, reference, implClass, context);
             } else if (site instanceof MethodInjectionSite) {
                 MethodInjectionSite methodSite = (MethodInjectionSite) site;
                 Method method = methodSite.getMethod();
-                processReferenceAnnotation(method, reference, implClass, context);
+                processBindingAnnotation(method, reference, implClass, context);
             } else if (site instanceof ConstructorInjectionSite) {
                 ConstructorInjectionSite constructorSite = (ConstructorInjectionSite) site;
                 Constructor<?> constructor = constructorSite.getConstructor();
@@ -154,7 +154,7 @@ public class ZeroMQPostProcessor implements PostProcessor {
 
     }
 
-    private void processReferenceAnnotation(AccessibleObject object, ReferenceDefinition reference, Class<?> implClass, IntrospectionContext context) {
+    private void processBindingAnnotation(AccessibleObject object, ReferenceDefinition reference, Class<?> implClass, IntrospectionContext context) {
         ZeroMQ annotation = object.getAnnotation(ZeroMQ.class);
         if (annotation == null) {
             return;

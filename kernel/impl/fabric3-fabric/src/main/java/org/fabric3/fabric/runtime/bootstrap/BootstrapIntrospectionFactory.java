@@ -41,6 +41,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fabric3.introspection.java.ReferenceProcessorImpl;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
@@ -98,9 +99,11 @@ public class BootstrapIntrospectionFactory {
         Map<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation>> processors
                 = new HashMap<Class<? extends Annotation>, AnnotationProcessor<? extends Annotation>>();
 
+        ReferenceProcessorImpl referenceProcessor = new ReferenceProcessorImpl(contractProcessor, helper);
+
         // OASIS annotations
         processors.put(Property.class, new OASISPropertyProcessor(helper));
-        processors.put(Reference.class, new OASISReferenceProcessor(contractProcessor, helper));
+        processors.put(Reference.class, new OASISReferenceProcessor(referenceProcessor));
         processors.put(Service.class, new OASISServiceProcessor(contractProcessor));
         processors.put(EagerInit.class, new OASISEagerInitProcessor());
         processors.put(Init.class, new OASISInitProcessor());

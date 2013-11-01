@@ -34,19 +34,12 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
+*/
 package org.fabric3.introspection.java.annotation;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
+import org.fabric3.api.annotation.model.Binding;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ReferenceProcessor;
@@ -54,37 +47,20 @@ import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- *
+ * Creates a component type reference if one is not explicitly declared when an annotation annotated with the {@link Binding} annotation is found.
  */
-public class OASISReferenceProcessor extends AbstractAnnotationProcessor<Reference> {
+public class ImplicitBindingReferenceProcessor extends AbstractAnnotationProcessor<Binding> {
     private ReferenceProcessor referenceProcessor;
 
-    public OASISReferenceProcessor(@Reference ReferenceProcessor referenceProcessor) {
-        super(Reference.class);
+    public ImplicitBindingReferenceProcessor(@Reference ReferenceProcessor referenceProcessor) {
+        super(Binding.class);
         this.referenceProcessor = referenceProcessor;
     }
 
-    public void visitField(Reference annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
-        String name = annotation.name();
-        boolean required = annotation.required();
-        referenceProcessor.addDefinition(field, name, required, implClass, componentType, context);
+    public void visitField(Binding annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
+        if (field.isAnnotationPresent(Reference.class)) {
+            return;
+        }
+        referenceProcessor.addDefinition(field, "", true, implClass, componentType, context);
     }
-
-    public void visitMethod(Reference annotation, Method method, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
-        String name = annotation.name();
-        boolean required = annotation.required();
-        referenceProcessor.addDefinition(method, name, required, implClass, componentType, context);
-    }
-
-    public void visitConstructorParameter(Reference annotation,
-                                          Constructor<?> constructor,
-                                          int index,
-                                          Class<?> implClass,
-                                          InjectingComponentType componentType,
-                                          IntrospectionContext context) {
-        String name = annotation.name();
-        boolean required = annotation.required();
-        referenceProcessor.addDefinition(constructor, name, index, required, implClass, componentType, context);
-    }
-
 }

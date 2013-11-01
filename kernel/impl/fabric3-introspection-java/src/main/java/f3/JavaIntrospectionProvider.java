@@ -46,6 +46,7 @@ import org.fabric3.api.annotation.Consumer;
 import org.fabric3.api.annotation.Producer;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
+import org.fabric3.api.annotation.model.Binding;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.annotation.scope.Domain;
 import org.fabric3.api.annotation.scope.Stateless;
@@ -55,9 +56,11 @@ import org.fabric3.api.model.type.builder.CompositeBuilder;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.introspection.java.DefaultClassVisitor;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
+import org.fabric3.introspection.java.ReferenceProcessorImpl;
 import org.fabric3.introspection.java.annotation.CompositeProcessor;
 import org.fabric3.introspection.java.annotation.ConsumerProcessor;
 import org.fabric3.introspection.java.annotation.DomainProcessor;
+import org.fabric3.introspection.java.annotation.ImplicitBindingReferenceProcessor;
 import org.fabric3.introspection.java.annotation.KeyProcessor;
 import org.fabric3.introspection.java.annotation.ManagementOperationProcessor;
 import org.fabric3.introspection.java.annotation.ManagementProcessor;
@@ -110,6 +113,8 @@ public class JavaIntrospectionProvider {
 
         compositeBuilder.component(newBuilder(DefaultOperationPolicyIntrospector.class).build());
 
+        compositeBuilder.component(newBuilder(ReferenceProcessorImpl.class).build());
+
         addOASISAnnotations(compositeBuilder);
         addF3Annotations(compositeBuilder);
 
@@ -139,6 +144,8 @@ public class JavaIntrospectionProvider {
         compositeBuilder.component(newBuilder(KeyProcessor.class).key(Key.class.getName()).build());
 
         compositeBuilder.component(newBuilder(OrderProcessor.class).key(Order.class.getName()).build());
+
+        compositeBuilder.component(newBuilder(ImplicitBindingReferenceProcessor.class).key(Binding.class.getName()).build());
 
         compositeBuilder.component(componentBuilder.build());
 
