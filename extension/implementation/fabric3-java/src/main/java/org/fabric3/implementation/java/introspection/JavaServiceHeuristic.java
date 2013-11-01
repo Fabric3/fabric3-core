@@ -40,29 +40,33 @@ package org.fabric3.implementation.java.introspection;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.annotation.Source;
+import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.ServiceDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.HeuristicProcessor;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.annotation.PolicyAnnotationProcessor;
 import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
 import org.fabric3.spi.introspection.java.policy.OperationPolicyIntrospector;
-import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
  */
 public class JavaServiceHeuristic implements HeuristicProcessor {
-    private final IntrospectionHelper helper;
-    private final JavaContractProcessor contractProcessor;
+    private IntrospectionHelper helper;
+    private JavaContractProcessor contractProcessor;
     private PolicyAnnotationProcessor policyProcessor;
     private OperationPolicyIntrospector policyIntrospector;
+
+    private boolean strictSCA;
 
     public JavaServiceHeuristic(@Reference IntrospectionHelper helper,
                                 @Reference JavaContractProcessor contractProcessor,
@@ -75,6 +79,12 @@ public class JavaServiceHeuristic implements HeuristicProcessor {
     @Reference
     public void setPolicyProcessor(PolicyAnnotationProcessor processor) {
         this.policyProcessor = processor;
+    }
+
+    @Property(required = false)
+    @Source("$systemConfig//f3:sca/@enable.sca.annotations")
+    public void setStrictSCA(boolean strictSCA) {
+        this.strictSCA = strictSCA;
     }
 
     public void applyHeuristics(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
@@ -95,20 +105,39 @@ public class JavaServiceHeuristic implements HeuristicProcessor {
         }
 
         Set<Class<?>> interfaces = helper.getImplementedInterfaces(implClass);
-        if (interfaces.size() == 1) {
-            // The class implements a single interface, use it
-            Class<?> service = interfaces.iterator().next();
-            ServiceDefinition serviceDefinition = createServiceDefinition(service, implClass, componentType, context);
-            componentType.add(serviceDefinition);
-        } else if (interfaces.size() == 2) {
-            // The class implements two interfaces. If one of them is a management interface, use the other
-            // No management interfaces, use the impl class per SCA rules
-            ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, componentType, context);
-            componentType.add(serviceDefinition);
+        if (!strictSCA) {
+            if (interfaces.isEmpty()) {
+                // no interfaces, use implementation
+                ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, componentType, context);
+                componentType.add(serviceDefinition);
+            } else {
+                // class implements all interfaces that are not management interfaces or in the Java package
+                for (Class<?> interfaze : interfaces) {
+                    Package pkg = interfaze.getPackage();
+                    if (interfaze.isAnnotationPresent(Management.class) || pkg == null || pkg.getName().startsWith("java")) {
+                        continue;
+                    }
+                    ServiceDefinition serviceDefinition = createServiceDefinition(interfaze, implClass, componentType, context);
+                    componentType.add(serviceDefinition);
+                }
+            }
         } else {
-            // multiple interfaces, use the impl class per SCA rules
-            ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, componentType, context);
-            componentType.add(serviceDefinition);
+            // strict SCA rules
+            if (interfaces.size() == 1) {
+                // The class implements a single interface, use it
+                Class<?> service = interfaces.iterator().next();
+                ServiceDefinition serviceDefinition = createServiceDefinition(service, implClass, componentType, context);
+                componentType.add(serviceDefinition);
+            } else if (interfaces.size() == 2) {
+                // The class implements two interfaces.
+                // No management interfaces, use the impl class per SCA rules
+                ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, componentType, context);
+                componentType.add(serviceDefinition);
+            } else {
+                // multiple interfaces, use the impl class per SCA rules
+                ServiceDefinition serviceDefinition = createServiceDefinition(implClass, implClass, componentType, context);
+                componentType.add(serviceDefinition);
+            }
         }
     }
 
