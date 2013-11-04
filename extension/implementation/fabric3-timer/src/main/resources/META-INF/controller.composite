@@ -19,8 +19,12 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.implementation.timer.introspection.TimerImplementationLoader"/>
     </component>
 
-    <component name="TimerComponentGenerator" f3:key="org.fabric3.implementation.timer.model.TimerImplementation">
+    <component name="TimerComponentGenerator" f3:key="org.fabric3.api.implementation.timer.model.TimerImplementation">
         <f3:implementation.system class="org.fabric3.implementation.timer.generator.TimerComponentGenerator"/>
+    </component>
+
+    <component name="TimerImplementationProcessor" f3:key="f3:implementation.timer">
+        <f3:implementation.system class="org.fabric3.implementation.timer.introspection.TimerImplementationProcessor"/>
     </component>
 
 </composite>

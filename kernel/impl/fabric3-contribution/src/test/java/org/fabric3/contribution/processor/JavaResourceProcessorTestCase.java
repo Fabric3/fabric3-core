@@ -44,12 +44,15 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.annotation.model.Component;
 import org.fabric3.api.model.type.component.ComponentDefinition;
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.JavaSymbol;
+import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
+import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ComponentProcessor;
@@ -62,6 +65,7 @@ public class JavaResourceProcessorTestCase extends TestCase {
     private IntrospectionContext context;
     private Resource resource;
     private ComponentProcessor componentProcessor;
+    private MetaDataStore metaDataStore;
 
     public void testIndexAndProcess() throws Exception {
         JavaSymbol symbol = new JavaSymbol(TestComponent.class.getName());
@@ -70,7 +74,11 @@ public class JavaResourceProcessorTestCase extends TestCase {
 
         componentProcessor.process(EasyMock.isA(ComponentDefinition.class), EasyMock.isA(Class.class), EasyMock.isA(IntrospectionContext.class));
         EasyMock.expectLastCall();
-        EasyMock.replay(componentProcessor);
+        EasyMock.expect(metaDataStore.resolve(EasyMock.eq(URI.create("test")),
+                                              EasyMock.eq(Composite.class),
+                                              EasyMock.isA(QNameSymbol.class),
+                                              EasyMock.eq(context))).andReturn(null);
+        EasyMock.replay(componentProcessor, metaDataStore);
 
         processor.index(resource, context);
 
@@ -78,13 +86,13 @@ public class JavaResourceProcessorTestCase extends TestCase {
 
         assertEquals(2, resource.getResourceElements().size());
 
-        EasyMock.verify(componentProcessor);
-
         processor.process(resource, context);
 
         assertFalse(context.hasErrors());
 
         assertEquals(2, resource.getContribution().getResources().size());
+
+        EasyMock.verify(componentProcessor, metaDataStore);
     }
 
     public void testIllegalCompositeName() throws Exception {
@@ -92,13 +100,13 @@ public class JavaResourceProcessorTestCase extends TestCase {
         ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, BadTestComponent.class);
         resource.addResourceElement(resourceElement);
 
-        EasyMock.replay(componentProcessor);
+        EasyMock.replay(componentProcessor, metaDataStore);
 
         processor.index(resource, context);
 
         assertTrue(context.hasErrors());
 
-        EasyMock.verify(componentProcessor);
+        EasyMock.verify(componentProcessor, metaDataStore);
     }
 
     public void setUp() throws Exception {
@@ -107,7 +115,8 @@ public class JavaResourceProcessorTestCase extends TestCase {
 
         componentProcessor = EasyMock.createMock(ComponentProcessor.class);
 
-        processor = new JavaResourceProcessor(registry, componentProcessor);
+        metaDataStore = EasyMock.createMock(MetaDataStore.class);
+        processor = new JavaResourceProcessor(registry, componentProcessor, metaDataStore);
 
         Contribution contribution = new Contribution(URI.create("test"));
         resource = new Resource(contribution, null, Constants.JAVA_COMPONENT_CONTENT_TYPE);

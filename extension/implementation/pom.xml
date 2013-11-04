@@ -15,27 +15,29 @@
  specific language governing permissions and limitations
  under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.codehaus.fabric3</groupId>
         <artifactId>fabric3-extension-parent-pom</artifactId>
-		<version>2.5.0-SNAPSHOT</version>
+        <version>2.5.0-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-extension-implementation-parent-pom</artifactId>
     <name>Fabric3 Extension Implementation Parent POM</name>
     <description>Fabric3 Extension Implementation Parent POM.</description>
-	<packaging>pom</packaging>
+    <packaging>pom</packaging>
 
-	<modules>
-            <module>fabric3-java</module>
-            <module>fabric3-junit</module>
-            <module>fabric3-mock</module>
-            <module>fabric3-web</module>
-            <module>fabric3-timer</module>
-            <module>fabric3-spring</module>
-            <module>fabric3-xquery</module>
-	</modules>
+    <modules>
+        <module>fabric3-java</module>
+        <module>fabric3-junit</module>
+        <module>fabric3-mock</module>
+        <module>fabric3-web</module>
+        <module>fabric3-timer-api</module>
+        <module>fabric3-timer</module>
+        <module>fabric3-spring</module>
+        <module>fabric3-xquery</module>
+    </modules>
 </project>

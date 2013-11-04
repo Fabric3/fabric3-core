@@ -35,31 +35,61 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.java.introspection;
+package org.fabric3.api.implementation.timer.annotation;
 
-import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.api.model.type.java.JavaImplementation;
-import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.spi.introspection.java.IntrospectionHelper;
-import org.fabric3.spi.introspection.java.contract.JavaContractProcessor;
-import org.oasisopen.sca.annotation.Reference;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import org.fabric3.api.annotation.model.Implementation;
+import org.fabric3.api.implementation.timer.model.TimerType;
 
 /**
- * Adds metadata for Java component implementations.
+ * Configures a timer component.
  */
-public class JavaImplementationProcessor extends AbstractPojoImplementationProcessor {
-    public JavaImplementationProcessor(@Reference JavaContractProcessor processor,
-                                       @Reference JavaImplementationIntrospector introspector,
-                                       @Reference IntrospectionHelper helper) {
-        super(processor, introspector, helper);
-    }
+@Implementation("{urn:fabric3.org}implementation.timer")
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Timer {
 
-    protected JavaImplementation createImplementation(Class<?> clazz, IntrospectionContext context) {
-        JavaImplementation implementation = new JavaImplementation();
-        implementation.setImplementationClass(clazz.getName());
-        InjectingComponentType componentType = new InjectingComponentType(clazz.getName());
-        implementation.setComponentType(componentType);
-        return implementation;
-    }
+    /**
+     * Specifies the timer type.
+     *
+     * @return the timer type
+     */
+    TimerType type() default TimerType.INTERVAL;
+
+    /**
+     * Specifies the timer pool.
+     *
+     * @return the timer pool name
+     */
+    String pool() default "default";
+
+    /**
+     * Specifies the initial delay before the timer will fire for the first time.
+     *
+     * @return the initial delay in milliseconds.
+     */
+    long initialDelay() default 100;
+
+    /**
+     * Specifies the fixed rate for a {@link TimerType#FIXED_RATE} timer.
+     *
+     * @return the fixed rate in milliseconds.
+     */
+    long fixedRate() default -1;
+
+    /**
+     * Specifies the firing interval for an {@link TimerType#INTERVAL} timer.
+     *
+     * @return the interval in milliseconds.
+     */
+    long repeatInterval() default -1;
+
+    /**
+     * Specifies the delay before firing a {@link TimerType#ONCE} timer.
+     *
+     * @return the interval in milliseconds.
+     */
+    long fireOnce() default -1;
 
 }

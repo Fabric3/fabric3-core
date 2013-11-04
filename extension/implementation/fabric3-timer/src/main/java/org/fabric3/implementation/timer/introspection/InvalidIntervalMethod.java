@@ -37,7 +37,7 @@
 */
 package org.fabric3.implementation.timer.introspection;
 
-import org.fabric3.implementation.timer.model.TimerImplementation;
+import org.fabric3.api.implementation.timer.model.TimerImplementation;
 import org.fabric3.spi.introspection.java.JavaValidationFailure;
 
 /**

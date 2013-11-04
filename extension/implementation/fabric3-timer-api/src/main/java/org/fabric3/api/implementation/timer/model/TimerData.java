@@ -35,22 +35,23 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.implementation.timer.provision;
+package org.fabric3.api.implementation.timer.model;
 
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
-
-import org.fabric3.timer.spi.TimerService;
 
 /**
  * Schedule metadata for a timer component.
  */
 public class TimerData implements Serializable {
     private static final long serialVersionUID = 5814910790533612455L;
+
+    public static final String DEFAULT_POOL = "default";
+
     public static final long UNSPECIFIED = -1;
 
     private TimerType type = TimerType.INTERVAL;
-    private String poolName = TimerService.DEFAULT_POOL;
+    private String poolName = DEFAULT_POOL;
     private String intervalClass;
     private boolean intervalMethod;
     private TimeUnit timeUnit = TimeUnit.MILLISECONDS;

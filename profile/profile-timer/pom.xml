@@ -7,7 +7,8 @@
  Public License. See the accompanying license file for details.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -26,11 +27,13 @@
             <artifactId>fabric3-timer-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-tx</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-datasource</artifactId>
@@ -42,7 +45,7 @@
             <artifactId>fabric3-atomikos-library</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-atomikos</artifactId>
@@ -51,9 +54,16 @@
 
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
+            <artifactId>fabric3-timer-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-timer</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
             <artifactId>fabric3-timer-service</artifactId>

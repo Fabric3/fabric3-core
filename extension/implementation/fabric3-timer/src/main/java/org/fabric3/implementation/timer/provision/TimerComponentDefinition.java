@@ -37,6 +37,7 @@
 */
 package org.fabric3.implementation.timer.provision;
 
+import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.implementation.java.provision.JavaComponentDefinition;
 
 /**

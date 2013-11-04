@@ -31,6 +31,7 @@
                 <include>org.codehaus.fabric3:fabric3-atomikos-library</include>
                 <include>org.codehaus.fabric3:fabric3-atomikos</include>
                 <include>org.codehaus.fabric3:fabric3-timer</include>
+                <include>org.codehaus.fabric3:fabric3-timer-api</include>
                 <include>org.codehaus.fabric3:fabric3-datasource</include>
                 <include>org.codehaus.fabric3:fabric3-timer-service</include>
                 <include>org.codehaus.fabric3:fabric3-timer-spi</include>

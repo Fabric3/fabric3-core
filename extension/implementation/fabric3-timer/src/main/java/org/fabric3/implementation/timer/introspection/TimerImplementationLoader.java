@@ -45,9 +45,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.fabric3.implementation.java.introspection.ImplementationArtifactNotFound;
 import org.fabric3.implementation.java.introspection.JavaImplementationIntrospector;
-import org.fabric3.implementation.timer.model.TimerImplementation;
-import org.fabric3.implementation.timer.provision.TimerData;
-import org.fabric3.implementation.timer.provision.TimerType;
+import org.fabric3.api.implementation.timer.model.TimerImplementation;
+import org.fabric3.api.implementation.timer.model.TimerData;
+import org.fabric3.api.implementation.timer.model.TimerType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -56,7 +56,7 @@ import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.oasisopen.sca.annotation.Reference;
-import static org.fabric3.implementation.timer.provision.TimerData.UNSPECIFIED;
+import static org.fabric3.api.implementation.timer.model.TimerData.UNSPECIFIED;
 
 /**
  * Loads <implementation.timer> entries in a composite.

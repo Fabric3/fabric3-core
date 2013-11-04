@@ -51,7 +51,7 @@ import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.timer.provision.TimerComponentDefinition;
-import org.fabric3.implementation.timer.provision.TimerData;
+import org.fabric3.api.implementation.timer.model.TimerData;
 import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ScopeContainer;

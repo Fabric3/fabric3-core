@@ -49,7 +49,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.implementation.java.introspection.JavaImplementationIntrospector;
-import org.fabric3.implementation.timer.model.TimerImplementation;
+import org.fabric3.api.implementation.timer.model.TimerImplementation;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.UnrecognizedAttribute;

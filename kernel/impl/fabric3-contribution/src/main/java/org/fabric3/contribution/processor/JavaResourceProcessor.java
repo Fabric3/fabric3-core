@@ -45,13 +45,16 @@ import java.net.URL;
 import org.fabric3.api.annotation.model.Component;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.contribution.StoreException;
 import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.model.type.component.Autowire;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
+import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
@@ -75,9 +78,11 @@ import org.oasisopen.sca.annotation.Reference;
 public class JavaResourceProcessor implements ResourceProcessor {
 
     private ComponentProcessor componentProcessor;
+    private MetaDataStore store;
 
-    public JavaResourceProcessor(@Reference ProcessorRegistry registry, @Reference ComponentProcessor componentProcessor) {
+    public JavaResourceProcessor(@Reference ProcessorRegistry registry, @Reference ComponentProcessor componentProcessor, @Reference MetaDataStore store) {
         this.componentProcessor = componentProcessor;
+        this.store = store;
         registry.register(this);
     }
 
@@ -125,13 +130,13 @@ public class JavaResourceProcessor implements ResourceProcessor {
         Contribution contribution = resource.getContribution();
 
         Composite composite = null;
-        for (Resource contributionResource : contribution.getResources()) {
-            for (ResourceElement<?, ?> element : contributionResource.getResourceElements()) {
-                if (element.getSymbol().equals(compositeSymbol)) {
-                    composite = (Composite) element.getValue();
-                    break;
-                }
+        try {
+            ResourceElement<QNameSymbol, Composite> element = store.resolve(context.getContributionUri(), Composite.class, compositeSymbol, context);
+            if (element != null) {
+                composite = element.getValue();
             }
+        } catch (StoreException e) {
+            throw new InstallException(e);
         }
         if (composite == null) {
             composite = new Composite(compositeName);
@@ -150,6 +155,9 @@ public class JavaResourceProcessor implements ResourceProcessor {
             }
             composite.add(definition);
         } else {
+            if (definition.getAutowire() == Autowire.INHERITED) {
+                definition.setAutowire(composite.getAutowire());
+            }
             composite.add(definition);
             updateIncludingComposites(contribution, composite);
         }
