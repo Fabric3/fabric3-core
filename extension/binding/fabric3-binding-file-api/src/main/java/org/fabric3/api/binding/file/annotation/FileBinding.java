@@ -1,4 +1,4 @@
-package org.fabric3.binding.file.api.annotation;
+package org.fabric3.api.binding.file.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

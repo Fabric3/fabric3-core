@@ -43,7 +43,7 @@ import java.net.URI;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.binding.file.api.ReferenceAdapter;
+import org.fabric3.api.binding.file.ReferenceAdapter;
 import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
 import org.fabric3.binding.file.runtime.sender.FileSystemInterceptor;
 import org.fabric3.api.host.runtime.HostInfo;

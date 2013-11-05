@@ -41,7 +41,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.binding.ws.metro.provision.AbstractEndpointDefinition;
-import org.fabric3.binding.ws.api.model.WsBindingDefinition;
+import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.spi.model.instance.LogicalBinding;
 
 /**

@@ -54,7 +54,7 @@ import org.fabric3.api.model.type.contract.Operation;
 import org.fabric3.api.model.type.definitions.PolicySet;
 import org.fabric3.binding.ws.metro.provision.ConnectionConfiguration;
 import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
-import org.fabric3.binding.ws.api.model.WsBindingDefinition;
+import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalOperation;

@@ -35,12 +35,12 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.file.api.model;
+package org.fabric3.api.binding.file.model;
 
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.binding.file.api.annotation.Strategy;
+import org.fabric3.api.binding.file.annotation.Strategy;
 
 /**
  * A file binding configuration set on a reference.

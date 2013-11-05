@@ -44,7 +44,7 @@ import java.lang.reflect.Array;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.binding.file.api.ReferenceAdapter;
+import org.fabric3.api.binding.file.ReferenceAdapter;
 import org.fabric3.spi.container.invocation.Message;
 import org.fabric3.spi.container.wire.Interceptor;
 

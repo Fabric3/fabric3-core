@@ -46,8 +46,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.fabric3.binding.file.api.InvalidDataException;
-import org.fabric3.binding.file.api.ServiceAdapter;
+import org.fabric3.api.binding.file.InvalidDataException;
+import org.fabric3.api.binding.file.ServiceAdapter;
 import org.fabric3.api.host.util.IOHelper;
 
 /**

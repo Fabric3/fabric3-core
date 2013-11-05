@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.ws.loader;
+package org.fabric3.binding.ws.introspection;
 
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
@@ -51,8 +51,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-import org.fabric3.binding.ws.api.model.EndpointReference;
-import org.fabric3.binding.ws.api.model.WsBindingDefinition;
+import org.fabric3.api.binding.ws.model.EndpointReference;
+import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;

@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.file.api;
+package org.fabric3.api.binding.file;
 
 import java.io.File;
 import java.io.IOException;

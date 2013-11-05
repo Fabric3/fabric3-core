@@ -16,14 +16,18 @@ Public License. See the accompanying license file for details.
            name="introspection">
 
     <component name="WsBindingLoader" f3:key="sca:binding.ws">
-        <f3:implementation.system class="org.fabric3.binding.ws.loader.WsBindingLoader"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.introspection.WsBindingLoader"/>
+    </component>
+
+    <component name="WsBindingPostProcessor">
+        <f3:implementation.system class="org.fabric3.binding.ws.introspection.WsBindingPostProcessor"/>
     </component>
 
     <component name="WsaLoader" f3:key="wsa:EndpointReference">
-        <f3:implementation.system class="org.fabric3.binding.ws.loader.WsaLoader"/>
+        <f3:implementation.system class="org.fabric3.binding.ws.introspection.WsaLoader"/>
     </component>
 
-    <component name="WsCallbackBindingGenerator" f3:key="org.fabric3.binding.ws.api.model.WsBindingDefinition">
+    <component name="WsCallbackBindingGenerator" f3:key="org.fabric3.api.binding.ws.model.WsBindingDefinition">
         <f3:implementation.system class="org.fabric3.binding.ws.generator.WsCallbackBindingGenerator"/>
     </component>
 

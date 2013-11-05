@@ -28,14 +28,25 @@
  * You should have received a copy of the GNU General Public License along with
  * Fabric3. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.file.api.annotation;
+package org.fabric3.api.binding.file;
+
+import java.io.IOException;
 
 /**
- * Identifies whether the file binding should archive or delete data files.
+ * Denotes a bad or invalid data file.
  */
-public enum Strategy {
+public class InvalidDataException extends IOException {
+    private static final long serialVersionUID = -199562389440429130L;
 
-    ARCHIVE,
-    DELETE
+    public InvalidDataException(String message) {
+        super(message);
+    }
 
+    public InvalidDataException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public InvalidDataException(Throwable cause) {
+        super(cause);
+    }
 }

@@ -40,7 +40,7 @@ package org.fabric3.binding.ws.metro.generator.wsdl;
 import java.net.URI;
 import javax.wsdl.Definition;
 
-import org.fabric3.binding.ws.api.model.WsBindingDefinition;
+import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.wsdl.model.WsdlServiceContract;

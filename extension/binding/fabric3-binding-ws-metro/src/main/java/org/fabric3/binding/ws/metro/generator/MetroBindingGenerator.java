@@ -43,7 +43,7 @@ import java.util.Map;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.ws.metro.provision.MetroSourceDefinition;
-import org.fabric3.binding.ws.api.model.WsBindingDefinition;
+import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.spi.deployment.generator.binding.BindingGenerator;
 import org.fabric3.spi.deployment.generator.policy.EffectivePolicy;

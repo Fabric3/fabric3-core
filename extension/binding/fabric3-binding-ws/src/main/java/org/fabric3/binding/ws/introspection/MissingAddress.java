@@ -36,7 +36,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.fabric3.binding.ws.loader;
+package org.fabric3.binding.ws.introspection;
 
 import javax.xml.stream.Location;
 

@@ -35,33 +35,37 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.file.introspection;
+package org.fabric3.binding.ws.introspection;
 
 import java.lang.reflect.AccessibleObject;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.api.binding.file.annotation.FileBinding;
-import org.fabric3.api.binding.file.annotation.Strategy;
-import org.fabric3.api.binding.file.model.FileBindingDefinition;
+import org.fabric3.api.binding.ws.annotation.BindingConfiguration;
+import org.fabric3.api.binding.ws.annotation.WebServiceBinding;
+import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.AbstractBindingPostProcessor;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Introspects file binding information in a component implementation.
+ * Introspects WS binding information in a component implementation.
  */
 @EagerInit
-public class FileBindingPostProcessor extends AbstractBindingPostProcessor<FileBinding> {
+public class WsBindingPostProcessor extends AbstractBindingPostProcessor<WebServiceBinding> {
 
-    public FileBindingPostProcessor() {
-        super(FileBinding.class);
+    public WsBindingPostProcessor() {
+        super(WebServiceBinding.class);
     }
 
-    protected BindingDefinition processService(FileBinding annotation,
+    protected BindingDefinition processService(WebServiceBinding annotation,
                                                AbstractService<?> service,
                                                InjectingComponentType componentType,
                                                Class<?> implClass,
@@ -70,7 +74,7 @@ public class FileBindingPostProcessor extends AbstractBindingPostProcessor<FileB
 
     }
 
-    protected BindingDefinition processReference(FileBinding annotation,
+    protected BindingDefinition processReference(WebServiceBinding annotation,
                                                  ReferenceDefinition reference,
                                                  AccessibleObject object,
                                                  Class<?> implClass,
@@ -78,32 +82,43 @@ public class FileBindingPostProcessor extends AbstractBindingPostProcessor<FileB
         return createDefinition(annotation, implClass, context);
     }
 
-    private FileBindingDefinition createDefinition(FileBinding annotation, Class<?> implClass, IntrospectionContext context) {
+    private WsBindingDefinition createDefinition(WebServiceBinding annotation, Class<?> implClass, IntrospectionContext context) {
         String name = annotation.name();
         if (name.isEmpty()) {
-            name = "FileBinding";
+            name = "WSBinding";
         }
-        String location = annotation.location();
-        if (location.isEmpty()) {
-            InvalidAnnotation error = new InvalidAnnotation("File binding annotation must specify a location", implClass, annotation, implClass);
-            context.addError(error);
-        }
-        Strategy strategy = annotation.strategy();
-        String archiveLocation = getNullibleValue(annotation.archiveLocation());
-        if (strategy == Strategy.ARCHIVE && archiveLocation == null) {
-            InvalidAnnotation error = new InvalidAnnotation("File binding annotation must specify an archive location", implClass, annotation, implClass);
-            context.addError(error);
-        }
-        String errorLocation = getNullibleValue(annotation.errorLocation());
-        String adapterUri = getNullibleValue(annotation.adaptor());
-        String pattern = getNullibleValue(annotation.pattern());
-        long delay = annotation.delay();
-        if (delay < -1) {
-            InvalidAnnotation error = new InvalidAnnotation("Invalid delay value specified on file binding", implClass, annotation, implClass);
-            context.addError(error);
-        }
-        return new FileBindingDefinition(name, pattern, location, strategy, archiveLocation, errorLocation, null, adapterUri, delay);
+        URI uri = parseUri(annotation, implClass, context);
+        String wsdlLocation = getNullibleValue(annotation.wsdlLocation());
+        String wsdlElement = getNullibleValue(annotation.wsdlElement());
+        int retries = annotation.retries();
 
+        WsBindingDefinition binding = new WsBindingDefinition(name, uri, wsdlLocation, wsdlElement, retries);
+
+        parseConfiguration(annotation, binding);
+        return binding;
+    }
+
+    private void parseConfiguration(WebServiceBinding annotation, WsBindingDefinition binding) {
+        BindingConfiguration[] configurations = annotation.configuration();
+        if (configurations.length == 0) {
+            return;
+        }
+        Map<String, String> map = new HashMap<String, String>();
+        for (BindingConfiguration configuration : configurations) {
+            map.put(configuration.key(), configuration.value());
+        }
+        binding.setConfiguration(map);
+    }
+
+    private URI parseUri(WebServiceBinding annotation, Class<?> implClass, IntrospectionContext context) {
+        String uriString = getNullibleValue(annotation.uri());
+        try {
+            return new URI(uriString);
+        } catch (URISyntaxException e) {
+            InvalidAnnotation error = new InvalidAnnotation("Invalid web service binding uri", implClass, annotation, implClass, e);
+            context.addError(error);
+        }
+        return URI.create("errorUri");
     }
 
 }

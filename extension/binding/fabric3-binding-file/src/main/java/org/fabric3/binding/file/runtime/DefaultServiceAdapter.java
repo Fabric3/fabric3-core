@@ -43,8 +43,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import org.fabric3.binding.file.api.InvalidDataException;
-import org.fabric3.binding.file.api.ServiceAdapter;
+import org.fabric3.api.binding.file.InvalidDataException;
+import org.fabric3.api.binding.file.ServiceAdapter;
 import org.fabric3.api.host.util.IOHelper;
 
 /**

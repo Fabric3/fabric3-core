@@ -40,7 +40,7 @@ package org.fabric3.binding.file.runtime;
 import java.io.File;
 import java.io.IOException;
 
-import org.fabric3.binding.file.api.ServiceAdapter;
+import org.fabric3.api.binding.file.ServiceAdapter;
 import org.fabric3.api.host.util.FileHelper;
 
 /**

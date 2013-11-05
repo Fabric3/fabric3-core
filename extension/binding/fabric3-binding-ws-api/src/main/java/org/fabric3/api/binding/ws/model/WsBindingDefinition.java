@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.ws.api.model;
+package org.fabric3.api.binding.ws.model;
 
 import javax.xml.namespace.QName;
 import java.net.URI;

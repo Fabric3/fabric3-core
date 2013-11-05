@@ -1,17 +1,16 @@
-package org.fabric3.binding.ws.loader;
+package org.fabric3.binding.ws.introspection;
 
-import java.io.ByteArrayInputStream;
-import java.net.URI;
-import java.util.Collections;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.net.URI;
+import java.util.Collections;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
-import org.fabric3.binding.ws.api.model.WsBindingDefinition;
 import org.fabric3.api.model.type.component.BindingHandlerDefinition;
+import org.fabric3.api.binding.ws.model.WsBindingDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;

@@ -63,7 +63,7 @@ import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Base class for introspecting file binding information in a component implementation.
+ * Base class for introspecting binding information in a component implementation.
  */
 @EagerInit
 public abstract class AbstractBindingPostProcessor<A extends Annotation> implements PostProcessor {

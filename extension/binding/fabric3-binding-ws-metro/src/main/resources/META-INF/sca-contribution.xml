@@ -23,7 +23,7 @@ Public License. See the accompanying license file for details.
 
     <import.java package="javax.wsdl" version="1.6.2"/>
     <import.java package="org.fabric3.binding.ws.provision" version="2.5.0"/>
-    <import.java package="org.fabric3.binding.ws.api.*" version="2.5.0"/>
+    <import.java package="org.fabric3.api.binding.ws.*" version="2.5.0"/>
 
     <!-- export SAAJ classes used by application-level WS handlers -->
     <export.java package="javax.xml.soap.*" version="1.3.0"/>

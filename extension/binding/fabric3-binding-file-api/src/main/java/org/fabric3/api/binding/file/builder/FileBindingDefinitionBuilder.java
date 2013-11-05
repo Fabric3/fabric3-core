@@ -35,11 +35,11 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.file.api.builder;
+package org.fabric3.api.binding.file.builder;
 
 import org.fabric3.api.model.type.builder.AbstractBuilder;
-import org.fabric3.binding.file.api.annotation.Strategy;
-import org.fabric3.binding.file.api.model.FileBindingDefinition;
+import org.fabric3.api.binding.file.annotation.Strategy;
+import org.fabric3.api.binding.file.model.FileBindingDefinition;
 
 /**
  * Builder for the File binding.

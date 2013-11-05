@@ -45,9 +45,9 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.binding.file.api.ServiceAdapter;
-import org.fabric3.binding.file.api.InvalidDataException;
-import org.fabric3.binding.file.api.annotation.Strategy;
+import org.fabric3.api.binding.file.ServiceAdapter;
+import org.fabric3.api.binding.file.InvalidDataException;
+import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.host.util.FileHelper;
 import org.fabric3.api.host.util.IOHelper;
 import org.fabric3.spi.container.invocation.Message;

@@ -33,7 +33,7 @@ package org.fabric3.binding.file.provision;
 import javax.activation.DataHandler;
 import java.net.URI;
 
-import org.fabric3.binding.file.api.annotation.Strategy;
+import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
 
 /**
