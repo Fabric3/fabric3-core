@@ -45,7 +45,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.fabric3.binding.ws.model.EndpointReference;
+import org.fabric3.binding.ws.api.model.EndpointReference;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.TypeLoader;

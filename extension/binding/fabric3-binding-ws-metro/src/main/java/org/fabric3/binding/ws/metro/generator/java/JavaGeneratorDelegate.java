@@ -94,7 +94,7 @@ import org.fabric3.binding.ws.metro.provision.SecurityConfiguration;
 import org.fabric3.binding.ws.metro.provision.ServiceEndpointDefinition;
 import org.fabric3.binding.ws.metro.util.BindingIdResolver;
 import org.fabric3.binding.ws.metro.util.ClassLoaderUpdater;
-import org.fabric3.binding.ws.model.WsBindingDefinition;
+import org.fabric3.binding.ws.api.model.WsBindingDefinition;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.AbstractReference;
 import org.fabric3.api.model.type.component.AbstractService;

@@ -1,4 +1,4 @@
-package org.fabric3.binding.ws.model;
+package org.fabric3.binding.ws.api.model;
 
 import java.net.URI;
 

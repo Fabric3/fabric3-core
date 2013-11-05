@@ -10,7 +10,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.binding.ws.model.WsBindingDefinition;
+import org.fabric3.binding.ws.api.model.WsBindingDefinition;
 import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;

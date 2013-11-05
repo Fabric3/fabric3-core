@@ -36,6 +36,7 @@
         <module>fabric3-binding-rs-jersey</module>
         <module>fabric3-binding-web</module>
 		<module>fabric3-binding-test</module>
+        <module>fabric3-binding-ws-api</module>
 		<module>fabric3-binding-ws</module>
         <module>fabric3-binding-ws-metro</module>
         <module>fabric3-binding-ws-policy</module>

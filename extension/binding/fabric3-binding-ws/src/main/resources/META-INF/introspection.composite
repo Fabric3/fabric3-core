@@ -23,7 +23,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.ws.loader.WsaLoader"/>
     </component>
 
-    <component name="WsCallbackBindingGenerator" f3:key="org.fabric3.binding.ws.model.WsBindingDefinition">
+    <component name="WsCallbackBindingGenerator" f3:key="org.fabric3.binding.ws.api.model.WsBindingDefinition">
         <f3:implementation.system class="org.fabric3.binding.ws.generator.WsCallbackBindingGenerator"/>
     </component>
 

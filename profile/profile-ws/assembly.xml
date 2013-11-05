@@ -31,6 +31,7 @@
                 <include>org.codehaus.fabric3:fabric3-interface-wsdl</include>
                 <include>org.codehaus.fabric3:fabric3-databinding-jaxb</include>
                 <include>org.codehaus.fabric3:fabric3-jaxb</include>
+                <include>org.codehaus.fabric3:fabric3-binding-ws-api</include>
                 <include>org.codehaus.fabric3:fabric3-binding-ws</include>
                 <include>org.codehaus.fabric3:fabric3-binding-ws-metro</include>
                 <include>org.codehaus.fabric3:fabric3-binding-ws-policy</include>
