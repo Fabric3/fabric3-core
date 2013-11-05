@@ -45,7 +45,9 @@ package org.fabric3.api.model.type.component;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.fabric3.api.model.type.AbstractPolicyAware;
@@ -62,6 +64,7 @@ public abstract class BindingDefinition extends AbstractPolicyAware<BindableDefi
     protected String name;
 
     private Set<String> requiredCapabilities = new HashSet<String>();
+    private List<BindingHandlerDefinition> handlers = new ArrayList<BindingHandlerDefinition>();
 
     /**
      * Constructor for a binding using the default binding name.
@@ -109,6 +112,25 @@ public abstract class BindingDefinition extends AbstractPolicyAware<BindableDefi
 
     public void addRequiredCapability(String capability) {
         requiredCapabilities.add(capability);
+    }
+
+    /**
+     * Returns the applicable binding handlers for this definition. Note that order is significant: at runtime, the handlers should be engaged in the order they
+     * appear in this list.
+     *
+     * @return the applicable binding handlers for this definition.
+     */
+    public List<BindingHandlerDefinition> getHandlers() {
+        return handlers;
+    }
+
+    /**
+     * Adds a binding handler definition.
+     *
+     * @param handler the binding handler definition
+     */
+    public void addHandler(BindingHandlerDefinition handler) {
+        handlers.add(handler);
     }
 
 }

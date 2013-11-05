@@ -43,18 +43,17 @@
  */
 package org.fabric3.introspection.xml.binding;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
+import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
-import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Type loader for the <f3:handler> element.

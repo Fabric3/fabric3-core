@@ -40,6 +40,7 @@ package org.fabric3.binding.file.introspection;
 import java.lang.reflect.AccessibleObject;
 
 import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.binding.file.api.annotation.FileBinding;
@@ -60,22 +61,21 @@ public class FileBindingPostProcessor extends AbstractBindingPostProcessor<FileB
         super(FileBinding.class);
     }
 
-    protected void processService(FileBinding annotation,
-                                  AbstractService<?> service,
-                                  InjectingComponentType componentType,
-                                  Class<?> implClass,
-                                  IntrospectionContext context) {
-        FileBindingDefinition binding = createDefinition(annotation, implClass, context);
-        service.addBinding(binding);
+    protected BindingDefinition processService(FileBinding annotation,
+                                               AbstractService<?> service,
+                                               InjectingComponentType componentType,
+                                               Class<?> implClass,
+                                               IntrospectionContext context) {
+        return createDefinition(annotation, implClass, context);
+
     }
 
-    protected void processReference(FileBinding annotation,
-                                    ReferenceDefinition reference,
-                                    AccessibleObject object,
-                                    Class<?> implClass,
-                                    IntrospectionContext context) {
-        FileBindingDefinition binding = createDefinition(annotation, implClass, context);
-        reference.addBinding(binding);
+    protected BindingDefinition processReference(FileBinding annotation,
+                                                 ReferenceDefinition reference,
+                                                 AccessibleObject object,
+                                                 Class<?> implClass,
+                                                 IntrospectionContext context) {
+        return createDefinition(annotation, implClass, context);
     }
 
     private FileBindingDefinition createDefinition(FileBinding annotation, Class<?> implClass, IntrospectionContext context) {

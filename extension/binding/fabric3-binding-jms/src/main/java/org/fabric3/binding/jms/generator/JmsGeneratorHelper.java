@@ -51,7 +51,7 @@ import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.common.TransactionType;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
-import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
+import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 
 import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_CONNECTION_FACTORY;
 import static org.fabric3.binding.jms.common.JmsConnectionConstants.DEFAULT_XA_CONNECTION_FACTORY;

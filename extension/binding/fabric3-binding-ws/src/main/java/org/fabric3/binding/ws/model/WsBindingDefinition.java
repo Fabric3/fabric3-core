@@ -45,13 +45,10 @@ package org.fabric3.binding.ws.model;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import org.fabric3.api.model.type.component.BindingDefinition;
-import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
 import org.oasisopen.sca.Constants;
 
 /**
@@ -65,7 +62,6 @@ public class WsBindingDefinition extends BindingDefinition {
     private String wsdlElement;
     private Map<String, String> configuration;
     private int retries;
-    private List<BindingHandlerDefinition> handlers;
 
     /**
      * Constructor
@@ -81,7 +77,6 @@ public class WsBindingDefinition extends BindingDefinition {
         this.wsdlElement = wsdlElement;
         this.wsdlLocation = wsdlLocation;
         this.retries = retries;
-        this.handlers = new ArrayList<BindingHandlerDefinition>();
         this.configuration = Collections.emptyMap();
     }
 
@@ -117,25 +112,6 @@ public class WsBindingDefinition extends BindingDefinition {
      */
     public int getRetries() {
         return retries;
-    }
-
-    /**
-     * Returns the applicable binding handlers for this definition. Note that order is significant: at runtime, the handlers should be engaged in the order they
-     * appear in this list.
-     *
-     * @return the applicable binding handlers for this definition.
-     */
-    public List<BindingHandlerDefinition> getHandlers() {
-        return handlers;
-    }
-
-    /**
-     * Adds a binding handler definition.
-     *
-     * @param handler the binding handler definition
-     */
-    public void addHandler(BindingHandlerDefinition handler) {
-        handlers.add(handler);
     }
 
     /**

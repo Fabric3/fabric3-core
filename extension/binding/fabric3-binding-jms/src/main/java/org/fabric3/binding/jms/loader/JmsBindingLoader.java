@@ -43,19 +43,16 @@
  */
 package org.fabric3.binding.jms.loader;
 
-import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
-
+import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.fabric3.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.binding.jms.spi.common.ActivationSpec;
 import org.fabric3.binding.jms.spi.common.CacheLevel;
@@ -78,8 +75,9 @@ import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
-
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 

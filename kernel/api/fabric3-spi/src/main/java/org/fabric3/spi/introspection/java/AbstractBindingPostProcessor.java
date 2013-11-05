@@ -39,18 +39,24 @@ package org.fabric3.spi.introspection.java;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
+import org.fabric3.api.annotation.model.BindingHandler;
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.AbstractService;
+import org.fabric3.api.model.type.component.BindingDefinition;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
@@ -82,17 +88,17 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
         return value.isEmpty() ? null : value;
     }
 
-    protected abstract void processService(A annotation,
-                                           AbstractService<?> service,
-                                           InjectingComponentType componentType,
-                                           Class<?> implClazz,
-                                           IntrospectionContext context);
+    protected abstract BindingDefinition processService(A annotation,
+                                                        AbstractService<?> service,
+                                                        InjectingComponentType componentType,
+                                                        Class<?> implClazz,
+                                                        IntrospectionContext context);
 
-    protected abstract void processReference(A annotation,
-                                             ReferenceDefinition reference,
-                                             AccessibleObject object,
-                                             Class<?> implClass,
-                                             IntrospectionContext context);
+    protected abstract BindingDefinition processReference(A annotation,
+                                                          ReferenceDefinition reference,
+                                                          AccessibleObject object,
+                                                          Class<?> implClass,
+                                                          IntrospectionContext context);
 
     private void processService(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         A annotation = implClass.getAnnotation(annotationType);
@@ -126,7 +132,9 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
                 return;
             }
         }
-        processService(annotation, boundService, componentType, implClass, context);
+        BindingDefinition binding = processService(annotation, boundService, componentType, implClass, context);
+        processHandlers(implClass, binding, implClass, context);
+        boundService.addBinding(binding);
     }
 
     private void processReferences(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
@@ -150,7 +158,8 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
                 Annotation[] annotations = constructor.getParameterAnnotations()[constructorSite.getParam()];
                 for (Annotation annotation : annotations) {
                     if (annotationType.equals(annotation.annotationType())) {
-                        processReference(annotationType.cast(annotation), reference, constructor, implClass, context);
+                        BindingDefinition binding = processReference(annotationType.cast(annotation), reference, constructor, implClass, context);
+                        reference.addBinding(binding);
                     }
                 }
             }
@@ -163,8 +172,39 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
         if (annotation == null) {
             return;
         }
-        processReference(annotation, reference, object, implClass, context);
+        BindingDefinition binding = processReference(annotation, reference, object, implClass, context);
+        reference.addBinding(binding);
 
+    }
+
+    private void processHandlers(AnnotatedElement element, BindingDefinition binding, Class<?> implClass, IntrospectionContext context) {
+        BindingHandler annotation = element.getAnnotation(BindingHandler.class);
+        if (annotation == null) {
+            return;
+        }
+        if (annotation.value().isEmpty()) {
+            String[] values = annotation.handlers();
+            for (String value : values) {
+                parseHandlerUri(value, element, binding, implClass, context, annotation);
+            }
+        } else {
+            parseHandlerUri(annotation.value(), element, binding, implClass, context, annotation);
+        }
+    }
+
+    private void parseHandlerUri(String value,
+                                 AnnotatedElement element,
+                                 BindingDefinition binding,
+                                 Class<?> implClass,
+                                 IntrospectionContext context,
+                                 BindingHandler annotation) {
+        try {
+            BindingHandlerDefinition definition = new BindingHandlerDefinition(new URI(value));
+            binding.addHandler(definition);
+        } catch (URISyntaxException e) {
+            InvalidAnnotation error = new InvalidAnnotation("Invalid binding handler URI", element, annotation, implClass, e);
+            context.addError(error);
+        }
     }
 
     private Class<?> getService(A annotation) {

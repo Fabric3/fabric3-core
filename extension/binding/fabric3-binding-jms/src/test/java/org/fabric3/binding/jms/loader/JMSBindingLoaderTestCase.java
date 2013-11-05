@@ -69,7 +69,7 @@ import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
+import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 
 public class JMSBindingLoaderTestCase extends TestCase {
     // wireFormat; activation spec; messageSelection

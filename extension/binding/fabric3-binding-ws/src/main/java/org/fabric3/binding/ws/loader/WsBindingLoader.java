@@ -59,7 +59,7 @@ import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
 import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.spi.model.type.binding.BindingHandlerDefinition;
+import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
