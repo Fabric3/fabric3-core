@@ -41,7 +41,7 @@ import java.io.File;
 import java.util.regex.Pattern;
 
 import org.fabric3.binding.file.api.ServiceAdapter;
-import org.fabric3.binding.file.common.Strategy;
+import org.fabric3.binding.file.api.annotation.Strategy;
 import org.fabric3.spi.container.wire.Interceptor;
 
 /**

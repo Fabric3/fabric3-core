@@ -17,7 +17,10 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.file.introspection.FileBindingLoader"/>
     </component>
 
-    <component name="FileBindingGenerator" f3:key="org.fabric3.binding.file.model.FileBindingDefinition">
+    <component name="FileBindingPostProcessor">
+        <f3:implementation.system class="org.fabric3.binding.file.introspection.FileBindingPostProcessor"/>
+    </component>
+    <component name="FileBindingGenerator" f3:key="org.fabric3.binding.file.api.model.FileBindingDefinition">
         <f3:implementation.system class="org.fabric3.binding.file.generator.FileBindingGenerator"/>
     </component>
 

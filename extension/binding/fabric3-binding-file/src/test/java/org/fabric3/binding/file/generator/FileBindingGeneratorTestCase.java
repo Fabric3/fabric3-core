@@ -39,8 +39,8 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.binding.file.common.Strategy;
-import org.fabric3.binding.file.model.FileBindingDefinition;
+import org.fabric3.binding.file.api.annotation.Strategy;
+import org.fabric3.binding.file.api.model.FileBindingDefinition;
 import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
 import org.fabric3.binding.file.provision.FileBindingTargetDefinition;
 import org.fabric3.api.host.runtime.HostInfo;

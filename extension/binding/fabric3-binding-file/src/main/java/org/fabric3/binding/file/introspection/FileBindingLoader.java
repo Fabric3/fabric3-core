@@ -44,8 +44,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.binding.file.common.Strategy;
-import org.fabric3.binding.file.model.FileBindingDefinition;
+import org.fabric3.binding.file.api.annotation.Strategy;
+import org.fabric3.binding.file.api.model.FileBindingDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;

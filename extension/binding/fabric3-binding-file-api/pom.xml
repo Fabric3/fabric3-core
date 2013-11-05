@@ -10,30 +10,15 @@
         <version>2.5.0-SNAPSHOT</version>
     </parent>
     <groupId>org.codehaus.fabric3</groupId>
-    <artifactId>fabric3-binding-file</artifactId>
-    <name>Fabric3 File Transfer Binding Extension</name>
-    <description>File Transfer Binding Extension</description>
+    <artifactId>fabric3-binding-file-api</artifactId>
+    <name>Fabric3 File Transfer API Binding Extension</name>
+    <description>File Transfer API Binding Extension</description>
     <packaging>sca-contribution-jar</packaging>
     <dependencies>
-
         <dependency>
             <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-binding-file-api</artifactId>
+            <artifactId>fabric3-model-api</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.fabric3</groupId>
-            <artifactId>fabric3-spi</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.fabric3.api</groupId>
-            <artifactId>javax-jta</artifactId>
-            <version>${jta.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -48,15 +33,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.fabric3</groupId>
-                <artifactId>fabric3-contribution-plugin</artifactId>
-                <extensions>true</extensions>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

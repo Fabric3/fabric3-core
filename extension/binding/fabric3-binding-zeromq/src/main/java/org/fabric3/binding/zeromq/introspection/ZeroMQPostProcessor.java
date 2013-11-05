@@ -37,138 +37,59 @@
 */
 package org.fabric3.binding.zeromq.introspection;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.fabric3.api.binding.zeromq.annotation.ZeroMQ;
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQBindingDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.component.ReferenceDefinition;
 import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.AbstractBindingPostProcessor;
 import org.fabric3.spi.introspection.java.InvalidAnnotation;
-import org.fabric3.spi.introspection.java.PostProcessor;
-import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
-import org.fabric3.spi.model.type.java.FieldInjectionSite;
-import org.fabric3.spi.model.type.java.MethodInjectionSite;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Introspects ZeroMQ binding information in a component implementation.
  */
 @EagerInit
-public class ZeroMQPostProcessor implements PostProcessor {
+public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
 
-    public void process(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
-        processService(componentType, implClass, context);
-        processReferences(componentType, implClass, context);
+    public ZeroMQPostProcessor() {
+        super(ZeroMQ.class);
     }
 
-    private void processService(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
-        ZeroMQ annotation = implClass.getAnnotation(ZeroMQ.class);
-        if (annotation == null) {
-            return;
-        }
-        Class<?> serviceInterface = annotation.service();
-        if (serviceInterface.equals(Void.class)) {
-            serviceInterface = null;
-        }
-        AbstractService boundService = null;
-        if (serviceInterface == null) {
-            if (componentType.getServices().size() != 1) {
-                InvalidAnnotation error = new InvalidAnnotation("ZeroMQ binding annotation must specify a service interface", implClass, annotation, implClass);
-                context.addError(error);
-                return;
-            }
-            boundService = componentType.getServices().values().iterator().next();
-            try {
-                serviceInterface = implClass.getClassLoader().loadClass(boundService.getServiceContract().getQualifiedInterfaceName());
-            } catch (ClassNotFoundException e) {
-                throw new AssertionError(e);
-            }
-        } else {
-            String name = serviceInterface.getName();
-            for (AbstractService service : componentType.getServices().values()) {
-                String interfaceName = service.getServiceContract().getQualifiedInterfaceName();
-                if (interfaceName.equals(name)) {
-                    boundService = service;
-                    break;
-                }
-            }
-            if (boundService == null) {
-                InvalidAnnotation error = new InvalidAnnotation("Service specified in ZeroMQ binding annotation not found: " + name,
-                                                                implClass,
-                                                                annotation,
-                                                                implClass);
-                context.addError(error);
-                return;
-            }
-        }
-        ZeroMQMetadata metadata = new ZeroMQMetadata();
-        String bindingName = "ZMQ" + serviceInterface.getSimpleName();
-        ZeroMQBindingDefinition binding = new ZeroMQBindingDefinition(bindingName, metadata);
+    protected void processService(ZeroMQ annotation,
+                                  AbstractService<?> boundService,
+                                  InjectingComponentType componentType,
+                                  Class<?> implClass,
+                                  IntrospectionContext context) {
+        try {
+            Class<?> serviceInterface = implClass.getClassLoader().loadClass(boundService.getServiceContract().getQualifiedInterfaceName());
 
-        processMetadata(annotation, metadata);
+            ZeroMQMetadata metadata = new ZeroMQMetadata();
+            String bindingName = "ZMQ" + serviceInterface.getSimpleName();
+            ZeroMQBindingDefinition binding = new ZeroMQBindingDefinition(bindingName, metadata);
 
-        boundService.addBinding(binding);
+            processMetadata(annotation, metadata);
+
+            boundService.addBinding(binding);
+        } catch (ClassNotFoundException e) {
+            throw new AssertionError(e);
+        }
     }
 
-    private void processReferences(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
-        for (Map.Entry<ModelObject, InjectionSite> entry : componentType.getInjectionSiteMappings().entrySet()) {
-            if (!(entry.getKey() instanceof ReferenceDefinition)) {
-                continue;
-            }
-            ReferenceDefinition reference = (ReferenceDefinition) entry.getKey();
-            InjectionSite site = entry.getValue();
-            if (site instanceof FieldInjectionSite) {
-                FieldInjectionSite fieldSite = (FieldInjectionSite) site;
-                Field field = fieldSite.getField();
-                processBindingAnnotation(field, reference, implClass, context);
-            } else if (site instanceof MethodInjectionSite) {
-                MethodInjectionSite methodSite = (MethodInjectionSite) site;
-                Method method = methodSite.getMethod();
-                processBindingAnnotation(method, reference, implClass, context);
-            } else if (site instanceof ConstructorInjectionSite) {
-                ConstructorInjectionSite constructorSite = (ConstructorInjectionSite) site;
-                Constructor<?> constructor = constructorSite.getConstructor();
-                Annotation[] annotations = constructor.getParameterAnnotations()[constructorSite.getParam()];
-                for (Annotation annotation : annotations) {
-                    if (ZeroMQ.class.equals(annotation.annotationType())) {
-                        processAnnotation((ZeroMQ) annotation, reference, constructor, implClass, context);
-                    }
-                }
-            }
-        }
-
-    }
-
-    private void processBindingAnnotation(AccessibleObject object, ReferenceDefinition reference, Class<?> implClass, IntrospectionContext context) {
-        ZeroMQ annotation = object.getAnnotation(ZeroMQ.class);
-        if (annotation == null) {
-            return;
-        }
-
-        processAnnotation(annotation, reference, object, implClass, context);
-
-    }
-
-    private void processAnnotation(ZeroMQ annotation,
-                                   ReferenceDefinition reference,
-                                   AccessibleObject object,
-                                   Class<?> implClass,
-                                   IntrospectionContext context) {
+    protected void processReference(ZeroMQ annotation,
+                                    ReferenceDefinition reference,
+                                    AccessibleObject object,
+                                    Class<?> implClass,
+                                    IntrospectionContext context) {
         ZeroMQMetadata metadata = new ZeroMQMetadata();
         String bindingName = "ZMQ" + reference.getName();
         ZeroMQBindingDefinition binding = new ZeroMQBindingDefinition(bindingName, metadata);

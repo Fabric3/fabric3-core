@@ -35,12 +35,12 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.file.model;
+package org.fabric3.binding.file.api.model;
 
 import javax.xml.namespace.QName;
 
-import org.fabric3.binding.file.common.Strategy;
 import org.fabric3.api.model.type.component.BindingDefinition;
+import org.fabric3.binding.file.api.annotation.Strategy;
 
 /**
  * A file binding configuration set on a reference.
@@ -61,11 +61,20 @@ public class FileBindingDefinition extends BindingDefinition {
     /**
      * Constructor.
      *
+     * @param name the binding name
+     */
+    public FileBindingDefinition(String name) {
+        super(name, null, BINDING_FILE);
+    }
+
+    /**
+     * Constructor.
+     *
      * @param name          the binding name
-     * @param location      the directory to receive files in. May be relative or absolute. If it is relative, it will be resolved against the runtime
+     * @param location      the directory to receive files in. May be relative or absolute. If it is relative, it will be resolved against the runtime data
+     *                      directory.
+     * @param errorLocation the directory to place invalid files in. May be relative or absolute. If it is relative, it will be resolved against the runtime
      *                      data directory.
-     * @param errorLocation the directory to place invalid files in. May be relative or absolute. If it is relative, it will be resolved against the
-     *                      runtime data directory.
      */
     public FileBindingDefinition(String name, String location, String errorLocation) {
         super(name, null, BINDING_FILE);
@@ -78,13 +87,13 @@ public class FileBindingDefinition extends BindingDefinition {
      *
      * @param name            the binding name
      * @param pattern         the pattern to match files on. May be null.
-     * @param location        the directory to receive files in. May be relative or absolute. If it is relative, it will be resolved against the
-     *                        runtime data directory.
+     * @param location        the directory to receive files in. May be relative or absolute. If it is relative, it will be resolved against the runtime data
+     *                        directory.
      * @param strategy        whether to archive or delete received files
-     * @param archiveLocation the directory to archive files to. May be relative or absolute. If it is relative, it will be resolved against the
-     *                        runtime data directory.
-     * @param errorLocation   the directory to place invalid files in. May be relative or absolute. If it is relative, it will be resolved against the
-     *                        runtime data directory.
+     * @param archiveLocation the directory to archive files to. May be relative or absolute. If it is relative, it will be resolved against the runtime data
+     *                        directory.
+     * @param errorLocation   the directory to place invalid files in. May be relative or absolute. If it is relative, it will be resolved against the runtime
+     *                        data directory.
      * @param adapterClass    the adapter class for processing received files. May be null.
      * @param adapterUri      the URI of the adaptor component for receiving files. May be null.
      * @param delay           the delay in milliseconds between directory scans
@@ -146,8 +155,7 @@ public class FileBindingDefinition extends BindingDefinition {
     }
 
     /**
-     * The directory to place invalid files in. May be relative or absolute. If it is relative, it will be resolved against the runtime data
-     * directory
+     * The directory to place invalid files in. May be relative or absolute. If it is relative, it will be resolved against the runtime data directory
      *
      * @return the directory to place invalid files in
      */
@@ -182,4 +190,35 @@ public class FileBindingDefinition extends BindingDefinition {
         return delay;
     }
 
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public void setArchiveLocation(String archiveLocation) {
+        this.archiveLocation = archiveLocation;
+    }
+
+    public void setErrorLocation(String errorLocation) {
+        this.errorLocation = errorLocation;
+    }
+
+    public void setAdapterClass(String adapterClass) {
+        this.adapterClass = adapterClass;
+    }
+
+    public void setAdapterUri(String adapterUri) {
+        this.adapterUri = adapterUri;
+    }
+
+    public void setDelay(long delay) {
+        this.delay = delay;
+    }
 }

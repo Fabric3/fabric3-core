@@ -45,7 +45,7 @@ import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.file.api.ServiceAdapter;
-import org.fabric3.binding.file.common.Strategy;
+import org.fabric3.binding.file.api.annotation.Strategy;
 import org.fabric3.binding.file.provision.FileBindingSourceDefinition;
 import org.fabric3.binding.file.runtime.receiver.PassThroughInterceptor;
 import org.fabric3.binding.file.runtime.receiver.ReceiverConfiguration;
