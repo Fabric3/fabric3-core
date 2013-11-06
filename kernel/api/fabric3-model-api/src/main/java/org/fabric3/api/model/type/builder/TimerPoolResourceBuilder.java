@@ -35,25 +35,40 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.timer.generator;
+package org.fabric3.api.model.type.builder;
 
-import org.oasisopen.sca.annotation.EagerInit;
-
-import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.resource.ResourceGenerator;
-import org.fabric3.spi.model.instance.LogicalResource;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 import org.fabric3.api.model.type.resource.timer.TimerPoolResource;
-import org.fabric3.timer.provision.PhysicalTimerPoolResource;
 
 /**
- * Generates PhysicalTimerPoolResource definitions.
+ * Creates {@link TimerPoolResource}s.
  */
-@EagerInit
-public class TimerPoolResourceGenerator implements ResourceGenerator<TimerPoolResource> {
+public class TimerPoolResourceBuilder extends AbstractBuilder {
+    private TimerPoolResource resource;
 
-    public PhysicalResourceDefinition generateResource(LogicalResource<TimerPoolResource> resource) throws GenerationException {
-        TimerPoolResource definition = resource.getDefinition();
-        return new PhysicalTimerPoolResource(definition.getName(), definition.getCoreSize());
+    /**
+     * Creates a builder.
+     *
+     * @return the builder
+     */
+    public static TimerPoolResourceBuilder newBuilder(String name) {
+        return new TimerPoolResourceBuilder(name, 2);
     }
+
+    /**
+     * Creates a builder.
+     *
+     * @return the builder
+     */
+    public static TimerPoolResourceBuilder newBuilder(String name, int coreSize) {
+        return new TimerPoolResourceBuilder(name, coreSize);
+    }
+
+    public TimerPoolResource build() {
+        return resource;
+    }
+
+    private TimerPoolResourceBuilder(String name, int coreSize) {
+        resource = new TimerPoolResource(name, coreSize);
+    }
+
 }

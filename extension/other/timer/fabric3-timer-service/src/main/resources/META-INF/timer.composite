@@ -24,7 +24,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.timer.introspection.TimerPoolResourceLoader"/>
     </component>
 
-    <component name="TimerPoolResourceGenerator" f3:key="org.fabric3.timer.model.TimerPoolResource">
+    <component name="TimerPoolResourceGenerator" f3:key="org.fabric3.api.model.type.resource.timer.TimerPoolResource">
         <f3:implementation.system class="org.fabric3.timer.generator.TimerPoolResourceGenerator"/>
     </component>
 

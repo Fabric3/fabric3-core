@@ -48,7 +48,7 @@ import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.timer.model.TimerPoolResource;
+import org.fabric3.api.model.type.resource.timer.TimerPoolResource;
 
 /**
  *

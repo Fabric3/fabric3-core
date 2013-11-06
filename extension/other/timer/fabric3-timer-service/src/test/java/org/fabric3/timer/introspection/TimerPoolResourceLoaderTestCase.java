@@ -45,7 +45,7 @@ import junit.framework.TestCase;
 
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
-import org.fabric3.timer.model.TimerPoolResource;
+import org.fabric3.api.model.type.resource.timer.TimerPoolResource;
 
 /**
  *

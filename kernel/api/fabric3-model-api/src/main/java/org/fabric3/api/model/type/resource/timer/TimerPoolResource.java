@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.timer.model;
+package org.fabric3.api.model.type.resource.timer;
 
 import org.fabric3.api.model.type.component.ResourceDefinition;
 
