@@ -35,11 +35,42 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.datasource.spi;
+package org.fabric3.api.model.type.builder;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import org.fabric3.api.model.type.resource.jndi.JndiContextDefinition;
 
 /**
- * Denotes a datasource type.
+ * Builds {@link JndiContextDefinition}s.
  */
-public enum DataSourceType {
-    XA, NON_XA
+public class JndiContextDefinitionBuilder extends AbstractBuilder {
+    private Map<String, Properties> map;
+
+    /**
+     * Creates a builder.
+     *
+     * @return the builder
+     */
+    public static JndiContextDefinitionBuilder newBuilder() {
+        return new JndiContextDefinitionBuilder();
+    }
+
+    private JndiContextDefinitionBuilder() {
+        map = new HashMap<String, Properties>();
+    }
+
+    public JndiContextDefinitionBuilder add(String name, Properties properties) {
+        checkState();
+        map.put(name, properties);
+        return this;
+    }
+
+    public JndiContextDefinition build() {
+        checkState();
+        freeze();
+        return new JndiContextDefinition(map);
+    }
 }

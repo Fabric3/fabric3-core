@@ -39,7 +39,7 @@ package org.fabric3.jndi.generator;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.jndi.model.JndiContextDefinition;
+import org.fabric3.api.model.type.resource.jndi.JndiContextDefinition;
 import org.fabric3.jndi.provision.PhysicalJndiContextDefinition;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.resource.ResourceGenerator;

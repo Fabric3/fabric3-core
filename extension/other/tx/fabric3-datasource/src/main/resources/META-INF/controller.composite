@@ -34,7 +34,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.datasource.introspection.DataSourceResourceLoader"/>
     </component>
 
-    <component name="DataSourceResourceGenerator" f3:key="org.fabric3.datasource.model.DataSourceResource">
+    <component name="DataSourceResourceGenerator" f3:key="org.fabric3.api.model.type.resource.datasource.DataSourceResource">
         <f3:implementation.system class="org.fabric3.datasource.generator.DataSourceResourceGenerator"/>
     </component>
 

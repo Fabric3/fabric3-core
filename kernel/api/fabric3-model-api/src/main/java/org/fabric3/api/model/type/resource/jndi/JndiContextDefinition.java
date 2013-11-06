@@ -35,35 +35,26 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.datasource.model;
+package org.fabric3.api.model.type.resource.jndi;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
-import org.fabric3.datasource.spi.DataSourceConfiguration;
 import org.fabric3.api.model.type.component.ResourceDefinition;
 
 /**
- *
+ * Configuration used to create JNDI contexts on a runtime.
  */
-public class DataSourceResource extends ResourceDefinition {
-    private static final long serialVersionUID = -2844435223504878965L;
-    private List<DataSourceConfiguration> configurations;
+public class JndiContextDefinition extends ResourceDefinition {
+    private static final long serialVersionUID = 897102744778070486L;
 
-    /**
-     * Constructor.
-     *
-     * @param configurations the datasource configurations
-     */
-    public DataSourceResource(List<DataSourceConfiguration> configurations) {
-        this.configurations = configurations;
+    private Map<String, Properties> contexts;
+
+    public JndiContextDefinition(Map<String, Properties> contexts) {
+        this.contexts = contexts;
     }
 
-    /**
-     * Returns the datasource configurations.
-     *
-     * @return the datasource configurations
-     */
-    public List<DataSourceConfiguration> getConfigurations() {
-        return configurations;
+    public Map<String, Properties> getContexts() {
+        return contexts;
     }
 }

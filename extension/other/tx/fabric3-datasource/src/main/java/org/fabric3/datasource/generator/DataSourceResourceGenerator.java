@@ -39,7 +39,7 @@ package org.fabric3.datasource.generator;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.datasource.model.DataSourceResource;
+import org.fabric3.api.model.type.resource.datasource.DataSourceResource;
 import org.fabric3.datasource.provision.PhysicalDataSourceResource;
 import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.resource.ResourceGenerator;

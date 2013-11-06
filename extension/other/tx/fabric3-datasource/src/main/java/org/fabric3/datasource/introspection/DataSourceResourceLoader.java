@@ -48,9 +48,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.oasisopen.sca.annotation.EagerInit;
 
-import org.fabric3.datasource.model.DataSourceResource;
-import org.fabric3.datasource.spi.DataSourceConfiguration;
-import org.fabric3.datasource.spi.DataSourceType;
+import org.fabric3.api.model.type.resource.datasource.DataSourceResource;
+import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
+import org.fabric3.api.model.type.resource.datasource.DataSourceType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.InvalidValue;
 import org.fabric3.spi.introspection.xml.TypeLoader;

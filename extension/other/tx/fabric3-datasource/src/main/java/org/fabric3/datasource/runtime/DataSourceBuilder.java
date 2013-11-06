@@ -41,7 +41,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.datasource.provision.PhysicalDataSourceResource;
-import org.fabric3.datasource.spi.DataSourceConfiguration;
+import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
 import org.fabric3.datasource.spi.DataSourceFactory;
 import org.fabric3.datasource.spi.DataSourceFactoryException;
 import org.fabric3.spi.container.builder.BuilderException;

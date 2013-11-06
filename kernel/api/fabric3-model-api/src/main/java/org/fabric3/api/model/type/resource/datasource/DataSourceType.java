@@ -35,26 +35,11 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.jndi.model;
-
-import java.util.Map;
-import java.util.Properties;
-
-import org.fabric3.api.model.type.component.ResourceDefinition;
+package org.fabric3.api.model.type.resource.datasource;
 
 /**
- *
+ * Denotes a datasource type.
  */
-public class JndiContextDefinition extends ResourceDefinition {
-    private static final long serialVersionUID = 897102744778070486L;
-
-    private Map<String, Properties> contexts;
-
-    public JndiContextDefinition(Map<String, Properties> contexts) {
-        this.contexts = contexts;
-    }
-
-    public Map<String, Properties> getContexts() {
-        return contexts;
-    }
+public enum DataSourceType {
+    XA, NON_XA
 }

@@ -55,11 +55,11 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.datasource.spi.DataSourceConfiguration;
+import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
 import org.fabric3.datasource.spi.DataSourceFactory;
 import org.fabric3.datasource.spi.DataSourceFactoryException;
 import org.fabric3.datasource.spi.DataSourceRegistry;
-import org.fabric3.datasource.spi.DataSourceType;
+import org.fabric3.api.model.type.resource.datasource.DataSourceType;
 import org.fabric3.spi.management.ManagementException;
 import org.fabric3.spi.management.ManagementService;
 

@@ -22,7 +22,7 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.jndi.introspection.JndiContextLoader"/>
     </component>
 
-    <component name="JndiContextGenerator" f3:key="org.fabric3.jndi.model.JndiContextDefinition">
+    <component name="JndiContextGenerator" f3:key="org.fabric3.api.model.type.resource.jndi.JndiContextDefinition">
         <f3:implementation.system class="org.fabric3.jndi.generator.JndiContextGenerator"/>
     </component>
 

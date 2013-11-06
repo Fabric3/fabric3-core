@@ -39,7 +39,7 @@ package org.fabric3.datasource.provision;
 
 import java.util.List;
 
-import org.fabric3.datasource.spi.DataSourceConfiguration;
+import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
 import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 
 /**

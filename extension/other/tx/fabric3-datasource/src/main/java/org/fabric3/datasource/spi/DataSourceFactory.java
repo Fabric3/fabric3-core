@@ -37,6 +37,8 @@
 */
 package org.fabric3.datasource.spi;
 
+import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
+
 /**
  * Creates and disposes datasources on a runtime.
  */

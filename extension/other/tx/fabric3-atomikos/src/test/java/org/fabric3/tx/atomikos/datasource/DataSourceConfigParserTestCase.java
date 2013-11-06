@@ -45,8 +45,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.fabric3.datasource.spi.DataSourceConfiguration;
-import org.fabric3.datasource.spi.DataSourceType;
+import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
+import org.fabric3.api.model.type.resource.datasource.DataSourceType;
 
 /**
  *

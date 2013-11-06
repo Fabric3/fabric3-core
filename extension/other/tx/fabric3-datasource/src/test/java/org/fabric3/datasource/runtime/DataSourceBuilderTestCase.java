@@ -45,9 +45,9 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import org.fabric3.datasource.provision.PhysicalDataSourceResource;
-import org.fabric3.datasource.spi.DataSourceConfiguration;
+import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
 import org.fabric3.datasource.spi.DataSourceFactory;
-import org.fabric3.datasource.spi.DataSourceType;
+import org.fabric3.api.model.type.resource.datasource.DataSourceType;
 
 /**
  *

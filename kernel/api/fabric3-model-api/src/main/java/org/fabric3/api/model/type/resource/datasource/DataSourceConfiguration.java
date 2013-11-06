@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.datasource.spi;
+package org.fabric3.api.model.type.resource.datasource;
 
 import java.io.Serializable;
 import java.util.Collections;

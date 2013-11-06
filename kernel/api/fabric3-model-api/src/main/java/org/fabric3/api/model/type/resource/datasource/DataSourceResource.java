@@ -35,25 +35,34 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.runtime.weblogic.ds;
+package org.fabric3.api.model.type.resource.datasource;
 
-import org.oasisopen.sca.annotation.EagerInit;
+import java.util.List;
 
-import org.fabric3.api.model.type.resource.datasource.DataSourceConfiguration;
-import org.fabric3.datasource.spi.DataSourceFactory;
-import org.fabric3.datasource.spi.DataSourceFactoryException;
+import org.fabric3.api.model.type.component.ResourceDefinition;
 
 /**
- *
+ * A set of datasource definitions.
  */
-@EagerInit
-public class WebLogicDataSourceFactory implements DataSourceFactory {
+public class DataSourceResource extends ResourceDefinition {
+    private static final long serialVersionUID = -2844435223504878965L;
+    private List<DataSourceConfiguration> configurations;
 
-    public void create(DataSourceConfiguration configuration) throws DataSourceFactoryException {
-        throw new DataSourceFactoryException("DataSource creation not supported on WebLogic");
+    /**
+     * Constructor.
+     *
+     * @param configurations the datasource configurations
+     */
+    public DataSourceResource(List<DataSourceConfiguration> configurations) {
+        this.configurations = configurations;
     }
 
-    public void remove(DataSourceConfiguration configuration) throws DataSourceFactoryException {
-        throw new DataSourceFactoryException("DataSource creation not supported on WebLogic");
+    /**
+     * Returns the datasource configurations.
+     *
+     * @return the datasource configurations
+     */
+    public List<DataSourceConfiguration> getConfigurations() {
+        return configurations;
     }
 }
