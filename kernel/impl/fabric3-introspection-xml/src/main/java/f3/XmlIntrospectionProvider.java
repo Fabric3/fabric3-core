@@ -75,6 +75,7 @@ import org.fabric3.introspection.xml.definitions.IntentLoader;
 import org.fabric3.introspection.xml.definitions.PolicySetLoader;
 import org.fabric3.introspection.xml.plan.DeploymentPlanIndexer;
 import org.fabric3.introspection.xml.plan.DeploymentPlanProcessor;
+import org.fabric3.introspection.xml.template.BindingTemplatePostProcessor;
 import org.fabric3.introspection.xml.template.SystemConfigTemplateParser;
 import org.fabric3.introspection.xml.template.TemplateElementLoader;
 import org.fabric3.introspection.xml.template.TemplateLoader;
@@ -105,12 +106,14 @@ public class XmlIntrospectionProvider {
     }
 
     private static void addTemplateLoader(CompositeBuilder compositeBuilder) {
-        SystemComponentDefinitionBuilder componentBuilder = newBuilder("TemplateLoader",TemplateLoader.class);
+        SystemComponentDefinitionBuilder componentBuilder = newBuilder("TemplateLoader", TemplateLoader.class);
         componentBuilder.key(Constants.SCA_PREFIX + "binding.template");
         componentBuilder.property("expectedType", BindingDefinition.class.getName());
         compositeBuilder.component(componentBuilder.build());
 
         compositeBuilder.component(newBuilder(TemplateElementLoader.class).build());
+
+        compositeBuilder.component(newBuilder(BindingTemplatePostProcessor.class).build());
 
         compositeBuilder.component(newBuilder(TemplatesElementLoader.class).build());
 
@@ -147,7 +150,7 @@ public class XmlIntrospectionProvider {
         compositeBuilder.component(newBuilder(ChannelLoader.class).build());
         compositeBuilder.component(newBuilder(WireLoader.class).key(Constants.SCA_PREFIX + "wire").build());
 
-        SystemComponentDefinitionBuilder componentBuilder = newBuilder("CompositeLoader",CompositeLoader.class);
+        SystemComponentDefinitionBuilder componentBuilder = newBuilder("CompositeLoader", CompositeLoader.class);
         componentBuilder.reference("service", "CompositeServiceLoader");
         componentBuilder.reference("reference", "CompositeReferenceLoader");
         componentBuilder.reference("property", "PropertyLoader");

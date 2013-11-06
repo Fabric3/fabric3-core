@@ -91,7 +91,7 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
     protected abstract BindingDefinition processService(A annotation,
                                                         AbstractService<?> service,
                                                         InjectingComponentType componentType,
-                                                        Class<?> implClazz,
+                                                        Class<?> implClass,
                                                         IntrospectionContext context);
 
     protected abstract BindingDefinition processReference(A annotation,
@@ -133,6 +133,9 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
             }
         }
         BindingDefinition binding = processService(annotation, boundService, componentType, implClass, context);
+        if (binding == null) {
+            return;
+        }
         processHandlers(implClass, binding, implClass, context);
         boundService.addBinding(binding);
     }
@@ -159,6 +162,9 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
                 for (Annotation annotation : annotations) {
                     if (annotationType.equals(annotation.annotationType())) {
                         BindingDefinition binding = processReference(annotationType.cast(annotation), reference, constructor, implClass, context);
+                        if (binding == null) {
+                            continue;
+                        }
                         reference.addBinding(binding);
                     }
                 }
@@ -173,6 +179,9 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
             return;
         }
         BindingDefinition binding = processReference(annotation, reference, object, implClass, context);
+        if (binding == null) {
+            return;
+        }
         reference.addBinding(binding);
 
     }
