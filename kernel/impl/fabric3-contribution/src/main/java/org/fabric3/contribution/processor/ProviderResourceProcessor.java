@@ -42,8 +42,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import org.fabric3.api.annotation.model.Environment;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.host.contribution.InstallException;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
@@ -63,8 +65,10 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class ProviderResourceProcessor implements ResourceProcessor {
+    private HostInfo info;
 
-    public ProviderResourceProcessor(@Reference ProcessorRegistry processorRegistry) {
+    public ProviderResourceProcessor(@Reference ProcessorRegistry processorRegistry, @Reference HostInfo info) {
+        this.info = info;
         processorRegistry.register(this);
     }
 
@@ -96,17 +100,36 @@ public class ProviderResourceProcessor implements ResourceProcessor {
                     context.addError(error);
                     continue;
                 }
+                String environmentArg = null;
                 if (method.getParameterTypes().length > 0) {
-                    InvalidProviderMethod error = new InvalidProviderMethod("Provides method cannot take parameters: " + method);
-                    context.addError(error);
-                    continue;
+                    if (method.getParameterTypes().length == 1) {
+                        if (method.getParameterAnnotations()[0].length != 1 || !(method.getParameterAnnotations()[0][0] instanceof Environment)) {
+                            InvalidProviderMethod error = new InvalidProviderMethod("Unknown provider parameter type: " + method);
+                            context.addError(error);
+                            continue;
+                        } else if (!method.getParameterTypes()[0].equals(String.class)) {
+                            InvalidProviderMethod error = new InvalidProviderMethod("Unknown provider parameter type: " + method);
+                            context.addError(error);
+                            continue;
+                        }
+                        environmentArg = info.getEnvironment();
+                    } else {
+                        InvalidProviderMethod error = new InvalidProviderMethod("Provides method cannot take more than one parameter: " + method);
+                        context.addError(error);
+                        continue;
+                    }
                 }
                 if (!Modifier.isStatic(method.getModifiers())) {
                     InvalidProviderMethod error = new InvalidProviderMethod("Provides method must be static: " + method);
                     context.addError(error);
                     continue;
                 }
-                Composite composite = (Composite) method.invoke(null);
+                Composite composite;
+                if (environmentArg == null) {
+                    composite = (Composite) method.invoke(null);
+                } else {
+                    composite = (Composite) method.invoke(null, environmentArg);
+                }
                 if (composite == null) {
                     InvalidProviderMethod error = new InvalidProviderMethod("Provides method returned null: " + method);
                     context.addError(error);

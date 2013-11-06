@@ -43,6 +43,7 @@ import f3.BadTestProvider;
 import f3.TestProvider;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ProcessorRegistry;
@@ -85,7 +86,8 @@ public class ProviderResourceProcessorTestCase extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         ProcessorRegistry registry = EasyMock.createNiceMock(ProcessorRegistry.class);
-        processor = new ProviderResourceProcessor(registry);
+        HostInfo info = EasyMock.createNiceMock(HostInfo.class);
+        processor = new ProviderResourceProcessor(registry, info);
 
         Contribution contribution = new Contribution(URI.create("test"));
         resource = new Resource(contribution, null, Constants.DSL_CONTENT_TYPE);
