@@ -41,38 +41,40 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.runtime.resolver.destination;
+package org.fabric3.api.binding.jms.model;
 
-import java.util.List;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
-import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
-import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+import org.fabric3.api.model.type.ModelObject;
 
 /**
- * Implementation that always resolves a destination against JNDI and never attempts to create it.
+ * A response configuration.
  */
-public class NeverDestinationStrategy implements DestinationStrategy {
-    private List<DestinationResolver> resolvers;
+public class ResponseDefinition extends ModelObject {
+    private static final long serialVersionUID = -3413442748842988653L;
+    private DestinationDefinition destination;
+    private ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
+    private ActivationSpec activationSpec;
 
-    @Reference(required = false)
-    public void setResolvers(List<DestinationResolver> resolvers) {
-        this.resolvers = resolvers;
+    public ConnectionFactoryDefinition getConnectionFactory() {
+        return connectionFactory;
     }
 
-    public Destination getDestination(DestinationDefinition definition, String clientId, ConnectionFactory factory) throws JmsResolutionException {
-        for (DestinationResolver resolver : resolvers) {
-            Destination destination = resolver.resolve(definition);
-            if (destination != null) {
-                return destination;
-            }
-        }
-        throw new JmsResolutionException("Destination not found: " + definition.getName());
+    public void setConnectionFactory(ConnectionFactoryDefinition connectionFactory) {
+        this.connectionFactory = connectionFactory;
     }
 
+    public DestinationDefinition getDestination() {
+        return destination;
+    }
+
+    public void setDestination(DestinationDefinition destination) {
+        this.destination = destination;
+    }
+
+    public ActivationSpec getActivationSpec() {
+        return activationSpec;
+    }
+
+    public void setActivationSpec(ActivationSpec activationSpec) {
+        this.activationSpec = activationSpec;
+    }
 }

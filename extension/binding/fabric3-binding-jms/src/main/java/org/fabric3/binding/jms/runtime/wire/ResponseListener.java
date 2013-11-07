@@ -51,7 +51,7 @@ import javax.jms.Session;
 
 import org.oasisopen.sca.ServiceRuntimeException;
 
-import org.fabric3.binding.jms.spi.common.CorrelationScheme;
+import org.fabric3.api.binding.jms.model.CorrelationScheme;
 
 /**
  * MessageListener that blocks for responses from a service provider. This listener is attached to the reference side of a wire.

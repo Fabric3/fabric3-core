@@ -47,9 +47,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fabric3.binding.jms.model.JmsBindingDefinition;
-import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
+import org.fabric3.api.binding.jms.model.TransactionType;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 

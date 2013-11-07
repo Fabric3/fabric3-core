@@ -34,25 +34,56 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.binding.jms.spi.common;
+ *
+ * ----------------------------------------------------
+ *
+ * Portions originally based on Apache Tuscany 2007
+ * licensed under the Apache 2.0 license.
+ *
+ */
+package org.fabric3.api.binding.jms.model;
 
 /**
- * Defines consumer caching levels.
+ * JMS header values.
  */
-public enum CacheLevel {
-    /**
-     * No caching. Connections, sessions, and consumers will be created for every JMS operation.
-     */
-    NONE,
+public class HeadersDefinition extends PropertyAwareObject {
+    private static final long serialVersionUID = 831415808031924363L;
 
-    /**
-     * Connections are cached between JMS operations.
-     */
-    CONNECTION,
+    private String jmsType;
+    private DeliveryMode deliveryMode;
+    private long timeToLive;
+    private int priority;
 
-    /**
-     * Connections, sessions, and consumers are cached between JMS operations.
-     */
-    ADMINISTERED_OBJECTS
+    public String getJmsType() {
+        return jmsType;
+    }
+
+    public void setJmsType(String jmsType) {
+        this.jmsType = jmsType;
+    }
+
+    public DeliveryMode getDeliveryMode() {
+        return deliveryMode;
+    }
+
+    public void setDeliveryMode(DeliveryMode deliveryMode) {
+        this.deliveryMode = deliveryMode;
+    }
+
+    public long getTimeToLive() {
+        return timeToLive;
+    }
+
+    public void setTimeToLive(long timeToLive) {
+        this.timeToLive = timeToLive;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
 }

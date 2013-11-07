@@ -49,12 +49,12 @@ import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
-import org.fabric3.binding.jms.model.JmsBindingDefinition;
-import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.spi.common.DeliveryMode;
-import org.fabric3.binding.jms.spi.common.DestinationType;
-import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
+import org.fabric3.api.binding.jms.model.DeliveryMode;
+import org.fabric3.api.binding.jms.model.DestinationType;
+import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
+import org.fabric3.api.binding.jms.model.TransactionType;
 import org.fabric3.binding.jms.spi.generator.JmsResourceProvisioner;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;

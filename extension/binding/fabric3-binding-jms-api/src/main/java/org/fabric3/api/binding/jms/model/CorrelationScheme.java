@@ -41,40 +41,15 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.spi.common;
-
-import org.fabric3.api.model.type.ModelObject;
+package org.fabric3.api.binding.jms.model;
 
 /**
- * A response configuration.
+ * Defines message correlation schemes.
  */
-public class ResponseDefinition extends ModelObject {
-    private static final long serialVersionUID = -3413442748842988653L;
-    private DestinationDefinition destination;
-    private ConnectionFactoryDefinition connectionFactory = new ConnectionFactoryDefinition();
-    private ActivationSpec activationSpec;
+public enum CorrelationScheme {
 
-    public ConnectionFactoryDefinition getConnectionFactory() {
-        return connectionFactory;
-    }
+    NONE,
+    MESSAGE_ID,
+    CORRELATION_ID
 
-    public void setConnectionFactory(ConnectionFactoryDefinition connectionFactory) {
-        this.connectionFactory = connectionFactory;
-    }
-
-    public DestinationDefinition getDestination() {
-        return destination;
-    }
-
-    public void setDestination(DestinationDefinition destination) {
-        this.destination = destination;
-    }
-
-    public ActivationSpec getActivationSpec() {
-        return activationSpec;
-    }
-
-    public void setActivationSpec(ActivationSpec activationSpec) {
-        this.activationSpec = activationSpec;
-    }
 }

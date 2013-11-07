@@ -39,7 +39,7 @@ package org.fabric3.binding.jms.spi.runtime.provider;
 
 import javax.jms.ConnectionFactory;
 
-import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 
 /**
  * Implemented by a JMS provider to resolve connection factories.

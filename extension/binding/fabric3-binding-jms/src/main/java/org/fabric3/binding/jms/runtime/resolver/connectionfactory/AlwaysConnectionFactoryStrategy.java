@@ -54,7 +54,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
-import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryConfiguration;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreationException;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;

@@ -41,21 +41,71 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.spi.common;
+package org.fabric3.api.binding.jms.model;
+
+import javax.xml.namespace.QName;
+import java.net.URI;
+
+import org.fabric3.api.model.type.component.BindingDefinition;
+import org.oasisopen.sca.Constants;
 
 /**
- * Contains JMS message selection configuration.
+ * Encapsulates JMS binding configuration specified in a composite.
  */
-public class MessageSelection extends PropertyAwareObject {
-    private static final long serialVersionUID = 1966462577850832869L;
+public class JmsBindingDefinition extends BindingDefinition {
+    private static final long serialVersionUID = -1888120511695824132L;
 
-    private String selector;
+    public static final QName BINDING_QNAME = new QName(Constants.SCA_NS, "binding.jms");
+    private URI generatedTargetUri;
+    private JmsBindingMetadata metadata;
 
-    public MessageSelection(String selector) {
-        this.selector = selector;
+    /**
+     * Constructor.
+     *
+     * @param metadata the JMS metadata
+     */
+    public JmsBindingDefinition(JmsBindingMetadata metadata) {
+        this(null, null, metadata);
     }
 
-    public String getSelector() {
-        return selector;
+    /**
+     * Constructor.
+     *
+     * @param bindingName the binding name
+     * @param metadata    the JMS metadata
+     */
+    public JmsBindingDefinition(String bindingName, JmsBindingMetadata metadata) {
+        this(bindingName, null, metadata);
     }
+
+    /**
+     * Constructor.
+     *
+     * @param bindingName the binding name
+     * @param targetURI   the binding target URI
+     * @param metadata    the JMS metadata to be initialized
+     */
+    public JmsBindingDefinition(String bindingName, URI targetURI, JmsBindingMetadata metadata) {
+        super(bindingName, targetURI, BINDING_QNAME);
+        this.metadata = metadata;
+        addRequiredCapability("jms");
+    }
+
+    public JmsBindingMetadata getJmsMetadata() {
+        return metadata;
+    }
+
+    public void setJmsMetadata(JmsBindingMetadata metadata) {
+        this.metadata = metadata;
+    }
+
+    public void setGeneratedTargetUri(URI generatedTargetUri) {
+        this.generatedTargetUri = generatedTargetUri;
+    }
+
+    @Override
+    public URI getTargetUri() {
+        return generatedTargetUri;
+    }
+
 }

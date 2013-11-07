@@ -61,13 +61,13 @@ import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
 import org.fabric3.binding.jms.runtime.wire.InvocationChainHolder;
 import org.fabric3.binding.jms.runtime.wire.ServiceListener;
 import org.fabric3.binding.jms.runtime.wire.WireHolder;
-import org.fabric3.binding.jms.spi.common.CacheLevel;
-import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.spi.common.CorrelationScheme;
-import org.fabric3.binding.jms.spi.common.DestinationDefinition;
-import org.fabric3.binding.jms.spi.common.DestinationType;
-import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.api.binding.jms.model.CacheLevel;
+import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
+import org.fabric3.api.binding.jms.model.CorrelationScheme;
+import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.DestinationType;
+import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
+import org.fabric3.api.binding.jms.model.TransactionType;
 import org.fabric3.binding.jms.spi.provision.JmsSourceDefinition;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
@@ -87,7 +87,7 @@ import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_ADMINISTERED_OBJECTS;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_NONE;
-import static org.fabric3.binding.jms.spi.common.CacheLevel.ADMINISTERED_OBJECTS;
+import static org.fabric3.api.binding.jms.model.CacheLevel.ADMINISTERED_OBJECTS;
 
 /**
  * Attaches a channel or consumer to a JMS destination.

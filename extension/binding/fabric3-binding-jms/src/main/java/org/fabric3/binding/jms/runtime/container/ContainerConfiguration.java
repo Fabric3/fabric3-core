@@ -43,8 +43,8 @@ import javax.jms.Destination;
 import javax.jms.ExceptionListener;
 import javax.jms.MessageListener;
 
-import org.fabric3.binding.jms.spi.common.DestinationType;
-import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.api.binding.jms.model.DestinationType;
+import org.fabric3.api.binding.jms.model.TransactionType;
 
 /**
  * Configuration for registering a MessageListener with a {@link MessageContainerManager}.

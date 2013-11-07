@@ -47,16 +47,16 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.spi.common.CreateOption;
-import org.fabric3.binding.jms.spi.common.DeliveryMode;
-import org.fabric3.binding.jms.spi.common.DestinationDefinition;
-import org.fabric3.binding.jms.spi.common.DestinationType;
-import org.fabric3.binding.jms.spi.common.HeadersDefinition;
-import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.spi.common.JmsUri;
-import org.fabric3.binding.jms.spi.common.MessageSelection;
-import org.fabric3.binding.jms.spi.common.ResponseDefinition;
+import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
+import org.fabric3.api.binding.jms.model.CreateOption;
+import org.fabric3.api.binding.jms.model.DeliveryMode;
+import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.DestinationType;
+import org.fabric3.api.binding.jms.model.HeadersDefinition;
+import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
+import org.fabric3.api.binding.jms.model.JmsUri;
+import org.fabric3.api.binding.jms.model.MessageSelection;
+import org.fabric3.api.binding.jms.model.ResponseDefinition;
 
 /**
  * Helper class for loading JMS binding configuration from a composite.

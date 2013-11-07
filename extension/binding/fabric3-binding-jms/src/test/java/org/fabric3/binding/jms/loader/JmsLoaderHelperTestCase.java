@@ -45,8 +45,8 @@ package org.fabric3.binding.jms.loader;
 
 import junit.framework.TestCase;
 
-import org.fabric3.binding.jms.spi.common.DeliveryMode;
-import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.api.binding.jms.model.DeliveryMode;
+import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 
 public class JmsLoaderHelperTestCase extends TestCase {
 

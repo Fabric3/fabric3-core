@@ -41,21 +41,13 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.spi.common;
+package org.fabric3.api.binding.jms.model;
 
 /**
- * A destination configuration.
+ * Options for resolving destinations and connection factories.
  */
-public class DestinationDefinition extends AdministeredObjectDefinition {
-    private static final long serialVersionUID = 2175092846182913179L;
-    private DestinationType type = DestinationType.QUEUE;
+public enum CreateOption {
 
-    public DestinationType geType() {
-        return type;
-    }
-
-    public void setType(DestinationType type) {
-        this.type = type;
-    }
+    ALWAYS, NEVER, IF_NOT_EXIST
 
 }

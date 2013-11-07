@@ -46,9 +46,9 @@ package org.fabric3.binding.jms.spi.provision;
 import java.net.URI;
 import java.util.List;
 
-import org.fabric3.binding.jms.spi.common.DestinationDefinition;
-import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
-import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
+import org.fabric3.api.binding.jms.model.TransactionType;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.spi.model.physical.PhysicalBindingHandlerDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;

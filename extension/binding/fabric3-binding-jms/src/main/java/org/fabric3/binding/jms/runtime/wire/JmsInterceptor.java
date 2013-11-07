@@ -65,8 +65,8 @@ import java.util.UUID;
 
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants;
-import org.fabric3.binding.jms.spi.common.CorrelationScheme;
-import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.api.binding.jms.model.CorrelationScheme;
+import org.fabric3.api.binding.jms.model.TransactionType;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
 import org.fabric3.spi.container.invocation.CallbackReference;

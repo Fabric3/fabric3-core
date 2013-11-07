@@ -27,6 +27,7 @@ Public License. See the accompanying license file for details.
  
         <dependencySet>
             <includes>
+                <include>org.codehaus.fabric3:fabric3-binding-jms-api</include>
                 <include>org.codehaus.fabric3:fabric3-binding-jms</include>
                 <include>org.codehaus.fabric3:fabric3-jndi</include>
                 <include>org.codehaus.fabric3:fabric3-activemq</include>

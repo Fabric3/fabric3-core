@@ -41,38 +41,21 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.runtime.resolver.destination;
-
-import java.util.List;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
-import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
-import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+package org.fabric3.api.binding.jms.model;
 
 /**
- * Implementation that always resolves a destination against JNDI and never attempts to create it.
+ * A destination configuration.
  */
-public class NeverDestinationStrategy implements DestinationStrategy {
-    private List<DestinationResolver> resolvers;
+public class DestinationDefinition extends AdministeredObjectDefinition {
+    private static final long serialVersionUID = 2175092846182913179L;
+    private DestinationType type = DestinationType.QUEUE;
 
-    @Reference(required = false)
-    public void setResolvers(List<DestinationResolver> resolvers) {
-        this.resolvers = resolvers;
+    public DestinationType geType() {
+        return type;
     }
 
-    public Destination getDestination(DestinationDefinition definition, String clientId, ConnectionFactory factory) throws JmsResolutionException {
-        for (DestinationResolver resolver : resolvers) {
-            Destination destination = resolver.resolve(definition);
-            if (destination != null) {
-                return destination;
-            }
-        }
-        throw new JmsResolutionException("Destination not found: " + definition.getName());
+    public void setType(DestinationType type) {
+        this.type = type;
     }
 
 }

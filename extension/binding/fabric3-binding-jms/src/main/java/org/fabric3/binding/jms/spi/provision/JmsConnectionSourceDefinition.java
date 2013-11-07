@@ -45,7 +45,7 @@ package org.fabric3.binding.jms.spi.provision;
 
 import java.net.URI;
 
-import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.spi.model.physical.PhysicalConnectionSourceDefinition;
 
 /**

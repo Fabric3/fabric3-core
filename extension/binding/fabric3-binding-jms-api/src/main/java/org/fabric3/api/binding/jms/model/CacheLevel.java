@@ -34,20 +34,25 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.binding.jms.spi.common;
+*/
+package org.fabric3.api.binding.jms.model;
 
 /**
- * Defines transaction types.
+ * Defines consumer caching levels.
  */
-public enum TransactionType {
+public enum CacheLevel {
+    /**
+     * No caching. Connections, sessions, and consumers will be created for every JMS operation.
+     */
+    NONE,
 
-    GLOBAL, NONE, SESSION
+    /**
+     * Connections are cached between JMS operations.
+     */
+    CONNECTION,
 
+    /**
+     * Connections, sessions, and consumers are cached between JMS operations.
+     */
+    ADMINISTERED_OBJECTS
 }

@@ -48,11 +48,11 @@ import javax.jms.Destination;
 
 import org.fabric3.binding.jms.runtime.channel.JmsEventStreamHandler;
 import org.fabric3.binding.jms.runtime.resolver.AdministeredObjectResolver;
-import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.spi.common.DeliveryMode;
-import org.fabric3.binding.jms.spi.common.DestinationDefinition;
-import org.fabric3.binding.jms.spi.common.HeadersDefinition;
-import org.fabric3.binding.jms.spi.common.JmsBindingMetadata;
+import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
+import org.fabric3.api.binding.jms.model.DeliveryMode;
+import org.fabric3.api.binding.jms.model.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.HeadersDefinition;
+import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.binding.jms.spi.provision.JmsConnectionTargetDefinition;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 import org.fabric3.spi.container.builder.component.ConnectionAttachException;

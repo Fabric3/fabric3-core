@@ -34,34 +34,12 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
- */
-package org.fabric3.binding.jms.spi.common;
+*/
+package org.fabric3.api.binding.jms.model;
 
 /**
- * Contains JMS activation spec configuration.
+ * Defines message delivery modes.
  */
-public class ActivationSpec extends PropertyAwareObject {
-    private static final long serialVersionUID = -913399490782035982L;
-    private String name;
-    private CreateOption create;
-
-    public ActivationSpec(String name, CreateOption create) {
-        this.name = name;
-        this.create = create;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public CreateOption getCreate() {
-        return create;
-    }
-
+public enum DeliveryMode {
+    PERSISTENT, NON_PERSISTENT
 }

@@ -57,8 +57,8 @@ import javax.jms.Topic;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.binding.jms.runtime.common.JmsHelper;
-import org.fabric3.binding.jms.spi.common.DestinationType;
-import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.api.binding.jms.model.DestinationType;
+import org.fabric3.api.binding.jms.model.TransactionType;
 import org.fabric3.spi.threadpool.ExecutionContext;
 import org.fabric3.spi.threadpool.ExecutionContextTunnel;
 

@@ -41,12 +41,35 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.spi.common;
+package org.fabric3.api.binding.jms.model;
 
 /**
- * The destination type.
+ * Represents binding.jms\operationProperties.
  */
-public enum DestinationType {
+public class OperationPropertiesDefinition extends PropertyAwareObject {
+    private static final long serialVersionUID = -1325680761205311178L;
+    private String name;
+    private String selectedOperation;
+    private HeadersDefinition header = new HeadersDefinition();
 
-    QUEUE, TOPIC
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSelectedOperation() {
+        return selectedOperation;
+    }
+
+    public void setSelectedOperation(String operation) {
+        this.selectedOperation = operation;
+    }
+
+    public HeadersDefinition getHeaders() {
+        return header;
+    }
+
 }

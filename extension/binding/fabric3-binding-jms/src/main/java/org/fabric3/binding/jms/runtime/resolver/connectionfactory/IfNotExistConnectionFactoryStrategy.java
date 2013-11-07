@@ -49,7 +49,7 @@ import javax.jms.ConnectionFactory;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.jms.runtime.resolver.ConnectionFactoryStrategy;
-import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
+import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryCreatorRegistry;
 import org.fabric3.binding.jms.spi.runtime.connection.ConnectionFactoryTemplateRegistry;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;

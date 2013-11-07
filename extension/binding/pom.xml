@@ -30,6 +30,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+        <module>fabric3-binding-jms-api</module>
 		<module>fabric3-binding-jms</module>
         <module>fabric3-binding-rs-api</module>
         <module>fabric3-binding-rs</module>

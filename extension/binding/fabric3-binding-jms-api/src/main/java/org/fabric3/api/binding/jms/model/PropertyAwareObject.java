@@ -41,13 +41,60 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.spi.common;
+package org.fabric3.api.binding.jms.model;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.fabric3.api.model.type.ModelObject;
 
 /**
- * Options for resolving destinations and connection factories.
+ * A JMS binding configuration element that contains properties.
  */
-public enum CreateOption {
+public abstract class PropertyAwareObject extends ModelObject {
+    private static final long serialVersionUID = 7862305926561642783L;
+    private Map<String, String> properties = null;
 
-    ALWAYS, NEVER, IF_NOT_EXIST
+    /**
+     * Add a property.
+     *
+     * @param name  name of the property.
+     * @param value value of the property.
+     */
+    public void addProperty(String name, String value) {
+        ensurePropertiesNotNull();
+        properties.put(name, value);
+    }
+
+
+    /**
+     * Add a property.
+     *
+     * @param properties the properties.
+     */
+    public void addProperties(Map<String, String> properties) {
+        ensurePropertiesNotNull();
+        properties.putAll(properties);
+    }
+
+    /**
+     * Returns properties used to create the administered object.
+     *
+     * @return Properties used to create the administered object.
+     */
+    public Map<String, String> getProperties() {
+        if (this.properties != null) {
+            return properties;
+        } else {
+            return Collections.emptyMap();
+        }
+    }
+
+    private void ensurePropertiesNotNull() {
+        if (properties == null) {
+            properties = new HashMap<String, String>();
+        }
+    }
 
 }

@@ -41,38 +41,21 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.runtime.resolver.destination;
-
-import java.util.List;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-
-import org.oasisopen.sca.annotation.Reference;
-
-import org.fabric3.binding.jms.runtime.resolver.DestinationStrategy;
-import org.fabric3.api.binding.jms.model.DestinationDefinition;
-import org.fabric3.binding.jms.spi.runtime.provider.DestinationResolver;
-import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
+package org.fabric3.api.binding.jms.model;
 
 /**
- * Implementation that always resolves a destination against JNDI and never attempts to create it.
+ * Contains JMS message selection configuration.
  */
-public class NeverDestinationStrategy implements DestinationStrategy {
-    private List<DestinationResolver> resolvers;
+public class MessageSelection extends PropertyAwareObject {
+    private static final long serialVersionUID = 1966462577850832869L;
 
-    @Reference(required = false)
-    public void setResolvers(List<DestinationResolver> resolvers) {
-        this.resolvers = resolvers;
+    private String selector;
+
+    public MessageSelection(String selector) {
+        this.selector = selector;
     }
 
-    public Destination getDestination(DestinationDefinition definition, String clientId, ConnectionFactory factory) throws JmsResolutionException {
-        for (DestinationResolver resolver : resolvers) {
-            Destination destination = resolver.resolve(definition);
-            if (destination != null) {
-                return destination;
-            }
-        }
-        throw new JmsResolutionException("Destination not found: " + definition.getName());
+    public String getSelector() {
+        return selector;
     }
-
 }

@@ -43,8 +43,8 @@ import javax.jms.Destination;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import org.fabric3.binding.jms.spi.common.ConnectionFactoryDefinition;
-import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
+import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.binding.jms.spi.runtime.manager.ConnectionFactoryManager;
 import org.fabric3.jndi.spi.JndiContextManager;
 

@@ -41,8 +41,8 @@ import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.transaction.TransactionManager;
 
-import org.fabric3.binding.jms.spi.common.CorrelationScheme;
-import org.fabric3.binding.jms.spi.common.TransactionType;
+import org.fabric3.api.binding.jms.model.CorrelationScheme;
+import org.fabric3.api.binding.jms.model.TransactionType;
 
 /**
  * Template for configuring non-operation specific objects for a JmsInterceptor.

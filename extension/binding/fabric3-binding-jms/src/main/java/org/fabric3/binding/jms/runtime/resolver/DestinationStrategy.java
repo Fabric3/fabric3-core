@@ -46,7 +46,7 @@ package org.fabric3.binding.jms.runtime.resolver;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 
-import org.fabric3.binding.jms.spi.common.DestinationDefinition;
+import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.binding.jms.spi.runtime.provider.JmsResolutionException;
 
 /**

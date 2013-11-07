@@ -41,15 +41,12 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.spi.common;
+package org.fabric3.api.binding.jms.model;
 
 /**
- * Defines message correlation schemes.
+ * The destination type.
  */
-public enum CorrelationScheme {
+public enum DestinationType {
 
-    NONE,
-    MESSAGE_ID,
-    CORRELATION_ID
-
+    QUEUE, TOPIC
 }
