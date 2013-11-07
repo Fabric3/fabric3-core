@@ -34,30 +34,53 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * ----------------------------------------------------
- *
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
- *
+*/
+package org.fabric3.api.binding.jms.annotation;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import org.fabric3.api.annotation.model.Binding;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+/**
+ * Configures a reference or service with the JMS binding.
  */
-package org.fabric3.binding.jms.loader;
+@Target({TYPE, FIELD, METHOD, PARAMETER})
+@Retention(RUNTIME)
+@Binding("{http://docs.oasis-open.org/ns/opencsa/sca/200912}binding.jms")
+public @interface JMS {
+    /**
+     * Specifies the service interface to bind.
+     *
+     * @return the service interface to bind
+     */
+    public Class<?> service() default Void.class;
 
-import junit.framework.TestCase;
+    /**
+     * Specifies the forward binding configuration.
+     *
+     * @return the forward binding configuration
+     */
+    public JMSConfiguration value() default @JMSConfiguration(destination = "");
 
-import org.fabric3.api.binding.jms.model.DeliveryMode;
-import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
+    /**
+     * Specifies the callback binding configuration for bidirectional services.
+     *
+     * @return the callback binding configuration
+     */
+    public JMSConfiguration callback() default @JMSConfiguration(destination = "");
 
-public class JmsLoaderHelperTestCase extends TestCase {
-
-    public void testParse() throws Exception {
-        String uri = "jms:destination?jndiConnectionFactoryName=factory&deliveryMode=nonpersistent&selector=select";
-        JmsBindingMetadata metadata = JmsLoaderHelper.parseUri(uri);
-        assertEquals("destination", metadata.getDestination().getName());
-        assertEquals("factory", metadata.getConnectionFactory().getName());
-        assertEquals("select", metadata.getUriMessageSelection().getSelector());
-        assertEquals(DeliveryMode.NON_PERSISTENT, metadata.getUriHeaders().getDeliveryMode());
-    }
-
+    /**
+     * Specifies the binding name.
+     *
+     * @return the binding name
+     */
+    public String name() default "";
 
 }
+

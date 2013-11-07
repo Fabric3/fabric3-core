@@ -70,12 +70,28 @@ public class FileBindingPostProcessor extends AbstractBindingPostProcessor<FileB
 
     }
 
+    protected BindingDefinition processServiceCallback(FileBinding annotation,
+                                                       AbstractService<?> service,
+                                                       InjectingComponentType componentType,
+                                                       Class<?> implClass,
+                                                       IntrospectionContext context) {
+        return null; // not supported
+    }
+
     protected BindingDefinition processReference(FileBinding annotation,
                                                  ReferenceDefinition reference,
                                                  AccessibleObject object,
                                                  Class<?> implClass,
                                                  IntrospectionContext context) {
         return createDefinition(annotation, implClass, context);
+    }
+
+    protected BindingDefinition processReferenceCallback(FileBinding annotation,
+                                                         ReferenceDefinition reference,
+                                                         AccessibleObject object,
+                                                         Class<?> implClass,
+                                                         IntrospectionContext context) {
+        return null; // not supported
     }
 
     private FileBindingDefinition createDefinition(FileBinding annotation, Class<?> implClass, IntrospectionContext context) {

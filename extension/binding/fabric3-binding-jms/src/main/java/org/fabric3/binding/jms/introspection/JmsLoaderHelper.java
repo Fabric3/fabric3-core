@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.loader;
+package org.fabric3.binding.jms.introspection;
 
 import java.util.Map;
 import java.util.StringTokenizer;

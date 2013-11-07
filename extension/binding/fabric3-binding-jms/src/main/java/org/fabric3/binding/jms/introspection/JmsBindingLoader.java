@@ -41,7 +41,7 @@
  * licensed under the Apache 2.0 license.
  *
  */
-package org.fabric3.binding.jms.loader;
+package org.fabric3.binding.jms.introspection;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -52,8 +52,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.fabric3.api.model.type.component.BindingHandlerDefinition;
-import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
+import org.fabric3.api.annotation.Source;
 import org.fabric3.api.binding.jms.model.ActivationSpec;
 import org.fabric3.api.binding.jms.model.CacheLevel;
 import org.fabric3.api.binding.jms.model.ConnectionFactoryDefinition;
@@ -63,11 +62,13 @@ import org.fabric3.api.binding.jms.model.DeliveryMode;
 import org.fabric3.api.binding.jms.model.DestinationDefinition;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.HeadersDefinition;
+import org.fabric3.api.binding.jms.model.JmsBindingDefinition;
 import org.fabric3.api.binding.jms.model.JmsBindingMetadata;
 import org.fabric3.api.binding.jms.model.MessageSelection;
 import org.fabric3.api.binding.jms.model.OperationPropertiesDefinition;
 import org.fabric3.api.binding.jms.model.PropertyAwareObject;
 import org.fabric3.api.binding.jms.model.ResponseDefinition;
+import org.fabric3.api.model.type.component.BindingHandlerDefinition;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
 import org.fabric3.spi.introspection.xml.InvalidValue;
@@ -80,7 +81,6 @@ import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-
 
 /**
  * Loads a <code>&lt;binding.jms&gt;</code> entry in a composite.
@@ -95,13 +95,14 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
     private int defaultTransactionTimeout = 30; // in seconds
     private int defaultReceiveTimeout = (defaultTransactionTimeout / 2) * 1000;  // set the timeout in milliseconds to half that of the trx timeout
 
-
     @Property(required = false)
+    @Source("$systemConfig//f3:jms/@response.timeout")
     public void setDefaultResponseTimeout(int defaultResponseTimeout) {
         this.defaultResponseTimeout = defaultResponseTimeout;
     }
 
     @Property(required = false)
+    @Source("$systemConfig//f3:jms/@transaction.timeout")
     public void setDefaultTransactionTimeout(int defaultTransactionTimeout) {
         this.defaultTransactionTimeout = defaultTransactionTimeout;
         defaultReceiveTimeout = (defaultTransactionTimeout / 2) * 1000;
@@ -177,59 +178,60 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         while (true) {
 
             switch (reader.next()) {
-            case START_ELEMENT:
-                name = reader.getName().getLocalPart();
-                Location location = reader.getLocation();
-                if ("handler".equals(name)) {
-                    BindingHandlerDefinition handler = registry.load(reader, BindingHandlerDefinition.class, context);
-                    definition.addHandler(handler);
-                } else if ("destination".equals(name)) {
-                    if (uri != null) {
-                        InvalidJmsBinding error = new InvalidJmsBinding(
-                                "A destination cannot be defined both as a JMS uri and as part of the binding.jms element",
-                                location, definition);
-                        context.addError(error);
+                case START_ELEMENT:
+                    name = reader.getName().getLocalPart();
+                    Location location = reader.getLocation();
+                    if ("handler".equals(name)) {
+                        BindingHandlerDefinition handler = registry.load(reader, BindingHandlerDefinition.class, context);
+                        definition.addHandler(handler);
+                    } else if ("destination".equals(name)) {
+                        if (uri != null) {
+                            InvalidJmsBinding error = new InvalidJmsBinding(
+                                    "A destination cannot be defined both as a JMS uri and as part of the binding.jms element",
+                                    location,
+                                    definition);
+                            context.addError(error);
+                        }
+                        DestinationDefinition destination = loadDestination(reader, context);
+                        metadata.setDestination(destination);
+                    } else if ("connectionFactory".equals(name)) {
+                        ConnectionFactoryDefinition connectionFactory = loadConnectionFactory(reader, context);
+                        metadata.setConnectionFactory(connectionFactory);
+                    } else if ("activationSpec".equals(name)) {
+                        ActivationSpec spec = loadActivationSpec(reader, context);
+                        metadata.setActivationSpec(spec);
+                    } else if ("response".equals(name)) {
+                        ResponseDefinition response = loadResponse(reader, context);
+                        metadata.setResponse(response);
+                    } else if ("headers".equals(name)) {
+                        HeadersDefinition headers = metadata.getHeaders();
+                        loadHeaders(headers, reader, context);
+                    } else if ("messageSelection".equals(name)) {
+                        MessageSelection messageSelection = loadMessageSelection(reader, context);
+                        metadata.setMessageSelection(messageSelection);
+                    } else if ("operationProperties".equals(name)) {
+                        OperationPropertiesDefinition operationProperties = loadOperationProperties(reader, context);
+                        metadata.addOperationProperties(operationProperties.getName(), operationProperties);
                     }
-                    DestinationDefinition destination = loadDestination(reader, context);
-                    metadata.setDestination(destination);
-                } else if ("connectionFactory".equals(name)) {
-                    ConnectionFactoryDefinition connectionFactory = loadConnectionFactory(reader, context);
-                    metadata.setConnectionFactory(connectionFactory);
-                } else if ("activationSpec".equals(name)) {
-                    ActivationSpec spec = loadActivationSpec(reader, context);
-                    metadata.setActivationSpec(spec);
-                } else if ("response".equals(name)) {
-                    ResponseDefinition response = loadResponse(reader, context);
-                    metadata.setResponse(response);
-                } else if ("headers".equals(name)) {
-                    HeadersDefinition headers = metadata.getHeaders();
-                    loadHeaders(headers, reader, context);
-                } else if ("messageSelection".equals(name)) {
-                    MessageSelection messageSelection = loadMessageSelection(reader, context);
-                    metadata.setMessageSelection(messageSelection);
-                } else if ("operationProperties".equals(name)) {
-                    OperationPropertiesDefinition operationProperties = loadOperationProperties(reader, context);
-                    metadata.addOperationProperties(operationProperties.getName(), operationProperties);
-                }
-                break;
-            case END_ELEMENT:
-                name = reader.getName().getLocalPart();
-                if ("binding.jms".equals(name)) {
-                    // needed for callbacks
-                    DestinationDefinition destinationDefinition = metadata.getDestination();
-                    if (destinationDefinition != null) {
-                        String target = destinationDefinition.getName();
-                        URI bindingUri = URI.create("jms://" + target);
-                        definition.setGeneratedTargetUri(bindingUri);
-                    } else if (metadata.getActivationSpec() != null) {
-                        String target = metadata.getActivationSpec().getName();
-                        URI bindingUri = URI.create("jms://" + target);
-                        definition.setGeneratedTargetUri(bindingUri);
+                    break;
+                case END_ELEMENT:
+                    name = reader.getName().getLocalPart();
+                    if ("binding.jms".equals(name)) {
+                        // needed for callbacks
+                        DestinationDefinition destinationDefinition = metadata.getDestination();
+                        if (destinationDefinition != null) {
+                            String target = destinationDefinition.getName();
+                            URI bindingUri = URI.create("jms://" + target);
+                            definition.setGeneratedTargetUri(bindingUri);
+                        } else if (metadata.getActivationSpec() != null) {
+                            String target = metadata.getActivationSpec().getName();
+                            URI bindingUri = URI.create("jms://" + target);
+                            definition.setGeneratedTargetUri(bindingUri);
+                        }
+                        validate(definition, reader, context);
+                        return definition;
                     }
-                    validate(definition, reader, context);
-                    return definition;
-                }
-                break;
+                    break;
             }
 
         }
@@ -363,31 +365,30 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         return spec;
     }
 
-
     private ResponseDefinition loadResponse(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         ResponseDefinition response = new ResponseDefinition();
         String name;
         while (true) {
             switch (reader.next()) {
-            case START_ELEMENT:
-                name = reader.getName().getLocalPart();
-                if ("destination".equals(name)) {
-                    DestinationDefinition destination = loadDestination(reader, context);
-                    response.setDestination(destination);
-                } else if ("activationSpec".equals(name)) {
-                    ActivationSpec spec = loadActivationSpec(reader, context);
-                    response.setActivationSpec(spec);
-                } else if ("connectionFactory".equals(name)) {
-                    ConnectionFactoryDefinition connectionFactory = loadConnectionFactory(reader, context);
-                    response.setConnectionFactory(connectionFactory);
-                }
-                break;
-            case END_ELEMENT:
-                name = reader.getName().getLocalPart();
-                if ("response".equals(name)) {
-                    return response;
-                }
-                break;
+                case START_ELEMENT:
+                    name = reader.getName().getLocalPart();
+                    if ("destination".equals(name)) {
+                        DestinationDefinition destination = loadDestination(reader, context);
+                        response.setDestination(destination);
+                    } else if ("activationSpec".equals(name)) {
+                        ActivationSpec spec = loadActivationSpec(reader, context);
+                        response.setActivationSpec(spec);
+                    } else if ("connectionFactory".equals(name)) {
+                        ConnectionFactoryDefinition connectionFactory = loadConnectionFactory(reader, context);
+                        response.setConnectionFactory(connectionFactory);
+                    }
+                    break;
+                case END_ELEMENT:
+                    name = reader.getName().getLocalPart();
+                    if ("response".equals(name)) {
+                        return response;
+                    }
+                    break;
             }
         }
     }
@@ -503,7 +504,6 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         return messageSelection;
     }
 
-
     private OperationPropertiesDefinition loadOperationProperties(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
         OperationPropertiesDefinition operationProperties = new OperationPropertiesDefinition();
         operationProperties.setName(reader.getAttributeValue(null, "name"));
@@ -511,21 +511,21 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         String name;
         while (true) {
             switch (reader.next()) {
-            case START_ELEMENT:
-                name = reader.getName().getLocalPart();
-                if ("headers".equals(name)) {
-                    HeadersDefinition headers = operationProperties.getHeaders();
-                    loadHeaders(headers, reader, context);
-                } else if ("property".equals(name)) {
-                    loadProperty(reader, operationProperties);
-                }
-                break;
-            case END_ELEMENT:
-                name = reader.getName().getLocalPart();
-                if ("operationProperties".equals(name)) {
-                    return operationProperties;
-                }
-                break;
+                case START_ELEMENT:
+                    name = reader.getName().getLocalPart();
+                    if ("headers".equals(name)) {
+                        HeadersDefinition headers = operationProperties.getHeaders();
+                        loadHeaders(headers, reader, context);
+                    } else if ("property".equals(name)) {
+                        loadProperty(reader, operationProperties);
+                    }
+                    break;
+                case END_ELEMENT:
+                    name = reader.getName().getLocalPart();
+                    if ("operationProperties".equals(name)) {
+                        return operationProperties;
+                    }
+                    break;
             }
         }
 
@@ -535,18 +535,18 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         String name;
         while (true) {
             switch (reader.next()) {
-            case START_ELEMENT:
-                name = reader.getName().getLocalPart();
-                if ("property".equals(name)) {
-                    loadProperty(reader, parent);
-                }
-                break;
-            case END_ELEMENT:
-                name = reader.getName().getLocalPart();
-                if (parentName.equals(name)) {
-                    return;
-                }
-                break;
+                case START_ELEMENT:
+                    name = reader.getName().getLocalPart();
+                    if ("property".equals(name)) {
+                        loadProperty(reader, parent);
+                    }
+                    break;
+                case END_ELEMENT:
+                    name = reader.getName().getLocalPart();
+                    if (parentName.equals(name)) {
+                        return;
+                    }
+                    break;
             }
         }
     }
@@ -566,8 +566,9 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         }
         if (metadata.getActivationSpec() != null && metadata.getConnectionFactory().isConfigured()) {
             Location location = reader.getLocation();
-            InvalidJmsBinding error =
-                    new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding", location, definition);
+            InvalidJmsBinding error = new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding",
+                                                            location,
+                                                            definition);
             context.addError(error);
         }
         DestinationDefinition requestDestination = metadata.getDestination();
@@ -575,10 +576,9 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
         if (requestDestination != null && requestSpec != null) {
             if (requestDestination.getName() != null && !requestDestination.getName().equals(requestSpec.getName())) {
                 Location location = reader.getLocation();
-                InvalidJmsBinding error =
-                        new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination",
-                                              location,
-                                              definition);
+                InvalidJmsBinding error = new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination",
+                                                                location,
+                                                                definition);
                 context.addError(error);
             }
         }
@@ -588,20 +588,18 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             ActivationSpec responseSpec = response.getActivationSpec();
             if (responseSpec != null && response.getConnectionFactory().isConfigured()) {
                 Location location = reader.getLocation();
-                InvalidJmsBinding error =
-                        new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding",
-                                              location,
-                                              definition);
+                InvalidJmsBinding error = new InvalidJmsBinding("Activation spec and connection factory cannot both be specified on a JMS binding",
+                                                                location,
+                                                                definition);
                 context.addError(error);
             }
             DestinationDefinition responseDestination = response.getDestination();
             if (responseDestination != null && responseSpec != null) {
                 if (responseDestination.getName() != null && !responseDestination.getName().equals(responseSpec.getName())) {
                     Location location = reader.getLocation();
-                    InvalidJmsBinding error =
-                            new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination",
-                                                  location,
-                                                  definition);
+                    InvalidJmsBinding error = new InvalidJmsBinding("Activation spec and destination configuration must refer to the same destination",
+                                                                    location,
+                                                                    definition);
                     context.addError(error);
                 }
             }
@@ -620,6 +618,5 @@ public class JmsBindingLoader extends AbstractValidatingTypeLoader<JmsBindingDef
             }
         }
     }
-
 
 }

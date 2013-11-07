@@ -74,12 +74,28 @@ public class WsBindingPostProcessor extends AbstractBindingPostProcessor<WebServ
 
     }
 
+    protected BindingDefinition processServiceCallback(WebServiceBinding annotation,
+                                                       AbstractService<?> service,
+                                                       InjectingComponentType componentType,
+                                                       Class<?> implClass,
+                                                       IntrospectionContext context) {
+        return null; // not yet supported
+    }
+
     protected BindingDefinition processReference(WebServiceBinding annotation,
                                                  ReferenceDefinition reference,
                                                  AccessibleObject object,
                                                  Class<?> implClass,
                                                  IntrospectionContext context) {
         return createDefinition(annotation, implClass, context);
+    }
+
+    protected BindingDefinition processReferenceCallback(WebServiceBinding annotation,
+                                                         ReferenceDefinition reference,
+                                                         AccessibleObject object,
+                                                         Class<?> implClass,
+                                                         IntrospectionContext context) {
+        return null; // not yet supported
     }
 
     private WsBindingDefinition createDefinition(WebServiceBinding annotation, Class<?> implClass, IntrospectionContext context) {

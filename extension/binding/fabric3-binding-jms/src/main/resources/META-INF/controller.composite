@@ -16,13 +16,15 @@ licensed under the Apache 2.0 license.
            name="JmsControllerExtension">
 
     <component f3:key="sca:binding.jms" name="JMSBindingLoader">
-        <f3:implementation.system class="org.fabric3.binding.jms.loader.JmsBindingLoader"/>
-        <property name="defaultResponseTimeout" source="$systemConfig//f3:jms/@response.timeout"/>
-        <property name="defaultTransactionTimeout" source="$systemConfig//f3:jms/@transaction.timeout"/>
+        <f3:implementation.system class="org.fabric3.binding.jms.introspection.JmsBindingLoader"/>
     </component>
 
     <component name="JmsBindingGenerator" f3:key="org.fabric3.api.binding.jms.model.JmsBindingDefinition">
         <f3:implementation.system class="org.fabric3.binding.jms.generator.JmsBindingGenerator"/>
+    </component>
+
+    <component name="JmsBindingPostProcessor">
+        <f3:implementation.system class="org.fabric3.binding.jms.introspection.JmsBindingPostProcessor"/>
     </component>
 
     <component name="JmsConnectionBindingGenerator" f3:key="org.fabric3.api.binding.jms.model.JmsBindingDefinition">

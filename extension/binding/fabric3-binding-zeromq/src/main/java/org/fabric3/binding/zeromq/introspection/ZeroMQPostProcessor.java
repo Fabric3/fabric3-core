@@ -85,6 +85,14 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
         }
     }
 
+    protected BindingDefinition processServiceCallback(ZeroMQ annotation,
+                                                       AbstractService<?> service,
+                                                       InjectingComponentType componentType,
+                                                       Class<?> implClass,
+                                                       IntrospectionContext context) {
+        return null; // not needed
+    }
+
     protected BindingDefinition processReference(ZeroMQ annotation,
                                                  ReferenceDefinition reference,
                                                  AccessibleObject object,
@@ -99,6 +107,14 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
 
         processMetadata(annotation, metadata);
         return binding;
+    }
+
+    protected BindingDefinition processReferenceCallback(ZeroMQ annotation,
+                                                         ReferenceDefinition reference,
+                                                         AccessibleObject object,
+                                                         Class<?> implClass,
+                                                         IntrospectionContext context) {
+        return null; // not needed
     }
 
     private void processMetadata(ZeroMQ annotation, ZeroMQMetadata metadata) {

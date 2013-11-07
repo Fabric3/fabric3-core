@@ -35,7 +35,7 @@
 * GNU General Public License along with Fabric3.
 * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.jms.loader;
+package org.fabric3.binding.jms.introspection;
 
 import org.fabric3.api.host.Fabric3Exception;
 

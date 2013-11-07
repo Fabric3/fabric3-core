@@ -70,12 +70,28 @@ public class BindingTemplatePostProcessor extends AbstractBindingPostProcessor<B
         return resolve(annotation, implClass, implClass, context);
     }
 
+    protected BindingDefinition processServiceCallback(BindingTemplate annotation,
+                                                       AbstractService<?> service,
+                                                       InjectingComponentType componentType,
+                                                       Class<?> implClass,
+                                                       IntrospectionContext context) {
+        return null; // not yet supported
+    }
+
     protected BindingDefinition processReference(BindingTemplate annotation,
                                                  ReferenceDefinition reference,
                                                  AccessibleObject object,
                                                  Class<?> implClass,
                                                  IntrospectionContext context) {
         return resolve(annotation, object, implClass, context);
+    }
+
+    protected BindingDefinition processReferenceCallback(BindingTemplate annotation,
+                                                         ReferenceDefinition reference,
+                                                         AccessibleObject object,
+                                                         Class<?> implClass,
+                                                         IntrospectionContext context) {
+        return null; // not yet supported
     }
 
     private BindingDefinition resolve(BindingTemplate annotation, AnnotatedElement element, Class<?> implClazz, IntrospectionContext context) {
