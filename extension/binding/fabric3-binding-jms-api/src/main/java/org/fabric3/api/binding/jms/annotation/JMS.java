@@ -66,7 +66,7 @@ public @interface JMS {
      *
      * @return the forward binding configuration
      */
-    public JMSConfiguration value() default @JMSConfiguration(destination = "");
+    public JMSConfiguration value();
 
     /**
      * Specifies the callback binding configuration for bidirectional services.

@@ -39,6 +39,7 @@ package org.fabric3.binding.jms.introspection;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
+import java.net.URI;
 
 import org.fabric3.api.binding.jms.annotation.JMS;
 import org.fabric3.api.binding.jms.annotation.JMSConfiguration;
@@ -109,7 +110,16 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
 
         parseConfiguration(configuration, metadata, implClass, context);
 
-        return new JmsBindingDefinition(name, metadata);
+        JmsBindingDefinition definition = new JmsBindingDefinition(name, metadata);
+
+        // needed for callbacks
+        DestinationDefinition destinationDefinition = metadata.getDestination();
+        if (destinationDefinition != null) {
+            String target = destinationDefinition.getName();
+            URI bindingUri = URI.create("jms://" + target);
+            definition.setGeneratedTargetUri(bindingUri);
+        }
+        return definition;
     }
 
     private void parseConfiguration(JMSConfiguration configuration, JmsBindingMetadata metadata, Class<?> implClass, IntrospectionContext context) {
