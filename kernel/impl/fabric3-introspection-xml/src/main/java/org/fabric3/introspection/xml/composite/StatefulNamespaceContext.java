@@ -37,18 +37,21 @@
 */
 package org.fabric3.introspection.xml.composite;
 
+import javax.xml.namespace.NamespaceContext;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.NamespaceContext;
 
 /**
  * A NamespaceContext used for loaded property default values specified on a component configuration.
  */
-public class StatefulNamespaceContext implements NamespaceContext {
+public class StatefulNamespaceContext implements NamespaceContext, Serializable {
+    private static final long serialVersionUID = -296391955811011867L;
+
     private Map<String, String> prefixToUri = new HashMap<String, String>();
     private Map<String, List<String>> uriToPrefixes = new HashMap<String, List<String>>();
 
