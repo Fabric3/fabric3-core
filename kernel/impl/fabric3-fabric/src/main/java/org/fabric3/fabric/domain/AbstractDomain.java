@@ -187,6 +187,9 @@ public abstract class AbstractDomain implements Domain {
             listener.onDeploy(name, SYNTHETIC_PLAN_NAME);
         }
         instantiateAndDeploy(composite, SYNTHETIC_PLAN, simulated);
+        for (DeployListener listener : listeners) {
+            listener.onDeployCompleted(name, SYNTHETIC_PLAN_NAME);
+        }
     }
 
     public synchronized void include(List<URI> uris) throws DeploymentException {

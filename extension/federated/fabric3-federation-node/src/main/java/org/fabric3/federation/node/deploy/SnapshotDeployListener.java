@@ -41,13 +41,15 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.host.HostNamespaces;
+import org.fabric3.api.host.Names;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.federation.node.command.DeploymentSnapshotCommand;
 import org.fabric3.federation.node.snapshot.SnapshotHelper;
-import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.domain.DeployListener;
+import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.NodeTopologyService;
-import org.fabric3.spi.domain.LogicalComponentManager;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -94,6 +96,10 @@ public class SnapshotDeployListener implements DeployListener {
     }
 
     public void onDeployCompleted(QName deployable, String plan) {
+        // a component is deployed programmatically via the fabric API
+        if (HostNamespaces.SYNTHESIZED.equals(deployable.getNamespaceURI())) {
+            broadcastSnapshot(Names.HOST_CONTRIBUTION, LogicalState.NEW);
+        }
     }
 
     public void onUndeploy(QName undeployed) {
