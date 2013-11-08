@@ -38,6 +38,7 @@
 package org.fabric3.binding.zeromq.introspection;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.AnnotatedElement;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
             String bindingName = "ZMQ" + serviceInterface.getSimpleName();
             ZeroMQBindingDefinition binding = new ZeroMQBindingDefinition(bindingName, metadata);
 
+            parseAddresses(annotation, metadata, implClass, implClass, context);
             processMetadata(annotation, metadata);
             return binding;
         } catch (ClassNotFoundException e) {
@@ -127,7 +129,7 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
         metadata.setWireFormat(annotation.wireFormat());
     }
 
-    private void parseAddresses(ZeroMQ annotation, ZeroMQMetadata metadata, AccessibleObject object, Class<?> implClass, IntrospectionContext context) {
+    private void parseAddresses(ZeroMQ annotation, ZeroMQMetadata metadata, AnnotatedElement element, Class<?> implClass, IntrospectionContext context) {
         String addresses = annotation.addresses();
         if (addresses.length() == 0) {
             return;
@@ -137,14 +139,14 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
         for (String entry : addressStrings) {
             String[] tokens = entry.split(":");
             if (tokens.length != 2) {
-                context.addError(new InvalidAnnotation("Invalid address specified on ZeroMQ binding: " + entry, object, annotation, implClass));
+                context.addError(new InvalidAnnotation("Invalid address specified on ZeroMQ binding: " + entry, element, annotation, implClass));
             } else {
                 try {
                     String host = tokens[0];
                     int port = Integer.parseInt(tokens[1]);
                     addressDefinitions.add(new SocketAddressDefinition(host, port));
                 } catch (NumberFormatException e) {
-                    context.addError(new InvalidAnnotation("Invalid port specified on ZeroMQ binding: " + e.getMessage(), object, annotation, implClass));
+                    context.addError(new InvalidAnnotation("Invalid port specified on ZeroMQ binding: " + e.getMessage(), element, annotation, implClass));
                 }
             }
         }
