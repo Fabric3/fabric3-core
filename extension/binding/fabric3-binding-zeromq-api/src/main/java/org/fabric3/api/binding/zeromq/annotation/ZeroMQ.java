@@ -77,6 +77,13 @@ public @interface ZeroMQ {
     public String addresses() default "";
 
     /**
+     * Optionally specifies a port for the service endpoint.
+     *
+     * @return the port
+     */
+    public int port() default -1;
+
+    /**
      * Specifies the socket timeout in microseconds.
      *
      * @return the socket timeout in microseconds

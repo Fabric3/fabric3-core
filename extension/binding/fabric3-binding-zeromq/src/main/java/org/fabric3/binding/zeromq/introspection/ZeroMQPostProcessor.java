@@ -42,6 +42,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.binding.zeromq.annotation.ZeroMQ;
@@ -78,8 +79,13 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
             ZeroMQMetadata metadata = new ZeroMQMetadata();
             String bindingName = "ZMQ" + serviceInterface.getSimpleName();
             ZeroMQBindingDefinition binding = new ZeroMQBindingDefinition(bindingName, metadata);
-
-            parseAddresses(annotation, metadata, implClass, implClass, context);
+            int port = annotation.port();
+            if (port > 0) {
+                SocketAddressDefinition address = new SocketAddressDefinition("localhost", port);
+                metadata.setSocketAddresses(Collections.singletonList(address));
+            } else {
+                parseAddresses(annotation, metadata, implClass, implClass, context);
+            }
             processMetadata(annotation, metadata);
             return binding;
         } catch (ClassNotFoundException e) {
