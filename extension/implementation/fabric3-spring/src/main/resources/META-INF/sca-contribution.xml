@@ -16,9 +16,9 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.persistence" version="1.0.0"/>
     <import.java package="javax.transaction" version="1.1.0"/>
     <import.java package="javax.transaction.xa" version="1.1.0"/>
-    <import.java package="org.fabric3.spi.*" version="2.0.1"/>
-    <import.java package="org.fabric3.implementation.pojo.*" version="2.0.1"/>
-    <import.java package="org.fabric3.jpa.api" version="2.0.1"/>
+    <import.java package="org.fabric3.spi.*" version="2.0.2"/>
+    <import.java package="org.fabric3.implementation.pojo.*" version="2.0.2"/>
+    <import.java package="org.fabric3.jpa.api" version="2.0.2"/>
     <import.java package="org.springframework.*" version="3.1.1"/>
     <import.java package="org.fabric3.spring.spi"/>
     <import.java package="org.fabric3.datasource.spi"/>

@@ -20,7 +20,7 @@ Public License. See the accompanying license file for details.
     <export.java package="com.atomikos.*" version="3.8.0"/>
 
     <!-- Needed for Atomikos logging -->
-    <import.java package="org.fabric3.spi.*" version="2.0.1"/>
+    <import.java package="org.fabric3.spi.*" version="2.0.2"/>
 
     <f3:provides name="datasource"/>
     <f3:provides.capability name="transaction"/>

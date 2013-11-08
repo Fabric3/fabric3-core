@@ -50,7 +50,7 @@ import java.net.URI;
  */
 public interface Names {
 
-    String VERSION = "2.0.1";
+    String VERSION = "2.0.2";
 
     URI BOOT_CONTRIBUTION = URI.create("fabric3-boot");
 
