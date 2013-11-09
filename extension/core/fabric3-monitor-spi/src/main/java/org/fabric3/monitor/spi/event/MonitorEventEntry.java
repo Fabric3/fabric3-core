@@ -48,6 +48,7 @@ public class MonitorEventEntry {
     private static final int DEFAULT_PARAM_SIZE = 10;
 
     private String template;
+    private boolean parse = true;
     private ParameterEntry[] entries;
     private int parameterLimit = 0;
 
@@ -115,6 +116,24 @@ public class MonitorEventEntry {
      */
     public void setTemplate(String template) {
         this.template = template;
+    }
+
+    /**
+     * Returns if the template should be parsed.
+     *
+     * @return true if the template should be parsed
+     */
+    public boolean isParse() {
+        return parse;
+    }
+
+    /**
+     * Sets if the template should be parsed.
+     *
+     * @param parse if the template should be parsed
+     */
+    public void setParse(boolean parse) {
+        this.parse = parse;
     }
 
     /**

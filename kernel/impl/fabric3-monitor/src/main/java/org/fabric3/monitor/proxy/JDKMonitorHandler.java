@@ -94,7 +94,7 @@ public class JDKMonitorHandler implements InvocationHandler, MonitorChannel, Mon
             return null;
         }
         long timestamp = System.currentTimeMillis();
-        send(currentLevel, timestamp, currentMessage, args);
+        send(currentLevel, timestamp, currentMessage, true, args);
         return null;
 
     }
@@ -119,11 +119,11 @@ public class JDKMonitorHandler implements InvocationHandler, MonitorChannel, Mon
         checkAndSend(MonitorLevel.TRACE, message, args);
     }
 
-    public void send(MonitorLevel level, long timestamp, String template, Object[] args) {
+    public void send(MonitorLevel level, long timestamp, String template, boolean parse, Object[] args) {
         if (args == null) {
-            router.send(level, destinationIndex, timestamp, source, template);
+            router.send(level, destinationIndex, timestamp, source, template, parse, template);
         } else {
-            router.send(level, destinationIndex, timestamp, source, template, args);
+            router.send(level, destinationIndex, timestamp, source, template, parse, args);
         }
     }
 
@@ -133,7 +133,7 @@ public class JDKMonitorHandler implements InvocationHandler, MonitorChannel, Mon
             return;
         }
         long timestamp = System.currentTimeMillis();
-        send(level, timestamp, message, args);
+        send(level, timestamp, message, true, args);
     }
 
 }

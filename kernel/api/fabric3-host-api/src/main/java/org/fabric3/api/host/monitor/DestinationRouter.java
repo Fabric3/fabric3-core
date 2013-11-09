@@ -70,8 +70,9 @@ public interface DestinationRouter {
      * @param timestamp        the event timestamp
      * @param source           the source emitting the event
      * @param message          the event message
+     * @param parse            true if the message should be parsed as a template
      * @param args             event arguments
      */
-    void send(MonitorLevel level, int destinationIndex, long timestamp, String source, String message, Object... args);
+    void send(MonitorLevel level, int destinationIndex, long timestamp, String source, String message, boolean parse, Object... args);
 
 }

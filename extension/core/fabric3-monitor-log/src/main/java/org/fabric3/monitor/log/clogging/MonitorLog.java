@@ -82,83 +82,83 @@ public class MonitorLog implements Log {
         if (!isTraceEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message.toString());
+        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message.toString(), false);
     }
 
     public void trace(Object message, Throwable t) {
         if (!isTraceEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message.toString(), t);
+        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message.toString(), false, t);
     }
 
     public void debug(Object message) {
         if (!isDebugEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message.toString());
+        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message.toString(), false);
     }
 
     public void debug(Object message, Throwable t) {
         if (!isDebugEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message.toString(), t);
+        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message.toString(), false, t);
     }
 
     public void info(Object message) {
         if (!isInfoEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message.toString());
+        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message.toString(), false);
     }
 
     public void info(Object message, Throwable t) {
         if (!isInfoEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message.toString(), t);
+        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message.toString(), false, t);
     }
 
     public void warn(Object message) {
         if (!isWarnEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message.toString());
+        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message.toString(), false);
     }
 
     public void warn(Object message, Throwable t) {
         if (!isWarnEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message.toString(), t);
+        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message.toString(), false, t);
     }
 
     public void error(Object message) {
         if (!isErrorEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message.toString());
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message.toString(), false);
     }
 
     public void error(Object message, Throwable t) {
         if (!isErrorEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message.toString(), t);
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message.toString(), false, t);
     }
 
     public void fatal(Object message) {
         if (!isFatalEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message.toString());
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message.toString(), false);
     }
 
     public void fatal(Object message, Throwable t) {
         if (!isFatalEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message.toString(), t);
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message.toString(), false, t);
     }
 }

@@ -103,7 +103,7 @@ public class JDKMonitorHandler implements InvocationHandler {
         if (asyncEnabled) {
             send(currentLevel, timestamp, currentMessage, args);
         } else {
-            router.send(currentLevel, destinationIndex, timestamp, source, currentMessage, args);
+            router.send(currentLevel, destinationIndex, timestamp, source, currentMessage, true, args);
         }
         return null;
 
@@ -117,6 +117,7 @@ public class JDKMonitorHandler implements InvocationHandler {
             entry.setDestinationIndex(destinationIndex);
             entry.setTimestampNanos(start);
             entry.setTemplate(template);
+            entry.setParse(true);
             if (args != null) {
                 for (int i = 0; i < args.length; i++) {
                     Object arg = args[i];

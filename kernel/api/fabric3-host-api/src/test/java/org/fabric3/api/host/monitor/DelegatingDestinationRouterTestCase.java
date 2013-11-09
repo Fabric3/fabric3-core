@@ -52,17 +52,17 @@ public class DelegatingDestinationRouterTestCase extends TestCase {
 
     public void testDelegate() throws Exception {
         long timestamp = System.currentTimeMillis();
-        delegate.send(MonitorLevel.SEVERE, 0, timestamp, "source", "this is a test: {0}", "test");
+        delegate.send(MonitorLevel.SEVERE, 0, timestamp, "source", "this is a test: {0}", true, "test");
         EasyMock.replay(delegate);
 
         router.setDestination(delegate);
-        router.send(MonitorLevel.SEVERE, 0, timestamp, "source", "this is a test: {0}", "test");
+        router.send(MonitorLevel.SEVERE, 0, timestamp, "source", "this is a test: {0}", true, "test");
         EasyMock.verify(delegate);
     }
 
     public void testFlush() throws Exception {
         long timestamp = System.currentTimeMillis();
-        router.send(MonitorLevel.SEVERE, 0, timestamp, "source", "this is a test: {0}", "test");
+        router.send(MonitorLevel.SEVERE, 0, timestamp, "source", "this is a test: {0}", true, "test");
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         router.flush(stream);
@@ -71,10 +71,10 @@ public class DelegatingDestinationRouterTestCase extends TestCase {
 
     public void testCacheEventsBeforeDestinationSet() throws Exception {
         long timestamp = System.currentTimeMillis();
-        delegate.send(MonitorLevel.SEVERE, 0, timestamp, "source", "this is a test: {0}", "test");
+        delegate.send(MonitorLevel.SEVERE, 0, timestamp, "source", "this is a test: {0}", true, "test");
         EasyMock.replay(delegate);
 
-        router.send(MonitorLevel.SEVERE, 0, timestamp, "source", "this is a test: {0}", "test");
+        router.send(MonitorLevel.SEVERE, 0, timestamp, "source", "this is a test: {0}", true, "test");
 
         router.setDestination(delegate);
         EasyMock.verify(delegate);

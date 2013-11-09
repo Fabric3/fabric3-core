@@ -67,7 +67,7 @@ public class DelegatingDestinationRouter implements DestinationRouter {
     public void setDestination(DestinationRouter destination) {
         this.delegate = destination;
         for (Entry entry : cache) {
-            delegate.send(entry.level, entry.destinationIndex, entry.timestamp, entry.source, entry.message, entry.values);
+            delegate.send(entry.level, entry.destinationIndex, entry.timestamp, entry.source, entry.message, entry.parse, entry.values);
         }
         cache = null;
     }
@@ -98,11 +98,11 @@ public class DelegatingDestinationRouter implements DestinationRouter {
         return delegate.getDestinationIndex(name);
     }
 
-    public void send(MonitorLevel level, int destinationIndex, long timestamp, String source, String message, Object... args) {
+    public void send(MonitorLevel level, int destinationIndex, long timestamp, String source, String message, boolean parse, Object... args) {
         if (delegate != null) {
-            delegate.send(level, destinationIndex, timestamp, source, message, args);
+            delegate.send(level, destinationIndex, timestamp, source, message, parse, args);
         } else {
-            cache.add(new Entry(level, destinationIndex, timestamp, source, message, args));
+            cache.add(new Entry(level, destinationIndex, timestamp, source, message, parse, args));
         }
     }
 
@@ -112,14 +112,16 @@ public class DelegatingDestinationRouter implements DestinationRouter {
         protected long timestamp;
         private String source;
         protected String message;
+        private boolean parse;
         protected Object[] values;
 
-        private Entry(MonitorLevel level, int destinationIndex, long timestamp, String source, String message, Object... values) {
+        private Entry(MonitorLevel level, int destinationIndex, long timestamp, String source, String message, boolean parse, Object... values) {
             this.level = level;
             this.destinationIndex = destinationIndex;
             this.timestamp = timestamp;
             this.source = source;
             this.message = message;
+            this.parse = parse;
             this.values = values;
         }
     }
