@@ -186,7 +186,7 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
         disruptor.getRingBuffer().publish(entry.getSequence());
     }
 
-    public void send(MonitorLevel level, int destinationIndex, long timestamp, String source, String template, Object... args) {
+    public void send(MonitorLevel level, int destinationIndex, long timestamp, String source, String template, boolean parse, Object... args) {
         // Note this method is not garbage-free as primitives will be auto-boxed. This method should only be called to flush bootstrap events or when the
         // ring buffer is disabled.
         if (enabled) {
@@ -198,6 +198,7 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
                 entry.setLevel(level);
                 entry.setEntryTimestamp(timestamp);
                 entry.setTemplate(template);
+                entry.setParse(parse);
                 entry.setLimit(args == null ? 0 : args.length);
                 if (args != null) {
                     for (int i = 0; i < args.length; i++) {
@@ -253,5 +254,4 @@ public class RingBufferDestinationRouterImpl implements RingBufferDestinationRou
         }
         return waitStrategy;
     }
-
 }

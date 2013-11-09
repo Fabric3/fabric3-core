@@ -131,7 +131,7 @@ public class EventWriterImpl implements EventWriter {
         ParameterEntry[] entries = entry.getEntries();
         for (int i = 0; i < template.length(); i++) {
             char current = template.charAt(i);
-            if ('{' == current) {
+            if (entry.isParse() && '{' == current) {
                 if (counter > entry.getLimit()) {
                     throw new ServiceRuntimeException("Monitor message contains more parameters than are supplied by the method interface: " + template);
                 }
@@ -253,5 +253,4 @@ public class EventWriterImpl implements EventWriter {
             return ObjectWriter.write(arg, buffer);
         }
     }
-
 }

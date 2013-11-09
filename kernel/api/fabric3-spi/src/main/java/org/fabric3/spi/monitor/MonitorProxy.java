@@ -49,8 +49,9 @@ public interface MonitorProxy {
      *
      * @param level     the event level
      * @param timestamp the timestamp
-     * @param template  the message template
+     * @param message   the message template
+     * @param parse     true if the message should be parsed as a template; false if the message should be written without parsing and param substitution
      * @param args      event arguments
      */
-    void send(MonitorLevel level, long timestamp, String template, Object... args);
+    void send(MonitorLevel level, long timestamp, String message, boolean parse, Object... args);
 }

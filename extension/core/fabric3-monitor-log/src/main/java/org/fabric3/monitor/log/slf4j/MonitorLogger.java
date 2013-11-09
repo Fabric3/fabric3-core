@@ -70,35 +70,35 @@ public class MonitorLogger implements Logger {
         if (!isTraceEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message);
+        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, false);
     }
 
     public void trace(String message, Object o) {
         if (!isTraceEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, o);
+        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, false, o);
     }
 
     public void trace(String message, Object o, Object o2) {
         if (!isTraceEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, o, o2);
+        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, false, o, o2);
     }
 
     public void trace(String message, Object[] objects) {
         if (!isTraceEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, objects);
+        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, false, objects);
     }
 
     public void trace(String message, Throwable throwable) {
         if (!isTraceEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, throwable);
+        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, false, throwable);
     }
 
     public boolean isTraceEnabled(Marker marker) {
@@ -109,35 +109,35 @@ public class MonitorLogger implements Logger {
         if (!isTraceEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message);
+        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, false);
     }
 
     public void trace(Marker marker, String message, Object o) {
         if (!isTraceEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, o);
+        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, false, o);
     }
 
     public void trace(Marker marker, String message, Object o, Object o2) {
         if (!isTraceEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, o, o2);
+        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, false, o, o2);
     }
 
     public void trace(Marker marker, String message, Object[] objects) {
         if (!isTraceEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, objects);
+        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, false, objects);
     }
 
     public void trace(Marker marker, String message, Throwable throwable) {
         if (!isTraceEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, throwable);
+        proxy.send(MonitorLevel.TRACE, System.currentTimeMillis(), message, false, throwable);
     }
 
     public boolean isDebugEnabled() {
@@ -148,35 +148,35 @@ public class MonitorLogger implements Logger {
         if (!isDebugEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message);
+        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, false);
     }
 
     public void debug(String message, Object o) {
         if (!isDebugEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, o);
+        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, false, o);
     }
 
     public void debug(String message, Object o, Object o2) {
         if (!isDebugEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, o, o2);
+        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, false, o, o2);
     }
 
     public void debug(String message, Object[] objects) {
         if (!isDebugEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, objects);
+        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, false, objects);
     }
 
     public void debug(String message, Throwable throwable) {
         if (!isDebugEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, throwable);
+        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, false, throwable);
     }
 
     public boolean isDebugEnabled(Marker marker) {
@@ -187,35 +187,35 @@ public class MonitorLogger implements Logger {
         if (!isDebugEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message);
+        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, false);
     }
 
     public void debug(Marker marker, String message, Object o) {
         if (!isDebugEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, o);
+        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, false, o);
     }
 
     public void debug(Marker marker, String message, Object o, Object o2) {
         if (!isDebugEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, o, o2);
+        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, false, o, o2);
     }
 
     public void debug(Marker marker, String message, Object[] objects) {
         if (!isDebugEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, objects);
+        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, false, objects);
     }
 
     public void debug(Marker marker, String message, Throwable throwable) {
         if (!isDebugEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, throwable);
+        proxy.send(MonitorLevel.DEBUG, System.currentTimeMillis(), message, false, throwable);
     }
 
     public boolean isInfoEnabled() {
@@ -226,35 +226,35 @@ public class MonitorLogger implements Logger {
         if (!isInfoEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message);
+        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, false);
     }
 
     public void info(String message, Object o) {
         if (!isInfoEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, o);
+        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, false, o);
     }
 
     public void info(String message, Object o, Object o2) {
         if (!isInfoEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, o, o2);
+        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, false, o, o2);
     }
 
     public void info(String message, Object[] objects) {
         if (!isInfoEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, objects);
+        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, false, objects);
     }
 
     public void info(String message, Throwable throwable) {
         if (!isInfoEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, throwable);
+        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, false, throwable);
     }
 
     public boolean isInfoEnabled(Marker marker) {
@@ -265,35 +265,35 @@ public class MonitorLogger implements Logger {
         if (!isInfoEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message);
+        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, false);
     }
 
     public void info(Marker marker, String message, Object o) {
         if (!isInfoEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, o);
+        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, false, o);
     }
 
     public void info(Marker marker, String message, Object o, Object o2) {
         if (!isInfoEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, o, o2);
+        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, false, o, o2);
     }
 
     public void info(Marker marker, String message, Object[] objects) {
         if (!isInfoEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, objects);
+        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, false, objects);
     }
 
     public void info(Marker marker, String message, Throwable throwable) {
         if (!isInfoEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, throwable);
+        proxy.send(MonitorLevel.INFO, System.currentTimeMillis(), message, false, throwable);
     }
 
     public boolean isWarnEnabled() {
@@ -304,35 +304,35 @@ public class MonitorLogger implements Logger {
         if (!isWarnEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message);
+        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, false);
     }
 
     public void warn(String message, Object o) {
         if (!isWarnEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, o);
+        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, false, o);
     }
 
     public void warn(String message, Object[] objects) {
         if (!isWarnEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, objects);
+        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, false, objects);
     }
 
     public void warn(String message, Object o, Object o2) {
         if (!isWarnEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, o, o2);
+        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, false, o, o2);
     }
 
     public void warn(String message, Throwable throwable) {
         if (!isWarnEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, throwable);
+        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, false, throwable);
     }
 
     public boolean isWarnEnabled(Marker marker) {
@@ -343,35 +343,35 @@ public class MonitorLogger implements Logger {
         if (!isWarnEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message);
+        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, false);
     }
 
     public void warn(Marker marker, String message, Object o) {
         if (!isWarnEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, o);
+        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, false, o);
     }
 
     public void warn(Marker marker, String message, Object o, Object o2) {
         if (!isWarnEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, o, o2);
+        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, false, o, o2);
     }
 
     public void warn(Marker marker, String message, Object[] objects) {
         if (!isWarnEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, objects);
+        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, false, objects);
     }
 
     public void warn(Marker marker, String message, Throwable throwable) {
         if (!isWarnEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, throwable);
+        proxy.send(MonitorLevel.WARNING, System.currentTimeMillis(), message, false, throwable);
     }
 
     public boolean isErrorEnabled() {
@@ -382,35 +382,35 @@ public class MonitorLogger implements Logger {
         if (!isErrorEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message);
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, false);
     }
 
     public void error(String message, Object o) {
         if (!isErrorEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, o);
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, false, o);
     }
 
     public void error(String message, Object o, Object o2) {
         if (!isErrorEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, o, o2);
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, false, o, o2);
     }
 
     public void error(String message, Object[] objects) {
         if (!isErrorEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, objects);
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, false, objects);
     }
 
     public void error(String message, Throwable throwable) {
         if (!isErrorEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, throwable);
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, false, throwable);
     }
 
     public boolean isErrorEnabled(Marker marker) {
@@ -421,34 +421,34 @@ public class MonitorLogger implements Logger {
         if (!isErrorEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message);
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, false);
     }
 
     public void error(Marker marker, String message, Object o) {
         if (!isErrorEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, o);
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, false, o);
     }
 
     public void error(Marker marker, String message, Object o, Object o2) {
         if (!isErrorEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, o, o2);
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, false, o, o2);
     }
 
     public void error(Marker marker, String message, Object[] objects) {
         if (!isErrorEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, objects);
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, false, objects);
     }
 
     public void error(Marker marker, String message, Throwable throwable) {
         if (!isErrorEnabled()) {
             return;
         }
-        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, throwable);
+        proxy.send(MonitorLevel.SEVERE, System.currentTimeMillis(), message, false, throwable);
     }
 }
