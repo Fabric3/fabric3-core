@@ -82,7 +82,6 @@ import org.w3c.dom.Document;
  */
 public class DefaultFabric implements Fabric {
     private static final File SYNTHETIC_DIRECTORY = new File("notfound");
-    private static final String SYSTEM_COMPOSITE = "META-INF/system.composite";
     private static final URI DOMAIN_URI = URI.create("fabric3://runtime/NodeDomain");
     public static final String ASM_PACKAGE = "org.objectweb.asm.";
     private URL configUrl;
