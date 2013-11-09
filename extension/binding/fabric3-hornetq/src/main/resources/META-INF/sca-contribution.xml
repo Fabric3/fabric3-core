@@ -13,10 +13,10 @@ Public License. See the accompanying license file for details.
               xmlns:f3="urn:fabric3.org"
               f3:extension="true">
     <import.java package="javax.jms" version="1.1.0"/>
-    <import.java package="org.fabric3.spi.*" version="2.0.1"/>
-    <import.java package="org.fabric3.binding.jms.spi.common" version="2.0.1"/>
-    <import.java package="org.fabric3.binding.jms.model" version="2.0.1"/>
-    <import.java package="org.fabric3.binding.jms.spi.*" version="2.0.1"/>
+    <import.java package="org.fabric3.spi.*" version="2.0.2"/>
+    <import.java package="org.fabric3.binding.jms.spi.common" version="2.0.2"/>
+    <import.java package="org.fabric3.binding.jms.model" version="2.0.2"/>
+    <import.java package="org.fabric3.binding.jms.spi.*" version="2.0.2"/>
     <deployable composite="f3:HornetQRuntimeExtension" modes="participant vm"/>
     <deployable composite="f3:HornetQControllerExtension" modes="controller vm"/>
     <f3:extends name="jms"/>

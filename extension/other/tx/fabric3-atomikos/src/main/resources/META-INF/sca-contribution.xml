@@ -21,7 +21,7 @@ Public License. See the accompanying license file for details.
     <import.java package="javax.jms" version="1.1.0"/>
     <import.java package="com.atomikos.*" version="3.8.0"/>
 
-    <import.java package="org.fabric3.spi.*" version="2.0.1"/>
+    <import.java package="org.fabric3.spi.*" version="2.0.2"/>
     <import.java package="org.fabric3.datasource.spi"/>
     <deployable composite="f3:AtomikosExtension"/>
     <f3:provides name="datasource"/>
