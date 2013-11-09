@@ -232,6 +232,8 @@ public class EventWriterImpl implements EventWriter {
             case OBJECT:
                 count = count + ObjectWriter.write(parameterEntry.getObjectValue(Object.class), buffer);
                 break;
+            case NONE:
+                break;
         }
         return count;
     }

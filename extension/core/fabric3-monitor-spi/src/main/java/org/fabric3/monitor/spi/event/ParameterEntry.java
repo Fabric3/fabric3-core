@@ -42,10 +42,10 @@ package org.fabric3.monitor.spi.event;
  */
 public class ParameterEntry {
     public enum Slot {
-        SHORT, INT, LONG, DOUBLE, FLOAT, CHAR, BOOLEAN, BYTE, OBJECT
+        SHORT, INT, LONG, DOUBLE, FLOAT, CHAR, BOOLEAN, BYTE, OBJECT, NONE
     }
 
-    private Slot slot;
+    private Slot slot = Slot.NONE;
 
     private short shortValue;
     private int intValue;
@@ -58,7 +58,7 @@ public class ParameterEntry {
     private Object objectValue;
 
     public void reset() {
-        slot = null;
+        slot = Slot.NONE;
         shortValue = 0;
         intValue = 0;
         longValue = 0;
@@ -67,7 +67,7 @@ public class ParameterEntry {
         charValue = 0;
         booleanValue = false;
         byteValue = 0;
-        Object objectValue = null;
+        objectValue = null;
     }
 
     public Slot getSlot() {
