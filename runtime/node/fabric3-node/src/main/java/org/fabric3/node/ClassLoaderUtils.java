@@ -54,6 +54,10 @@ public class ClassLoaderUtils {
      * @param newParent   the new parent
      */
     public static void changeParentClassLoader(ClassLoader classLoader, ClassLoader newParent) {
+    	if ("dalvik".equalsIgnoreCase(System.getProperty("java.vm.name"))){
+    		// android , not change
+    		return;
+    	}
         try {
             // get the parent classloader field
             Field parentField = getParentClassLoaderField();
