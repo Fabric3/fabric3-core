@@ -44,6 +44,8 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
+import org.fabric3.monitor.spi.buffer.ResizableByteBufferMonitor;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
 import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.writer.EventWriter;
@@ -54,14 +56,16 @@ import org.fabric3.monitor.spi.writer.EventWriter;
 public class DefaultMonitorDestinationTestCase extends TestCase {
 
     public void testWrite() throws Exception {
-        MonitorEventEntry entry = new MonitorEventEntry(25);
+        MonitorEventEntry entry = new MonitorEventEntry(25, EasyMock.createNiceMock(ResizableByteBufferMonitor.class));
         entry.setLevel(MonitorLevel.SEVERE);
         entry.setTemplate("test");
         long timestamp = System.currentTimeMillis();
         entry.setEntryTimestamp(timestamp);
 
         EventWriter eventWriter = EasyMock.createMock(EventWriter.class);
-        EasyMock.expect(eventWriter.writePrefix(EasyMock.eq(MonitorLevel.SEVERE), EasyMock.eq(timestamp), EasyMock.isA(ByteBuffer.class))).andReturn(10);
+        EasyMock.expect(eventWriter.writePrefix(EasyMock.eq(MonitorLevel.SEVERE),
+                                                EasyMock.eq(timestamp),
+                                                EasyMock.isA(ResizableByteBuffer.class))).andReturn(10);
         EasyMock.expect(eventWriter.writeTemplate(EasyMock.isA(MonitorEventEntry.class))).andReturn(10);
 
         Appender appender = EasyMock.createMock(Appender.class);

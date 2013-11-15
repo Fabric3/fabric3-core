@@ -42,9 +42,10 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.spi.appender.Appender;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 import org.fabric3.monitor.spi.destination.MonitorDestination;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
-import org.fabric3.monitor.spi.appender.Appender;
 import org.fabric3.monitor.spi.writer.EventWriter;
 
 /**
@@ -82,7 +83,7 @@ public class DefaultMonitorDestination implements MonitorDestination {
     }
 
     public void write(MonitorEventEntry entry) throws IOException {
-        ByteBuffer buffer = entry.getBuffer();
+        ResizableByteBuffer buffer = entry.getBuffer();
         MonitorLevel level = entry.getLevel();
 
         long entryTimestamp = entry.getEntryTimestamp();
@@ -97,14 +98,15 @@ public class DefaultMonitorDestination implements MonitorDestination {
 
     public void write(MonitorLevel level, long timestamp, String source, String template, Object... args) throws IOException {
         ByteBuffer buffer = ByteBuffer.allocate(capacity);
-        eventWriter.write(level, timestamp, template, buffer, args);
-        write(buffer);
+        ResizableByteBuffer wrapper = new ResizableByteBuffer(buffer);
+        eventWriter.write(level, timestamp, template, wrapper, args);
+        write(wrapper);
     }
 
-    private void write(ByteBuffer buffer) throws IOException {
+    private void write(ResizableByteBuffer buffer) throws IOException {
         for (Appender appender : appenders) {
             buffer.position(0);
-            appender.write(buffer);
+            appender.write(buffer.getByteBuffer());
         }
     }
 

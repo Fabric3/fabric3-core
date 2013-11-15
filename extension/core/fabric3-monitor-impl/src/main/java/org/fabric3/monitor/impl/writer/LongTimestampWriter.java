@@ -37,7 +37,7 @@
 */
 package org.fabric3.monitor.impl.writer;
 
-import java.nio.ByteBuffer;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  * Writes a long timestamp as a series of characters without allocating objects.
@@ -60,7 +60,7 @@ public class LongTimestampWriter implements TimestampWriter {
     final static char[] digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
                                   'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 
-    public int write(long value, ByteBuffer buffer) {
+    public int write(long value, ResizableByteBuffer buffer) {
         if (value == Long.MIN_VALUE) {
             CharSequenceWriter.write(MIN_VALUE, buffer);
             return MIN_VALUE.length();
@@ -74,7 +74,7 @@ public class LongTimestampWriter implements TimestampWriter {
         return size;
     }
 
-    void getChars(long i, int index, ByteBuffer buffer) {
+    void getChars(long i, int index, ResizableByteBuffer buffer) {
         long q;
         int r;
         int charPos = index;

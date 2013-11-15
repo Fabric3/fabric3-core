@@ -37,7 +37,7 @@
 */
 package org.fabric3.monitor.impl.writer;
 
-import java.nio.ByteBuffer;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  * Writes a boolean value in a character representation to a ByteBuffer without creating objects on the heap.
@@ -46,7 +46,7 @@ public final class BooleanWriter {
     private static final byte[] TRUE = "true".getBytes();
     private static final byte[] FALSE = "false".getBytes();
 
-    public static int write(boolean value, ByteBuffer buffer) {
+    public static int write(boolean value, ResizableByteBuffer buffer) {
         if (value) {
             buffer.put(TRUE);
             return 4;

@@ -37,14 +37,14 @@
 */
 package org.fabric3.monitor.impl.writer;
 
-import java.nio.ByteBuffer;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  * Writes a float value in a character representation to a ByteBuffer without creating objects on the heap.
  */
 public class FloatWriter extends AbstractNumericWriter {
 
-    public static int write(float value, ByteBuffer buffer) {
+    public static int write(float value, ResizableByteBuffer buffer) {
         int written = 0;
 
         if (Float.isNaN(value)) {

@@ -40,6 +40,7 @@ package org.fabric3.monitor.impl.writer;
 import java.nio.ByteBuffer;
 
 import junit.framework.TestCase;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  *
@@ -47,7 +48,7 @@ import junit.framework.TestCase;
 public class BooleanWriterTestCase extends TestCase {
 
     public void testWriteTrue() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(4);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(4));
 
         BooleanWriter.write(true, buffer);
 
@@ -58,7 +59,7 @@ public class BooleanWriterTestCase extends TestCase {
     }
 
     public void testWriteFalse() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(5);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(5));
 
         BooleanWriter.write(false, buffer);
 

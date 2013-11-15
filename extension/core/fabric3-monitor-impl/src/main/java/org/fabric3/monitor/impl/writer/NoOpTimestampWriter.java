@@ -37,14 +37,14 @@
 */
 package org.fabric3.monitor.impl.writer;
 
-import java.nio.ByteBuffer;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  *
  */
 public class NoOpTimestampWriter implements TimestampWriter {
 
-    public int write(long value, ByteBuffer buffer) {
+    public int write(long value, ResizableByteBuffer buffer) {
         return 0;
     }
 }

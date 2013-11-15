@@ -69,6 +69,8 @@ package org.fabric3.monitor.impl.writer;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
+
 /**
  * Base methods for writing numeric types in a character representation to a ByteBuffer without creating objects on the heap.
  */
@@ -394,7 +396,7 @@ public abstract class AbstractNumericWriter {
         return result;
     }
 
-    protected static int formatSimple(boolean negative, long decimalMantissa, int decimalExponent, ByteBuffer buffer) {
+    protected static int formatSimple(boolean negative, long decimalMantissa, int decimalExponent, ResizableByteBuffer buffer) {
         int written = 0;
         if (decimalMantissa < 0) {
             throw new IllegalArgumentException("Decimal mantissa (" + decimalMantissa + ") < 0");
@@ -458,7 +460,7 @@ public abstract class AbstractNumericWriter {
         return written;
     }
 
-    private static int write(char[] chars, int pos, int length, ByteBuffer buffer) {
+    private static int write(char[] chars, int pos, int length, ResizableByteBuffer buffer) {
         int written = 0;
         int amount = pos + length;
         for (int i = pos; i < amount; i++) {
@@ -468,7 +470,7 @@ public abstract class AbstractNumericWriter {
         return written;
     }
 
-    private static int writeCharacterNTimes(char ch, int n, ByteBuffer buffer) {
+    private static int writeCharacterNTimes(char ch, int n, ResizableByteBuffer buffer) {
         if (n < 0) {
             throw new IllegalArgumentException("N < 0");
         }
@@ -568,3 +570,4 @@ public abstract class AbstractNumericWriter {
     }
 
 }
+

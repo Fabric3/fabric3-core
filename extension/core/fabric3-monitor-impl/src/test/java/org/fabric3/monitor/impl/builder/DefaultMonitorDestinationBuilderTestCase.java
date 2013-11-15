@@ -69,7 +69,6 @@ public class DefaultMonitorDestinationBuilderTestCase extends TestCase {
         EasyMock.expect(appenderBuilder.build(EasyMock.isA(PhysicalAppenderDefinition.class))).andReturn(appender);
 
         EasyMock.replay(registry, appenderBuilder, eventWriter, appender);
-
         DefaultMonitorDestinationBuilder builder = new DefaultMonitorDestinationBuilder(registry, eventWriter);
 
         Map map = Collections.singletonMap(MockDefinition.class, appenderBuilder);

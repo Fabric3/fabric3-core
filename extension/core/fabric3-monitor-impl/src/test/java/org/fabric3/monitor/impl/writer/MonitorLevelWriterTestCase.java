@@ -41,6 +41,7 @@ import java.nio.ByteBuffer;
 
 import junit.framework.TestCase;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  *
@@ -48,7 +49,7 @@ import org.fabric3.api.annotation.monitor.MonitorLevel;
 public class MonitorLevelWriterTestCase extends TestCase {
 
     public void testWriteSevere() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(6);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(6));
 
         MonitorLevelWriter.write(MonitorLevel.SEVERE, buffer);
 
@@ -59,7 +60,7 @@ public class MonitorLevelWriterTestCase extends TestCase {
     }
 
     public void testWriteInfo() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(4);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(4));
 
         MonitorLevelWriter.write(MonitorLevel.INFO, buffer);
 
@@ -70,7 +71,7 @@ public class MonitorLevelWriterTestCase extends TestCase {
     }
 
     public void testWriteDebug() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(5);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(5));
 
         MonitorLevelWriter.write(MonitorLevel.DEBUG, buffer);
 
@@ -81,7 +82,7 @@ public class MonitorLevelWriterTestCase extends TestCase {
     }
 
     public void testWriteWarning() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(7);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(7));
 
         MonitorLevelWriter.write(MonitorLevel.WARNING, buffer);
 
@@ -92,7 +93,7 @@ public class MonitorLevelWriterTestCase extends TestCase {
     }
 
     public void testWriteTrace() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(5);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(5));
 
         MonitorLevelWriter.write(MonitorLevel.TRACE, buffer);
 

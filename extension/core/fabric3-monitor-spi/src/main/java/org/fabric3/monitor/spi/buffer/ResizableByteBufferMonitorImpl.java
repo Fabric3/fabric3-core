@@ -35,18 +35,24 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.writer;
-
-import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
+package org.fabric3.monitor.spi.buffer;
 
 /**
- * Writes a char value to a ByteBuffer without creating objects on the heap.
+ * Reports a buffer resize once.
  */
-public final class CharWriter {
+public class ResizableByteBufferMonitorImpl implements ResizableByteBufferMonitor {
+    private boolean fired;
 
-    public static int write(char value, ResizableByteBuffer buffer) {
-        buffer.put((byte) value);
-        return 1;
+    public ResizableByteBufferMonitorImpl() {
     }
 
+    public void bufferResize() {
+        if (fired) {
+            return;
+        }
+        System.err.println("WARNING: Initial capacity for the monitor buffer was too small and forced a resize. Increase the buffer capacity in "
+                           + "systemConfig/monitor/@capacity for optimal performance.");
+        fired = true;
+    }
 }
+

@@ -42,6 +42,8 @@ import java.nio.ByteBuffer;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
+import org.fabric3.monitor.spi.buffer.ResizableByteBufferMonitor;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
 
 /**
@@ -51,7 +53,7 @@ public class EventWriterImplTestCase extends TestCase {
     private EventWriterImpl eventWriter;
 
     private long timestamp;
-    private ByteBuffer buffer;
+    private ResizableByteBuffer buffer;
 
     public void testWriteString() throws Exception {
         eventWriter.write(MonitorLevel.SEVERE, timestamp, "This is a {0}", buffer, new Object[]{"test"});
@@ -87,7 +89,7 @@ public class EventWriterImplTestCase extends TestCase {
     }
 
     public void testWriteTemplate() throws Exception {
-        MonitorEventEntry entry = new MonitorEventEntry(2000);
+        MonitorEventEntry entry = new MonitorEventEntry(2000, EasyMock.createNiceMock(ResizableByteBufferMonitor.class));
         entry.setTemplate("This is a {0}");
         entry.getEntries()[0].setObjectValue("test");
         entry.setLimit(0);
@@ -102,11 +104,13 @@ public class EventWriterImplTestCase extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        EventWriterMonitor monitor = EasyMock.createNiceMock(EventWriterMonitor.class);
-        eventWriter = new EventWriterImpl(monitor);
+        EventWriterMonitor writerMonitor = EasyMock.createNiceMock(EventWriterMonitor.class);
+        eventWriter = new EventWriterImpl(writerMonitor);
         eventWriter.init();
 
         timestamp = System.currentTimeMillis();
-        buffer = ByteBuffer.allocate(200);
+        buffer = new ResizableByteBuffer(ByteBuffer.allocate(200));
+
     }
+
 }

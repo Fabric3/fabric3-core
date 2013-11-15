@@ -37,9 +37,8 @@
 */
 package org.fabric3.monitor.impl.writer;
 
-import java.nio.ByteBuffer;
-
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  * Writes a {@link MonitorLevel} value in a character representation to a ByteBuffer without creating objects on the heap.
@@ -54,7 +53,7 @@ public final class MonitorLevelWriter {
     private MonitorLevelWriter() {
     }
 
-    public static int write(MonitorLevel level, ByteBuffer buffer) {
+    public static int write(MonitorLevel level, ResizableByteBuffer buffer) {
         switch (level) {
             case SEVERE:
                 buffer.put(SEVERE);

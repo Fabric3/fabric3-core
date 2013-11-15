@@ -37,7 +37,7 @@
 */
 package org.fabric3.monitor.impl.writer;
 
-import java.nio.ByteBuffer;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  * Writes a CharSequence to a ByteBuffer without creating objects on the heap.
@@ -47,11 +47,11 @@ public final class CharSequenceWriter {
     private CharSequenceWriter() {
     }
 
-    public static int write(CharSequence value, ByteBuffer buffer) {
+    public static int write(CharSequence value, ResizableByteBuffer buffer) {
         return write(value, 0, buffer);
     }
 
-    public static int write(CharSequence value, int pos, ByteBuffer buffer) {
+    public static int write(CharSequence value, int pos, ResizableByteBuffer buffer) {
         for (int i = pos; i < value.length(); i++) {
             buffer.put((byte) value.charAt(i));
         }

@@ -37,7 +37,7 @@
 */
 package org.fabric3.monitor.impl.writer;
 
-import java.nio.ByteBuffer;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  * Writes a timestamp to the buffer.
@@ -51,6 +51,6 @@ public interface TimestampWriter {
      * @param buffer the buffer
      * @return the bytes written
      */
-    int write(long value, ByteBuffer buffer);
+    int write(long value, ResizableByteBuffer buffer);
 
 }

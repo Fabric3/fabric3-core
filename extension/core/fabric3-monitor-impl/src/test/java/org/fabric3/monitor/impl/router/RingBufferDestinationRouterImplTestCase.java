@@ -47,6 +47,7 @@ import java.util.concurrent.TimeUnit;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 import org.fabric3.monitor.spi.destination.MonitorDestination;
 import org.fabric3.monitor.spi.destination.MonitorDestinationRegistry;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
@@ -65,7 +66,8 @@ public class RingBufferDestinationRouterImplTestCase extends TestCase {
 
         router.init();
         MonitorEventEntry entry = router.get();
-        entry.setBuffer(buffer);
+        ResizableByteBuffer wrapper = new ResizableByteBuffer(this.buffer);
+        entry.setBuffer(wrapper);
         entry.setLevel(MonitorLevel.SEVERE);
         router.publish(entry);
         router.destroy();

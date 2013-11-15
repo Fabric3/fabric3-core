@@ -40,6 +40,7 @@ package org.fabric3.monitor.impl.writer;
 import java.nio.ByteBuffer;
 
 import junit.framework.TestCase;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  *
@@ -47,7 +48,7 @@ import junit.framework.TestCase;
 public class IntWriterTestCase extends TestCase {
 
     public void testWritePositiveInt() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(2);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(2));
 
         IntWriter.write(10, buffer);
 
@@ -58,7 +59,7 @@ public class IntWriterTestCase extends TestCase {
     }
 
     public void testWriteNegativeInt() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(3);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(3));
 
         IntWriter.write(-10, buffer);
 
@@ -70,7 +71,7 @@ public class IntWriterTestCase extends TestCase {
     }
 
     public void testWriteMinInt() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(11);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(11));
 
         IntWriter.write(Integer.MIN_VALUE, buffer);
 
@@ -81,7 +82,7 @@ public class IntWriterTestCase extends TestCase {
     }
 
     public void testWriteMaxInt() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(10);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(10));
 
         IntWriter.write(Integer.MAX_VALUE, buffer);
 

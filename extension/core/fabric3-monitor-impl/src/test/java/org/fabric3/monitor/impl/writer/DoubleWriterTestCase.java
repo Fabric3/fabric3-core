@@ -40,6 +40,7 @@ package org.fabric3.monitor.impl.writer;
 import java.nio.ByteBuffer;
 
 import junit.framework.TestCase;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  *
@@ -47,7 +48,7 @@ import junit.framework.TestCase;
 public class DoubleWriterTestCase extends TestCase {
 
     public void testWritePositive() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(4);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(4));
 
         int written = DoubleWriter.write(10d, buffer);
 
@@ -59,7 +60,7 @@ public class DoubleWriterTestCase extends TestCase {
     }
 
     public void testWriteDecimals() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(20);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(20));
 
         int written = DoubleWriter.write(10.21222222d, buffer);
 

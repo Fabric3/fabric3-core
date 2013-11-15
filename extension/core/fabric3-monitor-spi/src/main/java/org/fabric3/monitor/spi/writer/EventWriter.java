@@ -37,9 +37,8 @@
 */
 package org.fabric3.monitor.spi.writer;
 
-import java.nio.ByteBuffer;
-
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
 
 /**
@@ -56,7 +55,7 @@ public interface EventWriter {
      * @param buffer    the buffer to write into
      * @param args      the arguments
      */
-    void write(MonitorLevel level, long timestamp, String template, ByteBuffer buffer, Object[] args);
+    void write(MonitorLevel level, long timestamp, String template, ResizableByteBuffer buffer, Object[] args);
 
     /**
      * Writes the event in character form into the entry buffer.
@@ -74,5 +73,5 @@ public interface EventWriter {
      * @param buffer         the buffer to write into
      * @return the number of bytes written
      */
-    int writePrefix(MonitorLevel level, long entryTimestamp, ByteBuffer buffer);
+    int writePrefix(MonitorLevel level, long entryTimestamp, ResizableByteBuffer buffer);
 }

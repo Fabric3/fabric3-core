@@ -42,6 +42,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import junit.framework.TestCase;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  *
@@ -50,7 +51,9 @@ public class FormattingTimestampWriterTestCase extends TestCase {
 
     public void testWriteTimestamp() throws Exception {
         FormattingTimestampWriter writer = new FormattingTimestampWriter("%Y:%m:%d %H:%i:%s.%F", TimeZone.getDefault());
-        ByteBuffer buffer = ByteBuffer.allocateDirect(100);
+
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(100));
+
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(2013, Calendar.JANUARY, 12, 11, 11, 11);

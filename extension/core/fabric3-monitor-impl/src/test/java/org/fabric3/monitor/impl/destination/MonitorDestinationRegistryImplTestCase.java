@@ -39,6 +39,7 @@ package org.fabric3.monitor.impl.destination;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.monitor.spi.buffer.ResizableByteBufferMonitor;
 import org.fabric3.monitor.spi.destination.MonitorDestination;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
 
@@ -57,7 +58,7 @@ public class MonitorDestinationRegistryImplTestCase extends TestCase {
         registry.init();
 
         registry.register(destination);
-        registry.write(new MonitorEventEntry(1));
+        registry.write(new MonitorEventEntry(1, EasyMock.createNiceMock(ResizableByteBufferMonitor.class)));
 
         EasyMock.verify(destination);
     }
