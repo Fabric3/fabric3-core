@@ -42,6 +42,7 @@ import org.easymock.EasyMock;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.host.monitor.Monitorable;
+import org.fabric3.monitor.spi.buffer.ResizableByteBufferMonitor;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
 import org.fabric3.monitor.spi.event.ParameterEntry;
 import org.fabric3.monitor.impl.router.RingBufferDestinationRouter;
@@ -57,10 +58,10 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
     private MonitorEventEntry entry;
 
     // Used to verify bytecode
-//    public void testVerify() throws Exception {
-//        ClassReader cr = new ClassReader(proxyService.generateClass(ParamsMonitor.class, 0));
-//        CheckClassAdapter.verify(cr, true, new PrintWriter(System.out));
-//    }
+    //    public void testVerify() throws Exception {
+    //        ClassReader cr = new ClassReader(proxyService.generateClass(ParamsMonitor.class, 0));
+    //        CheckClassAdapter.verify(cr, true, new PrintWriter(System.out));
+    //    }
 
     public void testInvokeTwoStrings() throws Exception {
         EasyMock.replay(router, monitorable);
@@ -269,7 +270,7 @@ public class BytecodeMonitorProxyServiceTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        entry = new MonitorEventEntry(2000);
+        entry = new MonitorEventEntry(2000, EasyMock.createNiceMock(ResizableByteBufferMonitor.class));
 
         router = EasyMock.createMock(RingBufferDestinationRouter.class);
         EasyMock.expect(router.getDestinationIndex(EasyMock.isA(String.class))).andReturn(1);

@@ -37,7 +37,7 @@
 */
 package org.fabric3.monitor.impl.writer;
 
-import java.nio.ByteBuffer;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  * Writes an int value in a character representation to a ByteBuffer without creating objects on the heap.
@@ -65,7 +65,7 @@ public final class IntWriter {
     private IntWriter() {
     }
 
-    public static int write(int value, ByteBuffer buffer) {
+    public static int write(int value, ResizableByteBuffer buffer) {
         if (value == Integer.MIN_VALUE) {
             buffer.put(INT_MIN, 0, INT_MIN.length);
             return INT_MIN.length;
@@ -82,7 +82,7 @@ public final class IntWriter {
             }
     }
 
-    private static int writeIntChars(int value, ByteBuffer buffer) {
+    private static int writeIntChars(int value, ResizableByteBuffer buffer) {
         int start = buffer.position();
         int size = (value < 0) ? stringSize(-value) + 1 : stringSize(value);
         int index = size + start;

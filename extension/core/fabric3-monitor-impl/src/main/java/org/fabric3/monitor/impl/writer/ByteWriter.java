@@ -37,14 +37,14 @@
 */
 package org.fabric3.monitor.impl.writer;
 
-import java.nio.ByteBuffer;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  * Writes a byte value to a ByteBuffer without creating objects on the heap.
  */
 public final class ByteWriter {
 
-    public static int write(byte value, ByteBuffer buffer) {
+    public static int write(byte value, ResizableByteBuffer buffer) {
         buffer.put(value);
         return 1;
     }

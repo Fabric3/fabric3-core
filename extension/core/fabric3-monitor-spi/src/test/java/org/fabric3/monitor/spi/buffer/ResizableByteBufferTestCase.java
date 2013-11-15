@@ -35,18 +35,33 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.monitor.impl.writer;
+package org.fabric3.monitor.spi.buffer;
 
-import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
+import java.nio.ByteBuffer;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
- * Writes a char value to a ByteBuffer without creating objects on the heap.
+ *
  */
-public final class CharWriter {
+public class ResizableByteBufferTestCase extends TestCase {
 
-    public static int write(char value, ResizableByteBuffer buffer) {
-        buffer.put((byte) value);
-        return 1;
+    public void testResize() throws Exception {
+        ResizableByteBufferMonitor monitor = EasyMock.createNiceMock(ResizableByteBufferMonitor.class);
+        monitor.bufferResize();
+        EasyMock.replay(monitor);
+
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(1), monitor);
+        buffer.put(1);
+        buffer.put(2);
+        buffer.put(3);
+
+        assertEquals(1025, buffer.capacity());   // buffer re-sizes 1024 at a time
+        assertEquals(1, buffer.getByteBuffer().get(0));
+        assertEquals(2, buffer.getByteBuffer().get(1));
+        assertEquals(3, buffer.getByteBuffer().get(2));
+
+        EasyMock.verify(monitor);
     }
-
 }

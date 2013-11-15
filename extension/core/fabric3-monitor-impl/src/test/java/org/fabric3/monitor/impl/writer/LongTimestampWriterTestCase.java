@@ -40,6 +40,7 @@ package org.fabric3.monitor.impl.writer;
 import java.nio.ByteBuffer;
 
 import junit.framework.TestCase;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  *
@@ -52,7 +53,7 @@ public class LongTimestampWriterTestCase extends TestCase {
 
         String result = Long.toString(timestamp);
 
-        ByteBuffer buffer = ByteBuffer.allocate(result.length());
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocate(result.length()));
 
         int written = writer.write(timestamp, buffer);
 
@@ -65,7 +66,7 @@ public class LongTimestampWriterTestCase extends TestCase {
     public void testNegativeWrite() throws Exception {
         LongTimestampWriter writer = new LongTimestampWriter();
 
-        ByteBuffer buffer = ByteBuffer.allocate(2);
+        ResizableByteBuffer buffer = new ResizableByteBuffer(ByteBuffer.allocate(2));
 
         int written = writer.write(-1l, buffer);
 

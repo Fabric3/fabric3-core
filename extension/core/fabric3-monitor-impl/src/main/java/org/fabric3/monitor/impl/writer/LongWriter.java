@@ -37,7 +37,7 @@
 */
 package org.fabric3.monitor.impl.writer;
 
-import java.nio.ByteBuffer;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  * Writes a long value in a character representation to a ByteBuffer without creating objects on the heap.
@@ -66,7 +66,7 @@ public final class LongWriter {
     private LongWriter() {
     }
 
-    public static int write(long value, ByteBuffer buffer) {
+    public static int write(long value, ResizableByteBuffer buffer) {
         if (value == Long.MIN_VALUE) {
             buffer.put(LONG_MIN, 0, LONG_MIN.length);
             return LONG_MIN.length;
@@ -78,7 +78,7 @@ public final class LongWriter {
         }
     }
 
-    private static int writeLongChars(long value, ByteBuffer buffer) {
+    private static int writeLongChars(long value, ResizableByteBuffer buffer) {
         int start = buffer.position();
         int size = (value < 0) ? stringSize(-value) + 1 : stringSize(value);
         int index = size + start;

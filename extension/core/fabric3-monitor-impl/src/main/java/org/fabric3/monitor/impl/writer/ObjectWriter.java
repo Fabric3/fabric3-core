@@ -39,7 +39,8 @@ package org.fabric3.monitor.impl.writer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.nio.ByteBuffer;
+
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  * Writes an Object to a ByteBuffer.
@@ -51,7 +52,7 @@ public final class ObjectWriter {
     private ObjectWriter() {
     }
 
-    public static int write(Object object, ByteBuffer buffer) {
+    public static int write(Object object, ResizableByteBuffer buffer) {
         if (object == null) {
             return 0;
         } else if (object instanceof Throwable) {

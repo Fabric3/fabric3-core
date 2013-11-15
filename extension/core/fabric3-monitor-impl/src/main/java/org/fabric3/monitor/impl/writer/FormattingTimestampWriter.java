@@ -65,13 +65,14 @@
  */
 package org.fabric3.monitor.impl.writer;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
+
 /**
- * Formats a timestamp without creating objects and writes it to a ByteBuffer using the following pattern syntax:
+ * Formats a timestamp without creating objects and writes it to a ResizableByteBuffer using the following pattern syntax:
  * <pre>
  *     * %a - Abbreviated weekday name ("Sun", "Mon", "Tue")
  *     * %b - Abbreviated month name ("Jan", "Feb", "Mar")
@@ -336,7 +337,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
         this.chunks = chunks.toArray(new LongFormatter[chunks.size()]);
     }
 
-    public int write(long value, ByteBuffer buffer) {
+    public int write(long value, ResizableByteBuffer buffer) {
         int written = 0;
         if (tz != null) {
             value += tz.getOffset(value);
@@ -538,7 +539,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
         return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
     }
 
-    private static int writeIntegerWidth(int value, int width, ByteBuffer buffer) {
+    private static int writeIntegerWidth(int value, int width, ResizableByteBuffer buffer) {
         if (value < 0) {
             throw new IllegalArgumentException("Value (" + value + ") < 0");
         }
@@ -607,7 +608,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             this.literal = literal;
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             return CharSequenceWriter.write(literal, buffer);
         }
     }
@@ -621,7 +622,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             String monthName = MONTH_NAMES[getMonth(value)];
             return CharSequenceWriter.write(monthName, buffer);
         }
@@ -636,7 +637,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             String weekdayName = WEEKDAY_NAMES[getDayOfWeek(value)];
             return CharSequenceWriter.write(weekdayName, buffer);
         }
@@ -649,7 +650,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             int hour = getHour(value);
 
             String ampm = hour < 12 ? "AM" : "PM";
@@ -664,7 +665,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             int dayOfMonth = getDayOfMonth(value);
             return IntWriter.write(dayOfMonth + 1, buffer);
         }
@@ -677,7 +678,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             if (buffer == null) {
                 throw new IllegalArgumentException("buffer is null");
             }
@@ -695,7 +696,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             int dayOfWeek = getDayOfWeek(value);
             return IntWriter.write(dayOfWeek + 1, buffer);
         }
@@ -708,7 +709,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             int dayOfYear = getDayOfYear(value);
             return writeIntegerWidth(dayOfYear + 1, 3, buffer);
         }
@@ -721,7 +722,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             int hour = getHour(value) % 12;
 
             if (hour == 0) {
@@ -739,7 +740,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             int hour = getHour(value) % 12;
             if (hour == 0) {
                 hour = 12;
@@ -755,7 +756,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             int hour = getHour(value);
             return IntWriter.write(hour, buffer);
         }
@@ -768,7 +769,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             int hour = getHour(value);
             return writeIntegerWidth(hour, 2, buffer);
         }
@@ -781,7 +782,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             int milliseconds = getMillisecond(value);
             return IntWriter.write(milliseconds, buffer);
         }
@@ -794,7 +795,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             int milliseconds = getMillisecond(value);
             return writeIntegerWidth(milliseconds, 3, buffer);
         }
@@ -807,7 +808,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             int minutes = getMinute(value);
             return writeIntegerWidth(minutes, 2, buffer);
         }
@@ -823,7 +824,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             String monthName = MONTH_NAMES[getMonth(value)];
             return CharSequenceWriter.write(monthName, buffer);
         }
@@ -836,7 +837,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             return IntWriter.write(getMonth(value) + 1, buffer);
         }
     }
@@ -848,7 +849,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             return writeIntegerWidth(getMonth(value) + 1, 2, buffer);
         }
     }
@@ -860,7 +861,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             return IntWriter.write(getSecond(value), buffer);
         }
     }
@@ -872,7 +873,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             return writeIntegerWidth(getSecond(value), 2, buffer);
         }
     }
@@ -886,7 +887,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             String weekdayName = WEEKDAY_NAMES[getDayOfWeek(value)];
             return CharSequenceWriter.write(weekdayName, buffer);
         }
@@ -899,7 +900,7 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             return writeIntegerWidth(getYear(value) % 100, 2, buffer);
         }
     }
@@ -911,13 +912,13 @@ public class FormattingTimestampWriter implements TimestampWriter {
             // no-op
         }
 
-        public int format(long value, ByteBuffer buffer) {
+        public int format(long value, ResizableByteBuffer buffer) {
             return writeIntegerWidth(getYear(value), 4, buffer);
         }
     }
 
     private interface LongFormatter {
-        public int format(long value, ByteBuffer buffer);
+        public int format(long value, ResizableByteBuffer buffer);
     }
 
     private static class ExtractedYearMonth {

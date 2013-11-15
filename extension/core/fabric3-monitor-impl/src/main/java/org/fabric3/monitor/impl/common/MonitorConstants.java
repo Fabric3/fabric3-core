@@ -45,6 +45,6 @@ public interface MonitorConstants {
     /**
      * Default buffer capacity for ring buffer entries.
      */
-    int DEFAULT_BUFFER_CAPACITY = 5120;
+    int DEFAULT_BUFFER_CAPACITY = 1024;
 
 }

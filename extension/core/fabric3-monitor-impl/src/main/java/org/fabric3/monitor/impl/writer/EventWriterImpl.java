@@ -37,11 +37,11 @@
 */
 package org.fabric3.monitor.impl.writer;
 
-import java.nio.ByteBuffer;
 import java.util.TimeZone;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
 import org.fabric3.monitor.spi.event.ParameterEntry;
 import org.fabric3.monitor.spi.writer.EventWriter;
@@ -87,7 +87,7 @@ public class EventWriterImpl implements EventWriter {
         initializeTimestampWriter();
     }
 
-    public void write(MonitorLevel level, long timestamp, String template, ByteBuffer buffer, Object[] args) {
+    public void write(MonitorLevel level, long timestamp, String template, ResizableByteBuffer buffer, Object[] args) {
         int bytesWritten = 0;
         bytesWritten = bytesWritten + writePrefix(level, timestamp, buffer);
         bytesWritten = bytesWritten + writeTemplate(template, args, buffer);
@@ -96,7 +96,7 @@ public class EventWriterImpl implements EventWriter {
         buffer.limit(bytesWritten);
     }
 
-    public int writePrefix(MonitorLevel level, long timestamp, ByteBuffer buffer) {
+    public int writePrefix(MonitorLevel level, long timestamp, ResizableByteBuffer buffer) {
         int bytesWritten = 0;
         buffer.put((byte) '[');
         bytesWritten++;
@@ -125,7 +125,7 @@ public class EventWriterImpl implements EventWriter {
         if (template == null) {
             return 0;
         }
-        ByteBuffer buffer = entry.getBuffer();
+        ResizableByteBuffer buffer = entry.getBuffer();
         int bytesWritten = 0;
         int counter = 0;
         ParameterEntry[] entries = entry.getEntries();
@@ -170,7 +170,7 @@ public class EventWriterImpl implements EventWriter {
         }
     }
 
-    private int writeTemplate(String template, Object[] args, ByteBuffer buffer) {
+    private int writeTemplate(String template, Object[] args, ResizableByteBuffer buffer) {
         if (template == null) {
             return 0;
         }
@@ -202,7 +202,7 @@ public class EventWriterImpl implements EventWriter {
         return bytesWritten;
     }
 
-    private int writeParameter(ParameterEntry parameterEntry, ByteBuffer buffer) {
+    private int writeParameter(ParameterEntry parameterEntry, ResizableByteBuffer buffer) {
         int count = 0;
         switch (parameterEntry.getSlot()) {
             case SHORT:
@@ -238,7 +238,7 @@ public class EventWriterImpl implements EventWriter {
         return count;
     }
 
-    private int writeParameter(Object arg, ByteBuffer buffer) {
+    private int writeParameter(Object arg, ResizableByteBuffer buffer) {
         if (arg instanceof CharSequence) {
             return CharSequenceWriter.write((CharSequence) arg, buffer);
         } else if (arg instanceof Long) {

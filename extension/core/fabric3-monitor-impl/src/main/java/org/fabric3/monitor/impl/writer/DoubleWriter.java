@@ -66,14 +66,14 @@
 */
 package org.fabric3.monitor.impl.writer;
 
-import java.nio.ByteBuffer;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
 
 /**
  * Writes a double value in a character representation to a ByteBuffer without creating objects on the heap.
  */
 public class DoubleWriter extends AbstractNumericWriter {
 
-    public static int write(double value, ByteBuffer buffer) {
+    public static int write(double value, ResizableByteBuffer buffer) {
         int written = 0;
         if (Double.isNaN(value)) {
             buffer.put(NAN);

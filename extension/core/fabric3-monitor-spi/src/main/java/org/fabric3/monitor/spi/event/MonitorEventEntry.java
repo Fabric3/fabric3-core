@@ -40,6 +40,8 @@ package org.fabric3.monitor.spi.event;
 import java.nio.ByteBuffer;
 
 import org.fabric3.api.annotation.monitor.MonitorLevel;
+import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
+import org.fabric3.monitor.spi.buffer.ResizableByteBufferMonitor;
 
 /**
  * An entry for writing a monitor event to a ring buffer.
@@ -53,7 +55,7 @@ public class MonitorEventEntry {
     private int parameterLimit = 0;
 
     private long sequence;
-    private ByteBuffer buffer;
+    private ResizableByteBuffer buffer;
     private long timestamp;
     private MonitorLevel level;
     private int destinationIndex;
@@ -65,8 +67,8 @@ public class MonitorEventEntry {
      *
      * @param capacity the fixed event size in bytes
      */
-    public MonitorEventEntry(int capacity) {
-        buffer = ByteBuffer.allocateDirect(capacity);
+    public MonitorEventEntry(int capacity, ResizableByteBufferMonitor monitor) {
+        buffer = new ResizableByteBuffer(ByteBuffer.allocateDirect(capacity), monitor);
         entries = new ParameterEntry[DEFAULT_PARAM_SIZE];
         for (int i = 0; i < entries.length; i++) {
             entries[i] = new ParameterEntry();
@@ -195,7 +197,7 @@ public class MonitorEventEntry {
      *
      * @return the event buffer
      */
-    public ByteBuffer getBuffer() {
+    public ResizableByteBuffer getBuffer() {
         return buffer;
     }
 
@@ -204,7 +206,7 @@ public class MonitorEventEntry {
      *
      * @param buffer the event buffer
      */
-    public void setBuffer(ByteBuffer buffer) {
+    public void setBuffer(ResizableByteBuffer buffer) {
         this.buffer = buffer;
     }
 

@@ -351,7 +351,7 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         mv.visitLabel(l21);
         mv.visitLineNumber(85, l21);
         mv.visitVarInsn(ALOAD, varEntryPosition);
-        mv.visitMethodInsn(INVOKEVIRTUAL, MONITOR_EVENT_ENTRY, "getBuffer", "()Ljava/nio/ByteBuffer;");
+        mv.visitMethodInsn(INVOKEVIRTUAL, MONITOR_EVENT_ENTRY, "getBuffer", "()Lorg/fabric3/monitor/spi/buffer/ResizableByteBuffer;");
         mv.visitVarInsn(ASTORE, varBufferPosition);
 
         mv.visitVarInsn(ALOAD, varEntryPosition);
@@ -559,7 +559,7 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
         mv.visitLocalVariable("args", "[Ljava/lang/Object;", null, l32, l31, varArgsPosition);
 
         mv.visitLocalVariable("start", "J", null, l18, l1, varStartPosition);
-        mv.visitLocalVariable("buffer", "Ljava/nio/ByteBuffer;", null, l22, l1, varBufferPosition);
+        mv.visitLocalVariable("buffer", "Lorg/fabric3/monitor/spi/buffer/ResizableByteBuffer;", null, l22, l1, varBufferPosition);
 
         mv.visitMaxs(9, 14);
         mv.visitEnd();

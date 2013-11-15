@@ -38,6 +38,8 @@
 package org.fabric3.monitor.impl.router;
 
 import com.lmax.disruptor.EventFactory;
+import org.fabric3.monitor.spi.buffer.ResizableByteBufferMonitor;
+import org.fabric3.monitor.spi.buffer.ResizableByteBufferMonitorImpl;
 import org.fabric3.monitor.spi.event.MonitorEventEntry;
 
 /**
@@ -45,12 +47,14 @@ import org.fabric3.monitor.spi.event.MonitorEventEntry;
  */
 public class MonitorEventEntryFactory implements EventFactory<MonitorEventEntry> {
     private int capacity;
+    private ResizableByteBufferMonitor monitor;
 
     public MonitorEventEntryFactory(int capacity) {
         this.capacity = capacity;
+        this.monitor = new ResizableByteBufferMonitorImpl();
     }
 
     public MonitorEventEntry newInstance() {
-        return new MonitorEventEntry(capacity);
+        return new MonitorEventEntry(capacity, monitor);
     }
 }
