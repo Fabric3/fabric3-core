@@ -49,7 +49,7 @@ import com.lmax.disruptor.SleepingWaitStrategy;
 import com.lmax.disruptor.TimeoutBlockingWaitStrategy;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
-import org.fabric3.channel.disruptor.common.RingBufferData;
+import org.fabric3.api.model.type.component.RingBufferData;
 import org.fabric3.channel.disruptor.impl.RingBufferChannel;
 import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.channel.ChannelBuilder;

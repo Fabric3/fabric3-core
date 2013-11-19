@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.channel.disruptor.common;
+package org.fabric3.api.model.type.component;
 
 import java.io.Serializable;
 

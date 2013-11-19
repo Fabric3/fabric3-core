@@ -40,7 +40,7 @@ package org.fabric3.channel.disruptor.introspection;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fabric3.channel.disruptor.common.RingBufferData;
+import org.fabric3.api.model.type.component.RingBufferData;
 import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.spi.model.physical.ChannelConstants;
 import org.fabric3.spi.introspection.IntrospectionContext;

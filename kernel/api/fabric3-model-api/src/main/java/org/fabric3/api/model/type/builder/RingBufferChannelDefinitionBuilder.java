@@ -37,28 +37,77 @@
 */
 package org.fabric3.api.model.type.builder;
 
+import javax.xml.namespace.QName;
+
 import org.fabric3.api.model.type.component.ChannelDefinition;
+import org.fabric3.api.model.type.component.RingBufferData;
+import static org.fabric3.api.model.type.component.RingBufferData.PhasedBlockingType;
+import static org.fabric3.api.model.type.component.RingBufferData.WaitStrategyType;
 
 /**
  *
  */
-public class ChannelDefinitionBuilder extends AbstractBuilder {
+public class RingBufferChannelDefinitionBuilder extends AbstractBuilder {
+    private static final QName METADATA = new QName(org.fabric3.api.Namespaces.F3, "metadata");
 
-    protected final ChannelDefinition definition;
+    private final ChannelDefinition definition;
+    private final RingBufferData data;
 
     /**
-     * Creates a builder.
+     * Creates a ring buffer channel builder.
      *
      * @param name the channel name
      * @return the builder
      */
-    public static ChannelDefinitionBuilder newBuilder(String name) {
-        return new ChannelDefinitionBuilder(name);
+    public static RingBufferChannelDefinitionBuilder newBuilder(String name) {
+        return new RingBufferChannelDefinitionBuilder(name);
     }
 
-    public ChannelDefinitionBuilder type(String type) {
+    protected RingBufferChannelDefinitionBuilder(String name) {
+        definition = new ChannelDefinition(name);
+        data = new RingBufferData();
+        definition.addMetadata(METADATA, data);
+    }
+
+    public RingBufferChannelDefinitionBuilder type(String type) {
         checkState();
         definition.setType(type);
+        return this;
+    }
+
+    public RingBufferChannelDefinitionBuilder ringSize(int size) {
+        checkState();
+        data.setRingSize(size);
+        return this;
+    }
+
+    public RingBufferChannelDefinitionBuilder blockingTimeout(long nanos) {
+        checkState();
+        data.setBlockingTimeoutNanos(nanos);
+        return this;
+    }
+
+    public RingBufferChannelDefinitionBuilder phasedBlockingType(PhasedBlockingType type) {
+        checkState();
+        data.setPhasedBlockingType(type);
+        return this;
+    }
+
+    public RingBufferChannelDefinitionBuilder spinTimeout(long nanos) {
+        checkState();
+        data.setSpinTimeoutNanos(nanos);
+        return this;
+    }
+
+    public RingBufferChannelDefinitionBuilder waitStrategy(WaitStrategyType strategy) {
+        checkState();
+        data.setWaitStrategy(strategy);
+        return this;
+    }
+
+    public RingBufferChannelDefinitionBuilder yieldTimeout(long nanos) {
+        checkState();
+        data.setYieldTimeoutNanos(nanos);
         return this;
     }
 
@@ -71,10 +120,6 @@ public class ChannelDefinitionBuilder extends AbstractBuilder {
         checkState();
         freeze();
         return definition;
-    }
-
-    protected ChannelDefinitionBuilder(String name) {
-        definition = new ChannelDefinition(name);
     }
 
 }
