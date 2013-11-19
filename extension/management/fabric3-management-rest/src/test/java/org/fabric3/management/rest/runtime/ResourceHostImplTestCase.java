@@ -37,15 +37,14 @@
 */
 package org.fabric3.management.rest.runtime;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.management.rest.model.HttpStatus;
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.spi.DuplicateResourceNameException;
@@ -53,7 +52,6 @@ import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.BasicAuthenticator;
-import org.fabric3.spi.transform.Transformer;
 
 /**
  *
@@ -66,6 +64,7 @@ public final class ResourceHostImplTestCase extends TestCase {
 
     private Marshaller marshaller;
     private ServletHost servletHost;
+    private HttpServletResponse response;
 
     public void testIsRegisteredInPath() throws Exception {
         ResourceMapping mapping = new ResourceMapping("foo", "/foo/bar", "bar", Verb.GET, null, null, null, null);
@@ -109,7 +108,6 @@ public final class ResourceHostImplTestCase extends TestCase {
 
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(request.getPathInfo()).andReturn("/foo").anyTimes();
-        HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
         response.setStatus(404);
         EasyMock.expect(response.getWriter()).andReturn(new PrintWriter(new StringWriter()));
 
@@ -125,7 +123,6 @@ public final class ResourceHostImplTestCase extends TestCase {
 
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(request.getPathInfo()).andReturn("/foo/bar").anyTimes();
-        HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
         response.setStatus(404);
         EasyMock.expect(response.getWriter()).andReturn(new PrintWriter(new StringWriter()));
 
@@ -143,7 +140,6 @@ public final class ResourceHostImplTestCase extends TestCase {
 
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(request.getPathInfo()).andReturn("/foo/bar/baz").anyTimes();
-        HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
         response.setStatus(404);
         EasyMock.expect(response.getWriter()).andReturn(new PrintWriter(new StringWriter()));
 
@@ -163,10 +159,11 @@ public final class ResourceHostImplTestCase extends TestCase {
 
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(request.getPathInfo()).andReturn("/foo/bar/test").anyTimes();
-        HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
 
         EasyMock.expect(marshaller.deserialize(Verb.GET, request, mapping)).andReturn(new Object[]{"test"});
         marshaller.serialize("test", mapping, request, response);
+
+        response.setContentType("application/json");
 
         EasyMock.replay(request, response, marshaller, resource);
 
@@ -188,10 +185,11 @@ public final class ResourceHostImplTestCase extends TestCase {
 
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(request.getPathInfo()).andReturn("/foo/bar/test").anyTimes();
-        HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
 
         EasyMock.expect(marshaller.deserialize(Verb.GET, request, mapping)).andReturn(new Object[]{"test"});
         marshaller.serialize("test", mapping, request, response);
+
+        response.setContentType("application/json");
 
         EasyMock.replay(request, response, marshaller, resource, subresource);
 
@@ -211,8 +209,9 @@ public final class ResourceHostImplTestCase extends TestCase {
 
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(request.getPathInfo()).andReturn("/foo/bar").anyTimes();
-        HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
         response.setStatus(HttpStatus.BAD_REQUEST.getCode());
+
+        response.setContentType("application/json");
 
         EasyMock.expect(marshaller.deserialize(Verb.GET, request, mapping)).andReturn(new Object[]{});
         EasyMock.replay(request, response, marshaller, resource);
@@ -232,7 +231,6 @@ public final class ResourceHostImplTestCase extends TestCase {
         EasyMock.verify(servletHost);
     }
 
-
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -241,6 +239,7 @@ public final class ResourceHostImplTestCase extends TestCase {
         parameterizedMethod = MockResource.class.getMethod("parameterized", String.class);
         operationMethod = MockResource.class.getMethod("operation");
 
+        response = EasyMock.createMock(HttpServletResponse.class);
 
         marshaller = EasyMock.createMock(Marshaller.class);
         servletHost = EasyMock.createMock(ServletHost.class);

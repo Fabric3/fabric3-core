@@ -37,14 +37,13 @@
 */
 package org.fabric3.management.rest.runtime;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.management.rest.model.ResourceException;
 import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
@@ -61,7 +60,7 @@ public final class ResourceHostImplReplicationTestCase extends TestCase {
     private Method parameterizedMethod;
     private Method httpRequestMethod;
     private Marshaller marshaller;
-
+    private HttpServletResponse response;
 
     public void testDispatch() throws Exception {
         MockResource instance = EasyMock.createMock(MockResource.class);
@@ -87,7 +86,6 @@ public final class ResourceHostImplReplicationTestCase extends TestCase {
 
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(request.getPathInfo()).andReturn("/foo/bar").atLeastOnce();
-        HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
 
         ResourceMapping mapping = new ResourceMapping("foo", "/foo/bar", "bar", Verb.POST, parameterizedMethod, instance, true, null, null);
 
@@ -114,7 +112,6 @@ public final class ResourceHostImplReplicationTestCase extends TestCase {
 
         HttpServletRequest request = EasyMock.createNiceMock(HttpServletRequest.class);
         EasyMock.expect(request.getPathInfo()).andReturn("/foo/bar").atLeastOnce();
-        HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
 
         ResourceMapping mapping = new ResourceMapping("foo", "/foo/bar", "bar", Verb.POST, httpRequestMethod, instance, true, null, null);
 
@@ -138,6 +135,8 @@ public final class ResourceHostImplReplicationTestCase extends TestCase {
         parameterizedMethod = MockResource.class.getMethod("parameterized", String.class);
         httpRequestMethod = MockResource.class.getMethod("parameterized", HttpServletRequest.class);
 
+        response = EasyMock.createMock(HttpServletResponse.class);
+        response.setContentType("application/json");
 
         marshaller = EasyMock.createMock(Marshaller.class);
         ServletHost servletHost = EasyMock.createNiceMock(ServletHost.class);
