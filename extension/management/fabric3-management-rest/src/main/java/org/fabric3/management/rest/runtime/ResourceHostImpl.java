@@ -563,6 +563,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
      * @throws ResourceException if an error sending the response
      */
     private void respond(Object value, ResourceMapping mapping, HttpServletRequest request, HttpServletResponse response) throws ResourceException {
+        response.setContentType("application/json");
         if (value instanceof Response) {
             Response resourceResponse = (Response) value;
             for (Map.Entry<String, String> entry : resourceResponse.getHeaders().entrySet()) {
@@ -586,6 +587,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
      * @param response the current response
      */
     private void respondError(ResourceException e, ResourceMapping mapping, HttpServletResponse response) {
+        response.setContentType("application/json");
         for (Map.Entry<String, String> entry : e.getHeaders().entrySet()) {
             response.setHeader(entry.getKey(), entry.getValue());
         }
