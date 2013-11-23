@@ -118,7 +118,7 @@ public abstract class AbstractFabric implements Fabric {
 
     protected abstract File getTmpDir();
 
-	public Fabric addProfile(String name) {
+    public Fabric addProfile(String name) {
         profiles.add(name);
         return this;
     }
@@ -266,7 +266,7 @@ public abstract class AbstractFabric implements Fabric {
             File extensionArchive = ArchiveUtils.getExtensionArchive(extension, repositoryDirectory);
             URI uri = URI.create(extensionArchive.getName());
             Source location = new UrlSource(extensionArchive.toURI().toURL());
-            ContributionSource source = createContributionSource(uri,location);
+            ContributionSource source = createContributionSource(uri, location);
             sources.add(source);
         }
 
@@ -275,10 +275,12 @@ public abstract class AbstractFabric implements Fabric {
     }
 
     protected abstract File getRepositoryDir();
-	protected abstract ContributionSource createContributionSource(URI uri, Source location);
+
+    protected abstract ContributionSource createContributionSource(URI uri, Source location);
+
     protected abstract ContributionSource createContributionSource(Source location);
 
-	/**
+    /**
      * Adds the archive Sources to the sources.
      *
      * @param sources the sources
@@ -286,7 +288,7 @@ public abstract class AbstractFabric implements Fabric {
     private void addContributionSources(Set<Source> locations, List<ContributionSource> sources) {
         for (Source location : locations) {
             ContributionSource source = createContributionSource(location);
-			sources.add(source);
+            sources.add(source);
         }
     }
 
@@ -379,8 +381,7 @@ public abstract class AbstractFabric implements Fabric {
      *
      * @param files   the files
      * @param sources the sources to add to
-     * @throws MalformedURLException 
-     * @throws MalformedSourceException if there is an error reading a file name
+     * @throws MalformedURLException if there is an error reading a file name
      */
     private void addSources(List<File> files, List<ContributionSource> sources) throws MalformedURLException {
         for (File file : files) {

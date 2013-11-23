@@ -38,6 +38,7 @@
 package org.fabric3.api.node;
 
 import java.net.URL;
+import java.util.Map;
 
 /**
  * Main API for interfacing with a service fabric.
@@ -102,7 +103,16 @@ public interface Fabric {
     Fabric stop() throws FabricException;
 
     /**
-     * Registers an instance as a system component. This method is typically called before {@link #start()}}.
+     * Creates and returns the dispatcher for a transport identified by the given interface.
+     *
+     * @param interfaze  the dispatcher interface
+     * @param properties optional transport properties
+     * @return the dispatcher or null if not found
+     */
+    <T> T createTransportDispatcher(Class<T> interfaze, Map<String, Object> properties);
+
+    /**
+     * Registers an instance as a system component. This method must be called before {@link #start()}}.
      *
      * @param interfaze the service interface of the instance
      * @param instance  the instance

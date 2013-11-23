@@ -37,6 +37,7 @@
 */
 package org.fabric3.node;
 
+import javax.servlet.Servlet;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -48,10 +49,10 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
 import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.FileContributionSource;
@@ -62,6 +63,7 @@ import org.fabric3.api.host.runtime.BootConfiguration;
 import org.fabric3.api.host.runtime.BootstrapFactory;
 import org.fabric3.api.host.runtime.BootstrapHelper;
 import org.fabric3.api.host.runtime.BootstrapService;
+import org.fabric3.api.host.runtime.ComponentRegistration;
 import org.fabric3.api.host.runtime.DefaultHostInfo;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.HiddenPackages;
@@ -72,9 +74,11 @@ import org.fabric3.api.host.runtime.ScanException;
 import org.fabric3.api.host.runtime.ShutdownException;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.host.util.FileHelper;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.node.Domain;
 import org.fabric3.api.node.Fabric;
 import org.fabric3.api.node.FabricException;
+import org.fabric3.spi.host.ServletHost;
 import org.w3c.dom.Document;
 
 /**
@@ -105,6 +109,9 @@ public class DefaultFabric implements Fabric {
     private Set<URL> profileLocations = new HashSet<URL>();
     private Set<String> profiles = new HashSet<String>();
     private Set<URL> extensionLocations = new HashSet<URL>();
+    private List<ComponentRegistration> registrations = new ArrayList<ComponentRegistration>();
+
+    private FabricServletHost host;
 
     /**
      * Constructor.
@@ -199,6 +206,7 @@ public class DefaultFabric implements Fabric {
             configuration.setBootClassLoader(maskingBootLoader);
             configuration.setSystemConfig(systemConfig);
             configuration.setExtensionContributions(extensionSources);
+            configuration.addRegistrations(registrations);
 
             // boot the runtime
             coordinator = bootstrapService.createCoordinator(configuration);
@@ -236,8 +244,26 @@ public class DefaultFabric implements Fabric {
         }
     }
 
+    public <T> T createTransportDispatcher(Class<T> interfaze, Map<String, Object> properties) {
+        if (Servlet.class.isAssignableFrom(interfaze)) {
+            if (host == null) {
+                int httpPort = (Integer) properties.get("http.port");
+                int httpsPort = (Integer) properties.get("https.port");
+                URL httpUrl = (URL) properties.get("http.url");
+                URL httpsUrl = (URL) properties.get("https.url");
+
+                host = new FabricServletHost(httpPort, httpsPort, httpUrl, httpsUrl);
+                registerSystemService(ServletHost.class, host);
+            }
+            return interfaze.cast(host);
+        }
+        return null;
+    }
+
     public <T> Fabric registerSystemService(Class<T> interfaze, T instance) throws FabricException {
-        throw new UnsupportedOperationException();
+        ComponentRegistration registration = new ComponentRegistration(interfaze.getSimpleName(), interfaze, instance, false);
+        registrations.add(registration);
+        return this;
     }
 
     public Domain getDomain() {
@@ -356,7 +382,9 @@ public class DefaultFabric implements Fabric {
      * @return the sources
      * @throws ScanException if there is a scan error
      */
-    private List<ContributionSource> scanExtensions(final boolean onlyCore) throws ScanException {
+    private List<ContributionSource> scanExtensions(boolean onlyCore) throws ScanException {
+        File repositoryDirectory = ArchiveUtils.getJarDirectory(DefaultFabric.class);
+        File f3Extensions = new File(repositoryDirectory, "f3.extensions.jar");
         try {
 
             List<File> archives = scanClasspathForProfileArchives();
@@ -371,13 +399,22 @@ public class DefaultFabric implements Fabric {
             for (File extension : archives) {
                 // if profiles and/or extensions are explicitly configured, only load the core Fabric extensions and ignore all other extensions/profiles on
                 // the classpath
-                if (onlyCore && !extension.getName().contains("fabric3-node-extensions")) {
+                if ((onlyCore || f3Extensions.exists()) && !extension.getName().contains("fabric3-node-extensions")) {
                     continue;
                 }
                 extensionsFiles.addAll(ArchiveUtils.unpack(extension, extensionsDirectory));
             }
 
+            // if an f3 extensions archive exists, unzip its contents and add those to the extensions
+            if (f3Extensions.exists()) {
+                List<File> files = ArchiveUtils.unpack(f3Extensions, extensionsDirectory);
+                for (File file : files) {
+                    extensionsFiles.add(file);
+                }
+            }
+
             addSources(extensionsFiles, sources);
+
             return sources;
         } catch (IOException e) {
             throw new ScanException("Error scanning extensions", e);

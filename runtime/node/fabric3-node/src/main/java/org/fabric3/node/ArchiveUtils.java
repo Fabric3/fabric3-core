@@ -91,7 +91,6 @@ public class ArchiveUtils {
         return jarFile.getParentFile();
     }
 
-
     /**
      * Returns the archive file for the given profile in the Maven-based repository directory.
      * <p/>
@@ -137,7 +136,7 @@ public class ArchiveUtils {
      * @param directory the repository directory
      * @return the archive file
      */
-    public static  File getExtensionArchive(String extension, File directory) {
+    public static File getExtensionArchive(String extension, File directory) {
         File profileDirectory = new File(directory, extension);
         if (!profileDirectory.exists()) {
             throw new FabricException("Extension archive not found in repository: " + extension);
@@ -160,7 +159,7 @@ public class ArchiveUtils {
     }
 
     /**
-     * Expands the contents of an archive into the given destination directory.
+     * Expands the JAR and ZIP contents of an archive into the given destination directory.
      *
      * @param archive     the archive
      * @param destination the destination directory
@@ -196,7 +195,7 @@ public class ArchiveUtils {
     }
 
     /**
-     * Returns the name of a JAR entry without the path.
+     * Returns the name of a JAR or ZIP entry without the path.
      *
      * @param entry the JAR entry
      * @return the JAR entry without the path
@@ -210,7 +209,7 @@ public class ArchiveUtils {
             simpleName = entry.getName();
         }
 
-        if (!simpleName.endsWith(".jar")) {
+        if (!simpleName.endsWith(".jar") && !simpleName.endsWith(".zip")) {   // support jars and profile zips
             return null;
 
         }
