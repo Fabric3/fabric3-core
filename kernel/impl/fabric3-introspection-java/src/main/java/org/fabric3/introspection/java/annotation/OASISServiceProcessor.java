@@ -84,25 +84,22 @@ public class OASISServiceProcessor extends AbstractAnnotationProcessor<Service> 
     }
 
     public void visitType(Service annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
-        for (Class<?> service : annotation.names()) {
-            ServiceDefinition definition = createDefinition(service, type, componentType, context);
-            componentType.add(definition);
-        }
-
-        Class<?> service = annotation.value();
-        if (!Void.class.equals(service)) {
-            ServiceDefinition definition = createDefinition(service, type, componentType, context);
-            componentType.add(definition);
+        Class<?>[] services = annotation.value();
+        String[] names = annotation.names();
+        for (int i=0; i<services.length; i++) {
+            Class<?> service = services[i];
+            componentType.add(createDefinition(service, names.length == 0 ? service.getSimpleName() : names[i], type, componentType, context));
         }
     }
 
     @SuppressWarnings({"unchecked"})
     private ServiceDefinition createDefinition(Class<?> service,
+                                               String name,
                                                Class<?> implClass,
                                                InjectingComponentType componentType,
                                                IntrospectionContext context) {
         ServiceContract serviceContract = contractProcessor.introspect(service, implClass, context, componentType);
-        ServiceDefinition definition = new ServiceDefinition(serviceContract.getInterfaceName(), serviceContract);
+        ServiceDefinition definition = new ServiceDefinition(name, serviceContract);
         Annotation[] annotations = service.getAnnotations();
         if (policyProcessor != null) {
             for (Annotation annotation : annotations) {

@@ -67,7 +67,7 @@ import org.oasisopen.sca.annotation.Service;
 /**
  * A <code>ServletHost</code> implementation that forwards requests to registered servlets
  */
-@Service(names = {ServletHost.class, ServletRequestDispatcher.class})
+@Service({ServletHost.class, ServletRequestDispatcher.class})
 @EagerInit
 public class WebLogicServletHost extends HttpServlet implements ServletHost, ServletRequestDispatcher {
     private static final long serialVersionUID = -3784698338450289318L;

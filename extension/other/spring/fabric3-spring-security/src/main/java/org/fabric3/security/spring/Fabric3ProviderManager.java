@@ -69,7 +69,7 @@ import org.fabric3.spi.security.UsernamePasswordToken;
  * <p/>
  * Authentication is done using a set of Spring <code>AuthenticationProvider</code>s.
  */
-@Service(names = {AuthenticationManager.class, AuthenticationService.class})
+@Service({AuthenticationManager.class, AuthenticationService.class})
 public class Fabric3ProviderManager extends ProviderManager implements AuthenticationService {
     private AuthenticationProviderFactory factory;
     private ConfigurationParser parser;
