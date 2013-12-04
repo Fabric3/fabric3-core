@@ -70,7 +70,7 @@ import org.fabric3.timer.spi.TimerService;
  *
  */
 @EagerInit
-@Service(names = {TimerService.class, ScheduledExecutorService.class})
+@Service({TimerService.class, ScheduledExecutorService.class})
 public class ExecutorTimerService implements TimerService, ScheduledExecutorService {
     private ManagementService managementService;
     private TimerServiceMonitor monitor;

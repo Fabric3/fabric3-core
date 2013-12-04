@@ -77,7 +77,7 @@ import org.fabric3.spi.xml.XMLFactory;
 /**
  * Records profiles installed in the runtime.
  */
-@Service(names = {ContributionServiceListener.class, Fabric3EventListener.class})
+@Service({ContributionServiceListener.class, Fabric3EventListener.class})
 @EagerInit
 public class ProfileTracker implements ContributionServiceListener, Fabric3EventListener<RuntimeRecover> {
     private static final QName CONTRIBUTION = new QName(org.fabric3.api.Namespaces.F3, "contribution");

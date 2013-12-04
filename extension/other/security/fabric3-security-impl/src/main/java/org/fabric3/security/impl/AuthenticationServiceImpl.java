@@ -55,7 +55,7 @@ import org.fabric3.spi.security.UsernamePasswordToken;
  * Basic authentication and service that relies on a SecurityStore for subject information. This implementation may also be used to authenticate JMX
  * credentials.
  */
-@Service(names = {AuthenticationService.class, JMXAuthenticator.class})
+@Service({AuthenticationService.class, JMXAuthenticator.class})
 @EagerInit
 public class AuthenticationServiceImpl implements AuthenticationService, JMXAuthenticator {
     private SecurityStore store;

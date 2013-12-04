@@ -72,7 +72,7 @@ import org.oasisopen.sca.annotation.Service;
  * existing leader fails and the current host is elected zone leader.
  */
 @EagerInit
-@Service(names = {ScopeContainer.class, TopologyListener.class})
+@Service({ScopeContainer.class, TopologyListener.class})
 public class DomainScopeContainer extends SingletonScopeContainer implements TopologyListener {
     private HostInfo info;
     private ParticipantTopologyService topologyService;

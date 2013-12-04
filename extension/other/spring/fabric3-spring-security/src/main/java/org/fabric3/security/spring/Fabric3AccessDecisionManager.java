@@ -70,7 +70,7 @@ import org.fabric3.spi.security.AuthorizationService;
  * <p/>
  * Access decisions are delegated to a Spring <code>AccessDecisionManager<code> instance.
  */
-@Service(names = {AccessDecisionManager.class, AuthorizationService.class})
+@Service({AccessDecisionManager.class, AuthorizationService.class})
 public class Fabric3AccessDecisionManager extends AbstractAccessDecisionManager implements AuthorizationService {
     private String managerType = "affirmative";
 

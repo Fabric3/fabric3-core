@@ -112,7 +112,7 @@ import static org.fabric3.spi.federation.addressing.AddressAnnouncement.Type.ACT
  * Implements an HTTP transport service using Jetty.
  */
 @EagerInit
-@Service(names = {JettyService.class, Transport.class})
+@Service({JettyService.class, Transport.class})
 public class JettyServiceImpl implements JettyService, Transport {
     private static final String STATISTICS = "transports/http/container/statistics";
     private static final String MAPPINGS = "transports/http/container/mappings";

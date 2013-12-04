@@ -69,7 +69,7 @@ import org.w3c.dom.NodeList;
  */
 @EagerInit
 @Management(name = "MonitorService", path = "/runtime/monitor", description = "Sets monitoring levels for the runtime")
-@Service(names = {MonitorService.class, ComponentBuilderListener.class})
+@Service({MonitorService.class, ComponentBuilderListener.class})
 public class MonitorServiceImpl implements MonitorService, ComponentBuilderListener {
     private ComponentManager manager;
     private Map<URI, MonitorLevel> applicationComponentLevels = Collections.emptyMap();
