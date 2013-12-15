@@ -110,6 +110,9 @@ public class LogicalComponentManagerImpl implements LogicalComponentManager {
             autowire = Autowire.OFF;
         }
         this.autowire = autowire;
+        if (domain != null) {
+            domain.setAutowire(autowire);
+        }
     }
 
     public LogicalComponent<?> getComponent(URI uri) {
