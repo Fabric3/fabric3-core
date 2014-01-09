@@ -76,15 +76,17 @@ import org.oasisopen.sca.annotation.Reference;
 public class ZipContributionHandler implements ArchiveContributionHandler {
     private List<JarManifestHandler> manifestHandlers = Collections.emptyList();
     private Loader loader;
-    private JavaArtifactIntrospector artifactIntrospector;
+    private List<JavaArtifactIntrospector> artifactIntrospectors = Collections.emptyList();
     private ContentTypeResolver contentTypeResolver;
 
-    public ZipContributionHandler(@Reference Loader loader,
-                                  @Reference JavaArtifactIntrospector artifactIntrospector,
-                                  @Reference ContentTypeResolver contentTypeResolver) {
+    public ZipContributionHandler(@Reference Loader loader, @Reference ContentTypeResolver contentTypeResolver) {
         this.loader = loader;
-        this.artifactIntrospector = artifactIntrospector;
         this.contentTypeResolver = contentTypeResolver;
+    }
+
+    @Reference
+    public void setArtifactIntrospectors(List<JavaArtifactIntrospector> introspectors) {
+        this.artifactIntrospectors = introspectors;
     }
 
     @Reference(required = false)
@@ -177,7 +179,15 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
                 if (name.endsWith(".class")) {
                     URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + name);
                     ClassLoader classLoader = context.getClassLoader();
-                    Resource resource = artifactIntrospector.inspect(name, entryUrl, contribution, classLoader);
+
+                    Resource resource = null;
+                    for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
+                        resource = introspector.inspect(name, entryUrl, contribution, classLoader);
+                        if (resource != null) {
+                            break;
+                        }
+                    }
+
                     if (resource == null) {
                         continue;
                     }

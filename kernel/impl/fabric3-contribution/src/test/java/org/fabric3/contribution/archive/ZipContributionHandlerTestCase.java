@@ -49,7 +49,6 @@ import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
-import org.fabric3.spi.contribution.JavaArtifactIntrospector;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -129,12 +128,11 @@ public class ZipContributionHandlerTestCase extends TestCase {
         EasyMock.expect(resolver.getContentType(EasyMock.isA(String.class))).andReturn("application/xml").anyTimes();
         EasyMock.replay(resolver);
         loader = EasyMock.createMock(Loader.class);
-        JavaArtifactIntrospector artifactIntrospector = EasyMock.createNiceMock(JavaArtifactIntrospector.class);
 
         ClassLoader classLoader = getClass().getClassLoader();
         context = new DefaultIntrospectionContext(URI.create("test"), classLoader);
 
-        handler = new ZipContributionHandler(loader, artifactIntrospector, resolver);
+        handler = new ZipContributionHandler(loader, resolver);
     }
 
     private Contribution createContribution() {

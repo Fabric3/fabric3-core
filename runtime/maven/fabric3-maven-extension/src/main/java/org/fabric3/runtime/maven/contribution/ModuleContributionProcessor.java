@@ -43,6 +43,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.host.contribution.InstallException;
@@ -75,17 +76,18 @@ public class ModuleContributionProcessor implements ContributionProcessor {
     private static final String MAVEN_CONTENT_TYPE = "application/vnd.fabric3.maven-project";
     private ProcessorRegistry registry;
     private ContentTypeResolver contentTypeResolver;
-    private JavaArtifactIntrospector artifactIntrospector;
+    private List<JavaArtifactIntrospector> artifactIntrospectors = Collections.emptyList();
     private Loader loader;
 
-    public ModuleContributionProcessor(@Reference ProcessorRegistry registry,
-                                       @Reference ContentTypeResolver contentTypeResolver,
-                                       @Reference JavaArtifactIntrospector artifactIntrospector,
-                                       @Reference Loader loader) {
+    public ModuleContributionProcessor(@Reference ProcessorRegistry registry, @Reference ContentTypeResolver contentTypeResolver, @Reference Loader loader) {
         this.registry = registry;
         this.contentTypeResolver = contentTypeResolver;
-        this.artifactIntrospector = artifactIntrospector;
         this.loader = loader;
+    }
+
+    @Reference
+    public void setArtifactIntrospectors(List<JavaArtifactIntrospector> introspectors) {
+        this.artifactIntrospectors = introspectors;
     }
 
     public boolean canProcess(Contribution contribution) {
@@ -203,7 +205,15 @@ public class ModuleContributionProcessor implements ContributionProcessor {
                     if (name.endsWith(".class")) {
                         name = calculateClassName(file);
                         URL entryUrl = file.toURI().toURL();
-                        Resource resource = artifactIntrospector.inspect(name, entryUrl, contribution, context.getClassLoader());
+
+                        Resource resource = null;
+                        for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
+                            resource = introspector.inspect(name, entryUrl, contribution, context.getClassLoader());
+                            if (resource != null) {
+                                break;
+                            }
+                        }
+
                         if (resource == null) {
                             continue;
                         }

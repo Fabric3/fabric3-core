@@ -42,6 +42,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -70,15 +72,17 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class WarContributionHandler implements ArchiveContributionHandler {
     private Loader loader;
-    private JavaArtifactIntrospector artifactIntrospector;
+    private List<JavaArtifactIntrospector> artifactIntrospectors = Collections.emptyList();
     private ContentTypeResolver contentTypeResolver;
 
-    public WarContributionHandler(@Reference Loader loader,
-                                  @Reference JavaArtifactIntrospector artifactIntrospector,
-                                  @Reference ContentTypeResolver contentTypeResolver) {
+    public WarContributionHandler(@Reference Loader loader, @Reference ContentTypeResolver contentTypeResolver) {
         this.loader = loader;
-        this.artifactIntrospector = artifactIntrospector;
         this.contentTypeResolver = contentTypeResolver;
+    }
+
+    @Reference
+    public void setArtifactIntrospectors(List<JavaArtifactIntrospector> introspectors) {
+        this.artifactIntrospectors = introspectors;
     }
 
     public boolean canProcess(Contribution contribution) {
@@ -138,7 +142,15 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                 if (name.endsWith(".class")) {
                     URL entryUrl = new URL("jar:" + location.toExternalForm() + "!/" + name);
                     ClassLoader classLoader = context.getClassLoader();
-                    Resource resource = artifactIntrospector.inspect(name, entryUrl, contribution, classLoader);
+
+                    Resource resource = null;
+                    for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
+                        resource = introspector.inspect(name, entryUrl, contribution, classLoader);
+                        if (resource != null) {
+                            break;
+                        }
+                    }
+
                     if (resource == null) {
                         continue;
                     }

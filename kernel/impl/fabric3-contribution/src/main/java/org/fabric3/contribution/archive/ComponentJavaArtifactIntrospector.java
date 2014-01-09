@@ -51,9 +51,9 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.Symbol;
 
 /**
- *
+ * Introspects a class to determine if it is a Java component.
  */
-public class JavaArtifactIntrospectorImpl implements JavaArtifactIntrospector {
+public class ComponentJavaArtifactIntrospector implements JavaArtifactIntrospector {
 
     public Resource inspect(String name, URL url, Contribution contribution, ClassLoader loader) {
         try {

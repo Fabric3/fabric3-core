@@ -49,7 +49,6 @@ import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
-import org.fabric3.spi.contribution.JavaArtifactIntrospector;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.archive.ArtifactResourceCallback;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
@@ -129,12 +128,11 @@ public class ExplodedArchiveContributionHandlerTestCase extends TestCase {
         ContentTypeResolver resolver = EasyMock.createMock(ContentTypeResolver.class);
         EasyMock.expect(resolver.getContentType(EasyMock.isA(String.class))).andReturn("application/xml").anyTimes();
         loader = EasyMock.createMock(Loader.class);
-        JavaArtifactIntrospector artifactIntrospector = EasyMock.createNiceMock(JavaArtifactIntrospector.class);
         EasyMock.replay(resolver);
         ClassLoader classLoader = getClass().getClassLoader();
         context = new DefaultIntrospectionContext(URI.create("test"), classLoader);
 
-        handler = new ExplodedArchiveContributionHandler(loader, artifactIntrospector, resolver);
+        handler = new ExplodedArchiveContributionHandler(loader, resolver);
     }
 
     private Contribution createContribution() {

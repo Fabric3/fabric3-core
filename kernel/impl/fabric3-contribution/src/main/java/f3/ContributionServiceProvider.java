@@ -52,9 +52,9 @@ import org.fabric3.contribution.DependencyResolverImpl;
 import org.fabric3.contribution.ExtensionMapContentTypeResolver;
 import org.fabric3.contribution.ProcessorRegistryImpl;
 import org.fabric3.contribution.archive.ArchiveContributionProcessor;
+import org.fabric3.contribution.archive.ComponentJavaArtifactIntrospector;
 import org.fabric3.contribution.archive.ExplodedArchiveContributionHandler;
 import org.fabric3.contribution.archive.JarClasspathProcessor;
-import org.fabric3.contribution.archive.JavaArtifactIntrospectorImpl;
 import org.fabric3.contribution.archive.ZipContributionHandler;
 import org.fabric3.contribution.generator.JavaContributionWireGenerator;
 import org.fabric3.contribution.generator.LocationContributionWireGenerator;
@@ -197,7 +197,7 @@ public class ContributionServiceProvider {
 
         compositeBuilder.component(newBuilder(CompositeResourceElementUpdater.class).key(Composite.class.getName()).build());
 
-        compositeBuilder.component(newBuilder(JavaArtifactIntrospectorImpl.class).build());
+        compositeBuilder.component(newBuilder(ComponentJavaArtifactIntrospector.class).build());
 
         compositeBuilder.component(newBuilder(APIImportListener.class).build());
 

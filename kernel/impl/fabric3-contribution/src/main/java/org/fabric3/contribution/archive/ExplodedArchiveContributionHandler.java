@@ -42,6 +42,8 @@ import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.fabric3.api.host.contribution.InstallException;
@@ -68,15 +70,17 @@ import static org.fabric3.spi.contribution.Constants.EXPLODED_CONTENT_TYPE;
  */
 public class ExplodedArchiveContributionHandler implements ArchiveContributionHandler {
     private Loader loader;
-    private JavaArtifactIntrospector artifactIntrospector;
+    private List<JavaArtifactIntrospector> artifactIntrospectors = Collections.emptyList();
     private final ContentTypeResolver contentTypeResolver;
 
-    public ExplodedArchiveContributionHandler(@Reference Loader loader,
-                                              @Reference JavaArtifactIntrospector artifactIntrospector,
-                                              @Reference ContentTypeResolver contentTypeResolver) {
+    public ExplodedArchiveContributionHandler(@Reference Loader loader, @Reference ContentTypeResolver contentTypeResolver) {
         this.loader = loader;
-        this.artifactIntrospector = artifactIntrospector;
         this.contentTypeResolver = contentTypeResolver;
+    }
+
+    @Reference
+    public void setArtifactIntrospectors(List<JavaArtifactIntrospector> introspectors) {
+        this.artifactIntrospectors = introspectors;
     }
 
     public boolean canProcess(Contribution contribution) {
@@ -147,7 +151,14 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                         name = getRelativeName(file, root);
                         URL entryUrl = file.toURI().toURL();
                         ClassLoader classLoader = context.getClassLoader();
-                        Resource resource = artifactIntrospector.inspect(name, entryUrl, contribution, classLoader);
+                        Resource resource = null;
+                        for (JavaArtifactIntrospector introspector : artifactIntrospectors) {
+                            resource = introspector.inspect(name, entryUrl, contribution, classLoader);
+                            if (resource != null) {
+                                break;
+                            }
+                        }
+
                         if (resource == null) {
                             continue;
                         }

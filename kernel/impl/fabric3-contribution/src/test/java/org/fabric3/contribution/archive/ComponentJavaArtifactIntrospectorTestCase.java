@@ -50,10 +50,10 @@ import org.fabric3.spi.contribution.Resource;
 /**
  *
  */
-public class JavaArtifactIntrospectorImplTestCase extends TestCase {
+public class ComponentJavaArtifactIntrospectorTestCase extends TestCase {
     private URL url;
     private Contribution contribution;
-    private JavaArtifactIntrospectorImpl introspector;
+    private ComponentJavaArtifactIntrospector introspector;
 
     public void testProvider() throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
@@ -82,7 +82,7 @@ public class JavaArtifactIntrospectorImplTestCase extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        introspector = new JavaArtifactIntrospectorImpl();
+        introspector = new ComponentJavaArtifactIntrospector();
         url = new URL("file://test");
         contribution = new Contribution(URI.create("test"));
     }
