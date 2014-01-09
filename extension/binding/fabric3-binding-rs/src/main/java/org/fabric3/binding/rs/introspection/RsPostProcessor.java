@@ -49,6 +49,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.fabric3.api.annotation.model.EndpointUri;
 import org.fabric3.api.binding.rs.model.RsBindingDefinition;
 import org.fabric3.api.model.type.component.AbstractService;
 import org.fabric3.api.model.type.java.InjectingComponentType;
@@ -116,8 +117,15 @@ public class RsPostProcessor implements PostProcessor {
                 }
             }
         }
+        EndpointUri endpointUri = implClass.getAnnotation(EndpointUri.class);
         String serviceName = bindingService.getName();
-        RsBindingDefinition binding = new RsBindingDefinition(serviceName, URI.create("/" + serviceName));
+
+        String base = serviceName;
+        if (endpointUri != null) {
+            base = endpointUri.value();
+        }
+
+        RsBindingDefinition binding = new RsBindingDefinition(serviceName, URI.create("/" + base));
         bindingService.addBinding(binding);
     }
 
