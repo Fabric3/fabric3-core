@@ -38,11 +38,11 @@
 package org.fabric3.binding.rs.runtime.bytecode;
 
 /**
- * Generates a subclass of a provided class.
+ * Generates a concrete filter class from the given base class.
  * <p/>
  * This service is used to satisfy the Jersey requirement that filter classes be unique since Fabric3 component filters are proxied by a single class.
  */
-public interface SubclassGenerator {
+public interface FilterGenerator {
 
     /**
      * Generates the subclass.

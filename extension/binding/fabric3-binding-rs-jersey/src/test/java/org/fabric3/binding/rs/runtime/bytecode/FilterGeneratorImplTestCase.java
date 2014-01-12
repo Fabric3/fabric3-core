@@ -42,8 +42,8 @@ import junit.framework.TestCase;
 /**
  *
  */
-public class SubclassGeneratorImplTestCase extends TestCase {
-    private SubclassGeneratorImpl generator;
+public class FilterGeneratorImplTestCase extends TestCase {
+    private FilterGeneratorImpl generator;
 
     public void testGenerate() throws Exception {
         Class clazz = generator.generate(TestClass.class);
@@ -55,7 +55,7 @@ public class SubclassGeneratorImplTestCase extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        generator = new SubclassGeneratorImpl();
+        generator = new FilterGeneratorImpl();
         generator.init();
     }
 }

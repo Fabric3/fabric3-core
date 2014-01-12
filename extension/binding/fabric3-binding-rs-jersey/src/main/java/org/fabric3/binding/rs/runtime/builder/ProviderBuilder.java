@@ -41,7 +41,7 @@ import java.lang.annotation.Annotation;
 import java.net.URI;
 
 import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
-import org.fabric3.binding.rs.runtime.bytecode.SubclassGenerator;
+import org.fabric3.binding.rs.runtime.bytecode.FilterGenerator;
 import org.fabric3.binding.rs.runtime.filter.AbstractProxyFilter;
 import org.fabric3.binding.rs.runtime.filter.FilterRegistry;
 import org.fabric3.binding.rs.runtime.filter.ProxyRequestFilter;
@@ -59,16 +59,16 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
     private FilterRegistry filterRegistry;
     private ClassLoaderRegistry classLoaderRegistry;
     private ComponentManager componentManager;
-    private SubclassGenerator subclassGenerator;
+    private FilterGenerator filterGenerator;
 
     public ProviderBuilder(@Reference FilterRegistry filterRegistry,
                            @Reference ClassLoaderRegistry classLoaderRegistry,
                            @Reference ComponentManager componentManager,
-                           @Reference SubclassGenerator subclassGenerator) {
+                           @Reference FilterGenerator filterGenerator) {
         this.filterRegistry = filterRegistry;
         this.classLoaderRegistry = classLoaderRegistry;
         this.componentManager = componentManager;
-        this.subclassGenerator = subclassGenerator;
+        this.filterGenerator = filterGenerator;
     }
 
     @SuppressWarnings("unchecked")
@@ -114,9 +114,9 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
             URI filterUri = definition.getFilterUri();
             AbstractProxyFilter<?> filter;
             if (definition.isRequestFilter()) {
-                filter = subclassGenerator.generate(ProxyRequestFilter.class).newInstance();
+                filter = filterGenerator.generate(ProxyRequestFilter.class).newInstance();
             } else {
-                filter = subclassGenerator.generate(ProxyResponseFilter.class).newInstance();
+                filter = filterGenerator.generate(ProxyResponseFilter.class).newInstance();
             }
             filter.init(filterUri, componentManager);
             return filter;

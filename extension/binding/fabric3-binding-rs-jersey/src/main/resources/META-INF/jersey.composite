@@ -23,8 +23,8 @@ Public License. See the accompanying license file for details.
         <f3:implementation.system class="org.fabric3.binding.rs.runtime.filter.FilterRegistryImpl"/>
     </component>
 
-    <component name="SubclassGenerator">
-        <f3:implementation.system class="org.fabric3.binding.rs.runtime.bytecode.SubclassGeneratorImpl"/>
+    <component name="FilterGenerator">
+        <f3:implementation.system class="org.fabric3.binding.rs.runtime.bytecode.FilterGeneratorImpl"/>
     </component>
 
     <component name="NameBindingFilterProvider">

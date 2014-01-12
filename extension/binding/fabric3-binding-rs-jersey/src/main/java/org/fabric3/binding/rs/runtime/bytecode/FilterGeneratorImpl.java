@@ -55,7 +55,7 @@ import static org.objectweb.asm.Opcodes.RETURN;
 /**
  *
  */
-public class SubclassGeneratorImpl implements SubclassGenerator {
+public class FilterGeneratorImpl implements FilterGenerator {
     private static final String SUFFIX = "F3Subtype";
     private AtomicInteger counter = new AtomicInteger(1);
 
