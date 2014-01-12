@@ -1,4 +1,4 @@
-package org.fabric3.binding.rs.runtime;
+package org.fabric3.binding.rs.runtime.container;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

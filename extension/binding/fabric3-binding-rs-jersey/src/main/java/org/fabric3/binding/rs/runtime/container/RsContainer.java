@@ -35,7 +35,7 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fabric3.binding.rs.runtime;
+package org.fabric3.binding.rs.runtime.container;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.DispatcherType;
@@ -63,6 +63,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.fabric3.binding.rs.runtime.filter.FilterRegistry;
+import org.fabric3.binding.rs.runtime.filter.NameBindingFilterProvider;
 import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -77,13 +79,18 @@ import org.glassfish.jersey.servlet.ServletContainer;
 public final class RsContainer extends HttpServlet {
     private static final long serialVersionUID = 1954697059021782141L;
 
+    private String path;
+    private FilterRegistry filterRegistry;
+    private NameBindingFilterProvider provider;
+
     private ServletContainer servlet;
     private ServletConfig servletConfig;
     private List<Resource> resources;
-    private String path;
 
-    public RsContainer(String path) {
+    public RsContainer(String path, FilterRegistry filterRegistry, NameBindingFilterProvider provider) {
         this.path = path;
+        this.filterRegistry = filterRegistry;
+        this.provider = provider;
         this.resources = new ArrayList<Resource>();
     }
 
@@ -126,16 +133,24 @@ public final class RsContainer extends HttpServlet {
         try {
             // register contribution resources
             ResourceConfig resourceConfig = new ResourceConfig();
+
+            // configure filters
+            Collection<Object> globalFilters = filterRegistry.getGlobalFilters();
+            for (Object filter : globalFilters) {
+                resourceConfig.register(filter);
+            }
+            resourceConfig.register(provider);
+
             for (Resource resource : resources) {
                 resourceConfig.registerResources(resource);
             }
+
             servlet = new ServletContainer(resourceConfig);
             servlet.init(servletConfig);
         } catch (ServletException e) {
             throw new RsContainerException(e);
         } catch (Throwable t) {
-            RsContainerException e = new RsContainerException(t);
-            throw e;
+            throw new RsContainerException(t);
         }
     }
 

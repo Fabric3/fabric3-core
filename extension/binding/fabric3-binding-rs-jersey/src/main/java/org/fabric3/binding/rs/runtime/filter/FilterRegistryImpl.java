@@ -34,28 +34,61 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
- */
-package org.fabric3.binding.rs.runtime;
+*/
+package org.fabric3.binding.rs.runtime.filter;
 
+import java.lang.annotation.Annotation;
 import java.net.URI;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
  */
-public class RsContainerManagerImpl implements RsContainerManager {
-    private Map<URI, RsContainer> containers = new ConcurrentHashMap<URI, RsContainer>();
+public class FilterRegistryImpl implements FilterRegistry {
+    private Map<URI, Object> globalFilters = new HashMap<URI, Object>();
+    private Map<Class<? extends Annotation>, Map<URI, Object>> namedFilters = new HashMap<Class<? extends Annotation>, Map<URI, Object>>();
 
-    public void register(URI name, RsContainer container) {
-        containers.put(name, container);
+    public void registerGlobalFilter(URI uri, Object filter) {
+        globalFilters.put(uri, filter);
     }
 
-    public void unregister(URI name) {
-        containers.remove(name);
+    public Collection<Object> getGlobalFilters() {
+        return globalFilters.values();
     }
 
-    public RsContainer get(URI name) {
-        return containers.get(name);
+    public void registerNameFilter(URI filterUri, Class<? extends Annotation> annotation, Object filter) {
+        Map<URI, Object> map = namedFilters.get(annotation);
+        if (map == null) {
+            map = new HashMap<URI, Object>();
+            namedFilters.put(annotation, map);
+        }
+        map.put(filterUri, filter);
+    }
+
+    public Collection<Object> getNameFilters(Class<? extends Annotation> annotation) {
+        Map<URI, Object> filters = namedFilters.get(annotation);
+        if (filters == null) {
+            return null;
+        }
+        return filters.values();
+    }
+
+    public Object unregisterGlobalFilter(URI filterUri) {
+        return globalFilters.remove(filterUri);
+    }
+
+    public Object unregisterNameFilter(URI filterUri, Class<? extends Annotation> annotation) {
+        Map<URI, Object> filters = namedFilters.get(annotation);
+        if (filters == null) {
+            return null;
+        }
+
+        Object filter = filters.remove(filterUri);
+        if (filters.isEmpty()) {
+            namedFilters.remove(annotation);
+        }
+        return filter;
     }
 }

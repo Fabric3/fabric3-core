@@ -35,33 +35,43 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.annotation.model;
+package org.fabric3.binding.rs.model;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.net.URI;
 
-import org.fabric3.api.Namespaces;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import org.fabric3.api.model.type.component.ResourceDefinition;
 
 /**
- * Configures a class as a component
+ *
  */
-@Target({TYPE})
-@Retention(RUNTIME)
-public @interface Component {
-     public static final String DEFAULT_COMPOSITE =  Namespaces.F3_PREFIX + "DefaultApplicationComposite";
-    /**
-     * Specifies the composite qualified name
-     *
-     * @return the composite name
-     */
-    String composite() default DEFAULT_COMPOSITE;
+public class ProviderResourceDefinition extends ResourceDefinition {
+    private static final long serialVersionUID = -2165312623150769527L;
 
-    /**
-     * Specifies the component name.
-     *
-     * @return the component name
-     */
-    String name() default "";
+    private String filterName;
+    private String bindingAnnotation;
+    private URI contributionUri;
+    private boolean requestFilter;
+
+    public ProviderResourceDefinition(String filterName, String bindingAnnotation, URI contributionUri, boolean requestFilter) {
+        this.filterName = filterName;
+        this.bindingAnnotation = bindingAnnotation;
+        this.contributionUri = contributionUri;
+        this.requestFilter = requestFilter;
+    }
+
+    public String getFilterName() {
+        return filterName;
+    }
+
+    public String getBindingAnnotation() {
+        return bindingAnnotation;
+    }
+
+    public URI getContributionUri() {
+        return contributionUri;
+    }
+
+    public boolean isRequestFilter() {
+        return requestFilter;
+    }
 }

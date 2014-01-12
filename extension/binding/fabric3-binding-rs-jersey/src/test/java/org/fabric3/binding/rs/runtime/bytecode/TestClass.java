@@ -35,17 +35,14 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.runtime;
-
-import org.fabric3.api.host.Fabric3Exception;
+package org.fabric3.binding.rs.runtime.bytecode;
 
 /**
  *
  */
-public class RsContainerException extends Fabric3Exception {
-    private static final long serialVersionUID = 4043858922111535742L;
+public class TestClass {
 
-    public RsContainerException(Throwable cause) {
-        super(cause);
+    public String invoke() {
+        return "test";
     }
 }

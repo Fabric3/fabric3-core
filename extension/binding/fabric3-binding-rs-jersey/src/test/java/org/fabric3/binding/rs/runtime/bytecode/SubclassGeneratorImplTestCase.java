@@ -35,33 +35,27 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.annotation.model;
+package org.fabric3.binding.rs.runtime.bytecode;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import org.fabric3.api.Namespaces;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import junit.framework.TestCase;
 
 /**
- * Configures a class as a component
+ *
  */
-@Target({TYPE})
-@Retention(RUNTIME)
-public @interface Component {
-     public static final String DEFAULT_COMPOSITE =  Namespaces.F3_PREFIX + "DefaultApplicationComposite";
-    /**
-     * Specifies the composite qualified name
-     *
-     * @return the composite name
-     */
-    String composite() default DEFAULT_COMPOSITE;
+public class SubclassGeneratorImplTestCase extends TestCase {
+    private SubclassGeneratorImpl generator;
 
-    /**
-     * Specifies the component name.
-     *
-     * @return the component name
-     */
-    String name() default "";
+    public void testGenerate() throws Exception {
+        Class clazz = generator.generate(TestClass.class);
+        TestClass instance = (TestClass) clazz.newInstance();
+        System.out.println(instance.invoke());
+
+    }
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        generator = new SubclassGeneratorImpl();
+        generator.init();
+    }
 }

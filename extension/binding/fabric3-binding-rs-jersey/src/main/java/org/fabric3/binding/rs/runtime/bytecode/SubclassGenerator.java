@@ -35,33 +35,21 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.annotation.model;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import org.fabric3.api.Namespaces;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+package org.fabric3.binding.rs.runtime.bytecode;
 
 /**
- * Configures a class as a component
+ * Generates a subclass of a provided class.
+ * <p/>
+ * This service is used to satisfy the Jersey requirement that filter classes be unique since Fabric3 component filters are proxied by a single class.
  */
-@Target({TYPE})
-@Retention(RUNTIME)
-public @interface Component {
-     public static final String DEFAULT_COMPOSITE =  Namespaces.F3_PREFIX + "DefaultApplicationComposite";
-    /**
-     * Specifies the composite qualified name
-     *
-     * @return the composite name
-     */
-    String composite() default DEFAULT_COMPOSITE;
+public interface SubclassGenerator {
 
     /**
-     * Specifies the component name.
+     * Generates the subclass.
      *
-     * @return the component name
+     * @param clazz the superclass
+     * @return the subclass
      */
-    String name() default "";
+    <T> Class<? extends T> generate(Class<T> clazz);
+
 }

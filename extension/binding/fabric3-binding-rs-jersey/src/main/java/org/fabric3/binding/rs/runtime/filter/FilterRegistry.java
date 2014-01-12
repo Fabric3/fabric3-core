@@ -35,33 +35,64 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.annotation.model;
+package org.fabric3.binding.rs.runtime.filter;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import org.fabric3.api.Namespaces;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Annotation;
+import java.net.URI;
+import java.util.Collection;
 
 /**
- * Configures a class as a component
+ * Manages JAX-RS filters.
  */
-@Target({TYPE})
-@Retention(RUNTIME)
-public @interface Component {
-     public static final String DEFAULT_COMPOSITE =  Namespaces.F3_PREFIX + "DefaultApplicationComposite";
-    /**
-     * Specifies the composite qualified name
-     *
-     * @return the composite name
-     */
-    String composite() default DEFAULT_COMPOSITE;
+public interface FilterRegistry {
 
     /**
-     * Specifies the component name.
+     * Registers a global filter.
      *
-     * @return the component name
+     * @param uri    a unique filter identifier
+     * @param filter the filter
      */
-    String name() default "";
+    void registerGlobalFilter(URI uri, Object filter);
+
+    /**
+     * Returns registered global filters.
+     *
+     * @return the global filters
+     */
+    Collection<Object> getGlobalFilters();
+
+    /**
+     * Registers a name filter.
+     *
+     * @param filterUri  a unique filter identifier
+     * @param annotation the name binding annotation the filter is applied for
+     * @param filter     the filter
+     */
+    void registerNameFilter(URI filterUri, Class<? extends Annotation> annotation, Object filter);
+
+    /**
+     * Returns name filters that are applied for the given annotation.
+     *
+     * @param annotation the name binding annotation the filter is applied for
+     * @return the filter
+     */
+    Collection<Object> getNameFilters(Class<? extends Annotation> annotation);
+
+    /**
+     * Unregisters a global filter.
+     *
+     * @param filterUri the filter identifier
+     * @return the response filter or null if one is not registered for the identifier
+     */
+    Object unregisterGlobalFilter(URI filterUri);
+
+    /**
+     * Unregisters a name filter.
+     *
+     * @param filterUri       a unique filter identifier
+     * @param annotationClass the binding the filter is applied for
+     * @return the filter or null if one is not registered for the annotation
+     */
+    Object unregisterNameFilter(URI filterUri, Class<? extends Annotation> annotationClass);
+
 }

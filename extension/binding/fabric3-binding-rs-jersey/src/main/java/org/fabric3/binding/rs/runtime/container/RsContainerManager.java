@@ -34,34 +34,37 @@
  * You should have received a copy of the
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.fabric3.api.annotation.model;
+ */
+package org.fabric3.binding.rs.runtime.container;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import org.fabric3.api.Namespaces;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.net.URI;
 
 /**
- * Configures a class as a component
+ * Manages active {@link RsContainer}s.
  */
-@Target({TYPE})
-@Retention(RUNTIME)
-public @interface Component {
-     public static final String DEFAULT_COMPOSITE =  Namespaces.F3_PREFIX + "DefaultApplicationComposite";
-    /**
-     * Specifies the composite qualified name
-     *
-     * @return the composite name
-     */
-    String composite() default DEFAULT_COMPOSITE;
+public interface RsContainerManager {
 
     /**
-     * Specifies the component name.
+     * Registers a container.
      *
-     * @return the component name
+     * @param name      the unique container name
+     * @param container the container
      */
-    String name() default "";
+    void register(URI name, RsContainer container);
+
+    /**
+     * Removes a container.
+     *
+     * @param name the container name
+     */
+    void unregister(URI name);
+
+    /**
+     * Returns a container matching the given name.
+     *
+     * @param name the container name
+     * @return the container or null if not found
+     */
+    RsContainer get(URI name);
+
 }

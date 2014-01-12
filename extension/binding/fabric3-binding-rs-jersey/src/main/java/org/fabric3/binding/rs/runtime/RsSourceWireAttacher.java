@@ -46,17 +46,23 @@ import java.util.logging.Logger;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.binding.rs.provision.AuthenticationType;
 import org.fabric3.binding.rs.provision.RsSourceDefinition;
+import org.fabric3.binding.rs.runtime.container.F3ResourceHandler;
+import org.fabric3.binding.rs.runtime.container.RsContainer;
+import org.fabric3.binding.rs.runtime.container.RsContainerException;
+import org.fabric3.binding.rs.runtime.container.RsContainerManager;
+import org.fabric3.binding.rs.runtime.filter.FilterRegistry;
+import org.fabric3.binding.rs.runtime.filter.NameBindingFilterProvider;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.builder.WiringException;
 import org.fabric3.spi.container.builder.component.SourceWireAttacher;
 import org.fabric3.spi.container.builder.component.WireAttachException;
-import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.model.physical.PhysicalOperationDefinition;
 import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
-import org.fabric3.spi.container.objectfactory.ObjectFactory;
 import org.fabric3.spi.security.BasicAuthenticator;
-import org.fabric3.spi.container.wire.InvocationChain;
-import org.fabric3.spi.container.wire.Wire;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -71,6 +77,8 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
     private ServletHost servletHost;
     private ClassLoaderRegistry classLoaderRegistry;
     private RsContainerManager containerManager;
+    private FilterRegistry filterRegistry;
+    private NameBindingFilterProvider provider;
     private BasicAuthenticator authenticator;
     private RsWireAttacherMonitor monitor;
     private Level logLevel = Level.WARNING;
@@ -78,11 +86,15 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
     public RsSourceWireAttacher(@Reference ServletHost servletHost,
                                 @Reference ClassLoaderRegistry registry,
                                 @Reference RsContainerManager containerManager,
+                                @Reference FilterRegistry filterRegistry,
+                                @Reference NameBindingFilterProvider provider,
                                 @Reference BasicAuthenticator authenticator,
                                 @Monitor RsWireAttacherMonitor monitor) throws NoSuchFieldException, IllegalAccessException {
         this.servletHost = servletHost;
         this.classLoaderRegistry = registry;
         this.containerManager = containerManager;
+        this.filterRegistry = filterRegistry;
+        this.provider = provider;
         this.authenticator = authenticator;
         this.monitor = monitor;
         setDebugLevel();
@@ -98,7 +110,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsSourceDefiniti
         RsContainer container = containerManager.get(sourceUri);
         if (container == null) {
             // each resource defined with the same binding URI will be deployed to the same container
-            container = new RsContainer(sourceUri.toString());
+            container = new RsContainer(sourceUri.toString(), filterRegistry, provider);
             containerManager.register(sourceUri, container);
             String mapping = creatingMappingUri(sourceUri);
             if (servletHost.isMappingRegistered(mapping)) {

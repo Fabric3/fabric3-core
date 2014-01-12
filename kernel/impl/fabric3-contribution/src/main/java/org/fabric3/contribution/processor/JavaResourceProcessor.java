@@ -41,6 +41,8 @@ import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 
 import org.fabric3.api.annotation.model.Component;
 import org.fabric3.api.host.contribution.Deployable;
@@ -51,9 +53,11 @@ import org.fabric3.api.model.type.component.Autowire;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.api.model.type.component.Include;
+import org.fabric3.api.model.type.java.JavaImplementation;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
+import org.fabric3.spi.contribution.JavaResourceProcessorExtension;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
@@ -79,11 +83,17 @@ public class JavaResourceProcessor implements ResourceProcessor {
 
     private ComponentProcessor componentProcessor;
     private MetaDataStore store;
+    private List<JavaResourceProcessorExtension> processorExtensions = Collections.emptyList();
 
     public JavaResourceProcessor(@Reference ProcessorRegistry registry, @Reference ComponentProcessor componentProcessor, @Reference MetaDataStore store) {
         this.componentProcessor = componentProcessor;
         this.store = store;
         registry.register(this);
+    }
+
+    @Reference(required = false)
+    public void setProcessorExtensions(List<JavaResourceProcessorExtension> processorExtensions) {
+        this.processorExtensions = processorExtensions;
     }
 
     public String getContentType() {
@@ -94,14 +104,15 @@ public class JavaResourceProcessor implements ResourceProcessor {
         // create component definition
         ResourceElement<?, ?> resourceElement = resource.getResourceElements().get(0);
         Class<?> clazz = (Class<?>) resourceElement.getValue();
+
         Component annotation = clazz.getAnnotation(Component.class);
         String name = clazz.getSimpleName();
-        if (annotation.name().length() > 0) {
+        if (annotation != null && annotation.name().length() > 0) {
             name = annotation.name();
         }
 
         try {
-            QName compositeName = QName.valueOf(annotation.composite());
+            QName compositeName = (annotation != null) ? QName.valueOf(annotation.composite()) : QName.valueOf(Component.DEFAULT_COMPOSITE);
             ComponentDefinition definition = new ComponentDefinition(name);
             definition.setContributionUri(context.getContributionUri());
             componentProcessor.process(definition, clazz, context);
@@ -124,7 +135,7 @@ public class JavaResourceProcessor implements ResourceProcessor {
                 break;
             }
         }
-        ComponentDefinition<?> definition = resourceElement.getSymbol().getKey();
+        ComponentDefinition<JavaImplementation> definition = resourceElement.getSymbol().getKey();
         QName compositeName = resourceElement.getValue();
         QNameSymbol compositeSymbol = new QNameSymbol(compositeName);
         Contribution contribution = resource.getContribution();
@@ -163,6 +174,10 @@ public class JavaResourceProcessor implements ResourceProcessor {
             }
             composite.add(definition);
             updateIncludingComposites(contribution, composite);
+        }
+
+        for (JavaResourceProcessorExtension extension : processorExtensions) {
+            extension.process(definition);
         }
 
         resource.setState(ResourceState.PROCESSED);

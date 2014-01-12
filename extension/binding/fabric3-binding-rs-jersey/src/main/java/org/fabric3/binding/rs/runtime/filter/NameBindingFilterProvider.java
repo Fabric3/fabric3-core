@@ -35,33 +35,12 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.annotation.model;
+package org.fabric3.binding.rs.runtime.filter;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import org.fabric3.api.Namespaces;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.ws.rs.container.DynamicFeature;
 
 /**
- * Configures a class as a component
+ * Applies a component filter to a resource based on named binding rules.
  */
-@Target({TYPE})
-@Retention(RUNTIME)
-public @interface Component {
-     public static final String DEFAULT_COMPOSITE =  Namespaces.F3_PREFIX + "DefaultApplicationComposite";
-    /**
-     * Specifies the composite qualified name
-     *
-     * @return the composite name
-     */
-    String composite() default DEFAULT_COMPOSITE;
-
-    /**
-     * Specifies the component name.
-     *
-     * @return the component name
-     */
-    String name() default "";
+public interface NameBindingFilterProvider extends DynamicFeature {
 }

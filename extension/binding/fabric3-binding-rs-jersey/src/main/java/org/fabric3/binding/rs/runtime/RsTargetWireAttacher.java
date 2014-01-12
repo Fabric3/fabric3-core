@@ -3,6 +3,7 @@ package org.fabric3.binding.rs.runtime;
 import java.net.URI;
 import java.util.List;
 
+import org.fabric3.binding.rs.runtime.container.RsClientInterceptor;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.binding.rs.provision.RsTargetDefinition;

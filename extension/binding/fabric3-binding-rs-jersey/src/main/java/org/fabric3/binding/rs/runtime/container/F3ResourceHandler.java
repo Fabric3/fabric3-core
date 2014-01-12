@@ -1,4 +1,4 @@
-package org.fabric3.binding.rs.runtime;
+package org.fabric3.binding.rs.runtime.container;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

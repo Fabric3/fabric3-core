@@ -35,33 +35,29 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.annotation.model;
+package org.fabric3.binding.rs.runtime.container;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
-import org.fabric3.api.Namespaces;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import org.glassfish.jersey.server.model.Invocable;
+import org.glassfish.jersey.server.spi.internal.ResourceMethodInvocationHandlerProvider;
+import org.jvnet.hk2.annotations.Contract;
 
 /**
- * Configures a class as a component
+ * Passes an invocation from Jersey to Fabric3.
  */
-@Target({TYPE})
-@Retention(RUNTIME)
-public @interface Component {
-     public static final String DEFAULT_COMPOSITE =  Namespaces.F3_PREFIX + "DefaultApplicationComposite";
-    /**
-     * Specifies the composite qualified name
-     *
-     * @return the composite name
-     */
-    String composite() default DEFAULT_COMPOSITE;
+@Contract
+public class F3ResourceMethodInvocationHandlerProvider implements ResourceMethodInvocationHandlerProvider {
+    private static final Handler HANDLER = new Handler();
 
-    /**
-     * Specifies the component name.
-     *
-     * @return the component name
-     */
-    String name() default "";
+    public InvocationHandler create(Invocable method) {
+        return HANDLER;
+    }
+
+    private static class Handler implements InvocationHandler {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            return ((F3ResourceHandler) proxy).invoke(method, args);
+        }
+    }
 }

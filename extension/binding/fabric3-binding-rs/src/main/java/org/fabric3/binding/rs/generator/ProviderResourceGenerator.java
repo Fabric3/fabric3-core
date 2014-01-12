@@ -35,33 +35,31 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.annotation.model;
+package org.fabric3.binding.rs.generator;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.net.URI;
 
-import org.fabric3.api.Namespaces;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import org.fabric3.binding.rs.model.ProviderResourceDefinition;
+import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
+import org.fabric3.spi.deployment.generator.GenerationException;
+import org.fabric3.spi.deployment.generator.resource.ResourceGenerator;
+import org.fabric3.spi.model.instance.LogicalResource;
+import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Configures a class as a component
+ *
  */
-@Target({TYPE})
-@Retention(RUNTIME)
-public @interface Component {
-     public static final String DEFAULT_COMPOSITE =  Namespaces.F3_PREFIX + "DefaultApplicationComposite";
-    /**
-     * Specifies the composite qualified name
-     *
-     * @return the composite name
-     */
-    String composite() default DEFAULT_COMPOSITE;
+@EagerInit
+public class ProviderResourceGenerator implements ResourceGenerator<ProviderResourceDefinition> {
 
-    /**
-     * Specifies the component name.
-     *
-     * @return the component name
-     */
-    String name() default "";
+    public PhysicalResourceDefinition generateResource(LogicalResource<ProviderResourceDefinition> resource) throws GenerationException {
+        ProviderResourceDefinition definition = resource.getDefinition();
+        String filterName = definition.getFilterName();
+        URI filterUri = URI.create(resource.getParent().getUri().toString() + "/" + filterName);
+        String bindingAnnotation = definition.getBindingAnnotation();
+        URI contributionUri = definition.getContributionUri();
+        boolean requestFilter = definition.isRequestFilter();
+        return new PhysicalProviderResourceDefinition(filterUri, bindingAnnotation, requestFilter, contributionUri);
+    }
 }
