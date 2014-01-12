@@ -41,8 +41,8 @@ Public License. See the accompanying license file for details.
         </dependency>
 
         <dependency>
-            <groupId>org.codehaus.fabric3.api</groupId>
-            <artifactId>javax-annotation</artifactId>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
             <version>${annotations.version}</version>
             <scope>provided</scope>
         </dependency>

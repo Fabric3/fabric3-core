@@ -35,7 +35,8 @@
         <sca.api.version>1.1.4</sca.api.version>
         <jta.version>1.1.1</jta.version>
         <jms.version>1.1.1</jms.version>
-        <annotations.version>1.0.1</annotations.version>
+        <!-- if the annotations version changes, update BootExports entry -->
+        <annotations.version>1.2</annotations.version>
         <stax.api.version>1.0-2</stax.api.version>
 
         <!-- if the Woodstox version changes, update BootExports entry -->

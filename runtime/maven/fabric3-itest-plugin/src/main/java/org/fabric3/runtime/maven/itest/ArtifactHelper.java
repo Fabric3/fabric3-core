@@ -190,9 +190,9 @@ public class ArtifactHelper {
 
         // add commons annotations dependency
         Dependency jsr250API = new Dependency();
-        jsr250API.setGroupId("org.codehaus.fabric3.api");
-        jsr250API.setArtifactId("javax-annotation");
-        jsr250API.setVersion("1.0.1");
+        jsr250API.setGroupId("javax.annotation");
+        jsr250API.setArtifactId("javax.annotation-api");
+        jsr250API.setVersion("1.2");
         hostArtifacts.addAll(resolveArtifacts(jsr250API, Collections.<ArtifactRepository>emptySet(), true));
 
         // add JAXB API dependency

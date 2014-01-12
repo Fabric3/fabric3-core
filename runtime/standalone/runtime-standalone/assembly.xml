@@ -66,7 +66,7 @@
             <includes>
                 <!-- JSP must be on the host classpath as end-user tags may implement interfaces -->
                 <include>org.mortbay.jetty:jsp-api-2.1</include>
-                <include>org.codehaus.fabric3.api:javax-annotation</include>
+                <include>javax.annotation:javax.annotation-api</include>
                 <include>javax.xml.bind:jaxb-api-osgi</include>
                 <include>javax.ws.rs:javax.ws.rs-api</include>
                 <include>javax.xml.stream:stax-api</include>

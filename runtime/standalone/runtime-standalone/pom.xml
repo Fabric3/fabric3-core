@@ -136,11 +136,12 @@ licensed under the Apache 2.0 license.
 
         <!-- provided scope dependencies that need to be resolved -->
         <dependency>
-            <groupId>org.codehaus.fabric3.api</groupId>
-            <artifactId>javax-annotation</artifactId>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
             <version>${annotations.version}</version>
             <scope>runtime</scope>
         </dependency>
+
 
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>

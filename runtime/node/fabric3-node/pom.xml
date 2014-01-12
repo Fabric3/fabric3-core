@@ -105,10 +105,9 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- provided scope dependencies that need to be resolved -->
         <dependency>
-            <groupId>org.codehaus.fabric3.api</groupId>
-            <artifactId>javax-annotation</artifactId>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
             <version>${annotations.version}</version>
         </dependency>
 

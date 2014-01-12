@@ -217,9 +217,9 @@ public final class Java6HostExports {
         hostMap.put("sun.misc", "0.0.0");
 
         // Commons annotations included
-        hostMap.put("javax.annotation", "0.0");
-        hostMap.put("javax.annotation", "1.0.0");
-        hostMap.put("javax.annotation.security", "1.0.0");
+        hostMap.put("javax.annotation", "1.2");
+        hostMap.put("javax.annotation.security", "1.2");
+        hostMap.put("javax.annotation.sql", "1.2");
 
         // sca packages
         hostMap.put("org.oasisopen.sca", "1.1");

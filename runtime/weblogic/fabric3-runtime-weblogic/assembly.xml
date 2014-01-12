@@ -30,7 +30,7 @@
         <!-- copy shared classes to the host directory -->
         <dependencySet>
             <includes>
-                <include>org.codehaus.fabric3.api:javax-annotation</include>
+                <include>javax.annotation:javax.annotation-api</include>
                 <include>javax.xml.bind:jaxb-api-osgi</include>
                 <include>javax.ws.rs:javax.ws.rs-api</include>
                 <include>javax.xml.stream:stax-api</include>
