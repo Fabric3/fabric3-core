@@ -61,15 +61,6 @@ public final class ObjectWriter {
             PrintStream printStream = new PrintStream(bas);
             t.printStackTrace(printStream);
             byte[] bytes = bas.toByteArray();
-
-            int amount = buffer.capacity() - buffer.position();
-            if (amount < bytes.length + 1) {
-                // avoid buffer overflow
-                buffer.put(NEWLINE);
-                buffer.put(bytes, 0, amount - 5);
-                buffer.put(TRUNCATED);
-                return amount - 1;
-            }
             buffer.put(NEWLINE);
             buffer.put(bytes);
             return bytes.length + NEWLINE.length;
