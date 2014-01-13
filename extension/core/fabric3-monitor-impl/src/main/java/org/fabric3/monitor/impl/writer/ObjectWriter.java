@@ -47,7 +47,6 @@ import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
  */
 public final class ObjectWriter {
     private static final byte[] NEWLINE = "\n".getBytes();
-    private static final byte[] TRUNCATED = "...".getBytes();
 
     private ObjectWriter() {
     }
@@ -62,14 +61,6 @@ public final class ObjectWriter {
             t.printStackTrace(printStream);
             byte[] bytes = bas.toByteArray();
 
-            int amount = buffer.capacity() - buffer.position();
-            if (amount < bytes.length + 1) {
-                // avoid buffer overflow
-                buffer.put(NEWLINE);
-                buffer.put(bytes, 0, amount - 5);
-                buffer.put(TRUNCATED);
-                return amount - 1;
-            }
             buffer.put(NEWLINE);
             buffer.put(bytes);
             return bytes.length + NEWLINE.length;
