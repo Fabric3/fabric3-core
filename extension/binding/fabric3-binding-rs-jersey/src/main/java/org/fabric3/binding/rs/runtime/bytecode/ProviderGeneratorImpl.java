@@ -37,11 +37,13 @@
 */
 package org.fabric3.binding.rs.runtime.bytecode;
 
+import javax.annotation.Priority;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.spi.classloader.BytecodeClassLoader;
 import org.oasisopen.sca.annotation.Init;
+import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -55,7 +57,7 @@ import static org.objectweb.asm.Opcodes.RETURN;
 /**
  *
  */
-public class FilterGeneratorImpl implements FilterGenerator {
+public class ProviderGeneratorImpl implements ProviderGenerator {
     private static final String SUFFIX = "F3Subtype";
     private AtomicInteger counter = new AtomicInteger(1);
 
@@ -67,26 +69,37 @@ public class FilterGeneratorImpl implements FilterGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> Class<? extends T> generate(Class<T> interfaze) {
-        String name = interfaze.getName();
-        String internalName = name.replace('.', '/');
-        int number = counter.getAndIncrement();
-        String generatedInternalName = internalName + SUFFIX + "_" + number;
+    public <T> Class<? extends T> generate(Class<T> baseClass, Class<?> delegateClass) {
         ClassWriter cw = new ClassWriter(0);
-        byte[] bytes = generate(cw, generatedInternalName, interfaze);
-        String generatedName = name + SUFFIX + "_" + number;
+        int number = counter.getAndIncrement();
 
+        byte[] bytes = writeClass(cw, baseClass, delegateClass, number);
+
+        String generatedName = baseClass.getName() + SUFFIX + "_" + number;
         return (Class<? extends T>) bytecodeClassLoader.defineClass(generatedName, bytes);
     }
 
-    private byte[] generate(ClassWriter cw, String className, Class<?> clazz) {
-        String internalName = Type.getInternalName(clazz);
-        String descriptor = Type.getDescriptor(clazz);
+    private byte[] writeClass(ClassWriter cw, Class<?> baseClass, Class<?> delegateClass, int number) {
+        String internalName = Type.getInternalName(baseClass);
+        String generatedInternalName = internalName + SUFFIX + "_" + number;
+        String descriptor = Type.getDescriptor(baseClass);
 
-        cw.visit(Opcodes.V1_5, Opcodes.ACC_PUBLIC, className, null, internalName, null);
+        cw.visit(Opcodes.V1_5, Opcodes.ACC_PUBLIC, generatedInternalName, null, internalName, null);
+        writeAnnotations(cw, delegateClass);
         writeConstructor(internalName, descriptor, cw);
         cw.visitEnd();
         return cw.toByteArray();
+    }
+
+    private void writeAnnotations(ClassWriter cw, Class<?> delegateClass) {
+        Priority priority = delegateClass.getAnnotation(Priority.class);
+        if (priority == null) {
+            return;
+        }
+
+        AnnotationVisitor av = cw.visitAnnotation(getSignature(Priority.class), true);
+        av.visit("value", priority.value());
+        av.visitEnd();
     }
 
     private void writeConstructor(String handlerName, String handlerDescriptor, ClassWriter cw) {
@@ -103,6 +116,35 @@ public class FilterGeneratorImpl implements FilterGenerator {
         mv.visitLocalVariable("this", handlerDescriptor, null, l0, l1, 0);
         mv.visitMaxs(1, 1);
         mv.visitEnd();
+    }
+
+    public String getSignature(Class clazz) {
+        if (clazz == Void.TYPE) {
+            return "V";
+        }
+        if (clazz == Byte.TYPE) {
+            return "B";
+        } else if (clazz == Character.TYPE) {
+            return "C";
+        } else if (clazz == Double.TYPE) {
+            return "D";
+        } else if (clazz == Float.TYPE) {
+            return "F";
+        } else if (clazz == Integer.TYPE) {
+            return "I";
+        } else if (clazz == Long.TYPE) {
+            return "J";
+        } else if (clazz == Short.TYPE) {
+            return "S";
+        } else if (clazz == Boolean.TYPE) {
+            return "Z";
+        } else if (!clazz.getName().startsWith("[")) {
+            // object
+            return "L" + clazz.getName().replace('.', '/') + ";";
+        } else {
+            // array
+            return clazz.getName().replace('.', '/');
+        }
     }
 
 }

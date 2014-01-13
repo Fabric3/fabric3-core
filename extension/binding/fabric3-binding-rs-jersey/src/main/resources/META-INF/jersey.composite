@@ -24,7 +24,7 @@ Public License. See the accompanying license file for details.
     </component>
 
     <component name="FilterGenerator">
-        <f3:implementation.system class="org.fabric3.binding.rs.runtime.bytecode.FilterGeneratorImpl"/>
+        <f3:implementation.system class="org.fabric3.binding.rs.runtime.bytecode.ProviderGeneratorImpl"/>
     </component>
 
     <component name="NameBindingFilterProvider">

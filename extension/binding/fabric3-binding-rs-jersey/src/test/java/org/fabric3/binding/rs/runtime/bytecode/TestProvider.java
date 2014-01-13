@@ -37,25 +37,12 @@
 */
 package org.fabric3.binding.rs.runtime.bytecode;
 
-import junit.framework.TestCase;
-
 /**
  *
  */
-public class FilterGeneratorImplTestCase extends TestCase {
-    private FilterGeneratorImpl generator;
+public class TestProvider {
 
-    public void testGenerate() throws Exception {
-        Class clazz = generator.generate(TestClass.class);
-        TestClass instance = (TestClass) clazz.newInstance();
-        System.out.println(instance.invoke());
-
-    }
-
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        generator = new FilterGeneratorImpl();
-        generator.init();
+    public String invoke() {
+        return "test";
     }
 }

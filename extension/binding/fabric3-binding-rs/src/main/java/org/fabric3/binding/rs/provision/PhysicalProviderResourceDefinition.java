@@ -47,31 +47,32 @@ import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
 public class PhysicalProviderResourceDefinition extends PhysicalResourceDefinition {
     private static final long serialVersionUID = 122854501779816160L;
 
-    private URI filterUri;
+    private URI providerUri;
     private String bindingAnnotation;
     private URI contributionUri;
-    private boolean requestFilter;
+    private String providerClass;
 
-    public PhysicalProviderResourceDefinition(URI filterUri, String bindingAnnotation, boolean requestFilter, URI contributionUri) {
-        this.filterUri = filterUri;
+    public PhysicalProviderResourceDefinition(URI providerUri, String bindingAnnotation, String providerClass, URI contributionUri) {
+        this.providerUri = providerUri;
         this.bindingAnnotation = bindingAnnotation;
-        this.requestFilter = requestFilter;
+        this.providerClass = providerClass;
         this.contributionUri = contributionUri;
     }
 
-    public URI getFilterUri() {
-        return filterUri;
+    public URI getProviderUri() {
+        return providerUri;
     }
 
     public String getBindingAnnotation() {
         return bindingAnnotation;
     }
 
+    public String getProviderClass() {
+        return providerClass;
+    }
+
     public URI getContributionUri() {
         return contributionUri;
     }
 
-    public boolean isRequestFilter() {
-        return requestFilter;
-    }
 }

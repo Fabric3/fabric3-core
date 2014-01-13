@@ -35,31 +35,36 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.generator;
+package org.fabric3.binding.rs.runtime.bytecode;
 
-import java.net.URI;
+import javax.annotation.Priority;
+import javax.ws.rs.Priorities;
 
-import org.fabric3.binding.rs.model.ProviderResourceDefinition;
-import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
-import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.resource.ResourceGenerator;
-import org.fabric3.spi.model.instance.LogicalResource;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
-import org.oasisopen.sca.annotation.EagerInit;
+import junit.framework.TestCase;
 
 /**
  *
  */
-@EagerInit
-public class ProviderResourceGenerator implements ResourceGenerator<ProviderResourceDefinition> {
+public class ProviderGeneratorImplTestCase extends TestCase {
+    private ProviderGeneratorImpl generator;
 
-    public PhysicalResourceDefinition generateResource(LogicalResource<ProviderResourceDefinition> resource) throws GenerationException {
-        ProviderResourceDefinition definition = resource.getDefinition();
-        String providerName = definition.getProviderName();
-        URI filterUri = URI.create(resource.getParent().getUri().toString() + "/" + providerName);
-        String bindingAnnotation = definition.getBindingAnnotation();
-        String providerClass = definition.getProviderClass();
-        URI contributionUri = definition.getContributionUri();
-        return new PhysicalProviderResourceDefinition(filterUri, bindingAnnotation, providerClass, contributionUri);
+    public void testGenerate() throws Exception {
+        Class clazz = generator.generate(TestClass.class, TestProvider.class);
+        TestClass instance = (TestClass) clazz.newInstance();
+        assertEquals("test", instance.invoke());
+
+    }
+
+    public void testAnnotationCopied() throws Exception {
+        Class<? extends TestClass> clazz = generator.generate(TestClass.class, TestPriorityProvider.class);
+        assertTrue(clazz.isAnnotationPresent(Priority.class));
+        assertEquals(Priorities.AUTHENTICATION, clazz.getAnnotation(Priority.class).value());
+    }
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        generator = new ProviderGeneratorImpl();
+        generator.init();
     }
 }

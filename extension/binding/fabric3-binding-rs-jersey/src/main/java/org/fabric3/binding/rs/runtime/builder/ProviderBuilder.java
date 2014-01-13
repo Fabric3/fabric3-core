@@ -37,11 +37,12 @@
 */
 package org.fabric3.binding.rs.runtime.builder;
 
+import javax.ws.rs.container.ContainerRequestFilter;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 
 import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
-import org.fabric3.binding.rs.runtime.bytecode.FilterGenerator;
+import org.fabric3.binding.rs.runtime.bytecode.ProviderGenerator;
 import org.fabric3.binding.rs.runtime.filter.AbstractProxyFilter;
 import org.fabric3.binding.rs.runtime.filter.FilterRegistry;
 import org.fabric3.binding.rs.runtime.filter.ProxyRequestFilter;
@@ -59,22 +60,22 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
     private FilterRegistry filterRegistry;
     private ClassLoaderRegistry classLoaderRegistry;
     private ComponentManager componentManager;
-    private FilterGenerator filterGenerator;
+    private ProviderGenerator providerGenerator;
 
     public ProviderBuilder(@Reference FilterRegistry filterRegistry,
                            @Reference ClassLoaderRegistry classLoaderRegistry,
                            @Reference ComponentManager componentManager,
-                           @Reference FilterGenerator filterGenerator) {
+                           @Reference ProviderGenerator providerGenerator) {
         this.filterRegistry = filterRegistry;
         this.classLoaderRegistry = classLoaderRegistry;
         this.componentManager = componentManager;
-        this.filterGenerator = filterGenerator;
+        this.providerGenerator = providerGenerator;
     }
 
     @SuppressWarnings("unchecked")
     public void build(PhysicalProviderResourceDefinition definition) throws BuilderException {
         try {
-            URI filterUri = definition.getFilterUri();
+            URI filterUri = definition.getProviderUri();
 
             Object filter = createFilter(definition);
             if (definition.getBindingAnnotation() != null) {
@@ -97,10 +98,10 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
                 String bindingAnnotation = definition.getBindingAnnotation();
                 URI contributionUri = definition.getContributionUri();
                 Class<Annotation> annotationClass = (Class<Annotation>) classLoaderRegistry.loadClass(contributionUri, bindingAnnotation);
-                URI filterUri = definition.getFilterUri();
+                URI filterUri = definition.getProviderUri();
                 filterRegistry.unregisterNameFilter(filterUri, annotationClass);
             } else {
-                URI filterUri = definition.getFilterUri();
+                URI filterUri = definition.getProviderUri();
                 filterRegistry.unregisterGlobalFilter(filterUri);
             }
         } catch (ClassNotFoundException e) {
@@ -111,18 +112,23 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
     private Object createFilter(PhysicalProviderResourceDefinition definition) {
 
         try {
-            URI filterUri = definition.getFilterUri();
+            URI contributionUri = definition.getContributionUri();
+            Class<?> filterClass = classLoaderRegistry.loadClass(contributionUri, definition.getProviderClass());
+
+            URI filterUri = definition.getProviderUri();
             AbstractProxyFilter<?> filter;
-            if (definition.isRequestFilter()) {
-                filter = filterGenerator.generate(ProxyRequestFilter.class).newInstance();
+            if (ContainerRequestFilter.class.isAssignableFrom(filterClass)) {
+                filter = providerGenerator.generate(ProxyRequestFilter.class, filterClass).newInstance();
             } else {
-                filter = filterGenerator.generate(ProxyResponseFilter.class).newInstance();
+                filter = providerGenerator.generate(ProxyResponseFilter.class, filterClass).newInstance();
             }
             filter.init(filterUri, componentManager);
             return filter;
         } catch (InstantiationException e) {
             throw new AssertionError(e);
         } catch (IllegalAccessException e) {
+            throw new AssertionError(e);
+        } catch (ClassNotFoundException e) {
             throw new AssertionError(e);
         }
 

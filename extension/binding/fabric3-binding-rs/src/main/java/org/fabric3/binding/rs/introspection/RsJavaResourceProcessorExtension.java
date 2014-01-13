@@ -38,7 +38,6 @@
 package org.fabric3.binding.rs.introspection;
 
 import javax.ws.rs.NameBinding;
-import javax.ws.rs.container.ContainerRequestFilter;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 
@@ -75,8 +74,7 @@ public class RsJavaResourceProcessorExtension implements JavaResourceProcessorEx
                 }
             }
             String name = definition.getName();
-            boolean requestFilter = ContainerRequestFilter.class.isAssignableFrom(clazz);
-            ProviderResourceDefinition resourceDefinition = new ProviderResourceDefinition(name, bindingAnnotation, contributionUri, requestFilter);
+            ProviderResourceDefinition resourceDefinition = new ProviderResourceDefinition(name, bindingAnnotation, implClass, contributionUri);
             definition.getParent().add(resourceDefinition);
         } catch (ClassNotFoundException e) {
             throw new AssertionError(e);   // will not happen

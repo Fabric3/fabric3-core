@@ -35,31 +35,21 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.binding.rs.generator;
-
-import java.net.URI;
-
-import org.fabric3.binding.rs.model.ProviderResourceDefinition;
-import org.fabric3.binding.rs.provision.PhysicalProviderResourceDefinition;
-import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.resource.ResourceGenerator;
-import org.fabric3.spi.model.instance.LogicalResource;
-import org.fabric3.spi.model.physical.PhysicalResourceDefinition;
-import org.oasisopen.sca.annotation.EagerInit;
+package org.fabric3.binding.rs.runtime.bytecode;
 
 /**
- *
+ * Generates a concrete delegating provider class from the given base class and the delegating class.
+ * <p/>
+ * This service is used to satisfy the Jersey requirement that filter classes be unique since Fabric3 component providers are proxied by a single class.
  */
-@EagerInit
-public class ProviderResourceGenerator implements ResourceGenerator<ProviderResourceDefinition> {
+public interface ProviderGenerator {
 
-    public PhysicalResourceDefinition generateResource(LogicalResource<ProviderResourceDefinition> resource) throws GenerationException {
-        ProviderResourceDefinition definition = resource.getDefinition();
-        String providerName = definition.getProviderName();
-        URI filterUri = URI.create(resource.getParent().getUri().toString() + "/" + providerName);
-        String bindingAnnotation = definition.getBindingAnnotation();
-        String providerClass = definition.getProviderClass();
-        URI contributionUri = definition.getContributionUri();
-        return new PhysicalProviderResourceDefinition(filterUri, bindingAnnotation, providerClass, contributionUri);
-    }
+    /**
+     * Generates the concrete subclass.
+     *
+     * @param baseClass the superclass
+     * @return the subclass
+     */
+    <T> Class<? extends T> generate(Class<T> baseClass, Class<?> delegateClass);
+
 }

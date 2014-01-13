@@ -47,31 +47,32 @@ import org.fabric3.api.model.type.component.ResourceDefinition;
 public class ProviderResourceDefinition extends ResourceDefinition {
     private static final long serialVersionUID = -2165312623150769527L;
 
-    private String filterName;
+    private String providerName;
     private String bindingAnnotation;
+    private String providerClass;
     private URI contributionUri;
-    private boolean requestFilter;
 
-    public ProviderResourceDefinition(String filterName, String bindingAnnotation, URI contributionUri, boolean requestFilter) {
-        this.filterName = filterName;
+    public ProviderResourceDefinition(String providerName, String bindingAnnotation, String providerClass, URI contributionUri) {
+        this.providerName = providerName;
         this.bindingAnnotation = bindingAnnotation;
+        this.providerClass = providerClass;
         this.contributionUri = contributionUri;
-        this.requestFilter = requestFilter;
     }
 
-    public String getFilterName() {
-        return filterName;
+    public String getProviderName() {
+        return providerName;
     }
 
     public String getBindingAnnotation() {
         return bindingAnnotation;
     }
 
+    public String getProviderClass() {
+        return providerClass;
+    }
+
     public URI getContributionUri() {
         return contributionUri;
     }
 
-    public boolean isRequestFilter() {
-        return requestFilter;
-    }
 }
