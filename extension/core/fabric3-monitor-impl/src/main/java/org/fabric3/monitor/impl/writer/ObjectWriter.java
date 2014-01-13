@@ -47,7 +47,6 @@ import org.fabric3.monitor.spi.buffer.ResizableByteBuffer;
  */
 public final class ObjectWriter {
     private static final byte[] NEWLINE = "\n".getBytes();
-    private static final byte[] TRUNCATED = "...".getBytes();
 
     private ObjectWriter() {
     }
