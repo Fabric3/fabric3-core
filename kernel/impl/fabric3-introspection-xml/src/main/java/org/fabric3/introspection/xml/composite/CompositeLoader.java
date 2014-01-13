@@ -541,6 +541,9 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
         for (AbstractReference definition : type.getReferences().values()) {
             CompositeReference reference = (CompositeReference) definition;
             Location location = locations.get(reference);
+            if (reference.getPromotedUris() == null) {
+                return;
+            }
             for (URI promotedUri : reference.getPromotedUris()) {
                 String componentName = UriHelper.getDefragmentedNameAsString(promotedUri);
                 ComponentDefinition<?> promoted = type.getComponents().get(componentName);
