@@ -57,7 +57,7 @@ public class ResizableByteBufferTestCase extends TestCase {
         buffer.put(2);
         buffer.put(3);
 
-        assertEquals(1025, buffer.capacity());   // buffer re-sizes 1024 at a time
+        assertEquals(1026, buffer.capacity());   // buffer re-sizes 1024 at a time
         assertEquals(1, buffer.getByteBuffer().get(0));
         assertEquals(2, buffer.getByteBuffer().get(1));
         assertEquals(3, buffer.getByteBuffer().get(2));
