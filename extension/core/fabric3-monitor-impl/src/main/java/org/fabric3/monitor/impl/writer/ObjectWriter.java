@@ -60,7 +60,6 @@ public final class ObjectWriter {
             PrintStream printStream = new PrintStream(bas);
             t.printStackTrace(printStream);
             byte[] bytes = bas.toByteArray();
-
             buffer.put(NEWLINE);
             buffer.put(bytes);
             return bytes.length + NEWLINE.length;

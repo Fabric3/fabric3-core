@@ -162,7 +162,7 @@ public class ResizableByteBuffer {
             return;
         }
         monitor.bufferResize();
-        ByteBuffer newBuffer = ByteBuffer.allocate(buffer.capacity() + SIZE);
+        ByteBuffer newBuffer = ByteBuffer.allocate(buffer.capacity() + amount + SIZE);
         buffer.position(0);
         newBuffer.put(buffer);
         buffer = newBuffer;
