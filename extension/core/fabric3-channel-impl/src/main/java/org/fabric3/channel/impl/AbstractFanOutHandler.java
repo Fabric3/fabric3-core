@@ -40,28 +40,46 @@ package org.fabric3.channel.impl;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 
 /**
  * Base FanOutHandler functionality.
+ * <p/>
+ * Supports registering a connection multiple times. This is required for producer-side channels where a connection from the channel to a binding may be
+ * provisioned multiple times if there is more than one producer connected to the same channel provisioned in a zone.
  */
 public abstract class AbstractFanOutHandler implements FanOutHandler {
-    protected Map<URI, ChannelConnection> index = new HashMap<URI, ChannelConnection>();
+    protected Map<URI, ChannelConnection> connectionMap = new HashMap<URI, ChannelConnection>();
+    protected Map<URI, AtomicInteger> counterMap = new HashMap<URI, AtomicInteger>();
+
     protected ChannelConnection[] connections = new ChannelConnection[0];
 
     public synchronized void addConnection(URI uri, ChannelConnection connection) {
-        index.put(uri, connection);
-        connections = index.values().toArray(new ChannelConnection[index.size()]);
+        AtomicInteger count = counterMap.get(uri);
+        if (count == null) {
+            count = new AtomicInteger(1);
+            counterMap.put(uri, count);
+            connectionMap.put(uri, connection);
+            connections = connectionMap.values().toArray(new ChannelConnection[connectionMap.size()]);
+        } else {
+            count.incrementAndGet();
+        }
     }
 
     public synchronized ChannelConnection removeConnection(URI uri) {
-        ChannelConnection connection = index.remove(uri);
-        connections = index.values().toArray(new ChannelConnection[index.size()]);
-        return connection;
+        int count = counterMap.get(uri).decrementAndGet();
+        if (count == 0) {
+            counterMap.remove(uri);
+            ChannelConnection connection = connectionMap.remove(uri);
+            connections = connectionMap.values().toArray(new ChannelConnection[connectionMap.size()]);
+            return connection;
+        } else {
+            return connectionMap.get(uri);
+        }
     }
-
 
     public void setNext(EventStreamHandler next) {
         throw new IllegalStateException("This handler must be the last one in the handler sequence");
