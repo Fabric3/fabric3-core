@@ -74,7 +74,7 @@ public class ZeroMQConnectionBindingGenerator implements ConnectionBindingGenera
         URI targetUri = definition.getTargetUri();
         if (targetUri == null) {
             // no target uri specified, generate one as it is not used for the endpoint address
-            targetUri = producer.getUri();
+            targetUri = binding.getParent().getUri();
         }
         ZeroMQMetadata metadata = definition.getZeroMQMetadata();
         setChannelName(binding, metadata);
