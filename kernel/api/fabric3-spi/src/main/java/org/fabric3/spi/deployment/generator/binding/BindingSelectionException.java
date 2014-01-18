@@ -37,19 +37,16 @@
 */
 package org.fabric3.spi.deployment.generator.binding;
 
-import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.spi.deployment.generator.GenerationException;
 
 /**
  * General error denoting an exception configuring a binding.
  */
-public class BindingSelectionException extends Fabric3Exception {
+public class BindingSelectionException extends GenerationException {
     private static final long serialVersionUID = -8232393072665476184L;
 
     public BindingSelectionException(String message) {
         super(message);
     }
 
-    public BindingSelectionException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }
