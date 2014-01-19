@@ -46,7 +46,7 @@ public class FileAppenderGeneratorTestCase extends TestCase {
 
     public void testGenerate() throws Exception {
         FileAppenderGenerator generator = new FileAppenderGenerator();
-        PhysicalFileAppenderDefinition physicalDefinition = generator.generateResource(new FileAppenderDefinition("test", "none", -1));
+        PhysicalFileAppenderDefinition physicalDefinition = generator.generateResource(new FileAppenderDefinition("test", "none", -1, -1));
         assertNotNull(physicalDefinition);
     }
 }

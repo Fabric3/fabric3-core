@@ -48,12 +48,14 @@ public class FileAppenderDefinition extends AppenderDefinition {
     private String fileName;
     private String rollType = FileAppenderConstants.ROLL_STRATEGY_NONE;
     private long rollSize;
+    private int maxBackups;
 
-    public FileAppenderDefinition(String fileName, String rollType, long rollSize) {
+    public FileAppenderDefinition(String fileName, String rollType, long rollSize, int maxBackups) {
         super("file");
         this.fileName = fileName;
         this.rollType = rollType;
         this.rollSize = rollSize;
+        this.maxBackups = maxBackups;
     }
 
     public FileAppenderDefinition(String fileName) {
@@ -71,5 +73,9 @@ public class FileAppenderDefinition extends AppenderDefinition {
 
     public long getRollSize() {
         return rollSize;
+    }
+
+    public int getMaxBackups() {
+        return maxBackups;
     }
 }

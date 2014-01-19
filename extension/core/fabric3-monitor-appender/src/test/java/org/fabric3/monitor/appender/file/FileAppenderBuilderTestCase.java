@@ -56,7 +56,7 @@ public class FileAppenderBuilderTestCase extends TestCase {
         EasyMock.replay(info);
 
         FileAppenderBuilder builder = new FileAppenderBuilder(info);
-        Appender appender = builder.build(new PhysicalFileAppenderDefinition("test", "size", 10));
+        Appender appender = builder.build(new PhysicalFileAppenderDefinition("test", "size", 10, -1));
         assertNotNull(appender);
 
         EasyMock.verify(info);
@@ -68,7 +68,7 @@ public class FileAppenderBuilderTestCase extends TestCase {
         EasyMock.replay(info);
 
         FileAppenderBuilder builder = new FileAppenderBuilder(info);
-        Appender appender = builder.build(new PhysicalFileAppenderDefinition("test", "none", -1));
+        Appender appender = builder.build(new PhysicalFileAppenderDefinition("test", "none", -1, -1));
         assertNotNull(appender);
 
         EasyMock.verify(info);

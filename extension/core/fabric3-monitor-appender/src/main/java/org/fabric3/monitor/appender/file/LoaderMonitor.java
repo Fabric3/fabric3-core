@@ -49,4 +49,7 @@ public interface LoaderMonitor {
 
     @Warning("Invalid roll type specified for {0}: {1}. Defaulting to none.")
     void invalidRollType(String file, String rollType);
+
+    @Warning("Invalid max backups {0}: {1}. Defaulting to no maximum.")
+    void invalidMaxBackups(String fileName, String maxBackupsStr);
 }

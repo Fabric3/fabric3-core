@@ -38,7 +38,10 @@
 package org.fabric3.monitor.appender.file;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Scanner;
 
 import junit.framework.TestCase;
 
@@ -46,23 +49,118 @@ import junit.framework.TestCase;
  *
  */
 public class SizeRollStrategyTestCase extends TestCase {
-    private File file;
+    private File logFile;
 
     public void testTriggerRoll() throws Exception {
-        SizeRollStrategy strategy = new SizeRollStrategy(10);
-        assertTrue(strategy.checkRoll(file));
+        SizeRollStrategy strategy = new SizeRollStrategy(10, -1);
+        assertTrue(strategy.checkRoll(logFile));
     }
 
-    public void setUp() throws Exception {
+    public void testMaxBackups() throws Exception {
+        SizeRollStrategy strategy = new SizeRollStrategy(10, 2);
+        File backup1 = new File("f3rolling1.log");
+        File backup2 = new File("f3rolling2.log");
+        File backup3 = new File("f3rolling3.log");
+
+        File currentBackup = strategy.getBackup(logFile);
+        write(currentBackup, "A234567890");
+
+        assertTrue(backup1.exists());
+        assertFalse(backup2.exists());
+        assertFalse(backup3.exists());
+
+        currentBackup = strategy.getBackup(logFile);
+        write(currentBackup, "B234567890");
+
+        assertTrue(backup1.exists());
+        assertTrue(verifyContent(backup1, "A"));
+
+        assertTrue(backup2.exists());
+        assertTrue(verifyContent(backup2, "B"));
+
+        assertFalse(backup3.exists());
+
+        currentBackup = strategy.getBackup(logFile);
+        write(currentBackup, "C234567890");
+
+        assertTrue(backup1.exists());
+        assertTrue(verifyContent(backup1, "B"));
+
+        assertTrue(backup2.exists());
+        assertTrue(verifyContent(backup2, "C"));
+
+        assertFalse(backup3.exists());
+
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public void testMaxBackupsFileDeleted() throws Exception {
+        SizeRollStrategy strategy = new SizeRollStrategy(10, 2);
+        File backup1 = new File("f3rolling1.log");
+        File backup2 = new File("f3rolling2.log");
+        File backup3 = new File("f3rolling3.log");
+
+        File currentBackup = strategy.getBackup(logFile);
+        write(currentBackup, "A234567890");
+
+        assertTrue(backup1.exists());
+        assertFalse(backup2.exists());
+        assertFalse(backup3.exists());
+
+        currentBackup = strategy.getBackup(logFile);
+        write(currentBackup, "B234567890");
+
+        assertTrue(backup1.exists());
+        assertTrue(verifyContent(backup1, "A"));
+
+        assertTrue(backup2.exists());
+        assertTrue(verifyContent(backup2, "B"));
+
+        assertFalse(backup3.exists());
+
+        backup2.delete();  // delete the file
+
+        currentBackup = strategy.getBackup(logFile);
+        write(currentBackup, "C234567890");
+
+        assertFalse(backup1.exists());
+
+        assertTrue(backup2.exists());
+        assertTrue(verifyContent(backup2, "C"));
+
+        assertFalse(backup3.exists());
+
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    protected void setUp() throws Exception {
         super.setUp();
-        file = new File("f3rolling.log");
-        FileOutputStream stream = new FileOutputStream(file);
-        stream.write("1234567890".getBytes());
+        for (int i = 0; i < 10; i++) {
+            new File("f3rolling" + i + ".log").delete();
+        }
+        logFile = new File("f3rolling.log");
+        FileOutputStream stream = write(logFile, "1234567890");
         stream.close();
     }
 
-    public void tearDown() throws Exception {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    protected void tearDown() throws Exception {
         super.tearDown();
-        file.delete();
+        for (int i = 0; i < 10; i++) {
+            new File("f3rolling" + i + ".log").delete();
+        }
+        logFile.delete();
     }
+
+    private FileOutputStream write(File file, String content) throws IOException {
+        FileOutputStream stream = new FileOutputStream(file);
+        stream.write(content.getBytes());
+        return stream;
+    }
+
+    private boolean verifyContent(File file, String content) throws FileNotFoundException {
+        Scanner scanner = new Scanner(file);
+        return scanner.next().startsWith(content);
+    }
+
 }
