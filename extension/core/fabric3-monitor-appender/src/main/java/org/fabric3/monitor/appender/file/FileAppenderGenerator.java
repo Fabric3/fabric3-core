@@ -48,7 +48,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 public class FileAppenderGenerator implements AppenderGenerator<FileAppenderDefinition> {
 
     public PhysicalFileAppenderDefinition generateResource(FileAppenderDefinition definition) throws GenerationException {
-        return new PhysicalFileAppenderDefinition(definition.getFileName(), definition.getRollType(), definition.getRollSize());
+        return new PhysicalFileAppenderDefinition(definition.getFileName(), definition.getRollType(), definition.getRollSize(), definition.getMaxBackups());
     }
 
 }

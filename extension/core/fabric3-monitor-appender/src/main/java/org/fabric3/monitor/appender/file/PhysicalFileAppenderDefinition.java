@@ -48,11 +48,13 @@ public class PhysicalFileAppenderDefinition extends PhysicalAppenderDefinition {
     private String fileName;
     private String rollType;
     private long rollSize;
+    private int maxBackups;
 
-    public PhysicalFileAppenderDefinition(String fileName, String rollType, long rollSize) {
+    public PhysicalFileAppenderDefinition(String fileName, String rollType, long rollSize, int maxBackups) {
         this.fileName = fileName;
         this.rollType = rollType;
         this.rollSize = rollSize;
+        this.maxBackups = maxBackups;
     }
 
     public String getFileName() {
@@ -65,5 +67,9 @@ public class PhysicalFileAppenderDefinition extends PhysicalAppenderDefinition {
 
     public long getRollSize() {
         return rollSize;
+    }
+
+    public int getMaxBackups() {
+        return maxBackups;
     }
 }

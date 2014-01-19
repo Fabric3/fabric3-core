@@ -44,16 +44,18 @@ import java.io.File;
  */
 public class SizeRollStrategy implements RollStrategy {
     private long size;
-
+    private int maxBackups = -1;
     private int counter = 1;
 
     /**
      * Constructor the size in bytes when a file should be rolled.
      *
-     * @param size the size in bytes when a file should be rolled.
+     * @param size       the size in bytes when a file should be rolled.
+     * @param maxBackups the maximum number of backup files
      */
-    public SizeRollStrategy(long size) {
+    public SizeRollStrategy(long size, int maxBackups) {
         this.size = size;
+        this.maxBackups = maxBackups;
     }
 
     public boolean checkRoll(File file) {
@@ -61,14 +63,43 @@ public class SizeRollStrategy implements RollStrategy {
     }
 
     public File getBackup(File file) {
+        if (maxBackups > 0) {
+            rotateBackups(file);
+        }
         while (true) {
-            File backup = new File(file.getParent(), file.getName() + counter);
+            File backup = getLogName(file, counter);
             if (backup.exists()) {
                 counter++;
             } else {
                 return backup;
             }
         }
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private void rotateBackups(File file) {
+        if (counter >= maxBackups) {
+            // Files need to be rotated. Delete the oldest file.
+            getLogName(file, 1).delete();
+            // rotate the other log files
+            int current = 2;
+            while (current > 1) {
+                File source = getLogName(file, current);
+                current--;
+                File target = getLogName(file, current);
+                source.renameTo(target);
+            }
+        }
+    }
+
+    private File getLogName(File file, int counter) {
+        int pos = file.getName().lastIndexOf(".");
+        if (pos < 0) {
+            return new File(file.getParent(), file.getName() + counter);
+        }
+        String name = file.getName().substring(0, pos) + counter;
+        String extension = file.getName().substring(pos);
+        return new File(file.getParent(), name + extension);
     }
 
 }

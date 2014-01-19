@@ -116,7 +116,20 @@ public class FileAppenderLoader extends AbstractValidatingTypeLoader<FileAppende
                     monitor.invalidRollSize(fileName, sizeStr);
                 }
             }
-            return new FileAppenderDefinition(fileName, rollType, rollSize);
+            String maxBackupsStr = reader.getAttributeValue(null, "max.backups");
+            int maxBackups = -1;
+            if (maxBackupsStr != null) {
+                try {
+                    maxBackups = Integer.parseInt(maxBackupsStr);
+                } catch (NumberFormatException e) {
+                    monitor.invalidMaxBackups(fileName, maxBackupsStr);
+                }
+                if (maxBackups < 1) {
+                    monitor.invalidMaxBackups(fileName, maxBackupsStr);
+                    maxBackups = -1;
+                }
+            }
+            return new FileAppenderDefinition(fileName, rollType, rollSize, maxBackups);
         } else {
             monitor.invalidRollType(fileName, rollType);
             return new FileAppenderDefinition(fileName);
