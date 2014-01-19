@@ -97,6 +97,11 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
     public void execute(StartContextCommand command) throws ExecutionException {
         QName deployable = command.getDeployable();
         WorkContextCache.getAndResetThreadWorkContext();
+        // Channels must be started before components since the latter may send events during initialization.
+        // See https://fabric3.atlassian.net/browse/FABRIC-10
+        if (channelManager != null) {
+            channelManager.startContext(deployable);
+        }
         try {
             compositeScopeContainer.startContext(deployable);
             if (domainScopeContainer != null) {
@@ -107,9 +112,6 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
             throw new ExecutionException(e);
         } catch (ComponentException e) {
             throw new ExecutionException(e);
-        }
-        if (channelManager != null) {
-            channelManager.startContext(deployable);
         }
         if (command.isLog()) {
             monitor.deployed(deployable);
