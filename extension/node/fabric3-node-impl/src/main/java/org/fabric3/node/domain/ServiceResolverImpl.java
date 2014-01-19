@@ -54,7 +54,6 @@ import org.fabric3.node.nonmanaged.NonManagedPhysicalSourceDefinition;
 import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.Connector;
 import org.fabric3.spi.deployment.generator.GenerationException;
-import org.fabric3.spi.deployment.generator.binding.BindingSelectionException;
 import org.fabric3.spi.deployment.generator.binding.BindingSelector;
 import org.fabric3.spi.deployment.generator.wire.WireGenerator;
 import org.fabric3.spi.deployment.instantiator.AutowireResolver;
@@ -121,8 +120,6 @@ public class ServiceResolverImpl implements ServiceResolver {
         } catch (GenerationException e) {
             throw new ResolverException(e);
         } catch (BuilderException e) {
-            throw new ResolverException(e);
-        } catch (BindingSelectionException e) {
             throw new ResolverException(e);
         }
     }
