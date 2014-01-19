@@ -86,7 +86,7 @@ public class FileAppenderLoader extends AbstractValidatingTypeLoader<FileAppende
     }
 
     public FileAppenderDefinition load(XMLStreamReader reader, IntrospectionContext context) throws XMLStreamException {
-        addAttributes("file", "roll.type", "roll.size");
+        addAttributes("file", "roll.type", "roll.size", "max.backups");
         validateAttributes(reader, context);
         String fileName = reader.getAttributeValue(null, "file");
         Location location = reader.getLocation();
