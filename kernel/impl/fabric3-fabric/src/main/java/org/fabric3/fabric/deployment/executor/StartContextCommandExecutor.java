@@ -46,16 +46,16 @@ package org.fabric3.fabric.deployment.executor;
 import javax.xml.namespace.QName;
 
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.fabric.deployment.command.StartContextCommand;
 import org.fabric3.api.model.type.component.Scope;
+import org.fabric3.fabric.deployment.command.StartContextCommand;
+import org.fabric3.spi.command.CommandExecutor;
+import org.fabric3.spi.command.CommandExecutorRegistry;
+import org.fabric3.spi.command.ExecutionException;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ComponentException;
 import org.fabric3.spi.container.component.GroupInitializationException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
-import org.fabric3.spi.command.CommandExecutor;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.command.ExecutionException;
 import org.fabric3.spi.container.invocation.WorkContextCache;
 import org.oasisopen.sca.annotation.Constructor;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -97,6 +97,11 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
     public void execute(StartContextCommand command) throws ExecutionException {
         QName deployable = command.getDeployable();
         WorkContextCache.getAndResetThreadWorkContext();
+        // Channels must be started before components since the latter may send events during initialization.
+        // See https://fabric3.atlassian.net/browse/FABRIC-10
+        if (channelManager != null) {
+            channelManager.startContext(deployable);
+        }
         try {
             compositeScopeContainer.startContext(deployable);
             if (domainScopeContainer != null) {
@@ -107,9 +112,6 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
             throw new ExecutionException(e);
         } catch (ComponentException e) {
             throw new ExecutionException(e);
-        }
-        if (channelManager != null) {
-            channelManager.startContext(deployable);
         }
         if (command.isLog()) {
             monitor.deployed(deployable);
