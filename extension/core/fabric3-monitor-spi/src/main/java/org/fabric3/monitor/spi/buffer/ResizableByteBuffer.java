@@ -138,7 +138,7 @@ public class ResizableByteBuffer {
     }
 
     public ByteBuffer getByteBuffer() {
-        return buffer.asReadOnlyBuffer();
+        return buffer;
     }
 
     public void clear() {
