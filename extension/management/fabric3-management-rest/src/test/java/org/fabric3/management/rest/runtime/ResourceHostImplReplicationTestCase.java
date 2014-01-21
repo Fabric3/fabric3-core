@@ -49,6 +49,7 @@ import org.fabric3.management.rest.spi.ResourceMapping;
 import org.fabric3.management.rest.spi.Verb;
 import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.fabric3.spi.federation.topology.ParticipantTopologyService;
+import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.security.BasicAuthenticator;
 
@@ -79,7 +80,10 @@ public final class ResourceHostImplReplicationTestCase extends TestCase {
 
     public void testReplicateChange() throws Exception {
         ParticipantTopologyService topologyService = EasyMock.createMock(ParticipantTopologyService.class);
-        topologyService.openChannel(EasyMock.isA(String.class), (String) EasyMock.isNull(), EasyMock.isA(MessageReceiver.class));
+        topologyService.openChannel(EasyMock.isA(String.class),
+                                    (String) EasyMock.isNull(),
+                                    EasyMock.isA(MessageReceiver.class),
+                                    (TopologyListener) EasyMock.isNull());
         topologyService.sendAsynchronous(EasyMock.isA(String.class), EasyMock.isA((Serializable.class)));
         MockResource instance = EasyMock.createMock(MockResource.class);
         EasyMock.expect(instance.parameterized("test")).andReturn("test");
@@ -104,7 +108,10 @@ public final class ResourceHostImplReplicationTestCase extends TestCase {
 
     public void testReplicateHttpServletRequestChange() throws Exception {
         ParticipantTopologyService topologyService = EasyMock.createMock(ParticipantTopologyService.class);
-        topologyService.openChannel(EasyMock.isA(String.class), (String) EasyMock.isNull(), EasyMock.isA(MessageReceiver.class));
+        topologyService.openChannel(EasyMock.isA(String.class),
+                                    (String) EasyMock.isNull(),
+                                    EasyMock.isA(MessageReceiver.class),
+                                    (TopologyListener) EasyMock.isNull());
         topologyService.sendAsynchronous(EasyMock.isA(String.class), EasyMock.isA((Serializable.class)));
 
         MockResource instance = EasyMock.createMock(MockResource.class);

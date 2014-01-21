@@ -146,7 +146,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
         servletHost.registerMapping(MANAGEMENT_PATH, this);
         if (topologyService != null) {
             ResourceReplicationHandler handler = new ResourceReplicationHandler(this, monitor);
-            topologyService.openChannel(RESOURCE_CHANNEL, null, handler);
+            topologyService.openChannel(RESOURCE_CHANNEL, null, handler, null);
         }
         if (ManagementSecurity.DISABLED == security) {
             monitor.securityDisabled();

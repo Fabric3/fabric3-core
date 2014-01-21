@@ -38,31 +38,26 @@
 package org.fabric3.federation.jgroups;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.federation.deployment.command.ControllerAvailableCommand;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateCommand;
 import org.fabric3.federation.deployment.command.RuntimeUpdateResponse;
-import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.command.Command;
-import org.fabric3.spi.command.Response;
-import org.fabric3.spi.command.ResponseCommand;
-import org.fabric3.spi.runtime.event.EventService;
-import org.fabric3.spi.runtime.event.Fabric3EventListener;
-import org.fabric3.spi.runtime.event.JoinDomain;
-import org.fabric3.spi.runtime.event.RuntimeStop;
 import org.fabric3.spi.command.CommandExecutor;
 import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.command.ExecutionException;
+import org.fabric3.spi.command.Response;
+import org.fabric3.spi.command.ResponseCommand;
 import org.fabric3.spi.federation.topology.ControllerNotFoundException;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.MessageReceiver;
@@ -70,10 +65,13 @@ import org.fabric3.spi.federation.topology.ParticipantTopologyService;
 import org.fabric3.spi.federation.topology.RemoteSystemException;
 import org.fabric3.spi.federation.topology.TopologyListener;
 import org.fabric3.spi.federation.topology.ZoneChannelException;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.Fabric3EventListener;
+import org.fabric3.spi.runtime.event.JoinDomain;
+import org.fabric3.spi.runtime.event.RuntimeStop;
 import org.jgroups.Address;
 import org.jgroups.Channel;
 import org.jgroups.JChannel;
-import org.jgroups.MembershipListener;
 import org.jgroups.Message;
 import org.jgroups.View;
 import org.jgroups.blocks.MessageDispatcher;
@@ -102,9 +100,8 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
     private Fabric3EventListener<RuntimeStop> stopListener;
     private MessageDispatcher domainDispatcher;
     private boolean synchronize = true;
-    private final Object viewLock = new Object();
-    private View previousView;
-    private List<TopologyListener> topologyListeners = new ArrayList<TopologyListener>();
+    private final Object viewLock;
+    private TopologyListenerMultiplexer multiplexer;
 
     private Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>();
 
@@ -118,6 +115,8 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
                                              @Monitor TopologyServiceMonitor monitor) {
         super(info, executorRegistry, eventService, executor, helper, monitor);
         zoneName = info.getZoneName();
+        viewLock = new Object();
+        multiplexer = new TopologyListenerMultiplexer(helper, viewLock);
     }
 
     @Property(required = false)
@@ -127,7 +126,7 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
 
     @Reference(required = false)
     public void setTopologyListeners(List<TopologyListener> listeners) {
-        this.topologyListeners.addAll(listeners);
+        this.multiplexer.addAll(listeners);
     }
 
     /**
@@ -160,20 +159,15 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
 
         Fabric3MessageListener messageListener = new Fabric3MessageListener();
         Fabric3RequestHandler requestHandler = new Fabric3RequestHandler();
-        ZoneMemberListener memberListener = new ZoneMemberListener();
-        domainDispatcher = new MessageDispatcher(domainChannel, messageListener, memberListener, requestHandler);
-    }
-
-    public boolean supportsDynamicChannels() {
-        return true;
+        domainDispatcher = new MessageDispatcher(domainChannel, messageListener, multiplexer, requestHandler);
     }
 
     public void register(TopologyListener listener) {
-        topologyListeners.add(listener);
+        multiplexer.add(listener);
     }
 
     public void deregister(TopologyListener listener) {
-        topologyListeners.remove(listener);
+        multiplexer.remove(listener);
     }
 
     @ManagementOperation(description = "True if the runtime is the zone leader")
@@ -226,7 +220,7 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
         return channels.containsKey(name);
     }
 
-    public void openChannel(String name, String configuration, MessageReceiver receiver) throws ZoneChannelException {
+    public void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws ZoneChannelException {
         if (channels.containsKey(name)) {
             throw new ZoneChannelException("Channel already open:" + name);
         }
@@ -243,7 +237,12 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
             channel.setName(runtimeName);
             initializeChannel(channel);
             channels.put(name, channel);
-            DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver, helper, monitor);
+
+            Object viewLock = new Object();
+            List<TopologyListener> listeners = Collections.singletonList(listener);
+            TopologyListenerMultiplexer multiplexer = (listener != null) ? new TopologyListenerMultiplexer(helper, viewLock, listeners) : null;
+
+            DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver, helper, multiplexer, monitor);
             channel.setReceiver(delegatingReceiver);
             channel.connect(info.getDomain().getAuthority() + ":" + name);
         } catch (Exception e) {
@@ -279,7 +278,7 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
             throw new MessageException("Channel not found: " + name);
         }
         try {
-            View view = domainChannel.getView();
+            View view = channel.getView();
             if (view == null) {
                 throw new MessageException("Federation channel closed or not connected when sending message to: " + runtimeName);
             }
@@ -325,17 +324,6 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
         }
     }
 
-    private void sendAsync(Address address, Command command) throws MessageException {
-        try {
-            Address sourceAddress = domainChannel.getAddress();
-            byte[] payload = helper.serialize(command);
-            Message message = new Message(address, sourceAddress, payload);
-            domainChannel.send(message);
-        } catch (Exception e) {
-            throw new MessageException("Error broadcasting message to zone: " + zoneName, e);
-        }
-    }
-
     /**
      * Attempts to update the runtime with the current set of deployments for the zone. The zone leader (i.e. oldest runtime in the zone) is queried for the
      * deployment commands. If the zone leader is unavailable or has not been updated, the controller is queried.
@@ -373,6 +361,7 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
      * @return true if the runtime was updated
      * @throws MessageException if an error is encountered during update
      */
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     private boolean update(Address address) throws MessageException {
         String name = UUID.get(address);
         monitor.updating(name);
@@ -462,50 +451,6 @@ public class JGroupsParticipantTopologyService extends AbstractTopologyService i
             } catch (MessageException e) {
                 monitor.error("Error updating the runtime", e);
             }
-        }
-    }
-
-    private class ZoneMemberListener implements MembershipListener {
-        public void viewAccepted(View newView) {
-            synchronized (viewLock) {
-                try {
-                    Set<Address> newZoneLeaders = helper.getNewZoneLeaders(previousView, newView);
-                    Set<Address> newRuntimes = helper.getNewRuntimes(previousView, newView);
-                    previousView = newView;
-                    if (newZoneLeaders.isEmpty() && newRuntimes.isEmpty()) {
-                        return;
-                    }
-                    for (Address address : newRuntimes) {
-                        String name = UUID.get(address);
-                        for (TopologyListener listener : topologyListeners) {
-                            listener.onJoin(name);
-                        }
-                    }
-                    for (Address address : newZoneLeaders) {
-                        String name = UUID.get(address);
-                        for (TopologyListener listener : topologyListeners) {
-                            listener.onLeaderElected(name);
-                        }
-                    }
-                } finally {
-                    viewLock.notifyAll();
-                }
-            }
-        }
-
-        public void suspect(Address suspected) {
-            String runtimeName = UUID.get(suspected);
-            for (TopologyListener listener : topologyListeners) {
-                listener.onLeave(runtimeName);
-            }
-        }
-
-        public void block() {
-            // no-op
-        }
-
-        public void unblock() {
-            // no-op
         }
     }
 }

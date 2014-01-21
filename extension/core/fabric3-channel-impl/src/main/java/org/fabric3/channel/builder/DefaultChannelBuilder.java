@@ -83,7 +83,7 @@ public class DefaultChannelBuilder implements ChannelBuilder {
         // use a collection to force reinjection
         if (services != null && !services.isEmpty()) {
             this.topologyService = services.get(0);
-            replicationCapable = topologyService.supportsDynamicChannels();
+            replicationCapable = true;
         }
     }
 
@@ -112,7 +112,7 @@ public class DefaultChannelBuilder implements ChannelBuilder {
             channel = new DefaultChannelImpl(uri, deployable, replicationHandler, fanOutHandler, definition.getChannelSide());
             if (!topologyService.isChannelOpen(channelName)) {
                 try {
-                    topologyService.openChannel(channelName, null, replicationHandler);
+                    topologyService.openChannel(channelName, null, replicationHandler, null);
                 } catch (ZoneChannelException e) {
                     throw new BuilderException(e);
                 }

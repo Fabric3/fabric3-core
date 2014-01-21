@@ -39,6 +39,7 @@ package org.fabric3.runtime.weblogic.federation;
 
 import javax.management.JMException;
 import javax.naming.Binding;
+import javax.naming.CommunicationException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameAlreadyBoundException;
@@ -47,9 +48,11 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.event.EventContext;
 import java.io.IOException;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -60,6 +63,9 @@ import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.Command;
 import org.fabric3.spi.command.Response;
 import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.federation.topology.MessageReceiver;
+import org.fabric3.spi.federation.topology.TopologyListener;
+import org.fabric3.spi.federation.topology.ZoneChannelException;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.runtime.event.JoinDomain;
@@ -74,6 +80,7 @@ import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 import static org.fabric3.runtime.weblogic.federation.Constants.CONTROLLER_CHANNEL;
+import static org.fabric3.runtime.weblogic.federation.Constants.DYNAMIC_CHANNEL_CONTEXT;
 import static org.fabric3.runtime.weblogic.federation.Constants.PARTICIPANT_CONTEXT;
 
 /**
@@ -93,6 +100,8 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
     private RuntimeChannelImpl controllerChannel;
     private JmxHelper jmxHelper;
     private String domainName;
+
+    private Set<String> openChannels = new HashSet<String>();
 
     public WebLogicControllerTopologyService(@Reference CommandExecutorRegistry executorRegistry,
                                              @Reference EventService eventService,
@@ -129,8 +138,8 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
             while (list.hasMore()) {
                 Binding binding = list.next();
                 RuntimeChannel channel = (RuntimeChannel) binding.getObject();
-                String runtimeName = channel.getRuntimeName();
-                RuntimeInstance runtimeInstance = new RuntimeInstance(runtimeName);
+                String RUNTIME_NAME = channel.getRuntimeName();
+                RuntimeInstance runtimeInstance = new RuntimeInstance(RUNTIME_NAME);
                 instances.add(runtimeInstance);
             }
         } catch (NamingException e) {
@@ -152,17 +161,13 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
                     channel.send(payload);
                 }
             }
-        } catch (NamingException
-                e) {
+        } catch (NamingException e) {
             throw new MessageException(e);
-        } catch (RemoteException
-                e) {
+        } catch (RemoteException e) {
             throw new MessageException(e);
-        } catch (ChannelException
-                e) {
+        } catch (ChannelException e) {
             throw new MessageException(e);
-        } catch (IOException
-                e) {
+        } catch (IOException e) {
             throw new MessageException(e);
         }
     }
@@ -215,6 +220,85 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
             }
         }
         return responses;
+    }
+
+    public boolean isChannelOpen(String name) {
+        return openChannels.contains(name);
+    }
+
+    public void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws ZoneChannelException {
+        if (isChannelOpen(name)) {
+            throw new ZoneChannelException("Channel already open: " + name);
+        }
+
+        Context rootContext = null;
+        Context dynamicChannelContext = null;
+        RuntimeChannelImpl channel = new RuntimeChannelImpl(RUNTIME_NAME, executorRegistry, serializationService, receiver, monitor);
+        try {
+            dynamicChannelContext = JndiHelper.getContext(DYNAMIC_CHANNEL_CONTEXT, rootContext);
+            dynamicChannelContext.bind(name + ":" + RUNTIME_NAME, channel);
+            openChannels.add(name);
+        } catch (NameAlreadyBoundException e) {
+            try {
+                dynamicChannelContext.rebind(name + ":" + RUNTIME_NAME, channel);
+            } catch (NamingException ex) {
+                monitor.errorMessage("Error binding channel: " + name);
+                monitor.errorDetail(e);
+            }
+        } catch (NamingException e) {
+            // controller may not be available
+            monitor.errorMessage("Error binding channel: " + name);
+            monitor.errorDetail(e);
+        } finally {
+            JndiHelper.close(rootContext, dynamicChannelContext);
+        }
+    }
+
+    public void closeChannel(String name) throws ZoneChannelException {
+        Context rootContext = null;
+        Context dynamicChannelContext = null;
+        try {
+            dynamicChannelContext = JndiHelper.getContext(DYNAMIC_CHANNEL_CONTEXT, rootContext);
+            dynamicChannelContext.unbind(name + ":" + RUNTIME_NAME);
+            openChannels.remove(name);
+        } catch (CommunicationException e) {
+            // Controller was not available. Ignore since the controller could have been shutdown before the participant
+        } catch (NamingException e) {
+            throw new ZoneChannelException(e);
+        } finally {
+            JndiHelper.close(rootContext, dynamicChannelContext);
+        }
+    }
+
+    public void sendAsynchronous(String name, Serializable message) throws MessageException {
+        Context rootContext = null;
+        try {
+            byte[] payload = serializationService.serialize(message);
+            NamingEnumeration<Binding> enumeration = rootContext.listBindings(DYNAMIC_CHANNEL_CONTEXT);
+            while (enumeration.hasMoreElements()) {
+                Binding binding = enumeration.next();
+                if (RuntimeChannel.class.getName().equals(binding.getClassName())) {
+                    RuntimeChannel channel = (RuntimeChannel) binding.getObject();
+                    if (binding.getName().startsWith(name + ":")) {
+                        if (channel.getRuntimeName().equals(RUNTIME_NAME)) {
+                            // don't send to self
+                            continue;
+                        }
+                        channel.publish(payload);
+                    }
+                }
+            }
+        } catch (NamingException e) {
+            throw new MessageException(e);
+        } catch (RemoteException e) {
+            throw new MessageException(e);
+        } catch (ChannelException e) {
+            throw new MessageException(e);
+        } catch (IOException e) {
+            throw new MessageException(e);
+        } finally {
+            JndiHelper.close(rootContext);
+        }
     }
 
     private List<RuntimeChannel> getChannels() throws MessageException {
@@ -294,6 +378,5 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
             }
         }
     }
-
 
 }

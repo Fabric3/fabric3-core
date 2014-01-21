@@ -37,7 +37,9 @@
 */
 package org.fabric3.federation.jgroups;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,25 +50,28 @@ import java.util.concurrent.Executor;
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
 import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.federation.deployment.command.ControllerAvailableCommand;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.federation.deployment.command.ControllerAvailableCommand;
 import org.fabric3.spi.command.Command;
+import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.command.Response;
 import org.fabric3.spi.command.ResponseCommand;
+import org.fabric3.spi.federation.topology.ControllerTopologyService;
+import org.fabric3.spi.federation.topology.ErrorResponse;
+import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.MessageReceiver;
+import org.fabric3.spi.federation.topology.RemoteSystemException;
+import org.fabric3.spi.federation.topology.RuntimeInstance;
+import org.fabric3.spi.federation.topology.TopologyListener;
+import org.fabric3.spi.federation.topology.Zone;
+import org.fabric3.spi.federation.topology.ZoneChannelException;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.runtime.event.JoinDomain;
 import org.fabric3.spi.runtime.event.RuntimeStart;
 import org.fabric3.spi.runtime.event.RuntimeStop;
-import org.fabric3.spi.command.CommandExecutorRegistry;
-import org.fabric3.spi.federation.topology.ControllerTopologyService;
-import org.fabric3.spi.federation.topology.ErrorResponse;
-import org.fabric3.spi.federation.topology.MessageException;
-import org.fabric3.spi.federation.topology.RemoteSystemException;
-import org.fabric3.spi.federation.topology.RuntimeInstance;
-import org.fabric3.spi.federation.topology.TopologyListener;
-import org.fabric3.spi.federation.topology.Zone;
 import org.jgroups.Address;
+import org.jgroups.Channel;
 import org.jgroups.JChannel;
 import org.jgroups.MembershipListener;
 import org.jgroups.Message;
@@ -96,6 +101,7 @@ public class JGroupsControllerTopologyService extends AbstractTopologyService im
     private View previousView;
     private List<TopologyListener> topologyListeners = new ArrayList<TopologyListener>();
     private Map<String, Map<String, RuntimeInstance>> runtimes = new ConcurrentHashMap<String, Map<String, RuntimeInstance>>();
+    private Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>();
     private Element channelConfig;
 
     public JGroupsControllerTopologyService(@Reference HostInfo info,
@@ -248,6 +254,61 @@ public class JGroupsControllerTopologyService extends AbstractTopologyService im
             }
         }
         return responses;
+    }
+
+    public boolean isChannelOpen(String name) {
+        return channels.containsKey(name);
+    }
+
+    public void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws ZoneChannelException {
+        if (channels.containsKey(name)) {
+            throw new ZoneChannelException("Channel already open:" + name);
+        }
+        try {
+
+            Channel channel;
+            if (configuration != null) {
+                channel = new JChannel(configuration);
+            } else if (channelConfig != null) {
+                channel = new JChannel(channelConfig);
+            } else {
+                channel = new JChannel();
+            }
+            channel.setName(runtimeName);
+            initializeChannel(channel);
+            channels.put(name, channel);
+
+            Object viewLock = new Object();
+            List<TopologyListener> listeners = Collections.singletonList(listener);
+            TopologyListenerMultiplexer multiplexer = (listener != null) ? new TopologyListenerMultiplexer(helper, viewLock, listeners) : null;
+            DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver, helper, multiplexer, monitor);
+            channel.setReceiver(delegatingReceiver);
+            channel.connect(info.getDomain().getAuthority() + ":" + name);
+        } catch (Exception e) {
+            throw new ZoneChannelException(e);
+        }
+    }
+
+    public void closeChannel(String name) throws ZoneChannelException {
+        Channel channel = channels.remove(name);
+        if (channel == null) {
+            throw new ZoneChannelException("Channel not found: " + name);
+        }
+        channel.close();
+    }
+
+    public void sendAsynchronous(String name, Serializable message) throws MessageException {
+        Channel channel = channels.get(name);
+        if (channel == null) {
+            throw new MessageException("Channel not found: " + name);
+        }
+        try {
+            byte[] payload = helper.serialize(message);
+            Message jMessage = new Message(null, null, payload);
+            channel.send(jMessage);
+        } catch (Exception e) {
+            throw new MessageException(e);
+        }
     }
 
     Fabric3EventListener<JoinDomain> getJoinListener() {

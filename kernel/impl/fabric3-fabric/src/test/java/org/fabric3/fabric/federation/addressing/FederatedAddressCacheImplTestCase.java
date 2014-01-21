@@ -37,6 +37,7 @@ import java.util.concurrent.Executor;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.federation.addressing.SocketAddress;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.runtime.event.EventService;
@@ -93,7 +94,7 @@ public class FederatedAddressCacheImplTestCase extends TestCase {
         EasyMock.replay(info, topologyService, listener);
 
         AddressCacheImpl cache = new AddressCacheImpl(executor, eventService, info, monitor);
-        cache.setTopologyService(topologyService);
+        cache.setParticipantTopologyService(topologyService);
         cache.subscribe("test", listener);
 
         cache.publish(announcement);
@@ -106,9 +107,10 @@ public class FederatedAddressCacheImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testSendAddressAnnouncement() throws Exception {
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).atLeastOnce();
         EasyMock.replay(info);
         AddressCacheImpl cache = new AddressCacheImpl(executor, eventService, info, monitor);
-        cache.setTopologyService(topologyService);
+        cache.setParticipantTopologyService(topologyService);
         topologyService.sendAsynchronous(EasyMock.eq(CHANNEL), EasyMock.isA(AddressAnnouncement.class));
         EasyMock.replay(topologyService);
 
@@ -124,7 +126,7 @@ public class FederatedAddressCacheImplTestCase extends TestCase {
         EasyMock.replay(info);
 
         AddressCacheImpl cache = new AddressCacheImpl(executor, eventService, info, monitor);
-        cache.setTopologyService(topologyService);
+        cache.setParticipantTopologyService(topologyService);
         EasyMock.replay(topologyService);
 
         AddressAnnouncement announcement2 = new AddressAnnouncement("test", AddressAnnouncement.Type.ACTIVATED, ADDRESS2);
@@ -137,9 +139,10 @@ public class FederatedAddressCacheImplTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testSendAddressUpdate() throws Exception {
         EasyMock.expect(info.getRuntimeName()).andReturn("runtime").atLeastOnce();
+        EasyMock.expect(info.getRuntimeMode()).andReturn(RuntimeMode.NODE).atLeastOnce();
         EasyMock.replay(info);
         AddressCacheImpl cache = new AddressCacheImpl(executor, eventService, info, monitor);
-        cache.setTopologyService(topologyService);
+        cache.setParticipantTopologyService(topologyService);
 
         topologyService.sendAsynchronous(EasyMock.eq(CHANNEL), EasyMock.isA(AddressAnnouncement.class));
 

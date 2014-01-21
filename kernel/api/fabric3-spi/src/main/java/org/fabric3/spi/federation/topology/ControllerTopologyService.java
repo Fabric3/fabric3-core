@@ -50,7 +50,7 @@ import org.fabric3.spi.command.ResponseCommand;
  * This service is present only on controller runtimes in a federated topology and provides low-level communications between a controller and participants.
  * Higher-level communications semantics such as deployment can be layered over this service.
  */
-public interface ControllerTopologyService {
+public interface ControllerTopologyService extends TopologyService {
 
     /**
      * Returns the active zones in the domain.
@@ -92,8 +92,8 @@ public interface ControllerTopologyService {
      *                 Otherwise, all synchronous calls will be attempted.
      * @param timeout  the time to wait on a response
      * @return the response messages. If an error was encountered and fail-fast is enabled, the responses will include all successful ones made up to the point
-     *         the error was received. The error response will be the last in the list. If fail-fast is not enabled, responses from all runtimes in the zone
-     *         will be received, possibly included multiple error responses.
+     * the error was received. The error response will be the last in the list. If fail-fast is not enabled, responses from all runtimes in the zone will be
+     * received, possibly included multiple error responses.
      * @throws MessageException if there is an error sending the message
      */
     List<Response> sendSynchronousToZone(String zoneName, ResponseCommand command, boolean failFast, long timeout) throws MessageException;

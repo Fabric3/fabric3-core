@@ -149,10 +149,6 @@ public class WebLogicParticipantTopologyService implements ParticipantTopologySe
         return false;
     }
 
-    public boolean supportsDynamicChannels() {
-        return true;
-    }
-
     public void register(TopologyListener listener) {
 
     }
@@ -221,7 +217,7 @@ public class WebLogicParticipantTopologyService implements ParticipantTopologySe
         return openChannels.contains(name);
     }
 
-    public void openChannel(String name, String configuration, MessageReceiver receiver) throws ZoneChannelException {
+    public void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws ZoneChannelException {
         if (isChannelOpen(name)) {
             throw new ZoneChannelException("Channel already open: " + name);
         }

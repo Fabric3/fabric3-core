@@ -40,6 +40,8 @@ import java.util.concurrent.Executor;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
+import org.fabric3.spi.federation.topology.ControllerTopologyService;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.runtime.event.JoinDomainCompleted;
@@ -62,13 +64,15 @@ import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
 
 /**
- *
+ * Implementation designed to work on controller, participant and node runtimes.
  */
 @Service(AddressCache.class)
 public class AddressCacheImpl implements AddressCache, TopologyListener, MessageReceiver, Fabric3EventListener<JoinDomainCompleted> {
     private static final String ADDRESS_CHANNEL = "F3AddressChannel";
 
-    private ParticipantTopologyService topologyService;
+    private ParticipantTopologyService participantTopologyService;
+    private ControllerTopologyService controllerTopologyService;
+
     private Executor executor;
     private EventService eventService;
     private HostInfo info;
@@ -88,23 +92,30 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
     }
 
     @Reference(required = false)
-    public void setTopologyService(ParticipantTopologyService topologyService) {
-        this.topologyService = topologyService;
+    public void setParticipantTopologyService(ParticipantTopologyService participantTopologyService) {
+        this.participantTopologyService = participantTopologyService;
+    }
+
+    @Reference(required = false)
+    public void setControllerTopologyService(ControllerTopologyService controllerTopologyService) {
+        this.controllerTopologyService = controllerTopologyService;
     }
 
     @Init
     public void init() throws MessageException {
         eventService.subscribe(JoinDomainCompleted.class, this);
-        if (topologyService != null) {
-            topologyService.register(this);
+        if (isParticipantOrNode()) {
+            participantTopologyService.register(this);
         }
     }
 
     @Destroy
     public void destroy() throws ZoneChannelException {
-        if (topologyService != null) {
-            topologyService.closeChannel(qualifiedChannelName);
-            topologyService.deregister(this);
+        if (isParticipantOrNode()) {
+            participantTopologyService.closeChannel(qualifiedChannelName);
+            participantTopologyService.deregister(this);
+        } else if (isController()) {
+            controllerTopologyService.closeChannel(qualifiedChannelName);
         }
     }
 
@@ -212,10 +223,14 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
      */
     public void onEvent(JoinDomainCompleted event) {
         try {
-            if (topologyService != null) {
-                topologyService.openChannel(qualifiedChannelName, null, this);
+            if (isParticipantOrNode()) {
+                participantTopologyService.openChannel(qualifiedChannelName, null, this, null);
                 AddressRequest request = new AddressRequest(info.getRuntimeName());
-                topologyService.sendAsynchronous(qualifiedChannelName, request);
+                participantTopologyService.sendAsynchronous(qualifiedChannelName, request);
+            } else if (isController()) {
+                controllerTopologyService.openChannel(qualifiedChannelName, null, this, this);
+                AddressRequest request = new AddressRequest(info.getRuntimeName());
+                controllerTopologyService.sendAsynchronous(qualifiedChannelName, request);
             }
         } catch (ZoneChannelException e) {
             monitor.error(e);
@@ -249,13 +264,15 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
                 }
             }
 
-            if (propagate && topologyService != null && event instanceof AddressAnnouncement) {
+            if (propagate && isParticipantOrNode() && event instanceof AddressAnnouncement) {
                 try {
-                    topologyService.sendAsynchronous(qualifiedChannelName, event);
+                    participantTopologyService.sendAsynchronous(qualifiedChannelName, event);
                 } catch (MessageException e) {
                     monitor.error(e);
                 }
             }
+            // ignore on controller
+
             // notify listeners of a change
             notifyChange(endpointId);
         }
@@ -277,13 +294,24 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
             executor.execute(new Runnable() {
                 public void run() {
                     try {
-                        topologyService.sendAsynchronous(request.getRuntimeName(), qualifiedChannelName, update);
+                        if (isParticipantOrNode()) {
+                            participantTopologyService.sendAsynchronous(request.getRuntimeName(), qualifiedChannelName, update);
+                        }
+                        // ignore on controller
                     } catch (MessageException e) {
                         monitor.error(e);
                     }
                 }
             });
         }
+    }
+
+    private boolean isParticipantOrNode() {
+        return RuntimeMode.PARTICIPANT == info.getRuntimeMode() || RuntimeMode.NODE == info.getRuntimeMode();
+    }
+
+    private boolean isController() {
+        return RuntimeMode.CONTROLLER == info.getRuntimeMode();
     }
 
 }

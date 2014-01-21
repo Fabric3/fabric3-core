@@ -40,28 +40,30 @@ package org.fabric3.federation.jgroups;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.fabric3.spi.federation.topology.MessageException;
+import org.fabric3.spi.federation.topology.MessageReceiver;
 import org.jgroups.Address;
 import org.jgroups.Channel;
+import org.jgroups.MembershipListener;
 import org.jgroups.Message;
 import org.jgroups.Receiver;
 import org.jgroups.View;
-
-import org.fabric3.spi.federation.topology.MessageException;
-import org.fabric3.spi.federation.topology.MessageReceiver;
 
 /**
  *
  */
 public class DelegatingReceiver implements Receiver {
     private Channel channel;
-    private MessageReceiver delegate;
+    private MessageReceiver receiver;
     private JGroupsHelper helper;
+    private MembershipListener listener;
     private TopologyServiceMonitor monitor;
 
-    public DelegatingReceiver(Channel channel, MessageReceiver delegate, JGroupsHelper helper, TopologyServiceMonitor monitor) {
+    public DelegatingReceiver(Channel channel, MessageReceiver receiver, JGroupsHelper helper, MembershipListener listener, TopologyServiceMonitor monitor) {
         this.channel = channel;
-        this.delegate = delegate;
+        this.receiver = receiver;
         this.helper = helper;
+        this.listener = listener;
         this.monitor = monitor;
     }
 
@@ -69,7 +71,7 @@ public class DelegatingReceiver implements Receiver {
         if (message.getSrc() != channel.getAddress()) {
             try {
                 Object payload = helper.deserialize(message.getBuffer());
-                delegate.onMessage(payload);
+                receiver.onMessage(payload);
             } catch (MessageException e) {
                 monitor.error("Error deserializing message payload", e);
             }
@@ -84,20 +86,28 @@ public class DelegatingReceiver implements Receiver {
 
     }
 
-    public void viewAccepted(View new_view) {
-
+    public void viewAccepted(View newView) {
+        if (listener != null) {
+            listener.viewAccepted(newView);
+        }
     }
 
-    public void suspect(Address suspected_mbr) {
-
+    public void suspect(Address suspected) {
+        if (listener != null) {
+            listener.suspect(suspected);
+        }
     }
 
     public void block() {
-
+        if (listener != null) {
+            listener.block();
+        }
     }
 
     public void unblock() {
-
+        if (listener != null) {
+            listener.unblock();
+        }
     }
 
 }

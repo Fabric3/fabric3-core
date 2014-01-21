@@ -39,6 +39,7 @@ package org.fabric3.federation.jgroups;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -215,10 +216,6 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
         return view != null && address != null && address.equals(helper.getZoneLeader(zoneName, view));
     }
 
-    public boolean supportsDynamicChannels() {
-        return true;
-    }
-
     public void register(TopologyListener listener) {
         topologyListeners.add(listener);
     }
@@ -252,7 +249,7 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
         return channels.containsKey(name);
     }
 
-    public void openChannel(String name, String configuration, MessageReceiver receiver) throws ZoneChannelException {
+    public void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws ZoneChannelException {
         if (channels.containsKey(name)) {
             throw new ZoneChannelException("Channel already open:" + name);
         }
@@ -269,7 +266,12 @@ public class JGroupsNodeTopologyService extends AbstractTopologyService implemen
             channel.setName(runtimeName);
             initializeChannel(channel);
             channels.put(name, channel);
-            DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver, helper, monitor);
+
+            Object viewLock = new Object();
+            List<TopologyListener> listeners = Collections.singletonList(listener);
+            TopologyListenerMultiplexer multiplexer = (listener != null) ? new TopologyListenerMultiplexer(helper, viewLock, listeners) : null;
+
+            DelegatingReceiver delegatingReceiver = new DelegatingReceiver(channel, receiver, helper, multiplexer, monitor);
             channel.setReceiver(delegatingReceiver);
             channel.connect(info.getDomain().getAuthority() + ":" + name);
         } catch (Exception e) {

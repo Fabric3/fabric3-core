@@ -37,8 +37,47 @@
 */
 package org.fabric3.spi.federation.topology;
 
+import java.io.Serializable;
+
 /**
- * Responsible for controller communications across a federated (distributed) domain consisting of node runtimes.
+ * Base federation interface for controller, participant and node runtimes.
  */
-public interface NodeTopologyService extends ControllerTopologyService, ParticipantTopologyService {
+public interface TopologyService {
+
+    /**
+     * Returns true if the channel is open.
+     *
+     * @param name the channel name
+     * @return true if the channel is open
+     */
+    boolean isChannelOpen(String name);
+
+    /**
+     * Opens a channel.
+     *
+     * @param name          the channel name
+     * @param configuration the channel configuration or null to use the default configuration
+     * @param receiver      the receiver to callback when a message is received
+     * @param listener      an optional topology listener. May be null.
+     * @throws ZoneChannelException if an error occurs opening the channel
+     */
+    void openChannel(String name, String configuration, MessageReceiver receiver, TopologyListener listener) throws ZoneChannelException;
+
+    /**
+     * Closes a channel.
+     *
+     * @param name the channel name
+     * @throws ZoneChannelException if an error occurs closing the channel
+     */
+    void closeChannel(String name) throws ZoneChannelException;
+
+    /**
+     * Asynchronously sends a message over the given channel.
+     *
+     * @param name    the channel name
+     * @param message the message
+     * @throws MessageException if there is an error sending the message
+     */
+    void sendAsynchronous(String name, Serializable message) throws MessageException;
+
 }

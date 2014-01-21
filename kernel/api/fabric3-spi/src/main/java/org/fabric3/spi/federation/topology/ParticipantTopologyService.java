@@ -48,7 +48,7 @@ import org.fabric3.spi.command.ResponseCommand;
  * This service is present only on participant runtimes in a federated topology and provides low-level communications between a participant and other runtimes
  * (a participant or controller). Higher-level communications semantics can be layered over this service.
  */
-public interface ParticipantTopologyService {
+public interface ParticipantTopologyService extends TopologyService{
 
     /**
      * Returns true if the current runtime is the zone leader.
@@ -56,13 +56,6 @@ public interface ParticipantTopologyService {
      * @return true if the current runtime is the zone leader
      */
     boolean isZoneLeader();
-
-    /**
-     * Returns true if the group communications infrastructure supports creation of channels using {@link #openChannel(String, String, MessageReceiver)}.
-     *
-     * @return true if the group communications infrastructure supports creation of channels
-     */
-    boolean supportsDynamicChannels();
 
     /**
      * Registers a transient {@link TopologyListener}.
@@ -112,41 +105,6 @@ public interface ParticipantTopologyService {
      * @throws MessageException if an error occurs sending the message. {@link ControllerNotFoundException} wil be thrown if a controller
      */
     Response sendSynchronousToController(ResponseCommand command, long timeout) throws MessageException;
-
-    /**
-     * Returns true if the channel is open.
-     *
-     * @param name the channel name
-     * @return true if the channel is open
-     */
-    boolean isChannelOpen(String name);
-
-    /**
-     * Opens a channel.
-     *
-     * @param name          the channel name
-     * @param configuration the channel configuration or null to use the default configuration
-     * @param receiver      the receiver to callback when a message is received
-     * @throws ZoneChannelException if an error occurs opening the channel
-     */
-    void openChannel(String name, String configuration, MessageReceiver receiver) throws ZoneChannelException;
-
-    /**
-     * Closes a channel.
-     *
-     * @param name the channel name
-     * @throws ZoneChannelException if an error occurs closing the channel
-     */
-    void closeChannel(String name) throws ZoneChannelException;
-
-    /**
-     * Asynchronously sends a message over the given channel.
-     *
-     * @param name    the channel name
-     * @param message the message
-     * @throws MessageException if there is an error sending the message
-     */
-    void sendAsynchronous(String name, Serializable message) throws MessageException;
 
     /**
      * Asynchronously sends a message over the given channel to the specified runtime.
