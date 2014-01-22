@@ -89,6 +89,7 @@ public class SizeRollStrategy implements RollStrategy {
                 File target = getLogName(file, current);
                 source.renameTo(target);
             }
+            counter = 1;
         }
     }
 
