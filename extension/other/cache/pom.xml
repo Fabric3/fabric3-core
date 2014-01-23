@@ -32,6 +32,7 @@
 	<modules>
         <module>fabric3-cache</module>
         <module>fabric3-cache-infinispan</module>
+        <module>fabric3-cache-ehcache</module>
 	</modules>
     
 </project>
