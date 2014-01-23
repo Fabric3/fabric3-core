@@ -123,14 +123,53 @@ public class SizeRollStrategyTestCase extends TestCase {
         currentBackup = strategy.getBackup(logFile);
         write(currentBackup, "C234567890");
 
-        assertFalse(backup1.exists());
+        assertTrue(backup1.exists());
 
-        assertTrue(backup2.exists());
-        assertTrue(verifyContent(backup2, "C"));
+        assertFalse(backup2.exists());
+        assertTrue(verifyContent(backup1, "C"));
 
         assertFalse(backup3.exists());
 
     }
+
+    public void testRollReset() throws Exception {
+        SizeRollStrategy strategy = new SizeRollStrategy(10, 2);
+        File backup1 = new File("f3rolling1.log");
+        File backup2 = new File("f3rolling2.log");
+        File backup3 = new File("f3rolling3.log");
+
+        File currentBackup = strategy.getBackup(logFile);
+
+        write(currentBackup, "A234567890");
+
+        currentBackup = strategy.getBackup(logFile);
+        write(currentBackup, "B234567890");
+
+        currentBackup = strategy.getBackup(logFile);
+        write(currentBackup, "C234567890");
+
+        currentBackup = strategy.getBackup(logFile);
+        write(currentBackup, "D234567890");
+
+        currentBackup = strategy.getBackup(logFile);
+        write(currentBackup, "E234567890");
+
+        currentBackup = strategy.getBackup(logFile);
+        write(currentBackup, "F234567890");
+
+        currentBackup = strategy.getBackup(logFile);
+        write(currentBackup, "G234567890");
+
+        assertTrue(backup1.exists());
+        assertTrue(verifyContent(backup1, "F"));
+
+        assertTrue(backup2.exists());
+        assertTrue(verifyContent(backup2, "G"));
+
+        assertFalse(backup3.exists());
+
+    }
+
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     protected void setUp() throws Exception {
