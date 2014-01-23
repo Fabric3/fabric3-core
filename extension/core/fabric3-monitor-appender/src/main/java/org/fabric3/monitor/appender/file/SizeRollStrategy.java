@@ -82,7 +82,7 @@ public class SizeRollStrategy implements RollStrategy {
             // Files need to be rotated. Delete the oldest file.
             getLogName(file, 1).delete();
             // rotate the other log files
-            int current = 2;
+            int current = counter;
             while (current > 1) {
                 File source = getLogName(file, current);
                 current--;
