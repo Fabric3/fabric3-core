@@ -18,4 +18,5 @@ Public License. See the accompanying license file for details.
     <export.java package="net.sf.ehcache.*" version="2.8.0" />
     
     <f3:extends name="spring-core" />
+    
 </contribution>
