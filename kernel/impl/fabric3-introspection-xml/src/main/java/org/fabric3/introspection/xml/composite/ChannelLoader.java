@@ -85,7 +85,7 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
 
     public ChannelLoader(@Reference LoaderRegistry registry, @Reference LoaderHelper loaderHelper) {
         super(registry);
-        addAttributes("name", "requires", "type");
+        addAttributes("name", "requires", "type", "local");
         this.loaderHelper = loaderHelper;
     }
 
@@ -118,7 +118,9 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
             channelType = ChannelDefinition.DEFAULT_TYPE;
         }
 
-        ChannelDefinition definition = new ChannelDefinition(name, uri, channelType);
+        boolean local = Boolean.parseBoolean(reader.getAttributeValue(null, "local"));
+
+        ChannelDefinition definition = new ChannelDefinition(name, uri, channelType, local);
 
         validateAttributes(reader, context, definition);
 
@@ -143,6 +145,10 @@ public class ChannelLoader extends AbstractExtensibleTypeLoader<ChannelDefinitio
                     QName elementName = reader.getName();
                     ModelObject type = registry.load(reader, ModelObject.class, context);
                     if (type instanceof BindingDefinition) {
+                        if (local) {
+                            context.addError(new IllegalBinding("Bindings cannot be configured on a local channel: " + name, location, definition));
+                            continue;
+                        }
                         BindingDefinition binding = (BindingDefinition) type;
                         boolean check = BindingHelper.checkDuplicateNames(binding, definition.getBindings(), location, context);
                         if (check) {
