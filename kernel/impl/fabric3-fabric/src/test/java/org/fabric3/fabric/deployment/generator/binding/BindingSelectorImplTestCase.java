@@ -46,6 +46,7 @@ import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.component.ChannelDefinition;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Implementation;
@@ -211,11 +212,11 @@ public class BindingSelectorImplTestCase extends TestCase {
     private LogicalCompositeComponent createComponentWithChannel() {
         URI compositeUri = URI.create("composite");
         LogicalCompositeComponent composite = new LogicalCompositeComponent(compositeUri, null, null);
-        LogicalChannel channel = new LogicalChannel(URI.create("composite/channel"), null, composite);
+        ChannelDefinition definition = new ChannelDefinition("channel");
+        LogicalChannel channel = new LogicalChannel(URI.create("composite/channel"), definition, composite);
         composite.addChannel(channel);
         return composite;
     }
-
 
 }
 

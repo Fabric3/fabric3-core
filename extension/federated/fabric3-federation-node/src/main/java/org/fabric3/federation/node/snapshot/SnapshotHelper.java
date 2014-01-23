@@ -114,10 +114,12 @@ public class SnapshotHelper {
         String name = definition.getName();
         URI contributionUri = definition.getContributionUri();
         String type = definition.getType();
-        ChannelDefinition definitionCopy = new ChannelDefinition(name, contributionUri, type);
+        boolean local = definition.isLocal();
+        ChannelDefinition definitionCopy = new ChannelDefinition(name, contributionUri, type, local);
         definitionCopy.setParent(composite);
         definitionCopy.setIntents(definition.getIntents());
         definitionCopy.setPolicySets(definition.getPolicySets());
+        definitionCopy.setLocal(definition.isLocal());
         LogicalChannel channelCopy = new LogicalChannel(channel.getUri(), definitionCopy, domain);
         channelCopy.getBindings().addAll(channel.getBindings());
         channelCopy.setDeployable(channel.getDeployable());

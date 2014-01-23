@@ -212,7 +212,7 @@ public class BindingSelectorImpl implements BindingSelector {
      * @throws BindingSelectionException if an error occurs selecting a binding
      */
     private void selectBinding(LogicalChannel channel) throws BindingSelectionException {
-        if (channel.isConcreteBound()) {
+        if (channel.isConcreteBound() || channel.getDefinition().isLocal()) {
             return;
         }
         List<BindingMatchResult> results = new ArrayList<BindingMatchResult>();

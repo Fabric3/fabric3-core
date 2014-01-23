@@ -35,52 +35,20 @@
  * GNU General Public License along with Fabric3.
  * If not, see <http://www.gnu.org/licenses/>.
 */
-package org.fabric3.api.model.type.builder;
+package org.fabric3.introspection.xml.composite;
 
-import org.fabric3.api.model.type.component.ChannelDefinition;
+import javax.xml.stream.Location;
+
+import org.fabric3.api.model.type.ModelObject;
+import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 
 /**
  *
  */
-public class ChannelDefinitionBuilder extends AbstractBuilder {
+public class IllegalBinding extends XmlValidationFailure {
 
-    protected final ChannelDefinition definition;
-
-    /**
-     * Creates a builder.
-     *
-     * @param name the channel name
-     * @return the builder
-     */
-    public static ChannelDefinitionBuilder newBuilder(String name) {
-        return new ChannelDefinitionBuilder(name);
-    }
-
-    public ChannelDefinitionBuilder type(String type) {
-        checkState();
-        definition.setType(type);
-        return this;
-    }
-
-    public ChannelDefinitionBuilder local(boolean local) {
-        checkState();
-        definition.setLocal(local);
-        return this;
-    }
-
-    /**
-     * Builds the channel definition.
-     *
-     * @return the definition
-     */
-    public ChannelDefinition build() {
-        checkState();
-        freeze();
-        return definition;
-    }
-
-    protected ChannelDefinitionBuilder(String name) {
-        definition = new ChannelDefinition(name);
+    public IllegalBinding(String message, Location location, ModelObject modelObject) {
+        super(message, location, modelObject);
     }
 
 }
