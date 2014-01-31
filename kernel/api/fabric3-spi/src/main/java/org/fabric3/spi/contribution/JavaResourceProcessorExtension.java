@@ -41,9 +41,14 @@ import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.api.model.type.java.JavaImplementation;
 
 /**
- *
+ * Processes annotations and other Java implementation metadata.
  */
 public interface JavaResourceProcessorExtension {
 
+    /**
+     * Process metadata for the given Java component implementation.
+     *
+     * @param definition the component
+     */
     void process(ComponentDefinition<JavaImplementation> definition);
 }
