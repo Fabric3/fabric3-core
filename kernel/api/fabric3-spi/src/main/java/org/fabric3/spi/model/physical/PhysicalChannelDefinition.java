@@ -54,7 +54,6 @@ public class PhysicalChannelDefinition implements Serializable {
     private static final long serialVersionUID = 8681183877136491160L;
     private URI uri;
     private QName deployable;
-    private boolean replicate;
     private PhysicalChannelBindingDefinition bindingDefinition;
     private String type;
     private ChannelDeliveryType deliveryType;
@@ -62,14 +61,13 @@ public class PhysicalChannelDefinition implements Serializable {
 
     private Serializable metadata;
 
-    public PhysicalChannelDefinition(URI uri, QName deployable, boolean replicate) {
-        this(uri, deployable, replicate, ChannelConstants.DEFAULT_TYPE, ChannelDeliveryType.DEFAULT);
+    public PhysicalChannelDefinition(URI uri, QName deployable) {
+        this(uri, deployable, ChannelConstants.DEFAULT_TYPE, ChannelDeliveryType.DEFAULT);
     }
 
-    public PhysicalChannelDefinition(URI uri, QName deployable, boolean replicate, String type, ChannelDeliveryType deliveryType) {
+    public PhysicalChannelDefinition(URI uri, QName deployable, String type, ChannelDeliveryType deliveryType) {
         this.uri = uri;
         this.deployable = deployable;
-        this.replicate = replicate;
         this.type = type;
         this.deliveryType = deliveryType;
     }
@@ -90,15 +88,6 @@ public class PhysicalChannelDefinition implements Serializable {
      */
     public QName getDeployable() {
         return deployable;
-    }
-
-    /**
-     * Returns true if the channel replicates events to all channel instances in a zone.
-     *
-     * @return true if the channel replicates events to all channel instances in a zone
-     */
-    public boolean isReplicate() {
-        return replicate;
     }
 
     /**

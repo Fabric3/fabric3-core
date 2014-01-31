@@ -42,7 +42,6 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.spi.model.physical.ChannelConstants;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 
@@ -54,7 +53,6 @@ public class DefaultChannelGeneratorImplTestCase extends TestCase {
 
     public void testGenerate() throws Exception {
         ChannelDefinition channelDefinition = new ChannelDefinition("test", URI.create("contribution"));
-        channelDefinition.addIntent(ChannelConstants.REPLICATE_INTENT);
         LogicalChannel channel = new LogicalChannel(URI.create("test"), channelDefinition, null);
         QName deployable = new QName("test", "test");
         channel.setDeployable(deployable);
@@ -62,6 +60,5 @@ public class DefaultChannelGeneratorImplTestCase extends TestCase {
         PhysicalChannelDefinition definition = generator.generate(channel, deployable);
 
         assertEquals(deployable, definition.getDeployable());
-        assertTrue(definition.isReplicate());
     }
 }

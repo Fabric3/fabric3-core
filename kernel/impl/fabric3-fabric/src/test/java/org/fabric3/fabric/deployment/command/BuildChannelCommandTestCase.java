@@ -62,6 +62,6 @@ public class BuildChannelCommandTestCase extends TestCase {
         super.setUp();
         URI uri = URI.create("channel");
         QName name = new QName("test", "composite");
-        definition = new PhysicalChannelDefinition(uri, name, false);
+        definition = new PhysicalChannelDefinition(uri, name);
     }
 }

@@ -60,9 +60,7 @@ public class RingBufferChannelGeneratorExtension implements ChannelGeneratorExte
         ChannelDefinition definition = channel.getDefinition();
         String channelType = definition.getType();
 
-        boolean replicate = definition.getIntents().contains(ChannelConstants.REPLICATE_INTENT);
-
-        PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, replicate, channelType, ASYNCHRONOUS_WORKER);
+        PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, channelType, ASYNCHRONOUS_WORKER);
         physicalDefinition.setMetadata(definition.getMetadata().get(ChannelConstants.METADATA));
 
         return physicalDefinition;

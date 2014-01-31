@@ -211,7 +211,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"), false);
+        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"));
         buildChannelCommand = new BuildChannelCommand(definition);
         disposeChannelCommand = new DisposeChannelCommand(definition);
     }

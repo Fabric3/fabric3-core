@@ -55,9 +55,6 @@ public interface ChannelMonitor {
     @Severe("HTTP/websocket error encountered: {0}")
     void error(Throwable t);
 
-    @Severe("Error replicating event to zone members")
-    void replicationError(Throwable t);
-
     @Debug("Atmosphere channel event {0}")
 	void eventing(String string);
     

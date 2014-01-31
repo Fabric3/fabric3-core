@@ -45,11 +45,6 @@ import javax.xml.namespace.QName;
 public interface ChannelConstants {
 
     /**
-     * Indicates a channel must replicate events to all channel instances in a zone.
-     */
-    QName REPLICATE_INTENT = new QName(org.fabric3.api.Namespaces.F3, "replication");
-
-    /**
      * Indicates a channel must send events in a durable (persistent) fashion.
      */
     QName DURABLE_INTENT = new QName(org.fabric3.api.Namespaces.F3, "durable");

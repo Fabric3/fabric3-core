@@ -44,13 +44,12 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
 import org.fabric3.api.model.type.component.ChannelDefinition;
-import org.fabric3.spi.model.physical.ChannelConstants;
+import org.fabric3.fabric.deployment.generator.GeneratorRegistry;
+import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.deployment.generator.channel.ChannelDirection;
 import org.fabric3.spi.deployment.generator.channel.ChannelGeneratorExtension;
 import org.fabric3.spi.deployment.generator.channel.ConnectionBindingGenerator;
-import org.fabric3.spi.deployment.generator.GenerationException;
 import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -183,14 +182,13 @@ public class ChannelGeneratorImplTestCase extends TestCase {
 
     private ChannelGeneratorExtension getChannelGenerator() throws GenerationException {
         ChannelGeneratorExtension channelGenerator = EasyMock.createMock(ChannelGeneratorExtension.class);
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("channel"), new QName("test", "test"), false);
+        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("channel"), new QName("test", "test"));
         EasyMock.expect(channelGenerator.generate(EasyMock.isA(LogicalChannel.class), EasyMock.eq(DEPLOYABLE))).andReturn(definition);
         return channelGenerator;
     }
 
     private LogicalChannel createChannel() {
         ChannelDefinition definition = new ChannelDefinition("channel", URI.create("contribution"));
-        definition.addIntent(ChannelConstants.REPLICATE_INTENT);
         return new LogicalChannel(URI.create("channel"), definition, null);
     }
 

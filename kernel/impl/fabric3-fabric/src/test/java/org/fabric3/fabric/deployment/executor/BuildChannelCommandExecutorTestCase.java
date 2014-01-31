@@ -59,7 +59,7 @@ import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 public class BuildChannelCommandExecutorTestCase extends TestCase {
 
     public void testBuildChannel() throws Exception {
-        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"), true);
+        PhysicalChannelDefinition definition = new PhysicalChannelDefinition(URI.create("test"), new QName("foo", "bar"));
 
         Channel channel = EasyMock.createMock(Channel.class);
 

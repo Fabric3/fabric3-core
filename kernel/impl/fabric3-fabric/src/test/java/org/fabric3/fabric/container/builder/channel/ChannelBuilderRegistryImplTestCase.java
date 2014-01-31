@@ -112,7 +112,7 @@ public class ChannelBuilderRegistryImplTestCase extends TestCase {
 
         channel = EasyMock.createMock(Channel.class);
 
-        definition = new PhysicalChannelDefinition(URI, new QName("test", "bar"), false);
+        definition = new PhysicalChannelDefinition(URI, new QName("test", "bar"));
         definition.setChannelSide(ChannelSide.CONSUMER);
     }
 }

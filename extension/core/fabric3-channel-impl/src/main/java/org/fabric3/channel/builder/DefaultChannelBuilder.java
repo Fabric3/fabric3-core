@@ -40,23 +40,17 @@ package org.fabric3.channel.builder;
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.channel.impl.AsyncFanOutHandler;
-import org.fabric3.channel.impl.FanOutHandler;
-import org.fabric3.channel.impl.ReplicationHandler;
-import org.fabric3.channel.impl.SyncFanOutHandler;
 import org.fabric3.channel.impl.DefaultChannelImpl;
-import org.fabric3.channel.impl.ReplicationMonitor;
+import org.fabric3.channel.impl.FanOutHandler;
+import org.fabric3.channel.impl.SyncFanOutHandler;
 import org.fabric3.spi.container.builder.BuilderException;
 import org.fabric3.spi.container.builder.channel.ChannelBuilder;
 import org.fabric3.spi.container.builder.component.ChannelBindingBuilder;
 import org.fabric3.spi.container.channel.Channel;
-import org.fabric3.spi.federation.topology.ParticipantTopologyService;
-import org.fabric3.spi.federation.topology.ZoneChannelException;
 import org.fabric3.spi.model.physical.PhysicalChannelBindingDefinition;
 import org.fabric3.spi.model.physical.PhysicalChannelDefinition;
 import org.oasisopen.sca.annotation.Reference;
@@ -67,24 +61,11 @@ import org.oasisopen.sca.annotation.Reference;
 public class DefaultChannelBuilder implements ChannelBuilder {
 
     private ExecutorService executorService;
-    private ReplicationMonitor monitor;
-    private ParticipantTopologyService topologyService;
-    private boolean replicationCapable;
 
     private Map<Class<? extends PhysicalChannelBindingDefinition>, ChannelBindingBuilder> bindingBuilders = Collections.emptyMap();
 
-    public DefaultChannelBuilder(@Reference ExecutorService executorService, @Monitor ReplicationMonitor monitor) {
+    public DefaultChannelBuilder(@Reference ExecutorService executorService) {
         this.executorService = executorService;
-        this.monitor = monitor;
-    }
-
-    @Reference(required = false)
-    public void setTopologyService(List<ParticipantTopologyService> services) {
-        // use a collection to force reinjection
-        if (services != null && !services.isEmpty()) {
-            this.topologyService = services.get(0);
-            replicationCapable = true;
-        }
     }
 
     @Reference(required = false)
@@ -98,29 +79,14 @@ public class DefaultChannelBuilder implements ChannelBuilder {
 
         FanOutHandler fanOutHandler;
         if (definition.getBindingDefinition() != null) {
-            // if a binding is set on the channel, make the channel synchronous since async behavior will be provided by the binding
+            // if a binding is set on the channel, make the channel is synchronous since async behavior will be provided by the binding
             fanOutHandler = new SyncFanOutHandler();
         } else {
             // the channel is local, have it implement asynchrony
             fanOutHandler = new AsyncFanOutHandler(executorService);
         }
 
-        Channel channel;
-        if (definition.isReplicate() && replicationCapable) {
-            String channelName = uri.toString();
-            ReplicationHandler replicationHandler = new ReplicationHandler(channelName, topologyService, monitor);
-            channel = new DefaultChannelImpl(uri, deployable, replicationHandler, fanOutHandler, definition.getChannelSide());
-            if (!topologyService.isChannelOpen(channelName)) {
-                try {
-                    topologyService.openChannel(channelName, null, replicationHandler, null);
-                } catch (ZoneChannelException e) {
-                    throw new BuilderException(e);
-                }
-            }
-        } else {
-            channel = new DefaultChannelImpl(uri, deployable, fanOutHandler, definition.getChannelSide());
-        }
-
+        Channel channel = new DefaultChannelImpl(uri, deployable, fanOutHandler, definition.getChannelSide());
         PhysicalChannelBindingDefinition bindingDefinition = definition.getBindingDefinition();
         buildBinding(channel, bindingDefinition);
 
@@ -128,17 +94,7 @@ public class DefaultChannelBuilder implements ChannelBuilder {
     }
 
     public void dispose(PhysicalChannelDefinition definition, Channel channel) throws BuilderException {
-        URI uri = definition.getUri();
-        if (definition.isReplicate() && replicationCapable) {
-            String channelName = uri.toString();
-            try {
-                topologyService.closeChannel(channelName);
-            } catch (ZoneChannelException e) {
-                throw new BuilderException(e);
-            }
-        }
         disposeBinding(channel, definition.getBindingDefinition());
-
     }
 
     @SuppressWarnings({"unchecked"})

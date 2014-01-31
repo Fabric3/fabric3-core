@@ -60,9 +60,7 @@ public class DefaultChannelGeneratorExtensionImpl implements ChannelGeneratorExt
         ChannelDefinition definition = channel.getDefinition();
         String channelType = definition.getType();
 
-        boolean replicate = definition.getIntents().contains(ChannelConstants.REPLICATE_INTENT);
-
-        PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, replicate, channelType, ChannelDeliveryType.DEFAULT);
+        PhysicalChannelDefinition physicalDefinition = new PhysicalChannelDefinition(uri, deployable, channelType, ChannelDeliveryType.DEFAULT);
         physicalDefinition.setMetadata(definition.getMetadata().get(ChannelConstants.METADATA));
 
         return physicalDefinition;

@@ -63,6 +63,6 @@ public class DisposeChannelCommandTestCase extends TestCase {
         super.setUp();
         URI uri = URI.create("channel");
         QName deployable = new QName("test", "composite");
-        definition = new PhysicalChannelDefinition(uri, deployable, false);
+        definition = new PhysicalChannelDefinition(uri, deployable);
     }
 }

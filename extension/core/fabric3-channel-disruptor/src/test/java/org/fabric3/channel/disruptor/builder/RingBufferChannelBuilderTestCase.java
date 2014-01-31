@@ -78,7 +78,7 @@ public class RingBufferChannelBuilderTestCase extends TestCase {
 
         builder = new RingBufferChannelBuilder(executorService);
 
-        definition = new PhysicalChannelDefinition(URI, DEPLOYABLE, false, "ring.buffer", ChannelDeliveryType.ASYNCHRONOUS_WORKER);
+        definition = new PhysicalChannelDefinition(URI, DEPLOYABLE, "ring.buffer", ChannelDeliveryType.ASYNCHRONOUS_WORKER);
         definition.setMetadata(new RingBufferData());
     }
 }
