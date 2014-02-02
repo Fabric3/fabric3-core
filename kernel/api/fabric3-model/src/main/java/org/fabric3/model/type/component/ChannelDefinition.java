@@ -51,6 +51,7 @@ public class ChannelDefinition extends BindableDefinition<Composite> {
     private String name;
     private URI contributionUri;
     private String type = DEFAULT_TYPE;
+    private boolean local;
 
     public ChannelDefinition(String name, URI contributionUri) {
         this.name = name;
@@ -58,10 +59,11 @@ public class ChannelDefinition extends BindableDefinition<Composite> {
         bindings = new ArrayList<BindingDefinition>();
     }
 
-    public ChannelDefinition(String name, URI contributionUri, String type) {
+    public ChannelDefinition(String name, URI contributionUri, String type, boolean local) {
         this.name = name;
         this.contributionUri = contributionUri;
         this.type = type;
+        this.local = local;
         bindings = new ArrayList<BindingDefinition>();
     }
 
@@ -90,4 +92,23 @@ public class ChannelDefinition extends BindableDefinition<Composite> {
         return type;
     }
 
+    /**
+     * True if the channel is local.
+     *
+     * @return true if the channel is local
+     */
+    public boolean isLocal() {
+        return local;
+    }
+
+    /**
+     * Sets if the channel is local.
+     *
+     * @param local true if the channel is local
+     */
+    public void setLocal(boolean local) {
+        this.local = local;
+    }
 }
+
+

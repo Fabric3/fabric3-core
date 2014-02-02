@@ -37,17 +37,16 @@
 */
 package org.fabric3.fabric.binding;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.oasisopen.sca.annotation.EagerInit;
-
 import org.fabric3.host.RuntimeMode;
 import org.fabric3.host.runtime.HostInfo;
+import org.fabric3.model.type.component.ChannelDefinition;
 import org.fabric3.spi.binding.provider.BindingMatchResult;
 import org.fabric3.spi.binding.provider.BindingProvider;
 import org.fabric3.spi.model.instance.LogicalBinding;
@@ -57,6 +56,7 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalService;
 import org.fabric3.spi.model.instance.LogicalWire;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  *
@@ -204,11 +204,11 @@ public class BindingSelectorImplTestCase extends TestCase {
     private LogicalCompositeComponent createComponentWithChannel() {
         URI compositeUri = URI.create("composite");
         LogicalCompositeComponent composite = new LogicalCompositeComponent(compositeUri, null, null);
-        LogicalChannel channel = new LogicalChannel(URI.create("composite/channel"), null, composite);
+        ChannelDefinition definition = new ChannelDefinition("channel", URI.create("contribution"));
+        LogicalChannel channel = new LogicalChannel(URI.create("composite/channel"), definition, composite);
         composite.addChannel(channel);
         return composite;
     }
-
 
 }
 
