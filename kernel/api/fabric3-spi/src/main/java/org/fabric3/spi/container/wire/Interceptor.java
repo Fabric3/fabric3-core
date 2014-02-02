@@ -68,7 +68,7 @@ public interface Interceptor {
     /**
      * Returns the next interceptor in the invocation chain or null if the interceptor is the last one.
      *
-     * @return he next interceptor or null
+     * @return the next interceptor or null
      */
     Interceptor getNext();
 
