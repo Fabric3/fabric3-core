@@ -31,80 +31,40 @@
 package org.fabric3.binding.zeromq.runtime.message;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.zeromq.ZMQ;
 
-import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
-import org.fabric3.binding.zeromq.runtime.JDK7WorkaroundHelper;
-
 /**
- * Implementations dispatch messages over a ZeroMQ socket.
+ *
  */
 public final class SocketHelperTestCase extends TestCase {
     private ZMQ.Socket socket;
     private ZeroMQMetadata metadata;
 
-    public void testSetNone() throws Exception {
-        socket.setHWM(1000);
-        EasyMock.replay(socket);
-
-        SocketHelper.configure(socket, metadata);
-        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
-    }
-
     public void testHighWater() throws Exception {
         metadata.setHighWater(1);
-        socket.setHWM(1);
-        EasyMock.replay(socket);
 
         SocketHelper.configure(socket, metadata);
-        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
-    }
-
-    public void testMulticastRate() throws Exception {
-        metadata.setMulticastRate(1);
-        socket.setRate(1);
-        socket.setHWM(1000);
-        EasyMock.replay(socket);
-
-        SocketHelper.configure(socket, metadata);
-        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
-    }
-
-    public void testMulticastRecovery() throws Exception {
-        metadata.setMulticastRecovery(1);
-        socket.setHWM(1000);
-        socket.setRecoveryInterval(1);
-        EasyMock.replay(socket);
-
-        SocketHelper.configure(socket, metadata);
-        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
+        assertEquals(1, socket.getRcvHWM());
     }
 
     public void testReceiveBuffer() throws Exception {
         metadata.setReceiveBuffer(1);
-        socket.setHWM(1000);
-        socket.setReceiveBufferSize(1);
-        EasyMock.replay(socket);
 
         SocketHelper.configure(socket, metadata);
-        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
+        assertEquals(1, socket.getReceiveBufferSize());
     }
 
     public void testSendBuffer() throws Exception {
         metadata.setSendBuffer(1);
-        socket.setHWM(1000);
-        socket.setSendBufferSize(1);
-        EasyMock.replay(socket);
 
         SocketHelper.configure(socket, metadata);
-        JDK7WorkaroundHelper.workaroundLinuxJDK7Assertion(socket);
+        assertEquals(1, socket.getSendBufferSize());
     }
 
-    @Override
     public void setUp() throws Exception {
         super.setUp();
-        socket = EasyMock.createMock(ZMQ.Socket.class);
+        socket = ZMQ.context(1).socket(ZMQ.PUB);
         socket.setLinger(0);
         metadata = new ZeroMQMetadata();
     }

@@ -124,12 +124,11 @@ public class ContextManagerImpl implements ContextManager {
 
     /**
      * Initializes the ZeroMQ library on Windows and Linux. If the ZeroMQ Library is not initialized before the Context is created the loading of the library is
-     * delegated to the Operating System. This causes problems since then F3 can't control where to load the libraries from. To work around this problem we
-     * initialize ZeroMQ base library (libzmq.dll or libzmq.so) prior to the JZMQ (which happens when a Context is created). This workaround is currently tested
-     * on Windows and Linux.
+     * delegated to the Operating System. This causes problems since F3 can't control where to load the libraries from. To work around this problem we
+     * initialize ZeroMQ base library prior to JZMQ (which happens when a Context is created).
      */
     protected enum ZMQLibraryInitializer {
-        WINDOWS("libzmq"), LINUX("zmq"), OTHER("");
+        WINDOWS("libzmq-v120-mt-3_2_4"), LINUX("zmq"), OTHER("");
 
         private String libName;
 
