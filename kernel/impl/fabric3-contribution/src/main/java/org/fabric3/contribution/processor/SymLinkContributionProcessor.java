@@ -84,7 +84,7 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
 
     public boolean canProcess(Contribution contribution) {
         String sourceUrl = contribution.getLocation().toString();
-        return sourceUrl.endsWith(".contribution") || contribution.getMetaData(Boolean.class, F3_SYMLINK);  // source url will change
+        return sourceUrl.endsWith(".contribution") || contribution.getMetaData(Boolean.class, F3_SYMLINK) != null;  // source url will change
     }
 
     public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
