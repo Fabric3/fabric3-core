@@ -60,11 +60,12 @@ import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.introspection.IntrospectionContext;
 
 /**
- * Processes a symbolic link contribution (*.contribution file). This is done by de-referencing the target directory specified in the .contribution
- * file and introspecting it. The introspection results are then copied to the <code>Contribution</code> representing the symbolic link.
+ * Processes a symbolic link contribution (*.contribution file). This is done by de-referencing the target directory specified in the .contribution file and
+ * introspecting it. The introspection results are then copied to the <code>Contribution</code> representing the symbolic link.
  */
 @EagerInit
 public class SymLinkContributionProcessor implements ContributionProcessor {
+    public static final String F3_SYMLINK = "f3.symlink";
     private ProcessorRegistry processorRegistry;
 
     public SymLinkContributionProcessor(@Reference ProcessorRegistry processorRegistry) {
@@ -83,7 +84,7 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
 
     public boolean canProcess(Contribution contribution) {
         String sourceUrl = contribution.getLocation().toString();
-        return sourceUrl.endsWith(".contribution");
+        return sourceUrl.endsWith(".contribution") || contribution.getMetaData(Boolean.class, F3_SYMLINK);  // source url will change
     }
 
     public void processManifest(Contribution contribution, IntrospectionContext context) throws InstallException {
@@ -93,6 +94,7 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
             // override the location
             contribution.setLocation(syntheticContribution.getLocation());
             contribution.setManifest(syntheticContribution.getManifest());
+            contribution.addMetaData(F3_SYMLINK, Boolean.TRUE);
             contribution.addMetaData(contribution.getUri(), syntheticContribution);
         } catch (IOException e) {
             throw new InstallException(e);
