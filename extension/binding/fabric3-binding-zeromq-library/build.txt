@@ -2,17 +2,56 @@ This file contains build instructions for the ZMQ and JZMQ dynamic link librarie
 
 Windows 7 x64
 ______________________
-JZMQ was built against libzmq 2.1.7. Both the ZMQ and JZMQ libraries were built using Microsoft Visual Studio 2010 targeted to 64-bit architectures.
-Note the Visual Studio solution distributed with JZMQ needed to be modified to include a 64-bit target with updated ZMQ library dependencies (dynamic
-and static libraries). Also, projected type needed to be changed from Application (EXE) to Dynamic Link Library.
+JZMQ was built against the official libzmq 3.2.4 Windows distribution (libzmq-v120-mt-3_2_4.dll). Both the ZMQ and JZMQ libraries were built using Microsoft
+Visual Studio 2013 targeted to 64-bit architectures.
+Note the Visual Studio solution distributed with JZMQ needed to be modified to include updated ZMQ library dependencies (dynamic and static libraries).
 
 
 OS X
 ______________________
 
-JZMQ was built against libzmq 2.1.7 installed using Homebrew. The JZMQ dylib was modified with instal_name_tool to make the dependency path to
-libzmq.0.dylib relative using @loader_path. This allows the libzmq.dylib library to load the libzmq.0.dylib library without the need to place the
+JZMQ was built against libzmq 3.2.4 installed using Homebrew. The JZMQ dylib was modified with instal_name_tool to make the dependency path to
+the libzmq dylib relative using @loader_path. This allows libzmq to load the libzmq.0.dylib library without the need to place the
 latter in usr/local or set the DYLD_FALLBACK_LIBRARY_PATH environment variable on runtime startup.
+
+
+
+1. Install Homebrew (see website)
+2. brew install pkg-config
+3. brew install automake (will also install autoconf)
+4. Go to ZMQ directory
+5. ./configure --with-pgm
+
+This may lead to following error in PGM build: ./include/pgm/in.h:34: error: redefinition of ‘struct group_req’
+
+ To fix, do:
+ a. cd foreign/openpgm/     (from zeromq directory where ./configure is run)
+ b. wget http://openpgm.googlecode.com/files/libpgm-5.2.122~dfsg.tar.gz
+ c. cd ../..
+ d. ./configure --with-pgm=libpgm-5.2.122~dfsg
+
+Then finish up with:
+
+6. make
+7. sudo make install
+
+JZMQ Build
+
+1. Clone JZMQ repo
+2. ./autogen.sh
+
+May result in lib tools error. To fix:
+
+a. brew install libtool
+b.  ./autogen (again, if error)
+
+Then:
+
+3. ./configure
+4. make
+5. make install
+6. mvm clean install
+
 
 The following otool and instal_name_tool commands were used:
 
@@ -33,3 +72,8 @@ libjzmq.dylib:
 	@loader_path/libzmq.0.dylib (compatibility version 1.0.0, current version 1.0.0)
 	/usr/lib/libstdc++.6.dylib (compatibility version 7.0.0, current version 7.9.0)
 	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 125.2.1)
+
+Linux (Ubuntu)
+______________________
+
+Standard build procedures were followed
