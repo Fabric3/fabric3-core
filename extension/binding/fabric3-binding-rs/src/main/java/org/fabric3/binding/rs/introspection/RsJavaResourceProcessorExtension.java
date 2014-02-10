@@ -38,6 +38,8 @@
 package org.fabric3.binding.rs.introspection;
 
 import javax.ws.rs.NameBinding;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ContainerResponseFilter;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 
@@ -65,6 +67,10 @@ public class RsJavaResourceProcessorExtension implements JavaResourceProcessorEx
             URI contributionUri = definition.getContributionUri();
             String implClass = definition.getImplementation().getImplementationClass();
             Class<?> clazz = classLoaderRegistry.loadClass(contributionUri, implClass);
+            if (!(ContainerRequestFilter.class.isAssignableFrom(clazz)) && !ContainerResponseFilter.class.isAssignableFrom(clazz)) {
+                // not a filter
+                return;
+            }
             String bindingAnnotation = null;
             for (Annotation annotation : clazz.getAnnotations()) {
                 Class<? extends Annotation> type = annotation.annotationType();
