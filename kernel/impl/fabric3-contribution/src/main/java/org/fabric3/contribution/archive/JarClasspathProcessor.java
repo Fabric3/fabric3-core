@@ -130,19 +130,20 @@ public class JarClasspathProcessor implements ClasspathProcessor {
                 if (entry.isDirectory()) {
                     continue;
                 }
-                int index = entry.getName().lastIndexOf("/");
+                String name = entry.getName();
+                int index = name.lastIndexOf("/");
                 String path;
                 if (index > 0) {
-                    path = entry.getName().substring(0, index);
+                    path = name.substring(0, index);
                 } else {
-                    path = entry.getName();
+                    path = name;
                 }
 
-                if (resolvedLibraryPaths.contains(entry.getName())) {
+                if (resolvedLibraryPaths.contains(name)) {
                     extractNativeLibrary(path, jarStream, entry);
                     continue;
                 }
-                if (!path.startsWith("META-INF/lib")) {
+                if (!path.startsWith("META-INF/lib") || (path.startsWith("META-INF/lib") && name.length() <= 13)) {
                     continue;
                 }
                 if (explodeJars) {
