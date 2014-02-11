@@ -43,6 +43,7 @@
         <module>fabric3-binding-ws-policy</module>
         <module>fabric3-binding-ftp</module>
         <module>fabric3-binding-zeromq-library</module>
+        <module>fabric3-binding-jeromq</module>
         <module>fabric3-binding-zeromq-api</module>
         <module>fabric3-binding-zeromq</module>
         <module>fabric3-binding-file-api</module>

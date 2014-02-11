@@ -37,6 +37,7 @@
         <module>profile-jpa</module>
         <module>profile-jms</module>
         <module>profile-zeromq</module>
+        <module>profile-jeromq</module>
         <module>profile-spring</module>
         <module>profile-ftp</module>
         <module>profile-file</module>
