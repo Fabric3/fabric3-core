@@ -170,7 +170,6 @@ public class SizeRollStrategyTestCase extends TestCase {
 
     }
 
-
     @SuppressWarnings("ResultOfMethodCallIgnored")
     protected void setUp() throws Exception {
         super.setUp();
@@ -178,8 +177,8 @@ public class SizeRollStrategyTestCase extends TestCase {
             new File("f3rolling" + i + ".log").delete();
         }
         logFile = new File("f3rolling.log");
-        FileOutputStream stream = write(logFile, "1234567890");
-        stream.close();
+        write(logFile, "1234567890");
+
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -191,15 +190,23 @@ public class SizeRollStrategyTestCase extends TestCase {
         logFile.delete();
     }
 
-    private FileOutputStream write(File file, String content) throws IOException {
+    private void write(File file, String content) throws IOException {
         FileOutputStream stream = new FileOutputStream(file);
-        stream.write(content.getBytes());
-        return stream;
+        try {
+            stream.write(content.getBytes());
+        } finally {
+            stream.close();
+        }
+
     }
 
     private boolean verifyContent(File file, String content) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
-        return scanner.next().startsWith(content);
+        try {
+            return scanner.next().startsWith(content);
+        } finally {
+            scanner.close();
+        }
     }
 
 }

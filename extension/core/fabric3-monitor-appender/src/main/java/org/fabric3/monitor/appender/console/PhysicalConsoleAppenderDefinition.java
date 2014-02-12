@@ -43,4 +43,5 @@ import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
  * Configuration for a console appender.
  */
 public class PhysicalConsoleAppenderDefinition extends PhysicalAppenderDefinition {
+    private static final long serialVersionUID = -3488051139471179107L;
 }
