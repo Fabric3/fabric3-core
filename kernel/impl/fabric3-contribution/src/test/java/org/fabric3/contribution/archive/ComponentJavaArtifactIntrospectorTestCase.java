@@ -37,6 +37,7 @@
 */
 package org.fabric3.contribution.archive;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
@@ -57,7 +58,7 @@ public class ComponentJavaArtifactIntrospectorTestCase extends TestCase {
 
     public void testProvider() throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
-        String name = TestProvider.class.getName().replace(".", "/") + ".class";
+        String name = TestProvider.class.getName().replace(".", File.separator) + ".class";
         Resource resource = introspector.inspect(name, url, contribution, classLoader);
 
         assertEquals(Constants.DSL_CONTENT_TYPE, resource.getContentType());
@@ -66,7 +67,7 @@ public class ComponentJavaArtifactIntrospectorTestCase extends TestCase {
 
     public void testComponent() throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
-        String name = TestComponent.class.getName().replace(".", "/") + ".class";
+        String name = TestComponent.class.getName().replace(".", File.separator) + ".class";
         Resource resource = introspector.inspect(name, url, contribution, classLoader);
 
         assertEquals(Constants.JAVA_COMPONENT_CONTENT_TYPE, resource.getContentType());
@@ -75,7 +76,7 @@ public class ComponentJavaArtifactIntrospectorTestCase extends TestCase {
 
     public void testNoComponent() throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
-        String name = getClass().getName().replace(".", "/") + ".class";
+        String name = getClass().getName().replace(".", File.separator) + ".class";
         assertNull(introspector.inspect(name, url, contribution, classLoader));
 
     }

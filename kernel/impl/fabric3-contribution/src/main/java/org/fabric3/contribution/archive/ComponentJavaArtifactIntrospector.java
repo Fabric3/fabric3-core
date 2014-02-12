@@ -37,6 +37,7 @@
 */
 package org.fabric3.contribution.archive;
 
+import java.io.File;
 import java.net.URL;
 
 import org.fabric3.api.annotation.model.Component;
@@ -61,7 +62,7 @@ public class ComponentJavaArtifactIntrospector implements JavaArtifactIntrospect
             if (extensionIndex < 1) {
                 throw new AssertionError("Not a class: " + name);
             }
-            String className = name.substring(0, extensionIndex).replace("/", ".");
+            String className = name.substring(0, extensionIndex).replace(File.separator, ".");
             if (isProvider(className)) {
                 // the class is a model provider
                 UrlSource source = new UrlSource(url);
