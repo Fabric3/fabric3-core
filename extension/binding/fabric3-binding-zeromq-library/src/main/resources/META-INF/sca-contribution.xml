@@ -25,7 +25,15 @@ Public License. See the accompanying license file for details.
     <f3:library path='META-INF/native/libjzmq.dylib'>
         <os name='Mac OS X' version="10.6.6" processor='x86_64'/>
     </f3:library>
-    
+
+    <f3:library path='META-INF/native/msvcr120.dll'>
+        <os name='Windows'/>
+    </f3:library>
+
+    <f3:library path='META-INF/native/msvcp120.dll'>
+        <os name='Windows'/>
+    </f3:library>
+
     <f3:library path='META-INF/native/libzmq-v120-mt-3_2_4.dll'>
         <os name='Windows'/>
     </f3:library>
