@@ -52,7 +52,7 @@ public class Bootstrap {
      * @throws FabricException if an exception occurs during bootstrap
      */
     public static Fabric initialize() throws FabricException {
-        return initialize(null);
+        return boot(null);
     }
 
     /**
@@ -62,21 +62,19 @@ public class Bootstrap {
      * @throws FabricException if an exception occurs during bootstrap
      */
     public static Fabric initialize(URL url) throws FabricException {
+        if (url == null) {
+            throw new IllegalArgumentException("Configuration URL is null");
+        }
+        return boot(url);
+    }
+
+    private static Fabric boot(URL url) throws FabricException {
         try {
             ClassLoader bootstrapClassLoader = Bootstrap.class.getClassLoader();
             // instantiate the Fabric API implementation class
             Class<?> implClass = Class.forName(FABRIC_CLASS, true, bootstrapClassLoader);
             return (Fabric) implClass.getConstructor(URL.class).newInstance(url);
-        } catch (ClassNotFoundException e) {
-            // programming error
-            throw new FabricException(e);
-        } catch (IllegalAccessException e) {
-            // programming error
-            throw new FabricException(e);
-        } catch (InstantiationException e) {
-            // programming error
-            throw new FabricException(e);
-        } catch (NoSuchMethodException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException e) {
             // programming error
             throw new FabricException(e);
         } catch (InvocationTargetException e) {
@@ -86,6 +84,5 @@ public class Bootstrap {
             throw new FabricException(e);
         }
     }
-
 
 }
