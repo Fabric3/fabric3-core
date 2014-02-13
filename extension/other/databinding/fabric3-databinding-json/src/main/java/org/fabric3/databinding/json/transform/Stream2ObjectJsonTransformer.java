@@ -81,7 +81,7 @@ public class Stream2ObjectJsonTransformer implements Transformer<InputStream, Ob
         try {
             Thread.currentThread().setContextClassLoader(loader);
 
-            JsonParser jp = mapper.getJsonFactory().createJsonParser(source);
+            JsonParser jp = mapper.getFactory().createParser(source);
             // do not to close the underlying stream after mapping
             jp.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
             return mapper.readValue(jp, type);
