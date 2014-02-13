@@ -53,6 +53,7 @@ import org.w3c.dom.Element;
 /**
  * A policy set.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public final class PolicySet extends AbstractPolicyDefinition {
     private static final long serialVersionUID = -4507145141780962741L;
 
@@ -282,6 +283,7 @@ public final class PolicySet extends AbstractPolicyDefinition {
         return intentMaps;
     }
 
+    @SuppressWarnings("RedundantIfStatement")
     public boolean equals(Object o) {
         if (this == o) {
             return true;

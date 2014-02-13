@@ -51,6 +51,7 @@ import org.fabric3.spi.introspection.xml.XmlValidationFailure;
 /**
  *
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class InvalidServiceContractException extends ComponentRegistrationException {
     private static final long serialVersionUID = 4367622270403828483L;
     private List<ValidationFailure> errors;

@@ -41,7 +41,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;

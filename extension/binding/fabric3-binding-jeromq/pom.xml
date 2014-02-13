@@ -10,7 +10,6 @@
         <artifactId>fabric3-extension-binding-parent-pom</artifactId>
         <version>2.5.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-binding-jeromq</artifactId>
     <name>Fabric3 JeroMQ Binding Extension</name>
     <description>JeroMQ Binding Extension</description>

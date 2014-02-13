@@ -113,8 +113,8 @@ public class CompositeLoader extends AbstractExtensibleTypeLoader<Composite> {
     private TypeLoader<CompositeReference> referenceLoader;
     private TypeLoader<Property> propertyLoader;
     private ContractMatcher contractMatcher;
-    private final LoaderHelper loaderHelper;
-    boolean roundTrip;
+    private LoaderHelper loaderHelper;
+    private boolean roundTrip;
 
     /**
      * Constructor used during bootstrap; service and reference elements are not supported.

@@ -23,7 +23,6 @@
         <artifactId>fabric3-runtime-parent-pom</artifactId>
         <version>2.5.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-runtime-standalone-parent-pom</artifactId>
     <name>Fabric3 Runtime Standalone Parent POM</name>
     <description>Fabric3 Runtime Standalone Parent POM.</description>

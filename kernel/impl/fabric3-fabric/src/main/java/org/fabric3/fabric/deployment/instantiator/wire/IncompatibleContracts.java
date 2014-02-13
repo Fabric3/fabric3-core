@@ -66,8 +66,7 @@ public class IncompatibleContracts extends AssemblyFailure {
     }
 
     public String getMessage() {
-        StringBuilder builder = new StringBuilder("The contracts for the reference ").append(referenceUri).append(
-                " and service ").append(serviceUri).append(" are incompatible. The following error was reported: ").append(message);
-        return builder.toString();
+        return "The contracts for the reference " + referenceUri + " and service " + serviceUri + " are incompatible. The following error was reported: "
+               + message;
     }
 }

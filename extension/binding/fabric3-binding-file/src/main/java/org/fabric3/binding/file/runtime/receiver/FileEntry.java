@@ -38,8 +38,6 @@
 package org.fabric3.binding.file.runtime.receiver;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Implements the ability to set a modification checkpoint for detecting if a file has been changed.

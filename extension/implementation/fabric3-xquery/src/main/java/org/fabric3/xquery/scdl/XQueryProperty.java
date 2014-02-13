@@ -45,6 +45,7 @@ import org.fabric3.api.model.type.component.Property;
  *
  */
 public class XQueryProperty extends Property {
+    private static final long serialVersionUID = 6399277101971414832L;
 
     private QName variableName;
 

@@ -43,23 +43,23 @@
  */
 package org.fabric3.runtime.weblogic.boot;
 
-import java.io.IOException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
+import java.io.IOException;
 
 import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.runtime.weblogic.api.ServletRequestDispatcher;
-
 import static org.fabric3.runtime.weblogic.api.Constants.RUNTIME_ATTRIBUTE;
 import static org.fabric3.runtime.weblogic.api.ServletRequestDispatcher.SERVLET_REQUEST_DISPATCHER;
 
 /**
  * Forwards incoming HTTP requests to a servlet provided by a binding.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class WebLogicDispatchingServlet extends HttpServlet {
     private static final long serialVersionUID = -7044395140732475283L;
     private ServletRequestDispatcher requestDispatcher;

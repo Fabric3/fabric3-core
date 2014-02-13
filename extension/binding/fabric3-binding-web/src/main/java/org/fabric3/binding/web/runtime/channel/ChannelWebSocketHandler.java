@@ -111,7 +111,7 @@ public class ChannelWebSocketHandler extends AbstractReflectorAtmosphereHandler 
 
         } else if ("POST".equalsIgnoreCase(method)) {
             String contentType = req.getContentType();
-            if (contentType == null || contentType == "text/html") {
+            if (contentType == null || contentType.equals("text/html")) {
                 contentType = ContentTypes.DEFAULT;
             }
             String encoding = req.getCharacterEncoding();

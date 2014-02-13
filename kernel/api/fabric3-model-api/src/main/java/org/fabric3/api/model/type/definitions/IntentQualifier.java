@@ -50,6 +50,7 @@ import org.w3c.dom.Element;
 /**
  * A qualifier in an IntentMap.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public final class IntentQualifier implements Serializable {
     private static final long serialVersionUID = -2487001541970876844L;
 

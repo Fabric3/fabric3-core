@@ -43,6 +43,7 @@ import org.fabric3.monitor.spi.model.physical.PhysicalAppenderDefinition;
  * Configuration for a component appender.
  */
 public class PhysicalComponentAppenderDefinition extends PhysicalAppenderDefinition {
+    private static final long serialVersionUID = -3157159103889841312L;
     private String componentName;
 
     public PhysicalComponentAppenderDefinition(String componentName) {

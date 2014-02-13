@@ -37,9 +37,6 @@
 */
 package org.fabric3.runtime.tomcat.servlet;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -47,6 +44,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.catalina.comet.CometEvent;
 import org.apache.catalina.comet.CometProcessor;
@@ -58,8 +58,8 @@ import org.apache.catalina.comet.CometProcessor;
 public class Fabric3DispatchingServlet extends HttpServlet implements CometProcessor {
     private static final long serialVersionUID = -8765328474350267313L;
 
-    private Map<String, Servlet> servlets = new ConcurrentHashMap<>();
-    private ServletConfig config;
+    private transient Map<String, Servlet> servlets = new ConcurrentHashMap<>();
+    private transient ServletConfig config;
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);

@@ -43,8 +43,8 @@
  */
 package org.fabric3.api.model.type.contract;
 
-import java.io.Serializable;
 import javax.xml.namespace.QName;
+import java.io.Serializable;
 
 /**
  * Representation of a user-supplied data type comprising a abstract logical form and a runtime-specific physical form. The logical form describes an
@@ -54,6 +54,7 @@ import javax.xml.namespace.QName;
  *
  * @param <L> the type of identifier for the logical type system used by this DataType (such as an XML QName or Java Class)
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public abstract class DataType<L> implements Serializable {
     private static final long serialVersionUID = 1848442023940979720L;
     private Class<?> physical;

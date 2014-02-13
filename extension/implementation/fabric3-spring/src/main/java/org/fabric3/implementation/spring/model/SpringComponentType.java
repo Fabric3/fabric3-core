@@ -46,6 +46,7 @@ import org.fabric3.api.model.type.java.InjectingComponentType;
 /**
  * A component type for a Spring application context.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class SpringComponentType extends InjectingComponentType {
     private static final long serialVersionUID = -8894733979791676532L;
 

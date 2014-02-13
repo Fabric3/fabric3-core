@@ -50,7 +50,7 @@ import java.util.List;
  */
 public class CallbackReferenceSerializer {
 
-    public static String serializeToString(List<CallbackReference> references) throws IOException {
+    public static String serializeToString(List<CallbackReference> references){
         StringBuilder builder = new StringBuilder();
         for (CallbackReference reference : references) {
             String correlationId = reference.getCorrelationId();
@@ -111,7 +111,7 @@ public class CallbackReferenceSerializer {
         return references;
     }
 
-    public static List<CallbackReference> deserialize(String serialized) throws IOException {
+    public static List<CallbackReference> deserialize(String serialized) {
         List<CallbackReference> references = new ArrayList<>();
         String[] tokens = serialized.split(",");
         for (int i = 0; i < tokens.length; i = i + 2) {

@@ -245,7 +245,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
         return runtimeDir;
     }
 
-    private void handleStartException(Exception ex) throws Fabric3ServerException {
+    private void handleStartException(Exception ex) {
         if (monitor != null) {
             // there could have been an error initializing the monitor
             monitor.exited(ex);

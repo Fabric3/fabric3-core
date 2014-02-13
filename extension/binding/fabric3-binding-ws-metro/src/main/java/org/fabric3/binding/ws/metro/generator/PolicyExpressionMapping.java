@@ -50,6 +50,7 @@ import org.w3c.dom.Element;
  * <p/>
  * Operation overloading is not supported.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class PolicyExpressionMapping implements Serializable {
     private static final long serialVersionUID = 5554492976250872672L;
 
@@ -92,9 +93,8 @@ public class PolicyExpressionMapping implements Serializable {
 
         PolicyExpressionMapping that = (PolicyExpressionMapping) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        return !(id != null ? !id.equals(that.id) : that.id != null);
 
-        return true;
     }
 
     @Override

@@ -37,13 +37,13 @@
 */
 package org.fabric3.federation.provisioning;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.fabric3.api.host.util.IOHelper;
 import org.fabric3.spi.contribution.Contribution;
@@ -57,7 +57,7 @@ import org.fabric3.spi.security.AuthorizationService;
  */
 public class MetaDataStoreResolverServlet extends AbstractResolverServlet {
     private static final long serialVersionUID = -5822568715938454572L;
-    private MetaDataStore store;
+    private transient MetaDataStore store;
     private boolean secure;
 
     protected MetaDataStoreResolverServlet(MetaDataStore store,

@@ -80,6 +80,7 @@ import org.oasisopen.sca.annotation.Reference;
 /**
  *
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class ResourceHostImpl extends HttpServlet implements ResourceHost {
     private static final long serialVersionUID = 5554150494161533656L;
 

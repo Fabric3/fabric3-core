@@ -71,6 +71,11 @@
 */
 package org.fabric3.binding.ws.metro.runtime.security;
 
+import javax.crypto.SecretKey;
+import javax.security.auth.Subject;
+import javax.security.auth.callback.CallbackHandler;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
 import java.math.BigInteger;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -87,11 +92,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Map;
-import javax.crypto.SecretKey;
-import javax.security.auth.Subject;
-import javax.security.auth.callback.CallbackHandler;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 
 import com.sun.org.apache.xml.internal.security.utils.RFC2253Parser;
 import com.sun.xml.ws.security.impl.kerberos.KerberosContext;
@@ -106,13 +106,6 @@ import com.sun.xml.wss.impl.XWSSecurityRuntimeException;
 import com.sun.xml.wss.impl.configuration.DynamicApplicationContext;
 import com.sun.xml.wss.impl.policy.mls.AuthenticationTokenPolicy;
 import com.sun.xml.wss.saml.Assertion;
-import org.ietf.jgss.GSSCredential;
-import org.ietf.jgss.GSSName;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Reference;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.binding.ws.metro.runtime.MetroConstants;
 import org.fabric3.spi.container.invocation.WorkContext;
@@ -120,6 +113,12 @@ import org.fabric3.spi.security.AuthenticationException;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.KeyStoreManager;
 import org.fabric3.spi.security.UsernamePasswordToken;
+import org.ietf.jgss.GSSCredential;
+import org.ietf.jgss.GSSName;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Partially implements the Metro security SPI for hosting runtimes. SAML and Kerberos operations are not supported.
@@ -146,9 +145,8 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
         this.keyStoreManager = keyStoreManager;
     }
 
-
     @Init
-    public void init() throws XWSSecurityException {
+    public void init() {
         keyStore = keyStoreManager.getKeyStore();
         String password = keyStoreManager.getKeyStorePassword();
         if (password != null) {
@@ -447,7 +445,6 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
         validateTimestamp(context, timestamp.getCreated(), timestamp.getExpires(), maxClockSkew, freshnessLimit);
     }
 
-
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void validateTimestamp(Map context, String created, String expires, long maxClockSkew, long freshnessLimit) {
         checkEnabled();
@@ -461,9 +458,7 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
         validateCreationTime(context, created, maxClockSkew, freshnessLimit);
     }
 
-
-    public void validateCreationTime(Map context, String creationTime, long maxClockSkew, long timestampFreshnessLimit)
-            throws XWSSecurityRuntimeException {
+    public void validateCreationTime(Map context, String creationTime, long maxClockSkew, long timestampFreshnessLimit) throws XWSSecurityRuntimeException {
         checkEnabled();
         SimpleDateFormat calendarFormatter1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         SimpleDateFormat calendarFormatter2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'.'SSS'Z'");
@@ -603,7 +598,6 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
         return c.getTime();
     }
 
-
     private Date getFreshnessAndSkewAdjustedDate(long maxClockSkew, long timestampFreshnessLimit) {
         Calendar c = new GregorianCalendar();
         long offset = c.get(Calendar.ZONE_OFFSET);
@@ -618,7 +612,6 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
 
         return c.getTime();
     }
-
 
     private X509Certificate getDefaultCertificateInternal(KeyStore store, Map context) throws XWSSecurityRuntimeException {
         try {

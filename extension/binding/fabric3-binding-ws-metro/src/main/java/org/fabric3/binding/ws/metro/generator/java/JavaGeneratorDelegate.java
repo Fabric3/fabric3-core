@@ -698,7 +698,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
     }
 
     private ServiceContract getServiceContract(BindableDefinition parent) throws GenerationException {
-        ServiceContract serviceContract = null;
+        ServiceContract serviceContract;
         if (parent instanceof AbstractService) {
             serviceContract = ((AbstractService) parent).getServiceContract();
         } else if (parent instanceof AbstractReference) {

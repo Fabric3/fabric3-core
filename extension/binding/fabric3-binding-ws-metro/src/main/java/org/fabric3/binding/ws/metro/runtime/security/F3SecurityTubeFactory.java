@@ -71,6 +71,9 @@
 */
 package org.fabric3.binding.ws.metro.runtime.security;
 
+import javax.security.auth.message.config.AuthConfigFactory;
+import javax.xml.namespace.QName;
+import javax.xml.ws.WebServiceException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
@@ -78,9 +81,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
-import javax.security.auth.message.config.AuthConfigFactory;
-import javax.xml.namespace.QName;
-import javax.xml.ws.WebServiceException;
 
 import com.sun.xml.ws.api.WSBinding;
 import com.sun.xml.ws.api.model.wsdl.WSDLBoundOperation;
@@ -151,7 +151,7 @@ public final class F3SecurityTubeFactory implements TubeFactory, TubelineAssembl
     public Tube createTube(ServerTubelineAssemblyContext context) throws WebServiceException {
         //TEMP: uncomment this ServerPipelineHook hook = context.getEndpoint().getContainer().getSPI(ServerPipelineHook.class);
         ServerPipelineHook[] hooks = getServerTubeLineHooks();
-        ServerPipelineHook hook = null;
+        ServerPipelineHook hook;
         if (hooks != null && hooks.length > 0 && hooks[0] instanceof com.sun.xml.wss.provider.wsit.ServerPipeCreator) {
             //we let it override GF defaults
             hook = hooks[0];
@@ -393,15 +393,13 @@ public final class F3SecurityTubeFactory implements TubeFactory, TubelineAssembl
                 return true;
             }
         } catch (Exception e) {
-            boolean bool = Boolean.getBoolean("USE_XWSS_SECURITY");
-            return bool;
+            return Boolean.getBoolean("USE_XWSS_SECURITY");
         }
         //returning true by default for now, because the Client Side Security Config is
         //only accessible as a Runtime Property on BindingProvider.RequestContext
         //With Metro 2.0 we are disabling the default rule above and one would need to
         //set System Property USE_XWSS_SECURITY to enable the client pipeline.
-        boolean bool = Boolean.getBoolean("USE_XWSS_SECURITY");
-        return bool;
+        return Boolean.getBoolean("USE_XWSS_SECURITY");
     }
 
     private boolean isSecurityConfigPresent(ServerTubelineAssemblyContext context) {
@@ -477,7 +475,7 @@ public final class F3SecurityTubeFactory implements TubeFactory, TubelineAssembl
 
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            Class gfServerPipeClass = null;
+            Class gfServerPipeClass;
             if (loader != null) {
                 gfServerPipeClass = loader.loadClass(GF_SERVER_SEC_PIPE);
             } else {
@@ -487,8 +485,8 @@ public final class F3SecurityTubeFactory implements TubeFactory, TubelineAssembl
                 //now instantiate the class
                 Constructor[] ctors = gfServerPipeClass.getDeclaredConstructors();
                 Constructor ctor = null;
-                for (int i = 0; i < ctors.length; i++) {
-                    ctor = ctors[i];
+                for (Constructor ctor1 : ctors) {
+                    ctor = ctor1;
                     Class[] paramTypes = ctor.getParameterTypes();
                     if (paramTypes[0].equals(Map.class)) {
                         break;

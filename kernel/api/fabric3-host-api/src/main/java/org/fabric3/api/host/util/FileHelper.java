@@ -308,7 +308,7 @@ public class FileHelper {
          * @return the regex filter
          */
         public static RegExpFilter getWildcardFilter(String str, boolean ignoreCase) {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             for (int i = 0; i < str.length(); i++) {
                 char ch = str.charAt(i);
                 if (ch == '?') {

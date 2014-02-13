@@ -17,7 +17,6 @@
         <artifactId>fabric3-kernel-impl-parent-pom</artifactId>
         <version>2.5.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-monitor</artifactId>
     <name>Fabric3 Monitor Core Module</name>
     <description>Support for monitor proxies, channels and event logging</description>

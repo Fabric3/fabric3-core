@@ -53,6 +53,7 @@ import org.fabric3.api.model.type.contract.DataType;
  * is passed to a consumer handler, the invoker may convert the default form to a specific type. As an optimization, a consumer handler may cache the
  * converted type in the wrapper to avoid conversions to the same type by subsequent handlers.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class EventWrapper implements Serializable {
     private static final long serialVersionUID = 7377714429939143568L;
 

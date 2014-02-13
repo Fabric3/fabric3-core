@@ -89,7 +89,7 @@ public class WebLogicExecutorService implements ExecutorService {
             // prior 10.3.5 version
             Class<?> clazz = Class.forName("com.bea.core.workmanager.WorkManagerFactory", true, classLoader);
             Method defaultMethod = clazz.getMethod("getDefault", new Class[0]);
-            wm = (WorkManager) defaultMethod.invoke(null, new Object[0]);
+            wm = (WorkManager) defaultMethod.invoke(null);
         } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             logger.log(Level.FINEST, "Did not initialize com.bea.core.workmanager.WorkManagerFactory", e);
         }
@@ -102,12 +102,12 @@ public class WebLogicExecutorService implements ExecutorService {
             Class<?> wmWLSFactoryClass = Class.forName("weblogic.work.WorkManagerFactory", true, classLoader);
             Method instanceMethod = wmWLSFactoryClass.getMethod("getInstance", new Class[0]);
             Method defaultMethod = wmWLSFactoryClass.getMethod("getDefault", new Class[0]);
-            Object wmWLSFactory = instanceMethod.invoke(null, new Object[0]);
-            wmObj = defaultMethod.invoke(wmWLSFactory, new Object[0]);
+            Object wmWLSFactory = instanceMethod.invoke(null);
+            wmObj = defaultMethod.invoke(wmWLSFactory);
             Class<?> wmCommonJClass = Class.forName("weblogic.work.commonj.CommonjWorkManagerImpl", true, classLoader);
             Class<?> wmWLSInterface = Class.forName("weblogic.work.WorkManager", true, classLoader);
             Constructor<?> wmCommonJConstructor = wmCommonJClass.getConstructor(new Class[]{wmWLSInterface});
-            wm = (WorkManager) wmCommonJConstructor.newInstance(new Object[]{wmObj});
+            wm = (WorkManager) wmCommonJConstructor.newInstance(wmObj);
         } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new ExecutorInitException(e);
         }

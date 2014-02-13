@@ -74,6 +74,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * If the persistence context is transaction-scoped (as defined by JPA), the proxy will attempt to retrieve the Session instance associated with the current
  * transaction context from the EntityManagerService. The proxy will cache the Session instance until the transaction completes (or aborts).
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class StatefulSessionProxy implements Session, HibernateProxy {
     private static final long serialVersionUID = 1955430345975268500L;
     private String unitName;

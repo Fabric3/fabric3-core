@@ -37,21 +37,19 @@
  */
 package org.fabric3.introspection.xml.writer;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 import junit.framework.TestCase;
-
+import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
-import org.fabric3.introspection.xml.composite.ComponentLoader;
 import org.fabric3.introspection.xml.composite.CompositeLoader;
 import org.fabric3.introspection.xml.composite.CompositeReferenceLoader;
 import org.fabric3.introspection.xml.composite.CompositeServiceLoader;
-import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
@@ -95,7 +93,6 @@ public class WriterRoundTripTestCase extends TestCase {
         LoaderHelper loaderHelper = new DefaultLoaderHelper();
         CompositeReferenceLoader referenceLoader = new CompositeReferenceLoader(null, loaderHelper);
         CompositeServiceLoader serviceLoader = new CompositeServiceLoader(null, loaderHelper);
-        ComponentLoader componentLoader = new ComponentLoader(null, loaderHelper, null);
         loader = new CompositeLoader(null, serviceLoader, referenceLoader, null, null, loaderHelper);
 
         Writer writer = new WriterImpl();

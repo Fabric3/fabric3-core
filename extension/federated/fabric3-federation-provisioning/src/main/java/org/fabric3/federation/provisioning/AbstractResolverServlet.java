@@ -51,10 +51,10 @@ import org.fabric3.spi.security.UsernamePasswordToken;
  */
 public abstract class AbstractResolverServlet extends HttpServlet {
     private static final long serialVersionUID = 6804699201507293087L;
-    protected AuthenticationService authenticationService;
-    protected AuthorizationService authorizationService;
+    protected transient AuthenticationService authenticationService;
+    protected transient AuthorizationService authorizationService;
     protected String role;
-    protected ProvisionMonitor monitor;
+    protected transient ProvisionMonitor monitor;
 
 
     protected AbstractResolverServlet(AuthenticationService authenticationService,

@@ -37,18 +37,18 @@
 */
 package org.fabric3.xquery.provision;
 
+import javax.xml.namespace.QName;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
-
-import org.w3c.dom.Document;
 
 import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
+import org.w3c.dom.Document;
 
 /**
  *
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class XQueryComponentDefinition extends PhysicalComponentDefinition {
     private static final long serialVersionUID = -2176668190738465467L;
 

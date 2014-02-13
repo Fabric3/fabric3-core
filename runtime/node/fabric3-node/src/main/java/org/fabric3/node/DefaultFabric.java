@@ -338,7 +338,7 @@ public class DefaultFabric implements Fabric {
         return new UrlSource(configUrl);
     }
 
-    private File getRuntimeDirectory(RuntimeMode mode) throws IOException {
+    private File getRuntimeDirectory(RuntimeMode mode) {
         //  calculate config directories based on the mode the runtime is booted in
         File jarDirectory = ArchiveUtils.getJarDirectory(DefaultFabric.class);
         File root = new File(jarDirectory, "runtimes");

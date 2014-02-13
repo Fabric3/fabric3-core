@@ -43,4 +43,5 @@ import org.fabric3.spi.model.physical.PhysicalSourceDefinition;
  *
  */
 public class XQueryComponentSourceDefinition extends PhysicalSourceDefinition {
+    private static final long serialVersionUID = -7617953789862083680L;
 }

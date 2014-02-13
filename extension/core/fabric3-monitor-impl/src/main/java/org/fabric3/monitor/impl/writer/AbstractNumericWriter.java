@@ -328,9 +328,7 @@ public abstract class AbstractNumericWriter {
 
             if (bitOffset == 0) {
                 length -= offset;
-                for (int i = 0; i < length; i++) {
-                    buffer[i] = buffer[i + offset];
-                }
+                System.arraycopy(buffer, offset, buffer, 0, length);
             } else {
                 length -= offset;
                 int l1 = length - 1;

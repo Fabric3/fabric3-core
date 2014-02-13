@@ -37,6 +37,10 @@
 */
 package org.fabric3.recovery.domain;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,18 +51,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.spi.domain.DeployListener;
 import org.fabric3.spi.xml.XMLFactory;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Records the current domain state to a journal so it may be replayed when a controller comes back online and resyncs with the domain.
@@ -166,6 +165,8 @@ public class FSDeployTracker implements DeployListener {
             writer.writeStartElement("deployable");
             writer.writeAttribute("namespace", deployable.getNamespaceURI());
             writer.writeAttribute("name", deployable.getLocalPart());
+            // Note the equality test below is correct
+            //noinspection StringEquality
             if (plan != NO_PLAN) {
                 writer.writeAttribute("plan", plan);
             }

@@ -37,8 +37,6 @@
 */
 package org.fabric3.wsdl.factory.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensionDeserializer;
 import javax.wsdl.extensions.ExtensionRegistry;
@@ -47,6 +45,8 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.fabric3.wsdl.factory.Wsdl4JFactory;
 
@@ -86,9 +86,8 @@ public class Wsdl4JFactoryImpl implements Wsdl4JFactory {
     }
 
     public WSDLWriter newWriter() {
-        WSDLWriter writer = factory.newWSDLWriter();
-//        writer.setFeature(VERBOSE, false);
-        return writer;
+        //        writer.setFeature(VERBOSE, false);
+        return factory.newWSDLWriter();
     }
 
     /**

@@ -153,7 +153,6 @@ public class OASISPropertyProcessor extends AbstractAnnotationProcessor<org.oasi
             return false;
         }
         if (!Modifier.isProtected(method.getModifiers()) && !Modifier.isPublic(method.getModifiers())) {
-            Class<?> clazz = method.getDeclaringClass();
             if (annotation.required()) {
                 InvalidAccessor error = new InvalidAccessor(
                         "Invalid required property. The method " + method + " is annotated with @Property and must be public or protected.",

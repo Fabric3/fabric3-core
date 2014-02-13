@@ -45,17 +45,18 @@ package org.fabric3.federation.deployment.domain;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.federation.deployment.command.DeploymentCommand;
 import org.fabric3.federation.deployment.command.SerializedDeploymentUnit;
-import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.spi.classloader.SerializationService;
 import org.fabric3.spi.command.CompensatableCommand;
 import org.fabric3.spi.command.Response;
+import org.fabric3.spi.deployment.generator.Deployment;
+import org.fabric3.spi.deployment.generator.DeploymentUnit;
 import org.fabric3.spi.domain.Deployer;
 import org.fabric3.spi.domain.DeployerMonitor;
 import org.fabric3.spi.domain.DeploymentPackage;
@@ -64,8 +65,6 @@ import org.fabric3.spi.federation.topology.ErrorResponse;
 import org.fabric3.spi.federation.topology.MessageException;
 import org.fabric3.spi.federation.topology.RuntimeInstance;
 import org.fabric3.spi.federation.topology.Zone;
-import org.fabric3.spi.deployment.generator.Deployment;
-import org.fabric3.spi.deployment.generator.DeploymentUnit;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
@@ -99,7 +98,6 @@ public class FederatedDeployer implements Deployer {
         Deployment fullDeployment = deploymentPackage.getFullDeployment();
 
         // tracks deployment responses by zone
-        List<DeploymentCommand> completed = new ArrayList<>();
         for (String zoneName : currentDeployment.getZones()) {
             monitor.deploy(zoneName);
             DeploymentCommand command;
@@ -136,7 +134,6 @@ public class FederatedDeployer implements Deployer {
                     throw new DeploymentException("Deployment errors encountered and logged");
                 }
             }
-            completed.add(command);
         }
     }
 

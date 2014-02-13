@@ -44,6 +44,7 @@ import org.fabric3.api.host.Fabric3Exception;
  *
  */
 public class ProxyException extends Fabric3Exception {
+    private static final long serialVersionUID = 2290187704308675671L;
 
     public ProxyException(Throwable cause) {
         super(cause);

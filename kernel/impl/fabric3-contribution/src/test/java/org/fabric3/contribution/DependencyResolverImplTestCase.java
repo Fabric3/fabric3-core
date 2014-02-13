@@ -37,7 +37,6 @@
 */
 package org.fabric3.contribution;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +44,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.contribution.wire.QNameContributionWire;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
@@ -181,7 +179,6 @@ public class DependencyResolverImplTestCase extends TestCase {
         EasyMock.expect(store.resolveCapability("capability")).andReturn(Collections.<Contribution>emptySet());
         EasyMock.replay(store);
 
-
         List<Contribution> contributions = new ArrayList<>();
         contributions.add(contribution1);
         contributions.add(contribution2);
@@ -216,7 +213,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         service = new DependencyResolverImpl(store);
     }
 
-    private void createContributions() throws MalformedURLException {
+    private void createContributions() {
         Capability capability = new Capability("capability");
 
         contribution1 = new Contribution(CONTRIBUTION1_URI);

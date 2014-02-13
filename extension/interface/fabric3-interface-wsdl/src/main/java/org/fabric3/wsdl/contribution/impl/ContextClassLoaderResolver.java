@@ -40,7 +40,6 @@ package org.fabric3.wsdl.contribution.impl;
 import java.io.IOException;
 import java.net.URL;
 
-import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.xml.sax.InputSource;
 

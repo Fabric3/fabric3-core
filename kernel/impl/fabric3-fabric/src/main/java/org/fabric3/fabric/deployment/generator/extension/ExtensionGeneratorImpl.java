@@ -116,9 +116,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
      * @param commands      the list of commands to update with un/provision extension commands
      * @param type          the generation type
      */
-    private void evaluateContributions(Map<String, List<Contribution>> contributions,
-                                       Map<String, CompensatableCommand> commands,
-                                       GenerationType type) {
+    private void evaluateContributions(Map<String, List<Contribution>> contributions, Map<String, CompensatableCommand> commands, GenerationType type) {
         for (Map.Entry<String, List<Contribution>> entry : contributions.entrySet()) {
             String zone = entry.getKey();
             if (Names.LOCAL_ZONE.equals(zone)) {
@@ -155,9 +153,7 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
      * @param commands   the list of commands to update with un/provision extension commands
      * @param type       the generation  type
      */
-    private void evaluateComponents(List<LogicalComponent<?>> components,
-                                    Map<String, CompensatableCommand> commands,
-                                    GenerationType type) {
+    private void evaluateComponents(List<LogicalComponent<?>> components, Map<String, CompensatableCommand> commands, GenerationType type) {
         for (LogicalComponent<?> component : components) {
             String zone = component.getZone();
             if (Names.LOCAL_ZONE.equals(zone)) {
@@ -273,7 +269,8 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
     private void evaluateWireCommand(WireCommand wireCommand,
                                      Map<String, CompensatableCommand> commands,
                                      Map<String, List<Contribution>> contributions,
-                                     String zone, GenerationType type) throws GenerationException {
+                                     String zone,
+                                     GenerationType type) throws GenerationException {
         for (PhysicalOperationDefinition operation : wireCommand.getPhysicalWireDefinition().getOperations()) {
             for (PhysicalInterceptorDefinition interceptor : operation.getInterceptors()) {
                 URI contributionUri = interceptor.getPolicyClassLoaderId();
@@ -283,9 +280,8 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
                     continue;
                 }
                 AbstractExtensionsCommand command = getExtensionsCommand(commands, zone, type);
-                if (!command.getExtensionUris().contains(contributionUri)
-                        && !Names.HOST_CONTRIBUTION.equals(contributionUri)
-                        && !Names.BOOT_CONTRIBUTION.equals(contributionUri)) {
+                if (!command.getExtensionUris().contains(contributionUri) && !Names.HOST_CONTRIBUTION.equals(contributionUri)
+                    && !Names.BOOT_CONTRIBUTION.equals(contributionUri)) {
                     command.addExtensionUri(contributionUri);
                 }
                 commands.put(zone, command);
@@ -315,17 +311,14 @@ public class ExtensionGeneratorImpl implements ExtensionGenerator {
      *
      * @param contribution the contribution to calculate imports for
      * @param command      the command to update
-     * @throws GenerationException if an exception occurs
      */
-    private void addDependencies(Contribution contribution, AbstractExtensionsCommand command) throws GenerationException {
+    private void addDependencies(Contribution contribution, AbstractExtensionsCommand command) {
         List<ContributionWire<?, ?>> contributionWires = contribution.getWires();
         for (ContributionWire<?, ?> wire : contributionWires) {
             URI uri = wire.getExportContributionUri();
             Contribution imported = store.find(uri);
             addDependencies(imported, command);
-            if (!command.getExtensionUris().contains(uri)
-                    && !Names.HOST_CONTRIBUTION.equals(uri)
-                    && !Names.BOOT_CONTRIBUTION.equals(uri)) {
+            if (!command.getExtensionUris().contains(uri) && !Names.HOST_CONTRIBUTION.equals(uri) && !Names.BOOT_CONTRIBUTION.equals(uri)) {
                 command.addExtensionUri(uri);
             }
         }

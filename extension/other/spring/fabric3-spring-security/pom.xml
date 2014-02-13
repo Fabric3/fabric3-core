@@ -18,7 +18,6 @@ Public License. See the accompanying license file for details.
         <version>2.5.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-spring-security</artifactId>
     <name>Fabric3 Spring Security Extension</name>
     <description>Spring Security Extension.</description>

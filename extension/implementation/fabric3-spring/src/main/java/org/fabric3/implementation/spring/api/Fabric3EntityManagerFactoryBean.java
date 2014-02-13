@@ -37,17 +37,15 @@
 */
 package org.fabric3.implementation.spring.api;
 
-import java.util.Collections;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceException;
-
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import java.util.Collections;
 
 import org.fabric3.jpa.api.EntityManagerFactoryResolver;
 import org.fabric3.jpa.api.JpaResolutionException;
 import org.fabric3.jpa.api.PersistenceOverrides;
-
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER;
 
 /**
@@ -66,7 +64,7 @@ import static org.fabric3.implementation.spring.api.SpringConstants.EMF_RESOLVER
 public class Fabric3EntityManagerFactoryBean extends LocalContainerEntityManagerFactoryBean {
     private static final long serialVersionUID = 3488984443450640577L;
 
-    private EntityManagerFactoryResolver resolver;
+    private transient EntityManagerFactoryResolver resolver;
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) {

@@ -37,13 +37,12 @@
 */
 package org.fabric3.runtime.tomcat.activator;
 
+import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
-import javax.naming.NamingException;
 
 import org.apache.tomcat.InstanceManager;
-
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 
@@ -80,7 +79,7 @@ public class Fabric3InstanceManager implements InstanceManager {
     }
 
     @SuppressWarnings({"unchecked"})
-    private Object inject(Object instance) throws IllegalAccessException, InvocationTargetException, NamingException {
+    private Object inject(Object instance) throws InvocationTargetException {
         if (instance == null) {
             return null;
         }

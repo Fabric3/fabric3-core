@@ -18,7 +18,6 @@ Public License. See the accompanying license file for details.
         <version>2.5.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-ftp-server</artifactId>
     <name>Fabric3 FTP Server Extension</name>
     <description>Support for running an embedded FTP server</description>

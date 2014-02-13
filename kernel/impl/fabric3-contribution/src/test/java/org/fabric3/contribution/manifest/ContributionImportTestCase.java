@@ -41,8 +41,6 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 
-import org.fabric3.spi.contribution.Export;
-
 /**
  *
  */

@@ -37,13 +37,13 @@
 */
 package org.fabric3.federation.provisioning;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.fabric3.api.host.util.IOHelper;
 import org.fabric3.spi.repository.ArtifactCache;
@@ -56,7 +56,7 @@ import org.fabric3.spi.security.AuthorizationService;
  */
 public class ArtifactCacheResolverServlet extends AbstractResolverServlet {
     private static final long serialVersionUID = 7721634599080335126L;
-    private ArtifactCache cache;
+    private transient ArtifactCache cache;
     private boolean secure;
 
     protected ArtifactCacheResolverServlet(ArtifactCache cache,

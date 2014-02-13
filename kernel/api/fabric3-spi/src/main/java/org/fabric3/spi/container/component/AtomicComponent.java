@@ -43,7 +43,6 @@
  */
 package org.fabric3.spi.container.component;
 
-import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
 
 /**
@@ -59,8 +58,7 @@ public interface AtomicComponent extends Component {
     ObjectFactory<Object> createObjectFactory();
 
     /**
-     * Returns a component instance for the current context. After an instance is used, it must be returned by calling {@link #releaseInstance(Object,
-     * WorkContext)}.
+     * Returns a component instance for the current context. After an instance is used, it must be returned by calling {@link #releaseInstance(Object)}.
      *
      * @return a component instance
      * @throws InstanceLifecycleException if there is an error returning an instance
@@ -70,7 +68,7 @@ public interface AtomicComponent extends Component {
     /**
      * Signals that an implementation has been released from use.
      *
-     * @param instance    the instance
+     * @param instance the instance
      * @throws InstanceDestructionException if there is an error releasing the component
      */
     void releaseInstance(Object instance) throws InstanceDestructionException;

@@ -63,6 +63,7 @@ import org.oasisopen.sca.ServiceUnavailableException;
 /**
  * Dispatches from a proxy to a wire.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public final class JDKInvocationHandler<B> implements InvocationHandler, ServiceReference<B> {
     private static final long serialVersionUID = -5841336280391145583L;
     private Class<B> interfaze;

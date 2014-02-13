@@ -44,6 +44,7 @@ import org.fabric3.management.rest.spi.Verb;
 /**
  * Used to replicate resource requests to participants in a zone.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class ReplicationEnvelope implements Serializable {
     private static final long serialVersionUID = -7548186506338136783L;
     private String path;

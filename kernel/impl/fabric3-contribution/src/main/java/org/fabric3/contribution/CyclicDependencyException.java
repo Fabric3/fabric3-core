@@ -48,7 +48,7 @@ import org.fabric3.util.graph.Cycle;
  */
 public class CyclicDependencyException extends DependencyException {
     private static final long serialVersionUID = 3763877232188058275L;
-    private final List<Cycle<Contribution>> cycles;
+    private transient List<Cycle<Contribution>> cycles;
 
     public CyclicDependencyException(List<Cycle<Contribution>> cycles) {
         super("Cyclic dependency found");

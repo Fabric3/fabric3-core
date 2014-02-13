@@ -135,7 +135,7 @@ public class OSGiManifestEntryParserTestCase extends TestCase {
         assertEquals("org.fabric3.baz", parser.getText());
         type = parser.next();
         assertEquals(OSGiManifestEntryParser.EventType.END_CLAUSE, type);
-        type = parser.next();
+        parser.next();
         assertEquals("org.fabric3.bar", parser.getText());
     }
 

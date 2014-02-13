@@ -113,7 +113,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
     }
 
     @Destroy
-    public void destroy() throws ZoneChannelException {
+    public void destroy() {
         cacheManager.stop();
     }
 
@@ -170,7 +170,7 @@ public class InfinispanCacheManager implements CacheManager<InfinispanPhysicalRe
         }
     }
 
-    private void configureCluster(GlobalConfigurationBuilder builder) throws ZoneChannelException {
+    private void configureCluster(GlobalConfigurationBuilder builder) {
         // TODO support the case where a single VM is connecting to an external cache
         TransportConfigurationBuilder transportBuilder = builder.transport();
         transportBuilder.machineId(info.getRuntimeName());

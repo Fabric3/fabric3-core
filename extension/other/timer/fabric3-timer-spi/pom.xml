@@ -15,7 +15,6 @@ Public License. See the accompanying license file for details.
         <artifactId>fabric3-extension-timer-parent-pom</artifactId>
         <version>2.5.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-timer-spi</artifactId>
     <name>Fabric3 Timer Service SPI</name>
     <description>SPI for extending the runtime timer service</description>

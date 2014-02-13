@@ -67,6 +67,7 @@ import org.oasisopen.sca.annotation.Service;
 /**
  * A <code>ServletHost</code> implementation that forwards requests to registered servlets
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 @Service({ServletHost.class, ServletRequestDispatcher.class})
 @EagerInit
 public class WebLogicServletHost extends HttpServlet implements ServletHost, ServletRequestDispatcher {

@@ -47,6 +47,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 /**
  * A resource that is to be serialized to a specific representation such as JSON.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class Resource implements Serializable {
     private static final long serialVersionUID = -7831162074975555876L;
 

@@ -44,7 +44,6 @@
 package org.fabric3.contribution;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,19 +51,17 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-
 import org.fabric3.api.host.contribution.ContributionInUseException;
-import org.fabric3.api.host.contribution.UnresolvedImportException;
 import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.classloader.MultiParentClassLoader;
+import org.fabric3.spi.container.builder.classloader.ClassLoaderWireBuilder;
+import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.ContributionWire;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.archive.ClasspathProcessorRegistry;
-import org.fabric3.spi.contribution.ClassLoaderWireGenerator;
 
 /**
  * This is more intended to be a integration test then a unit test. *
@@ -136,12 +133,12 @@ public class ContributionLoaderImplUnloadTestCase extends TestCase {
 
     }
 
-    private void setupStore() throws UnresolvedImportException {
+    private void setupStore() {
         store = EasyMock.createMock(MetaDataStore.class);
         EasyMock.expect(store.resolveDependentContributions(contributionUri)).andReturn(Collections.singleton(dependentContribution));
     }
 
-    private void createContributions() throws MalformedURLException {
+    private void createContributions() {
         contributionUri = URI.create("contribution");
         contribution = new Contribution(contributionUri);
 

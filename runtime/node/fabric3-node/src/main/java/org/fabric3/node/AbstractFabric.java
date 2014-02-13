@@ -304,7 +304,7 @@ public abstract class AbstractFabric implements Fabric {
 
     protected abstract Source resolveSystemConfiguration(Source configSource);
 
-    private File getRuntimeDirectory(RuntimeMode mode) throws IOException {
+    private File getRuntimeDirectory(RuntimeMode mode) {
         //  calculate config directories based on the mode the runtime is booted in
         File jarDirectory = getRepositoryDir();
         File root = new File(jarDirectory, "runtimes");
@@ -312,7 +312,7 @@ public abstract class AbstractFabric implements Fabric {
 
     }
 
-    private HostInfo createHostInfo(String runtimeName, String zoneName, RuntimeMode mode, URI domainName, String environment) throws IOException {
+    private HostInfo createHostInfo(String runtimeName, String zoneName, RuntimeMode mode, URI domainName, String environment) {
 
         File runtimeDirectory = getRuntimeDirectory(mode);
 

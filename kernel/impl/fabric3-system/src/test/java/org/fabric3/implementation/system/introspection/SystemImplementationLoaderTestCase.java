@@ -64,7 +64,6 @@ public class SystemImplementationLoaderTestCase extends TestCase {
     private SystemImplementationLoader loader;
 
     public void testLoad() throws Exception {
-        InjectingComponentType componentType = new InjectingComponentType();
         implementationIntrospector.introspect(EasyMock.isA(InjectingComponentType.class), EasyMock.eq(context));
 
         EasyMock.replay(implementationIntrospector);

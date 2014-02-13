@@ -87,7 +87,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
         component.addProducer(producer);
 
         try {
-            ChannelConnectionCommand command = generator.generate(component, true);
+            generator.generate(component, true);
             fail();
         } catch (ChannelNotFoundException e) {
             // expected

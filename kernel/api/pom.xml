@@ -18,7 +18,6 @@
         <artifactId>fabric3-kernel-parent-pom</artifactId>
         <version>2.5.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-kernel-api-parent-pom</artifactId>
     <name>Fabric3 Kernel API Parent POM</name>
     <description>Fabric3 Kernel API Parent POM.</description>

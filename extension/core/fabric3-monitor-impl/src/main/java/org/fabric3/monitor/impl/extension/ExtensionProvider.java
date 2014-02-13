@@ -87,7 +87,7 @@ public class ExtensionProvider {
     }
 
     @Property(required = false)
-    public void setDefaultAppenders(XMLStreamReader reader) throws AppenderCreationException, XMLStreamException {
+    public void setDefaultAppenders(XMLStreamReader reader) {
         systemReader = new LocationAwareXMLStreamReader(reader, "system configuration");
     }
 
@@ -104,7 +104,7 @@ public class ExtensionProvider {
     }
 
     @Init
-    public void init() throws AppenderCreationException, IOException {
+    public void init() {
         try {
             if (overrideDefault) {
                 // default destination already registered

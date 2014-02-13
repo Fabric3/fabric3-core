@@ -58,7 +58,7 @@ public class AssemblyException extends DeploymentException {
         }
     };
 
-    private final List<AssemblyFailure> errors;
+    private transient final List<AssemblyFailure> errors;
 
     public AssemblyException(List<AssemblyFailure> errors) {
         this.errors = errors;

@@ -47,6 +47,8 @@ package org.fabric3.spi.container.component;
  * Thrown when an error is encountered registering a component with the ComponentManager.
  */
 public abstract class RegistrationException extends ComponentException {
+    private static final long serialVersionUID = 4098099370593803646L;
+
     public RegistrationException() {
     }
 

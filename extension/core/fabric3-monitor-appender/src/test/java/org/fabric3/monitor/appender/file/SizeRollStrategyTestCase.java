@@ -191,21 +191,15 @@ public class SizeRollStrategyTestCase extends TestCase {
     }
 
     private void write(File file, String content) throws IOException {
-        FileOutputStream stream = new FileOutputStream(file);
-        try {
+        try (FileOutputStream stream = new FileOutputStream(file)) {
             stream.write(content.getBytes());
-        } finally {
-            stream.close();
         }
 
     }
 
     private boolean verifyContent(File file, String content) throws FileNotFoundException {
-        Scanner scanner = new Scanner(file);
-        try {
+        try (Scanner scanner = new Scanner(file)) {
             return scanner.next().startsWith(content);
-        } finally {
-            scanner.close();
         }
     }
 

@@ -43,6 +43,7 @@ import org.fabric3.api.host.Fabric3Exception;
  *
  */
 public class AppenderCreationException extends Fabric3Exception {
+    private static final long serialVersionUID = -3093673133836078648L;
 
     public AppenderCreationException(String message) {
         super(message);

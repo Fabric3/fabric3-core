@@ -102,7 +102,7 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
     }
 
     @Init
-    public void init() throws MessageException {
+    public void init() {
         eventService.subscribe(JoinDomainCompleted.class, this);
         if (isParticipantOrNode()) {
             participantTopologyService.register(this);

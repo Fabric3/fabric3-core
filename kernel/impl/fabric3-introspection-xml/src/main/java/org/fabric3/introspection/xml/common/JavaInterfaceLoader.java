@@ -58,7 +58,6 @@ import org.fabric3.spi.introspection.xml.LoaderUtil;
 import org.fabric3.spi.introspection.xml.MissingAttribute;
 import org.fabric3.spi.introspection.xml.ResourceNotFound;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
-import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 /**

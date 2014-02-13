@@ -99,7 +99,7 @@ public class FileAppenderLoaderTestCase extends TestCase {
 
         IntrospectionContext context = new DefaultIntrospectionContext();
 
-        FileAppenderDefinition definition = loader.load(reader, context);
+        loader.load(reader, context);
 
         assertTrue(context.hasErrors());
         EasyMock.verify(loaderRegistry, monitor);

@@ -83,7 +83,7 @@ public final class OSHelper {
     }
 
     public static String parseVersion(String value) {
-        int major = 0;
+        int major;
         int minor = 0;
         int micro = 0;
         try {
@@ -97,7 +97,7 @@ public final class OSHelper {
                 if (st.hasMoreTokens()) {
                     st.nextToken(); // consume delimiter
                     String microStr = st.nextToken();
-                    if (microStr.indexOf(QUALIFIER_DELIMETER) < 0) {
+                    if (!microStr.contains(QUALIFIER_DELIMETER)) {
                         micro = Integer.parseInt(microStr);
                     } else {
                         micro = Integer.parseInt(microStr.substring(0, microStr

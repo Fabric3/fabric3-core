@@ -38,33 +38,31 @@
 
 package org.fabric3.binding.jms.runtime.container;
 
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.transaction.TransactionManager;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.transaction.TransactionManager;
 
+import org.fabric3.api.annotation.monitor.Monitor;
+import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.spi.management.ManagementException;
+import org.fabric3.spi.management.ManagementService;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.Fabric3EventListener;
+import org.fabric3.spi.runtime.event.RuntimeStart;
+import org.fabric3.spi.runtime.event.RuntimeStop;
+import org.fabric3.spi.transport.Transport;
+import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Service;
-
-import org.fabric3.api.annotation.monitor.Monitor;
-import org.fabric3.api.binding.jms.model.TransactionType;
-import org.fabric3.api.host.runtime.HostInfo;
-import org.fabric3.spi.runtime.event.EventService;
-import org.fabric3.spi.runtime.event.Fabric3EventListener;
-import org.fabric3.spi.runtime.event.RuntimeStart;
-import org.fabric3.spi.runtime.event.RuntimeStop;
-import org.fabric3.spi.management.ManagementException;
-import org.fabric3.spi.management.ManagementService;
-import org.fabric3.spi.transport.Transport;
-import org.fabric3.spi.util.UriHelper;
-
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_CONNECTION;
 
 /**
@@ -132,11 +130,7 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
             return;
         }
         for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
-            try {
-                entry.getValue().stop();
-            } catch (JMSException e) {
-                managerMonitor.stopError(entry.getKey(), e);
-            }
+            entry.getValue().stop();
         }
         started = false;
     }
@@ -257,18 +251,10 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
 
         public void onEvent(RuntimeStop event) {
             for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
-                try {
-                    entry.getValue().stop();
-                } catch (JMSException e) {
-                    managerMonitor.stopError(entry.getKey(), e);
-                }
+                entry.getValue().stop();
             }
             for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
-                try {
-                    entry.getValue().shutdown();
-                } catch (JMSException e) {
-                    managerMonitor.stopError(entry.getKey(), e);
-                }
+                entry.getValue().shutdown();
             }
 
         }

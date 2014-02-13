@@ -20,7 +20,6 @@
         <version>2.5.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-sca-intents</artifactId>
     <packaging>jar</packaging>
     <name>Fabric3 SCA Intents</name>

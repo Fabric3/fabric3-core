@@ -46,6 +46,7 @@ import org.fabric3.spi.model.physical.PhysicalTargetDefinition;
 /**
  *
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class FtpTargetDefinition extends PhysicalTargetDefinition {
     private static final long serialVersionUID = -494501322715192283L;
     private final URI classLoaderId;

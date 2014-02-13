@@ -125,9 +125,7 @@ public final class MemberSubmissionEndpointReference extends EndpointReference i
         }
         try {
             Unmarshaller unmarshaller = msjc.createUnmarshaller();
-            MemberSubmissionEndpointReference epr = (MemberSubmissionEndpointReference) unmarshaller.unmarshal(source,
-                                                                                                               MemberSubmissionEndpointReference.class)
-                    .getValue();
+            MemberSubmissionEndpointReference epr = unmarshaller.unmarshal(source, MemberSubmissionEndpointReference.class).getValue();
 
             this.addr = epr.addr;
             this.referenceProperties = epr.referenceProperties;
@@ -168,7 +166,7 @@ public final class MemberSubmissionEndpointReference extends EndpointReference i
 
     private static JAXBContext getMSJaxbContext() {
         try {
-            return JAXBContext.newInstance(new Class[]{MemberSubmissionEndpointReference.class});
+            return JAXBContext.newInstance(MemberSubmissionEndpointReference.class);
         } catch (JAXBException e) {
             throw new WebServiceException("Error creating JAXBContext for MemberSubmissionEndpointReference. ", e);
         }

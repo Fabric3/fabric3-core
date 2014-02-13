@@ -313,14 +313,13 @@ public abstract class AbstractDomain implements Domain {
                 // force undeployment in effect: ignore deployment exceptions
             }
         } catch (GenerationException e) {
-            StringBuffer list = new StringBuffer();
+            StringBuilder list = new StringBuilder();
             for (QName deployable : names) {
                 list.append(" ").append(deployable);
             }
             throw new DeploymentException("Error undeploying:" + list, e);
         }
-        for (int i = 0, deployablesSize = names.size(); i < deployablesSize; i++) {
-            QName deployable = names.get(i);
+        for (QName deployable : names) {
             contribution.releaseLock(deployable);
         }
         logicalComponentManager.replaceRootComponent(domain);
@@ -546,11 +545,7 @@ public abstract class AbstractDomain implements Domain {
             // release the contribution locks if there was an error
             contributionHelper.releaseLocks(contributions);
             throw e;
-        } catch (AllocationException e) {
-            // release the contribution locks if there was an error
-            contributionHelper.releaseLocks(contributions);
-            throw new DeploymentException("Error deploying composite", e);
-        } catch (PolicyResolutionException e) {
+        } catch (AllocationException | PolicyResolutionException e) {
             // release the contribution locks if there was an error
             contributionHelper.releaseLocks(contributions);
             throw new DeploymentException("Error deploying composite", e);

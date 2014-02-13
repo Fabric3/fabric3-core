@@ -23,7 +23,6 @@
         <artifactId>fabric3-extension-binding-parent-pom</artifactId>
         <version>2.5.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-binding-rs-jersey</artifactId>
     <packaging>sca-contribution-jar</packaging>
     <name>Fabric3 JAX-RS Jersey Binding Extension</name>

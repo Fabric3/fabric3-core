@@ -59,6 +59,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * re-serialization when one client publishes an event, the event is flowed through a channel, and other clients are notified via the broadcaster. In this case,
  * the serialized string representation is simply passed through without an intervening de-serialization.
  */
+@SuppressWarnings("unchecked")
 public class ChannelBroadcaster extends SimpleBroadcaster {
     private Transformer<Object, String> jsonTransformer;
 

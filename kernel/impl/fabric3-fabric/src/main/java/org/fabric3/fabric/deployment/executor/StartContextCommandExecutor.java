@@ -53,7 +53,6 @@ import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.command.ExecutionException;
 import org.fabric3.spi.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ComponentException;
-import org.fabric3.spi.container.component.GroupInitializationException;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.container.invocation.WorkContextCache;

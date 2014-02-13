@@ -52,6 +52,7 @@ import org.fabric3.api.model.type.ModelObject;
 /**
  * A component type property.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class Property extends ModelObject<ComponentType> {
     private static final long serialVersionUID = -1930360315004829917L;
 

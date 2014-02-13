@@ -44,6 +44,7 @@ import org.w3c.dom.Document;
 /**
  * Holds a parsed component property as a DOM.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class LogicalProperty extends LogicalScaArtifact<LogicalComponent<?>> {
     private static final long serialVersionUID = 4648573312983221666L;
 

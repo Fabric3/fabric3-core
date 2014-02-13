@@ -120,9 +120,8 @@ public class JarClasspathProcessor implements ClasspathProcessor {
         }
 
         File dir = hostInfo.getTempDir();
-        InputStream is = jar.openStream();
         Set<String> resolvedLibraryPaths = resolveNativeLibraries(libraries);
-        try {
+        try (InputStream is = jar.openStream()) {
 
             JarInputStream jarStream = new JarInputStream(is);
             JarEntry entry;
@@ -156,20 +155,15 @@ public class JarClasspathProcessor implements ClasspathProcessor {
                         dir.mkdirs();
                     }
                     File jarFile = File.createTempFile("fabric3", ".jar", dir);
-                    OutputStream os = new BufferedOutputStream(new FileOutputStream(jarFile));
-                    try {
+                    try (OutputStream os = new BufferedOutputStream(new FileOutputStream(jarFile))) {
                         IOHelper.copy(jarStream, os);
                         os.flush();
-                    } finally {
-                        os.close();
                     }
                     jarFile.deleteOnExit();
                     classpath.add(jarFile.toURI().toURL());
                 }
             }
             return classpath;
-        } finally {
-            is.close();
         }
     }
 
@@ -187,12 +181,9 @@ public class JarClasspathProcessor implements ClasspathProcessor {
         if (library.exists()) {
             return;
         }
-        OutputStream os = new BufferedOutputStream(new FileOutputStream(library));
-        try {
+        try (OutputStream os = new BufferedOutputStream(new FileOutputStream(library))) {
             IOHelper.copy(jarStream, os);
             os.flush();
-        } finally {
-            os.close();
         }
         library.deleteOnExit();
     }
@@ -204,13 +195,10 @@ public class JarClasspathProcessor implements ClasspathProcessor {
             explodedDirectory.mkdirs();
             File jarFile = File.createTempFile("fabric3", ".jar", dir);
             jarFile.createNewFile();
-            OutputStream os = new BufferedOutputStream(new FileOutputStream(jarFile));
 
-            try {
+            try (OutputStream os = new BufferedOutputStream(new FileOutputStream(jarFile))) {
                 IOHelper.copy(jarStream, os);
                 os.flush();
-            } finally {
-                os.close();
             }
 
             try {

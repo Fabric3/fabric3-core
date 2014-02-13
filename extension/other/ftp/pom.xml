@@ -23,7 +23,6 @@
         <artifactId>fabric3-extension-other-parent-pom</artifactId>
         <version>2.5.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-extension-ftp-parent-pom</artifactId>
     <name>Fabric3 FTP Extensions Parent POM</name>
     <description>Fabric3 FTP Extensions Parent POM.</description>

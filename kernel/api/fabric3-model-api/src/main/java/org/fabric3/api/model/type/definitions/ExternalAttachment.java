@@ -48,6 +48,7 @@ import org.oasisopen.sca.Constants;
  * An external attachment specified in a policy definitions file.
  */
 public class ExternalAttachment extends AbstractPolicyDefinition {
+    private static final long serialVersionUID = -6816479833424275158L;
     private String attachTo;
     private Set<QName> policySets;
     private Set<QName> intents;

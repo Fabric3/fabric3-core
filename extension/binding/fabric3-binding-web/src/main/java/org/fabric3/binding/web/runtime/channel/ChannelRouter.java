@@ -37,17 +37,17 @@
 */
 package org.fabric3.binding.web.runtime.channel;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.fabric3.binding.web.runtime.common.InvalidContentTypeException;
 import org.fabric3.api.host.util.IOHelper;
+import org.fabric3.binding.web.runtime.common.InvalidContentTypeException;
 import org.fabric3.spi.container.channel.EventWrapper;
 
 /**
@@ -59,8 +59,8 @@ public class ChannelRouter extends HttpServlet {
     private static final long serialVersionUID = -1830803509605261532L;
     private static final String ISO_8859_1 = "ISO-8859-1";
 
-    private PubSubManager pubSubManager;
-    private ChannelMonitor monitor;
+    private transient PubSubManager pubSubManager;
+    private transient ChannelMonitor monitor;
 
     public ChannelRouter(PubSubManager pubSubManager, ChannelMonitor monitor) {
         this.pubSubManager = pubSubManager;

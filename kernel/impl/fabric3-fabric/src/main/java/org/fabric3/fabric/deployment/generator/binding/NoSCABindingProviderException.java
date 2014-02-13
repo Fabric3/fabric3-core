@@ -47,7 +47,7 @@ import org.fabric3.spi.deployment.generator.binding.BindingSelectionException;
  */
 public class NoSCABindingProviderException extends BindingSelectionException {
     private static final long serialVersionUID = -7797860974206005955L;
-    private List<BindingMatchResult> results;
+    private transient List<BindingMatchResult> results;
 
     public NoSCABindingProviderException(String message, List<BindingMatchResult> results) {
         super(message);

@@ -56,17 +56,16 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
-import org.fabric3.spi.container.component.InstanceLifecycleException;
-import org.fabric3.spi.container.invocation.WorkContext;
-import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.InjectionSite;
-import org.fabric3.spi.model.type.java.MethodInjectionSite;
+import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
+import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.objectfactory.Injector;
 import org.fabric3.spi.container.objectfactory.ObjectCreationException;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
+import org.fabric3.spi.model.type.java.FieldInjectionSite;
+import org.fabric3.spi.model.type.java.MethodInjectionSite;
 
 /**
  *
@@ -153,7 +152,6 @@ public class ImplementationManagerFactoryImplTestCase extends TestCase {
         EasyMock.replay(reflectionFactory);
 
         ImplementationManager implementationManager = provider.createManager();
-        WorkContext workContext = new WorkContext();
         Foo foo = (Foo) implementationManager.newInstance();
         implementationManager.start(foo);
 

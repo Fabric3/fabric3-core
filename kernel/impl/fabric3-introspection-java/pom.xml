@@ -16,7 +16,6 @@
         <artifactId>fabric3-kernel-impl-parent-pom</artifactId>
         <version>2.5.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-introspection-java</artifactId>
     <name>Fabric3 Introspection</name>
     <description>Fabric3 introspection implementation for Java artifacts.</description>

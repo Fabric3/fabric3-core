@@ -147,9 +147,9 @@ public class DefaultIntrospectionHelperTestCase extends TestCase {
     }
 
     public void testImplementedInterfaces() {
-        assertEquals(Collections.singleton(ServiceInterface.class), helper.getImplementedInterfaces(BaseWithInterface.class));
-        assertEquals(Collections.singleton(ServiceInterface.class), helper.getImplementedInterfaces(ExtendsBaseWithInterface.class));
-        assertEquals(Collections.singleton(SubInterface.class), helper.getImplementedInterfaces(ExtendsBaseWithSubInterface.class));
+        assertEquals(ServiceInterface.class, helper.getImplementedInterfaces(BaseWithInterface.class).iterator().next());
+        assertEquals(ServiceInterface.class, helper.getImplementedInterfaces(ExtendsBaseWithInterface.class).iterator().next());
+        assertEquals(SubInterface.class, helper.getImplementedInterfaces(ExtendsBaseWithSubInterface.class).iterator().next());
     }
 
     private abstract static class InjectionBase {

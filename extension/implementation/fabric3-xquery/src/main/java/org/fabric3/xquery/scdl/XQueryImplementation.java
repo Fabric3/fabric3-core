@@ -47,6 +47,7 @@ import org.fabric3.api.model.type.component.Implementation;
 public class XQueryImplementation extends Implementation<XQueryComponentType> {
 
     public static final QName QNAME = new QName(org.fabric3.api.Namespaces.F3, "implementation.xquery");
+    private static final long serialVersionUID = 9033206463165493951L;
     private String location;
     private String context;
     private boolean isModule;

@@ -58,6 +58,7 @@ package org.apache.commons.logging;
  * This class exists to allow Fabric3 to replace Commons Logging with a direct bridge to its monitor subsystem.
  */
 public class LogConfigurationException extends RuntimeException {
+    private static final long serialVersionUID = 1571584275865309127L;
     protected Throwable cause = null;
 
     public LogConfigurationException() {

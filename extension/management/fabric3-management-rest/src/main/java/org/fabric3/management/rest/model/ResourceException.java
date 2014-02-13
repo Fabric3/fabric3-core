@@ -46,6 +46,7 @@ import org.fabric3.api.host.Fabric3Exception;
 /**
  * Raised by framework services when an exception is encountered processing a resource request that must be returned to the client.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class ResourceException extends Fabric3Exception {
     private static final long serialVersionUID = 228120523405433691L;
 

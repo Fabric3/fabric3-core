@@ -50,6 +50,7 @@ import org.fabric3.spi.model.physical.PhysicalComponentDefinition;
  *
  */
 public abstract class AbstractComponentCommand implements CompensatableCommand {
+    private static final long serialVersionUID = -5673514688303766858L;
     protected PhysicalComponentDefinition definition;
 
     public AbstractComponentCommand(PhysicalComponentDefinition definition) {

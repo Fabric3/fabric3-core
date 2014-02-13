@@ -7,7 +7,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.codehaus.fabric3</groupId>
     <artifactId>fabric3-jdk-reflection</artifactId>
     <name>Fabric3 JDK Reflection Core Module</name>
     <description>Fabric3 extension for JDK-based reflection and injection.</description>

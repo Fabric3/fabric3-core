@@ -54,7 +54,6 @@ import org.fabric3.api.host.contribution.FileContributionSource;
 import org.fabric3.api.host.domain.DeploymentException;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.spi.contribution.ContributionResolver;
-import org.fabric3.spi.contribution.ResolutionException;
 import org.fabric3.spi.command.CommandExecutor;
 import org.fabric3.spi.command.CommandExecutorRegistry;
 import org.fabric3.spi.command.ExecutionException;

@@ -41,7 +41,6 @@ import javax.management.MBeanServer;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.File;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URI;
 
@@ -69,7 +68,6 @@ public class BrokerEngine {
     private PortAllocator portAllocator;
     private HostInfo info;
 
-    private String brokerName;
     private BrokerService broker;
     private File tempDir;
     private Port selectedPort;
@@ -142,7 +140,7 @@ public class BrokerEngine {
             bindAddress = InetAddress.getLocalHost().getHostAddress();
         }
         // set the default broker name
-        brokerName = info.getRuntimeName().replace(":", ".");
+        String brokerName = info.getRuntimeName().replace(":", ".");
         broker = new BrokerService();
         broker.setUseJmx(mBeanServer != null);
         broker.setTmpDataDirectory(tempDir);
@@ -204,7 +202,7 @@ public class BrokerEngine {
         }
     }
 
-    private void selectPort() throws IOException, PortAllocationException {
+    private void selectPort() throws PortAllocationException {
         if (jmsPort == -1) {
             // port not assigned, get one from the allocator
             if (portAllocator.isPoolEnabled()) {

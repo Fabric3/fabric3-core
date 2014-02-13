@@ -45,10 +45,6 @@ package org.fabric3.fabric.host;
 
 import junit.framework.TestCase;
 
-import org.fabric3.spi.host.Port;
-import org.fabric3.spi.host.PortAllocationException;
-import org.fabric3.spi.host.PortAllocator;
-
 /**
  * Temporarily commented out as it is failing on the Codehaus Bamboo machine.
  */

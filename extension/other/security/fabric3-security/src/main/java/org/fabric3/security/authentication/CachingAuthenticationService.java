@@ -37,21 +37,16 @@
 */
 package org.fabric3.security.authentication;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.api.annotation.monitor.Monitor;
@@ -66,6 +61,10 @@ import org.fabric3.spi.security.UsernamePasswordToken;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
 import org.fabric3.spi.transform.TransformerRegistry;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Performs authentication and populates the current work context and HTTP session with the authenticated subject.
@@ -77,10 +76,11 @@ import org.fabric3.spi.transform.TransformerRegistry;
  * <li>HTTP POST data encoded as JSON
  * <li>HTTP POST data encoded as XML/JAXB
  * </ul>
- * <p/>
+ *
  * <pre>
  * Logout is performed by performing an HTTP DELETE.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 @EagerInit
 public class CachingAuthenticationService extends HttpServlet {
     private static final long serialVersionUID = -3247111411539759436L;
@@ -100,7 +100,6 @@ public class CachingAuthenticationService extends HttpServlet {
     private AuthMonitor monitor;
     private boolean enabled = true;
     private boolean allowHttp;
-    private String mapping = "/fabric/security/token";
     private TransformerRegistry registry;
     private Transformer<InputStream, UsernamePasswordToken> jsonTransformer;
     private Transformer<InputStream, UsernamePasswordToken> xmlTransformer;
@@ -126,11 +125,11 @@ public class CachingAuthenticationService extends HttpServlet {
     }
 
     @Init
-    public void start() throws TransformationException {
+    public void start() {
         if (!enabled) {
             return;
         }
-        host.registerMapping(mapping, this);
+        host.registerMapping("/fabric/security/token", this);
     }
 
     /**

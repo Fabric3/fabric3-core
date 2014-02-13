@@ -57,16 +57,15 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants;
-import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
 import org.fabric3.api.binding.jms.model.CorrelationScheme;
 import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants;
+import org.fabric3.binding.jms.runtime.common.ListenerMonitor;
 import org.fabric3.binding.jms.spi.provision.OperationPayloadTypes;
 import org.fabric3.binding.jms.spi.provision.PayloadType;
 import org.fabric3.spi.container.binding.handler.BindingHandler;
@@ -337,8 +336,8 @@ public class ServiceListener implements MessageListener {
             List<CallbackReference> stack = CallbackReferenceSerializer.deserialize(encoded);
             workContext.addCallbackReferences(stack);
             return workContext;
-        } catch (JMSException | IOException ex) {
-            throw new JmsBadMessageException("Error deserializing callback references", ex);
+        } catch (JMSException e) {
+            throw new JmsBadMessageException("Error deserializing callback references", e);
         }
     }
 

@@ -43,16 +43,15 @@
  */
 package org.fabric3.introspection.xml.composite;
 
+import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-
+import org.fabric3.api.model.type.component.Property;
 import org.fabric3.introspection.xml.DefaultLoaderHelper;
 import org.fabric3.introspection.xml.LoaderRegistryImpl;
 import org.fabric3.introspection.xml.MockXMLFactory;
-import org.fabric3.api.model.type.component.Property;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.xml.LoaderHelper;
@@ -63,7 +62,7 @@ import org.fabric3.spi.xml.XMLFactory;
  *
  */
 public class ComponentLoaderDuplicatePropertyTestCase extends TestCase {
-    private String XML = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
+    private static String XML = "<component xmlns='http://docs.oasis-open.org/ns/opencsa/sca/200912' name='component' "
             + "xmlns:f3='" + org.fabric3.api.Namespaces.F3 + "'>"
             + "<f3:implementation.testing/>"
             + "<property name='prop'><value>val</value></property>"

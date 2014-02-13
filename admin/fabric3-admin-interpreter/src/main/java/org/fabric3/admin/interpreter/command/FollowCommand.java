@@ -88,7 +88,7 @@ public class FollowCommand implements Command {
         return true;
     }
 
-    private boolean follow(String name, String resourceAddress, PrintStream out) throws CommandException {
+    private boolean follow(String name, String resourceAddress, PrintStream out) {
         HttpURLConnection connection = null;
         try {
             connection = domainConnection.createControllerConnection(resourceAddress, "GET");

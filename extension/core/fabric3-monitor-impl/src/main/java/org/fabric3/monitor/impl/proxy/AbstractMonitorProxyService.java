@@ -99,7 +99,7 @@ public abstract class AbstractMonitorProxyService implements MonitorProxyService
             }
         }
         String key = type.getName() + "#" + method.getName();
-        ResourceBundle bundle = locateBundle(type, "f3", loader);
+        ResourceBundle bundle = locateBundle(type, loader);
         if (bundle != null) {
             try {
                 message = bundle.getString(key);
@@ -115,12 +115,12 @@ public abstract class AbstractMonitorProxyService implements MonitorProxyService
         return info;
     }
 
-    protected <T> ResourceBundle locateBundle(Class<T> monitorInterface, String bundleName, ClassLoader loader) {
+    protected <T> ResourceBundle locateBundle(Class<T> monitorInterface, ClassLoader loader) {
         Locale locale = Locale.getDefault();
         String packageName = monitorInterface.getPackage().getName();
         while (true) {
             try {
-                return ResourceBundle.getBundle(packageName + '.' + bundleName, locale, loader);
+                return ResourceBundle.getBundle(packageName + ".f3", locale, loader);
             } catch (MissingResourceException e) {
                 //ok
             }
@@ -131,7 +131,7 @@ public abstract class AbstractMonitorProxyService implements MonitorProxyService
             packageName = packageName.substring(0, index);
         }
         try {
-            return ResourceBundle.getBundle(bundleName, locale, loader);
+            return ResourceBundle.getBundle("f3", locale, loader);
         } catch (Exception e) {
             return null;
         }

@@ -224,12 +224,9 @@ public class ArchiveUtils {
      * @throws IOException if there is an error copying
      */
     private static void copy(JarInputStream stream, File destination) throws IOException {
-        OutputStream os = new BufferedOutputStream(new FileOutputStream(destination));
-        try {
+        try (OutputStream os = new BufferedOutputStream(new FileOutputStream(destination))) {
             IOHelper.copy(stream, os);
             os.flush();
-        } finally {
-            os.close();
         }
         destination.deleteOnExit();
     }

@@ -48,6 +48,7 @@ import org.fabric3.api.model.type.java.InjectionSite;
 /**
  *
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class WebComponentDefinition extends PhysicalComponentDefinition {
     private static final long serialVersionUID = 2871569095506575868L;
     private String contextUrl;

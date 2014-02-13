@@ -37,13 +37,11 @@
 */
 package org.fabric3.contribution.updater;
 
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
-
-import org.oasisopen.sca.annotation.EagerInit;
 
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.ComponentDefinition;
@@ -58,6 +56,7 @@ import org.fabric3.spi.contribution.ResourceElementUpdater;
 import org.fabric3.spi.contribution.ResourceState;
 import org.fabric3.spi.contribution.Symbol;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
  * Dynamically updates a composite in a contribution and all references to it in the contribution and importing contributions. Updated references
@@ -103,6 +102,7 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
         return set;
     }
 
+    @SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
     private void removeComposite(Contribution contribution, QName name) {
         List<Resource> resources = contribution.getResources();
         synchronized (resources) {
@@ -123,7 +123,7 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
         }
     }
 
-    @SuppressWarnings({"VariableNotUsedInsideIf", "unchecked"})
+    @SuppressWarnings({"VariableNotUsedInsideIf", "unchecked", "SynchronizationOnLocalVariableOrMethodParameter"})
     private void updateComposite(Composite newComposite, Contribution contribution, Set<ModelObject> set) {
         QName name = newComposite.getName();
         // replace the composite in the contribution
@@ -161,6 +161,7 @@ public class CompositeResourceElementUpdater implements ResourceElementUpdater<C
      * @param contribution the contribution
      * @param set          the collection of modified elements to update
      */
+    @SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
     private void replaceReferences(Composite newComposite, Contribution contribution, Set<ModelObject> set) {
         List<Resource> resources = contribution.getResources();
         synchronized (resources) {

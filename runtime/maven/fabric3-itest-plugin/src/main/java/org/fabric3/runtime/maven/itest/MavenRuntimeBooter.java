@@ -150,7 +150,7 @@ public class MavenRuntimeBooter {
         }
     }
 
-    private MavenRuntime createRuntime(BootstrapService bootstrapService, Document systemConfig) throws MojoExecutionException, InitializationException {
+    private MavenRuntime createRuntime(BootstrapService bootstrapService, Document systemConfig) throws InitializationException {
         String environment = bootstrapService.parseEnvironment(systemConfig);
 
         File tempDir = new File(System.getProperty("java.io.tmpdir"), ".f3");

@@ -40,8 +40,6 @@ package org.fabric3.fabric.deployment.command;
 import java.net.URI;
 
 import junit.framework.TestCase;
-import org.fabric3.fabric.deployment.command.StartComponentCommand;
-import org.fabric3.fabric.deployment.command.StopComponentCommand;
 
 public class StartComponentCommandTestCase extends TestCase {
     private static final URI COMPONENT_URI = URI.create("component");

@@ -107,8 +107,7 @@ public class WarClasspathProcessor implements ClasspathProcessor {
 
     private void addLibraries(List<URL> classpath, URL jar) throws IOException {
         File dir = info.getTempDir();
-        InputStream is = jar.openStream();
-        try {
+        try (InputStream is = jar.openStream()) {
             JarInputStream jarStream = new JarInputStream(is);
             JarEntry entry;
             File classesDir = null;
@@ -120,12 +119,9 @@ public class WarClasspathProcessor implements ClasspathProcessor {
                 if (path.startsWith("WEB-INF/lib/")) {
                     // expand jars in WEB-INF/lib and add to the classpath
                     File jarFile = File.createTempFile("fabric3", ".jar", dir);
-                    OutputStream os = new BufferedOutputStream(new FileOutputStream(jarFile));
-                    try {
+                    try (OutputStream os = new BufferedOutputStream(new FileOutputStream(jarFile))) {
                         copy(jarStream, os);
                         os.flush();
-                    } finally {
-                        os.close();
                     }
                     jarFile.deleteOnExit();
                     classpath.add(jarFile.toURI().toURL());
@@ -159,8 +155,6 @@ public class WarClasspathProcessor implements ClasspathProcessor {
                     classpath.add(classesDir.toURI().toURL());
                 }
             }
-        } finally {
-            is.close();
         }
     }
 

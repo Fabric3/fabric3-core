@@ -82,8 +82,6 @@ public class JettyServiceImplTestCase extends TestCase {
 
     private static final int HTTP_PORT = 8585;
 
-    private TransportMonitor monitor;
-    private ExecutorService executorService;
     private ExecutorService executor = Executors.newCachedThreadPool();
     private JettyServiceImpl service;
 
@@ -176,8 +174,8 @@ public class JettyServiceImplTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
-        monitor = createMock(TransportMonitor.class);
-        executorService = createMock(ExecutorService.class);
+        TransportMonitor monitor = createMock(TransportMonitor.class);
+        ExecutorService executorService = createMock(ExecutorService.class);
         executorService.execute(isA(Runnable.class));
 
         expectLastCall().andStubAnswer(new IAnswer() {
@@ -214,7 +212,7 @@ public class JettyServiceImplTestCase extends TestCase {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             String str;
             while ((str = reader.readLine()) != null) {
                 sb.append(str);
@@ -235,11 +233,8 @@ public class JettyServiceImplTestCase extends TestCase {
         protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
             invoked = true;
             sessionId = req.getSession().getId();
-            OutputStream writer = resp.getOutputStream();
-            try {
+            try (OutputStream writer = resp.getOutputStream()) {
                 writer.write("result".getBytes());
-            } finally {
-                writer.close();
             }
         }
 

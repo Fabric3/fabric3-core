@@ -37,6 +37,7 @@
 */
 package org.fabric3.spi.contribution;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
@@ -44,7 +45,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.namespace.QName;
 
 import org.fabric3.api.host.stream.Source;
 
@@ -54,8 +54,8 @@ import org.fabric3.api.host.stream.Source;
 public class Contribution implements Serializable {
     private static final long serialVersionUID = 2511879480122631196L;
 
-    private final URI uri;
-    private Source source;
+    private URI uri;
+    private transient Source source;
     private ContributionState state = ContributionState.STORED;
     private List<URI> profiles;
     private URL location;
@@ -63,8 +63,8 @@ public class Contribution implements Serializable {
     private String contentType;
     private boolean persistent;
     private ContributionManifest manifest = new ContributionManifest();
-    private List<Resource> resources = new ArrayList<>();
-    private Map<Object, Object> metadata = new HashMap<>();
+    private transient List<Resource> resources = new ArrayList<>();
+    private transient Map<Object, Object> metadata = new HashMap<>();
     private List<ContributionWire<?, ?>> wires = new ArrayList<>();
     private List<URI> resolvedExtensionProviders = new ArrayList<>();
 

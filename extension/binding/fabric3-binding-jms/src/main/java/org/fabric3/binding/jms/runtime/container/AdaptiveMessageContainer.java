@@ -37,13 +37,6 @@
 */
 package org.fabric3.binding.jms.runtime.container;
 
-import java.net.URI;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.ExceptionListener;
@@ -53,22 +46,28 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.Topic;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.annotation.management.Management;
 import org.fabric3.api.annotation.management.ManagementOperation;
-import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.api.binding.jms.model.DestinationType;
 import org.fabric3.api.binding.jms.model.TransactionType;
+import org.fabric3.binding.jms.runtime.common.JmsHelper;
 import org.fabric3.spi.threadpool.ExecutionContext;
 import org.fabric3.spi.threadpool.ExecutionContextTunnel;
-
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_ADMINISTERED_OBJECTS;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_CONNECTION;
 import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_NONE;
 
 /**
- * A container for a JMS MessageListener that is capable of adapting to varying workloads by dispatching messages from a destination to the listener
- * on different managed threads. Workload management is performed by sizing up or down the number of managed threads reserved for message processing.
+ * A container for a JMS MessageListener that is capable of adapting to varying workloads by dispatching messages from a destination to the listener on
+ * different managed threads. Workload management is performed by sizing up or down the number of managed threads reserved for message processing.
  * <p/>
  * Note this implementation supports dispatching transactional and non-transactional messages.
  */
@@ -214,8 +213,7 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Sets the minimum number of receivers to create for a destination. The default is one. Note the number of receivers for a topic should generally
-     * be one.
+     * Sets the minimum number of receivers to create for a destination. The default is one. Note the number of receivers for a topic should generally be one.
      *
      * @param min the minimum number of receivers to create.
      */
@@ -242,8 +240,8 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Sets the maximum threshold for the number of receivers to create for a destination. The default is one. Note the number of receivers for a
-     * topic should generally be one.
+     * Sets the maximum threshold for the number of receivers to create for a destination. The default is one. Note the number of receivers for a topic should
+     * generally be one.
      *
      * @param max the maximum threshold for the number of receivers to create for a destination
      */
@@ -303,9 +301,9 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Sets the number of times a receiver can be marked idle during its execution window before it is removed from the work scheduler. Note if the
-     * maximum number of receivers is set to one, the single receiver will not be removed. Likewise, if a minimum number of receivers is set, idle
-     * receivers will not be removed if that threshold is reached.
+     * Sets the number of times a receiver can be marked idle during its execution window before it is removed from the work scheduler. Note if the maximum
+     * number of receivers is set to one, the single receiver will not be removed. Likewise, if a minimum number of receivers is set, idle receivers will not be
+     * removed if that threshold is reached.
      *
      * @param limit the limit to set
      */
@@ -329,9 +327,9 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Sets the maximum number of messages to process by a receiver during its execution window. The default is unlimited, which results in the
-     * receiver processing messages until shutdown. Setting the number lower increases the ability of the work scheduler to adjust scheduling at the
-     * expense of thread context switches as receivers may be scheduled on different threads.
+     * Sets the maximum number of messages to process by a receiver during its execution window. The default is unlimited, which results in the receiver
+     * processing messages until shutdown. Setting the number lower increases the ability of the work scheduler to adjust scheduling at the expense of thread
+     * context switches as receivers may be scheduled on different threads.
      *
      * @param max the maximum number of messages to process by a receivers
      */
@@ -465,11 +463,9 @@ public class AdaptiveMessageContainer {
 
     /**
      * Stops the container processing messages.
-     *
-     * @throws JMSException if an error occurs during stop
      */
     @ManagementOperation(description = "Stops the containing processing messages")
-    public void stop() throws JMSException {
+    public void stop() {
         synchronized (syncMonitor) {
             running = false;
             syncMonitor.notifyAll();
@@ -508,10 +504,8 @@ public class AdaptiveMessageContainer {
 
     /**
      * Stops the container from receiving message and releases all resources and receivers.
-     *
-     * @throws JMSException if there is an error during shutdown.
      */
-    public void shutdown() throws JMSException {
+    public void shutdown() {
         boolean wasRunning;
         synchronized (syncMonitor) {
             wasRunning = running;
@@ -537,8 +531,7 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Re-sizes the receivers pool. If there are no idle receivers and the maximum number of receivers has not been reached, a new receiver will be
-     * scheduled.
+     * Re-sizes the receivers pool. If there are no idle receivers and the maximum number of receivers has not been reached, a new receiver will be scheduled.
      */
     private void resizePool() {
         if (isRunning()) {
@@ -591,8 +584,7 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Handle the given exception during a receive by delegating to an exception listener if the exception is a JMSException or sending it to the
-     * monitor.
+     * Handle the given exception during a receive by delegating to an exception listener if the exception is a JMSException or sending it to the monitor.
      *
      * @param e the exception to handle
      */
@@ -606,8 +598,8 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Attempt to reschedule the given work. This is done immediately if the container is running, or deferred until restart. If the container is
-     * shutdown, scheduling will not be performed.
+     * Attempt to reschedule the given work. This is done immediately if the container is running, or deferred until restart. If the container is shutdown,
+     * scheduling will not be performed.
      *
      * @param runnable the work to reschedule
      * @return true if the work has been rescheduled
@@ -635,7 +627,7 @@ public class AdaptiveMessageContainer {
     private void resumePausedWork() {
         synchronized (syncMonitor) {
             if (!pausedWork.isEmpty()) {
-                for (Iterator<Runnable> it = pausedWork.iterator(); it.hasNext();) {
+                for (Iterator<Runnable> it = pausedWork.iterator(); it.hasNext(); ) {
                     Runnable runnable = it.next();
                     try {
                         executorService.execute(runnable);
@@ -909,7 +901,6 @@ public class AdaptiveMessageContainer {
                 work.end(session, message);
                 return false;
             }
-
 
         }
 

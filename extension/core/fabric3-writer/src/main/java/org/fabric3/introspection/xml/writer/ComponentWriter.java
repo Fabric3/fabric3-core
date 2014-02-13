@@ -38,17 +38,16 @@
  */
 package org.fabric3.introspection.xml.writer;
 
-import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Reference;
+import java.util.List;
 
 import org.fabric3.api.model.type.ModelObject;
 import org.fabric3.api.model.type.component.ComponentDefinition;
 import org.fabric3.spi.introspection.xml.UnrecognizedTypeException;
 import org.fabric3.spi.introspection.xml.Writer;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Serializes a composite to a StAX stream.
@@ -60,6 +59,7 @@ public class ComponentWriter extends AbstractTypeWriter<ComponentDefinition> {
         super(ComponentDefinition.class, writer);
     }
 
+    @SuppressWarnings("unchecked")
     public void write(ComponentDefinition definition, XMLStreamWriter xmlWriter) throws XMLStreamException, UnrecognizedTypeException {
         xmlWriter.writeStartElement("component");
         xmlWriter.writeAttribute("name", definition.getName());

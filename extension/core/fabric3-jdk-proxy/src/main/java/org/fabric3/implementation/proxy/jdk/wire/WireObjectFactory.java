@@ -71,18 +71,13 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
      * @param callbackUri  the callback URI for the wire or null if the wire is unidirectional
      * @param proxyService the proxy creation service
      * @param mappings     proxy method to wire invocation chain mappings
-     * @throws NoMethodForOperationException if a method matching the operation cannot be found
      */
-    public WireObjectFactory(Class<T> interfaze,
-                             String callbackUri,
-                             JDKWireProxyService proxyService,
-                             Map<Method, InvocationChain> mappings) throws NoMethodForOperationException {
+    public WireObjectFactory(Class<T> interfaze, String callbackUri, JDKWireProxyService proxyService, Map<Method, InvocationChain> mappings) {
         this.interfaze = interfaze;
         this.callbackUri = callbackUri;
         this.proxyService = proxyService;
         this.mappings = mappings;
     }
-
 
     public T getInstance() throws ObjectCreationException {
         // as an optimization, only create one proxy since they are stateless

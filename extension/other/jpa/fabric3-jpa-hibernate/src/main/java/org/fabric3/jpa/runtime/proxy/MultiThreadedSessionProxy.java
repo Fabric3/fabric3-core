@@ -77,8 +77,8 @@ import org.oasisopen.sca.ServiceRuntimeException;
 public class MultiThreadedSessionProxy implements Session, HibernateProxy {
     private static final long serialVersionUID = -4143261157740097948L;
     private String unitName;
-    private EntityManagerService emService;
-    private TransactionManager tm;
+    private transient EntityManagerService emService;
+    private transient TransactionManager tm;
 
     public MultiThreadedSessionProxy(String unitName, EntityManagerService emService, TransactionManager tm) {
         this.unitName = unitName;

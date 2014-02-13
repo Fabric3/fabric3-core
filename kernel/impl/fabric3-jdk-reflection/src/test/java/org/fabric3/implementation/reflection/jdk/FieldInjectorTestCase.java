@@ -45,7 +45,6 @@ package org.fabric3.implementation.reflection.jdk;
 
 import java.lang.reflect.Field;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.fabric3.spi.container.objectfactory.ObjectFactory;
@@ -67,7 +66,7 @@ public class FieldInjectorTestCase extends TestCase {
 
         FieldInjector injector = new FieldInjector(protectedField, objectFactory);
         injector.inject(foo);
-        Assert.assertEquals(value, foo.hidden);
+        assertEquals(value, foo.hidden);
     }
 
     public void testReinjectionOfNullValue() throws Exception {
@@ -76,7 +75,7 @@ public class FieldInjectorTestCase extends TestCase {
         FieldInjector injector = new FieldInjector(fooField, objectFactory);
         injector.clearObjectFactory();
         injector.inject(foo);
-        Assert.assertNull(foo.foo);
+        assertNull(foo.foo);
     }
 
 

@@ -39,13 +39,11 @@ package org.fabric3.introspection.xml.common;
 
 import javax.xml.namespace.QName;
 
+import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
+import org.fabric3.spi.introspection.xml.LoaderRegistry;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
-
-import org.fabric3.spi.introspection.xml.AbstractValidatingTypeLoader;
-import org.fabric3.spi.introspection.xml.LoaderRegistry;
-import org.fabric3.spi.introspection.xml.TypeLoader;
 
 /**
  * TypeLoader implementation that can delegate back to the LoaderRegistry to process sub-elements in a composite.

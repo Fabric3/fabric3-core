@@ -45,6 +45,7 @@ import org.w3c.dom.Document;
 /**
  * A property and its resolved values.
  */
+@SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class PhysicalPropertyDefinition implements Serializable {
     private static final long serialVersionUID = -9068366603932114615L;
     private String name;

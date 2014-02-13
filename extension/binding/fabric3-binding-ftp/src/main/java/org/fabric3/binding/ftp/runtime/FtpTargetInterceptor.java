@@ -40,7 +40,6 @@ package org.fabric3.binding.ftp.runtime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 
 import org.apache.commons.net.SocketFactory;
@@ -77,7 +76,7 @@ public class FtpTargetInterceptor implements Interceptor {
                                 int timeout,
                                 SocketFactory factory,
                                 List<String> commands,
-                                FtpInterceptorMonitor monitor) throws UnknownHostException {
+                                FtpInterceptorMonitor monitor) {
         this.hostAddress = hostAddress;
         this.port = port;
         this.security = security;

@@ -52,7 +52,7 @@ import org.oasisopen.sca.Constants;
  */
 public class CompositeImplementation extends Implementation<Composite> {
     private static final long serialVersionUID = 2140686609936627287L;
-    public static final QName IMPLEMENTATION_COMPOSITE = new QName(Constants.SCA_NS, "implementation.composite");
+    private static final QName IMPLEMENTATION_COMPOSITE = new QName(Constants.SCA_NS, "implementation.composite");
     private QName name;
 
     public QName getType() {

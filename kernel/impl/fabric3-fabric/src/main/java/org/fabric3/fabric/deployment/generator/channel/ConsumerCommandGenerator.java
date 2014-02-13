@@ -58,7 +58,6 @@ import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.physical.ChannelDeliveryType;
 import org.fabric3.spi.model.physical.PhysicalChannelConnectionDefinition;
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import static org.fabric3.spi.deployment.generator.channel.ChannelDirection.CONSUMER;
 

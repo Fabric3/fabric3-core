@@ -46,7 +46,6 @@ package org.fabric3.fabric.deployment.generator.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 import org.fabric3.fabric.deployment.command.DisposeResourcesCommand;

@@ -50,7 +50,6 @@ import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.InstanceDestructionException;
 import org.fabric3.spi.container.component.InstanceLifecycleException;
 import org.fabric3.spi.container.invocation.Message;
-import org.fabric3.spi.container.invocation.WorkContext;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationRuntimeException;
 
@@ -77,7 +76,6 @@ public class SystemInvokerInterceptor implements Interceptor {
 
     public Message invoke(Message msg) {
         Object body = msg.getBody();
-        WorkContext workContext = msg.getWorkContext();
         Object instance;
         try {
             instance = component.getInstance();
