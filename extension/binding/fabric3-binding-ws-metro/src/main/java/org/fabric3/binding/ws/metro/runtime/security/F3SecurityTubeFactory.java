@@ -501,17 +501,7 @@ public final class F3SecurityTubeFactory implements TubeFactory, TubelineAssembl
             }
 
             return context.getTubelineHead();
-        } catch (InstantiationException ex) {
-            throw new WebServiceException(ex);
-        } catch (IllegalAccessException ex) {
-            throw new WebServiceException(ex);
-        } catch (IllegalArgumentException ex) {
-            throw new WebServiceException(ex);
-        } catch (InvocationTargetException ex) {
-            throw new WebServiceException(ex);
-        } catch (SecurityException ex) {
-            throw new WebServiceException(ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (InstantiationException | ClassNotFoundException | SecurityException | InvocationTargetException | IllegalArgumentException | IllegalAccessException ex) {
             throw new WebServiceException(ex);
         }
     }

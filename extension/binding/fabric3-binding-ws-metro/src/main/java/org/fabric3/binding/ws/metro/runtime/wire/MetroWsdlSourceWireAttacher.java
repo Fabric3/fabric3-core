@@ -126,9 +126,7 @@ public class MetroWsdlSourceWireAttacher extends AbstractMetroSourceWireAttacher
                                                                             generatedSchemas,
                                                                             handlers);
             endpointService.registerService(configuration);
-        } catch (CacheException e) {
-            throw new WiringException(e);
-        } catch (EndpointException e) {
+        } catch (CacheException | EndpointException e) {
             throw new WiringException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);

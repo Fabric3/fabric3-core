@@ -108,11 +108,7 @@ public class JMXManagementExtension implements ManagementExtension {
             if (!mBeanServer.isRegistered(name)) {
                 mBeanServer.registerMBean(mBean, name);
             }
-        } catch (JMException e) {
-            throw new ManagementException(e);
-        } catch (ClassNotFoundException e) {
-            throw new ManagementException(e);
-        } catch (NoSuchMethodException e) {
+        } catch (JMException | NoSuchMethodException | ClassNotFoundException e) {
             throw new ManagementException(e);
         }
     }
@@ -161,13 +157,7 @@ public class JMXManagementExtension implements ManagementExtension {
             if (!mBeanServer.isRegistered(objectName)) {
                 mBeanServer.registerMBean(managementBean, objectName);
             }
-        } catch (MalformedObjectNameException e) {
-            throw new ManagementException(e);
-        } catch (JMException e) {
-            throw new ManagementException(e);
-        } catch (ClassNotFoundException e) {
-            throw new ManagementException(e);
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException | ClassNotFoundException | JMException e) {
             throw new ManagementException(e);
         }
     }
@@ -186,11 +176,7 @@ public class JMXManagementExtension implements ManagementExtension {
             group = parseGroup(group);
             ObjectName objectName = new ObjectName(DOMAIN + ":SubDomain=runtime, type=resource, group=" + group + ", name=" + name);
             mBeanServer.unregisterMBean(objectName);
-        } catch (MalformedObjectNameException e) {
-            throw new ManagementException(e);
-        } catch (InstanceNotFoundException e) {
-            throw new ManagementException(e);
-        } catch (MBeanRegistrationException e) {
+        } catch (MalformedObjectNameException | MBeanRegistrationException | InstanceNotFoundException e) {
             throw new ManagementException(e);
         }
     }

@@ -409,9 +409,7 @@ public class JettyServiceImpl implements JettyService, Transport {
                     host = InetAddress.getLocalHost().getHostAddress();
                 }
                 return new URL("http://" + host + ":" + getHttpPort());
-            } catch (UnknownHostException e) {
-                throw new IllegalStateException(e);
-            } catch (MalformedURLException e) {
+            } catch (UnknownHostException | MalformedURLException e) {
                 throw new IllegalStateException(e);
             }
 
@@ -427,9 +425,7 @@ public class JettyServiceImpl implements JettyService, Transport {
                     host = InetAddress.getLocalHost().getHostAddress();
                 }
                 return new URL("https://" + host + ":" + getHttpPort());
-            } catch (UnknownHostException e) {
-                throw new IllegalStateException(e);
-            } catch (MalformedURLException e) {
+            } catch (UnknownHostException | MalformedURLException e) {
                 throw new IllegalStateException(e);
             }
 

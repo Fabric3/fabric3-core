@@ -90,13 +90,7 @@ public class WebLogicExecutorService implements ExecutorService {
             Class<?> clazz = Class.forName("com.bea.core.workmanager.WorkManagerFactory", true, classLoader);
             Method defaultMethod = clazz.getMethod("getDefault", new Class[0]);
             wm = (WorkManager) defaultMethod.invoke(null, new Object[0]);
-        } catch (ClassNotFoundException e) {
-            logger.log(Level.FINEST, "Did not initialize com.bea.core.workmanager.WorkManagerFactory", e);
-        } catch (NoSuchMethodException e) {
-            logger.log(Level.FINEST, "Did not initialize com.bea.core.workmanager.WorkManagerFactory", e);
-        } catch (InvocationTargetException e) {
-            logger.log(Level.FINEST, "Did not initialize com.bea.core.workmanager.WorkManagerFactory", e);
-        } catch (IllegalAccessException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             logger.log(Level.FINEST, "Did not initialize com.bea.core.workmanager.WorkManagerFactory", e);
         }
         if (wm != null) {
@@ -114,15 +108,7 @@ public class WebLogicExecutorService implements ExecutorService {
             Class<?> wmWLSInterface = Class.forName("weblogic.work.WorkManager", true, classLoader);
             Constructor<?> wmCommonJConstructor = wmCommonJClass.getConstructor(new Class[]{wmWLSInterface});
             wm = (WorkManager) wmCommonJConstructor.newInstance(new Object[]{wmObj});
-        } catch (NoSuchMethodException e) {
-            throw new ExecutorInitException(e);
-        } catch (IllegalAccessException e) {
-            throw new ExecutorInitException(e);
-        } catch (InstantiationException e) {
-            throw new ExecutorInitException(e);
-        } catch (InvocationTargetException e) {
-            throw new ExecutorInitException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new ExecutorInitException(e);
         }
         return wm;
@@ -134,11 +120,7 @@ public class WebLogicExecutorService implements ExecutorService {
                 workManager = getDefaultWorkManager();
             }
             workManager.schedule(new CommonJWorkWrapper(command));
-        } catch (WorkException e) {
-            LogRecord record = new LogRecord(Level.SEVERE, "Error submitting work");
-            record.setThrown(e);
-            logger.log(record);
-        } catch (ExecutorInitException e) {
+        } catch (WorkException | ExecutorInitException e) {
             LogRecord record = new LogRecord(Level.SEVERE, "Error submitting work");
             record.setThrown(e);
             logger.log(record);

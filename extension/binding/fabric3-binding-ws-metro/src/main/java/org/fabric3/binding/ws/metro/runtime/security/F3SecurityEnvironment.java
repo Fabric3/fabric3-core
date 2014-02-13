@@ -191,11 +191,7 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
         checkEnabled();
         try {
             return (PrivateKey) keyStore.getKey(alias, keyStorePassword);
-        } catch (KeyStoreException e) {
-            throw new XWSSecurityRuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new XWSSecurityRuntimeException(e);
-        } catch (UnrecoverableKeyException e) {
+        } catch (KeyStoreException | UnrecoverableKeyException | NoSuchAlgorithmException e) {
             throw new XWSSecurityRuntimeException(e);
         }
     }
@@ -263,11 +259,7 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
                     return (PrivateKey) keyStore.getKey(alias, keyStorePassword);
                 }
             }
-        } catch (KeyStoreException e) {
-            throw new XWSSecurityRuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new XWSSecurityRuntimeException(e);
-        } catch (UnrecoverableKeyException e) {
+        } catch (KeyStoreException | UnrecoverableKeyException | NoSuchAlgorithmException e) {
             throw new XWSSecurityRuntimeException(e);
         }
         throw new XWSSecurityRuntimeException("Private key not found");
@@ -343,11 +335,7 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
                     return (PrivateKey) keyStore.getKey(alias, keyStorePassword);
                 }
             }
-        } catch (NoSuchAlgorithmException e) {
-            throw new XWSSecurityRuntimeException(e);
-        } catch (UnrecoverableKeyException e) {
-            throw new XWSSecurityRuntimeException(e);
-        } catch (KeyStoreException e) {
+        } catch (NoSuchAlgorithmException | KeyStoreException | UnrecoverableKeyException e) {
             throw new XWSSecurityRuntimeException(e);
         }
         throw new XWSSecurityRuntimeException("Private key not found");
@@ -377,11 +365,7 @@ public class F3SecurityEnvironment implements SecurityEnvironment {
                         }
                     }
                 }
-            } catch (KeyStoreException e) {
-                throw new XWSSecurityRuntimeException(e);
-            } catch (NoSuchAlgorithmException e) {
-                throw new XWSSecurityRuntimeException(e);
-            } catch (UnrecoverableKeyException e) {
+            } catch (KeyStoreException | UnrecoverableKeyException | NoSuchAlgorithmException e) {
                 throw new XWSSecurityRuntimeException(e);
             }
         }

@@ -250,9 +250,7 @@ public class MultiThreadedEntityManagerProxy implements HibernateProxy, EntityMa
                 throw new IllegalStateException("A transaction is not active - ensure the component is executing in a managed transaction");
             }
             return emService.getEntityManager(unitName, this, trx);
-        } catch (SystemException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (EntityManagerCreationException e) {
+        } catch (SystemException | EntityManagerCreationException e) {
             throw new ServiceRuntimeException(e);
         }
     }

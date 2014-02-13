@@ -171,9 +171,7 @@ public class JavaHeuristic implements HeuristicProcessor {
                 return;
             }
             constructor = ctor.getConstructor(implClass);
-        } catch (ClassNotFoundException e) {
-            throw new AssertionError(e);
-        } catch (NoSuchMethodException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
             throw new AssertionError(e);
         }
 

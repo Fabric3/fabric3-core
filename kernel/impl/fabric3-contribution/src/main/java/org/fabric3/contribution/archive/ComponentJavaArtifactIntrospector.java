@@ -86,9 +86,7 @@ public class ComponentJavaArtifactIntrospector implements JavaArtifactIntrospect
                 }
             }
             return null;
-        } catch (ClassNotFoundException e) {
-            // ignore since the class may reference another class not present in the contribution
-        } catch (NoClassDefFoundError e) {
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
             // ignore since the class may reference another class not present in the contribution
         }
         return null;

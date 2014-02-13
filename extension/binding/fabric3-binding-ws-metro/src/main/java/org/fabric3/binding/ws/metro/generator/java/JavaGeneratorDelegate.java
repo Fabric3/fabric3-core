@@ -587,11 +587,7 @@ public class JavaGeneratorDelegate implements MetroGeneratorDelegate<JavaService
             Transformer transformer = transformerFactory.newTransformer();
             transformer.transform(source, result);
             return writer.toString();
-        } catch (IOException e) {
-            throw new GenerationException(e);
-        } catch (SAXException e) {
-            throw new GenerationException(e);
-        } catch (TransformerException e) {
+        } catch (IOException | TransformerException | SAXException e) {
             throw new GenerationException(e);
         }
     }

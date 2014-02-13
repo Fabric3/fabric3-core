@@ -135,9 +135,7 @@ public class FSDeployTracker implements DeployListener {
             writeDeployables(writer);
             writer.writeEndElement();
             writer.writeEndDocument();
-        } catch (FileNotFoundException e) {
-            monitor.error(e);
-        } catch (XMLStreamException e) {
+        } catch (FileNotFoundException | XMLStreamException e) {
             monitor.error(e);
         } finally {
             try {

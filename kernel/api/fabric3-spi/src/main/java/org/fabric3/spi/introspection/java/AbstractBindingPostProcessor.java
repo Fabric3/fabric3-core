@@ -256,9 +256,7 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
     private Class<?> getService(A annotation) {
         try {
             return (Class<?>) serviceAttribute.invoke(annotation);
-        } catch (IllegalAccessException e) {
-            throw new AssertionError(e);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             throw new AssertionError(e);
         }
     }

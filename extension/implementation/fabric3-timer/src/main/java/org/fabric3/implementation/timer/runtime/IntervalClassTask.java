@@ -67,9 +67,7 @@ public class IntervalClassTask implements Task {
             return (Long) method.invoke(interval);
         } catch (ClassCastException e) {
             throw new ServiceRuntimeException("Invalid interval type returned", e);
-        } catch (IllegalAccessException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             throw new ServiceRuntimeException(e);
         }
     }

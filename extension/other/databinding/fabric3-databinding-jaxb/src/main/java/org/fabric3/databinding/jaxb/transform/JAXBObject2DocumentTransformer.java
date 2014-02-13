@@ -69,9 +69,7 @@ public class JAXBObject2DocumentTransformer implements Transformer<Object, Docum
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.marshal(source, document);
             return document;
-        } catch (JAXBException e) {
-            throw new TransformationException(e);
-        } catch (ParserConfigurationException e) {
+        } catch (JAXBException | ParserConfigurationException e) {
             throw new TransformationException(e);
         }
     }

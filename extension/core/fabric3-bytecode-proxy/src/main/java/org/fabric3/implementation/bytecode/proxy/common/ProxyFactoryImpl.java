@@ -127,9 +127,7 @@ public class ProxyFactoryImpl implements ProxyFactory, ClassLoaderListener {
             return proxyClass.newInstance();
         } catch (ClassNotFoundException e) {
             // ignore
-        } catch (InstantiationException e) {
-            throw new ProxyException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new ProxyException(e);
         }
 
@@ -307,9 +305,7 @@ public class ProxyFactoryImpl implements ProxyFactory, ClassLoaderListener {
         Class<?> proxyClass = generationLoader.defineClass(className, data);
         try {
             return (T) proxyClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new ProxyException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new ProxyException(e);
         }
     }
@@ -337,9 +333,7 @@ public class ProxyFactoryImpl implements ProxyFactory, ClassLoaderListener {
             return proxyClass.newInstance();
         } catch (ClassNotFoundException e) {
             // ignore
-        } catch (InstantiationException e) {
-            throw new ProxyException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new ProxyException(e);
         }
 
@@ -462,9 +456,7 @@ public class ProxyFactoryImpl implements ProxyFactory, ClassLoaderListener {
         Class<?> proxyClass = generationLoader.defineClass(className, data);
         try {
             return (T) proxyClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new ProxyException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new ProxyException(e);
         }
     }

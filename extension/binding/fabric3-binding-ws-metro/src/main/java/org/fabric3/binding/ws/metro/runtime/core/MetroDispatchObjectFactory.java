@@ -143,12 +143,9 @@ public class MetroDispatchObjectFactory extends AbstractMetroBindingProviderFact
             configureHandlers(dispatch);
             setSOAPAction(dispatch);
             return dispatch;
-        } catch (InaccessibleWSDLException e) {
-            throw new ObjectCreationException(e);
-        } catch (MalformedURLException e) {
+        } catch (InaccessibleWSDLException | MalformedURLException e) {
             throw new ObjectCreationException(e);
         }
-
 
     }
 

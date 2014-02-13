@@ -71,10 +71,7 @@ public class Shutdown {
         }
         try {
             shutdown.shutdown(parameters);
-        } catch (JMException e) {
-            System.out.println("ERROR: Unable to shutdown remote server");
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (JMException | IOException e) {
             System.out.println("ERROR: Unable to shutdown remote server");
             e.printStackTrace();
         }

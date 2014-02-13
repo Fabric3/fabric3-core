@@ -77,9 +77,7 @@ public class RsProviderIntrospector implements JavaArtifactIntrospector {
             resource.addResourceElement(resourceElement);
             contribution.addResource(resource);
             return resource;
-        } catch (ClassNotFoundException e) {
-            // ignore since the class may reference another class not present in the contribution
-        } catch (NoClassDefFoundError e) {
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
             // ignore since the class may reference another class not present in the contribution
         }
         return null;

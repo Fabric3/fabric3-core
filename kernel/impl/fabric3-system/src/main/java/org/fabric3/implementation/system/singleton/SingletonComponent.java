@@ -245,10 +245,7 @@ public class SingletonComponent implements ScopedComponent {
                 try {
                     Method method = methodInjectionSite.getSignature().getMethod(instance.getClass());
                     sites.put(method, entry.getValue());
-                } catch (ClassNotFoundException e) {
-                    // programming error
-                    throw new AssertionError(e);
-                } catch (NoSuchMethodException e) {
+                } catch (ClassNotFoundException | NoSuchMethodException e) {
                     // programming error
                     throw new AssertionError(e);
                 }
@@ -375,10 +372,8 @@ public class SingletonComponent implements ScopedComponent {
                         Object param = factory.getInstance();
                         Method method = (Method) member;
                         method.invoke(instance, param);
-                    } catch (IllegalAccessException e) {
+                    } catch (IllegalAccessException | InvocationTargetException e) {
                         // should not happen as accessibility is already set
-                        throw new ObjectCreationException(e);
-                    } catch (InvocationTargetException e) {
                         throw new ObjectCreationException(e);
                     }
                 } else {

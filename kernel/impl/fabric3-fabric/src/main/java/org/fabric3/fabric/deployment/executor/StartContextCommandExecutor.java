@@ -108,8 +108,6 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
                 // domain scope not available during bootstrap
                 domainScopeContainer.startContext(deployable);
             }
-        } catch (GroupInitializationException e) {
-            throw new ExecutionException(e);
         } catch (ComponentException e) {
             throw new ExecutionException(e);
         }

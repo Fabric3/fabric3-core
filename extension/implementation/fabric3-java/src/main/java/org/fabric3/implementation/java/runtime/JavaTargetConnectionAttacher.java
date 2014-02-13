@@ -101,9 +101,7 @@ public class JavaTargetConnectionAttacher implements TargetConnectionAttacher<Ja
         Class<?> implementationClass = component.getImplementationClass();
         try {
             return signature.getMethod(implementationClass);
-        } catch (ClassNotFoundException e) {
-            throw new ConnectionAttachException(e);
-        } catch (NoSuchMethodException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
             throw new ConnectionAttachException(e);
         }
     }

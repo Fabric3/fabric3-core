@@ -446,9 +446,7 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
             }
             EntityManager em = emService.getEntityManager(unitName, this, trx);
             return (Session) em.getDelegate();
-        } catch (SystemException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (EntityManagerCreationException e) {
+        } catch (SystemException | EntityManagerCreationException e) {
             throw new ServiceRuntimeException(e);
         }
     }

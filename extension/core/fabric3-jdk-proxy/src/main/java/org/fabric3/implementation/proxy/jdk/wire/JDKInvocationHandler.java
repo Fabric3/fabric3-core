@@ -118,9 +118,6 @@ public final class JDKInvocationHandler<B> implements InvocationHandler, Service
             Message response;
             try {
                 response = headInterceptor.invoke(message);
-            } catch (ServiceUnavailableException e) {
-                // simply rethrow ServiceUnavailableExceptions
-                throw e;
             } catch (ServiceRuntimeException e) {
                 // simply rethrow ServiceRuntimeException
                 throw e;

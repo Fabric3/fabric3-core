@@ -231,9 +231,7 @@ public class ModuleContributionProcessor implements ContributionProcessor {
                         contribution.addResource(resource);
                         callback.onResource(resource);
                     }
-                } catch (MalformedURLException e) {
-                    context.addWarning(new ContributionIndexingFailure(file, e));
-                } catch (ContentTypeResolutionException e) {
+                } catch (MalformedURLException | ContentTypeResolutionException e) {
                     context.addWarning(new ContributionIndexingFailure(file, e));
                 }
             }

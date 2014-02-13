@@ -105,9 +105,7 @@ public class CertificateValidatorImpl implements CertificateValidator {
     public boolean validate(X509Certificate certificate, KeyStore trustStore) throws XWSSecurityRuntimeException {
         try {
             certificate.checkValidity();
-        } catch (CertificateExpiredException e) {
-            throw new XWSSecurityRuntimeException(e);
-        } catch (CertificateNotYetValidException e) {
+        } catch (CertificateExpiredException | CertificateNotYetValidException e) {
             throw new XWSSecurityRuntimeException(e);
         }
 
@@ -187,15 +185,7 @@ public class CertificateValidatorImpl implements CertificateValidator {
             certValidator = CertPathValidator.getInstance("PKIX");
             certValidator.validate(certPath, parameters);
             return true;
-        } catch (InvalidAlgorithmParameterException e) {
-            throw new XWSSecurityRuntimeException(e);
-        } catch (CertPathValidatorException e) {
-            throw new XWSSecurityRuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new XWSSecurityRuntimeException(e);
-        } catch (CertificateException e) {
-            throw new XWSSecurityRuntimeException(e);
-        } catch (KeyStoreException e) {
+        } catch (InvalidAlgorithmParameterException | KeyStoreException | CertificateException | NoSuchAlgorithmException | CertPathValidatorException e) {
             throw new XWSSecurityRuntimeException(e);
         }
     }

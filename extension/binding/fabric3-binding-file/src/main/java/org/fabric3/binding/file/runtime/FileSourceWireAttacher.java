@@ -204,11 +204,7 @@ public class FileSourceWireAttacher implements SourceWireAttacher<FileBindingSou
         }
         try {
             return (ServiceAdapter) loader.loadClass(adapterClass).newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new WiringException(e);
-        } catch (InstantiationException e) {
-            throw new WiringException(e);
-        } catch (IllegalAccessException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             throw new WiringException(e);
         }
     }

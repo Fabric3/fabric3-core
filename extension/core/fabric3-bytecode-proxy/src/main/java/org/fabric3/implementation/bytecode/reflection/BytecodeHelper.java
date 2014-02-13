@@ -89,9 +89,7 @@ public class BytecodeHelper {
         Class<?> invokerClass = classLoader.defineClass(className, data);
         try {
             return type.cast(invokerClass.newInstance());
-        } catch (InstantiationException e) {
-            throw new AssertionError(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new AssertionError(e);
         }
     }

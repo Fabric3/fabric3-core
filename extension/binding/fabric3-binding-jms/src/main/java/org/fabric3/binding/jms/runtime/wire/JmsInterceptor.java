@@ -214,21 +214,11 @@ public class JmsInterceptor implements Interceptor {
                 return ONE_WAY_RESPONSE;
             }
 
-        } catch (JMSException e) {
+        } catch (JMSException | JmsBadMessageException e) {
             throw new ServiceRuntimeException("Unable to receive response", e);
         } catch (IOException e) {
             throw new ServiceRuntimeException("Error serializing callback references", e);
-        } catch (JmsBadMessageException e) {
-            throw new ServiceRuntimeException("Unable to receive response", e);
-        } catch (SystemException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (NotSupportedException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (HeuristicMixedException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (HeuristicRollbackException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (RollbackException e) {
+        } catch (SystemException | RollbackException | HeuristicRollbackException | HeuristicMixedException | NotSupportedException e) {
             throw new ServiceRuntimeException(e);
         } finally {
             JmsHelper.closeQuietly(session);

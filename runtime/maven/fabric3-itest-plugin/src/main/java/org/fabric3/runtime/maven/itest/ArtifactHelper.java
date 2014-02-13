@@ -299,9 +299,7 @@ public class ArtifactHelper {
             Set<Artifact> resolvedArtifacts = resolveTransitive(exclusions, rootArtifact);
             artifacts.addAll(resolvedArtifacts);
             return artifacts;
-        } catch (ArtifactResolutionException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
-        } catch (ArtifactNotFoundException e) {
+        } catch (ArtifactResolutionException | ArtifactNotFoundException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
     }
@@ -333,11 +331,7 @@ public class ArtifactHelper {
                                                                            filter);
             return result.getArtifacts();
 
-        } catch (ArtifactResolutionException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
-        } catch (ArtifactNotFoundException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
-        } catch (ArtifactMetadataRetrievalException e) {
+        } catch (ArtifactResolutionException | ArtifactMetadataRetrievalException | ArtifactNotFoundException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
 

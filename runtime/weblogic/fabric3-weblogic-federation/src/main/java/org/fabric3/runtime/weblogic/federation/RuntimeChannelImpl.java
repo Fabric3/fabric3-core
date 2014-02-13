@@ -95,9 +95,7 @@ public class RuntimeChannelImpl implements RuntimeChannel {
             executorRegistry.execute(command);
             Response response = command.getResponse();
             return serializationService.serialize(response);
-        } catch (IOException e) {
-            throw new ChannelException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new ChannelException(e);
         } catch (ExecutionException e) {
             // execution exception is not on the server classpath; record message only and log it locally
@@ -113,9 +111,7 @@ public class RuntimeChannelImpl implements RuntimeChannel {
         try {
             Command command = serializationService.deserialize(Command.class, payload);
             executorRegistry.execute(command);
-        } catch (IOException e) {
-            throw new ChannelException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new ChannelException(e);
         } catch (ExecutionException e) {
             // execution exception is not on the server classpath; record message only and log it locally
@@ -135,9 +131,7 @@ public class RuntimeChannelImpl implements RuntimeChannel {
         try {
             Object message = serializationService.deserialize(Object.class, payload);
             messageReceiver.onMessage(message);
-        } catch (IOException e) {
-            throw new ChannelException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new ChannelException(e);
         }
     }

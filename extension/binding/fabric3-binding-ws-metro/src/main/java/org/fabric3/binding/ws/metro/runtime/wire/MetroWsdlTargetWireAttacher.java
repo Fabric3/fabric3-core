@@ -98,9 +98,7 @@ public class MetroWsdlTargetWireAttacher extends AbstractMetroTargetWireAttacher
         try {
             URI servicePath = target.getEndpointDefinition().getUrl().toURI();
             wsdlLocation = cache.cache(servicePath, new ByteArrayInputStream(wsdl.getBytes()));
-        } catch (CacheException e) {
-            throw new WiringException(e);
-        } catch (URISyntaxException e) {
+        } catch (CacheException | URISyntaxException e) {
             throw new WiringException(e);
         }
 

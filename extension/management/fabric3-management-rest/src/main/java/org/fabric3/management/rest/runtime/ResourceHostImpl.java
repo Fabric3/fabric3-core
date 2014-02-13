@@ -509,7 +509,7 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
                 replicate(mapping, params);
             }
             return ret;
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException | ObjectCreationException e) {
             monitor.error("Error invoking operation: " + mapping.getMethod(), e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (InvocationTargetException e) {
@@ -518,9 +518,6 @@ public class ResourceHostImpl extends HttpServlet implements ResourceHost {
                 // resource exceptions are returned to the client
                 throw (ResourceException) target;
             }
-            monitor.error("Error invoking operation: " + mapping.getMethod(), e);
-            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (ObjectCreationException e) {
             monitor.error("Error invoking operation: " + mapping.getMethod(), e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (MessageException e) {

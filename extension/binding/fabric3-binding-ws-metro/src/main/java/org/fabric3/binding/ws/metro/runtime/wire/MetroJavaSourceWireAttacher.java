@@ -159,9 +159,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
             } finally {
                 Thread.currentThread().setContextClassLoader(old);
             }
-        } catch (EndpointException e) {
-            throw new WiringException(e);
-        } catch (CacheException e) {
+        } catch (EndpointException | CacheException e) {
             throw new WiringException(e);
         }
     }
@@ -181,9 +179,7 @@ public class MetroJavaSourceWireAttacher extends AbstractMetroSourceWireAttacher
             }
 
             endpointService.unregisterService(path);
-        } catch (CacheException e) {
-            throw new WiringException(e);
-        } catch (EndpointException e) {
+        } catch (CacheException | EndpointException e) {
             throw new WiringException(e);
         }
     }

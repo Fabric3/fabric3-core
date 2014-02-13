@@ -111,9 +111,7 @@ public class Fabric3WebLogicListener implements ServletContextListener {
                 return;
             }
             prepare(runtimeMode, mBeanServer, installDirectory, componentRuntime);
-        } catch (NamingException e) {
-            context.log("Error initializing Fabric3", e);
-        } catch (JMException e) {
+        } catch (NamingException | JMException e) {
             context.log("Error initializing Fabric3", e);
         }
     }
@@ -257,8 +255,6 @@ public class Fabric3WebLogicListener implements ServletContextListener {
 
             start(mBeanServer, componentRuntime, runtimeMode);
 
-        } catch (RuntimeException e) {
-            context.log("Error initializing Fabric3", e);
         } catch (Exception e) {
             context.log("Error initializing Fabric3", e);
         } finally {

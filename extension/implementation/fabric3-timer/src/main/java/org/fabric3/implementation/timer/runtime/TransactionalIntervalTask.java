@@ -71,23 +71,7 @@ public class TransactionalIntervalTask extends NonTransactionalIntervalTask {
             long value = super.nextInterval();
             tm.commit();
             return value;
-        } catch (NotSupportedException e) {
-            monitor.executeError(e);
-            // propagate to the scheduler
-            throw new ServiceRuntimeException(e);
-        } catch (SystemException e) {
-            monitor.executeError(e);
-            // propagate to the scheduler
-            throw new ServiceRuntimeException(e);
-        } catch (HeuristicRollbackException e) {
-            monitor.executeError(e);
-            // propagate to the scheduler
-            throw new ServiceRuntimeException(e);
-        } catch (RollbackException e) {
-            monitor.executeError(e);
-            // propagate to the scheduler
-            throw new ServiceRuntimeException(e);
-        } catch (HeuristicMixedException e) {
+        } catch (NotSupportedException | HeuristicMixedException | RollbackException | HeuristicRollbackException | SystemException e) {
             monitor.executeError(e);
             // propagate to the scheduler
             throw new ServiceRuntimeException(e);

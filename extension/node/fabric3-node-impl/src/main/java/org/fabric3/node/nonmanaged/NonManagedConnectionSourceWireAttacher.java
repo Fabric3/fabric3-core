@@ -67,11 +67,7 @@ public class NonManagedConnectionSourceWireAttacher implements SourceConnectionA
             Class<?> interfaze = loader.loadClass(source.getInterface());
             Object proxy = proxyService.createObjectFactory(interfaze, connection).getInstance();
             source.setProxy(proxy);
-        } catch (ProxyCreationException e) {
-            throw new ConnectionAttachException(e);
-        } catch (ObjectCreationException e) {
-            throw new ConnectionAttachException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (ProxyCreationException | ClassNotFoundException | ObjectCreationException e) {
             throw new ConnectionAttachException(e);
         }
     }

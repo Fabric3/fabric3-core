@@ -165,12 +165,7 @@ public class ContributionTrackerImpl implements ContributionTracker {
             }
             writer.writeEndElement();
             writer.writeEndDocument();
-        } catch (XMLStreamException e) {
-            if (journal.exists()) {
-                journal.delete();
-            }
-            monitor.error(e);
-        } catch (IOException e) {
+        } catch (XMLStreamException | IOException e) {
             if (journal.exists()) {
                 journal.delete();
             }

@@ -188,11 +188,7 @@ public class RestfulManagementExtension implements ManagementExtension {
             if (!rootResourcePathOverride) {
                 createRootResource(identifier, root, getMappings);
             }
-        } catch (ClassNotFoundException e) {
-            throw new ManagementException(e);
-        } catch (NoSuchMethodException e) {
-            throw new ManagementException(e);
-        } catch (TransformationException e) {
+        } catch (ClassNotFoundException | TransformationException | NoSuchMethodException e) {
             throw new ManagementException(e);
         }
     }

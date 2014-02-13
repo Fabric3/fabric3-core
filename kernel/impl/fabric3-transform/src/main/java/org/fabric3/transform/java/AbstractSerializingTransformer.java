@@ -87,9 +87,7 @@ public abstract class AbstractSerializingTransformer<S, T> implements Transforme
             bis = new ByteArrayInputStream(bytes);
             stream = new ClassLoaderObjectInputStream(bis, loader);
             return (Serializable) stream.readObject();
-        } catch (IOException e) {
-            throw new TransformationException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new TransformationException(e);
         } finally {
             try {

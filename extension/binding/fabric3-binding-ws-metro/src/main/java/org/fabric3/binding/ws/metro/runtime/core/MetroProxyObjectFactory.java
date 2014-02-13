@@ -220,9 +220,7 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
             configureSecurity(port);
             configureHandlers(port);
             return port;
-        } catch (InaccessibleWSDLException e) {
-            throw new ObjectCreationException(e);
-        } catch (MalformedURLException e) {
+        } catch (InaccessibleWSDLException | MalformedURLException e) {
             throw new ObjectCreationException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
@@ -284,11 +282,7 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
                 QName defaultServiceName = found.iterator().next();
                 service = WSService.create(wsdlLocation, defaultServiceName, params);
             }
-        } catch (IOException e1) {
-            throw new ObjectCreationException(e1);
-        } catch (SAXException e1) {
-            throw new ObjectCreationException(e1);
-        } catch (XMLStreamException e1) {
+        } catch (IOException | XMLStreamException | SAXException e1) {
             throw new ObjectCreationException(e1);
         } finally {
             try {
@@ -350,12 +344,8 @@ public class MetroProxyObjectFactory extends AbstractMetroBindingProviderFactory
             if (DEFINITIONS.equals(reader.getName())) {
                 return true;
             }
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | XMLStreamException | IOException e) {
             // ignore thrown by URL.openStream(..)
-        } catch (IOException e) {
-            // ignore
-        } catch (XMLStreamException e) {
-            // ignore
         } finally {
             close(stream);
             close(reader);

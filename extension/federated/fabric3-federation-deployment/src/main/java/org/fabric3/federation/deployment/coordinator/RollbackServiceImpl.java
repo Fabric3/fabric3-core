@@ -90,9 +90,7 @@ public class RollbackServiceImpl implements RollbackService {
         try {
             List<CompensatableCommand> commands = serializationService.deserialize(List.class, serializedCommands);
             rollback(commands, commands.size());
-        } catch (ClassNotFoundException e) {
-            throw new RollbackException(e);
-        } catch (IOException e) {
+        } catch (ClassNotFoundException | IOException e) {
             throw new RollbackException(e);
         }
     }
@@ -108,9 +106,7 @@ public class RollbackServiceImpl implements RollbackService {
             if (scopeRegistry != null) {
                 scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
             }
-        } catch (ExecutionException e) {
-            throw new RollbackException(e);
-        } catch (InstanceLifecycleException e) {
+        } catch (ExecutionException | InstanceLifecycleException e) {
             throw new RollbackException(e);
         }
     }

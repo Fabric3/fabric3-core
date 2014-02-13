@@ -188,13 +188,7 @@ public class TimerComponent extends JavaComponent implements TopologyListener {
                 task = new IntervalClassTask(interval, invoker);
             }
             future = timerService.scheduleRecurring(data.getPoolName(), task);
-        } catch (NoSuchMethodException e) {
-            monitor.executeError(e);
-        } catch (InstantiationException e) {
-            monitor.executeError(e);
-        } catch (IllegalAccessException e) {
-            monitor.executeError(e);
-        } catch (ClassNotFoundException e) {
+        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             monitor.executeError(e);
         }
     }

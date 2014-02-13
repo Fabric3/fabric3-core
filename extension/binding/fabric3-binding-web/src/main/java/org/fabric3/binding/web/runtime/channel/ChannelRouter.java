@@ -116,10 +116,7 @@ public class ChannelRouter extends HttpServlet {
             publisher.publish(wrapper);
         } catch (PublishDeniedException e) {
             response.setStatus(403);   // forbidden
-        } catch (PublishException e) {
-            response.setStatus(500);
-            monitor.error(e);
-        } catch (IOException e) {
+        } catch (PublishException | IOException e) {
             response.setStatus(500);
             monitor.error(e);
         } catch (InvalidContentTypeException e) {

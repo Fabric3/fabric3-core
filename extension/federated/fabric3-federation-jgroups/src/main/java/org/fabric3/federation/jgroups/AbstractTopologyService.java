@@ -211,9 +211,7 @@ public abstract class AbstractTopologyService {
                 monitor.receiveMessage(runtimeName);
                 Command command = (Command) helper.deserialize(msg.getBuffer());
                 executorRegistry.execute(command);
-            } catch (MessageException e) {
-                monitor.error("Error receiving message from: " + runtimeName, e);
-            } catch (ExecutionException e) {
+            } catch (MessageException | ExecutionException e) {
                 monitor.error("Error receiving message from: " + runtimeName, e);
             }
         }

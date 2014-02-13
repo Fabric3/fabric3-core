@@ -150,10 +150,7 @@ public class ProviderResourceProcessor implements ResourceProcessor {
 
                 contribution.addResource(compositeResource);
 
-            } catch (InvocationTargetException e) {
-                InvalidProviderMethod error = new InvalidProviderMethod("Error invoking provides method: " + method, e);
-                context.addError(error);
-            } catch (IllegalAccessException e) {
+            } catch (InvocationTargetException | IllegalAccessException e) {
                 InvalidProviderMethod error = new InvalidProviderMethod("Error invoking provides method: " + method, e);
                 context.addError(error);
             }

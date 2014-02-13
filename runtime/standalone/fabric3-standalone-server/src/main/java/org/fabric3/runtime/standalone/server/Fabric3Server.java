@@ -200,10 +200,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        } catch (RuntimeException ex) {
-            router.flush(System.out);
-            shutdown();
-            handleStartException(ex);
         } catch (Exception ex) {
             router.flush(System.out);
             shutdown();

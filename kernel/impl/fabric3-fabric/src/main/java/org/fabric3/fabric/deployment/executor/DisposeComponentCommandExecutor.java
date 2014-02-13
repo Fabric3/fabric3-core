@@ -111,8 +111,6 @@ public class DisposeComponentCommandExecutor implements CommandExecutor<DisposeC
             }
         } catch (RegistrationException e) {
             throw new ExecutionException("Unexpected exception un-registering component: " + uri, e);
-        } catch (BuilderNotFoundException e) {
-            throw new ExecutionException(e);
         } catch (BuilderException e) {
             throw new ExecutionException(e);
         }

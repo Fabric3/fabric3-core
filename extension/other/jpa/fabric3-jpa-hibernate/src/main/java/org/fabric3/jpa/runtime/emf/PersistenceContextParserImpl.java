@@ -127,9 +127,7 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
                     }
                 }
 
-            } catch (IOException e) {
-                throw new PersistenceUnitException(e);
-            } catch (XMLStreamException e) {
+            } catch (IOException | XMLStreamException e) {
                 throw new PersistenceUnitException(e);
             } finally {
                 close(stream, reader);
@@ -263,10 +261,7 @@ public class PersistenceContextParserImpl implements PersistenceContextParser {
                 if (reader != null) {
                     reader.close();
                 }
-            } catch (IOException e) {
-                // ignore
-                e.printStackTrace();
-            } catch (XMLStreamException e) {
+            } catch (IOException | XMLStreamException e) {
                 // ignore
                 e.printStackTrace();
             }

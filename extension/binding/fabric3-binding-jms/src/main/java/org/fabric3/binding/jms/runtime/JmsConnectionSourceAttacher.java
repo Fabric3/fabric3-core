@@ -134,9 +134,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         try {
             containerManager.unregister(source.getUri());
             resolver.release(source.getMetadata().getConnectionFactory());
-        } catch (JMSException e) {
-            throw new ConnectionAttachException(e);
-        } catch (JmsResolutionException e) {
+        } catch (JMSException | JmsResolutionException e) {
             throw new ConnectionAttachException(e);
         }
     }

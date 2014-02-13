@@ -345,11 +345,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         try {
             contributionService.uninstall(uris);
             contributionService.remove(uris);
-        } catch (UninstallException e) {
-            monitor.error(e);
-        } catch (ContributionNotFoundException e) {
-            monitor.error(e);
-        } catch (RemoveException e) {
+        } catch (UninstallException | RemoveException | ContributionNotFoundException e) {
             monitor.error(e);
         }
     }
@@ -417,20 +413,9 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 for (FileSystemResource resource : addedResources) {
                     resource.setState(FileSystemResourceState.ERROR);
                 }
-            } catch (ContributionException e) {
+            } catch (ContributionException | NoClassDefFoundError | DeploymentException e) {
                 handleError(e, addedResources);
-            } catch (DeploymentException e) {
-                handleError(e, addedResources);
-            } catch (NoClassDefFoundError e) {
-                handleError(e, addedResources);
-                // don't re-throw the error since the contribution can be safely ignored
-            } catch (Error e) {
-                for (FileSystemResource resource : addedResources) {
-                    resource.setState(FileSystemResourceState.ERROR);
-                }
-                // re-throw the exception as the runtime may be in an unstable state
-                throw e;
-            } catch (RuntimeException e) {
+            } catch (Error | RuntimeException e) {
                 for (FileSystemResource resource : addedResources) {
                     resource.setState(FileSystemResourceState.ERROR);
                 }
@@ -469,9 +454,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                         contributionService.remove(uri);
                     }
                     monitor.removed(name);
-                } catch (ContributionException e) {
-                    monitor.removalError(name, e);
-                } catch (DeploymentException e) {
+                } catch (ContributionException | DeploymentException e) {
                     monitor.removalError(name, e);
                 }
             }

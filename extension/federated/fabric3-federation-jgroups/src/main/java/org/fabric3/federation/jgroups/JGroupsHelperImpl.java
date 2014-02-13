@@ -157,9 +157,7 @@ public class JGroupsHelperImpl implements JGroupsHelper {
             // to deserialize classes in the appropriate classloader.
             ois = new MultiClassLoaderObjectInputStream(stream, classLoaderRegistry);
             return ois.readObject();
-        } catch (IOException e) {
-            throw new MessageException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new MessageException(e);
         } finally {
             try {

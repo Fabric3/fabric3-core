@@ -93,9 +93,6 @@ public class WireProxyDispatcher<B> implements ProxyDispatcher, ServiceReference
             Message response;
             try {
                 response = headInterceptor.invoke(message);
-            } catch (ServiceUnavailableException e) {
-                // simply rethrow ServiceUnavailableExceptions
-                throw e;
             } catch (ServiceRuntimeException e) {
                 // simply rethrow ServiceRuntimeException
                 throw e;

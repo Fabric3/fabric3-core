@@ -93,9 +93,7 @@ public class UnitOfWork {
         try {
             tm.begin();
             tm.setTransactionTimeout(transactionTimeout);
-        } catch (NotSupportedException e) {
-            throw new TransactionException(e);
-        } catch (SystemException e) {
+        } catch (NotSupportedException | SystemException e) {
             throw new TransactionException(e);
         }
     }
@@ -140,17 +138,7 @@ public class UnitOfWork {
                 tm.rollback();
                 statistics.incrementTransactionsRolledBack();
             }
-        } catch (SystemException e) {
-            throw new TransactionException("Error handling message for " + listenerUri, e);
-        } catch (IllegalStateException e) {
-            throw new TransactionException("Error handling message for " + listenerUri, e);
-        } catch (SecurityException e) {
-            throw new TransactionException("Error handling message for " + listenerUri, e);
-        } catch (HeuristicMixedException e) {
-            throw new TransactionException("Error handling message for " + listenerUri, e);
-        } catch (HeuristicRollbackException e) {
-            throw new TransactionException("Error handling message for " + listenerUri, e);
-        } catch (RollbackException e) {
+        } catch (SystemException | RollbackException | HeuristicRollbackException | HeuristicMixedException | SecurityException | IllegalStateException e) {
             throw new TransactionException("Error handling message for " + listenerUri, e);
         }
     }

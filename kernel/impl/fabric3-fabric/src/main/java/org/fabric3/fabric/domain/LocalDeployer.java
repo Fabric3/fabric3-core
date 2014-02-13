@@ -137,9 +137,7 @@ public class LocalDeployer implements Deployer {
             // this is thrown when an error occurs during bootstrap: some of the command executors may not have be deployed at this point, which
             // results in an ExecutorNotFoundException. Log an ignore
             monitor.rollbackAborted();
-        } catch (ExecutionException ex) {
-            monitor.rollbackError("local", ex);
-        } catch (InstanceLifecycleException ex) {
+        } catch (ExecutionException | InstanceLifecycleException ex) {
             monitor.rollbackError("local", ex);
         }
     }

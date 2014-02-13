@@ -181,9 +181,7 @@ public class JUnitHeuristic implements HeuristicProcessor {
                 return;
             }
             constructor = componentType.getConstructor().getConstructor(implClass);
-        } catch (ClassNotFoundException e) {
-            throw new AssertionError(e);
-        } catch (NoSuchMethodException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
             throw new AssertionError(e);
         }
 

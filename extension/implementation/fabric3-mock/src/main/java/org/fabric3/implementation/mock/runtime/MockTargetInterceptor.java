@@ -67,9 +67,7 @@ public class MockTargetInterceptor implements Interceptor {
             message.reset();
             message.setBody(ret);
             return message;
-        } catch (IllegalAccessException e) {
-            throw new AssertionError(e);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             throw new AssertionError(e);
         }
     }

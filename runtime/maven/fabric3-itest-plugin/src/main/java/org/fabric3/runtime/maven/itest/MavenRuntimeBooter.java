@@ -215,19 +215,7 @@ public class MavenRuntimeBooter {
                 implClass = cl.loadClass(MAVEN3_RUNTIME_IMPL);
             }
             return MavenRuntime.class.cast(implClass.getConstructor(RuntimeConfiguration.class).newInstance(configuration));
-        } catch (ClassNotFoundException e) {
-            // programming error
-            throw new AssertionError(e);
-        } catch (IllegalAccessException e) {
-            // programming error
-            throw new AssertionError(e);
-        } catch (InstantiationException e) {
-            // programming error
-            throw new AssertionError(e);
-        } catch (InvocationTargetException e) {
-            // programming error
-            throw new AssertionError(e);
-        } catch (NoSuchMethodException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             // programming error
             throw new AssertionError(e);
         }

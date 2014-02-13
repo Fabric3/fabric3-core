@@ -140,11 +140,7 @@ public class FileTargetWireAttacher implements TargetWireAttacher<FileBindingTar
         }
         try {
             return (ReferenceAdapter) loader.loadClass(adapterClass).newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new WiringException(e);
-        } catch (InstantiationException e) {
-            throw new WiringException(e);
-        } catch (IllegalAccessException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             throw new WiringException(e);
         }
     }

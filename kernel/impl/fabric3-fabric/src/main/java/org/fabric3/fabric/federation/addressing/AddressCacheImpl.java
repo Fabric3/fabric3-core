@@ -232,8 +232,6 @@ public class AddressCacheImpl implements AddressCache, TopologyListener, Message
                 AddressRequest request = new AddressRequest(info.getRuntimeName());
                 controllerTopologyService.sendAsynchronous(qualifiedChannelName, request);
             }
-        } catch (ZoneChannelException e) {
-            monitor.error(e);
         } catch (MessageException e) {
             monitor.error(e);
         }

@@ -70,11 +70,7 @@ public class WireAttacherHelperImpl implements WireAttacherHelper {
 
             classLoaderUpdater.updateClassLoader(seiClass);
             return seiClass;
-        } catch (ClassNotFoundException e) {
-            throw new WiringException(e);
-        } catch (IllegalAccessException e) {
-            throw new WiringException(e);
-        } catch (InvocationTargetException e) {
+        } catch (ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {
             throw new WiringException(e);
         }
     }

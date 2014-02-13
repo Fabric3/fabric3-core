@@ -95,9 +95,7 @@ public class SystemUnannotatedHeuristic implements HeuristicProcessor {
         Constructor<?> constructor;
         try {
             constructor = componentType.getConstructor().getConstructor(implClass);
-        } catch (ClassNotFoundException e) {
-            throw new AssertionError(e);
-        } catch (NoSuchMethodException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
             throw new AssertionError(e);
         }
 

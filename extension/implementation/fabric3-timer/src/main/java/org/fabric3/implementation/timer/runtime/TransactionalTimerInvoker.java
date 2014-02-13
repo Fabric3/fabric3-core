@@ -80,23 +80,7 @@ public class TransactionalTimerInvoker implements Runnable {
             tm.begin();
             ((Runnable) instance).run();
             tm.commit();
-        } catch (HeuristicRollbackException e) {
-            monitor.executeError(e);
-            // propagate to the scheduler
-            throw new ServiceRuntimeException(e);
-        } catch (RollbackException e) {
-            monitor.executeError(e);
-            // propagate to the scheduler
-            throw new ServiceRuntimeException(e);
-        } catch (SystemException e) {
-            monitor.executeError(e);
-            // propagate to the scheduler
-            throw new ServiceRuntimeException(e);
-        } catch (HeuristicMixedException e) {
-            monitor.executeError(e);
-            // propagate to the scheduler
-            throw new ServiceRuntimeException(e);
-        } catch (NotSupportedException e) {
+        } catch (HeuristicRollbackException | NotSupportedException | HeuristicMixedException | SystemException | RollbackException e) {
             monitor.executeError(e);
             // propagate to the scheduler
             throw new ServiceRuntimeException(e);

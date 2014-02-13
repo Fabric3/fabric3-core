@@ -75,9 +75,7 @@ public class WsdlResolverImpl implements WsdlResolver {
         try {
             WSDLReader reader = wsdlFactory.newReader();
             return reader.readWSDL(wsdlLocation.toURI().toString());
-        } catch (WSDLException e) {
-            throw new WsdlResolutionException(e);
-        } catch (URISyntaxException e) {
+        } catch (WSDLException | URISyntaxException e) {
             throw new WsdlResolutionException(e);
         }
     }

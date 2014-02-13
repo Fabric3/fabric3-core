@@ -174,11 +174,7 @@ public class WarContributionHandler implements ArchiveContributionHandler {
                     callback.onResource(resource);
                 }
             }
-        } catch (ContentTypeResolutionException e) {
-            throw new InstallException(e);
-        } catch (MalformedURLException e) {
-            throw new InstallException(e);
-        } catch (IOException e) {
+        } catch (ContentTypeResolutionException | IOException e) {
             throw new InstallException(e);
         } finally {
             try {

@@ -286,9 +286,7 @@ public class JmsTargetWireAttacher implements TargetWireAttacher<JmsTargetDefini
                 }
 
             }
-        } catch (JmsResolutionException e) {
-            throw new WiringException(e);
-        } catch (JMSException e) {
+        } catch (JmsResolutionException | JMSException e) {
             throw new WiringException(e);
         }
 

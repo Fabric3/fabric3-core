@@ -513,11 +513,7 @@ public class ContributionServiceImpl implements ContributionService {
                 }
                 contributionLoader.unload(contribution);
                 remove(contribution.getUri());
-            } catch (UninstallException ex) {
-                monitor.error("Error reverting installation: " + contribution.getUri(), ex);
-            } catch (ContributionNotFoundException ex) {
-                monitor.error("Error reverting installation: " + contribution.getUri(), ex);
-            } catch (RemoveException ex) {
+            } catch (UninstallException | RemoveException | ContributionNotFoundException ex) {
                 monitor.error("Error reverting installation: " + contribution.getUri(), ex);
             }
         }
@@ -695,9 +691,7 @@ public class ContributionServiceImpl implements ContributionService {
                 boolean extension = contributionSource.isExtension();
                 locationUrl = getRepository().store(contributionUri, stream, extension);
                 source = new UrlSource(locationUrl);
-            } catch (IOException e) {
-                throw new StoreException(e);
-            } catch (RepositoryException e) {
+            } catch (IOException | RepositoryException e) {
                 throw new StoreException(e);
             } finally {
                 try {

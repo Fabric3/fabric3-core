@@ -112,9 +112,7 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
                                                         reinjectable,
                                                         cl,
                                                         reflectionFactory);
-        } catch (ClassNotFoundException ex) {
-            throw new ImplementationBuildException(ex);
-        } catch (NoSuchMethodException ex) {
+        } catch (ClassNotFoundException | NoSuchMethodException ex) {
             throw new ImplementationBuildException(ex);
         }
     }

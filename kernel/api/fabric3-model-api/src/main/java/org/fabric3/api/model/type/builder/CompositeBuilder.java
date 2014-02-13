@@ -206,11 +206,7 @@ public class CompositeBuilder extends AbstractBuilder {
             Property property = new Property(name);
             property.setDefaultValue(document);
             composite.add(property);
-        } catch (IOException e) {
-            throw new ModelBuilderException(e);
-        } catch (SAXException e) {
-            throw new ModelBuilderException(e);
-        } catch (ParserConfigurationException e) {
+        } catch (IOException | ParserConfigurationException | SAXException e) {
             throw new ModelBuilderException(e);
         }
         return this;

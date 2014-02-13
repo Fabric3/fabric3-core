@@ -80,9 +80,7 @@ public class RunCommand implements Command {
             while ((line = buffered.readLine()) != null) {
                 interpreter.process(line, out);
             }
-        } catch (IOException e) {
-            throw new CommandException(e);
-        } catch (InterpreterException e) {
+        } catch (IOException | InterpreterException e) {
             throw new CommandException(e);
         } finally {
             if (buffered != null) {

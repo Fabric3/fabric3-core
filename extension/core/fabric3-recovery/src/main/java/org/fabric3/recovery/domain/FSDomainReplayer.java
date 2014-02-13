@@ -109,11 +109,7 @@ public class FSDomainReplayer implements Fabric3EventListener<DomainRecover> {
         try {
             DomainJournal journal = parse();
             domain.recover(journal);
-        } catch (FileNotFoundException e) {
-            monitor.error(e);
-        } catch (XMLStreamException e) {
-            monitor.error(e);
-        } catch (DeploymentException e) {
+        } catch (FileNotFoundException | DeploymentException | XMLStreamException e) {
             monitor.error(e);
         }
     }

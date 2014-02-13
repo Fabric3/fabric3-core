@@ -17,11 +17,7 @@ public class MockXMLFactory implements XMLFactory {
         try {
             Class clazz = classLoader.loadClass("com.ctc.wstx.stax.WstxInputFactory");
             return (XMLInputFactory) clazz.newInstance();
-        } catch (IllegalAccessException e) {
-            throw new XMLFactoryInstantiationException("Error", e);
-        } catch (InstantiationException e) {
-            throw new XMLFactoryInstantiationException("Error", e);
-        } catch (ClassNotFoundException e) {
+        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
             throw new XMLFactoryInstantiationException("Error", e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCL);

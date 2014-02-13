@@ -59,9 +59,7 @@ package org.fabric3.databinding.json.transform;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
@@ -87,10 +85,6 @@ public class Stream2ObjectJsonTransformer implements Transformer<InputStream, Ob
             // do not to close the underlying stream after mapping
             jp.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
             return mapper.readValue(jp, type);
-        } catch (JsonMappingException e) {
-            throw new TransformationException(e);
-        } catch (JsonParseException e) {
-            throw new TransformationException(e);
         } catch (IOException e) {
             throw new TransformationException(e);
         } finally {

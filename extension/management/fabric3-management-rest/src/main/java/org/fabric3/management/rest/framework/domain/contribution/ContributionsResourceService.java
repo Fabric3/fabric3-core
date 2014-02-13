@@ -216,10 +216,7 @@ public class ContributionsResourceService {
         } catch (ContributionLockedException e) {
             monitor.error("Unable to uninstall contribution in use: " + uri);
             throw new ResourceException(HttpStatus.BAD_REQUEST, "Unable to uninstall contribution in use: " + uri);
-        } catch (UninstallException e) {
-            monitor.error("Error removing contribution: " + uri, e);
-            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error removing contribution: " + uri);
-        } catch (RemoveException e) {
+        } catch (UninstallException | RemoveException e) {
             monitor.error("Error removing contribution: " + uri, e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error removing contribution: " + uri);
         } catch (ContributionNotFoundException e) {

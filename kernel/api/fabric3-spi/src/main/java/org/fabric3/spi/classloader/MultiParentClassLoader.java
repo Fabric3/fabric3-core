@@ -245,9 +245,7 @@ public class MultiParentClassLoader extends DelegatingResourceClassLoader {
                         }
                     }
                 }
-            } catch (NoClassDefFoundError e) {
-                throw e;
-            } catch (ClassNotFoundException e) {
+            } catch (NoClassDefFoundError | ClassNotFoundException e) {
                 throw e;
             }
         }

@@ -135,9 +135,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
             for (JarManifestHandler handler : manifestHandlers) {
                 handler.processManifest(contribution.getManifest(), jarManifest, context);
             }
-        } catch (MalformedURLException e) {
-            // ignore no manifest found
-        } catch (FileNotFoundException e) {
+        } catch (MalformedURLException | FileNotFoundException e) {
             // ignore no manifest found
         } catch (IOException e) {
             throw new InstallException(e);
@@ -210,11 +208,7 @@ public class ZipContributionHandler implements ArchiveContributionHandler {
                     callback.onResource(resource);
                 }
             }
-        } catch (ContentTypeResolutionException e) {
-            throw new InstallException(e);
-        } catch (MalformedURLException e) {
-            throw new InstallException(e);
-        } catch (IOException e) {
+        } catch (ContentTypeResolutionException | IOException e) {
             throw new InstallException(e);
         } finally {
             try {

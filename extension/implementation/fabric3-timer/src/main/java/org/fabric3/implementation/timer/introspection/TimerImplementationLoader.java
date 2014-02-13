@@ -213,10 +213,8 @@ public class TimerImplementationLoader extends AbstractValidatingTypeLoader<Time
                 InvalidIntervalMethod failure = new InvalidIntervalMethod("The nextInterval method must return a long value: " + name, clazz, implementation);
                 context.addError(failure);
             }
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
             // this should not happen as the impl class should already be loaded
-        } catch (NoSuchMethodException e) {
-            // do nothing, the class does not define an interval method
         }
     }
 

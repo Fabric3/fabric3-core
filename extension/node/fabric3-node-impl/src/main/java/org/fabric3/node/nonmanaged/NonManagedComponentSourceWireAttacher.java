@@ -70,11 +70,7 @@ public class NonManagedComponentSourceWireAttacher implements SourceWireAttacher
             Class<?> interfaze = loader.loadClass(source.getInterface());
             Object proxy = proxyService.createObjectFactory(interfaze, wire, null).getInstance();
             source.setProxy(proxy);
-        } catch (ProxyCreationException e) {
-            throw new WiringException(e);
-        } catch (ObjectCreationException e) {
-            throw new WiringException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (ProxyCreationException | ClassNotFoundException | ObjectCreationException e) {
             throw new WiringException(e);
         }
     }

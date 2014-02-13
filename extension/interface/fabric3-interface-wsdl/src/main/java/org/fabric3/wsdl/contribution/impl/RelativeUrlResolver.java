@@ -166,9 +166,7 @@ public class RelativeUrlResolver implements URIResolver {
                 schemaKeyIdField.setAccessible(true);
             }
             return (String) schemaKeyIdField.get(key);
-        } catch (NoSuchFieldException e) {
-            throw new AssertionError(e);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new AssertionError(e);
         }
     }

@@ -165,11 +165,7 @@ public class CachingAuthenticationService extends HttpServlet {
             }
             SecuritySubject subject = authService.authenticate(token);
             req.getSession().setAttribute(FABRIC3_SUBJECT, subject);
-        } catch (TransformationException e) {
-            monitor.error("Error authenticating", e);
-        } catch (AuthenticationException e) {
-            monitor.error("Error authenticating", e);
-        } catch (IOException e) {
+        } catch (TransformationException | IOException | AuthenticationException e) {
             monitor.error("Error authenticating", e);
         }
     }

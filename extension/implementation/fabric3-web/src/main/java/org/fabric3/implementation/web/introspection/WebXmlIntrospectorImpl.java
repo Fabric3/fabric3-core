@@ -139,10 +139,7 @@ public class WebXmlIntrospectorImpl implements WebXmlIntrospector {
                     return artifacts;
                 }
             }
-        } catch (XMLStreamException e) {
-            InvalidWebManifest failure = new InvalidWebManifest("Error reading web.xml", e);
-            context.addError(failure);
-        } catch (IOException e) {
+        } catch (XMLStreamException | IOException e) {
             InvalidWebManifest failure = new InvalidWebManifest("Error reading web.xml", e);
             context.addError(failure);
         } finally {

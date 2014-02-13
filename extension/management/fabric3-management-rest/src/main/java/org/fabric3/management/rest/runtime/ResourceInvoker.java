@@ -154,13 +154,7 @@ public class ResourceInvoker {
             }
             Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
             return mapping.getMethod().invoke(instance);
-        } catch (IllegalArgumentException e) {
-            throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
-        } catch (IllegalAccessException e) {
-            throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
-        } catch (InvocationTargetException e) {
-            throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
-        } catch (ObjectCreationException e) {
+        } catch (IllegalArgumentException | ObjectCreationException | InvocationTargetException | IllegalAccessException e) {
             throw new ResourceProcessingException("Error invoking operation: " + mapping.getMethod(), e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);

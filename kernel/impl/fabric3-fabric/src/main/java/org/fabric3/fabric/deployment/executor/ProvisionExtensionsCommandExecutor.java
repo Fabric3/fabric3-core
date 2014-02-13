@@ -106,11 +106,7 @@ public class ProvisionExtensionsCommandExecutor implements CommandExecutor<Provi
             }
             contributionService.install(stored);
             domain.include(stored);
-        } catch (ResolutionException e) {
-            throw new ExecutionException(e);
-        } catch (ContributionException e) {
-            throw new ExecutionException(e);
-        } catch (DeploymentException e) {
+        } catch (DeploymentException | ContributionException e) {
             throw new ExecutionException(e);
         }
     }

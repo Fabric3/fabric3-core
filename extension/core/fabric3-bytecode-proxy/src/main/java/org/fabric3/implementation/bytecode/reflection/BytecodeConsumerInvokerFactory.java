@@ -109,9 +109,7 @@ public class BytecodeConsumerInvokerFactory implements ConsumerInvokerFactory, C
             return invokerClass.newInstance();
         } catch (ClassNotFoundException e) {
             // ignore
-        } catch (InstantiationException e) {
-            throw new AssertionError(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new AssertionError(e);
         }
 

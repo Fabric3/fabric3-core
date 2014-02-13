@@ -899,10 +899,7 @@ public class AdaptiveMessageContainer {
                     statistics.incrementMessagesReceived();
                     work.end(session, message);
                     return true;
-                } catch (RuntimeException e) {
-                    monitor.receiveError(listenerUri, e);
-                    work.rollback(session);
-                } catch (Error e) {
+                } catch (RuntimeException | Error e) {
                     monitor.receiveError(listenerUri, e);
                     work.rollback(session);
                 }

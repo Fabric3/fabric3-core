@@ -165,11 +165,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
                 contributionService.processContents(uri);
                 domain.include(Collections.singletonList(uri));
             }
-        } catch (InstallException e) {
-            throw new InitializationException(e);
-        } catch (StoreException e) {
-            throw new InitializationException(e);
-        } catch (ContributionNotFoundException e) {
+        } catch (InstallException | ContributionNotFoundException | StoreException e) {
             throw new InitializationException(e);
         } catch (DeploymentException e) {
             state = RuntimeState.ERROR;

@@ -124,11 +124,7 @@ public class ProviderBuilder implements ResourceBuilder<PhysicalProviderResource
             }
             filter.init(filterUri, componentManager);
             return filter;
-        } catch (InstantiationException e) {
-            throw new AssertionError(e);
-        } catch (IllegalAccessException e) {
-            throw new AssertionError(e);
-        } catch (ClassNotFoundException e) {
+        } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
             throw new AssertionError(e);
         }
 

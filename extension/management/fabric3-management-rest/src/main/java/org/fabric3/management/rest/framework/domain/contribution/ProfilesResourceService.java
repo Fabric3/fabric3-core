@@ -135,10 +135,7 @@ public class ProfilesResourceService {
         } catch (DuplicateContributionException e) {
             monitor.error("Duplicate profile:" + name, e);
             throw new ResourceException(HttpStatus.CONFLICT, "Profile already exists: " + name);
-        } catch (ContributionException e) {
-            monitor.error("Error creating contribution: " + name, e);
-            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating profile: " + name);
-        } catch (IOException e) {
+        } catch (ContributionException | IOException e) {
             monitor.error("Error creating contribution: " + name, e);
             throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating profile: " + name);
         }

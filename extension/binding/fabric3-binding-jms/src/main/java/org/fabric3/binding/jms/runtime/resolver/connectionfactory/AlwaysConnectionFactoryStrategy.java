@@ -105,9 +105,7 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
             }
             created.add(name);
             return manager.register(name, factory);
-        } catch (ConnectionFactoryCreationException e) {
-            throw new JmsResolutionException(e);
-        } catch (FactoryRegistrationException e) {
+        } catch (ConnectionFactoryCreationException | FactoryRegistrationException e) {
             throw new JmsResolutionException(e);
         }
     }
@@ -139,15 +137,7 @@ public class AlwaysConnectionFactoryStrategy implements ConnectionFactoryStrateg
                 }
             }
             return factory;
-        } catch (InstantiationException e) {
-            throw new JmsResolutionException("Unable to create connection factory: " + className, e);
-        } catch (IllegalAccessException e) {
-            throw new JmsResolutionException("Unable to create connection factory: " + className, e);
-        } catch (ClassNotFoundException e) {
-            throw new JmsResolutionException("Unable to create connection factory: " + className, e);
-        } catch (IntrospectionException e) {
-            throw new JmsResolutionException("Unable to create connection factory: " + className, e);
-        } catch (InvocationTargetException e) {
+        } catch (InstantiationException | InvocationTargetException | IntrospectionException | ClassNotFoundException | IllegalAccessException e) {
             throw new JmsResolutionException("Unable to create connection factory: " + className, e);
         }
 

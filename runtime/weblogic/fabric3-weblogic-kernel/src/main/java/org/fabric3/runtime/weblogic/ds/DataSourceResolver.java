@@ -169,9 +169,7 @@ public class DataSourceResolver {
             }
             try {
                 updateDataSources(false);
-            } catch (JMException e) {
-                monitor.error(e);
-            } catch (NamingException e) {
+            } catch (JMException | NamingException e) {
                 monitor.error(e);
             }
         }

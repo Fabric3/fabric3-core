@@ -745,8 +745,6 @@ public abstract class AbstractDomain implements Domain {
             DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
             deployer.deploy(deploymentPackage);
             logicalComponentManager.replaceRootComponent(domain);
-        } catch (PolicyResolutionException e) {
-            throw new DeploymentException(e);
         } catch (GenerationException e) {
             throw new DeploymentException(e);
         }
@@ -768,8 +766,6 @@ public abstract class AbstractDomain implements Domain {
             DeploymentPackage deploymentPackage = new DeploymentPackage(deployment, fullDeployment);
             deployer.deploy(deploymentPackage);
             logicalComponentManager.replaceRootComponent(domain);
-        } catch (PolicyResolutionException e) {
-            throw new DeploymentException(e);
         } catch (GenerationException e) {
             throw new DeploymentException(e);
         }

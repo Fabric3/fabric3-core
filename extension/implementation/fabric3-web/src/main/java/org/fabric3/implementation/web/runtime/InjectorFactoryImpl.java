@@ -102,9 +102,7 @@ public class InjectorFactoryImpl implements InjectorFactory {
         try {
             Method method = getMethod(site, artifactName, classLoader);
             return reflectionFactory.createInjector(method, factory);
-        } catch (ClassNotFoundException e) {
-            throw new InjectionCreationException(e);
-        } catch (NoSuchMethodException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
             throw new InjectionCreationException(e);
         }
     }
@@ -114,9 +112,7 @@ public class InjectorFactoryImpl implements InjectorFactory {
         try {
             Field field = getField(site, artifactName, classLoader);
             return reflectionFactory.createInjector(field, factory);
-        } catch (NoSuchFieldException e) {
-            throw new InjectionCreationException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (NoSuchFieldException | ClassNotFoundException e) {
             throw new InjectionCreationException(e);
         }
     }

@@ -207,9 +207,6 @@ public abstract class AbstractFabric implements Fabric {
 
             state = State.RUNNING;
             return this;
-        } catch (RuntimeException e) {
-            router.flush(System.out);
-            throw new FabricException(e);
         } catch (Exception e) {
             router.flush(System.out);
             throw new FabricException(e);
@@ -227,9 +224,7 @@ public abstract class AbstractFabric implements Fabric {
                 FileHelper.cleanDirectory(tempDirectory);
             }
             return this;
-        } catch (ShutdownException e) {
-            throw new FabricException(e);
-        } catch (IOException e) {
+        } catch (ShutdownException | IOException e) {
             throw new FabricException(e);
         }
     }

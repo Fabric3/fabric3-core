@@ -141,9 +141,7 @@ public class NonReliableRequestReplySender implements RequestReplySender, Thread
             throw new ServiceRuntimeException(e);
         } catch (ExecutionException e) {
             throw new ServiceRuntimeException(e);
-        } catch (TimeoutException e) {
-            throw new ServiceUnavailableException(e);
-        } catch (IOException e) {
+        } catch (TimeoutException | IOException e) {
             throw new ServiceUnavailableException(e);
         }
     }

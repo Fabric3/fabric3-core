@@ -109,11 +109,7 @@ public class UnProvisionExtensionsCommandExecutor implements CommandExecutor<UnP
         try {
             contributionService.uninstall(uninstall);
             contributionService.remove(uninstall);
-        } catch (ContributionNotFoundException e) {
-            throw new ExecutionException(e);
-        } catch (RemoveException e) {
-            throw new ExecutionException(e);
-        } catch (UninstallException e) {
+        } catch (ContributionNotFoundException | UninstallException | RemoveException e) {
             throw new ExecutionException(e);
         }
     }

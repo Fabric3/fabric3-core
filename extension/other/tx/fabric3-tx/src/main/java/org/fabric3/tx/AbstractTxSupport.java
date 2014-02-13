@@ -92,9 +92,7 @@ public abstract class AbstractTxSupport {
     protected void begin() throws ServiceRuntimeException {
         try {
             transactionManager.begin();
-        } catch (NotSupportedException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (SystemException e) {
+        } catch (NotSupportedException | SystemException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -110,11 +108,7 @@ public abstract class AbstractTxSupport {
     protected void resume(Transaction transaction) throws ServiceRuntimeException {
         try {
             transactionManager.resume(transaction);
-        } catch (SystemException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (InvalidTransactionException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (IllegalStateException e) {
+        } catch (SystemException | IllegalStateException | InvalidTransactionException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -126,17 +120,7 @@ public abstract class AbstractTxSupport {
             } else {
                 rollback();
             }
-        } catch (SystemException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (IllegalStateException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (SecurityException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (HeuristicMixedException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (HeuristicRollbackException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (RollbackException e) {
+        } catch (SystemException | RollbackException | HeuristicRollbackException | HeuristicMixedException | SecurityException | IllegalStateException e) {
             throw new ServiceRuntimeException(e);
         }
     }

@@ -98,9 +98,7 @@ public class TestRunner {
             suite.execute(factory, null);
             RunStatistics statistics = factory.getGlobalRunStatistics();
             return statistics.getErrorSources().isEmpty() && statistics.getFailureSources().isEmpty();
-        } catch (ReporterException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
-        } catch (TestSetFailedException e) {
+        } catch (ReporterException | TestSetFailedException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
 

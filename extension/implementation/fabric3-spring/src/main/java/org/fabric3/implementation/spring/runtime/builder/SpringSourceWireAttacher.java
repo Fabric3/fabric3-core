@@ -94,9 +94,7 @@ public class SpringSourceWireAttacher implements SourceWireAttacher<SpringSource
             for (WireListener listener : listeners) {
                 listener.onAttach(wire);
             }
-        } catch (ClassNotFoundException e) {
-            throw new WiringException(e);
-        } catch (ProxyCreationException e) {
+        } catch (ClassNotFoundException | ProxyCreationException e) {
             throw new WiringException(e);
         }
     }

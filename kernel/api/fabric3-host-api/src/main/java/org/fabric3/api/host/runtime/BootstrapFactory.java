@@ -59,13 +59,7 @@ public class BootstrapFactory {
         try {
             Class<?> implClass = Class.forName(FACTORY_CLASS, true, bootClassLoader);
             return (BootstrapService) implClass.newInstance();
-        } catch (ClassNotFoundException e) {
-            // programming error
-            throw new AssertionError(e);
-        } catch (IllegalAccessException e) {
-            // programming error
-            throw new AssertionError(e);
-        } catch (InstantiationException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             // programming error
             throw new AssertionError(e);
         }

@@ -43,7 +43,6 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -248,17 +247,7 @@ public class DomainConnectionImpl implements DomainConnection {
                 sslFactory = ctx.getSocketFactory();
             }
             connection.setSSLSocketFactory(sslFactory);
-        } catch (NoSuchAlgorithmException e) {
-            throw new CommunicationException(e);
-        } catch (KeyStoreException e) {
-            throw new CommunicationException(e);
-        } catch (KeyManagementException e) {
-            throw new CommunicationException(e);
-        } catch (FileNotFoundException e) {
-            throw new CommunicationException(e);
-        } catch (CertificateException e) {
-            throw new CommunicationException(e);
-        } catch (IOException e) {
+        } catch (NoSuchAlgorithmException | CertificateException | KeyManagementException | KeyStoreException | IOException e) {
             throw new CommunicationException(e);
         }
     }

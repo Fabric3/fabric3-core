@@ -146,9 +146,7 @@ public class WebComponent implements Component {
             injectorFactory.createInjectorMappings(injectors, siteMappings, contextFactories, classLoader);
             // activate the web application
             activator.activate(contextUrl, archiveUri, classLoaderId, injectors, oasisContext);
-        } catch (InjectionCreationException e) {
-            throw new WebComponentStartException("Error starting web component: " + uri.toString(), e);
-        } catch (WebApplicationActivationException e) {
+        } catch (InjectionCreationException | WebApplicationActivationException e) {
             throw new WebComponentStartException("Error starting web component: " + uri.toString(), e);
         }
 

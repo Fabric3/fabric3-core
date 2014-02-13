@@ -129,9 +129,7 @@ public class SystemConfigLoader {
                 loader.addNamespace(document, oldRoot, org.fabric3.api.Namespaces.F3);
             }
             return document;
-        } catch (IOException e) {
-            throw new ParseException(e);
-        } catch (SAXException e) {
+        } catch (IOException | SAXException e) {
             throw new ParseException(e);
         }
     }

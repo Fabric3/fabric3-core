@@ -175,9 +175,7 @@ public class MetroJavaTargetWireAttacher extends AbstractMetroTargetWireAttacher
             } finally {
                 Thread.currentThread().setContextClassLoader(old);
             }
-        } catch (CacheException e) {
-            throw new WiringException(e);
-        } catch (URISyntaxException e) {
+        } catch (CacheException | URISyntaxException e) {
             throw new WiringException(e);
         }
 

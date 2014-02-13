@@ -112,9 +112,7 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
             for (ComponentBuilderListener listener : listeners) {
                 listener.onBuild(component, definition);
             }
-        } catch (BuilderException e) {
-            throw new ExecutionException(e.getMessage(), e);
-        } catch (RegistrationException e) {
+        } catch (BuilderException | RegistrationException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
     }

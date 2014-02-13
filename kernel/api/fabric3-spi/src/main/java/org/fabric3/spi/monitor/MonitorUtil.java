@@ -74,9 +74,7 @@ public class MonitorUtil {
                     try {
                         Method valueMethod = methodAnnotation.getClass().getMethod("value");
                         message = (String) valueMethod.invoke(methodAnnotation);
-                    } catch (IllegalAccessException e) {
-                        throw new AssertionError(e);
-                    } catch (InvocationTargetException e) {
+                    } catch (IllegalAccessException | InvocationTargetException e) {
                         throw new AssertionError(e);
                     } catch (NoSuchMethodException e) {
                         // ignore

@@ -58,8 +58,6 @@ package org.fabric3.databinding.json.transform;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
@@ -77,10 +75,6 @@ public class Object2BytesJsonTransformer implements Transformer<Object, byte[]> 
     public byte[] transform(Object source, ClassLoader loader) throws TransformationException {
         try {
             return mapper.writeValueAsBytes(source);
-        } catch (JsonMappingException e) {
-            throw new TransformationException(e);
-        } catch (JsonParseException e) {
-            throw new TransformationException(e);
         } catch (IOException e) {
             throw new TransformationException(e);
         }

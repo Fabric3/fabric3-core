@@ -87,9 +87,7 @@ public class JAXBElement2DocumentTransformer implements Transformer<Object, Docu
             System.out.println(stringWriter.getBuffer().toString());    */
 
             return document;
-        } catch (JAXBException e) {
-            throw new TransformationException(e);
-        } catch (ParserConfigurationException e) {
+        } catch (JAXBException | ParserConfigurationException e) {
             throw new TransformationException(e);
         }
     }

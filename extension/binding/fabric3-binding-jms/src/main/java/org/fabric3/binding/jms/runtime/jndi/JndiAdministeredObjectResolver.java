@@ -72,9 +72,7 @@ public class JndiAdministeredObjectResolver implements ConnectionFactoryResolver
                 return null;
             }
             return factoryManager.register(name, factory);
-        } catch (NamingException e) {
-            throw new JmsResolutionException(e);
-        } catch (FactoryRegistrationException e) {
+        } catch (NamingException | FactoryRegistrationException e) {
             throw new JmsResolutionException(e);
         }
     }

@@ -58,8 +58,6 @@ package org.fabric3.databinding.json.transform;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fabric3.spi.transform.TransformationException;
 import org.fabric3.spi.transform.Transformer;
@@ -81,10 +79,6 @@ public class String2ObjectJsonTransformer implements Transformer<String, Object>
         try {
             Thread.currentThread().setContextClassLoader(loader);
             return mapper.readValue(source, type);
-        } catch (JsonMappingException e) {
-            throw new TransformationException(e);
-        } catch (JsonParseException e) {
-            throw new TransformationException(e);
         } catch (IOException e) {
             throw new TransformationException(e);
         } finally {

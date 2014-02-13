@@ -170,13 +170,7 @@ public class WebLogicParticipantTopologyService implements ParticipantTopologySe
             byte[] payload = serializationService.serialize(command);
             byte[] responsePayload = controllerChannel.sendSynchronous(payload);
             return serializationService.deserialize(Response.class, responsePayload);
-        } catch (ChannelException e) {
-            throw new MessageException(e);
-        } catch (RemoteException e) {
-            throw new MessageException(e);
-        } catch (IOException e) {
-            throw new MessageException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (ChannelException | ClassNotFoundException | IOException e) {
             throw new MessageException(e);
         }
     }
@@ -198,15 +192,7 @@ public class WebLogicParticipantTopologyService implements ParticipantTopologySe
                 }
             }
             throw new MessageException("Runtime not found: " + destinationName);
-        } catch (NamingException e) {
-            throw new MessageException(e);
-        } catch (RemoteException e) {
-            throw new MessageException(e);
-        } catch (ChannelException e) {
-            throw new MessageException(e);
-        } catch (IOException e) {
-            throw new MessageException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (NamingException | ClassNotFoundException | ChannelException | IOException e) {
             throw new MessageException(e);
         } finally {
             JndiHelper.close(rootContext);
@@ -285,13 +271,7 @@ public class WebLogicParticipantTopologyService implements ParticipantTopologySe
                     }
                 }
             }
-        } catch (NamingException e) {
-            throw new MessageException(e);
-        } catch (RemoteException e) {
-            throw new MessageException(e);
-        } catch (ChannelException e) {
-            throw new MessageException(e);
-        } catch (IOException e) {
+        } catch (NamingException | ChannelException | IOException e) {
             throw new MessageException(e);
         } finally {
             JndiHelper.close(rootContext);
@@ -315,13 +295,7 @@ public class WebLogicParticipantTopologyService implements ParticipantTopologySe
                 }
             }
             throw new MessageException("Runtime not found: " + destinationName);
-        } catch (NamingException e) {
-            throw new MessageException(e);
-        } catch (RemoteException e) {
-            throw new MessageException(e);
-        } catch (ChannelException e) {
-            throw new MessageException(e);
-        } catch (IOException e) {
+        } catch (NamingException | ChannelException | IOException e) {
             throw new MessageException(e);
         } finally {
             JndiHelper.close(rootContext);

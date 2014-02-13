@@ -100,9 +100,7 @@ public class InterfaceFromWsdlGeneratorImpl implements InterfaceFromWsdlGenerato
         try {
             Class<?> clazz = definer.defineClass(generatedName, bytes, loader);
             return new GeneratedInterface(clazz, bytes);
-        } catch (IllegalAccessException e) {
-            throw new InterfaceGenerationException(e);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             throw new InterfaceGenerationException(e);
         }
 

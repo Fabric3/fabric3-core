@@ -108,10 +108,7 @@ public class DefaultIntrospectionHelper implements IntrospectionHelper {
         try {
             thread.setContextClassLoader(cl);
             return Class.forName(name, true, cl);
-        } catch (ClassNotFoundException e) {
-            throw new ImplementationNotFoundException(name, e);
-        } catch (NoClassDefFoundError e) {
-            // we trap this error as the most likely cause is a missing dependency on the classpath
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
             throw new ImplementationNotFoundException(name, e);
         } finally {
             thread.setContextClassLoader(oldCL);

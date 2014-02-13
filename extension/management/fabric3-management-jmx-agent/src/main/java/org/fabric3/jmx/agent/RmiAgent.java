@@ -18,31 +18,28 @@
  */
 package org.fabric3.jmx.agent;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.ExportException;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.Map;
 import javax.management.MBeanServer;
 import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
-
-import org.oasisopen.sca.annotation.Destroy;
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.runtime.ParseException;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocationException;
 import org.fabric3.spi.host.PortAllocator;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *
@@ -111,8 +108,6 @@ public class RmiAgent {
             Map<String, Object> environment = initEnvironment();
             initConnector(environment);
             monitor.jmxStarted(assignedPort.getNumber());
-        } catch (MalformedURLException ex) {
-            throw new ManagementException(ex);
         } catch (IOException ex) {
             throw new ManagementException(ex);
         }
@@ -161,9 +156,7 @@ public class RmiAgent {
                 }
                 assignedPort.bind(Port.TYPE.TCP);
                 registry = LocateRegistry.createRegistry(assignedPort.getNumber());
-            } catch (RemoteException e) {
-                throw new ManagementException(e);
-            } catch (PortAllocationException e) {
+            } catch (RemoteException | PortAllocationException e) {
                 throw new ManagementException(e);
             }
         } else {
@@ -172,11 +165,7 @@ public class RmiAgent {
                 assignedPort = portAllocator.reserve("JMX", "JMX", port);
                 assignedPort.bind(Port.TYPE.TCP);
                 registry = LocateRegistry.createRegistry(assignedPort.getNumber());
-            } catch (PortAllocationException e) {
-                throw new ManagementException(e);
-            } catch (ExportException e) {
-                throw new ManagementException(e);
-            } catch (RemoteException e) {
+            } catch (PortAllocationException | RemoteException e) {
                 throw new ManagementException(e);
             }
         }

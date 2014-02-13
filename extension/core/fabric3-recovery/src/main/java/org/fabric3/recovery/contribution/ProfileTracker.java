@@ -129,11 +129,7 @@ public class ProfileTracker implements ContributionServiceListener, Fabric3Event
                 mappings.remove(uri);
             }
             persist();
-        } catch (FileNotFoundException e) {
-            monitor.error(e);
-        } catch (XMLStreamException e) {
-            monitor.error(e);
-        } catch (InvalidRepositoryIndexException e) {
+        } catch (FileNotFoundException | InvalidRepositoryIndexException | XMLStreamException e) {
             monitor.error(e);
         }
     }
@@ -216,9 +212,7 @@ public class ProfileTracker implements ContributionServiceListener, Fabric3Event
             writer.writeEndElement();
 
             writer.writeEndDocument();
-        } catch (FileNotFoundException e) {
-            monitor.error(e);
-        } catch (XMLStreamException e) {
+        } catch (FileNotFoundException | XMLStreamException e) {
             monitor.error(e);
         } finally {
             try {

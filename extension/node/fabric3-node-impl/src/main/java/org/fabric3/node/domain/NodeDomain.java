@@ -149,15 +149,7 @@ public class NodeDomain implements Domain {
             contributionService.install(uri);
             domain.include(Collections.singletonList(uri));
             return this;
-        } catch (URISyntaxException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (StoreException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (ContributionNotFoundException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (InstallException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (org.fabric3.api.host.domain.DeploymentException e) {
+        } catch (URISyntaxException | org.fabric3.api.host.domain.DeploymentException | InstallException | ContributionNotFoundException | StoreException e) {
             throw new ServiceRuntimeException(e);
         }
     }
@@ -169,15 +161,7 @@ public class NodeDomain implements Domain {
             contributionService.uninstall(uri);
             contributionService.remove(uri);
             return this;
-        } catch (URISyntaxException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (ContributionNotFoundException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (org.fabric3.api.host.domain.DeploymentException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (UninstallException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (RemoveException e) {
+        } catch (URISyntaxException | RemoveException | UninstallException | org.fabric3.api.host.domain.DeploymentException | ContributionNotFoundException e) {
             throw new ServiceRuntimeException(e);
         }
     }

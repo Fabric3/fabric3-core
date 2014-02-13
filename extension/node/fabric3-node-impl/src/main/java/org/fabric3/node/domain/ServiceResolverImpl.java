@@ -117,9 +117,7 @@ public class ServiceResolverImpl implements ServiceResolver {
             source.setClassLoaderId(Names.HOST_CONTRIBUTION);
             connector.connect(pwd);
             return interfaze.cast(source.getProxy());
-        } catch (GenerationException e) {
-            throw new ResolverException(e);
-        } catch (BuilderException e) {
+        } catch (GenerationException | BuilderException e) {
             throw new ResolverException(e);
         }
     }

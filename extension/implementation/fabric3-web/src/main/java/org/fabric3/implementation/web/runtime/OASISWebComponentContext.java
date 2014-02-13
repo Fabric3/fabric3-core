@@ -109,9 +109,7 @@ public class OASISWebComponentContext implements Fabric3ComponentContext {
     public <B> B getProperty(Class<B> type, String propertyName) {
         try {
             return component.getProperty(type, propertyName);
-        } catch (ObjectCreationException e) {
-            throw new ServiceRuntimeException(e.getMessage(), e);
-        } catch (Fabric3RuntimeException e) {
+        } catch (ObjectCreationException | Fabric3RuntimeException e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
     }

@@ -106,11 +106,7 @@ public class MetroDispatchTargetInterceptor extends AbstractMetroTargetIntercept
                 msg.setBody(result.getNode());
                 return msg;
             }
-        } catch (InaccessibleWSDLException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (ObjectCreationException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (TransformerException e) {
+        } catch (InaccessibleWSDLException | TransformerException | ObjectCreationException e) {
             throw new ServiceRuntimeException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);

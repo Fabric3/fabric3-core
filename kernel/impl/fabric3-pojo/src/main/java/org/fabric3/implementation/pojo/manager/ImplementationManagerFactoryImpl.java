@@ -201,9 +201,7 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
                 MethodInjectionSite methodSite = (MethodInjectionSite) site;
                 Method method = methodSite.getSignature().getMethod(implementationClass);
                 return method.getParameterTypes()[methodSite.getParam()];
-            } catch (ClassNotFoundException e) {
-                throw new AssertionError(e);
-            } catch (NoSuchMethodException e) {
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
                 throw new AssertionError(e);
             }
         } else if (site instanceof ConstructorInjectionSite) {
@@ -211,9 +209,7 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
                 ConstructorInjectionSite methodSite = (ConstructorInjectionSite) site;
                 Constructor<?> method = methodSite.getSignature().getConstructor(implementationClass);
                 return method.getParameterTypes()[methodSite.getParam()];
-            } catch (ClassNotFoundException e) {
-                throw new AssertionError(e);
-            } catch (NoSuchMethodException e) {
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
                 throw new AssertionError(e);
             }
         } else {
@@ -239,9 +235,7 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
                 MethodInjectionSite methodSite = (MethodInjectionSite) site;
                 Method method = methodSite.getSignature().getMethod(implementationClass);
                 return method.getGenericParameterTypes()[methodSite.getParam()];
-            } catch (ClassNotFoundException e) {
-                throw new AssertionError(e);
-            } catch (NoSuchMethodException e) {
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
                 throw new AssertionError(e);
             }
         } else if (site instanceof ConstructorInjectionSite) {
@@ -249,9 +243,7 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
                 ConstructorInjectionSite methodSite = (ConstructorInjectionSite) site;
                 Constructor<?> method = methodSite.getSignature().getConstructor(implementationClass);
                 return method.getGenericParameterTypes()[methodSite.getParam()];
-            } catch (ClassNotFoundException e) {
-                throw new AssertionError(e);
-            } catch (NoSuchMethodException e) {
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
                 throw new AssertionError(e);
             }
         } else {
@@ -313,9 +305,7 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
                         Method method = methodSite.getSignature().getMethod(implementationClass);
                         Injector<?> injector = reflectionFactory.createInjector(method, factory);
                         injectors.put(attribute, injector);
-                    } catch (ClassNotFoundException e) {
-                        throw new AssertionError(e);
-                    } catch (NoSuchMethodException e) {
+                    } catch (ClassNotFoundException | NoSuchMethodException e) {
                         throw new AssertionError(e);
                     }
                 }

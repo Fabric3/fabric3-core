@@ -170,13 +170,7 @@ public class BytecodeMonitorProxyService extends AbstractMonitorProxyService imp
             AbstractMonitorHandler handler = (AbstractMonitorHandler) clazz.getConstructor().newInstance();
             handler.init(destinationIndex, monitorable, router, infos, enabled);
             return type.cast(handler);
-        } catch (InvocationTargetException e) {
-            throw new MonitorCreationException(e);
-        } catch (NoSuchMethodException e) {
-            throw new MonitorCreationException(e);
-        } catch (InstantiationException e) {
-            throw new MonitorCreationException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException e) {
             throw new MonitorCreationException(e);
         }
     }

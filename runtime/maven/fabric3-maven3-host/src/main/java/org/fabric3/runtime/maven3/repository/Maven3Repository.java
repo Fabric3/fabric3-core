@@ -134,9 +134,7 @@ public class Maven3Repository implements Repository {
             request.setRepositories(Collections.singletonList(central));
             ArtifactResult result = repositorySystem.resolveArtifact(session, request);
             return result.getArtifact().getFile().toURI().toURL();
-        } catch (ArtifactResolutionException e) {
-            throw new RepositoryException(e);
-        } catch (MalformedURLException e) {
+        } catch (ArtifactResolutionException | MalformedURLException e) {
             throw new RepositoryException(e);
         }
     }

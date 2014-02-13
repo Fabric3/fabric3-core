@@ -121,11 +121,7 @@ public class ExtensionProvider {
             defaultDestination.start();
             registry.register(defaultDestination);
             systemReader = null;
-        } catch (AppenderCreationException e) {
-            monitor.error(e);
-        } catch (IOException e) {
-            monitor.error(e);
-        } catch (XMLStreamException e) {
+        } catch (AppenderCreationException | XMLStreamException | IOException e) {
             monitor.error(e);
         }
     }

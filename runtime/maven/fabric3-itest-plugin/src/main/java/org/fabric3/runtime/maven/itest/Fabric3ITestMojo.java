@@ -318,11 +318,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
                 getLog().error("Found latch service " + type + " but it does not declare an await() method");
             } catch (SecurityException e) {
                 getLog().error("Security exception introspecting latch service", e);
-            } catch (IllegalAccessException e) {
-                getLog().error("Exception attempting to wait on latch service", e);
-            } catch (IllegalArgumentException e) {
-                getLog().error("Exception attempting to wait on latch service", e);
-            } catch (InvocationTargetException e) {
+            } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
                 getLog().error("Exception attempting to wait on latch service", e);
             }
         }
@@ -352,15 +348,7 @@ public class Fabric3ITestMojo extends AbstractMojo {
             List<URI> uris = contributionService.store(sources);
             contributionService.install(uris);
             domain.include(uris);
-        } catch (MalformedURLException e) {
-            throw new MojoExecutionException("Error installing contributions", e);
-        } catch (StoreException e) {
-            throw new MojoExecutionException("Error installing contributions", e);
-        } catch (DeploymentException e) {
-            throw new MojoExecutionException("Error installing contributions", e);
-        } catch (ContributionNotFoundException e) {
-            throw new MojoExecutionException("Error installing contributions", e);
-        } catch (InstallException e) {
+        } catch (MalformedURLException | InstallException | ContributionNotFoundException | DeploymentException | StoreException e) {
             throw new MojoExecutionException("Error installing contributions", e);
         }
     }

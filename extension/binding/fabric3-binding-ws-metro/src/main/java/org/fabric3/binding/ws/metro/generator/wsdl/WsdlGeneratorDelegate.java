@@ -382,9 +382,7 @@ public class WsdlGeneratorDelegate implements MetroGeneratorDelegate<WsdlService
             Transformer transformer = transformerFactory.newTransformer();
             transformer.transform(source, result);
             return writer.toString();
-        } catch (TransformerException e) {
-            throw new GenerationException(e);
-        } catch (WSDLException e) {
+        } catch (TransformerException | WSDLException e) {
             throw new GenerationException(e);
         }
     }

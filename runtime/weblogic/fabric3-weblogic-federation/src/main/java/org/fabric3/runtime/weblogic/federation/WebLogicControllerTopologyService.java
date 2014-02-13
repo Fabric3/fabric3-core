@@ -142,9 +142,7 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
                 RuntimeInstance runtimeInstance = new RuntimeInstance(RUNTIME_NAME);
                 instances.add(runtimeInstance);
             }
-        } catch (NamingException e) {
-            monitor.error(e);
-        } catch (RemoteException e) {
+        } catch (NamingException | RemoteException e) {
             monitor.error(e);
         }
         return instances;
@@ -161,13 +159,7 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
                     channel.send(payload);
                 }
             }
-        } catch (NamingException e) {
-            throw new MessageException(e);
-        } catch (RemoteException e) {
-            throw new MessageException(e);
-        } catch (ChannelException e) {
-            throw new MessageException(e);
-        } catch (IOException e) {
+        } catch (NamingException | ChannelException | IOException e) {
             throw new MessageException(e);
         }
     }
@@ -181,9 +173,7 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
                     channel.send(payload);
                 }
             }
-        } catch (IOException e) {
-            throw new MessageException(e);
-        } catch (ChannelException e) {
+        } catch (IOException | ChannelException e) {
             throw new MessageException(e);
         }
     }
@@ -209,13 +199,7 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
                 Response response = serializationService.deserialize(Response.class, responsePayload);
                 responses.add(response);
                 // TODO handle exceptions and rollback
-            } catch (ChannelException e) {
-                throw new MessageException(e);
-            } catch (RemoteException e) {
-                throw new MessageException(e);
-            } catch (ClassNotFoundException e) {
-                throw new MessageException(e);
-            } catch (IOException e) {
+            } catch (ChannelException | ClassNotFoundException | IOException e) {
                 throw new MessageException(e);
             }
         }
@@ -288,13 +272,7 @@ public class WebLogicControllerTopologyService implements ControllerTopologyServ
                     }
                 }
             }
-        } catch (NamingException e) {
-            throw new MessageException(e);
-        } catch (RemoteException e) {
-            throw new MessageException(e);
-        } catch (ChannelException e) {
-            throw new MessageException(e);
-        } catch (IOException e) {
+        } catch (NamingException | ChannelException | IOException e) {
             throw new MessageException(e);
         } finally {
             JndiHelper.close(rootContext);

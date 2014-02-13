@@ -72,13 +72,7 @@ public class NonTransactionalIntervalTask implements Task {
         try {
             instance = component.getInstance();
             return (Long) method.invoke(instance);
-        } catch (InstanceLifecycleException e) {
-            monitor.executeError(e);
-            throw new InvocationRuntimeException(e);
-        } catch (InvocationTargetException e) {
-            monitor.executeError(e);
-            throw new InvocationRuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstanceLifecycleException | IllegalAccessException | InvocationTargetException e) {
             monitor.executeError(e);
             throw new InvocationRuntimeException(e);
         } finally {

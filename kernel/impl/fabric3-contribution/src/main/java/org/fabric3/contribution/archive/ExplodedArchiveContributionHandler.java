@@ -181,9 +181,7 @@ public class ExplodedArchiveContributionHandler implements ArchiveContributionHa
                         contribution.addResource(resource);
                         callback.onResource(resource);
                     }
-                } catch (MalformedURLException e) {
-                    throw new InstallException(e);
-                } catch (ContentTypeResolutionException e) {
+                } catch (MalformedURLException | ContentTypeResolutionException e) {
                     throw new InstallException(e);
                 }
             }

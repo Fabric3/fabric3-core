@@ -120,9 +120,7 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
             // TODO return host from JNDI
             String host = InetAddress.getLocalHost().getHostAddress();
             return new URL("http://" + host + ":" + getHttpPort());
-        } catch (UnknownHostException e) {
-            throw new IllegalStateException(e);
-        } catch (MalformedURLException e) {
+        } catch (UnknownHostException | MalformedURLException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -132,9 +130,7 @@ public class WebLogicServletHost extends HttpServlet implements ServletHost, Ser
             // TODO return host from JNDI
             String host = InetAddress.getLocalHost().getHostAddress();
             return new URL("https://" + host + ":" + getHttpPort());
-        } catch (UnknownHostException e) {
-            throw new IllegalStateException(e);
-        } catch (MalformedURLException e) {
+        } catch (UnknownHostException | MalformedURLException e) {
             throw new IllegalStateException(e);
         }
     }

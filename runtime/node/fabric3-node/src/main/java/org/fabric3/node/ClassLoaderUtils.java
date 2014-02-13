@@ -70,9 +70,7 @@ public class ClassLoaderUtils {
 
             // set the parent classloader field to the new value
             parentField.set(classLoader, newParent);
-        } catch (IllegalAccessException e) {
-            throw new FabricException("Unsupported VM", e);
-        } catch (NoSuchFieldException e) {
+        } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new FabricException("Unsupported VM", e);
         }
     }

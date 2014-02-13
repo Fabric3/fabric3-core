@@ -115,11 +115,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
             scopeContainer.register(physical);
             // initialize the component - needed for reinjection to work
             scopeContainer.getInstance(physical);
-        } catch (RegistrationException e) {
-            throw new ComponentRegistrationException(e);
-        } catch (AssemblyException e) {
-            throw new ComponentRegistrationException(e);
-        } catch (InstanceLifecycleException e) {
+        } catch (RegistrationException | InstanceLifecycleException | AssemblyException e) {
             throw new ComponentRegistrationException(e);
         }
     }

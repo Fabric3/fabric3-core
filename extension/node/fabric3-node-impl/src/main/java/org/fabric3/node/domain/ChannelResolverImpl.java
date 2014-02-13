@@ -121,9 +121,7 @@ public class ChannelResolverImpl implements ChannelResolver {
             }
             throw new GenerationException("Source generator not found");
 
-        } catch (GenerationException e) {
-            throw new ResolverException(e);
-        } catch (BuilderException e) {
+        } catch (GenerationException | BuilderException e) {
             throw new ResolverException(e);
         }
     }

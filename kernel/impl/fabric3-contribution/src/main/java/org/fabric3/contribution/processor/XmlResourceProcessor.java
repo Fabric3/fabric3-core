@@ -153,9 +153,7 @@ public class XmlResourceProcessor implements ResourceProcessor {
             }
             elementLoaderRegistry.load(reader, resource, context);
             resource.setState(ResourceState.PROCESSED);
-        } catch (XMLStreamException e) {
-            throw new InstallException(e);
-        } catch (IOException e) {
+        } catch (XMLStreamException | IOException e) {
             throw new InstallException(e);
         } finally {
             try {

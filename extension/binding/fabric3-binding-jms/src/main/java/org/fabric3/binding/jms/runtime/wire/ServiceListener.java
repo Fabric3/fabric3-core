@@ -155,11 +155,8 @@ public class ServiceListener implements MessageListener {
                     invoke(request, interceptor, payload, payloadTypes, oneWay, transactionType);
                     break;
             }
-        } catch (JMSException e) {
+        } catch (JMSException | JmsBadMessageException e) {
             // TODO This could be a temporary error and should be sent to a dead letter queue. For now, just log the error.
-            monitor.redeliveryError(e);
-        } catch (JmsBadMessageException e) {
-            // The message is invalid and cannot be processed. Log the error.
             monitor.redeliveryError(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
@@ -340,9 +337,7 @@ public class ServiceListener implements MessageListener {
             List<CallbackReference> stack = CallbackReferenceSerializer.deserialize(encoded);
             workContext.addCallbackReferences(stack);
             return workContext;
-        } catch (JMSException ex) {
-            throw new JmsBadMessageException("Error deserializing callback references", ex);
-        } catch (IOException ex) {
+        } catch (JMSException | IOException ex) {
             throw new JmsBadMessageException("Error deserializing callback references", ex);
         }
     }

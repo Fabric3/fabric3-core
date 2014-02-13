@@ -537,9 +537,7 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
             }
             EntityManager em = emService.getEntityManager(unitName, this, trx);
             session = (Session) em.getDelegate();
-        } catch (SystemException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (EntityManagerCreationException e) {
+        } catch (SystemException | EntityManagerCreationException e) {
             throw new ServiceRuntimeException(e);
         }
 

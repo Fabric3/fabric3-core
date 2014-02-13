@@ -114,12 +114,9 @@ public final class RsContainer extends HttpServlet {
             workContext.setHeader("fabric3.httpRequest", req);
             workContext.setHeader("fabric3.httpResponse", res);
             servlet.service(req, res);
-        } catch (ServletException se) {
+        } catch (ServletException | IOException se) {
             se.printStackTrace();
             throw se;
-        } catch (IOException ie) {
-            ie.printStackTrace();
-            throw ie;
         } catch (Throwable t) {
             t.printStackTrace();
             throw new ServletException(t);
@@ -147,8 +144,6 @@ public final class RsContainer extends HttpServlet {
 
             servlet = new ServletContainer(resourceConfig);
             servlet.init(servletConfig);
-        } catch (ServletException e) {
-            throw new RsContainerException(e);
         } catch (Throwable t) {
             throw new RsContainerException(t);
         }

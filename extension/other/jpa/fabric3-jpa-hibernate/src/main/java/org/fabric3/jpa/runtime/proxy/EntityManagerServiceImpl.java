@@ -88,9 +88,7 @@ public class EntityManagerServiceImpl implements EntityManagerService {
         try {
             TransactionScopedSync sync = new TransactionScopedSync(key, proxy);
             key.transaction.registerSynchronization(sync);
-        } catch (RollbackException e) {
-            throw new EntityManagerCreationException(e);
-        } catch (SystemException e) {
+        } catch (RollbackException | SystemException e) {
             throw new EntityManagerCreationException(e);
         }
     }
