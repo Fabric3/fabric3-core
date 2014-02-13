@@ -37,14 +37,13 @@
 */
 package org.fabric3.container.web.spi;
 
+import javax.servlet.ServletContext;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.ServletContext;
-
-import org.oasisopen.sca.ComponentContext;
 
 import org.fabric3.spi.container.objectfactory.Injector;
+import org.oasisopen.sca.ComponentContext;
 
 /**
  * Responsible for activating a web application in an embedded servlet container.
@@ -52,7 +51,6 @@ import org.fabric3.spi.container.objectfactory.Injector;
 public interface WebApplicationActivator {
     public static final String SERVLET_CONTEXT_SITE = "fabric3.servletContext";
     public static final String SESSION_CONTEXT_SITE = "fabric3.sessionContext";
-    public static final String CONTEXT_ATTRIBUTE = "org.osoa.sca.ComponentContext";
     public static final String OASIS_CONTEXT_ATTRIBUTE = "org.oasisopen.sca.ComponentContext";
 
     /**
